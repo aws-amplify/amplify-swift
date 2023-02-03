@@ -65,7 +65,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             return
         }
         assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedField: "postWithTagsCompositeKey"))
+                                                 associatedFields: ["postWithTagsCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
@@ -77,7 +77,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             return
         }
         assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name],
-                                                 associatedField: "tagWithCompositeKey"))
+                                                 associatedFields: ["tagWithCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
@@ -161,12 +161,12 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
         assertList(queriedPosts.first!.tags!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "postWithTagsCompositeKey"))
+                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postWithTagsCompositeKey"]))
         
         let queriedTags = try await listQuery(.list(Tag.self, where: Tag.keys.id == tag.id))
         assertList(queriedTags, state: .isLoaded(count: 1))
         assertList(queriedTags.first!.posts!,
-                   state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name], associatedField: "tagWithCompositeKey"))
+                   state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name], associatedFields: ["tagWithCompositeKey"]))
         
         let queriedPostTags = try await listQuery(.list(PostTag.self, where: PostTag.keys.id == postTag.id))
         assertList(queriedPostTags, state: .isLoaded(count: 1))
@@ -216,7 +216,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             return
         }
         assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedField: "postWithTagsCompositeKey"))
+                                                 associatedFields: ["postWithTagsCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }
@@ -227,7 +227,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             return
         }
         assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name],
-                                                 associatedField: "tagWithCompositeKey"))
+                                                 associatedFields: ["tagWithCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }

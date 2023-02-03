@@ -16,7 +16,7 @@ public struct AppSyncListDecoder: ModelListDecoder {
     /// Metadata that contains information about an associated parent object.
     struct Metadata: Codable {
         let appSyncAssociatedIdentifiers: [String]
-        let appSyncAssociatedField: String
+        let appSyncAssociatedFields: [String]
         let apiName: String?
     }
     

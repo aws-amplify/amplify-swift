@@ -118,19 +118,19 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
                                                                            content: savedParent.content)))!
         assertList(queriedParent.children!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.customId,
                                                                                         queriedParent.content],
-                                                                associatedField: "parent"))
+                                                                associatedFields: ["parent"]))
         try await queriedParent.children?.fetch()
         assertList(queriedParent.children!, state: .isLoaded(count: 1))
         
         assertList(queriedParent.implicitChildren!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.customId,
                                                                                                 queriedParent.content],
-                                                                        associatedField: "parent"))
+                                                                        associatedFields: ["parent"]))
         try await queriedParent.implicitChildren?.fetch()
         assertList(queriedParent.implicitChildren!, state: .isLoaded(count: 1))
         
         assertList(queriedParent.strangeChildren!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.customId,
                                                                                                queriedParent.content],
-                                                                       associatedField: "parent"))
+                                                                       associatedFields: ["parent"]))
         try await queriedParent.strangeChildren?.fetch()
         assertList(queriedParent.strangeChildren!, state: .isLoaded(count: 1))
         
@@ -153,7 +153,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
          */
         assertList(queriedParent.childrenSansBelongsTo!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.customId,
                                                                                                      queriedParent.content],
-                                                                             associatedField: "compositePKParentChildrenSansBelongsToCustomId"))
+                                                                             associatedFields: ["compositePKParentChildrenSansBelongsToCustomId"]))
         try await queriedParent.childrenSansBelongsTo?.fetch()
         assertList(queriedParent.childrenSansBelongsTo!, state: .isLoaded(count: 1))
         

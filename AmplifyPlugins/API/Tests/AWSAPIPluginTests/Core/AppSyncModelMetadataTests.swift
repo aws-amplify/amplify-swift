@@ -58,14 +58,14 @@ class ModelMetadataTests: XCTestCase {
         XCTAssertEqual(posts.count, 2)
         for post in posts {
             guard case .object(let associationData) = post["comments"],
-                  case .string(let associatedField) = associationData["appSyncAssociatedField"],
+                  case .array(let associatedFields) = associationData["appSyncAssociatedFields"],
                   case .array(let associatedIdentifiers) = associationData["appSyncAssociatedIdentifiers"],
                   case .string(let apiName) = associationData["apiName"] else {
                 XCTFail("Missing association metadata for comments")
                 return
             }
             XCTAssertEqual(associatedIdentifiers[0], "postId")
-            XCTAssertEqual(associatedField, "post")
+            XCTAssertEqual(associatedFields, ["post"])
             XCTAssertEqual(apiName, "apiName")
         }
     }
@@ -79,14 +79,14 @@ class ModelMetadataTests: XCTestCase {
 
         let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName")
         guard case .object(let associationData) = post["comments"],
-              case .string(let associatedField) = associationData["appSyncAssociatedField"],
+              case .array(let associatedFields) = associationData["appSyncAssociatedFields"],
               case .array(let associatedIdentifiers) = associationData["appSyncAssociatedIdentifiers"],
               case .string(let apiName) = associationData["apiName"] else {
             XCTFail("Missing association metadata for comments")
             return
         }
         XCTAssertEqual(associatedIdentifiers[0], "postId")
-        XCTAssertEqual(associatedField, "post")
+        XCTAssertEqual(associatedFields, ["post"])
         XCTAssertEqual(apiName, "apiName")
     }
 
