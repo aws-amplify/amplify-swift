@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.2 (2023-02-03)
+
+### Bug Fixes
+
+- **api**: add default user-agent header to API subscription requests (#2709)
+- **auth**: Delete user api get stuck on no network (#2656)
+- **auth**: Unblock fetchAuthSession call during a signIn flow (#2687)
+
 ## 2.3.1 (2023-01-18)
 
 ### Bug Fixes
