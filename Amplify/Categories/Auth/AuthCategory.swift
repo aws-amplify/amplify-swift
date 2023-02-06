@@ -9,36 +9,7 @@ final public class AuthCategory: Category {
 
     public let categoryType =  CategoryType.auth
 
-    var plugins = [PluginKey: AuthCategoryPlugin]()
-
-    /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
-    /// are added, or if more than one plugin is added, will cause a preconditionFailure.
-    var plugin: AuthCategoryPlugin {
-        guard isConfigured else {
-            return Fatal.preconditionFailure(
-                """
-                \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
-                any methods on the category.
-                """
-            )
-        }
-
-        guard !plugins.isEmpty else {
-            return Fatal.preconditionFailure("No plugins added to \(categoryType.displayName) category.")
-        }
-
-        guard plugins.count == 1 else {
-            return Fatal.preconditionFailure(
-                """
-                More than 1 plugin added to \(categoryType.displayName) category. \
-                You must invoke operations on this category by getting the plugin you want, as in:
-                #"Amplify.\(categoryType.displayName).getPlugin(for: "ThePluginKey").foo()
-                """
-            )
-        }
-
-        return plugins.first!.value
-    }
+    var plugin: AuthCategoryPlugin = AuthCategoryPluginPlaceholder()
 
     var isConfigured = false
 
@@ -65,7 +36,7 @@ final public class AuthCategory: Category {
             throw error
         }
 
-        plugins[plugin.key] = plugin
+        self.plugin = plugin
     }
 
     /// Returns the added plugin with the specified `key` property.
@@ -73,10 +44,9 @@ final public class AuthCategory: Category {
     /// - Parameter key: The PluginKey (String) of the plugin to retrieve
     /// - Returns: The wrapped plugin
     public func getPlugin(for key: PluginKey) throws -> AuthCategoryPlugin {
-        guard let plugin = plugins[key] else {
-            let keys = plugins.keys.joined(separator: ", ")
+        guard plugin.key == key else {
             let error = AuthError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
+                "Either add a plugin for '\(key)', or use one of the known keys: \(plugin.key)")
             throw error
         }
         return plugin
@@ -87,6 +57,9 @@ final public class AuthCategory: Category {
     ///
     /// - Parameter key: The key used to `add` the plugin
     public func removePlugin(for key: PluginKey) {
-        plugins.removeValue(forKey: key)
+        guard plugin.key == key else {
+            return
+        }
+        self.plugin = AuthCategoryPluginPlaceholder()
     }
 }

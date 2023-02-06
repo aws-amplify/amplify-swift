@@ -18,7 +18,7 @@ extension AuthCategory: CategoryConfigurable {
             throw error
         }
 
-        try Amplify.configure(plugins: Array(plugins.values), using: configuration)
+        try Amplify.configure(plugins: [plugin], using: configuration)
 
         isConfigured = true
     }

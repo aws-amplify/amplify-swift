@@ -22,9 +22,7 @@ struct PluginInfoHelper {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
         
-        pluginList.append(contentsOf: Amplify.Auth.plugins.map {
-            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-        })
+        pluginList.append(makePluginInfoItem(for: Amplify.Auth.plugin.key, versionable: Amplify.Auth.plugin as? AmplifyVersionable))
         
         pluginList.append(contentsOf: Amplify.DataStore.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)

@@ -120,10 +120,13 @@ class AuthCategoryConfigurationTests: XCTestCase {
     ///    - I should be able to access individual plugins I added.
     ///
     func testCanRegisterMultiplePlugins() throws {
+        var interactions: [String] = []
         let plugin1 = MockAuthCategoryPlugin()
+        plugin1.listeners.append { interactions.append("plugin1: \($0)") }
         try Amplify.add(plugin: plugin1)
 
         let plugin2 = MockSecondAuthCategoryPlugin()
+        plugin2.listeners.append { interactions.append("plugin2: \($0)") }
         try Amplify.add(plugin: plugin2)
 
         let config = AuthCategoryConfiguration(
@@ -137,8 +140,11 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        XCTAssertNotNil(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"))
+        XCTAssertThrowsError(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"))
         XCTAssertNotNil(try Amplify.Auth.getPlugin(for: "MockSecondAuthCategoryPlugin"))
+        XCTAssertEqual(interactions, [
+            "plugin2: configure(using:)"
+        ])
     }
 
     /// Test if the default plugin works
@@ -212,10 +218,13 @@ class AuthCategoryConfigurationTests: XCTestCase {
     ///    - Should throw an exception
     ///
     func testPreconditionFailureInvokingWithMultiplePlugins() async throws {
+        var interactions: [String] = []
         let plugin1 = MockAuthCategoryPlugin()
+        plugin1.listeners.append { interactions.append("plugin1: \($0)") }
         try Amplify.add(plugin: plugin1)
 
         let plugin2 = MockSecondAuthCategoryPlugin()
+        plugin2.listeners.append { interactions.append("plugin2: \($0)") }
         try Amplify.add(plugin: plugin2)
 
         let config = AuthCategoryConfiguration(
@@ -229,13 +238,11 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
-            MockAuthCategoryPlugin()
-        }
-
         _ = try await Amplify.Auth.update(oldPassword: "current", to: "new")
-
-        XCTAssertGreaterThan(registry.messages.count, 0)
+        XCTAssertEqual(interactions, [
+            "plugin2: configure(using:)",
+            "plugin2: changePassword"
+        ])
     }
 
     /// Test if configuration Auth plugin with getPlugin() works
@@ -277,26 +284,33 @@ class AuthCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    /// Test if unconfigured plugin throws an error
+    /// - Given: No custom Auth plugin has been provided
+    /// - When: One of the Auth category APIs is invoked
+    /// - Then: An exception is thrown citing the lack of a plugin
     ///
-    /// - Given: An unconfigured Amplify framework with Auth plugin added
-    /// - When:
-    ///    - Invoke an API in auth
-    /// - Then:
-    ///    - I should get an exception
+    func testPlaceholderPlugin() async throws {
+        do {
+            _ = try await Amplify.Auth.update(oldPassword: "current", to: "new")
+            XCTFail("Expecting an error")
+        } catch let error as PlaceholderPluginError {
+            XCTAssertEqual(error.errorDescription, "A AuthCategoryPlugin value must first be provided using `Amplify.add(plugin:)` before calling `update(oldPassword:to:options:)`.")
+        }
+    }
+
+    /// - Given: An Auth plugin that needs no configuration is added
+    /// - When: One of its APIs is invoked
+    /// - Then: It does not throw an exception
     ///
     func testPreconditionFailureInvokingBeforeConfig() async throws {
+        var interactions: [String] = []
         let plugin = MockAuthCategoryPlugin()
+        plugin.listeners.append { interactions.append($0) }
         try Amplify.add(plugin: plugin)
 
-        let registry = TypeRegistry.register(type: AuthCategoryPlugin.self) { _ in
-            MockAuthCategoryPlugin()
-        }
-
-        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         _ = try await Amplify.Auth.update(oldPassword: "current", to: "new")
-
-        XCTAssertGreaterThan(registry.messages.count, 0)
+        XCTAssertEqual(interactions, [
+            "changePassword"
+        ])
     }
 
     // MARK: - Test internal config behavior guarantees
