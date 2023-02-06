@@ -83,6 +83,10 @@
 		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
 		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
+		2170971329915C1500FD7EB2 /* GraphQLLazyLoadCompositePKChildTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971229915C1500FD7EB2 /* GraphQLLazyLoadCompositePKChildTests.swift */; };
+		2170971529915C9F00FD7EB2 /* GraphQLLazyLoadCompositePKImplicitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971429915C9F00FD7EB2 /* GraphQLLazyLoadCompositePKImplicitTests.swift */; };
+		2170971729915CCC00FD7EB2 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971629915CCC00FD7EB2 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift */; };
+		2170971929915CEC00FD7EB2 /* GraphQLLazyLoadCompositePKChildSansTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2170971829915CEC00FD7EB2 /* GraphQLLazyLoadCompositePKChildSansTests.swift */; };
 		218D0193291AE3750068D133 /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D018F291AE3750068D133 /* Post4V2.swift */; };
 		218D0194291AE3750068D133 /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0190291AE3750068D133 /* Comment4V2.swift */; };
 		218D0195291AE3750068D133 /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0191291AE3750068D133 /* Comment4V2+Schema.swift */; };
@@ -405,6 +409,10 @@
 		21698CC42889D75F004BD994 /* SocialNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialNote.swift; sourceTree = "<group>"; };
 		21698CC52889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Support.swift"; sourceTree = "<group>"; };
 		21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLAuthDirectiveIntegrationTests.swift; sourceTree = "<group>"; };
+		2170971229915C1500FD7EB2 /* GraphQLLazyLoadCompositePKChildTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadCompositePKChildTests.swift; sourceTree = "<group>"; };
+		2170971429915C9F00FD7EB2 /* GraphQLLazyLoadCompositePKImplicitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadCompositePKImplicitTests.swift; sourceTree = "<group>"; };
+		2170971629915CCC00FD7EB2 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadCompositePKStrangeExplicitTests.swift; sourceTree = "<group>"; };
+		2170971829915CEC00FD7EB2 /* GraphQLLazyLoadCompositePKChildSansTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadCompositePKChildSansTests.swift; sourceTree = "<group>"; };
 		218D018F291AE3750068D133 /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
 		218D0190291AE3750068D133 /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
 		218D0191291AE3750068D133 /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
@@ -1078,6 +1086,10 @@
 			isa = PBXGroup;
 			children = (
 				21FA8EFA295C9647009F6A07 /* GraphQLLazyLoadCompositePKTests.swift */,
+				2170971229915C1500FD7EB2 /* GraphQLLazyLoadCompositePKChildTests.swift */,
+				2170971429915C9F00FD7EB2 /* GraphQLLazyLoadCompositePKImplicitTests.swift */,
+				2170971629915CCC00FD7EB2 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift */,
+				2170971829915CEC00FD7EB2 /* GraphQLLazyLoadCompositePKChildSansTests.swift */,
 				21908A58291D762B005021F7 /* ChildSansBelongsTo.swift */,
 				21908A53291D762B005021F7 /* ChildSansBelongsTo+Schema.swift */,
 				21908A5B291D762B005021F7 /* CompositePKChild.swift */,
@@ -1864,6 +1876,7 @@
 				21908A20291D75E4005021F7 /* Project2.swift in Sources */,
 				219089F4291D75C3005021F7 /* Comment8V2.swift in Sources */,
 				21908A60291D762B005021F7 /* DefaultPKChild.swift in Sources */,
+				2170971929915CEC00FD7EB2 /* GraphQLLazyLoadCompositePKChildSansTests.swift in Sources */,
 				219089F8291D75C3005021F7 /* MyCustomModel8.swift in Sources */,
 				21908A2A291D75EB005021F7 /* Comment4.swift in Sources */,
 				21908A19291D75DD005021F7 /* Team1.swift in Sources */,
@@ -1916,6 +1929,7 @@
 				21EA888228F9BCD90000BA75 /* TestConfigHelper.swift in Sources */,
 				21AB5C4029819A4000CCA482 /* ListIntContainer.swift in Sources */,
 				21908A0E291D75D6005021F7 /* TagWithCompositeKey+Schema.swift in Sources */,
+				2170971329915C1500FD7EB2 /* GraphQLLazyLoadCompositePKChildTests.swift in Sources */,
 				21908A6B291D762B005021F7 /* CompositePKParent+Schema.swift in Sources */,
 				21BC111F2971ADA4000E189E /* User14.swift in Sources */,
 				21BC111E2971ADA4000E189E /* User14+Schema.swift in Sources */,
@@ -1944,10 +1958,12 @@
 				21BC11202971ADA4000E189E /* Comment14+Schema.swift in Sources */,
 				21BC11212971ADA4000E189E /* Post14+Schema.swift in Sources */,
 				21908A21291D75E4005021F7 /* GraphQLLazyLoadProjectTeam2Tests.swift in Sources */,
+				2170971529915C9F00FD7EB2 /* GraphQLLazyLoadCompositePKImplicitTests.swift in Sources */,
 				219089FE291D75CE005021F7 /* GraphQLLazyLoadPostCommentWithCompositeKeyTests.swift in Sources */,
 				21908A76291D7631005021F7 /* GraphQLLazyLoadPostComment8Tests.swift in Sources */,
 				21908A23291D75E4005021F7 /* Project2+Schema.swift in Sources */,
 				21908A49291D7608005021F7 /* GraphQLLazyLoadPostComment7Tests.swift in Sources */,
+				2170971729915CCC00FD7EB2 /* GraphQLLazyLoadCompositePKStrangeExplicitTests.swift in Sources */,
 				21908A2D291D75EB005021F7 /* Post4+Schema.swift in Sources */,
 				218D0196291AE3750068D133 /* Post4V2+Schema.swift in Sources */,
 				21AB5C3E29819A4000CCA482 /* NestedTypeTestModel.swift in Sources */,

@@ -34,7 +34,7 @@ extension CompositePKParent {
       .hasMany(compositePKParent.children, is: .optional, ofType: CompositePKChild.self, associatedWith: CompositePKChild.keys.parent),
       .hasMany(compositePKParent.implicitChildren, is: .optional, ofType: ImplicitChild.self, associatedWith: ImplicitChild.keys.parent),
       .hasMany(compositePKParent.strangeChildren, is: .optional, ofType: StrangeExplicitChild.self, associatedWith: StrangeExplicitChild.keys.parent),
-      .hasMany(compositePKParent.childrenSansBelongsTo, is: .optional, ofType: ChildSansBelongsTo.self, associatedWith: ChildSansBelongsTo.keys.compositePKParentChildrenSansBelongsToCustomId),
+      .hasMany(compositePKParent.childrenSansBelongsTo, is: .optional, ofType: ChildSansBelongsTo.self, associatedFields: [ChildSansBelongsTo.keys.compositePKParentChildrenSansBelongsToCustomId, ChildSansBelongsTo.keys.compositePKParentChildrenSansBelongsToContent]),
       .field(compositePKParent.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(compositePKParent.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
