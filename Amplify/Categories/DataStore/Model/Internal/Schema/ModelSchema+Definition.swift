@@ -280,21 +280,6 @@ public enum ModelFieldDefinition {
                       association: .hasOne(associatedWith: associatedKey, targetNames: targetNames))
     }
 
-    public static func hasOne(_ key: CodingKey,
-                              is nullability: ModelFieldNullability = .required,
-                              isReadOnly: Bool = false,
-                              ofType type: Model.Type,
-                              associatedFields associatedKeys: [CodingKey],
-                              targetNames: [String]) -> ModelFieldDefinition {
-        return .field(key,
-                      is: nullability,
-                      isReadOnly: isReadOnly,
-                      ofType: .model(type: type),
-                      association: .hasOne(associatedWith: associatedKeys.first,
-                                           associatedFields: associatedKeys,
-                                           targetNames: targetNames))
-    }
-
     public static func belongsTo(_ key: CodingKey,
                                  is nullability: ModelFieldNullability = .required,
                                  isReadOnly: Bool = false,

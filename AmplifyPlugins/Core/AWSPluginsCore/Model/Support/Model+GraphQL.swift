@@ -207,7 +207,7 @@ extension Model {
         let defaultFieldName = modelName.camelCased() + modelField.name.pascalCased() + "Id"
         if case let .belongsTo(_, targetNames) = modelField.association, !targetNames.isEmpty {
             return targetNames
-        } else if case let .hasOne(_, _, targetNames) = modelField.association,
+        } else if case let .hasOne(_, targetNames) = modelField.association,
                   !targetNames.isEmpty {
             return targetNames
         }
