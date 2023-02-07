@@ -53,7 +53,7 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: .dataStore)
     }
 
-    
+
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement,
@@ -66,7 +66,7 @@ extension Statement: StatementModelConvertible {
         let result: StatementResult<M> = try StatementResult.from(dictionary: values)
         return result.elements
     }
-    
+
     func convertToModelValues<M: Model>(to modelType: M.Type,
                                         withSchema modelSchema: ModelSchema,
                                         using statement: SelectStatement,
@@ -121,13 +121,24 @@ extension Statement: StatementModelConvertible {
             return convertCollection(field: field, schema: schema, from: element, path: path)
 
         case (.model, false):
-            let foreignKey = field.association.map(getTargetNames).map {
-                field.foreignKeySqlName(withAssociationTargets: $0)
-            }
-            let targetBinding = foreignKey.flatMap {
+            let targetNames = getTargetNames(field: field)
+            var associatedFieldValues = targetNames.map {
                 getValue(from: element, by: path + [$0])
+            }.compactMap { $0 }
+            .map { String(describing: $0) }
+
+            if associatedFieldValues.isEmpty {
+                associatedFieldValues = associatedValues(
+                    from: path + [field.foreignKeySqlName(withAssociationTargets: targetNames)],
+                    element: element
+                )
             }
-            return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
+            guard associatedFieldValues.count == field.associatedFieldNames.count else {
+                return nil
+            }
+            return DataStoreModelDecoder.lazyInit(identifiers: zip(field.associatedFieldNames, associatedFieldValues).map {
+                LazyReferenceIdentifier(name: $0.0, value: $0.1)
+            })?.toJsonObject()
 
         case let (.model(modelName), true):
             guard let modelSchema = getModelSchema(for: modelName, with: statement)
@@ -150,6 +161,14 @@ extension Statement: StatementModelConvertible {
 
     private func getModelSchema(for modelName: ModelName, with statement: SelectStatement) -> ModelSchema? {
         return statement.metadata.columnMapping.values.first { $0.0.name == modelName }.map { $0.0 }
+    }
+
+    private func associatedValues(from foreignKeyPath: [String], element: Element) -> [String] {
+        return [getValue(from: element, by: foreignKeyPath)]
+            .compactMap({ $0 })
+            .map({ String(describing: $0) })
+            .flatMap({ $0.split(separator: ModelIdentifierFormat.Custom.separator.first!) })
+            .map({ String($0).trimmingCharacters(in: .init(charactersIn: "\"")) })
     }
 
     private func convertCollection(field: ModelField, schema: ModelSchema, from element: Element, path: [String]) -> Any? {
@@ -178,19 +197,19 @@ extension Statement: StatementModelConvertible {
                 return DataStoreListDecoder.lazyInit(associatedIds: primaryKeyValues,
                                                      associatedWith: associatedFieldNames)
             }
-            
+
         }
 
         return nil
     }
 
-    private func getTargetNames(assoication: ModelAssociation) -> [String] {
-        switch assoication {
-        case let .hasOne(associatedFieldName: _, targetNames: targets):
-            return targets
-        case let.belongsTo(associatedFieldName: _, targetNames: targets):
-            return targets
-        case .hasMany:
+    private func getTargetNames(field: ModelField) -> [String] {
+        switch field.association {
+        case let .some(.hasOne(_, targetNames)):
+            return targetNames
+        case let .some(.belongsTo(_, targetNames)):
+            return targetNames
+        default:
             return []
         }
     }

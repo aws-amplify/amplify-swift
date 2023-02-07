@@ -40,7 +40,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let child = Child(parent: parent)
         let savedParent = try await saveAndWaitForSync(parent)
         let savedChild = try await saveAndWaitForSync(child)
-        try await assertChild(savedChild, hasEagerLoaded: savedParent)
+        try await assertChild(savedChild, canLazyLoad: savedParent)
         try await assertParent(savedParent, canLazyLoad: savedChild)
         let queriedChild = try await query(for: savedChild)
         try await assertChild(queriedChild, canLazyLoad: savedParent)
@@ -60,7 +60,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Could not encode child")
             return
         }
-        try await assertChild(savedChild, hasEagerLoaded: savedParent)
+        try await assertChild(savedChild, canLazyLoad: savedParent)
         
         guard let decodedChild = try? ModelRegistry.decode(modelName: Child.modelName,
                                                              from: encodedChild) as? Child else {
@@ -69,7 +69,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
             return
         }
         
-        try await assertChild(decodedChild, hasEagerLoaded: savedParent)
+        try await assertChild(decodedChild, canLazyLoad: savedParent)
     }
     
     func testLazyLoadOnQueryAfterEncodeDecoder() async throws {

@@ -79,7 +79,10 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         // query children and load the parent - StrangeExplicitChild
         let queriedStrangeImplicitChild = try await query(for: savedChild)
         assertLazyReference(queriedStrangeImplicitChild._parent,
-                            state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: savedParent.identifier)]))
+                            state: .notLoaded(identifiers: [
+                                .init(name: CompositePKParent.keys.customId.stringValue, value: savedParent.customId),
+                                .init(name: CompositePKParent.keys.content.stringValue, value: savedParent.content)
+                            ]))
         let loadedParent3 = try await queriedStrangeImplicitChild.parent
         assertLazyReference(queriedStrangeImplicitChild._parent,
                             state: .loaded(model: loadedParent3))

@@ -42,7 +42,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
-        try await assertComment(savedComment, hasEagerLoaded: savedPost)
+        try await assertComment(savedComment, canLazyLoad: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
         let queriedComment = try await query(for: savedComment)
         try await assertComment(queriedComment, canLazyLoad: savedPost)
@@ -62,7 +62,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Could not encode comment")
             return
         }
-        try await assertComment(savedComment, hasEagerLoaded: savedPost)
+        try await assertComment(savedComment, canLazyLoad: savedPost)
         
         guard let decodedComment = try? ModelRegistry.decode(modelName: Comment.modelName,
                                                              from: encodedComment) as? Comment else {
@@ -71,7 +71,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
             return
         }
         
-        try await assertComment(decodedComment, hasEagerLoaded: savedPost)
+        try await assertComment(decodedComment, canLazyLoad: savedPost)
     }
     
     func testLazyLoadOnQueryAfterEncodeDecoder() async throws {

@@ -167,23 +167,18 @@ extension Model {
 
         let fieldNames = getFieldNameForAssociatedModels(modelField: field)
         var values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
-
-        if fieldNames.count != values.count {
-            // if the field is required, the associated field keys and values should match
-            if field.isRequired {
-                preconditionFailure(
-                """
-                Associated model target names and values for field \(field.name) of model \(modelName) mismatch.
-                There is a possibility that is an issue with the generated models.
-                """
-                )
-            } else if mutationType == .update {
-                // otherwise, pad the values with `nil` to account for removals of associations on updates.
-                values = [Persistable?](repeating: nil, count: fieldNames.count)
-            }
+        if values.count != fieldNames.count {
+            values = [Persistable?](repeating: nil, count: fieldNames.count)
         }
 
-        return Array(zip(fieldNames, values))
+        let associatedModelIdentifiers = zip(fieldNames, values).map { ($0.0, $0.1)}
+        if mutationType != .update {
+            return associatedModelIdentifiers.compactMap { key, value in
+                value.map { (key, $0) }
+            }
+        } else {
+            return associatedModelIdentifiers
+        }
     }
 
     /// Given a model and its schema, returns the values of its identifier (primary key).
@@ -192,7 +187,10 @@ extension Model {
     ///   - value: model value
     ///   - modelSchema: model's schema
     /// - Returns: array of values of its primary key
-    private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable?] {
+    private func getModelIdentifierValues(
+        from value: Any,
+        modelSchema: ModelSchema
+    ) -> [Persistable?] {
         if let modelValue = value as? Model {
             return modelValue.identifier(schema: modelSchema).values
         } else if let optionalModel = value as? Model?,

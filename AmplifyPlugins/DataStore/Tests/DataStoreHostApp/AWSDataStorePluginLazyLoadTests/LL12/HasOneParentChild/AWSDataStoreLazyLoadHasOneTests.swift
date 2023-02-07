@@ -76,6 +76,38 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(child)
     }
 
+    func testUpdateParentWithNewChild() async throws {
+            await setup(withModels: HasOneModels())
+            let child = HasOneChild()
+            let savedChild = try await saveAndWaitForSync(child)
+            let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
+            let savedParent = try await saveAndWaitForSync(parent)
+
+            var queriedParent = try await query(for: savedParent)
+            XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
+
+            // The child can be lazy loaded.
+            assertLazyReference(queriedParent._child,
+                                state: .notLoaded(identifiers: [
+                                    .init(name: HasOneChild.keys.id.stringValue, value: child.id)
+                                ]))
+
+            let newChild = HasOneChild()
+            let savedNewChild = try await saveAndWaitForSync(newChild)
+
+            // Update parent to new child
+            queriedParent.setChild(savedNewChild)
+            queriedParent.hasOneParentChildId = savedNewChild.id
+            try await updateAndWaitForSync(queriedParent)
+
+            let queriedParentWithNewChild = try await query(for: parent)
+            // The child can be lazy loaded.
+            assertLazyReference(queriedParentWithNewChild._child, state: .notLoaded(identifiers: [
+                .init(name: HasOneChild.keys.id.stringValue, value: savedNewChild.id)
+            ]))
+            XCTAssertEqual(queriedParentWithNewChild.hasOneParentChildId, savedNewChild.id)
+        }
+
 }
 
 extension AWSDataStoreLazyLoadHasOneTests {
