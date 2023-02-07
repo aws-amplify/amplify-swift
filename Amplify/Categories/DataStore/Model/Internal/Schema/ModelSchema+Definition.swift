@@ -240,7 +240,7 @@ public enum ModelFieldDefinition {
                       ofType: .collection(of: type),
                       association: .hasMany(associatedWith: associatedKey))
     }
-    
+
     public static func hasMany(_ key: CodingKey,
                                is nullability: ModelFieldNullability = .required,
                                isReadOnly: Bool = false,
@@ -250,7 +250,7 @@ public enum ModelFieldDefinition {
                       is: nullability,
                       isReadOnly: isReadOnly,
                       ofType: .collection(of: type),
-                      association: .hasMany(associatedWith: associatedKeys.first ?? nil, associatedFields: associatedKeys))
+                      association: .hasMany(associatedWith: associatedKeys.first, associatedFields: associatedKeys))
     }
 
     public static func hasOne(_ key: CodingKey,

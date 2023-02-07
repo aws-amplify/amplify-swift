@@ -97,7 +97,7 @@ public enum ModelAssociation {
         let targetNames = targetName.map { [$0] } ?? []
         return .belongsTo(associatedFieldName: nil, targetNames: targetNames)
     }
-    
+
     public static func hasMany(associatedWith: CodingKey? = nil, associatedFields: [CodingKey] = []) -> ModelAssociation {
         return .hasMany(associatedFieldName: associatedWith?.stringValue, associatedFieldNames: associatedFields.map { $0.stringValue })
     }
@@ -225,7 +225,7 @@ extension ModelField {
         }
         return true
     }
-    
+
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
@@ -267,19 +267,23 @@ extension ModelField {
     ///   breaking change.
     public var associatedFieldNames: [String] {
         switch association {
-        case .belongsTo(let associatedKey, let associatedKeys),
-                .hasOne(let associatedKey, let associatedKeys),
-                .hasMany(let associatedKey, let associatedKeys):
+        case .hasMany(let associatedKey, let associatedKeys):
             if associatedKeys.isEmpty, let associatedKey = associatedKey {
                 return [associatedKey]
             }
-            
             return associatedKeys
+
+        case .hasOne, .belongsTo:
+            return ModelRegistry.modelSchema(from: requiredAssociatedModelName)?
+                .primaryKey
+                .fields
+                .map(\.name) ?? []
+
         case .none:
             return []
         }
     }
-    
+
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a

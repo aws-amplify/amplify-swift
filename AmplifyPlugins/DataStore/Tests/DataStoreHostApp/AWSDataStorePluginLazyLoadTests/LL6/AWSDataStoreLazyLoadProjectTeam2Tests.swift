@@ -137,8 +137,10 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
         assertProject(queriedProject, hasTeam: savedTeam)
         queriedProject.project2TeamTeamId = newTeam.teamId
         queriedProject.project2TeamName = newTeam.name
-        let savedProjectWithNewTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
-        assertProject(queriedProject, hasTeam: savedNewTeam)
+        try await saveAndWaitForSync(queriedProject, assertVersion: 2)
+
+        let queriedProjectV2 = try await query(for: savedProject)
+        assertProject(queriedProjectV2, hasTeam: savedNewTeam)
     }
     
     func testDeleteTeam() async throws {
