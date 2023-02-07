@@ -34,7 +34,7 @@ public struct StrangeExplicitChild: Model {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
-  public mutating func setParent(parent: CompositePKParent) {
+  public mutating func setParent(_ parent: CompositePKParent) {
     self._parent = LazyReference(parent)
   }
   public init(from decoder: Decoder) throws {

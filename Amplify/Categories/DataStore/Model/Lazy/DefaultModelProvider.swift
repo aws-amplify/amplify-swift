@@ -24,7 +24,7 @@ public struct DefaultModelProvider<Element: Model>: ModelProvider {
     public func load() async throws -> Element? {
         switch loadedState {
         case .notLoaded:
-            throw CoreError.clientValidation("DefaultModelProvider does not provide loading capabilities", "")
+            return nil
         case .loaded(let model):
             return model
         }
