@@ -37,7 +37,7 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testHasOneWithCodingKeys() {
         let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: nil)
-        guard case .hasOne(let fieldName, _, let target) = hasOne else {
+        guard case .hasOne(let fieldName, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
         }
@@ -47,7 +47,7 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testHasOneWithCodingKeysWithTargetName() {
         let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: "postID")
-        guard case .hasOne(let fieldName, _, let target) = hasOne else {
+        guard case .hasOne(let fieldName, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
         }
