@@ -24,15 +24,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         }
 
         func toJsonObject() -> Any? {
-            return [
-                "identifiers": identifiers.map({
-                    [
-                        "name": $0.name,
-                        "value": $0.value
-                    ]
-                }),
-                "source": source
-            ]
+            try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self))
         }
     }
     
