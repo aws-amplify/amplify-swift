@@ -166,28 +166,12 @@ extension Model {
         }
 
         let fieldNames = getFieldNameForAssociatedModels(modelField: field)
-
-        let foreignKeyValues = fieldNames.map {
-            getFieldValue(for: $0, modelSchema: self.schema)?.flatMap({$0 as? Persistable})
-        }
-
         var values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
-
-        if fieldNames.count != values.count {
-            let defaultValues = [Persistable?](repeating: nil, count: fieldNames.count)
-            if field.isAssociationOwner && fieldNames.count > 1 && values.count == 1 {
-                let discreteKeys = values.compactMap { persistable in
-                    persistable.map({ String(describing: $0) })
-                        .map({ $0.split(separator: ModelIdentifierFormat.Custom.separator.first!) })
-                }.flatMap({ $0 })
-                .map({ $0.trimmingCharacters(in: CharacterSet(charactersIn: "\"")) })
-                values = discreteKeys.count == fieldNames.count ? discreteKeys : defaultValues
-            } else {
-                values = defaultValues
-            }
+        if values.count != fieldNames.count {
+            values = [Persistable?](repeating: nil, count: fieldNames.count)
         }
 
-        let associatedModelIdentifiers = zip(fieldNames, zip(values, foreignKeyValues)).map { ($0.0, $0.1.0 ?? $0.1.1) }
+        let associatedModelIdentifiers = zip(fieldNames, values).map { ($0.0, $0.1)}
         if mutationType != .update {
             return associatedModelIdentifiers.compactMap { key, value in
                 value.map { (key, $0) }

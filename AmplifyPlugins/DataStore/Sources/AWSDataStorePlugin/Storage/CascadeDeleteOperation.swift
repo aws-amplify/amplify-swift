@@ -142,9 +142,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
         
         let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
-        
+
         associatedModels = await self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
-        
+
         deletedResult = await withCheckedContinuation { continuation in
             self.storageAdapter.delete(self.modelType,
                                        modelSchema: self.modelSchema,
