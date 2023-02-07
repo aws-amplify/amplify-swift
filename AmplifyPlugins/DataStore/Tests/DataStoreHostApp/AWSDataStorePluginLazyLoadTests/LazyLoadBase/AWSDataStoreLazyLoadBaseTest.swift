@@ -178,6 +178,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
                 if event.eventName == dataStoreEvents.outboxMutationProcessed,
                    let outboxMutationEvent = event.data as? OutboxMutationEvent,
                    outboxMutationEvent.modelName == model.modelName,
+                   outboxMutationEvent.element.model.identifier == model.identifier,
                    outboxMutationEvent.element.deleted == true {
                     Task { await modelSynced.fulfill() }
                     
