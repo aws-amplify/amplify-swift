@@ -88,10 +88,13 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         queriedTeam.setProject(queriedProjectWithTeam)
         let savedTeamWithProject = try await saveAndWaitForSync(queriedTeam, assertVersion: 2)
         
-        assertLazyReference(savedTeamWithProject._project, state: .loaded(model: projectWithTeam))
+        assertLazyReference(savedTeamWithProject._project,
+                            state: .notLoaded(identifiers: [.init(name: "", value: projectWithTeam.projectId),
+                                                            .init(name: "", value: projectWithTeam.name)]))
         var queriedTeamWithProject = try await query(for: savedTeamWithProject)
-        assertLazyReference(queriedTeamWithProject._project, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: projectWithTeam.identifier)]))
-        
+        assertLazyReference(queriedTeamWithProject._project,
+                            state: .notLoaded(identifiers: [.init(name: "", value: projectWithTeam.projectId),
+                                                            .init(name: "", value: projectWithTeam.name)]))
         let loadedProject = try await queriedTeamWithProject.project!
         XCTAssertEqual(loadedProject.projectId, projectWithTeam.projectId)
     }

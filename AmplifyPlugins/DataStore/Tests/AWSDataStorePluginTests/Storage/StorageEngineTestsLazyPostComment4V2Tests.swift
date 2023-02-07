@@ -208,7 +208,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers[0], .init(name: "id", value: "postId"))
+            XCTAssertEqual(identifiers[0], .init(name: "", value: "postId"))
         case .loaded:
             XCTFail("Should be not loaded")
         }
@@ -263,7 +263,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers[0], .init(name: "id", value: post.id))
+            XCTAssertEqual(identifiers[0], .init(name: "", value: post.id))
         case .loaded:
             XCTFail("lazy loaded post should be not loaded")
         }
@@ -354,7 +354,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers[0], .init(name: "id", value: "postId1"))
+            XCTAssertEqual(identifiers[0], .init(name: "", value: "postId1"))
         case .loaded:
             XCTFail("Should be not loaded")
         }
@@ -364,7 +364,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers[0], .init(name: "id", value: "postId2"))
+            XCTAssertEqual(identifiers[0], .init(name: "", value: "postId2"))
         case .loaded:
             XCTFail("Should be not loaded")
         }

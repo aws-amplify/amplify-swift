@@ -30,8 +30,10 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         
         try await assertPost(savedPost, canLazyLoad: savedPostTag)
         try await assertTag(savedTag, canLazyLoad: savedPostTag)
-        assertLazyReference(savedPostTag._postWithTagsCompositeKey, state: .loaded(model: savedPost))
-        assertLazyReference(savedPostTag._tagWithCompositeKey, state: .loaded(model: savedTag))
+        assertLazyReference(savedPostTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "", value: savedPost.postId),
+                                                                                                    .init(name: "", value: savedPost.title)]))
+        assertLazyReference(savedPostTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "", value: savedTag.id),
+                                                                                               .init(name: "", value: savedTag.name)]))
         let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedPostTag)
         let queriedTag = try await query(for: savedTag)
@@ -65,8 +67,10 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func assertPostTag(_ postTag: PostTag, canLazyLoadTag tag: Tag, canLazyLoadPost post: Post) async throws {
-        assertLazyReference(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: tag.identifier)]))
-        assertLazyReference(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
+        assertLazyReference(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "", value: tag.id),
+                                                                                          .init(name: "", value: tag.name)]))
+        assertLazyReference(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "", value: post.postId),
+                                                                                               .init(name: "", value: post.title)]))
         let loadedTag = try await postTag.tagWithCompositeKey
         assertLazyReference(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
@@ -90,7 +94,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         _ = try await saveAndWaitForSync(newPost)
         queriedPostTag.setPostWithTagsCompositeKey(newPost)
         let savedPostTagWithNewPost = try await saveAndWaitForSync(queriedPostTag, assertVersion: 2)
-        assertLazyReference(savedPostTagWithNewPost._postWithTagsCompositeKey, state: .loaded(model: newPost))
+        assertLazyReference(savedPostTagWithNewPost._postWithTagsCompositeKey,
+                            state: .notLoaded(identifiers: [.init(name: "", value: newPost.postId),
+                                                            .init(name: "", value: newPost.title)]))
         let queriedPreviousPost = try await query(for: savedPost)
         try await assertPostWithNoPostTag(queriedPreviousPost)
         
@@ -100,7 +106,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         _ = try await saveAndWaitForSync(newTag)
         queriedPostTagWithNewPost.setTagWithCompositeKey(newTag)
         let savedPostTagWithNewTag = try await saveAndWaitForSync(queriedPostTagWithNewPost, assertVersion: 3)
-        assertLazyReference(savedPostTagWithNewTag._tagWithCompositeKey, state: .loaded(model: newTag))
+        assertLazyReference(savedPostTagWithNewTag._tagWithCompositeKey,
+                            state: .notLoaded(identifiers: [.init(name: "", value: newTag.id),
+                                                            .init(name: "", value: newTag.name)]))
         let queriedPreviousTag = try await query(for: savedTag)
         try await assertTagWithNoPostTag(queriedPreviousTag)
     }

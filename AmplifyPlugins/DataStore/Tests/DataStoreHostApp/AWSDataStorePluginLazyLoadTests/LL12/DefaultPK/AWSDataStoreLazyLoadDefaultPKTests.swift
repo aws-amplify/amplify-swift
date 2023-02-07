@@ -40,7 +40,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let child = Child(parent: parent)
         let savedParent = try await saveAndWaitForSync(parent)
         let savedChild = try await saveAndWaitForSync(child)
-        try await assertChild(savedChild, hasEagerLoaded: savedParent)
+        try await assertChild(savedChild, canLazyLoad: savedParent)
         try await assertParent(savedParent, canLazyLoad: savedChild)
         let queriedChild = try await query(for: savedChild)
         try await assertChild(queriedChild, canLazyLoad: savedParent)
@@ -60,7 +60,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Could not encode child")
             return
         }
-        try await assertChild(savedChild, hasEagerLoaded: savedParent)
+        try await assertChild(savedChild, canLazyLoad: savedParent)
         
         guard let decodedChild = try? ModelRegistry.decode(modelName: Child.modelName,
                                                              from: encodedChild) as? Child else {
@@ -69,7 +69,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
             return
         }
         
-        try await assertChild(decodedChild, hasEagerLoaded: savedParent)
+        try await assertChild(decodedChild, canLazyLoad: savedParent)
     }
     
     func testLazyLoadOnQueryAfterEncodeDecoder() async throws {
@@ -115,7 +115,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
     func assertChild(_ child: Child,
                        canLazyLoad parent: Parent) async throws {
         assertLazyReference(child._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+                        state: .notLoaded(identifiers: [.init(name: "", value: parent.identifier)]))
         guard let loadedParent = try await child.parent else {
             XCTFail("Failed to load the parent from the child")
             return
@@ -144,7 +144,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         
         // further nested models should not be loaded
         assertLazyReference(child._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+                        state: .notLoaded(identifiers: [.init(name: "", value: parent.identifier)]))
     }
     
     func testSaveWithoutPost() async throws {
@@ -170,7 +170,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let savedChild = try await saveAndWaitForSync(child)
         let queriedChild = try await query(for: savedChild)
         assertLazyReference(queriedChild._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+                        state: .notLoaded(identifiers: [.init(name: "", value: parent.identifier)]))
         let savedqueriedChild = try await saveAndWaitForSync(queriedChild, assertVersion: 2)
         let queriedChild2 = try await query(for: savedqueriedChild)
         try await assertChild(queriedChild2, canLazyLoad: savedParent)
@@ -185,7 +185,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let savedChild = try await saveAndWaitForSync(child)
         var queriedChild = try await query(for: savedChild)
         assertLazyReference(queriedChild._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+                        state: .notLoaded(identifiers: [.init(name: "", value: parent.identifier)]))
         
         let newParent = DefaultPKParent()
         _ = try await saveAndWaitForSync(newParent)
@@ -204,7 +204,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         let savedChild = try await saveAndWaitForSync(child)
         var queriedChild = try await query(for: savedChild)
         assertLazyReference(queriedChild._parent,
-                        state: .notLoaded(identifiers: [.init(name: "id", value: parent.identifier)]))
+                        state: .notLoaded(identifiers: [.init(name: "", value: parent.identifier)]))
         
         queriedChild.setParent(nil)
         let saveCommentRemovePost = try await saveAndWaitForSync(queriedChild, assertVersion: 2)

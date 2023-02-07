@@ -60,7 +60,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         let queriedParent = try await query(for: parent)
         
         // The child can be lazy loaded.
-        assertLazyReference(queriedParent._child, state: .notLoaded(identifiers: [.init(name: "id", value: child.id)]))
+        assertLazyReference(queriedParent._child, state: .notLoaded(identifiers: [.init(name: "", value: child.id)]))
         let queriedParentChild = try await queriedParent.child!
         XCTAssertEqual(queriedParentChild.id, child.id)
         
@@ -74,6 +74,34 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelExists(child)
         try await deleteAndWaitForSync(child)
         try await assertModelDoesNotExist(child)
+    }
+    
+    func testUpdateParentWithNewChild() async throws {
+        await setup(withModels: HasOneModels())
+        let child = HasOneChild()
+        let savedChild = try await saveAndWaitForSync(child)
+        let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
+        let savedParent = try await saveAndWaitForSync(parent)
+        
+        var queriedParent = try await query(for: savedParent)
+        XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
+        
+        // The child can be lazy loaded.
+        assertLazyReference(queriedParent._child,
+                            state: .notLoaded(identifiers: [.init(name: "", value: child.id)]))
+        
+        let newChild = HasOneChild()
+        let savedNewChild = try await saveAndWaitForSync(newChild)
+        
+        // Update parent to new child
+        queriedParent.setChild(savedNewChild)
+        queriedParent.hasOneParentChildId = savedNewChild.id
+        try await updateAndWaitForSync(queriedParent)
+        
+        let queriedParentWithNewChild = try await query(for: parent)
+        // The child can be lazy loaded.
+        assertLazyReference(queriedParentWithNewChild._child, state: .notLoaded(identifiers: [.init(name: "", value: newChild.id)]))
+        XCTAssertEqual(queriedParentWithNewChild.hasOneParentChildId, savedNewChild.id)
     }
 
 }
