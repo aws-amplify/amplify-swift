@@ -14,11 +14,7 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     
     // Create a "not loaded" model provider with the identifier metadata, useful for hydrating the model
     init(metadata: DataStoreModelDecoder.Metadata) {
-        if let identifier = metadata.identifier {
-            self.loadedState = .notLoaded(identifiers: [.init(name: ModelType.schema.primaryKey.sqlName, value: identifier)])
-        } else {
-            self.loadedState = .notLoaded(identifiers: nil)
-        }
+        self.loadedState = .notLoaded(identifiers: metadata.identifiers)
     }
     
     // Create a "loaded" model provider with the model instance
@@ -31,10 +27,15 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     public func load() async throws -> ModelType? {
         switch loadedState {
         case .notLoaded(let identifiers):
-            guard let identifiers = identifiers, let identifier = identifiers.first else {
+            guard let identifiers = identifiers, !identifiers.isEmpty else {
                 return nil
             }
-            let queryPredicate: QueryPredicate = field(identifier.name).eq(identifier.value)
+
+            let identifierValue = identifiers.count == 1
+                ? identifiers.first?.value
+                : identifiers.map({ "\"\($0.value)\""}).joined(separator: ModelIdentifierFormat.Custom.separator)
+
+            let queryPredicate: QueryPredicate = field(ModelType.schema.primaryKey.sqlName).eq(identifierValue)
             let models = try await Amplify.DataStore.query(ModelType.self, where: queryPredicate)
             guard let model = models.first else {
                 return nil
@@ -53,11 +54,9 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded(let identifiers):
-            if let identifier = identifiers?.first {
-                let metadata = DataStoreModelDecoder.Metadata(identifier: identifier.value)
-                var container = encoder.singleValueContainer()
-                try container.encode(metadata)
-            }
+            let metadata = DataStoreModelDecoder.Metadata(identifiers: identifiers ?? [])
+            var container = encoder.singleValueContainer()
+            try container.encode(metadata)
             
         case .loaded(let element):
             try element.encode(to: encoder)
