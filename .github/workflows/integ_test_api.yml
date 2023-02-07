@@ -136,7 +136,6 @@ jobs:
           scheme: AWSAPIPluginGraphQLLambdaAuthTests
 
   api-lazy-load-test:
-    if: ${{ false }}
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
