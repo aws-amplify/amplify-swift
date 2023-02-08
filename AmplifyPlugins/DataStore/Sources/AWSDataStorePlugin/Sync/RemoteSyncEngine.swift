@@ -61,6 +61,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     var currentAttemptNumber: Int
 
     var finishedCompletionBlock: DataStoreCallback<Void>?
+    
+    /// Monitor for connectivity updates
+    let connectivityMonitor: ConnectivityMonitor
+    var connectivityStatus: AtomicValue<ConnectivityStatus>
 
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
@@ -72,7 +76,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                      reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
                      stateMachine: StateMachine<State, Action>? = nil,
                      networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
-                     requestRetryablePolicy: RequestRetryablePolicy? = nil) throws {
+                     requestRetryablePolicy: RequestRetryablePolicy? = nil,
+                     connectivityMonitor: ConnectivityMonitor = ConnectivityMonitor(),
+                     connectivityStatus: AtomicValue<ConnectivityStatus> = .init(initialValue: .satisfied)) throws {
 
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
@@ -107,7 +113,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                   reconciliationQueueFactory: reconciliationQueueFactory,
                   stateMachine: stateMachine,
                   networkReachabilityPublisher: networkReachabilityPublisher,
-                  requestRetryablePolicy: requestRetryablePolicy)
+                  requestRetryablePolicy: requestRetryablePolicy,
+                  connectivityMonitor: connectivityMonitor,
+                  connectivityStatus: connectivityStatus)
     }
 
     init(storageAdapter: StorageEngineAdapter,
@@ -120,7 +128,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
          reconciliationQueueFactory: @escaping IncomingEventReconciliationQueueFactory,
          stateMachine: StateMachine<State, Action>,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
-         requestRetryablePolicy: RequestRetryablePolicy) {
+         requestRetryablePolicy: RequestRetryablePolicy,
+         connectivityMonitor: ConnectivityMonitor,
+         connectivityStatus: AtomicValue<ConnectivityStatus>) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.authModeStrategy = authModeStrategy
@@ -132,7 +142,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
         self.networkReachabilityPublisher = networkReachabilityPublisher
         self.requestRetryablePolicy = requestRetryablePolicy
-
+        self.connectivityMonitor = connectivityMonitor
+        self.connectivityStatus = connectivityStatus
         self.currentAttemptNumber = 1
 
         self.stateMachine = stateMachine
@@ -149,6 +160,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
 
         self.authModeStrategy.authDelegate = self
+        connectivityMonitor.start(onUpdates: handleConnectivityUpdates(connectivity:))
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -400,7 +412,13 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                                    data: networkStatusEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: networkStatusEventPayload)
     }
-
+    
+    /// Handle updates from the ConnectivityMonitor
+    func handleConnectivityUpdates(connectivity: ConnectivityPath) {
+        log.verbose("Connectivity status: \(connectivity.status)")
+        self.connectivityStatus.set(connectivity.status)
+    }
+    
     /// Must be invoked from workQueue (as during a `respond` call)
     func cleanup() {
         reconciliationQueue?.cancel()
