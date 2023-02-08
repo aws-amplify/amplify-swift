@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.4.0 (2023-02-08)
+
+### Features
+
+- DataStore and API Lazy Loading with Custom Selection Set (#2583)
+
+### Bug Fixes
+
+- **test**: DS transformer V2 tests should be update mutation on existing model (#2753)
+- **test**: compare model identifier for deletion events (#2752)
+- **datastore**: load hasOne and belongsTo lazy reference with composite key (#2737)
+- DefaultModelProvider return nil from not loaded state (#2746)
+- CPK uni-directional has-many lazy list load (#2730)
+- do not set nil values for create mutation graphQL input translation (#2701)
+- Add missing PropertyPath types double and int (#2689)
+- **datastore**: observe API mutation event decode to model successfully (#2684)
+
 ## 2.3.2 (2023-02-03)
 
 ### Bug Fixes
