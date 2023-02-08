@@ -140,7 +140,8 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
                                                                             modelSchema: modelSchema,
                                                                             where: graphQLFilter,
-                                                                            version: mutationEvent.version)
+                                                                            version: mutationEvent.version,
+                                                                            changedFields: mutationEvent.changedFields ?? [])
             case .create:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {

@@ -15,10 +15,12 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let model: Model
     private let mutationType: GraphQLMutationType
+    private let changedFields: [String]?
     
-    public init(model: Model, mutationType: GraphQLMutationType) {
+    public init(model: Model, mutationType: GraphQLMutationType, changedFields: [String]? = nil) {
         self.model = model
         self.mutationType = mutationType
+        self.changedFields = changedFields
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -29,6 +31,12 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
+        // This takes a model instance and translates it to the GraphQL input.
+        // This decorator is shared by the Model Helper APIs and the conflict resolution enabled Model Helpers
+        //
+        // The goal is to create a ModelDecorator which will produce a `graphqlInput` which only contains changed fields
+        // What if we passed this decorator an additional `changedFields: [String]` which will be used to extract
+        // only the changed fields from `graphQLInput`?
         var graphQLInput = model.graphQLInputForMutation(modelSchema, mutationType: mutationType)
 
         if !modelSchema.authRules.isEmpty {
@@ -43,6 +51,10 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
                     }
                 }
             }
+        }
+        if let changedFields = changedFields {
+            // reduce `graphQLInput` to just the changed fields.
+            // should always keep metadata fields like `version` and `updatedAt`.
         }
 
         inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",

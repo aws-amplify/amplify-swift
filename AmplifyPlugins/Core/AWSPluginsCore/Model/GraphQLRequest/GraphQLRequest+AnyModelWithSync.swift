@@ -28,7 +28,8 @@ protocol ModelSyncGraphQLRequestFactory {
                                modelSchema: ModelSchema,
                                where filter: GraphQLFilter?,
                                version: Int?,
-                               authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
+                               authType: AWSAuthorizationType?,
+                               changedFields: [String]?) -> GraphQLRequest<MutationSyncResult>
 
     static func deleteMutation(of model: Model,
                                modelSchema: ModelSchema,
@@ -89,8 +90,14 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     public static func updateMutation(of model: Model,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil,
-                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
-        updateMutation(of: model, modelSchema: model.schema, where: filter, version: version, authType: authType)
+                                      authType: AWSAuthorizationType? = nil,
+                                      changedFields: [String]? = nil) -> GraphQLRequest<MutationSyncResult> {
+        updateMutation(of: model,
+                       modelSchema: model.schema,
+                       where: filter,
+                       version: version,
+                       authType: authType,
+                       changedFields: changedFields)
     }
 
     public static func subscription(to modelType: Model.Type,
@@ -131,13 +138,15 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                       modelSchema: ModelSchema,
                                       where filter: GraphQLFilter? = nil,
                                       version: Int? = nil,
-                                      authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                      authType: AWSAuthorizationType? = nil,
+                                      changedFields: [String]? = nil) -> GraphQLRequest<MutationSyncResult> {
         createOrUpdateMutation(of: model,
                                modelSchema: modelSchema,
                                where: filter,
                                type: .update,
                                version: version,
-                               authType: authType)
+                               authType: authType,
+                               changedFields: changedFields)
     }
 
     public static func deleteMutation(of model: Model,
@@ -246,12 +255,13 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                where filter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil,
-                                               authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+                                               authType: AWSAuthorizationType? = nil,
+                                               changedFields: [String]? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation,
                                                                primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
-        documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
+        documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type, changedFields: changedFields))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }

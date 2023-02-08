@@ -20,6 +20,11 @@ public struct MutationEvent: Model {
     public var version: Int?
     public var inProcess: Bool
     public var graphQLFilterJSON: String?
+    
+    // MutationEvent, which is also the payload to DataStore.observe API is public and so we should make sure that
+    // this is the right direction to go, since there's already a disparity across platforms on the observe API's
+    // event type.
+    public var changedFields: [String]?
 
     public init(id: EventIdentifier = UUID().uuidString,
                 modelId: ModelId,
@@ -29,7 +34,8 @@ public struct MutationEvent: Model {
                 createdAt: Temporal.DateTime = .now(),
                 version: Int? = nil,
                 inProcess: Bool = false,
-                graphQLFilterJSON: String? = nil) {
+                graphQLFilterJSON: String? = nil,
+                changedFields: [String]? = nil) {
         self.id = id
         self.modelId = modelId
         self.modelName = modelName
@@ -39,20 +45,23 @@ public struct MutationEvent: Model {
         self.version = version
         self.inProcess = inProcess
         self.graphQLFilterJSON = graphQLFilterJSON
+        self.changedFields = changedFields
     }
 
     public init<M: Model>(model: M,
                           modelSchema: ModelSchema,
                           mutationType: MutationType,
                           version: Int? = nil,
-                          graphQLFilterJSON: String? = nil) throws {
+                          graphQLFilterJSON: String? = nil,
+                          changedFields: [String]? = nil) throws {
         let json = try model.toJSON()
         self.init(modelId: model.identifier(schema: modelSchema).stringValue,
                   modelName: modelSchema.name,
                   json: json,
                   mutationType: mutationType,
                   version: version,
-                  graphQLFilterJSON: graphQLFilterJSON)
+                  graphQLFilterJSON: graphQLFilterJSON,
+                  changedFields: changedFields)
 
     }
 

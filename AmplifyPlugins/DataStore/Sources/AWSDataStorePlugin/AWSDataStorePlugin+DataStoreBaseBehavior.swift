@@ -37,6 +37,9 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
+            // TODO: instead of calling `exists`, query for the model
+            // Create a diff of the queried model and the `model` to be saved.
+            // The output of this diff should be a list of fields that have been modified.
             modelExists = try engine.storageAdapter.exists(modelSchema,
                                                            withIdentifier: model.identifier(schema: modelSchema),
                                                            predicate: nil)
@@ -52,13 +55,17 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
 
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
+        let changedFields = modelExists ? generateChangedFields(model) : nil
 
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
             case .success(let model):
                 // TODO: Differentiate between save & update
                 // TODO: Handle errors from mutation event creation
-                self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: mutationType)
+                self.publishMutationEvent(from: model,
+                                          modelSchema: modelSchema,
+                                          mutationType: mutationType,
+                                          changedFields: changedFields)
             case .failure:
                 break
             }
@@ -70,6 +77,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                            condition: condition,
                            eagerLoad: isEagerLoad,
                            completion: publishingCompletion)
+    }
+    
+    private func generateChangedFields(_ model: Model) -> [String] {
+        []
     }
     
     public func save<M: Model>(_ model: M,
@@ -499,7 +510,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     private func publishMutationEvent<M: Model>(from model: M,
                                                 modelSchema: ModelSchema,
-                                                mutationType: MutationEvent.MutationType) {
+                                                mutationType: MutationEvent.MutationType,
+                                                changedFields: [String]? = nil) {
 
         let metadata = MutationSyncMetadata.keys
         let metadataId = MutationSyncMetadata.identifier(modelName: modelSchema.name,
@@ -515,7 +527,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 let mutationEvent = try MutationEvent(model: model,
                                                       modelSchema: modelSchema,
                                                       mutationType: mutationType,
-                                                      version: syncMetadata?.version)
+                                                      version: syncMetadata?.version,
+                                                      changedFields: changedFields)
                 self.dataStorePublisher?.send(input: mutationEvent)
             } catch {
                 self.log.error(error: error)
