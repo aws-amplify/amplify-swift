@@ -207,7 +207,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         queriedComment.post = nil
         // A mock GraphQL request is created to assert that the request variables contains the "postId"
         // with the value `nil` which is sent to the API to persist the removal of the association.
-        let request = GraphQLRequest<Comment8>.createMutation(of: queriedComment, version: 1)
+        let request = GraphQLRequest<Comment8>.updateMutation(of: queriedComment, version: 1)
         guard let variables = request.variables,
               let input = variables["input"] as? [String: Any?],
               let postValue = input["postId"],
