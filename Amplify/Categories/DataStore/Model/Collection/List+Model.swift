@@ -125,6 +125,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     // MARK: - Persistent Operations
 
     public var totalCount: Int {
+        // swiftlint:disable:next todo
         // TODO handle total count
         return 0
     }
@@ -143,6 +144,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     /// the plugin to successfully return an instance of `ModelListProvider`.
     required convenience public init(from decoder: Decoder) throws {
         for listDecoder in ModelListDecoderRegistry.listDecoders.get() {
+            // swiftlint:disable:next for_where
             if listDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
                 let listProvider = try listDecoder.makeListProvider(modelType: ModelType.self, decoder: decoder)
                 self.init(listProvider: listProvider)

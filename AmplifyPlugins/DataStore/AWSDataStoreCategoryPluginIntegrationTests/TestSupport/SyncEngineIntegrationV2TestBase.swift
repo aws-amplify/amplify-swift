@@ -16,6 +16,7 @@ import AWSMobileClient
 
 class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
 
+    // swiftlint:disable:next line_length
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationV2Tests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)
@@ -78,7 +79,9 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
     }
 
     func startAmplify(_ completion: BasicClosure? = nil) throws {
-        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
+        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+            forResource: Self.amplifyConfigurationFile
+        )
 
         DispatchQueue.global().async {
             do {

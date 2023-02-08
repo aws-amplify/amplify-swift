@@ -461,4 +461,4 @@ extension AWSDataStoreAuthBaseTest {
             }
         }
     }
-}
+} // swiftlint:disable:this file_length

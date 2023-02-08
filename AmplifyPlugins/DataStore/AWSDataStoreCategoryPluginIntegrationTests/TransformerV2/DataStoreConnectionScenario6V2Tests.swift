@@ -264,6 +264,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getBlogCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveBlogPost() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -337,6 +338,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveBlogPostComment() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -419,6 +421,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testCascadeDeleteBlogDeletesPostAndComments() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -458,7 +461,8 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
                         XCTAssertEqual(mutationEvent.version, 2)
                         deleteReceived.fulfill()
                     }
-                } else if let commentEvent = try? mutationEvent.decodeModel() as? Comment6V2, commentEvent.id == comment.id {
+                } else if let commentEvent = try? mutationEvent.decodeModel() as? Comment6V2,
+                            commentEvent.id == comment.id {
                     if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                         XCTAssertEqual(commentEvent.content, comment.content)
                         XCTAssertEqual(mutationEvent.version, 1)
@@ -538,4 +542,4 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
-}
+} // swiftlint:disable:this file_length

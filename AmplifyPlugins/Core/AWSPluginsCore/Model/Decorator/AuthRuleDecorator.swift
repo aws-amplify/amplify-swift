@@ -32,11 +32,11 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     private let input: AuthRuleDecoratorInput
     private let authType: AWSAuthorizationType?
 
-
     /// Initializes a new AuthRuleDecorator
     /// - Parameters:
     ///   - authRuleDecoratorInput: decorator input
-    ///   - authType: authentication type, if provided will be used to filter the auth rules based on the provider field.
+    ///   - authType: authentication type, if provided will be used to filter the auth rules based on the
+    ///               provider field.
     ///               Only use when multi-auth is enabled.
     public init(_ authRuleDecoratorInput: AuthRuleDecoratorInput,
                 authType: AWSAuthorizationType? = nil) {
@@ -77,6 +77,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     private func decorateAuthStrategy(document: SingleDirectiveGraphQLDocument,
                                       authRule: AuthRule,
                                       readRestrictingStaticGroups: [String: Set<String>]) -> SingleDirectiveGraphQLDocument {
+        // swiftlint:disable:previous line_length
         guard authRule.allow == .owner,
             var selectionSet = document.selectionSet else {
             return document
@@ -99,6 +100,7 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return document.copy(inputs: inputs, selectionSet: selectionSet)
         }
 
+        // swiftlint:disable:next todo
         // TODO: Subscriptions always require an `owner` field.
         //       We're sending an invalid owner value to receive a proper response from AppSync,
         //       when there's no authenticated user.

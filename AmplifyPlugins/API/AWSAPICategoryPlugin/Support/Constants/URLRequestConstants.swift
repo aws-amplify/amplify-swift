@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable:next todo
 // TODO: remove this https://github.com/aws-amplify/amplify-ios/issues/75
 struct URLRequestConstants {
     static let appSyncServiceName = "appsync"

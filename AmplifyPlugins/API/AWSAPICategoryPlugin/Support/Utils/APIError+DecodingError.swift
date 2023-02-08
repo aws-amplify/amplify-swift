@@ -8,6 +8,7 @@
 import Foundation
 import Amplify
 
+// swiftlint:disable:next todo
 // TODO: Extract context and fill out better error handling
 
 extension APIError {

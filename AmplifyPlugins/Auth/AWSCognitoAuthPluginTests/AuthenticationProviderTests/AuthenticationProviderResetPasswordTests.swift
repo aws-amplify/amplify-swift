@@ -192,7 +192,7 @@ class AuthenticationProviderResetPasswordTests: BaseAuthenticationProviderTest {
     ///    - I should get a --
     ///
     func testResetPasswordWithInvalidEmailRoleAccessPolicyException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a resetPassword call with InvalidLambdaResponseException response from service
@@ -279,7 +279,7 @@ class AuthenticationProviderResetPasswordTests: BaseAuthenticationProviderTest {
     ///    - I should get a --
     ///
     func testResetPasswordWithInvalidSmsRoleAccessPolicyException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a resetPassword call with InvalidSmsRoleTrustRelationshipException response from service
@@ -292,7 +292,7 @@ class AuthenticationProviderResetPasswordTests: BaseAuthenticationProviderTest {
     ///    - I should get a --
     ///
     func testResetPasswordWithInvalidSmsRoleTrustRelationshipException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a resetPassword call with LimitExceededException response from service

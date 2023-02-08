@@ -36,7 +36,7 @@ public struct AppSyncListDecoder: ModelListDecoder {
     }
 
     static func makeAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                   decoder: Decoder) throws -> AppSyncListProvider<ModelType>? {
+                                                          decoder: Decoder) throws -> AppSyncListProvider<ModelType>? {
         if let listPayload = try? AppSyncListPayload.init(from: decoder) {
             return try AppSyncListProvider(payload: listPayload)
         } else if let metadata = try? AppSyncModelMetadata.init(from: decoder) {

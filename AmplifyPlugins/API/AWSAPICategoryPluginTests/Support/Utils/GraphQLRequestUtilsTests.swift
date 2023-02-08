@@ -9,6 +9,7 @@ import XCTest
 
 class GraphQLRequestUtilsTests: XCTestCase {
     func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
-        //TODO implement code
+        // swiftlint:disable:next todo
+        // TODO implement code
     }
 }

@@ -35,6 +35,7 @@ struct StorageErrorConstants {
         "The `path` is specified but is empty.",
         "Specify a non-empty path")
 
+    // swiftlint:disable:next todo
     // TODO content type messaging
     static let contentTypeIsEmpty: StorageValidationErrorString = (
         "contentType",

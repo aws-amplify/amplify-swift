@@ -21,6 +21,7 @@ protocol OutgoingMutationQueueBehavior: AnyObject {
 }
 
 @available(iOS 13.0, *)
+// swiftlint:disable:next type_body_length
 final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private let stateMachine: StateMachine<State, Action>
@@ -248,11 +249,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         if let mutationSync = mutationSync {
             guard let reconciliationQueue = reconciliationQueue else {
                 let dataStoreError = DataStoreError.configuration(
-                    "reconciliationQueue is unexpectedly nil",
-                                """
-                                The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
-                                \(AmplifyErrorMessages.reportBugToAWS())
-                                """
+                   "reconciliationQueue is unexpectedly nil",
+                   """
+                   The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
+                   \(AmplifyErrorMessages.reportBugToAWS())
+                   """
                 )
                 stateMachine.notify(action: .errored(dataStoreError))
                 return
@@ -301,6 +302,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private func completeProcessingEvent(_ mutationEvent: MutationEvent,
                                          mutationSync: MutationSync<AnyModel>? = nil) {
+        // swiftlint:disable:next todo
         // TODO: We shouldn't be inspecting state, we should be using granular enough states to
         // ensure we don't encounter forbidden transitions.
         if case .stopped = stateMachine.state {
@@ -406,6 +408,7 @@ extension OutgoingMutationQueue: Subscriber {
         return .none
     }
 
+    // swiftlint:disable:next todo
     // TODO: Resolve with an appropriate state machine notification
     func receive(completion: Subscribers.Completion<DataStoreError>) {
         log.verbose(#function)
@@ -421,4 +424,4 @@ extension OutgoingMutationQueue: Resettable {
 }
 
 @available(iOS 13.0, *)
-extension OutgoingMutationQueue: DefaultLogger { }
+extension OutgoingMutationQueue: DefaultLogger { } // swiftlint:disable:this file_length

@@ -33,7 +33,6 @@ class AuthenticationTokenAuthInterceptorTests: XCTestCase {
     }
 }
 
-
 // MARK: - Test token providers
 private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = "token"

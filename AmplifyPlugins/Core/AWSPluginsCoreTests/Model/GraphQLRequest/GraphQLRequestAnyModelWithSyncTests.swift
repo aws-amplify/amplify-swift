@@ -419,4 +419,4 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         }
         XCTAssertEqual(conditionValue["eq"], "myTitle")
     }
-}
+} // swiftlint:disable:this file_length

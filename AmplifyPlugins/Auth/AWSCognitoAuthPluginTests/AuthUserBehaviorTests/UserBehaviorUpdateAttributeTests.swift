@@ -269,7 +269,7 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
     ///    - I should get a --
     ///
     func testUpdateUserAttributesWithInvalidEmailRoleAccessPolicyException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a updateUserAttributes call with InvalidLambdaResponseException response from service
@@ -320,7 +320,9 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
     ///
     func testUpdateUserAttributesWithInvalidParameterException() {
 
-        mockAWSMobileClient?.updateUserAttributesMockResult = .failure(AWSMobileClientError.invalidParameter(message: "Error"))
+        mockAWSMobileClient?.updateUserAttributesMockResult = .failure(
+            AWSMobileClientError.invalidParameter(message: "Error")
+        )
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
             defer {
@@ -355,7 +357,7 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
     ///    - I should get a --
     ///
     func testUpdateUserAttributesWithinvalidSmsRoleAccessPolicyException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a updateUserAttributes call with InvalidSmsRoleTrustRelationship response from service
@@ -368,7 +370,7 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
     ///    - I should get a --
     ///
     func testUpdateUserAttributesCodeWithInvalidSmsRoleTrustRelationshipException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a updateUserAttributes call with NotAuthorizedException response from service

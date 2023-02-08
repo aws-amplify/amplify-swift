@@ -33,6 +33,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                    resultListener: resultListener)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     override public func main() {
         Amplify.API.log.debug("Starting \(request.operationType) \(id)")
 

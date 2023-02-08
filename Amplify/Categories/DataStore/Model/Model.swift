@@ -56,7 +56,11 @@ extension Model {
                 return (name: $0.name, value: value.rawValue)
             default:
                 preconditionFailure(
-                    "Invalid identifier value \(String(describing: fieldValue)) for field \($0.name) in model \(modelSchema.name)")
+                    """
+                    Invalid identifier value \(String(describing: fieldValue)) for field \($0.name) \
+                    in model \(modelSchema.name)
+                    """
+                )
             }
         }
 

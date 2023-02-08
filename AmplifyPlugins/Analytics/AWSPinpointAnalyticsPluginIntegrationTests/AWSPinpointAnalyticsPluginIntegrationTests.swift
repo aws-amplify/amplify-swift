@@ -16,6 +16,7 @@ import AWSPinpoint
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
+    // swiftlint:disable:next line_length
     static let amplifyConfiguration = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
     static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
@@ -95,7 +96,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         let deleteExpectation = expectation(description: "Delete endpoints")
         let lowLevelClient = lowLevelClient(from: targetingConfiguration)
-        lowLevelClient.deleteUserEndpoints(deleteEndpointsRequest) { response, error in
+        lowLevelClient.deleteUserEndpoints(deleteEndpointsRequest) { _, error in
             guard error == nil else {
                 XCTFail("Unexpected error when attempting to delete endpoints")
                 deleteExpectation.fulfill()
@@ -110,6 +111,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
+                // swiftlint:disable:next todo
                 // TODO: Remove exposing AWSPinpointEvent
                 guard let pinpointEvents = payload.data as? [AWSPinpointEvent] else {
                     XCTFail("Missing data")

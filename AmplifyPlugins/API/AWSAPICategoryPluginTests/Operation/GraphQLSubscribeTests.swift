@@ -11,6 +11,7 @@ import XCTest
 @testable import AWSAPICategoryPlugin
 import AppSyncRealTimeClient
 
+// swiftlint:disable:next type_body_length
 class GraphQLSubscribeTests: OperationTestBase {
 
     // Setup expectations
@@ -276,8 +277,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// self.subscriptionItem and self.subscriptionEventHandler, then fulfills
     /// self.onSubscribeInvoked
     func setUpMocksAndSubscriptionItems() throws {
-        let onSubscribe: MockSubscriptionConnection.OnSubscribe = {
-            requestString, variables, eventHandler in
+        let onSubscribe: MockSubscriptionConnection.OnSubscribe = { requestString, variables, eventHandler in
             let item = SubscriptionItem(
                 requestString: requestString,
                 variables: variables,
@@ -301,6 +301,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// the operation created from that subscription. If `expectedValue` is not nil, also asserts
     /// that the received value is equal to the expected value
     @discardableResult
+    // swiftlint:disable:next cyclomatic_complexity
     func subscribe(
         expecting expectedValue: JSONValue? = nil
     ) -> GraphQLSubscriptionOperation<JSONValue> {

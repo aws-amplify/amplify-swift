@@ -13,6 +13,7 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
+    // swiftlint:disable:next line_length
     static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _, _  in
         MockAWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                                 api: api,

@@ -64,7 +64,8 @@ class MutationSyncMetadataMigrationTests: MutationSyncMetadataMigrationTestBase 
         do {
             try migration.apply()
         } catch {
-            XCTAssertEqual(delegate.stepsCalled, [.precondition, .transaction, .mutationSyncMetadataStoreEmptyOrMigrated])
+            XCTAssertEqual(delegate.stepsCalled,
+                           [.precondition, .transaction, .mutationSyncMetadataStoreEmptyOrMigrated])
             return
         }
         XCTFail("Should catch error")

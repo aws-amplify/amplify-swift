@@ -379,6 +379,7 @@ class GraphQLModelBasedTests: XCTestCase {
         wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testOnCreatePostSubscriptionWithModel() {
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
@@ -700,4 +701,4 @@ class GraphQLModelBasedTests: XCTestCase {
         wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
-}
+} // swiftlint:disable:this file_length

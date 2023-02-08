@@ -41,6 +41,7 @@ import XCTest
  ```
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details.
  */
+// swiftlint:disable:next type_body_length
 class GraphQLConnectionScenario5Tests: XCTestCase {
 
     override func setUp() {
@@ -132,6 +133,7 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
     // Create a Post and a User, Create a PostEditor with the post and user
     // Get the post and fetch the PostEditors for that post
     // The Posteditor contains the user which is connected the post
+    // swiftlint:disable:next cyclomatic_complexity
     func testGetPostThenFetchPostEditorsToRetrieveUser() {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")
@@ -215,6 +217,7 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
     // create first PostEditor with the `post1` and user and create second postEditor with `post2` and user.
     // Get the user and fetch the PostEditors for that user
     // The PostEditors should contain the two posts `post1` and `post2`
+    // swiftlint:disable:next cyclomatic_complexity
     func testGetUserThenFetchPostEditorsToRetrievePosts() {
         guard let post1 = createPost(title: "title") else {
             XCTFail("Could not create post")

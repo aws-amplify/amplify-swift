@@ -401,4 +401,4 @@ class AuthenticationProviderSignoutTests: BaseAuthenticationProviderTest {
         window.rootViewController = MockRootUIViewController()
         return window
     }
-}
+} // swiftlint:disable:this file_length

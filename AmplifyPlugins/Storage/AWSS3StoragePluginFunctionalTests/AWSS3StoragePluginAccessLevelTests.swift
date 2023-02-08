@@ -13,6 +13,7 @@ import AWSPluginsCore
 @testable import AWSS3StoragePlugin
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_body_length
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     /// Given: An unauthenticated user
@@ -53,6 +54,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             case .success:
                 XCTFail("Should not have completed")
             case .failure(let error):
+                // swiftlint:disable:next todo
                 // TODO: service error, check string?
                 guard case let .accessDenied(description, _, _) = error else {
                     XCTFail("Expected accessDenied error")
@@ -397,4 +399,4 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         }
         wait(for: [signOutCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-}
+} // swiftlint:disable:this file_length

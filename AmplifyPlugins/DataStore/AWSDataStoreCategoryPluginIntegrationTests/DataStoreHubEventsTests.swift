@@ -37,7 +37,8 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - syncQueriesStarted received, payload should be: {models: ["Post", "Comment"]}
     ///    - outboxStatus received, payload should be {isEmpty: true}
     ///    - modelSynced received, payload should be:
-    ///      {modelName: "Some Model name", isFullSync: true/false, isDeltaSync: false/true, createCount: #, updateCount: #, deleteCount: #}
+    ///      {modelName: "Some Model name", isFullSync: true/false, isDeltaSync: false/true,
+    ///      createCount: #, updateCount: #, deleteCount: #}
     ///    - syncQueriesReady received, payload should be nil
     func testDataStoreConfiguredDispatchesHubEvents() throws {
 
@@ -100,7 +101,8 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - outboxMutationEnqueued received, payload should be:
     ///      {modelName: "Post", element: {id: #, content: "some content"}}
     ///    - outboxMutationProcessed received, payload should be:
-    ///      {modelName: "Post", element: {model: {id: #, content: "some content"}, version: 1, deleted: false, lastChangedAt: "some time"}}
+    ///      {modelName: "Post",
+    ///      element: {model: {id: #, content: "some content"}, version: 1, deleted: false, lastChangedAt: "some time"}}
     func testOutboxMutationEvents() throws {
 
         let post = Post(title: "title", content: "content", createdAt: .now())
@@ -164,7 +166,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
                 if modelSyncedEvents.count == 2 {
                     guard let postModelSyncedEvent = modelSyncedEvents.first(where: { $0.modelName == "Post" }),
-                            let commentModelSyncedEvent = modelSyncedEvents.first(where: { $0.modelName == "Comment" }) else {
+                          let commentModelSyncedEvent = modelSyncedEvents.first(where: {
+                              $0.modelName == "Comment"
+                          }) else {
                         XCTFail("Could not get modelSyncedEvent for Post and Comment")
                         return
                     }

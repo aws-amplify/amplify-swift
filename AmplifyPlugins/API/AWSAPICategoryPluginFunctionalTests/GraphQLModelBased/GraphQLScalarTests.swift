@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPluginTestCommon
 
+// swiftlint:disable:next type_body_length
 class GraphQLScalarTests: GraphQLTestBase {
 
     override func setUp() {

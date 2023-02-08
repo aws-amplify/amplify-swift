@@ -163,10 +163,14 @@ class SyncEventEmitterTests: XCTestCase {
             }
         })
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Post.modelName, syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(
+            .started(modelName: Post.modelName, syncType: .fullSync)
+        )
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Post.modelName))
 
-        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Comment.modelName, syncType: .fullSync))
+        initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(
+            .started(modelName: Comment.modelName, syncType: .fullSync)
+        )
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Comment.modelName))
 
         waitForExpectations(timeout: 1)

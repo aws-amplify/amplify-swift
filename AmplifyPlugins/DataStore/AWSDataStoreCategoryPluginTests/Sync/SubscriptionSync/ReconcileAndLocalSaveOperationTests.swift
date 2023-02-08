@@ -1056,11 +1056,13 @@ extension ReconcileAndLocalSaveOperationTests {
         Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
-                                                 dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin",
-                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
+        let dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

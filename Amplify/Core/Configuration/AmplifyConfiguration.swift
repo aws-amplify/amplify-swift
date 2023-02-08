@@ -95,6 +95,7 @@ extension Amplify {
     ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
+        // swiftlint:disable:previous cyclomatic_complexity
         log.info("Configuring")
         log.debug("Configuration: \(String(describing: configuration))")
         guard !isConfigured else {

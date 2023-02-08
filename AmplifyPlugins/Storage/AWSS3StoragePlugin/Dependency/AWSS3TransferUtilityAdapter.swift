@@ -41,7 +41,6 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                                 completionHandler: completionHandler)
     }
 
-
     /// Downloads to a file.
     /// - Parameters:
     ///   - fileURL: File URL.
@@ -63,7 +62,6 @@ class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
                                             expression: expression,
                                             completionHandler: completionHandler)
     }
-
 
     // swiftlint:disable function_parameter_count
 

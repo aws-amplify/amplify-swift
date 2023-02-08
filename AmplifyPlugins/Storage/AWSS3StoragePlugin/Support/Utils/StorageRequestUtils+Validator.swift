@@ -89,6 +89,7 @@ extension StorageRequestUtils {
                                                    StorageErrorConstants.metadataKeysInvalid.errorDescription,
                                                    StorageErrorConstants.metadataKeysInvalid.recoverySuggestion)
                 }
+                // swiftlint:disable:next todo
                 // TODO: validate that metadata values are within a certain size.
                 // https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-metadata 2KB
             }

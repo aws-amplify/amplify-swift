@@ -27,6 +27,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private var modelReconciliationQueueSinks: [String: AnyCancellable]
 
+    // swiftlint:disable:next line_length
     private let eventReconciliationQueueTopic: CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
         return eventReconciliationQueueTopic.eraseToAnyPublisher()
@@ -39,6 +40,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
 
     private var isInitialized: Bool {
+        // swiftlint:disable:next line_length
         log.verbose("[InitializeSubscription.5] \(reconciliationQueueConnectionStatus.count)/\(modelSchemasCount) initialized")
         return modelSchemasCount == reconciliationQueueConnectionStatus.count
     }
@@ -53,11 +55,12 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) {
         self.modelSchemasCount = modelSchemas.count
         self.modelReconciliationQueueSinks = [:]
-        self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.idle)
+        self.eventReconciliationQueueTopic = .init(.idle)
         self.reconciliationQueues = [:]
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
         self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ?? AWSModelReconciliationQueue.init
+        // swiftlint:disable:next todo
         // TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
@@ -73,6 +76,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 log.warn("Duplicate model name found: \(modelName), not subscribing")
                 continue
             }
+            // swiftlint:disable:next line_length
             log.verbose("[InitializeSubscription.5] Creating reconciliationQueues \(modelName) \(reconciliationQueues.count)")
             let queue = self.modelReconciliationQueueFactory(modelSchema,
                                                              storageAdapter,
@@ -83,9 +87,11 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                              authModeStrategy,
                                                              nil)
             reconciliationQueues[modelName] = queue
+            // swiftlint:disable:next line_length
             log.verbose("[InitializeSubscription.5] Sink reconciliationQueues \(modelName) \(reconciliationQueues.count)")
             let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
                                                                     receiveValue: onReceiveValue(receiveValue:))
+            // swiftlint:disable:next line_length
             log.verbose("[InitializeSubscription.5] Sink done reconciliationQueues \(modelName) \(reconciliationQueues.count)")
             modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
@@ -103,6 +109,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: ModelName) {
         guard let queue = reconciliationQueues[modelName] else {
+            // swiftlint:disable:next todo
             // TODO: Error handling
             return
         }
@@ -141,6 +148,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         case .disconnected(modelName: let modelName, reason: .operationDisabled),
              .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
+                // swiftlint:disable:next line_length
                 self.log.verbose("[InitializeSubscription.4] subscription disconnected [\(modelName)] reason: [\(receiveValue)]")
                 // A disconnected subscription due to operation disabled or unauthorized will still contribute
                 // to the overall state of the reconciliation queue system on sending the `.initialized` event
@@ -182,6 +190,7 @@ extension AWSIncomingEventReconciliationQueue: DefaultLogger { }
 // MARK: - Static factory
 @available(iOS 13.0, *)
 extension AWSIncomingEventReconciliationQueue {
+    // swiftlint:disable:next line_length
     static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _ in
         AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                             api: api,

@@ -132,6 +132,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
     }
 
+    // swiftlint:disable:next function_parameter_count
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
                          predicate: QueryPredicate?,
@@ -151,7 +152,9 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return true
     }
 
-    func exists(_ modelSchema: ModelSchema, withIdentifier id: ModelIdentifierProtocol, predicate: QueryPredicate?) throws -> Bool {
+    func exists(_ modelSchema: ModelSchema,
+                withIdentifier id: ModelIdentifierProtocol,
+                predicate: QueryPredicate?) throws -> Bool {
         XCTFail("Not expected to execute")
         return true
     }
@@ -280,7 +283,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
     static let mockStorageEngineBehaviorFactory =
-        MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
+        MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
     var responders = [ResponderKeys: Any]()
 
     init() {
@@ -370,6 +373,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
         }
     }
 
+    // swiftlint:disable:next function_parameter_count
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
                          predicate: QueryPredicate?,

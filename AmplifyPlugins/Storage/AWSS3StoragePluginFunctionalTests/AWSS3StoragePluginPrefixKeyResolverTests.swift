@@ -38,6 +38,7 @@ class AWSS3StoragePluginKeyResolverTests: XCTestCase {
         // A background URLSession with identifier
         // com.amazonaws.AWSS3TransferUtility.Default.Identifier.awsS3StoragePlugin already exists!`
         // ```
+        // swiftlint:disable:next todo
         // TODO: Remove in the future when the plugin no longer depends on the SDK and have addressed this problem.
         sleep(5)
     }

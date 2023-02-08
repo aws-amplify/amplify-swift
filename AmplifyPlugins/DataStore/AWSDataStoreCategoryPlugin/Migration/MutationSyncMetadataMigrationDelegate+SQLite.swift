@@ -10,6 +10,7 @@ import Foundation
 import SQLite
 import AWSPluginsCore
 
+// swiftlint:disable:next type_name
 final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDelegate {
 
     let modelSchemas: [ModelSchema]
@@ -102,6 +103,7 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
             }
             sql += "SELECT id, \'\(modelName)\' as tableName FROM \(modelName)"
         }
+        // swiftlint:disable:next line_length
         sql = "INSERT INTO \(MutationSyncMetadataMigration.MutationSyncMetadataCopy.modelName) (id,deleted,lastChangedAt,version) " +
         "select models.tableName || '|' || mm.id, mm.deleted, mm.lastChangedAt, mm.version " +
         "from MutationSyncMetadata mm INNER JOIN (" + sql + ") as models on mm.id=models.id"

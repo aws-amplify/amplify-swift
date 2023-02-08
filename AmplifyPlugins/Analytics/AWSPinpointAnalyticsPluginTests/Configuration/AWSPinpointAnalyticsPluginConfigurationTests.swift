@@ -10,7 +10,7 @@ import XCTest
 
 @testable import AWSPinpointAnalyticsPlugin
 
-// swiftlint:disable:next type_name
+// swiftlint:disable:next type_name type_body_length
 class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     let testAppId = "testAppId"
     let appId: JSONValue = "testAppId"
@@ -435,4 +435,4 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         }
     }
 
-}
+} // swiftlint:disable:this file_length

@@ -135,6 +135,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     ///    - The subscription should receive mutation events corresponding to the API calls performed.
     ///
     func testOnCreateTodo() {
+        // swiftlint:disable:previous cyclomatic_complexity
         registerAndSignIn()
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
@@ -282,6 +283,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
             self.description = description
         }
 
+        // swiftlint:disable:next nesting
         enum CodingKeys: String, ModelKey {
             case id
             case name

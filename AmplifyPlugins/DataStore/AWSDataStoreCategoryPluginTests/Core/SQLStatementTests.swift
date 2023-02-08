@@ -14,6 +14,8 @@ import XCTest
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
+// swiftlint:disable line_length
+// swiftlint:disable:next todo
 // TODO: Refactor this into separate test suites
 class SQLStatementTests: XCTestCase {
 
@@ -1024,6 +1026,7 @@ class SQLStatementTests: XCTestCase {
                 XCTAssertEqual(bindings.count, statement.variables.count)
                 bindings.enumerated().forEach {
                     if let one = $0.element, let other = statement.variables[$0.offset] {
+                        // swiftlint:disable:next todo
                         // TODO find better way to test `Binding` equality
                         XCTAssertEqual(String(describing: one), String(describing: other))
                     }

@@ -28,6 +28,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testCreate() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
@@ -723,4 +724,4 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 @available(iOS 13.0, *)
 extension DataStoreEndToEndTests: DefaultLogger {
 
-}
+} // swiftlint:disable:this file_length

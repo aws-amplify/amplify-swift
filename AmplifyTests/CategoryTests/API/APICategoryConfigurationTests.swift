@@ -10,6 +10,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_body_length
 class APICategoryConfigurationTests: XCTestCase {
     override func setUp() {
         Amplify.reset()

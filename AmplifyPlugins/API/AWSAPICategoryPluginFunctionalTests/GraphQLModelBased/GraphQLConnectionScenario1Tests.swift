@@ -123,6 +123,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         wait(for: [updateProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAndGetProject() {
         guard let team = createTeam(name: "name") else {
             XCTFail("Could not create team")

@@ -259,6 +259,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getBlogCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveBlogPost() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -332,6 +333,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveBlogPostComment() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -512,6 +514,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [deletePostSuccess, deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteBlogCascadeToPostAndComments() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -631,4 +634,4 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
-}
+} // swiftlint:disable:this file_length

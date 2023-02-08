@@ -11,6 +11,7 @@ import Amplify
 public extension PredictionsIdentifyRequest {
     /// Performs client side validation and returns a `PredictionsError` for any validation failures.
     func validate() -> PredictionsError? {
+        // swiftlint:disable:next todo
         // TODO: implement
         return nil
     }

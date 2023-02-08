@@ -12,11 +12,12 @@ import AWSPluginsCore
 
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
-final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
+final class SQLiteStorageEngineAdapter: StorageEngineAdapter { // swiftlint:disable:this type_body_length
     var connection: Connection?
     var dbFilePath: URL?
     static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
 
+    // swiftlint:disable:next todo
     // TODO benchmark whether a SELECT FROM FOO WHERE ID IN (1, 2, 3...) performs measurably
     // better than SELECT FROM FOO WHERE ID = 1 OR ID=2 OR ID=3
     //
@@ -130,7 +131,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
          save(model, modelSchema: model.schema, condition: condition, completion: completion)
      }
 
-    func save<M: Model>(_ model: M, modelSchema: ModelSchema, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition: QueryPredicate? = nil,
+                        completion: DataStoreCallback<M>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
@@ -530,4 +534,4 @@ extension DataStoreError {
     }
 }
 
-extension SQLiteStorageEngineAdapter: DefaultLogger { }
+extension SQLiteStorageEngineAdapter: DefaultLogger { } // swiftlint:disable:this file_length

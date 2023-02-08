@@ -31,7 +31,7 @@ class ReadyEventEmitterTests: XCTestCase {
         let remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
         readyEventEmitter =
             ReadyEventEmitter(remoteSyncEnginePublisher: remoteSyncTopicPublisher.eraseToAnyPublisher())
-        readyEventSink = readyEventEmitter?.publisher.sink(receiveCompletion: { completion in
+        readyEventSink = readyEventEmitter?.publisher.sink(receiveCompletion: { _ in
             XCTFail("Should not receive completion")
         }, receiveValue: { event in
             switch event {

@@ -113,6 +113,7 @@ extension IdentifyTextResultTransformers {
                     case .selectionElement:
                         if !selectionItemFound {
                             selectionItemFound = true
+                            // swiftlint:disable:next todo
                             // TODO: https://github.com/aws-amplify/amplify-ios/issues/695
                             // Support multiple selection items found in a KeyValueSet
                             isSelected = selectionStatus == .selected

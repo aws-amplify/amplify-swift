@@ -12,6 +12,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable:next type_body_length
 class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
     override func setUp() {
@@ -289,7 +290,7 @@ class GraphQLRequestOwnerAndGroupTests: XCTestCase {
         let modelType = OGCScenarioBPost.self as Model.Type
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        //Specifically, leave this out:
+        // Specifically, leave this out:
         //                     "cognito:groups": ["GroupX"]]
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .subscription)

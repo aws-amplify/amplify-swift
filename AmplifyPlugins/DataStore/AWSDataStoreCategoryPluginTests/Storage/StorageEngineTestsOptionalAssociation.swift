@@ -13,6 +13,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable:next type_body_length
 class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
 
     override func setUp() {

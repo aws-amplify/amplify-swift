@@ -932,4 +932,4 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         return operation
     }
-}
+} // swiftlint:disable:this file_length

@@ -123,6 +123,7 @@ final class ModelSyncedEventEmitter {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     private func onReceiveReconciliationEvent(value: IncomingEventReconciliationQueueEvent) {
         guard !dispatchedModelSyncedEvent else {
             switch value {

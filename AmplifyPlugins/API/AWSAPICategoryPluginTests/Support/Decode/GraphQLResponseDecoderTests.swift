@@ -33,6 +33,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
             self.id = id
         }
 
+        // swiftlint:disable:next nesting
         enum CodingKeys: String, ModelKey {
             case id
         }

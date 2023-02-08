@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyPlugins
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_name
 class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseTest {
 
     /// Given: a user signed in with CognitoUserPools, a model with a custom implicit owner

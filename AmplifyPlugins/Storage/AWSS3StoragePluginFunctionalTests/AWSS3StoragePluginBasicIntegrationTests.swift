@@ -14,6 +14,7 @@ import func CommonCrypto.CC_MD5
 import typealias CommonCrypto.CC_LONG
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_body_length
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
     /// Given: An data object
@@ -501,4 +502,4 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
         return digestData
     }
-}
+} // swiftlint:disable:this file_length

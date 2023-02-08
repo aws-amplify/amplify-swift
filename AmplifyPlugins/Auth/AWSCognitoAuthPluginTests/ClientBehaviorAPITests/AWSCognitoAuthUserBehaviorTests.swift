@@ -88,7 +88,8 @@ class AWSCognitoAuthUserBehaviorTests: XCTestCase {
     ///
     /// - Given: Given a configured auth plugin
     /// - When: It receives an `update(userAttribute:)` message with an email attribute and options
-    /// - Then: The operation is delegated to the user service's `updateAttribute(request:completionHandler:)` (singular) method
+    /// - Then: The operation is delegated to the user service's `updateAttribute(request:completionHandler:)`
+    ///        (singular) method
     ///
     func testUpdateUserAttributeRequest() {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
@@ -110,7 +111,8 @@ class AWSCognitoAuthUserBehaviorTests: XCTestCase {
     ///
     /// - Given: Given a configured auth plugin
     /// - When: It receives an `update(userAttribute:)` message with an email attribute and without options
-    /// - Then: The operation is delegated to the user service's `updateAttribute(request:completionHandler:)` (singular) method
+    /// - Then: The operation is delegated to the user service's `updateAttribute(request:completionHandler:)`
+    ///        (singular) method
     ///
     func testUpdateUserAttributeRequestWithoutOptions() {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
@@ -130,7 +132,8 @@ class AWSCognitoAuthUserBehaviorTests: XCTestCase {
     ///
     /// - Given: Given a configured auth plugin
     /// - When: It receives an `update(userAttribute:)` message with email and phone number attributes and options
-    /// - Then: The operation is delegated to the user service's `updateAttributes(request:completionHandler:)` (plural) method
+    /// - Then: The operation is delegated to the user service's `updateAttributes(request:completionHandler:)`
+    ///        (plural) method
     ///
     func testUpdateUserAttributesRequest() {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
@@ -153,7 +156,8 @@ class AWSCognitoAuthUserBehaviorTests: XCTestCase {
     ///
     /// - Given: Given a configured auth plugin
     /// - When: It receives an `update(userAttribute:)` message with email and phone number attributes and no options
-    /// - Then: The operation is delegated to the user service's `updateAttributes(request:completionHandler:)` (plural) method
+    /// - Then: The operation is delegated to the user service's `updateAttributes(request:completionHandler:)`
+    ///        (plural) method
     ///
     func testUpdateUserAttributesRequestWithoutOptions() {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
@@ -174,7 +178,8 @@ class AWSCognitoAuthUserBehaviorTests: XCTestCase {
     ///
     /// - Given: Given a configured auth plugin
     /// - When: It receives an `resendConfirmationCode(for:)` message with options
-    /// - Then: The operation is delegated to the user service's `resendAttributeConfirmationCode(request:completionHandler:)` method
+    /// - Then: The operation is delegated to the user service's
+    ///        `resendAttributeConfirmationCode(request:completionHandler:)` method
     ///
     func testResendConfirmationCodeAttributeRequest() {
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["key": "value"])
@@ -195,7 +200,8 @@ class AWSCognitoAuthUserBehaviorTests: XCTestCase {
     ///
     /// - Given: Given a configured auth plugin
     /// - When: It receives an `resendConfirmationCode(for:)` message without any options
-    /// - Then: The operation is delegated to the user service's `resendAttributeConfirmationCode(request:completionHandler:)` method
+    /// - Then: The operation is delegated to the user service's
+    ///        `resendAttributeConfirmationCode(request:completionHandler:)` method
     ///
     func testResendConfirmationCodeAttributeRequestWithoutOptions() {
         let operation = plugin.resendConfirmationCode(for: .email)

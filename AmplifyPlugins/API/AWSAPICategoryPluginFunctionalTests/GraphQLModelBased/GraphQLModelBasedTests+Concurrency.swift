@@ -14,6 +14,7 @@ import AWSPluginsCore
 
 extension GraphQLModelBasedTests {
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testConcurrentSubscriptions() throws {
         let count = 50
         let connectedInvoked = expectation(description: "Connection established")

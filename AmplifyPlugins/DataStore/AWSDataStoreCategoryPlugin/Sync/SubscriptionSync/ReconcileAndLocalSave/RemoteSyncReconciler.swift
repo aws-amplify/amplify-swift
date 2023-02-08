@@ -59,7 +59,9 @@ struct RemoteSyncReconciler {
         }
 
         let metadataBymodelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
-        let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: metadataBymodelId[$0.model.identifier]) }
+        let dispositions = remoteModels.compactMap {
+            getDisposition($0, localMetadata: metadataBymodelId[$0.model.identifier])
+        }
 
         return dispositions
     }

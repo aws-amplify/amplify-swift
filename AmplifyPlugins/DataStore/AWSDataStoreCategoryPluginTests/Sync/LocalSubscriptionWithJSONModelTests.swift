@@ -16,7 +16,7 @@ import Combine
 
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 /// using serialized JSON models
-class LocalSubscriptionWithJSONModelTests: XCTestCase {
+class LocalSubscriptionWithJSONModelTests: XCTestCase { // swiftlint:disable:this type_body_length
     var dataStorePlugin: AWSDataStorePlugin!
 
     override func setUp() {
@@ -324,7 +324,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
     ///    - Delete the post. This will cascade delete the comments as well
     /// - Then:
     ///    - I am notified of `delete` mutations of the post and comments deleted
-    func testDeletePostShouldDeleteComments() {
+    func testDeletePostShouldDeleteComments() { // swiftlint:disable:this cyclomatic_complexity
         let receivedPostMutationEvent = expectation(description: "Received post delete mutation event")
 
         let subscriptionPost = dataStorePlugin.publisher(for: "Post").sink(
@@ -419,4 +419,4 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         }
         wait(for: [queryCommentEmpty], timeout: 10.0)
     }
-}
+} // swiftlint:disable:this file_length

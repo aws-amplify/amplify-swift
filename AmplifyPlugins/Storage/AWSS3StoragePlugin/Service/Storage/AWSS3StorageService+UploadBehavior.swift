@@ -29,8 +29,9 @@ extension AWSS3StorageService {
             }
         }
 
+        // swiftlint:disable:next todo
         // TODO: Implement tagging functionality, got 403 on tagging using below code
-        //expression.setValue("Project=blue&Classification=confidential", forRequestHeader: "x-amz-tagging")
+        // expression.setValue("Project=blue&Classification=confidential", forRequestHeader: "x-amz-tagging")
 
         let onUploadCompletedHandler = AWSS3StorageService.makeUploadCompletedHandler(onEvent: onEvent,
                                                                                       serviceKey: serviceKey)
@@ -82,7 +83,7 @@ extension AWSS3StorageService {
 
     private static func makeOnUploadProgressHandler(
         onEvent: @escaping StorageServiceUploadEventHandler) -> AWSS3TransferUtilityProgressBlock {
-            let block: AWSS3TransferUtilityProgressBlock = {task, progress in
+            let block: AWSS3TransferUtilityProgressBlock = {_, progress in
                 onEvent(StorageEvent.inProcess(progress))
             }
 

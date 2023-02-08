@@ -130,9 +130,9 @@ extension Model {
         return values
     }
 
-
     /// Given a serialized JSON model, returns the serialized value of its primary key.
-    /// The returned value is either the value of the field or the serialization of multiple values in case of a composite PK.
+    /// The returned value is either the value of the field or the serialization of multiple values
+    /// in case of a composite PK.
     /// - Parameters:
     ///   - associatedModelJSON: model as JSON value
     ///   - associatedModelSchema: model's schema

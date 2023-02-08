@@ -13,6 +13,7 @@ import AWSPluginsCore
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
 @available(iOS 13.0, *)
+// swiftlint:disable:next type_body_length
 class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     /// Disambiguation for the version of the model incoming from the remote API
@@ -255,6 +256,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         return dispositions
     }
 
+    // swiftlint:disable:next todo
     // TODO: refactor - move each the publisher constructions to its own utility method for readability of the
     // `switch` and a single method that you can invoke in the `map`
     func applyRemoteModelsDispositions(
@@ -427,6 +429,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                         mutationType: MutationEvent.MutationType) {
         let version = savedModel.syncMetadata.version
 
+        // swiftlint:disable:next todo
         // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,
         // which shouldn't be possible this late in the process. Possibly notify global conflict/error handler?
         guard let json = try? savedModel.model.instance.toJSON() else {
@@ -466,4 +469,4 @@ extension ReconcileAndLocalSaveOperation: DefaultLogger { }
 enum ReconcileAndLocalSaveOperationEvent {
     case mutationEvent(MutationEvent)
     case mutationEventDropped(modelName: String, error: DataStoreError? = nil)
-}
+} // swiftlint:disable:this file_length

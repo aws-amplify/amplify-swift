@@ -52,6 +52,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
         interactions.append(#function)
     }
 
+    // swiftlint:disable:next function_parameter_count
     func signUp(username: String,
                 password: String,
                 userAttributes: [String: String],

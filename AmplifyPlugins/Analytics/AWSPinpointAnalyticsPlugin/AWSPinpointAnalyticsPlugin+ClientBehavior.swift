@@ -24,6 +24,7 @@ extension AWSPinpointAnalyticsPlugin {
 
         pinpoint.update(currentEndpointProfile).continueWith { (task) -> Any? in
             guard task.error == nil else {
+                // swiftlint:disable:next todo
                 // TODO: some error mapping
                 let error = task.error! as NSError
                 Amplify.Hub.dispatchIdentifyUser(AnalyticsErrorHelper.getDefaultError(error))
@@ -49,6 +50,7 @@ extension AWSPinpointAnalyticsPlugin {
 
         pinpoint.record(pinpointEvent).continueWith { (task) -> Any? in
             guard task.error == nil else {
+                // swiftlint:disable:next todo
                 // TODO: some error mapping
                 let error = task.error! as NSError
                 Amplify.Hub.dispatchRecord(AnalyticsErrorHelper.getDefaultError(error))
@@ -66,6 +68,7 @@ extension AWSPinpointAnalyticsPlugin {
     }
 
     public func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
+        // swiftlint:disable:next todo
         // TODO: check if there is a limit on total number of properties
         properties.forEach { key, _ in
             guard key.count >= 1, key.count <= 50 else {
@@ -107,7 +110,7 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         pinpoint.submitEvents().continueWith { (task) -> Any? in
-            if let error = task.error as? NSError{
+            if let error = task.error as? NSError {
                 // For "No events to submit" errors, dispatch and empty array instead
                 if error.domain == AWSPinpointAnalyticsErrorDomain,
                    error.localizedDescription == "No events to submit." {
@@ -120,6 +123,7 @@ extension AWSPinpointAnalyticsPlugin {
             }
 
             if let pinpointEvents = task.result as? [AWSPinpointEvent] {
+                // swiftlint:disable:next todo
                 // TODO: revist this, this is exposing internal implementation
                 Amplify.Hub.dispatchFlushEvents(pinpointEvents)
             }

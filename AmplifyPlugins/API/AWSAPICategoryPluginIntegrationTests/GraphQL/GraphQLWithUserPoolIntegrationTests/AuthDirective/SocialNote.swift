@@ -13,8 +13,8 @@ public struct SocialNote: Model {
   public var owner: String?
 
   public init(id: String = UUID().uuidString,
-      content: String,
-      owner: String? = nil) {
+              content: String,
+              owner: String? = nil) {
       self.id = id
       self.content = content
       self.owner = owner
@@ -30,13 +30,16 @@ extension SocialNote {
   }
 
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema
+  // MARK: - ModelSchema
 
   public static let schema = defineSchema { model in
     let socialNote = SocialNote.keys
 
     model.authRules = [
-      rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", operations: [.create, .update, .delete])
+      rule(allow: .owner,
+           ownerField: "owner",
+           identityClaim: "cognito:username",
+           operations: [.create, .update, .delete])
     ]
 
     model.listPluralName = "SocialNotes"

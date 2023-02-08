@@ -31,6 +31,7 @@ import AWSMobileClient
 
  */
 
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -42,6 +43,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveTeamAndProjectSyncToCloud() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -109,6 +111,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         wait(for: [queriedProjectCompleted], timeout: networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testUpdateProjectWithAnotherTeam() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -196,6 +199,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         wait(for: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAndGetProjectReturnsNilWithSync() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -251,6 +255,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
 
+        // swiftlint:disable:next todo
         // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
         // Once cascade works for hasOne, the following code can be removed.
         let deleteTeamSuccessful = expectation(description: "delete team")
@@ -423,4 +428,4 @@ extension Project1: Equatable {
             && lhs.name == rhs.name
             && lhs.team == rhs.team
     }
-}
+} // swiftlint:disable:this file_length

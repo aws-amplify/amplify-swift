@@ -18,6 +18,7 @@ public enum QueryOperator {
     case between(start: Persistable, end: Persistable)
     case beginsWith(_ value: String)
 
+    // swiftlint:disable:next cyclomatic_complexity
     public func evaluate(target: Any) -> Bool {
         switch self {
         case .notEqual(let predicateValue):

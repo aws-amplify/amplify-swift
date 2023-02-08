@@ -73,7 +73,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
         self.storageEngineBehaviorFactory =
-            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
+            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
@@ -95,7 +95,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.operationQueue = operationQueue
         self.isSyncEnabled = false
         self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
-            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
+            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
         self.dataStorePublisher = dataStorePublisher
         self.dispatchedModelSyncedEvents = [:]
         self.validAPIPluginKey = validAPIPluginKey

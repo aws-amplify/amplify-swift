@@ -11,7 +11,7 @@ import AWSPinpoint
 @testable import AmplifyTestCommon
 import XCTest
 
-// swiftlint:disable:next type_name
+// swiftlint:disable:next type_name type_body_length
 class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase {
     let testName = "testName"
     let testIdentityId = "identityId"
@@ -429,4 +429,4 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         analyticsPlugin.disable()
         XCTAssertFalse(analyticsPlugin.isEnabled)
     }
-}
+} // swiftlint:disable:this file_length

@@ -20,6 +20,7 @@ class AppSessionTracker: Tracker {
         self.autoSessionTrackingInterval = autoSessionTrackingInterval
 
         if trackAppSessions {
+            // swiftlint:disable:next todo
             // TODO: to be implemented
         }
     }

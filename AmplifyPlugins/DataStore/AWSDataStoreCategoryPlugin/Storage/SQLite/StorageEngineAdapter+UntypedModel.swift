@@ -33,6 +33,7 @@ extension SQLiteStorageEngineAdapter {
             let shouldUpdate = try exists(modelSchema,
                                           withIdentifier: untypedModel.identifier(schema: modelSchema))
 
+            // swiftlint:disable:next todo
             // TODO serialize result and create a new instance of the model
             // (some columns might be auto-generated after DB insert/update)
             if shouldUpdate {
