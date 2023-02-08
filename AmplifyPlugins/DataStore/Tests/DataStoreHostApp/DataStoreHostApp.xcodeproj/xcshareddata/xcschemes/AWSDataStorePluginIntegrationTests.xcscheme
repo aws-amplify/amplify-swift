@@ -42,6 +42,9 @@
                   Identifier = "DataStoreConsecutiveUpdatesTests/testSaveThenMultipleUpdate()">
                </Test>
                <Test
+                  Identifier = "DataStoreEndToEndTests/testCreateThenMutateWithConditionFailOnSync()">
+               </Test>
+               <Test
                   Identifier = "DataStoreLocalStoreTests">
                </Test>
                <Test

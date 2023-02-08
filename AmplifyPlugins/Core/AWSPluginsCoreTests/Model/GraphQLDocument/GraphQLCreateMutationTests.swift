@@ -39,7 +39,7 @@ class GraphQLCreateMutationTests: XCTestCase {
                         status: .private)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
@@ -78,6 +78,53 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///   - the model is of type `Comment`
     ///   - the model has required associations
     ///   - the mutation is of type `.create`
+    ///   - primaryKeysOnly true in the selection set
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `createComment`
+    ///     - it contains an `input` of type `CreateCommentInput`
+    ///     - it has a list of fields with a `postId`
+    func testCreateGraphQLMutationFromModelWithAssociationPrimaryKeysOnly() {
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let comment = Comment(content: "comment", createdAt: .now(), post: post)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .mutation, primaryKeysOnly: true)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: comment, mutationType: .create))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        mutation CreateComment($input: CreateCommentInput!) {
+          createComment(input: $input) {
+            id
+            content
+            createdAt
+            post {
+              id
+              __typename
+            }
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "createComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.name, "createComment")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
+            XCTFail("Variables should contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["commentPostId"] as? String, post.id)
+    }
+    
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has required associations
+    ///   - the mutation is of type `.create`
+    ///   - primaryKeysOnly true in the selection set
     /// - Then:
     ///   - check if the generated GraphQL document is a valid mutation:
     ///     - it is named `createComment`
@@ -86,9 +133,9 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociation() {
         let post = Post(title: "title", content: "content", createdAt: .now())
         let comment = Comment(content: "comment", createdAt: .now(), post: post)
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .mutation, primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: comment))
+        documentBuilder.add(decorator: ModelDecorator(model: comment, mutationType: .create))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
@@ -139,8 +186,8 @@ class GraphQLCreateMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
@@ -181,6 +228,61 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///   - the model is of type `Comment`
     ///   - the model has required associations
     ///   - the mutation is of type `.create`
+    ///   - primaryKeysOnly true in the selection set
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `createComment`
+    ///     - it contains an `input` of type `CreateCommentInput`
+    ///     - it has a list of fields with a `postId`
+    func testCreateGraphQLMutationFromModelWithAssociationWithSyncEnabledPrimaryKeysOnly() {
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let comment = Comment(content: "comment", createdAt: .now(), post: post)
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .mutation, primaryKeysOnly: true)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: comment, mutationType: .create))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        mutation CreateComment($input: CreateCommentInput!) {
+          createComment(input: $input) {
+            id
+            content
+            createdAt
+            post {
+              id
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "createComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.name, "createComment")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
+            XCTFail("Variables should contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["commentPostId"] as? String, post.id)
+    }
+    
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has required associations
+    ///   - the mutation is of type `.create`
+    ///   - primaryKeysOnly false in the selection set
     /// - Then:
     ///   - check if the generated GraphQL document is a valid mutation:
     ///     - it is named `createComment`
@@ -190,10 +292,10 @@ class GraphQLCreateMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         let comment = Comment(content: "comment", createdAt: .now(), post: post)
 
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .mutation)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .mutation, primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: comment))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ModelDecorator(model: comment, mutationType: .create))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
@@ -242,8 +344,8 @@ class GraphQLCreateMutationTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: record))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ModelDecorator(model: record, mutationType: .create))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreateRecord($input: CreateRecordInput!) {
@@ -254,6 +356,7 @@ class GraphQLCreateMutationTests: XCTestCase {
             description
             name
             updatedAt
+            cover
             __typename
             _version
             _deleted

@@ -967,6 +967,14 @@ class SQLStatementTests: XCTestCase {
         where 1 = 1
           and "root"."@@postForeignKey" = ?
         """
+        let noJoin = """
+        select
+          "root"."@@primaryKey" as "@@primaryKey", "root"."id" as "id", "root"."content" as "content",
+          "root"."createdAt" as "createdAt", "root"."updatedAt" as "updatedAt", "root"."@@postForeignKey" as "@@postForeignKey"
+        from "CommentWithCompositeKey" as "root"
+        where 1 = 1
+          and "root"."@@postForeignKey" = ?
+        """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 

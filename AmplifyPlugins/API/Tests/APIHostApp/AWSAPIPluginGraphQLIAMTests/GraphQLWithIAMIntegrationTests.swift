@@ -220,7 +220,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     }
     
     func signOut() async {
-        await Amplify.Auth.signOut()
+        _ = await Amplify.Auth.signOut()
     }
 
     // MARK: - Model

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 /// Empty protocol used as a marker to detect when the type is a `List`
 ///
@@ -23,7 +22,13 @@ public protocol ModelListMarker { }
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public enum ModelListProviderState<Element: Model> {
-    case notLoaded
+    /// If the list represents an association between two models, the `associatedIdentifiers` will
+    /// hold the information necessary to query the associated elements (e.g. comments of a post)
+    ///
+    /// The associatedFields represents the field to which the owner of the `List` is linked to.
+    /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
+    /// of `Post` will have a reference to the `post` field in `Comment`.
+    case notLoaded(associatedIdentifiers: [String], associatedFields: [String])
     case loaded([Element])
 }
 
@@ -47,6 +52,9 @@ public protocol ModelListProvider {
     /// Asynchronously retrieve the next page as a new in-memory List object. Returns a failure if there
     /// is no next page of results. You can validate whether the list has another page with `hasNextPage()`.
     func getNextPage() async throws -> List<Element>
+    
+    /// Custom encoder
+    func encode(to encoder: Encoder) throws
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
@@ -58,7 +66,8 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     private let loadAsync: () async throws -> [Element]
     private let hasNextPageClosure: () -> Bool
     private let getNextPageAsync: () async throws -> List<Element>
-
+    private let encodeClosure: (Encoder) throws -> Void
+    
     public init<Provider: ModelListProvider>(
         provider: Provider
     ) where Provider.Element == Self.Element {
@@ -66,6 +75,7 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
         self.loadAsync = provider.load
         self.hasNextPageClosure = provider.hasNextPage
         self.getNextPageAsync = provider.getNextPage
+        self.encodeClosure = provider.encode
     }
 
     public func getState() -> ModelListProviderState<Element> {
@@ -82,6 +92,10 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
 
     public func getNextPage() async throws -> List<Element> {
         try await getNextPageAsync()
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        try encodeClosure(encoder)
     }
 }
 

@@ -32,7 +32,7 @@ class ModelSchemaGraphQLTests: XCTestCase {
         let wish = ModelSchema(name: "Wish",
                                pluralName: "Wishes")
         XCTAssertEqual(wish.graphQLName(queryType: .get), "getWish")
-        XCTAssertEqual(wish.graphQLName(queryType: .list), "listWishs")
+        XCTAssertEqual(wish.graphQLName(queryType: .list), "listWishes")
         XCTAssertEqual(wish.graphQLName(queryType: .sync), "syncWishes")
 
         XCTAssertEqual(wish.graphQLName(subscriptionType: .onCreate), "onCreateWish")

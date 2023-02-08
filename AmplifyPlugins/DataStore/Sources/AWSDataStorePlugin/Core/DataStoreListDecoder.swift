@@ -10,61 +10,40 @@ import Amplify
 import Combine
 
 public struct DataStoreListDecoder: ModelListDecoder {
-
-    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
-        guard let json = try? JSONValue(from: decoder) else {
-            return false
-        }
-
-        return shouldDecode(json: json)
+    
+    struct Metadata: Codable {
+        let dataStoreAssociatedIdentifiers: [String]
+        let dataStoreAssociatedFields: [String]
     }
-
-    static func shouldDecode(json: JSONValue) -> Bool {
-        if case let .object(list) = json,
-           case .string = list["associatedId"],
-           case .string = list["associatedField"] {
-            return true
-        }
-
-        if case .array = json {
-            return true
-        }
-
-        return false
+    
+    /// Creates a data structure that is capable of initializing a `List<M>` with
+    /// lazy-load capabilities when the list is being decoded.
+    static func lazyInit(associatedIds: [String], associatedWith: [String]) -> [String: Any?] {
+        return [
+            "dataStoreAssociatedIdentifiers": associatedIds,
+            "dataStoreAssociatedFields": associatedWith,
+        ]
     }
-
-    public static func makeListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                         decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
-        if let provider = try getDataStoreListProvider(modelType: modelType, decoder: decoder) {
-            return provider.eraseToAnyModelListProvider()
-        }
-
-        return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
+    
+    public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
+        shouldDecodeToDataStoreListProvider(modelType: modelType, decoder: decoder)?.eraseToAnyModelListProvider()
     }
-
-    static func getDataStoreListProvider<ModelType: Model>(
-        modelType: ModelType.Type,
-        decoder: Decoder) throws -> DataStoreListProvider<ModelType>? {
+    
+    public static func shouldDecodeToDataStoreListProvider<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> DataStoreListProvider<ModelType>? {
+        if let metadata = try? Metadata.init(from: decoder) {
+            return DataStoreListProvider<ModelType>(metadata: metadata)
+        }
+        
         let json = try? JSONValue(from: decoder)
         switch json {
         case .array:
-            let elements = try [ModelType](from: decoder)
-            return DataStoreListProvider<ModelType>(elements)
-        case .object(let associationData):
-            if case let .string(associatedId) = associationData["associatedId"],
-               case let .string(associatedField) = associationData["associatedField"] {
-                return DataStoreListProvider<ModelType>(associatedId: associatedId,
-                                                        associatedField: associatedField)
+            do {
+                let elements = try [ModelType](from: decoder)
+                return DataStoreListProvider<ModelType>(elements)
+            } catch {
+                return nil
             }
-
-            let message = "DataStoreListProvider could not be created from \(String(describing: json))"
-            Amplify.DataStore.log.error(message)
-            assertionFailure(message)
-            return nil
         default:
-            let message = "DataStoreListProvider could not be created from \(String(describing: json))"
-            Amplify.DataStore.log.error(message)
-            assertionFailure(message)
             return nil
         }
     }

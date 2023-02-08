@@ -21,24 +21,17 @@ class ListTests: XCTestCase {
     }
 
     class MockListDecoder: ModelListDecoder {
-        static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
-            guard let json = try? JSONValue(from: decoder) else {
-                return false
-            }
-            if case .array = json {
-                return true
-            }
-            return false
-        }
-
-        static func makeListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                       decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
-            let json = try JSONValue(from: decoder)
-            if case .array = json {
-                let elements = try [ModelType](from: decoder)
-                return MockListProvider<ModelType>(elements: elements).eraseToAnyModelListProvider()
-            } else {
-                return MockListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
+        static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
+            do {
+                let json = try JSONValue(from: decoder)
+                if case .array = json {
+                    let elements = try [ModelType](from: decoder)
+                    return MockListProvider<ModelType>(elements: elements).eraseToAnyModelListProvider()
+                } else {
+                    return nil
+                }
+            } catch {
+                return nil
             }
         }
     }
@@ -66,7 +59,7 @@ class ListTests: XCTestCase {
         }
 
         public func getState() -> ModelListProviderState<Element> {
-            state ?? .notLoaded
+            state ?? .notLoaded(associatedIdentifiers: [""], associatedFields: [""])
         }
         
         public func load(completion: (Result<[Element], CoreError>) -> Void) {
@@ -115,6 +108,10 @@ class ListTests: XCTestCase {
             } else {
                 fatalError("Mock not implemented")
             }
+        }
+        
+        func encode(to encoder: Encoder) throws {
+            try elements.encode(to: encoder)
         }
     }
 

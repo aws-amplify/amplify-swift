@@ -18,6 +18,8 @@ extension ModelSchema {
         case .list:
             if let listPluralName = listPluralName {
                 graphQLName = queryType.rawValue + listPluralName
+            } else if let pluralName = pluralName {
+                graphQLName = queryType.rawValue + pluralName
             } else {
                 graphQLName = (queryType.rawValue + name).pluralize()
             }
@@ -49,7 +51,7 @@ extension ModelSchema {
     /// The list of fields formatted for GraphQL usage.
     var graphQLFields: [ModelField] {
         sortedFields.filter { field in
-            !field.hasAssociation || field.isAssociationOwner
+            !field.hasAssociation || field._isBelongsToOrHasOne
         }
     }
 }

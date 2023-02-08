@@ -39,6 +39,17 @@
                ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "21801C7928F9A22900FFA37E"
+               BuildableName = "AWSDataStorePluginLazyLoadTests.xctest"
+               BlueprintName = "AWSDataStorePluginLazyLoadTests"
+               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -1,8 +1,8 @@
 //
-//  APIHostAppApp.swift
-//  APIHostApp
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Law, Michael on 7/21/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import SwiftUI

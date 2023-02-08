@@ -20,10 +20,6 @@ extension DataStoreCategory: Resettable {
             }
             await taskGroup.waitForAll()
         }
-        log.verbose("Resetting ModelRegistry and ModelListDecoderRegistry")
-        ModelRegistry.reset()
-        ModelListDecoderRegistry.reset()
-        log.verbose("Resetting ModelRegistry and ModelListDecoderRegistry: finished")
 
         isConfigured = false
     }

@@ -120,6 +120,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate?,
+               eagerLoad: Bool,
                completion: DataStoreCallback<[Model]>) {
         let result = resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))
         completion(result)
@@ -128,6 +129,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
     }
@@ -137,6 +139,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: (DataStoreResult<[M]>) -> Void) {
         XCTFail("Not expected to execute")
     }
@@ -151,7 +154,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return true
     }
 
-    func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>) {
+    func save(untypedModel: Model, eagerLoad: Bool, completion: @escaping DataStoreCallback<Model>) {
         if let responder = responders[.saveUntypedModel] as? SaveUntypedModelResponder {
             responder.callback((untypedModel, completion))
             return
@@ -162,6 +165,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
+                        eagerLoad: Bool,
                         completion: @escaping DataStoreCallback<M>) {
         if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
             responder.callback((model, completion))
@@ -176,6 +180,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition where: QueryPredicate?,
+                        eagerLoad: Bool,
                         completion: @escaping DataStoreCallback<M>) {
         if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
             responder.callback((model, completion))
@@ -196,6 +201,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>) {
         if let responder = responders[.queryModelTypePredicate]
             as? QueryModelTypePredicateResponder<M> {
@@ -318,13 +324,17 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
     }
 
-    func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M,
+                        condition: QueryPredicate?,
+                        eagerLoad: Bool,
+                        completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
 
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition where: QueryPredicate?,
+                        eagerLoad: Bool,
                         completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
@@ -356,6 +366,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>) {
         if let responder = responders[.query] as? QueryResponder<M> {
             let result = responder.callback(())
@@ -370,6 +381,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: (DataStoreResult<[M]>) -> Void) {
 
         if let responder = responders[.query] as? QueryResponder<M> {

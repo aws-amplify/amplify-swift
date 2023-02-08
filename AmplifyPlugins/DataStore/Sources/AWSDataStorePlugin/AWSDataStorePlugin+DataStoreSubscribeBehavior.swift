@@ -51,4 +51,5 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                                                 dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         return taskRunner.sequence
     }
+
 }

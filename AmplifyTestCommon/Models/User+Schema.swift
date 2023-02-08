@@ -34,4 +34,17 @@ extension User {
       .hasMany(user.followers, is: .optional, ofType: UserFollowers.self, associatedWith: UserFollowers.keys.user)
     )
     }
+    
+    public class Path: ModelPath<User> {}
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
+
+extension ModelPath where ModelType == User {
+    var id: FieldPath<String> { id() }
+    var name: FieldPath<String> { string("name") }
+    var following: ModelPath<UserFollowing> { UserFollowing.Path(name: "following", isCollection: true, parent: self) }
+    var followers: ModelPath<UserFollowers> { UserFollowers.Path(name: "followers", isCollection: true, parent: self) }
+    
+}
+

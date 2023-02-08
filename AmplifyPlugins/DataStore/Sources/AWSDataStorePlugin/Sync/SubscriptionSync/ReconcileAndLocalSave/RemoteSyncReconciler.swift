@@ -84,7 +84,7 @@ struct RemoteSyncReconciler {
         guard remoteModel.syncMetadata.version > localMetadata.version else {
             return nil
         }
-
+        
         return remoteModel.syncMetadata.deleted ? .delete(remoteModel) : .update(remoteModel)
     }
 }

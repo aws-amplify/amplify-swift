@@ -28,7 +28,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         let document = documentBuilder.build()
         let documentStringValue = """
         query GetPost($id: ID!) {
@@ -66,8 +66,8 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation CreatePost($input: CreatePostInput!) {
@@ -109,8 +109,8 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .update))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation UpdatePost($input: UpdatePostInput!) {
@@ -153,7 +153,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation DeletePost($input: DeletePostInput!) {
@@ -195,7 +195,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnCreatePost {
@@ -232,7 +232,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query))
         let document = documentBuilder.build()
         let documentStringValue = """
         query SyncPosts($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {

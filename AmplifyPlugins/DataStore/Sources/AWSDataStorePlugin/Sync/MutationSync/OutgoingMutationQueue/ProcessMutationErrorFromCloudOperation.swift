@@ -357,7 +357,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
     private func saveCreateOrUpdateMutation(remoteModel: MutationSync<AnyModel>) {
         log.verbose(#function)
-        storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
+        storageAdapter.save(untypedModel: remoteModel.model.instance, eagerLoad: true) { response in
             switch response {
             case .failure(let dataStoreError):
                 let error = DataStoreError.unknown("Save failed \(dataStoreError)", "")
@@ -381,7 +381,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
                               inProcessModel: MutationSync<AnyModel>) {
         log.verbose(#function)
-        storageAdapter.save(inProcessModel.syncMetadata, condition: nil) { result in
+        storageAdapter.save(inProcessModel.syncMetadata, condition: nil, eagerLoad: true) { result in
             switch result {
             case .failure(let dataStoreError):
                 let error = DataStoreError.unknown("Save metadata failed \(dataStoreError)", "")

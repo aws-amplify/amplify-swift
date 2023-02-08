@@ -48,6 +48,7 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
         XCTAssertEqual(input["name"] as? String, user.name)
     }
 
+    
     func testCreateUserFollowingGraphQLRequest() {
         let user1 = User(name: "user1")
         let user2 = User(name: "user2")
@@ -58,12 +59,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
             id
             followingUser {
               id
-              name
               __typename
             }
             user {
               id
-              name
               __typename
             }
             __typename
@@ -92,12 +91,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
             id
             followingUser {
               id
-              name
               __typename
             }
             user {
               id
-              name
               __typename
             }
             __typename
@@ -140,12 +137,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
               id
               followingUser {
                 id
-                name
                 __typename
               }
               user {
                 id
-                name
                 __typename
               }
               __typename
@@ -170,12 +165,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
             id
             followingUser {
               id
-              name
               __typename
             }
             user {
               id
-              name
               __typename
             }
             __typename
