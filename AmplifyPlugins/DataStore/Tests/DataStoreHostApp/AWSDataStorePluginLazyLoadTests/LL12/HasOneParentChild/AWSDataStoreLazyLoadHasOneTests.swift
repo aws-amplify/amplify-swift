@@ -13,25 +13,51 @@ import XCTest
 import AWSPluginsCore
 
 class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
-    
-    func testStart() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When: Configured with `HashOneModels`
+     - Then: Successfully start the sync engine
+     */
+    func testStart_withHasOneModels_success() async throws {
         await setup(withModels: HasOneModels())
         try await startAndWaitForReady()
     }
-    
-    func testSaveHasOneParent() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance without `HasOneChild` association
+     - Then: Successfully saved and synced to remote
+     */
+    func testSaveHasOneParent_withoutChild_success() async throws {
         await setup(withModels: HasOneModels())
         let parent = HasOneParent()
         try await saveAndWaitForSync(parent)
     }
-    
-    func testSaveHasOneChild() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneChild` instance
+     - Then: Successfully saved and synced to remote
+     */
+    func testSaveHasOneChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
         try await saveAndWaitForSync(child)
     }
-    
-    func testSaveParentWithChild() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+     - Then: Successfully saved and synced to remote
+     */
+    func testSaveHasOneParent_withChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
         try await saveAndWaitForSync(child)
@@ -76,7 +102,15 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(child)
     }
 
-    func testUpdateParentWithNewChild() async throws {
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+        - Update `HasOneParent` instance with a new `HasOneChild` association
+     - Then: Successfully updated and synced to remote
+     */
+    func testUpdateHasOneParent_withNewChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
         let savedChild = try await saveAndWaitForSync(child)
@@ -108,7 +142,15 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         XCTAssertEqual(queriedParentWithNewChild.hasOneParentChildId, savedNewChild.id)
     }
 
-    func testObserveHasOneChild() async throws {
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+        - Update `HasOneParent` instance with a new `HasOneChild` association
+     - Then: Successfully updated and synced to remote
+     */
+    func testCreateHasOneChild_withObserve_success() async throws {
         await setup(withModels: HasOneModels())
         try await startAndWaitForReady()
         let child = HasOneChild()
@@ -138,7 +180,15 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         mutationEvents.cancel()
     }
 
-    func testDeleteHasOneChild() async throws {
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneChild` instance
+        - Delete the `HasOneChild` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
         let savedChild = try await saveAndWaitForSync(child)
@@ -148,7 +198,15 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(savedChild)
     }
 
-    func testDeleteHasOneParent() async throws {
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance without `HasOneChild` association
+        - Delete the `HasOneParent` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneParent_withoutChild_success() async throws {
         await setup(withModels: HasOneModels())
         let parent = HasOneParent()
         let savedParent = try await saveAndWaitForSync(parent)
@@ -158,7 +216,15 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(savedParent)
     }
 
-    func testDeleteHasOneParentWithChild() async throws {
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+        - Delete the `HasOneParent` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneParent_withChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
         let savedChild = try await saveAndWaitForSync(child)
@@ -173,7 +239,15 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelExists(savedChild)
     }
 
-    func testDeleteHasOneChildWithParent() async throws {
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneChild` instance and associated to a `HasOneParent` instance
+        - Delete the `HasOneChild` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneChild_withParent_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
         let savedChild = try await saveAndWaitForSync(child)
@@ -187,8 +261,8 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(savedChild)
         try await assertModelExists(savedParent)
 
-        let childIdInParent = try await query(for: savedParent).child?.id
-        XCTAssertEqual(childIdInParent, nil)
+        let associatedChild = try await query(for: savedParent).child
+        XCTAssertTrue(associatedChild == nil)
     }
 
 }
