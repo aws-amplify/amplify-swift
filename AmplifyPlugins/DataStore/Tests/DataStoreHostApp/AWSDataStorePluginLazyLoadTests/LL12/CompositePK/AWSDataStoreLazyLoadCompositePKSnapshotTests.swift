@@ -88,10 +88,10 @@ extension AWSDataStoreLazyLoadCompositePKTests {
      - When:
         - Configured with `CompositePKModels`
      - Then:
-        - All mutation GraphQL requests on `SrangeExplicitChild` model have correct selection set
-        - All subscription GraphQL requests on `SrangeExplicitChild` model have correct selection set
+        - All mutation GraphQL requests on `StrangeExplicitChild` model have correct selection set
+        - All subscription GraphQL requests on `StrangeExplicitChild` model have correct selection set
      */
-    func testSrangeExplicitChild_withGraphQLOperations_generateCorrectSelectionSets() {
+    func testStrangeExplicitChild_withGraphQLOperations_generateCorrectSelectionSets() {
         Operation.allOperations(on: StrangeExplicitChild.schema, model: StrangeExplicitChild.self).forEach { operation in
             let expectedDocument = operation.expectedDocument
             XCTAssertNotNil(expectedDocument)
