@@ -35,8 +35,9 @@ public struct IncludeAssociationDecorator: ModelBasedGraphQLDocumentDecorator {
         includedAssociations.forEach { association in
             // we don't include the root reference because it refers to the root model
             // fields in the selection set, only the nested/included ones are needed
-            let associationSelectionSet = association.asSelectionSet(includeRoot: false)
-            selectionSet.merge(with: associationSelectionSet)
+            if let associationSelectionSet = association.asSelectionSet(includeRoot: false) {
+                selectionSet.merge(with: associationSelectionSet)
+            }
         }
 
         return document.copy(selectionSet: selectionSet)
@@ -46,23 +47,43 @@ public struct IncludeAssociationDecorator: ModelBasedGraphQLDocumentDecorator {
 
 extension PropertyContainerPath {
     
-    func asSelectionSet(includeRoot: Bool = true) -> SelectionSet {
-        let metadata = getMetadata()
-        let modelName = getModelType().modelName
-        guard let schema = ModelRegistry.modelSchema(from: modelName) else {
-            fatalError("Schema for model \(modelName) could not be found.")
+    func asSelectionSet(includeRoot: Bool = true) -> SelectionSet? {
+        func getSelectionSet(node: PropertyContainerPath) -> SelectionSet {
+            let metadata = node.getMetadata()
+            let modelName = node.getModelType().modelName
+
+            guard let schema = ModelRegistry.modelSchema(from: modelName) else {
+                fatalError("Schema for model \(modelName) could not be found.")
+            }
+            let fieldType: SelectionSetFieldType = metadata.isCollection ? .collection : .model
+
+            let selectionSet = SelectionSet(value: .init(name: metadata.name, fieldType: fieldType))
+            selectionSet.withModelFields(schema.graphQLFields, primaryKeysOnly: true)
+            return selectionSet
         }
-        let fieldType: SelectionSetFieldType = metadata.isCollection ? .collection : .model
-        
-        var selectionSet = SelectionSet(value: .init(name: metadata.name, fieldType: fieldType))
-        selectionSet.withModelFields(schema.graphQLFields, primaryKeysOnly: true)
-        if let parent = metadata.parent as? PropertyContainerPath,
-           parent.getMetadata().parent != nil || includeRoot {
-            let parentSelectionSet = parent.asSelectionSet(includeRoot: includeRoot)
-            parentSelectionSet.replaceChild(selectionSet)
-            selectionSet = parentSelectionSet
+
+        func shouldProcessNode(node: PropertyContainerPath) -> Bool {
+            includeRoot || node.getMetadata().name != "root"
         }
-        return selectionSet
+
+        func nodesInPath(node: PropertyContainerPath) -> [PropertyContainerPath] {
+            var parent: PropertyContainerPath? = node
+            var path = [PropertyContainerPath]()
+            while let currentNode = parent, shouldProcessNode(node: currentNode) {
+                path.append(currentNode)
+                parent = currentNode.getMetadata().parent as? PropertyContainerPath
+            }
+            return path
+        }
+
+        let selectionSets = nodesInPath(node: self).map(getSelectionSet(node:))
+        return selectionSets.dropFirst().reduce(selectionSets.first) { partialResult, selectionSet in
+            guard let partialResult = partialResult else {
+                return selectionSet
+            }
+            selectionSet.replaceChild(partialResult)
+            return selectionSet
+        }
     }
 
 }

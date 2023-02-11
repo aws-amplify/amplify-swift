@@ -19,8 +19,8 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        let createdPost = try await mutate(.create(post))
-        let createdComment = try await mutate(.create(comment))
+        _ = try await mutate(.create(post))
+        _ = try await mutate(.create(comment))
     }
     
     // Without `includes` and latest codegenerated types with the model path, the post should be lazy loaded
@@ -145,17 +145,13 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                   updatedAt
                   post {
                     id
+                    createdAt
+                    title
+                    updatedAt
                     __typename
                   }
                   __typename
                 }
-              }
-              post {
-                id
-                createdAt
-                title
-                updatedAt
-                __typename
               }
             }
             __typename
@@ -163,7 +159,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         }
         """
         XCTAssertEqual(request.document, expectedDocument)
-        let createdComment = try await mutate(request)
+        _ = try await mutate(request)
     }
     
     // Without `includes` and latest codegenerated types with the model path, the post's comments should be lazy loaded
