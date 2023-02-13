@@ -23,10 +23,10 @@ public final class AWSPinpointPushNotificationsPlugin: PushNotificationsCategory
         "awsPinpointPushNotificationsPlugin"
     }
 
-    /// Creates an instance of the AWSPinpointPushNotificationsPlugin and requests Push Notifications authorization from the user.
+    /// Creates an instance of the AWSPinpointPushNotificationsPlugin and optionally requests Push Notifications authorization from the user.
     ///
-    /// - Parameter options: The `UNAuthorizationOptions` permissions to request. Defaults to `badge`, `alert` and `sound`.
-    public init(options: UNAuthorizationOptions = [.badge, .alert, .sound]) {
+    /// - Parameter options: The `UNAuthorizationOptions` permissions to request. Does not request permissions by default.
+    public init(options: UNAuthorizationOptions = []) {
         self.options = options
     }
 }
