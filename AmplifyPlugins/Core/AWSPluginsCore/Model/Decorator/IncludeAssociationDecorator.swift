@@ -46,7 +46,11 @@ public struct IncludeAssociationDecorator: ModelBasedGraphQLDocumentDecorator {
 }
 
 extension PropertyContainerPath {
-    
+    /// Build GraphQL Selection Set based on Model Associations
+    /// `PropertyContainerPath` is a tree path with leaf node pointer that
+    /// represents the associations from bottom to the top.
+    ///
+    /// - Returns: A Optional<SelectionSet> represents GraphQL Selection Set from top to bottom.
     func asSelectionSet(includeRoot: Bool = true) -> SelectionSet? {
         func getSelectionSet(node: PropertyContainerPath) -> SelectionSet {
             let metadata = node.getMetadata()

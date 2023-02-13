@@ -19,8 +19,8 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        _ = try await mutate(.create(post))
-        _ = try await mutate(.create(comment))
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
     }
     
     // Without `includes` and latest codegenerated types with the model path, the post should be lazy loaded
@@ -117,7 +117,16 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
     }
     
-    // This looks broken
+
+    /*
+     - Given: Api plugin is cleared
+     - When:
+        - Initialize with PostComment4V2Models
+        - Create post
+        - Create comment with [comment.post.comments.post] association path
+     - Then:
+        - The comment creation request GraphQL Selection Set represents the assocation path
+     */
     func testCommentWithEagerLoadPostAndPostCommentsAndPostCommentsPost() async throws {
         await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
@@ -159,7 +168,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         }
         """
         XCTAssertEqual(request.document, expectedDocument)
-        _ = try await mutate(request)
+        try await mutate(request)
     }
     
     // Without `includes` and latest codegenerated types with the model path, the post's comments should be lazy loaded
