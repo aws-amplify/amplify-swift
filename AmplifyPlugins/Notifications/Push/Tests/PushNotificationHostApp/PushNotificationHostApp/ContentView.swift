@@ -48,7 +48,7 @@ struct ContentView: View {
             let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFilePath)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
-            try Amplify.add(plugin: AWSPinpointPushNotificationsPlugin())
+            try Amplify.add(plugin: AWSPinpointPushNotificationsPlugin(options: [.alert, .badge, .sound]))
             try Amplify.configure(config)
 
             listenHubEvent()
