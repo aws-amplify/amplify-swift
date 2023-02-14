@@ -17,6 +17,7 @@ These tests were provisioned with V2 Transform, CPK enabled, and with the lazy l
 2. `amplify add api`
 
 - Use API Key
+- Disable Conflict detection (required for DataStore)
 - Use the `lazyload-schema.graphql` from this test directory.
 
 3. `amplify push`
