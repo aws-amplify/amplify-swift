@@ -113,19 +113,19 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let child = HasOneChild()
         let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneChild.self, type: .onCreate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onCreate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to create HasOneChild, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to create HasOneChild, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onCreate.fulfill()
                 }
             }
         }
@@ -152,22 +152,21 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let parent = HasOneParent(child: child, hasOneParentChildId: child.id)
         let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneParent.self, type: .onCreate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        let associatedChild = try await newModel.child
-                        if newModel.identifier == parent.identifier,
-                           associatedChild?.identifier == child.identifier
-                        {
-                            await onCreate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to create HasOneParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to create HasOneParent, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == parent.identifier,
+                   let associatedChild = try await data.child,
+                   associatedChild.identifier == child.identifier
+                {
+                    await onCreate.fulfill()
                 }
             }
         }
@@ -196,19 +195,19 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneChild.self, type: .onUpdate))
 
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onUpdate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to update HasOneChild, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to update HasOneChild, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onUpdate.fulfill()
                 }
             }
         }
@@ -242,22 +241,21 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneParent.self, type: .onUpdate))
 
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        let associatedChild = try await newModel.child
-                        if newModel.identifier == parent.identifier,
-                           associatedChild?.identifier == anotherChild.identifier
-                        {
-                            await onUpdate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to update HasOneParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to update HasOneParent, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == parent.identifier,
+                   let associatedChild = try await data.child,
+                   associatedChild.identifier == anotherChild.identifier
+                {
+                    await onUpdate.fulfill()
                 }
             }
         }
@@ -291,19 +289,19 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneChild.self, type: .onDelete))
 
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onDelete.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to delete HasOneChild, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to delete HasOneChild, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onDelete.fulfill()
                 }
             }
         }
@@ -334,22 +332,21 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
         let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneParent.self, type: .onDelete))
 
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        let associatedChild = try await newModel.child
-                        if newModel.identifier == parent.identifier,
-                           associatedChild?.identifier == child.identifier
-                        {
-                            await onDelete.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to delete HasOneParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to delete HasOneParent, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == parent.identifier,
+                   let associatedChild = try await data.child,
+                   associatedChild.identifier == child.identifier
+                {
+                    await onDelete.fulfill()
                 }
             }
         }

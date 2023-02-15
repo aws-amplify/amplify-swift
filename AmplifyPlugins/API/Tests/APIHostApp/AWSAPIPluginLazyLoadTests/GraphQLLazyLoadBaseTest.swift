@@ -192,3 +192,28 @@ extension LazyReferenceIdentifier: Equatable {
         return lhs.name == rhs.name && lhs.value == rhs.value
     }
 }
+
+
+extension GraphQLSubscriptionEvent {
+    func isConnected() -> Bool {
+        if case .connection(.connected) = self {
+            return true
+        }
+        return false
+    }
+
+    func extractData() -> T? {
+        if case .data(.success(let data)) = self {
+            return data
+        }
+        return nil
+    }
+
+    func extractError() -> GraphQLResponseError<T>? {
+        if case .data(.failure(let error)) = self {
+            return error
+        }
+        return nil
+    }
+
+}
