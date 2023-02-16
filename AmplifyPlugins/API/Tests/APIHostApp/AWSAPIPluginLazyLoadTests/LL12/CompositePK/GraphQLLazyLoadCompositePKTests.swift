@@ -118,35 +118,17 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscribeCompositePKParentOnCreate() async throws {
         await setup(withModels: CompositePKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onCreate = asyncExpectation(description: "onCreate received")
         let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
         let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString, parent: parent)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKParent.self, type: .onCreate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to create CompositePKParent, error: \(error.errorDescription)")
-                }
-
-                guard let data = subscriptionEvent.extractData(),
-                      data.identifier == parent.identifier
-                else { continue }
-
-                try await data.children?.fetch()
-                if case .some(.loaded(let associatedchildren)) = data.children?.loadedState,
-                   associatedchildren.map(\.identifier).contains(child.identifier)
-                {
-                    await onCreate.fulfill()
-                }
+        let (onCreate, subscription) = try await subscribe(of: CompositePKParent.self, type: .onCreate) { createdParent in
+            try await createdParent.children?.fetch()
+            if case .some(.loaded(let associatedChildren)) = createdParent.children?.loadedState {
+                return createdParent.identifier == parent.identifier
+                && associatedChildren.map(\.identifier).contains(child.identifier)
             }
+            return false
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         await waitForExpectations([onCreate], timeout: 10)
@@ -165,36 +147,18 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscribeCompositePKParentOnUpdate() async throws {
         await setup(withModels: CompositePKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onUpdate = asyncExpectation(description: "onUpdate received")
         let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
         let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString, parent: parent)
 
-        let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKParent.self, type: .onUpdate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to update CompositePKParent, error: \(error.errorDescription)")
-                }
-
-                guard let data = subscriptionEvent.extractData(),
-                      data.identifier == parent.identifier
-                else { continue }
-
-                try await data.children?.fetch()
-                if case .some(.loaded(let associatedChildren)) = data.children?.loadedState,
-                   associatedChildren.map(\.identifier).contains(child.identifier)
-                {
-                    await onUpdate.fulfill()
-                }
+        let (onUpdate, subscription) = try await subscribe(of: CompositePKParent.self, type: .onCreate) { updatedParent in
+            try await updatedParent.children?.fetch()
+            if case .some(.loaded(let associatedChildren)) = updatedParent.children?.loadedState {
+                return updatedParent.identifier == parent.identifier
+                && associatedChildren.map(\.identifier).contains(child.identifier)
             }
+            return false
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         try await mutate(.update(parent))
@@ -213,36 +177,19 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscribeCompositePKParentOnDelete() async throws {
         await setup(withModels: CompositePKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onDelete = asyncExpectation(description: "onUpdate received")
+
         let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
         let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString, parent: parent)
 
-        let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKParent.self, type: .onDelete))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to delete CompositePKParent, error: \(error.errorDescription)")
-                }
-
-                guard let data = subscriptionEvent.extractData(),
-                      data.identifier == parent.identifier
-                else { continue }
-
-                try await data.children?.fetch()
-                if case .some(.loaded(let associatedChildren)) = data.children?.loadedState,
-                   associatedChildren.map(\.identifier).contains(child.identifier)
-                {
-                    await onDelete.fulfill()
-                }
+        let (onDelete, subscription) = try await subscribe(of: CompositePKParent.self, type: .onDelete) { deletedParent in
+            try await deletedParent.children?.fetch()
+            if case .some(.loaded(let associatedChildren)) = deletedParent.children?.loadedState {
+                return deletedParent.identifier == parent.identifier
+                && associatedChildren.map(\.identifier).contains(child.identifier)
             }
+            return false
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         try await mutate(.delete(parent))

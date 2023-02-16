@@ -118,31 +118,13 @@ extension GraphQLLazyLoadCompositePKTests {
      */
     func testSubscribeStrangeExplicitChildOnCreate() async throws {
         await setup(withModels: CompositePKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onCreate = asyncExpectation(description: "onCreate received")
 
         let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
         let child = StrangeExplicitChild(strangeId: UUID().uuidString, content: UUID().uuidString, parent: parent)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: StrangeExplicitChild.self, type: .onCreate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to create StrangeExplicitChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onCreate.fulfill()
-                }
-            }
+        let (onCreate, subscription) = try await subscribe(of: StrangeExplicitChild.self, type: .onCreate) { createdChild in
+            createdChild.identifier == child.identifier
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(parent))
         try await mutate(.create(child))
         await waitForExpectations([onCreate], timeout: 10)
@@ -161,32 +143,15 @@ extension GraphQLLazyLoadCompositePKTests {
      */
     func testSubscribeStrangeExplicitChildOnUpdate() async throws {
         await setup(withModels: CompositePKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onUpdate = asyncExpectation(description: "onUpdate received")
+
         let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
         let child = StrangeExplicitChild(strangeId: UUID().uuidString, content: UUID().uuidString, parent: parent)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: StrangeExplicitChild.self, type: .onUpdate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
+        let (onUpdate, subscription) = try await subscribe(of: StrangeExplicitChild.self, type: .onUpdate, verifyChange: { updatedChild in
+            let associatedParent = try await updatedChild.parent
+            return associatedParent.identifier == parent.identifier
+            && updatedChild.identifier == child.identifier
+        })
 
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to update StrangeExplicitChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier,
-                   let associatedParent = try? await data.parent,
-                   associatedParent.identifier == parent.identifier
-                {
-                    await onUpdate.fulfill()
-                }
-            }
-        }
-
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(parent))
         try await mutate(.create(child))
 
@@ -209,30 +174,13 @@ extension GraphQLLazyLoadCompositePKTests {
      */
     func testSubscribeStrangeExplicitChildOnDelete() async throws {
         await setup(withModels: CompositePKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onDelete = asyncExpectation(description: "onUpdate received")
+
         let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
         let child = StrangeExplicitChild(strangeId: UUID().uuidString, content: UUID().uuidString, parent: parent)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: StrangeExplicitChild.self, type: .onDelete))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to update StrangeExplicitChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onDelete.fulfill()
-                }
-            }
+        let (onDelete, subscription) = try await subscribe(of: StrangeExplicitChild.self, type: .onDelete) { deletedChild in
+            deletedChild.identifier == child.identifier
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(parent))
         try await mutate(.create(child))
         try await mutate(.delete(child))
