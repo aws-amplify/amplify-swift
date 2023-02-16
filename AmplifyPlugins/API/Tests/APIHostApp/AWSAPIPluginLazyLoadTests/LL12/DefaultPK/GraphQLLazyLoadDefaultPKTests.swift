@@ -112,29 +112,11 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscribeDefaultPKChildOnCreate() async throws {
         await setup(withModels: DefaultPKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onCreate = asyncExpectation(description: "onCreate received")
         let child = DefaultPKChild()
-        let subscription = Amplify.API.subscribe(request: .subscription(of: DefaultPKChild.self, type: .onCreate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to create DefaultPKChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onCreate.fulfill()
-                }
-            }
+        let (onCreate, subscription) = try await subscribe(of: DefaultPKChild.self, type: .onCreate) { newChild in
+            newChild.identifier == child.identifier
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         await waitForExpectations([onCreate], timeout: 10)
         subscription.cancel()
@@ -150,35 +132,18 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscribeDefaultPKParentOnCreate() async throws {
         await setup(withModels: DefaultPKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onCreate = asyncExpectation(description: "onCreate received")
+
         let parent = DefaultPKParent()
         let child = DefaultPKChild(parent: parent)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: DefaultPKParent.self, type: .onCreate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to create DefaultPKParent, error: \(error.errorDescription)")
-                }
-
-                guard let data = subscriptionEvent.extractData(),
-                      data.identifier == parent.identifier
-                else { continue }
-
-                try await data.children?.fetch()
-                if case .some(.loaded(let associatedChildren)) = data.children?.loadedState,
-                   associatedChildren.map(\.identifier).contains(child.identifier)
-                {
-                    await onCreate.fulfill()
-                }
+        let (onCreate, subscription) = try await subscribe(of: DefaultPKParent.self, type: .onCreate) { newParent in
+            try await newParent.children?.fetch()
+            if case .some(.loaded(let associatedChildren)) = newParent.children?.loadedState {
+                return newParent.identifier == parent.identifier
+                && associatedChildren.map(\.identifier).contains(child.identifier)
             }
+            return false
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         await waitForExpectations([onCreate], timeout: 10)
@@ -196,30 +161,12 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionDefaultPKChildOnUpdate() async throws {
         await setup(withModels: DefaultPKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onUpdate = asyncExpectation(description: "onUpdate received")
+
         let child = DefaultPKChild()
-        let subscription = Amplify.API.subscribe(request: .subscription(of: DefaultPKChild.self, type: .onUpdate))
-
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to update DefaultPKChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onUpdate.fulfill()
-                }
-            }
+        let (onUpdate, subscription) = try await subscribe(of: DefaultPKChild.self, type: .onUpdate) { updatedChild in
+            updatedChild.identifier == child.identifier
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         var updatingChild = child
         updatingChild.content = UUID().uuidString
@@ -240,40 +187,21 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionDefaultPKParentOnUpdate() async throws {
         await setup(withModels: DefaultPKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onUpdate = asyncExpectation(description: "onUpdate received")
 
         let parent = DefaultPKParent()
         let child = DefaultPKChild(parent: parent)
         let anotherChild = DefaultPKChild(parent: parent)
 
-        let subscription = Amplify.API.subscribe(request: .subscription(of: DefaultPKParent.self, type: .onUpdate))
-
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to update DefaultPKParent, error: \(error.errorDescription)")
-                }
-
-                guard let data = subscriptionEvent.extractData(),
-                      data.identifier == parent.identifier
-                else { continue }
-
-                try await data.children?.fetch()
-                if case .some(.loaded(let associatedChildren)) = data.children?.loadedState,
-                   associatedChildren.map(\.identifier).contains(child.identifier),
-                   associatedChildren.map(\.identifier).contains(anotherChild.identifier)
-                {
-                    await onUpdate.fulfill()
-                }
+        let (onUpdate, subscription) = try await subscribe(of: DefaultPKParent.self, type: .onUpdate) { updatedParent in
+            try await updatedParent.children?.fetch()
+            if case .some(.loaded(let associatedChildren)) = updatedParent.children?.loadedState {
+                return updatedParent.identifier == parent.identifier
+                && associatedChildren.map(\.identifier).contains(child.identifier)
+                && associatedChildren.map(\.identifier).contains(anotherChild.identifier)
             }
+            return false
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         try await mutate(.create(anotherChild))
@@ -295,30 +223,11 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionDefaultPKChildOnDelete() async throws {
         await setup(withModels: DefaultPKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onDelete = asyncExpectation(description: "onDelete received")
         let child = DefaultPKChild()
-        let subscription = Amplify.API.subscribe(request: .subscription(of: DefaultPKChild.self, type: .onDelete))
+        let (onDelete, subscription) = try await subscribe(of: DefaultPKChild.self, type: .onDelete, verifyChange: { deletedChild in
+            deletedChild.identifier == child.identifier
+        })
 
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to delete DefaultPKChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onDelete.fulfill()
-                }
-            }
-        }
-
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.delete(child))
         await waitForExpectations([onDelete], timeout: 10)
@@ -337,36 +246,18 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionDefaultPKParentOnDelete() async throws {
         await setup(withModels: DefaultPKModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onDelete = asyncExpectation(description: "onDelete received")
+
         let parent = DefaultPKParent()
         let child = DefaultPKChild(parent: parent)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: DefaultPKParent.self, type: .onDelete))
-
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to delete DefaultPKParent, error: \(error.errorDescription)")
-                }
-
-                guard let data = subscriptionEvent.extractData(),
-                      data.identifier == parent.identifier
-                else { continue }
-
-                try await data.children?.fetch()
-                if case .some(.loaded(let associatedChildren)) = data.children?.loadedState,
-                   associatedChildren.map(\.identifier).contains(child.identifier)
-                {
-                    await onDelete.fulfill()
-                }
+        let (onDelete, subscription) = try await subscribe(of: DefaultPKParent.self, type: .onDelete, verifyChange: { deletedParent in
+            try await deletedParent.children?.fetch()
+            if case .some(.loaded(let associatedChildren)) = deletedParent.children?.loadedState {
+                return deletedParent.identifier == parent.identifier
+                && associatedChildren.map(\.identifier).contains(child.identifier)
             }
-        }
+            return false
+        })
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         try await mutate(.delete(parent))

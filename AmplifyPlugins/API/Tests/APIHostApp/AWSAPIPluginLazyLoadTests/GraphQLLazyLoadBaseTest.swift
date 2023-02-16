@@ -185,6 +185,37 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
                                          decodePath: document.name)
         return try await query(request)
     }
+
+    func subscribe<M: Model>(
+        of modelType: M.Type,
+        type: GraphQLSubscriptionType,
+        verifyChange: @escaping (M) async throws -> Bool
+    ) async throws -> (AsyncExpectation, AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<M>>) {
+        let connected = asyncExpectation(description: "Subscription connected")
+        let eventReceived = asyncExpectation(description: "\(type.rawValue) received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: modelType, type: type))
+
+        Task {
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to \(type.rawValue) \(modelType), error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   try await verifyChange(data)
+                {
+                    await eventReceived.fulfill()
+                }
+            }
+        }
+
+        await waitForExpectations([connected], timeout: 10)
+        return (eventReceived, subscription)
+    }
 }
 
 extension LazyReferenceIdentifier: Equatable {

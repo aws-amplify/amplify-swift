@@ -108,29 +108,10 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscribeHasOneChildOnCreate() async throws {
         await setup(withModels: HasOneParentChildModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onCreate = asyncExpectation(description: "onCreate received")
         let child = HasOneChild()
-        let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneChild.self, type: .onCreate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to create HasOneChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onCreate.fulfill()
-                }
-            }
+        let (onCreate, subscription) = try await subscribe(of: HasOneChild.self, type: .onCreate) { newChild in
+            newChild.identifier == child.identifier
         }
-
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         await waitForExpectations([onCreate], timeout: 10)
         subscription.cancel()
@@ -146,32 +127,16 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscribeHasOneParentOnCreate() async throws {
         await setup(withModels: HasOneParentChildModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onCreate = asyncExpectation(description: "onCreate received")
         let child = HasOneChild()
         let parent = HasOneParent(child: child, hasOneParentChildId: child.id)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneParent.self, type: .onCreate))
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to create HasOneParent, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == parent.identifier,
-                   let associatedChild = try await data.child,
-                   associatedChild.identifier == child.identifier
-                {
-                    await onCreate.fulfill()
-                }
+        let (onCreate, subscription) = try await subscribe(of: HasOneParent.self, type: .onCreate) { newParent in
+            if let associatedChild = try await newParent.child {
+                return newParent.identifier == parent.identifier
+                && associatedChild.identifier == child.identifier
             }
+            return false
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         await waitForExpectations([onCreate], timeout: 10)
@@ -189,30 +154,11 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionHasOnChildOnUpdate() async throws {
         await setup(withModels: HasOneParentChildModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onUpdate = asyncExpectation(description: "onUpdate received")
         let child = HasOneChild()
-        let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneChild.self, type: .onUpdate))
-
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to update HasOneChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onUpdate.fulfill()
-                }
-            }
+        let (onUpdate, subscription) = try await subscribe(of: HasOneChild.self, type: .onUpdate) { updatedChild in
+            updatedChild.identifier == child.identifier
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         var updatingChild = child
         updatingChild.content = UUID().uuidString
@@ -233,34 +179,17 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionHasOnParentOnUpdate() async throws {
         await setup(withModels: HasOneParentChildModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onUpdate = asyncExpectation(description: "onUpdate received")
         let child = HasOneChild()
         let anotherChild = HasOneChild()
         let parent = HasOneParent(child: child, hasOneParentChildId: child.id)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneParent.self, type: .onUpdate))
-
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to update HasOneParent, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == parent.identifier,
-                   let associatedChild = try await data.child,
-                   associatedChild.identifier == anotherChild.identifier
-                {
-                    await onUpdate.fulfill()
-                }
+        let (onUpdate, subscription) = try await subscribe(of: HasOneParent.self, type: .onUpdate) { updatedParent in
+            if let associatedChild = try await updatedParent.child {
+                return updatedParent.identifier == parent.identifier
+                && associatedChild.identifier == anotherChild.identifier
             }
+            return false
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         var updatingParent = parent
@@ -283,30 +212,11 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionHasOneChildOnDelete() async throws {
         await setup(withModels: HasOneParentChildModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onDelete = asyncExpectation(description: "onDelete received")
         let child = HasOneChild()
-        let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneChild.self, type: .onDelete))
-
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to delete HasOneChild, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == child.identifier
-                {
-                    await onDelete.fulfill()
-                }
-            }
+        let (onDelete, subscription) = try await subscribe(of: HasOneChild.self, type: .onDelete) { deletedChild in
+            deletedChild.identifier == child.identifier
         }
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.delete(child))
         await waitForExpectations([onDelete], timeout: 10)
@@ -325,33 +235,16 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
      */
     func testSubscriptionHasOneParentOnDelete() async throws {
         await setup(withModels: HasOneParentChildModels())
-        let connected = asyncExpectation(description: "Subscription connected")
-        let onDelete = asyncExpectation(description: "onDelete received")
         let child = HasOneChild()
         let parent = HasOneParent(child: child, hasOneParentChildId: child.id)
-        let subscription = Amplify.API.subscribe(request: .subscription(of: HasOneParent.self, type: .onDelete))
-
-        Task {
-            for try await subscriptionEvent in subscription {
-                if subscriptionEvent.isConnected() {
-                    await connected.fulfill()
-                }
-
-                if let error = subscriptionEvent.extractError() {
-                    XCTFail("Failed to delete HasOneParent, error: \(error.errorDescription)")
-                }
-
-                if let data = subscriptionEvent.extractData(),
-                   data.identifier == parent.identifier,
-                   let associatedChild = try await data.child,
-                   associatedChild.identifier == child.identifier
-                {
-                    await onDelete.fulfill()
-                }
+        let (onDelete, subscription) = try await subscribe(of: HasOneParent.self, type: .onDelete, verifyChange: { deletedParent in
+            if let associatedChild = try await deletedParent.child {
+                return deletedParent.identifier == parent.identifier
+                && associatedChild.identifier == child.identifier
             }
-        }
+            return false
+        })
 
-        await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(child))
         try await mutate(.create(parent))
         try await mutate(.delete(parent))
