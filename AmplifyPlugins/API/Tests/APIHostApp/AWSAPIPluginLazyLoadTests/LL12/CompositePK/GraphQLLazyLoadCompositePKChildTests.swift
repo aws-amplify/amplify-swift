@@ -137,19 +137,19 @@ extension GraphQLLazyLoadCompositePKTests {
         let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString)
         let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKChild.self, type: .onCreate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onCreate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to create CompositePKChild, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to create CompositePKChild, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onCreate.fulfill()
                 }
             }
         }
@@ -178,22 +178,21 @@ extension GraphQLLazyLoadCompositePKTests {
         let parent = CompositePKParent(customId: UUID().uuidString, content: UUID().uuidString)
         let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKChild.self, type: .onUpdate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        let associatedParent = try await newModel.parent
-                        if newModel.identifier == child.identifier,
-                           associatedParent?.identifier == parent.identifier
-                        {
-                            await onUpdate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to update CompositePKParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to update CompositePKChild, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier,
+                   let associatedParent = try await data.parent,
+                   associatedParent.identifier == parent.identifier
+                {
+                    await onUpdate.fulfill()
                 }
             }
         }
@@ -225,19 +224,19 @@ extension GraphQLLazyLoadCompositePKTests {
         let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString)
         let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKChild.self, type: .onDelete))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onDelete.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to update CompositePKParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to delete CompositePKChild, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onDelete.fulfill()
                 }
             }
         }

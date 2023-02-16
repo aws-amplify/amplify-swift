@@ -124,24 +124,24 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
         let child = CompositePKChild(childId: UUID().uuidString, content: UUID().uuidString, parent: parent)
         let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKParent.self, type: .onCreate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        try await newModel.children?.fetch()
-                        let associatedChildren = newModel.children?.loadedState
-                        if newModel.identifier == parent.identifier,
-                           case .some(.loaded(let associatedChildren)) = associatedChildren,
-                           associatedChildren.map(\.identifier).contains(child.identifier)
-                        {
-                            await onCreate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to create CompositePKParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to create CompositePKParent, error: \(error.errorDescription)")
+                }
+
+                guard let data = subscriptionEvent.extractData(),
+                      data.identifier == parent.identifier
+                else { continue }
+
+                try await data.children?.fetch()
+                if case .some(.loaded(let associatedchildren)) = data.children?.loadedState,
+                   associatedchildren.map(\.identifier).contains(child.identifier)
+                {
+                    await onCreate.fulfill()
                 }
             }
         }
@@ -172,24 +172,24 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
 
         let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKParent.self, type: .onUpdate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        try await newModel.children?.fetch()
-                        let associatedChildren = newModel.children?.loadedState
-                        if newModel.identifier == parent.identifier,
-                           case .some(.loaded(let associatedChildren)) = associatedChildren,
-                           associatedChildren.map(\.identifier).contains(child.identifier)
-                        {
-                            await onUpdate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to update CompositePKParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to update CompositePKParent, error: \(error.errorDescription)")
+                }
+
+                guard let data = subscriptionEvent.extractData(),
+                      data.identifier == parent.identifier
+                else { continue }
+
+                try await data.children?.fetch()
+                if case .some(.loaded(let associatedChildren)) = data.children?.loadedState,
+                   associatedChildren.map(\.identifier).contains(child.identifier)
+                {
+                    await onUpdate.fulfill()
                 }
             }
         }
@@ -220,24 +220,24 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
 
         let subscription = Amplify.API.subscribe(request: .subscription(of: CompositePKParent.self, type: .onDelete))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        try await newModel.children?.fetch()
-                        let associatedChildren = newModel.children?.loadedState
-                        if newModel.identifier == parent.identifier,
-                           case .some(.loaded(let associatedChildren)) = associatedChildren,
-                           associatedChildren.map(\.identifier).contains(child.identifier)
-                        {
-                            await onDelete.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to delete CompositePKParent, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to delete CompositePKParent, error: \(error.errorDescription)")
+                }
+
+                guard let data = subscriptionEvent.extractData(),
+                      data.identifier == parent.identifier
+                else { continue }
+
+                try await data.children?.fetch()
+                if case .some(.loaded(let associatedChildren)) = data.children?.loadedState,
+                   associatedChildren.map(\.identifier).contains(child.identifier)
+                {
+                    await onDelete.fulfill()
                 }
             }
         }

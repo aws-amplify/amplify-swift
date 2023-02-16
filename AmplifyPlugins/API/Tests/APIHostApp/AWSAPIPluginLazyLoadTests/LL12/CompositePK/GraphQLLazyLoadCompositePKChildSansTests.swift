@@ -125,19 +125,19 @@ extension GraphQLLazyLoadCompositePKTests {
         let child = initChildSansBelongsTo(with: parent)
         let subscription = Amplify.API.subscribe(request: .subscription(of: ChildSansBelongsTo.self, type: .onCreate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onCreate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to create ChildSansBelongsTo, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to create ChildSansBelongsTo, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onCreate.fulfill()
                 }
             }
         }
@@ -167,19 +167,19 @@ extension GraphQLLazyLoadCompositePKTests {
         let child = initChildSansBelongsTo(with: parent)
         let subscription = Amplify.API.subscribe(request: .subscription(of: ChildSansBelongsTo.self, type: .onUpdate))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onUpdate.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to update ChildSansBelongsTo, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to update ChildSansBelongsTo, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onUpdate.fulfill()
                 }
             }
         }
@@ -210,19 +210,19 @@ extension GraphQLLazyLoadCompositePKTests {
         let child = initChildSansBelongsTo(with: parent)
         let subscription = Amplify.API.subscribe(request: .subscription(of: ChildSansBelongsTo.self, type: .onDelete))
         Task {
-            do {
-                for try await subscriptionEvent in subscription {
-                    switch subscriptionEvent {
-                    case .connection(.connected):
-                        await connected.fulfill()
-                    case let .data(.success(newModel)):
-                        if newModel.identifier == child.identifier {
-                            await onDelete.fulfill()
-                        }
-                    case let .data(.failure(error)):
-                        XCTFail("Failed to update ChildSansBelongsTo, error: \(error.errorDescription)")
-                    default: ()
-                    }
+            for try await subscriptionEvent in subscription {
+                if subscriptionEvent.isConnected() {
+                    await connected.fulfill()
+                }
+
+                if let error = subscriptionEvent.extractError() {
+                    XCTFail("Failed to delete ChildSansBelongsTo, error: \(error.errorDescription)")
+                }
+
+                if let data = subscriptionEvent.extractData(),
+                   data.identifier == child.identifier
+                {
+                    await onDelete.fulfill()
                 }
             }
         }
