@@ -32,7 +32,10 @@ extension AWSCognitoAuthPlugin {
         let authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
 
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
-        let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
+        let credentialEnvironment = credentialStoreEnvironment(
+            authConfiguration: authConfiguration,
+            accessGroup: jsonValueConfiguration["KeychainAccessGroup"]?.stringValue
+        )
         let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver,
                                                   environment: credentialEnvironment)
         let credentialsClient = CredentialStoreOperationClient(
@@ -130,11 +133,11 @@ extension AWSCognitoAuthPlugin {
         return analyticsHandler
     }
 
-    private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
-        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
+    private func makeCredentialStore(accessGroup: String? = nil) -> AmplifyAuthCredentialStoreBehavior {
+        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration, accessGroup: accessGroup)
     }
 
-    private func makeLegacyKeychainStore(service: String) -> KeychainStoreBehavior {
+    private func makeLegacyKeychainStore(service: String, accessGroup: String? = nil) -> KeychainStoreBehavior {
         KeychainStore(service: service)
     }
 
@@ -217,12 +220,16 @@ extension AWSCognitoAuthPlugin {
                                       cognitoIdentityFactory: makeIdentityClient)
     }
 
-    private func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
+    private func credentialStoreEnvironment(authConfiguration: AuthConfiguration, accessGroup: String? = nil) -> CredentialEnvironment {
         CredentialEnvironment(
             authConfiguration: authConfiguration,
             credentialStoreEnvironment: BasicCredentialStoreEnvironment(
-                amplifyCredentialStoreFactory: makeCredentialStore,
-                legacyKeychainStoreFactory: makeLegacyKeychainStore(service:)
+                amplifyCredentialStoreFactory: {
+                    self.makeCredentialStore(accessGroup: accessGroup)
+                },
+                legacyKeychainStoreFactory:  { service in
+                    self.makeLegacyKeychainStore(service: service, accessGroup: accessGroup)
+                }
             ), logger: log
         )
     }

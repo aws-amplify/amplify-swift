@@ -105,3 +105,12 @@ extension JSONValue: ExpressibleByStringLiteral {
         self = .string(value)
     }
 }
+
+public extension JSONValue {
+    var stringValue: String? {
+        guard case .string(let string) = self else {
+            return nil
+        }
+        return string
+    }
+}
