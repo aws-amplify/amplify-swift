@@ -238,7 +238,7 @@ jobs:
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
   
-  fortify:
+  fortify_scan:
     <<: *defaults
     steps:
       - *restore_repo
@@ -311,18 +311,17 @@ workflows:
       - install_gems:
           requires:
             - checkout_code
-      - fortify:
+      - fortify_scan:
           context:
             - amplify-swift-aws-s3-download
-          name: Run Fortify
           requires:
             - install_gems
       - build_amplify_ios_spm:
           requires:
-            - fortify
+            - fortify_scan
       - build_amplify_macos_spm:
           requires:
-            - fortify         
+            - fortify_scan         
       - unit_test:
           name: ios_unit_test_amplify
           scheme: Amplify
