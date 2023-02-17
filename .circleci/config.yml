@@ -3,6 +3,7 @@
 version: 2.1
 
 orbs:
+  aws-cli: circleci/aws-cli@3.1.4
   # Using inline orb for now
   getting-started-smoke-test:
     orbs:
@@ -325,6 +326,46 @@ jobs:
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
 
+  fortify_scan:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - run:
+          name: Make source directory
+          command: |
+            mkdir source
+            cp -r Amplify source
+            cp -r AmplifyPlugins source
+      - aws-cli/setup:
+          role-arn: 'arn:aws:iam::971028514469:role/CircleCiOIDC'
+          role-session-name: 'aws-s3-session'
+      - run:
+          name: Download License
+          command: |
+            aws s3 cp s3://amplify-swift-fortify-prod/fortify.license fortify.license
+      - run:
+          name: Download Installer
+          command: |
+            aws s3 cp s3://amplify-swift-fortify-prod/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+            tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+            unzip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
+      - run:
+          name: Download Scripts
+          command: |
+            aws s3 cp s3://amplify-swift-fortify-prod/amplify_swift_fortify_scan.sh fortify_scan.sh
+      - run:
+          name: Run Installer
+          command: |
+            Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+            export PATH=~/amplify-swift/Fortify/bin:$PATH
+            echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
+            fortifyupdate -acceptKey
+            sourceanalyzer -version
+      - run:
+          name: Run Scan
+          command: |
+            sh ./fortify_scan.sh source
+
 deploy_requires: &deploy_requires
   requires:
     - build_test_amplify
@@ -338,6 +379,7 @@ deploy_requires: &deploy_requires
     - unit_test_geo
     - unit_test_predictions
     - unit_test_storage
+    - fortify_scan
 
 workflows:
   build_test_deploy:
@@ -349,15 +391,20 @@ workflows:
       - install_gems:
           requires:
             - checkout_code
+      - fortify_scan:
+          context:
+            - amplify-swift-aws-s3-download
+          requires:
+            - install_gems
       - build_test_amplify:
           requires:
-            - install_gems
+            - fortify_scan
       - build_test_aws_plugins_core:
           requires:
-            - install_gems
+            - fortify_scan
       - build_amplify_spm:
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_analytics
           path: Analytics
