@@ -299,7 +299,7 @@ deploy_requires: &deploy_requires
     - macos_unit_test_datastore
     - macos_unit_test_geo
     - macos_unit_test_storage
-    - fortify
+    - fortify_scan
 
 workflows:
   build_test_deploy:
