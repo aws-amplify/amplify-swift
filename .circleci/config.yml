@@ -249,22 +249,22 @@ jobs:
             cp -r Amplify source
             cp -r AmplifyPlugins source
       - aws-cli/setup:
-          role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
+          role-arn: 'arn:aws:iam::971028514469:role/CircleCiOIDC'
           role-session-name: 'aws-s3-session'
       - run:
           name: Download License
           command: |
-            aws s3 cp s3://amplify-swift-fortify/fortify.license fortify.license
+            aws s3 cp s3://amplify-swift-fortify-prod/fortify.license fortify.license
       - run:
           name: Download Installer
           command: |
-            aws s3 cp s3://amplify-swift-fortify/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+            aws s3 cp s3://amplify-swift-fortify-prod/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
             tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
             unzip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
       - run:
           name: Download Scripts
           command: |
-            aws s3 cp s3://amplify-swift-fortify/fortify_scan.sh fortify_scan.sh
+            aws s3 cp s3://amplify-swift-fortify-prod/amplify_swift_fortify_scan.sh fortify_scan.sh
       - run:
           name: Run Installer
           command: |
@@ -299,8 +299,166 @@ deploy_requires: &deploy_requires
     - macos_unit_test_datastore
     - macos_unit_test_geo
     - macos_unit_test_storage
+    - fortify
 
 workflows:
+  build_test_deploy:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+    jobs:
+      - checkout_code
+      - install_gems:
+          requires:
+            - checkout_code
+      - fortify:
+          context:
+            - amplify-swift-aws-s3-download
+          name: Run Fortify
+          requires:
+            - install_gems
+      - build_amplify_ios_spm:
+          requires:
+            - fortify
+      - build_amplify_macos_spm:
+          requires:
+            - fortify         
+      - unit_test:
+          name: ios_unit_test_amplify
+          scheme: Amplify
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_awspluginscore
+          scheme: AWSPluginsCore
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_analytics
+          scheme: AWSPinpointAnalyticsPlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_api
+          scheme: AWSAPIPlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_auth
+          scheme: AWSCognitoAuthPlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_datastore
+          scheme: AWSDataStorePlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_geo
+          scheme: AWSLocationGeoPlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_storage
+          scheme: AWSS3StoragePlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: macos_unit_test_amplify
+          scheme: Amplify
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_awspluginscore
+          scheme: AWSPluginsCore
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_analytics
+          scheme: AWSPinpointAnalyticsPlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_api
+          scheme: AWSAPIPlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_auth
+          scheme: AWSCognitoAuthPlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_datastore
+          scheme: AWSDataStorePlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_geo
+          scheme: AWSLocationGeoPlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_storage
+          scheme: AWSS3StoragePlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - deploy:
+          name: deploy unstable
+          <<: *deploy_requires
+          filters:
+            branches:
+              only:
+                - main 
+      - deploy:
+          name: deploy stable
+          lane: release
+          <<: *deploy_requires
+          filters:
+            branches:
+              only:
+                - release
+      - generate_api_docs:
+          name: Generate api documentation
+          requires:
+            - deploy stable
+          filters:
+            branches:
+              only:
+                - release
+
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined above
   canaries:
@@ -317,16 +475,3 @@ workflows:
           xcode-version: "13.4.1"
           simulator-os-version: "15.5"
           simulator-device: "iPhone 13 Pro"
-
-  fortify_scan:
-    when:
-      not:
-        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-    jobs:
-      - fortify:
-          context:
-            - amplify-swift-aws-s3-download
-          name: Run Fortify
-          filters:
-            branches:
-              only: phantum/automate_fortify_scan
