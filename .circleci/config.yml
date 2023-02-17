@@ -411,56 +411,56 @@ workflows:
           workspace: AnalyticsCategoryPlugin
           scheme: AWSPinpointAnalyticsPlugin
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_api
           path: API
           workspace: APICategoryPlugin
           scheme: AWSAPICategoryPlugin
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_auth
           path: Auth
           workspace: AWSCognitoAuthPlugin
           scheme: AWSCognitoAuthPlugin
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_datastore
           path: DataStore
           workspace: DataStoreCategoryPlugin
           scheme: AWSDataStoreCategoryPlugin
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_geo
           path: Geo
           workspace: GeoCategoryPlugin
           scheme: AWSLocationGeoPlugin
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_core_ml
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: CoreMLPredictionsPlugin
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_predictions
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
           requires:
-            - install_gems
+            - fortify_scan
       - plugin_unit_test:
           name: unit_test_storage
           path: Storage
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-            - install_gems
+            - fortify_scan
       - deploy:
           name: deploy unstable
           <<: *deploy_requires
