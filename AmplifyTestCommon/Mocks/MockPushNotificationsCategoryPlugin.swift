@@ -22,7 +22,7 @@ class MockPushNotificationsCategoryPlugin: MessageReporter, PushNotificationsCat
         notify()
     }
     
-    func identifyUser(userId: String) {
+    func identifyUser(userId: String, userProfile: AmplifyUserProfile?) {
         notify("identifyUser(userId:\(userId))")
     }
     

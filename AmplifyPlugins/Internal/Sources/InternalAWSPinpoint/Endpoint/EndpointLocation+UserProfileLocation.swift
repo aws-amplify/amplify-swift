@@ -9,7 +9,7 @@ import Amplify
 import AWSPinpoint
 
 extension PinpointClientTypes.EndpointLocation {
-    mutating func update(with location: AnalyticsUserProfile.Location) {
+    mutating func update(with location: UserProfileLocation) {
         if let latitudeValue = location.latitude {
             latitude = latitudeValue
         }
