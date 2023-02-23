@@ -13,7 +13,8 @@ public protocol PushNotificationsCategoryBehaviour: NotificationsSubcategoryBeha
     /// Associates a given user ID with the current device
     ///
     /// - Parameter userId: The unique identifier for the user
-    func identifyUser(userId: String) async throws
+    /// - Parameter userProfile: Additional specific data for the user
+    func identifyUser(userId: String, userProfile: UserProfile?) async throws
 
     /// Registers the given APNs token for this device, allowing it to receive Push Notifications
     ///

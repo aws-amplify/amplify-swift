@@ -16,9 +16,12 @@ import AppKit
 #endif
 
 extension AWSPinpointPushNotificationsPlugin {
-    public func identifyUser(userId: String) async throws {
+    public func identifyUser(userId: String, userProfile: UserProfile?) async throws {
         let currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.addUserId(userId)
+        if let userProfile = userProfile {
+            currentEndpointProfile.addUserProfile(userProfile)
+        }
         try await pinpoint.updateEndpoint(with: currentEndpointProfile,
                                           source: .pushNotifications)
     }

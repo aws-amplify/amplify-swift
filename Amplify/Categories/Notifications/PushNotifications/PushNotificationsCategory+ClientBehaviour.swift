@@ -9,8 +9,8 @@ import Foundation
 import UserNotifications
 
 extension PushNotificationsCategory: PushNotificationsCategoryBehaviour {
-    public func identifyUser(userId: String) async throws {
-        try await plugin.identifyUser(userId: userId)
+    public func identifyUser(userId: String, userProfile: UserProfile? = nil) async throws {
+        try await plugin.identifyUser(userId: userId, userProfile: userProfile)
     }
     
     public func registerDevice(apnsToken: Data) async throws {

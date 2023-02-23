@@ -191,7 +191,10 @@ actor EndpointClient: EndpointClientBehaviour {
         return publicEndpoint
     }
 
-    nonisolated private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType {
+    nonisolated private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType? {
+        if endpointProfile.deviceToken == nil {
+            return nil
+        }
         return endpointProfile.isDebug ? .apnsSandbox : .apns
     }
 

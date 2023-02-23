@@ -233,7 +233,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(createAmplifyConfig(hasSecondPlugin: true))
 
-        try await Amplify.Notifications.Push.getPlugin(for: "MockSecondPushNotificationsCategoryPlugin").identifyUser(userId: "test")
+        try await Amplify.Notifications.Push.getPlugin(for: "MockSecondPushNotificationsCategoryPlugin").identifyUser(userId: "test", userProfile: nil)
         await waitForExpectations(timeout: 1.0)
     }
 

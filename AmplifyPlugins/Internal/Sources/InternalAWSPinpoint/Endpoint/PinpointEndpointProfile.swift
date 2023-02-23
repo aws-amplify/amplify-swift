@@ -10,7 +10,7 @@ import AWSPinpoint
 import Foundation
 
 @_spi(InternalAWSPinpoint)
-public class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
+public class PinpointEndpointProfile: Codable {
     typealias DeviceToken = String
 
     var applicationId: String
@@ -49,21 +49,22 @@ public class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
         user.userId = userId
     }
 
-    public func addUserProfile(_ userProfile: AnalyticsUserProfile) {
+    public func addUserProfile(_ userProfile: UserProfile) {
         if let email = userProfile.email {
-            addAttribute(email, forKey: Constants.AttributeKeys.email)
+            setCustomProperty(email, forKey: Constants.AttributeKeys.email)
         }
 
         if let name = userProfile.name {
-            addAttribute(name, forKey: Constants.AttributeKeys.name)
+            setCustomProperty(name, forKey: Constants.AttributeKeys.name)
         }
 
         if let plan = userProfile.plan {
-            addAttribute(plan, forKey: Constants.AttributeKeys.plan)
+            setCustomProperty(plan, forKey: Constants.AttributeKeys.plan)
         }
 
-        if let properties = userProfile.properties {
-            addProperties(properties)
+        addCustomProperties(userProfile.customProperties)
+        if let pinpointUser = userProfile as? PinpointUserProfile {
+            addUserAttributes(pinpointUser.userAttributes)
         }
 
         if let userLocation = userProfile.location {
@@ -75,36 +76,35 @@ public class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
         deviceToken = apnsToken.asHexString()
     }
 
-    public func addAttribute(_ attribute: String, forKey key: String) {
-        attributes[key] = [attribute]
+    private func addCustomProperties(_ properties: [String: UserProfilePropertyValue]?) {
+        guard let properties = properties else { return }
+        for (key, value) in properties {
+            setCustomProperty(value, forKey: key)
+        }
     }
 
-    func addAttributes(_ newAttributes: [String], forKey key: String) {
-        attributes[key] = newAttributes
+    private func addUserAttributes(_ attributes: [String: [String]]?) {
+        guard let attributes = attributes else { return }
+        let userAttributes = user.userAttributes ?? [:]
+        user.userAttributes = userAttributes.merging(
+            attributes,
+            uniquingKeysWith: { _, new in new }
+        )
     }
 
-    func removeAttributes(forKey key: String) {
-        attributes[key] = nil
-    }
-
-    public func addMetric(_ metric: Int, forKey key: String) {
-        addMetric(Double(metric), forKey: key)
-    }
-
-    public func addMetric(_ metric: Double, forKey key: String) {
-        metrics[key] = metric
-    }
-
-    func removeMetric(forKey key: String) {
-        metrics[key] = nil
-    }
-
-    func removeAllAttributes() {
-        attributes = [:]
-    }
-
-    func removeAllMetrics() {
-        metrics = [:]
+    private func setCustomProperty(_ value: UserProfilePropertyValue,
+                                   forKey key: String) {
+        if let value = value as? String {
+            attributes[key] = [value]
+        } else if let values = value as? [String] {
+            attributes[key] = values
+        } else if let value = value as? Bool {
+            attributes[key] = [String(value)]
+        } else if let value = value as? Int {
+            metrics[key] = Double(value)
+        } else if let value = value as? Double {
+            metrics[key] = value
+        }
     }
 }
 

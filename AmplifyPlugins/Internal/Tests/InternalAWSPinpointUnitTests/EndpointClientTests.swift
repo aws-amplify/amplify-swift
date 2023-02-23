@@ -214,7 +214,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(keychain.saveDataCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 0)
     }
 
-    func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
+    func testConvertToPublicEndpoint_withoutDeviceToken_shouldReturnPublicEndpoint() async {
         let endpointProfile = await endpointClient.currentEndpointProfile()
         let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
         let mockModel = MockEndpointInformation()
@@ -222,13 +222,24 @@ class EndpointClientTests: XCTestCase {
         XCTAssertNil(publicEndpoint.address)
         XCTAssertEqual(publicEndpoint.attributes?.count, 0)
         XCTAssertEqual(publicEndpoint.metrics?.count, 0)
-        XCTAssertEqual(publicEndpoint.channelType, .apns)
+        XCTAssertNil(publicEndpoint.channelType)
         XCTAssertEqual(publicEndpoint.optOut, "ALL")
         XCTAssertEqual(publicEndpoint.demographic?.appVersion, mockModel.appVersion)
         XCTAssertEqual(publicEndpoint.demographic?.make, "apple")
         XCTAssertEqual(publicEndpoint.demographic?.model, mockModel.model)
         XCTAssertEqual(publicEndpoint.demographic?.platform, mockModel.platform.name)
         XCTAssertEqual(publicEndpoint.demographic?.platformVersion, mockModel.platform.version)
+    }
+
+    func testConvertToPublicEndpoint_withDeviceToken_shouldReturnPublicEndpoint() async {
+        let endpointProfile = await endpointClient.currentEndpointProfile()
+        endpointProfile.setAPNsToken(Data(hexString: newTokenHex)!)
+        endpointProfile.isOptOut = false
+        let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
+        XCTAssertNotNil(publicEndpoint)
+        XCTAssertEqual(publicEndpoint.address, newTokenHex)
+        XCTAssertEqual(publicEndpoint.channelType, .apns)
+        XCTAssertEqual(publicEndpoint.optOut, "NONE")
     }
 
     @discardableResult
