@@ -110,6 +110,9 @@ extension MockAWSPinpoint {
             return
         }
 
+        XCTAssertEqual(actualEndpointProfile.attributes.count, endpointProfile.attributes.count)
+        XCTAssertEqual(actualEndpointProfile.metrics.count, endpointProfile.metrics.count)
+
         let actualLocation = actualEndpointProfile.location
         let expectedLocation = endpointProfile.location
         XCTAssertEqual(actualLocation.latitude, expectedLocation.latitude)
@@ -122,6 +125,7 @@ extension MockAWSPinpoint {
         let actualUser = actualEndpointProfile.user
         let expectedUser = endpointProfile.user
         XCTAssertEqual(actualUser.userId, expectedUser.userId)
+        XCTAssertEqual(actualUser.userAttributes?.count, expectedUser.userAttributes?.count)
     }
 
     public func verifyAddAttribute(_ theValue: [Any], forKey theKey: String) {

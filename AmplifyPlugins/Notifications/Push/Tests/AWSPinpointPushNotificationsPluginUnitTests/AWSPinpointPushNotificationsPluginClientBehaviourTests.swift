@@ -20,11 +20,104 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
     
     // MARK: - Identify User tests
     func testIdentifyUser_shouldUpdateUserId() async throws {
-        try await plugin.identifyUser(userId: "newUserId")
+        try await plugin.identifyUser(userId: "newUserId", userProfile: nil)
         
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
         XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
         XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
+    }
+
+    func testIdentifyUser_withProfile_shouldUpdateUserProfile() async throws {
+        let userProfile = BasicUserProfile(
+            name: "Name",
+            email: "Email",
+            plan: "Plan"
+        )
+        try await plugin.identifyUser(userId: "newUserId", userProfile: userProfile)
+
+        XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
+        XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes.count, 3)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["name"]?.first, "Name")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["email"]?.first, "Email")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["plan"]?.first, "Plan")
+        XCTAssertTrue(mockPinpoint.mockedPinpointEndpointProfile.metrics.isEmpty)
+        XCTAssertNil(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes)
+    }
+
+    func testIdentifyUser_withAnalyticsProfile_shouldUpdateUserProfile() async throws {
+        let analyticsProfile = AnalyticsUserProfile(
+            properties: [
+                "attribute": "string",
+                "metric": 2.0,
+                "boolAttribute": true,
+                "intMetric": 1,
+            ]
+        )
+        try await plugin.identifyUser(userId: "newUserId", userProfile: analyticsProfile)
+
+        XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
+        XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes.count, 2)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attribute"]?.first, "string")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["boolAttribute"]?.first, "true")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["metric"], 2.0)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["intMetric"], 1)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics.count, 2)
+        XCTAssertNil(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes)
+    }
+
+    func testIdentifyUser_withBasicProfile_shouldUpdateUserProfile() async throws {
+        let basicUserProfile = BasicUserProfile(
+            customProperties: [
+                "attribute": "string",
+                "metric": 2.0,
+                "boolAttribute": true,
+                "intMetric": 1,
+            ]
+        )
+        try await plugin.identifyUser(userId: "newUserId", userProfile: basicUserProfile)
+
+        XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
+        XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes.count, 2)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attribute"]?.first, "string")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["boolAttribute"]?.first, "true")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["metric"], 2.0)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["intMetric"], 1)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics.count, 2)
+        XCTAssertNil(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes)
+    }
+
+    func testIdentifyUser_withPinpointProfile_shouldUpdateUserProfile() async throws {
+        let pinpointUserProfile = PinpointUserProfile(
+            customProperties: [
+                "attribute": "string",
+                "attributes": ["string", "anotherString"],
+                "boolAttribute": true,
+                "metric": 2.0,
+                "intMetric": 1,
+            ],
+            userAttributes: [
+                "roles": ["Test", "Validator"]
+            ]
+        )
+        try await plugin.identifyUser(userId: "newUserId", userProfile: pinpointUserProfile)
+
+        XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
+        XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attribute"]?.first, "string")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attributes"]?.count, 2)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attributes"]?.first, "string")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["boolAttribute"]?.first, "true")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["metric"], 2)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["intMetric"], 1)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes?["roles"]?.count, 2)
+        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes?["roles"]?.first, "Test")
     }
     
     // MARK: - Register Device tests
