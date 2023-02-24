@@ -52,9 +52,12 @@ class MockAWSClientConfiguration: LocationClientConfigurationProtocol {
     var retryer: SDKRetryer
 
     init(config: AWSLocationGeoPluginConfiguration) throws {
-        self.httpClientEngine = DefaultSDKRuntimeConfiguration //  ClientRuntime.CRTClientEngine()
-        self.httpClientConfiguration = HttpClientConfiguration()
-        self.idempotencyTokenGenerator = DefaultIdempotencyTokenGenerator()
+        let defaultSDKRuntimeConfig = try DefaultSDKRuntimeConfiguration("MockAWSClientConfiguration")
+        
+        self.httpClientEngine = defaultSDKRuntimeConfig.httpClientEngine
+        self.httpClientConfiguration = defaultSDKRuntimeConfig.httpClientConfiguration
+        self.idempotencyTokenGenerator = defaultSDKRuntimeConfig.idempotencyTokenGenerator
+        self.clientLogMode = defaultSDKRuntimeConfig.clientLogMode
         self.credentialsProvider = MockAWSAuthService().getCredentialsProvider()
         self.region = config.regionName
         self.signingRegion = ""
