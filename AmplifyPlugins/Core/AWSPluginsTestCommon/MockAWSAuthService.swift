@@ -66,15 +66,6 @@ struct MyCustomCredentialsProvider: CredentialsProvider {
         AWSCredentials(
             accessKey: "AKIDEXAMPLE",
             secret: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
-            expirationTimeout: 30)
-    }
-
-    func getCredentials() throws -> SdkFuture<AWSClientRuntime.AWSCredentials> {
-        let future = SdkFuture<AWSClientRuntime.AWSCredentials>()
-        future.fulfill(AWSCredentials(
-            accessKey: "AKIDEXAMPLE",
-            secret: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
-            expirationTimeout: 30))
-        return future
+            expirationTimeout: Date().addingTimeInterval(30))
     }
 }
