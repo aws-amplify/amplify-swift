@@ -28,11 +28,16 @@ struct AWSCognitoAuthCredentialStore {
 
     private let authConfiguration: AuthConfiguration
     private let keychain: KeychainStoreBehavior
-    private let userDefaults = UserDefaults.standard
+    private let userDefaults: UserDefaults
 
     init(authConfiguration: AuthConfiguration, accessGroup: String? = nil) {
         self.authConfiguration = authConfiguration
         self.keychain = KeychainStore(service: service, accessGroup: accessGroup)
+        if let accessGroup { 
+            self.userDefaults = UserDefaults(suiteName: accessGroup) ?? UserDefaults.standard
+        } else { 
+            self.userDefaults = UserDefaults.standard
+        }
 
         if !userDefaults.bool(forKey: isKeychainConfiguredKey) {
             try? clearAllCredentials()
