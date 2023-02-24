@@ -50,7 +50,6 @@ struct InitiateAuthSRP: Action {
                 NHexValue: nHexValue,
                 gHexValue: gHexValue,
                 srpKeyPair: srpKeyPair,
-                deviceMetadata: deviceMetadata,
                 clientTimestamp: Date())
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
