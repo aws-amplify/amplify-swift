@@ -215,24 +215,28 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
     /// Saves the deconflicted mutationEvent, invokes `nextEventPromise` if it exists, and the save was successful,
     /// and finally invokes the completion promise from the future of the original invocation of `submit`
-    func save(mutationEvent: MutationEvent,
-              storageAdapter: StorageEngineAdapter,
-              completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
-
+    func save(
+        mutationEvent: MutationEvent,
+        storageAdapter: StorageEngineAdapter,
+        completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise
+    ) {
         log.verbose("\(#function) mutationEvent: \(mutationEvent)")
+        let nextEventPromise = self.nextEventPromise.getAndSet(nil)
         var eventToPersist = mutationEvent
-        if nextEventPromise.get() != nil {
+        if nextEventPromise != nil {
             eventToPersist.inProcess = true
         }
+
         storageAdapter.save(eventToPersist, condition: nil, eagerLoad: true) { result in
             switch result {
             case .failure(let dataStoreError):
                 self.log.verbose("\(#function): Error saving mutation event: \(dataStoreError)")
+                nextEventPromise.map(self.nextEventPromise.set)
             case .success(let savedMutationEvent):
                 self.log.verbose("\(#function): saved \(savedMutationEvent)")
-                if let nextEventPromise = self.nextEventPromise.getAndSet(nil) {
+                nextEventPromise.map {
                     self.log.verbose("\(#function): invoking nextEventPromise with \(savedMutationEvent)")
-                    nextEventPromise(.success(savedMutationEvent))
+                    $0(.success(savedMutationEvent))
                 }
             }
             self.log.verbose("\(#function): invoking completionPromise with \(result)")
