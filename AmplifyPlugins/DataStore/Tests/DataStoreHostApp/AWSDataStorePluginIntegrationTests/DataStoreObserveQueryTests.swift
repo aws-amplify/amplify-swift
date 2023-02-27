@@ -156,21 +156,37 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The models only contain models based on the predicate
     ///
     func testInitialSyncWithPredicate() async throws {
-        await setUp(withModels: TestModelRegistration(), logLevel: .info)
+        let startTime = Temporal.DateTime.now()
+        await setUp(
+            withModels: TestModelRegistration(),
+            logLevel: .verbose,
+            dataStoreConfiguration: .custom(
+                syncMaxRecords: 100,
+                syncExpressions: [
+                    DataStoreSyncExpression(
+                        modelSchema: Post.schema,
+                        modelPredicate: { Post.keys.createdAt.ge(startTime) }
+                    )
+                ]
+            )
+        )
         try startAmplify()
-        let post1 = Post(title: "xyz 1", content: "content", createdAt: .now())
-        let post2 = Post(title: "xyz 2", content: "content", createdAt: .now())
-        let post3 = Post(title: "xyz 3", content: "content", createdAt: .now())
+
+        let randomTitle = UUID().uuidString
+        let post1 = Post(title: "\(randomTitle) 1", content: "content", createdAt: .now())
+        let post2 = Post(title: "\(randomTitle) 2", content: "content", createdAt: .now())
+        let post3 = Post(title: "\(randomTitle) 3", content: "content", createdAt: .now())
         try await savePostAndWaitForSync(post1)
         try await savePostAndWaitForSync(post2)
         try await savePostAndWaitForSync(post3)
         try await clearDataStore()
+
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = asyncExpectation(description: "query snapshot with isSynced true")
         var snapshotWithIsSyncedFulfilled = false
         let receivedPostFromObserveQuery = asyncExpectation(description: "received Post")
-        let post4 = Post(title: "xyz 4", content: "content", createdAt: .now())
-        let predicate = Post.keys.title.beginsWith("xyz")
+        let post4 = Post(title: "\(randomTitle) 4", content: "content", createdAt: .now())
+        let predicate = Post.keys.title.beginsWith(randomTitle)
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate)).sink { completed in
             switch completed {
             case .finished:
@@ -184,9 +200,9 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotWithIsSyncedFulfilled = true
                 Task { await snapshotWithIsSynced.fulfill() }
             } else if snapshotWithIsSyncedFulfilled {
-                if querySnapshot.items.count >= 4 && querySnapshot.items.contains(where: { post in
-                    post.title.contains("xyz")
-                }){
+                if querySnapshot.items.count >= 4
+                   && querySnapshot.items.allSatisfy({ $0.title.contains(randomTitle)})
+                {
                     Task { await receivedPostFromObserveQuery.fulfill() }
                 }
             }
@@ -194,7 +210,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }.store(in: &cancellables)
 
         await waitForExpectations([snapshotWithIsSynced], timeout: 100)
-    
+
         try await savePostAndWaitForSync(post4)
         await waitForExpectations([receivedPostFromObserveQuery], timeout: 100)
         
