@@ -23,12 +23,20 @@ extension SdkError {
         return clientError
     }
     
-    private var crtError: CRTError? {
-        if case .retryError(let crtError as CRTError) = clientError {
-            return crtError
+    private var commonRunTimeError: CommonRunTimeError? {
+        if case .crtError(let commonRunTimeError) = clientError {
+            return commonRunTimeError
         }
         
-        if case .crtError(let crtError) = clientError {
+        if case .retryError(let commonRunTimeError as CommonRunTimeError) = clientError {
+            return commonRunTimeError
+        }
+        
+        return nil
+    }
+    
+    private var crtError: CRTError? {
+        if case .crtError(let crtError) = commonRunTimeError {
             return crtError
         }
         
@@ -44,17 +52,9 @@ extension SdkError {
         return putEventsError
     }
 
-    private var awsError: AWSError? {
-        guard case .crtError(let awsError) = crtError else {
-            return nil
-        }
-
-        return awsError
-    }
-
-    public var errorDescription: String {
+    var errorDescription: String {
         guard let putEventsOutputError = putEventsOutputError else {
-            return awsError?.errorMessage ?? localizedDescription
+            return crtError?.message ?? localizedDescription
         }
 
         switch putEventsOutputError {
@@ -75,8 +75,8 @@ extension SdkError {
             return putEventsOutputError
         }
         
-        if crtError != nil {
-            return crtError
+        if commonRunTimeError != nil {
+            return commonRunTimeError
         }
         
         guard let clientError = clientError else {
@@ -98,7 +98,7 @@ extension SdkError {
             return true
         }
 
-        guard let awsError = awsError else {
+        guard let crtError = crtError else {
             return false
         }
 
@@ -119,6 +119,6 @@ extension SdkError {
             UInt32(AWS_HTTP_STATUS_CODE_408_REQUEST_TIMEOUT.rawValue)
         ]
 
-        return connectivityErrorCodes.contains(where: { $0 == awsError.errorCode })
+        return connectivityErrorCodes.contains(where: { $0 == crtError.code })
     }
 }
