@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(OptionalExtension) import Amplify
 import Combine
 import Foundation
 
@@ -231,10 +231,13 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             switch result {
             case .failure(let dataStoreError):
                 self.log.verbose("\(#function): Error saving mutation event: \(dataStoreError)")
-                nextEventPromise.map(self.nextEventPromise.set)
+                // restore the `nextEventPromise` value when failed to save mutation event
+                // as nextEventPromise is expecting to hanlde error of querying unprocessed mutaiton events
+                // not the failure of saving mutaiton event operation
+                nextEventPromise.peek(self.nextEventPromise.set(_:))
             case .success(let savedMutationEvent):
                 self.log.verbose("\(#function): saved \(savedMutationEvent)")
-                nextEventPromise.map {
+                nextEventPromise.peek {
                     self.log.verbose("\(#function): invoking nextEventPromise with \(savedMutationEvent)")
                     $0(.success(savedMutationEvent))
                 }
