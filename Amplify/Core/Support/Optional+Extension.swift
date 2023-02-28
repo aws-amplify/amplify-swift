@@ -14,7 +14,7 @@ extension Optional {
     /// - parameters:
     ///     - f: a function may perform side effects on wrapped data
     /// - returns:
-    /// The original Optional object without touched.
+    /// The original Optional object without changed
     @discardableResult
     @_spi(OptionalExtension)
     public func peek(_ f: @escaping (Wrapped) -> Void) -> Optional<Wrapped> {
