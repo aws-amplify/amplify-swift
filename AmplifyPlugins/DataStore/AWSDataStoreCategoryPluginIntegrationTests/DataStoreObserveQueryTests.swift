@@ -110,7 +110,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         sink.cancel()
     }
 
-    /// Apply a query predicate "title begins with 'xyz'"
+    /// Apply a query predicate "title begins with same random UUID"
     ///
     /// - Given: DataStore is set up with an empty local store
     /// - When:
@@ -119,18 +119,34 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The models only contain models based on the predicate
     ///
     func testInitialSyncWithPredicate() throws {
-        setUp(withModels: TestModelRegistration(), logLevel: .info)
+        let startTime = Temporal.DateTime.now()
+        setUp(
+            withModels: TestModelRegistration(),
+            logLevel: .info,
+            dataStoreConfiguration: .custom(
+                syncMaxRecords: 100,
+                syncExpressions: [
+                    DataStoreSyncExpression(
+                        modelSchema: Post.schema,
+                        modelPredicate: { Post.keys.createdAt.ge(startTime) }
+                    )
+                ]
+            )
+        )
         try startAmplify()
-        savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
-        savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
-        savePostAndWaitForSync(Post(title: "xyz 3", content: "content", createdAt: .now()))
+
+        let randomTitle = UUID().uuidString
+        savePostAndWaitForSync(Post(title: "\(randomTitle) 1", content: "content", createdAt: .now()))
+        savePostAndWaitForSync(Post(title: "\(randomTitle) 2", content: "content", createdAt: .now()))
+        savePostAndWaitForSync(Post(title: "\(randomTitle) 3", content: "content", createdAt: .now()))
         clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         let receivedPostFromObserveQuery = expectation(description: "received Post")
         snapshotWithIsSynced.assertForOverFulfill = false
+        receivedPostFromObserveQuery.assertForOverFulfill = false
         var snapshotWithIsSyncedFulfilled = false
-        let predicate = Post.keys.title.beginsWith("xyz")
+        let predicate = Post.keys.title.beginsWith(randomTitle)
         let sink = Amplify.DataStore.observeQuery(for: Post.self, where: predicate).sink { completed in
             switch completed {
             case .finished:
@@ -144,15 +160,14 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotWithIsSyncedFulfilled = true
                 snapshotWithIsSynced.fulfill()
             } else if snapshotWithIsSyncedFulfilled {
-                if querySnapshot.items.count >= 4 && querySnapshot.items.contains(where: { post in
-                    post.title.contains("xyz")
-                }) {
+                if querySnapshot.items.count >= 4
+                   && querySnapshot.items.allSatisfy({ $0.title.contains(randomTitle) }) {
                     receivedPostFromObserveQuery.fulfill()
                 }
             }
         }
 
-        savePostAndWaitForSync(Post(title: "xyz 4", content: "content", createdAt: .now()))
+        savePostAndWaitForSync(Post(title: "\(randomTitle) 4", content: "content", createdAt: .now()))
         wait(for: [snapshotWithIsSynced, receivedPostFromObserveQuery], timeout: 200)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)

@@ -35,7 +35,11 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
-    func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) {
+    func setUp(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .error,
+        dataStoreConfiguration: DataStoreConfiguration? = nil
+    ) {
 
         continueAfterFailure = false
 
@@ -45,7 +49,12 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
         do {
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            try Amplify.add(
+                plugin: AWSDataStorePlugin(
+                    modelRegistration: models,
+                    configuration: dataStoreConfiguration ?? .default
+                )
+            )
         } catch {
             XCTFail(String(describing: error))
             return
