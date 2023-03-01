@@ -49,6 +49,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
 
     // Create Project2 in different ways, then retrieve it
