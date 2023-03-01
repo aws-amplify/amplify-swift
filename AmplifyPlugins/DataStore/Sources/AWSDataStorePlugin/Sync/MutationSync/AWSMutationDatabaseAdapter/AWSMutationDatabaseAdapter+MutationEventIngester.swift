@@ -234,10 +234,10 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                 // restore the `nextEventPromise` value when failed to save mutation event
                 // as nextEventPromise is expecting to hanlde error of querying unprocessed mutaiton events
                 // not the failure of saving mutaiton event operation
-                nextEventPromise.peek(self.nextEventPromise.set(_:))
+                nextEventPromise.ifSome(self.nextEventPromise.set(_:))
             case .success(let savedMutationEvent):
                 self.log.verbose("\(#function): saved \(savedMutationEvent)")
-                nextEventPromise.peek {
+                nextEventPromise.ifSome {
                     self.log.verbose("\(#function): invoking nextEventPromise with \(savedMutationEvent)")
                     $0(.success(savedMutationEvent))
                 }

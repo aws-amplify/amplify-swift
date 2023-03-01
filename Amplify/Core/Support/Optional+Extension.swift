@@ -12,15 +12,11 @@ extension Optional {
     ///
     /// Performing side effect function when data is exist
     /// - parameters:
-    ///     - f: a function may perform side effects on wrapped data
-    /// - returns:
-    /// The original Optional object without changed
-    @discardableResult
+    ///     - then: a closure that takes wrapped data as a parameter
     @_spi(OptionalExtension)
-    public func peek(_ f: @escaping (Wrapped) -> Void) -> Optional<Wrapped> {
+    public func ifSome(_ then: (Wrapped) throws -> Void) rethrows {
         if case .some(let wrapped) = self {
-            f(wrapped)
+            try then(wrapped)
         }
-        return self
     }
 }
