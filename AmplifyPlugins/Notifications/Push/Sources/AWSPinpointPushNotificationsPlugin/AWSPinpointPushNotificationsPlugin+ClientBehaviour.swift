@@ -71,7 +71,11 @@ extension AWSPinpointPushNotificationsPlugin {
                                     action: PushNotification.Action) async {
         // Retrieve the payload from the notification
         guard let payload = userInfo.payload else {
-            log.error("No valid Pinpoint Push payload found")
+            log.error(
+                """
+                No valid Pinpoint Push payload found. The recordNotification API only supports Pinpoint Campaigns and Journeys. Test messages will not be recorded.
+                """
+            )
             return
         }
 
