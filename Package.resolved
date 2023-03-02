@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/amplify-swift-utils-notifications.git",
       "state" : {
-        "revision" : "c47cafce7c456b3f1f2cf6ef4863bf5e2340d9eb",
-        "version" : "0.0.1"
+        "revision" : "4932bd5199f1f5e1025fa7f22ac0731532f8d246",
+        "version" : "0.0.2"
       }
     },
     {

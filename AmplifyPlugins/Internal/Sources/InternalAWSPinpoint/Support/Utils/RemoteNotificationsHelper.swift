@@ -14,6 +14,7 @@ import UserNotifications
 public protocol RemoteNotificationsBehaviour {
     var isRegisteredForRemoteNotifications: Bool { get async }
     func requestAuthorization(_ options: UNAuthorizationOptions) async throws -> Bool
+    func registerForRemoteNotifications() async
 }
 
 @_spi(InternalAWSPinpoint)
@@ -45,6 +46,10 @@ public struct AmplifyRemoteNotificationsHelper: RemoteNotificationsBehaviour {
                 error
             )
         }
+    }
+
+    public func registerForRemoteNotifications() async {
+        await AUNotificationPermissions.registerForRemoteNotifications()
     }
 }
 

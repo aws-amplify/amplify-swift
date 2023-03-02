@@ -77,8 +77,6 @@ actor EndpointClient: EndpointClientBehaviour {
     private func retrieveOrCreateEndpointProfile() async -> PinpointEndpointProfile {
         // 1. Look for the local endpointProfile variable
         if let endpointProfile = endpointProfile {
-            // Update endpoint's optOut flag, as the user might have disabled notifications since the last time
-            endpointProfile.isOptOut = await isNotEligibleForPinpointNotifications(endpointProfile)
             return endpointProfile
         }
 
@@ -105,7 +103,6 @@ actor EndpointClient: EndpointClientBehaviour {
         endpointProfile.deviceToken = deviceToken
         endpointProfile.location = .init()
         endpointProfile.demographic = .init(device: endpointInformation)
-        endpointProfile.isOptOut = await isNotEligibleForPinpointNotifications(endpointProfile)
         endpointProfile.isDebug = configuration.isDebug
 
         return endpointProfile
@@ -146,14 +143,6 @@ actor EndpointClient: EndpointClientBehaviour {
             log.error("Unable to update the APNs token in the Keychain: \(error.localizedDescription)")
             log.error(error: error)
         }
-    }
-
-    private func isNotEligibleForPinpointNotifications(_ endpointProfile: PinpointEndpointProfile) async -> Bool {
-        guard endpointProfile.deviceToken.isNotEmpty else {
-            return true
-        }
-
-        return !(await remoteNotificationsHelper.isRegisteredForRemoteNotifications)
     }
 
     private func createUpdateInput(from endpointProfile: PinpointEndpointProfile) -> UpdateEndpointInput {
