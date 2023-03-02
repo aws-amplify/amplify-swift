@@ -45,6 +45,9 @@ public struct PinpointUserProfile: UserProfile {
     /// User attributes, which are mapped to the endpoint's `user attributes`.
     public var userAttributes: [String: [String]]?
 
+    /// Whether the user has opted out of receiving messages and push notifications from Pinpoint.
+    public var optedOutOfMessages: Bool?
+
     /// Initializer
     /// - Parameters:
     ///   - name: The name of the user
@@ -59,7 +62,8 @@ public struct PinpointUserProfile: UserProfile {
         plan: String? = nil,
         location: UserProfileLocation? = nil,
         customProperties: [String: UserProfilePropertyValue]? = nil,
-        userAttributes: [String: [String]]? = nil
+        userAttributes: [String: [String]]? = nil,
+        optedOutOfMessages: Bool? = nil
     ) {
         self.name = name
         self.email = email
@@ -67,5 +71,6 @@ public struct PinpointUserProfile: UserProfile {
         self.location = location
         self.customProperties = customProperties
         self.userAttributes = userAttributes
+        self.optedOutOfMessages = optedOutOfMessages
     }
 }

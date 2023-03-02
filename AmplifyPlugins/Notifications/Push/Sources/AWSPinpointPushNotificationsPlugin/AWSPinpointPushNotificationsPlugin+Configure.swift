@@ -42,18 +42,27 @@ extension AWSPinpointPushNotificationsPlugin {
                   remoteNotificationsHelper: .default)
     }
 
+    private func requestNotificationsPermissions(using helper: RemoteNotificationsBehaviour) async {
+        guard !options.isEmpty else {
+            return
+        }
+
+        do {
+            let result = try await helper.requestAuthorization(options)
+            Amplify.Hub.dispatchRequestNotificationsPermissions(result)
+        } catch {
+            Amplify.Hub.dispatchRequestNotificationsPermissions(error)
+        }
+    }
+
     // MARK: Internal
     /// Internal configure method to set the properties of the plugin
     func configure(pinpoint: AWSPinpointBehavior,
                    remoteNotificationsHelper: RemoteNotificationsBehaviour) {
         self.pinpoint = pinpoint
         Task {
-            do {
-                let result = try await remoteNotificationsHelper.requestAuthorization(options)
-                Amplify.Hub.dispatchRegisterForRemoteNotifications(result)
-            } catch {
-                Amplify.Hub.dispatchRegisterForRemoteNotifications(error)
-            }
+            await remoteNotificationsHelper.registerForRemoteNotifications()
+            await requestNotificationsPermissions(using: remoteNotificationsHelper)
         }
     }
 }

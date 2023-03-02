@@ -65,6 +65,9 @@ public class PinpointEndpointProfile: Codable {
         addCustomProperties(userProfile.customProperties)
         if let pinpointUser = userProfile as? PinpointUserProfile {
             addUserAttributes(pinpointUser.userAttributes)
+            if let optedOutOfMessages = pinpointUser.optedOutOfMessages {
+                isOptOut = optedOutOfMessages
+            }
         }
 
         if let userLocation = userProfile.location {

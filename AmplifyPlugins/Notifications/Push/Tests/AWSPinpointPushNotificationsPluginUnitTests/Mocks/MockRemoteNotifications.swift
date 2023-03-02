@@ -8,6 +8,7 @@
 import Foundation
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import UserNotifications
+import XCTest
 
 class MockRemoteNotifications: RemoteNotificationsBehaviour {
     var isRegisteredForRemoteNotifications: Bool = true
@@ -19,5 +20,10 @@ class MockRemoteNotifications: RemoteNotificationsBehaviour {
             throw error
         }
         return mockedRequestAuthorizationResult
+    }
+
+    var registerForRemoteNotificationsExpectation: XCTestExpectation?
+    func registerForRemoteNotifications() async {
+        registerForRemoteNotificationsExpectation?.fulfill()
     }
 }

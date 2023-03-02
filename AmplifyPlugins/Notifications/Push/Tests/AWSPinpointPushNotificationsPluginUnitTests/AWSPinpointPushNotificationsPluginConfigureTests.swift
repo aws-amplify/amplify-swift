@@ -47,12 +47,47 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         }
     }
 
+    func testConfigure_withNotificationsPermissionsGranted_shouldRegisterForRemoteNotifications() throws {
+        mockRemoteNotifications.mockedRequestAuthorizationResult = true
+        mockRemoteNotifications.registerForRemoteNotificationsExpectation = expectation(description: "Permissions Granted")
+        try plugin.configure(using: createPushNotificationsPluginConfig())
+        waitForExpectations(timeout: 1)
+    }
+
+    func testConfigure_withNotificationsPermissionsDenied_shouldRegisterForRemoteNotifications() throws {
+        mockRemoteNotifications.mockedRequestAuthorizationResult = false
+        mockRemoteNotifications.registerForRemoteNotificationsExpectation = expectation(description: "Permissions Denied")
+        try plugin.configure(using: createPushNotificationsPluginConfig())
+        waitForExpectations(timeout: 1)
+    }
+
+    func testConfigure_withNotificationsPermissionsFailed_shouldRegisterForRemoteNotifications() throws {
+        let error = PushNotificationsError.service("Description", "Recovery", nil)
+        mockRemoteNotifications.requestAuthorizationError = error
+        mockRemoteNotifications.registerForRemoteNotificationsExpectation = expectation(description: "Permissions Failed")
+        try plugin.configure(using: createPushNotificationsPluginConfig())
+        waitForExpectations(timeout: 1)
+    }
+
+    func testConfigure_withEmptyOptions_shouldNotReportToHub() throws {
+        plugin = AWSPinpointPushNotificationsPlugin(options: [])
+        try plugin.configure(using: createPushNotificationsPluginConfig())
+        let eventWasReported = expectation(description: "Event was reported to Hub")
+        _ = hubPlugin.listen(to: .pushNotifications, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Notifications.Push.requestNotificationsPermissions {
+                eventWasReported.fulfill()
+            }
+        }
+        eventWasReported.isInverted = true
+        waitForExpectations(timeout: 1)
+    }
+
     func testConfigure_withNotificationsPermissionsGranted_shouldReportSuccessToHub() throws {
         mockRemoteNotifications.mockedRequestAuthorizationResult = true
 
         let eventWasReported = expectation(description: "Event was reported to Hub")
         _ = hubPlugin.listen(to: .pushNotifications, isIncluded: nil) { payload in
-            if payload.eventName == HubPayload.EventName.Notifications.Push.registerForRemoteNotifications {
+            if payload.eventName == HubPayload.EventName.Notifications.Push.requestNotificationsPermissions {
                 eventWasReported.fulfill()
                 guard let result = payload.data as? Bool else {
                     XCTFail("Expected result")
@@ -72,7 +107,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
 
         let eventWasReported = expectation(description: "Event was reported to Hub")
         _ = hubPlugin.listen(to: .pushNotifications, isIncluded: nil) { payload in
-            if payload.eventName == HubPayload.EventName.Notifications.Push.registerForRemoteNotifications {
+            if payload.eventName == HubPayload.EventName.Notifications.Push.requestNotificationsPermissions {
                 eventWasReported.fulfill()
                 guard let result = payload.data as? Bool else {
                     XCTFail("Expected result")
@@ -93,7 +128,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
 
         let eventWasReported = expectation(description: "Event was reported to Hub")
         _ = hubPlugin.listen(to: .pushNotifications, isIncluded: nil) { payload in
-            if payload.eventName == HubPayload.EventName.Notifications.Push.registerForRemoteNotifications {
+            if payload.eventName == HubPayload.EventName.Notifications.Push.requestNotificationsPermissions {
                 eventWasReported.fulfill()
                 guard let error = payload.data as? PushNotificationsError,
                       case .service(let errorDescription, let recoverySuggestion, _) = error else {

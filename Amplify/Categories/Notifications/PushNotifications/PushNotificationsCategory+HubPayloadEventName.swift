@@ -11,6 +11,6 @@ public extension HubPayload.EventName.Notifications {
 }
 
 public extension HubPayload.EventName.Notifications.Push {
-    /// Event triggered when the device is registered for remote notifications
-    static let registerForRemoteNotifications = "Notifications.Push.registerForNotifications"
+    /// Event triggered when notifications permissions are requested to the user
+    static let requestNotificationsPermissions = "Notifications.Push.requestNotificationsPermissions"
 }

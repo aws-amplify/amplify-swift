@@ -47,9 +47,11 @@ class MockAWSPinpoint: AWSPinpointBehavior {
     }
 
     var updateEndpointCount = 0
+    var updatedPinpointEndpointProfile: PinpointEndpointProfile?
     func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
                         source: AWSPinpointSource) async throws {
         updateEndpointCount += 1
+        updatedPinpointEndpointProfile = endpointProfile
     }
 
     func addGlobalProperty(_ value: AnalyticsPropertyValue, forKey key: String) async {}

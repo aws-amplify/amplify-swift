@@ -9,17 +9,17 @@ import Amplify
 import Foundation
 
 extension HubCategory {
-    func dispatchRegisterForRemoteNotifications(_ result: Bool) {
+    func dispatchRequestNotificationsPermissions(_ result: Bool) {
         let payload = HubPayload(
-            eventName: HubPayload.EventName.Notifications.Push.registerForRemoteNotifications,
+            eventName: HubPayload.EventName.Notifications.Push.requestNotificationsPermissions,
             data: result
         )
         dispatch(to: .pushNotifications, payload: payload)
     }
 
-    func dispatchRegisterForRemoteNotifications(_ error: Error) {
+    func dispatchRequestNotificationsPermissions(_ error: Error) {
         let payload = HubPayload(
-            eventName: HubPayload.EventName.Notifications.Push.registerForRemoteNotifications,
+            eventName: HubPayload.EventName.Notifications.Push.requestNotificationsPermissions,
             data: error
         )
         dispatch(to: .pushNotifications, payload: payload)
