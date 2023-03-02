@@ -116,41 +116,6 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(endpointProfile.demographic.platformVersion, endpointInformation.platform.version)
     }
 
-    func testCurrentEndpointProfile_withStoredToken_andRemoteNotificationsEnabled_shouldSetOptOutFalse() async {
-        archiver.decoded = PinpointEndpointProfile(applicationId: "applicationId",
-                                                   endpointId: "endpointId",
-                                                   isOptOut: true)
-        storeToken("deviceToken")
-        remoteNotificationsHelper.isRegisteredForRemoteNotifications = true
-
-        let endpointProfile = await endpointClient.currentEndpointProfile()
-
-        XCTAssertFalse(endpointProfile.isOptOut)
-    }
-
-    func testCurrentEndpointProfile_withStoredToken_andRemoteNotificationsDisabled_shouldSetOptOutTrue() async {
-        archiver.decoded = PinpointEndpointProfile(applicationId: "applicationId",
-                                                   endpointId: "endpointId",
-                                                   isOptOut: false)
-        storeToken("deviceToken")
-        remoteNotificationsHelper.isRegisteredForRemoteNotifications = false
-
-        let endpointProfile = await endpointClient.currentEndpointProfile()
-
-        XCTAssertTrue(endpointProfile.isOptOut)
-    }
-
-    func testCurrentEndpointProfile_withoutStoredToken_andRemoteNotificationsEnabled_shouldSetOptOutTrue() async {
-        archiver.decoded = PinpointEndpointProfile(applicationId: "applicationId",
-                                                   endpointId: "endpointId",
-                                                   isOptOut: false)
-        remoteNotificationsHelper.isRegisteredForRemoteNotifications = false
-
-        let endpointProfile = await endpointClient.currentEndpointProfile()
-
-        XCTAssertTrue(endpointProfile.isOptOut)
-    }
-
     func testUpdateEndpointProfile_shouldSendUpdateRequestAndSave() async {
         keychain.resetCounters()
         try? await endpointClient.updateEndpointProfile()
@@ -214,7 +179,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(keychain.saveDataCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 0)
     }
 
-    func testConvertToPublicEndpoint_withoutDeviceToken_shouldReturnPublicEndpoint() async {
+    func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
         let endpointProfile = await endpointClient.currentEndpointProfile()
         let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
         let mockModel = MockEndpointInformation()
@@ -223,23 +188,12 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(publicEndpoint.attributes?.count, 0)
         XCTAssertEqual(publicEndpoint.metrics?.count, 0)
         XCTAssertNil(publicEndpoint.channelType)
-        XCTAssertEqual(publicEndpoint.optOut, "ALL")
+        XCTAssertEqual(publicEndpoint.optOut, "NONE")
         XCTAssertEqual(publicEndpoint.demographic?.appVersion, mockModel.appVersion)
         XCTAssertEqual(publicEndpoint.demographic?.make, "apple")
         XCTAssertEqual(publicEndpoint.demographic?.model, mockModel.model)
         XCTAssertEqual(publicEndpoint.demographic?.platform, mockModel.platform.name)
         XCTAssertEqual(publicEndpoint.demographic?.platformVersion, mockModel.platform.version)
-    }
-
-    func testConvertToPublicEndpoint_withDeviceToken_shouldReturnPublicEndpoint() async {
-        let endpointProfile = await endpointClient.currentEndpointProfile()
-        endpointProfile.setAPNsToken(Data(hexString: newTokenHex)!)
-        endpointProfile.isOptOut = false
-        let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
-        XCTAssertNotNil(publicEndpoint)
-        XCTAssertEqual(publicEndpoint.address, newTokenHex)
-        XCTAssertEqual(publicEndpoint.channelType, .apns)
-        XCTAssertEqual(publicEndpoint.optOut, "NONE")
     }
 
     @discardableResult
@@ -266,4 +220,6 @@ class MockRemoteNotifications: RemoteNotificationsBehaviour {
     func requestAuthorization(_ options: UNAuthorizationOptions) async throws -> Bool {
         return true
     }
+
+    func registerForRemoteNotifications() async {}
 }

@@ -119,6 +119,18 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
         XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes?["roles"]?.count, 2)
         XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes?["roles"]?.first, "Test")
     }
+
+    func testIdentifyUser_withPinpointProfileOptedOutOfMessages_shouldUpdateUserProfileOptOutValue() async throws {
+        try await plugin.identifyUser(userId: "newUserId", userProfile: nil)
+        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        XCTAssertFalse(updatedEndpoint.isOptOut)
+
+        try await plugin.identifyUser(userId: "newUserId", userProfile: PinpointUserProfile(optedOutOfMessages: true))
+        XCTAssertTrue(updatedEndpoint.isOptOut)
+
+        try await plugin.identifyUser(userId: "newUserId", userProfile: PinpointUserProfile(name: "User"))
+        XCTAssertTrue(updatedEndpoint.isOptOut)
+    }
     
     // MARK: - Register Device tests
     func testRegisterDevice_shouldUpdateDeviceToken() async throws {
