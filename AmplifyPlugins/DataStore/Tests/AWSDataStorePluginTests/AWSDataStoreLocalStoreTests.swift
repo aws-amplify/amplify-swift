@@ -333,6 +333,42 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(posts.count, 0)
     }
 
+    func testQueryNotContains() async throws {
+        setUp(withModels: TestModelRegistration())
+        _ = try await setUpLocalStore(numberOfPosts: 5)
+        let posts = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(posts.count, 5)
+
+        let postsContaining1InTitle = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains("1")
+        )
+        XCTAssertEqual(postsContaining1InTitle.count, 1)
+
+        let postsNotContaining1InTitle = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.notContains("1")
+        )
+        XCTAssertEqual(postsNotContaining1InTitle.count, 4)
+    }
+
+
+    func testDeleteNotContains() async throws {
+        setUp(withModels: TestModelRegistration())
+        _ = try await setUpLocalStore(numberOfPosts: 5)
+        let posts = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(posts.count, 5)
+
+        try await Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.notContains("1")
+        )
+
+        let postsIncluding1InTitle = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(postsIncluding1InTitle.count, 1)
+    }
+
+
     func setUpLocalStore(numberOfPosts: Int) async throws -> [Post] {
         let posts = (0..<numberOfPosts).map {
             Post(

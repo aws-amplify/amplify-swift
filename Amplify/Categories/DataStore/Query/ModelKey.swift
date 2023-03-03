@@ -56,6 +56,11 @@ extension CodingKey where Self: ModelKey {
         return key.contains(value)
     }
 
+    // MARK: - not contains
+    public func notContains(_ value: String) -> QueryPredicateOperation {
+        return field(stringValue).notContains(value)
+    }
+
     // MARK: - eq
 
     public func eq(_ value: Persistable?) -> QueryPredicateOperation {
