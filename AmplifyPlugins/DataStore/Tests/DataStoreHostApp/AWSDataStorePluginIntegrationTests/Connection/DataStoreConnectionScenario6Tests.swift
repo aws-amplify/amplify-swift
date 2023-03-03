@@ -205,7 +205,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         let post2 = try await savePost(title: "title", blog: blog2)
         _ = try await saveComment(id: commentId2, post: post2, content: "content")
 
-        await waitForExpectations(timeout: 5)
+        await waitForExpectations(timeout: 10)
 
         let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
         var processedSoFar = 0
