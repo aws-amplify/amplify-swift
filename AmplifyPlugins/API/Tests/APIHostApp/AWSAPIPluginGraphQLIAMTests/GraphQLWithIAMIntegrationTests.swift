@@ -11,7 +11,6 @@ import AWSCognitoAuthPlugin
 
 @testable import Amplify
 @testable import APIHostApp
-import Combine
 
 class GraphQLWithIAMIntegrationTests: XCTestCase {
 
