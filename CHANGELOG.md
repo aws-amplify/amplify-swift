@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.1 (2023-03-06)
+
+### Bug Fixes
+
+- **datastore**: mutation event got ignored while executing parallel saving (#2781)
+- upgrade to aws-sdk-swift v0.6.1 (#2774)
+- **auth**: Build failure due to typo in device binding (#2719)
+- **auth**: Device binding add retry incase of device not found (#2699)
+- **auth**: Pass deviceMetadata in RespondToAuthChallenge for signIn challenges
+- **auth**: Remove static deviceMetaData in auth flow (#2694)
+- **api**: build selection set bottom up (#2763)
+
 ## 2.4.0 (2023-02-08)
 
 ### Features
