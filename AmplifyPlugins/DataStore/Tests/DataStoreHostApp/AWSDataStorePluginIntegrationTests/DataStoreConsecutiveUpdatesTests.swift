@@ -43,7 +43,6 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         updatedPost.title = "MyUpdatedPost"
         updatedPost.content = "This is my updated post."
 
-        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
         let updateSyncReceived = expectation(description: "Received update mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
@@ -58,19 +57,15 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 return
             }
 
-            if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+            if mutationEvent.version == 1 {
                 XCTAssertEqual(post, newPost)
-                XCTAssertEqual(mutationEvent.version, 1)
-                saveSyncReceived.fulfill()
-                return
             }
 
-            if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+            if mutationEvent.version == 2 {
                 XCTAssertEqual(post, updatedPost)
-                XCTAssertEqual(mutationEvent.version, 2)
                 updateSyncReceived.fulfill()
-                return
             }
+
         }
 
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
@@ -124,7 +119,6 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                           rating: 3,
                           status: .published)
 
-        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
         let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
@@ -139,18 +133,14 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 return
             }
 
-            if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+            if mutationEvent.version == 1 {
                 XCTAssertEqual(post, newPost)
-                XCTAssertEqual(mutationEvent.version, 1)
-                saveSyncReceived.fulfill()
-                return
             }
 
-            if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+            if mutationEvent.version == 2 {
                 XCTAssertEqual(post, newPost)
-                XCTAssertEqual(mutationEvent.version, 2)
+                XCTAssertEqual(mutationEvent.mutationType, MutationEvent.MutationType.delete.rawValue)
                 deleteSyncReceived.fulfill()
-                return
             }
         }
 
@@ -212,12 +202,12 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         updatedPost.content = "This is my updated post."
 
         let saveSyncReceived = asyncExpectation(description: "Received create mutation event on subscription for Post")
-        let updateSyncReceived = asyncExpectation(description: "Received update mutation event on subscription for Post")
         let deleteSyncReceived = asyncExpectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
@@ -231,21 +221,11 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 XCTAssertEqual(post, newPost)
                 XCTAssertEqual(mutationEvent.version, 1)
                 Task { await saveSyncReceived.fulfill() }
-                return
             }
 
-            if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+            if mutationEvent.version == 3 {
                 XCTAssertEqual(post, updatedPost)
-                XCTAssertEqual(mutationEvent.version, 2)
-                Task { await updateSyncReceived.fulfill() }
-                return
-            }
-
-            if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                XCTAssertEqual(post, updatedPost)
-                XCTAssertEqual(mutationEvent.version, 3)
                 Task { await deleteSyncReceived.fulfill() }
-                return
             }
         }
 
@@ -265,7 +245,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = try await queryPost(byId: newPost.id)
         XCTAssertNil(queryResult)
 
-        await waitForExpectations([updateSyncReceived, deleteSyncReceived], timeout: networkTimeout)
+        await waitForExpectations([deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)

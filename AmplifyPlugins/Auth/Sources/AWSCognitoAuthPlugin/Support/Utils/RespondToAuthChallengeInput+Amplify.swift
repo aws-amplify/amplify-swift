@@ -15,6 +15,7 @@ extension RespondToAuthChallengeInput {
                                  session: String?,
                                  secretBlock: String,
                                  signature: String,
+                                 deviceMetadata: DeviceMetadata,
                                  environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {
         let dateStr = stateData.clientTimestamp.utcString
         let challengeResponses = [
@@ -28,7 +29,7 @@ extension RespondToAuthChallengeInput {
             challengeResponses: challengeResponses,
             session: session,
             clientMetadata: [:],
-            deviceMetadata: stateData.deviceMetadata,
+            deviceMetadata: deviceMetadata,
             environment: environment)
     }
 
@@ -56,6 +57,7 @@ extension RespondToAuthChallengeInput {
                                        session: String?,
                                        secretBlock: String,
                                        signature: String,
+                                       deviceMetadata: DeviceMetadata,
                                        environment: UserPoolEnvironment)
     -> RespondToAuthChallengeInput {
         let dateStr = stateData.clientTimestamp.utcString
@@ -70,7 +72,7 @@ extension RespondToAuthChallengeInput {
             challengeResponses: challengeResponses,
             session: session,
             clientMetadata: [:],
-            deviceMetadata: stateData.deviceMetadata,
+            deviceMetadata: deviceMetadata,
             environment: environment)
     }
 
@@ -82,6 +84,7 @@ extension RespondToAuthChallengeInput {
         answer: String,
         clientMetadata: [String: String]?,
         attributes: [String: String],
+        deviceMetadata: DeviceMetadata,
         environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {
 
             var challengeResponses = [
@@ -99,7 +102,7 @@ extension RespondToAuthChallengeInput {
                 challengeResponses: challengeResponses,
                 session: session,
                 clientMetadata: clientMetadata ?? [:],
-                deviceMetadata: .noData,
+                deviceMetadata: deviceMetadata,
                 environment: environment)
         }
 

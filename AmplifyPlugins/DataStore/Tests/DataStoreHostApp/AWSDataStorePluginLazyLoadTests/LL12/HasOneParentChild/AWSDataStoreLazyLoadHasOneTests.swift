@@ -13,25 +13,51 @@ import XCTest
 import AWSPluginsCore
 
 class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
-    
-    func testStart() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When: Configured with `HashOneModels`
+     - Then: Successfully start the sync engine
+     */
+    func testStart_withHasOneModels_success() async throws {
         await setup(withModels: HasOneModels())
         try await startAndWaitForReady()
     }
-    
-    func testSaveHasOneParent() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance without `HasOneChild` association
+     - Then: Successfully saved and synced to remote
+     */
+    func testSaveHasOneParent_withoutChild_success() async throws {
         await setup(withModels: HasOneModels())
         let parent = HasOneParent()
-        let savedParent = try await saveAndWaitForSync(parent)
+        try await saveAndWaitForSync(parent)
     }
-    
-    func testSaveHasOneChild() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneChild` instance
+     - Then: Successfully saved and synced to remote
+     */
+    func testSaveHasOneChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
-        let savedChild = try await saveAndWaitForSync(child)
+        try await saveAndWaitForSync(child)
     }
-    
-    func testSaveParentWithChild() async throws {
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+     - Then: Successfully saved and synced to remote
+     */
+    func testSaveHasOneParent_withChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
         try await saveAndWaitForSync(child)
@@ -76,37 +102,168 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(child)
     }
 
-    func testUpdateParentWithNewChild() async throws {
-            await setup(withModels: HasOneModels())
-            let child = HasOneChild()
-            let savedChild = try await saveAndWaitForSync(child)
-            let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
-            let savedParent = try await saveAndWaitForSync(parent)
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+        - Update `HasOneParent` instance with a new `HasOneChild` association
+     - Then: Successfully updated and synced to remote
+     */
+    func testUpdateHasOneParent_withNewChild_success() async throws {
+        await setup(withModels: HasOneModels())
+        let child = HasOneChild()
+        let savedChild = try await saveAndWaitForSync(child)
+        let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
+        let savedParent = try await saveAndWaitForSync(parent)
 
-            var queriedParent = try await query(for: savedParent)
-            XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
+        var queriedParent = try await query(for: savedParent)
+        XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
 
-            // The child can be lazy loaded.
-            assertLazyReference(queriedParent._child,
-                                state: .notLoaded(identifiers: [
-                                    .init(name: HasOneChild.keys.id.stringValue, value: child.id)
-                                ]))
+        // The child can be lazy loaded.
+        assertLazyReference(queriedParent._child,
+                            state: .notLoaded(identifiers: [
+                                .init(name: HasOneChild.keys.id.stringValue, value: child.id)
+                            ]))
 
-            let newChild = HasOneChild()
-            let savedNewChild = try await saveAndWaitForSync(newChild)
+        let newChild = HasOneChild()
+        let savedNewChild = try await saveAndWaitForSync(newChild)
 
-            // Update parent to new child
-            queriedParent.setChild(savedNewChild)
-            queriedParent.hasOneParentChildId = savedNewChild.id
-            try await updateAndWaitForSync(queriedParent)
+        // Update parent to new child
+        queriedParent.setChild(savedNewChild)
+        queriedParent.hasOneParentChildId = savedNewChild.id
+        try await updateAndWaitForSync(queriedParent)
 
-            let queriedParentWithNewChild = try await query(for: parent)
-            // The child can be lazy loaded.
-            assertLazyReference(queriedParentWithNewChild._child, state: .notLoaded(identifiers: [
-                .init(name: HasOneChild.keys.id.stringValue, value: savedNewChild.id)
-            ]))
-            XCTAssertEqual(queriedParentWithNewChild.hasOneParentChildId, savedNewChild.id)
+        let queriedParentWithNewChild = try await query(for: parent)
+        // The child can be lazy loaded.
+        assertLazyReference(queriedParentWithNewChild._child, state: .notLoaded(identifiers: [
+            .init(name: HasOneChild.keys.id.stringValue, value: savedNewChild.id)
+        ]))
+        XCTAssertEqual(queriedParentWithNewChild.hasOneParentChildId, savedNewChild.id)
+    }
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+        - Update `HasOneParent` instance with a new `HasOneChild` association
+     - Then: Successfully updated and synced to remote
+     */
+    func testCreateHasOneChild_withObserve_success() async throws {
+        await setup(withModels: HasOneModels())
+        try await startAndWaitForReady()
+        let child = HasOneChild()
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(HasOneChild.self)
+
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedChild = try? mutationEvent.decodeModel(as: HasOneChild.self),
+                   receivedChild.identifier == child.identifier
+                {
+                    await mutationEventReceived.fulfill()
+                }
+            }
         }
+
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: child, modelSchema: HasOneChild.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneChild` instance
+        - Delete the `HasOneChild` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneChild_success() async throws {
+        await setup(withModels: HasOneModels())
+        let child = HasOneChild()
+        let savedChild = try await saveAndWaitForSync(child)
+        try await assertModelExists(savedChild)
+
+        try await deleteAndWaitForSync(savedChild)
+        try await assertModelDoesNotExist(savedChild)
+    }
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance without `HasOneChild` association
+        - Delete the `HasOneParent` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneParent_withoutChild_success() async throws {
+        await setup(withModels: HasOneModels())
+        let parent = HasOneParent()
+        let savedParent = try await saveAndWaitForSync(parent)
+        try await assertModelExists(savedParent)
+
+        try await deleteAndWaitForSync(savedParent)
+        try await assertModelDoesNotExist(savedParent)
+    }
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneParent` instance with `HasOneChild` association
+        - Delete the `HasOneParent` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneParent_withChild_success() async throws {
+        await setup(withModels: HasOneModels())
+        let child = HasOneChild()
+        let savedChild = try await saveAndWaitForSync(child)
+        let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
+        let savedParent = try await saveAndWaitForSync(parent)
+
+        let queriedParent = try await query(for: savedParent)
+        XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
+
+        try await deleteAndWaitForSync(savedParent)
+        try await assertModelDoesNotExist(savedParent)
+        try await assertModelExists(savedChild)
+    }
+
+    /*
+     - Given: DataStore is cleared
+     - When:
+        - Configured with `HashOneModels`
+        - Create a new `HasOneChild` instance and associated to a `HasOneParent` instance
+        - Delete the `HasOneChild` instance
+     - Then: Successfully deleted and synced to remote
+     */
+    func testDeleteHasOneChild_withParent_success() async throws {
+        await setup(withModels: HasOneModels())
+        let child = HasOneChild()
+        let savedChild = try await saveAndWaitForSync(child)
+        let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
+        let savedParent = try await saveAndWaitForSync(parent)
+
+        let queriedParent = try await query(for: savedParent)
+        XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
+
+        try await deleteAndWaitForSync(savedChild)
+        try await assertModelDoesNotExist(savedChild)
+        try await assertModelExists(savedParent)
+
+        let associatedChild = try await query(for: savedParent).child
+        XCTAssertTrue(associatedChild == nil)
+    }
 
 }
 

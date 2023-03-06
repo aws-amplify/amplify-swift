@@ -15,6 +15,8 @@ struct SignInChallengeEvent: StateMachineEvent {
 
         case verifyChallengeAnswer(ConfirmSignInEventData)
 
+        case retryVerifyChallengeAnswer(ConfirmSignInEventData)
+
         case verified
 
     }
@@ -28,6 +30,7 @@ struct SignInChallengeEvent: StateMachineEvent {
         case .verified: return "SignInChallengeEvent.verified"
         case .verifyChallengeAnswer: return "SignInChallengeEvent.verifyChallengeAnswer"
         case .waitForAnswer: return "SignInChallengeEvent.waitForAnswer"
+        case .retryVerifyChallengeAnswer: return "SignInChallengeEvent.retryVerifyChallengeAnswer"
         }
     }
 
