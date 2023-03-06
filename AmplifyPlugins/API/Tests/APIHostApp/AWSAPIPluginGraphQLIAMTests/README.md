@@ -44,7 +44,7 @@ Do you want to use the default authentication and security configuration?
  Please enter a name for your identity pool. 
     <amplifyintegtestCIDP>
  Allow unauthenticated logins? (Provides scoped down permissions that you can control via AWS IAM) 
-    No
+    Yes
  Do you want to enable 3rd party authentication providers in your identity pool? 
     No
  Please provide a name for your user pool: 
