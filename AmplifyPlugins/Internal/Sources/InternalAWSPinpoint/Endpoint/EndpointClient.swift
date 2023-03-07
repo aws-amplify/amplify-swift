@@ -191,7 +191,10 @@ actor EndpointClient: EndpointClientBehaviour {
         endpointProfile.effectiveDate.asISO8601String
     }
 
-    nonisolated private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String {
+    nonisolated private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String? {
+        if endpointProfile.deviceToken == nil {
+            return nil
+        }
         return endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
     }
 
