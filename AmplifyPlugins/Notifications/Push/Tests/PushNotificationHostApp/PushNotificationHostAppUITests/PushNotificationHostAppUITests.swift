@@ -32,7 +32,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
     override func tearDown() async throws {
         await terminate()
-        try await uninstallApp()
+//        try await uninstallApp()
     }
 
     @MainActor
