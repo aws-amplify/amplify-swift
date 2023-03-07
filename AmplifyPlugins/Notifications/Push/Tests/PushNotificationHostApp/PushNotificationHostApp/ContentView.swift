@@ -59,7 +59,7 @@ struct ContentView: View {
 
     func listenHubEvent() {
         pushNotificationHubSubscription = Amplify.Hub.listen(to: .pushNotifications) { payload in
-            if payload.eventName == HubPayload.EventName.Notifications.Push.registerForRemoteNotifications {
+            if payload.eventName == HubPayload.EventName.Notifications.Push.requestNotificationsPermissions {
                 self.hubEvents.append(payload.eventDescription)
             }
         }
