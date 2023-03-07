@@ -188,7 +188,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(publicEndpoint.attributes?.count, 0)
         XCTAssertEqual(publicEndpoint.metrics?.count, 0)
         XCTAssertNil(publicEndpoint.channelType)
-        XCTAssertEqual(publicEndpoint.optOut, "NONE")
+        XCTAssertNil(publicEndpoint.optOut)
         XCTAssertEqual(publicEndpoint.demographic?.appVersion, mockModel.appVersion)
         XCTAssertEqual(publicEndpoint.demographic?.make, "apple")
         XCTAssertEqual(publicEndpoint.demographic?.model, mockModel.model)
