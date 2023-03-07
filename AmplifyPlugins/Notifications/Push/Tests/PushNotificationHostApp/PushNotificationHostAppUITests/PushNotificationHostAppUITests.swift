@@ -36,17 +36,17 @@ final class PushNotificationHostAppUITests: XCTestCase {
     }
 
     @MainActor
-    func testInitAmplify_withPushNotificationPlugin_verifyRegisterRemoteNotification() async throws {
+    func testInitAmplify_withPushNotificationPlugin_verifyRequestNotificationsPermissions() async throws {
         initAmplify()
 
         grantNotificationPermissionIfNeeded()
 
         let expectedEvent = anyElementContains(
-            text: "Notifications.Push.registerForNotifications = Optional(true)",
+            text: "Notifications.Push.requestNotificationsPermissions = Optional(true)",
             scope: app
         )
         if !expectedEvent.waitForExistence(timeout: 3) {
-            XCTFail("Failed to receive registerForNotification event from hub")
+            XCTFail("Failed to receive requestNotificationsPermissions event from hub")
         }
     }
 
