@@ -260,6 +260,11 @@ final class PushNotificationHostAppUITests: XCTestCase {
         if !springboard.wait(for: .runningForeground, timeout: timeout) {
             XCTFail("Failed to get back to home screen")
         }
+        
+        if !app.wait(for: .runningBackground, timeout: timeout) {
+            XCTFail("Failed to put app to the background")
+            return
+        }
     }
 
     private func anyElementContains(text: String, scope: XCUIElement) -> XCUIElement {
