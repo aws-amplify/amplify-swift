@@ -6,10 +6,15 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 import AWSDataStorePlugin
 
 class AWSDataStorePluginConfigurationTests: XCTestCase {
+
+    override func tearDown() async throws {
+        await Amplify.reset()
+        try await Task.sleep(seconds: 1)
+    }
 
     // Note this test requires the ability to write a new database in the Documents directcory, so it must be embedded
     // in a host app

@@ -32,13 +32,23 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
+    override func setUp() async throws {
+        try await super.setUp()
+        continueAfterFailure = false
+    }
+
+    override func tearDown() async throws {
+        try await super.tearDown()
+        try await stopDataStore()
+        await Amplify.reset()
+        try await Task.sleep(seconds: 1)
+    }
+
     func setUp(
         withModels models: AmplifyModelRegistration,
         logLevel: LogLevel = .error,
         dataStoreConfiguration: DataStoreConfiguration? = nil
     ) async {
-        continueAfterFailure = false
-
         Amplify.Logging.logLevel = logLevel
 
         do {
@@ -53,11 +63,6 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             XCTFail(String(describing: error))
             return
         }
-    }
-    
-    override func tearDown() async throws {
-        try await Amplify.DataStore.stop()
-        await Amplify.reset()
     }
     
     func stopDataStore() async throws {
@@ -91,8 +96,9 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     }
 
     private func startAmplifyAndWait(for eventName: String) async throws {
-        let eventReceived = expectation(description: "DataStore \(eventName) event")
+        try startAmplify()
 
+        let eventReceived = expectation(description: "DataStore \(eventName) event")
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(to: .dataStore,
                                    eventName: eventName) { _ in
@@ -105,11 +111,10 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             return
         }
 
-        try startAmplify()
-        // try await Amplify.DataStore.start()
-        try await deleteMutationEvents()
+        try await Amplify.DataStore.start()
+        await waitForExpectations(timeout: 10.0)
 
-        await waitForExpectations(timeout: 100.0)
+        try await deleteMutationEvents()
     }
     
     func deleteMutationEvents() async throws {
