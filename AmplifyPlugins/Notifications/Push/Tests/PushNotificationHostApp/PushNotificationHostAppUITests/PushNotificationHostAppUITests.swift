@@ -60,6 +60,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             identifyUserButton.tap()
         } else {
             XCTFail("Failed to find 'Identify User' button")
+            return
         }
 
         let firstAlert = app.alerts.firstMatch
@@ -80,6 +81,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             identifyUserButton.tap()
         } else {
             XCTFail("Failed to find 'Register Device' button")
+            return
         }
 
         let firstAlert = app.alerts.firstMatch
@@ -119,10 +121,12 @@ final class PushNotificationHostAppUITests: XCTestCase {
             notification.tap()
         } else {
             XCTFail("Failed to receive push notification")
+            return
         }
 
         if !app.wait(for: .runningForeground, timeout: timeout) {
             XCTFail("Failed to open App with push notification")
+            return
         }
 
         let expectedEvent = anyElementContains(
@@ -157,10 +161,12 @@ final class PushNotificationHostAppUITests: XCTestCase {
             notification.tap()
         } else {
             XCTFail("Failed to receive push notification")
+            return
         }
 
         if !app.wait(for: .runningForeground, timeout: timeout) {
             XCTFail("Failed to open App with push notification")
+            return
         }
 
         let unexpectedEvent = anyElementContains(
@@ -259,6 +265,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         if !springboard.wait(for: .runningForeground, timeout: timeout) {
             XCTFail("Failed to get back to home screen")
+            return
         }
         
         if !app.wait(for: .runningBackground, timeout: timeout) {
