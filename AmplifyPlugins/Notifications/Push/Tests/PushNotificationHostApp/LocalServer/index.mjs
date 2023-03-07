@@ -70,5 +70,5 @@ app.post('/uninstall', async (req, res) => {
 })
 
 app.listen(9293, () => {
-    console.log("Starting server")
+    console.log("Server listening for connections")
 })
