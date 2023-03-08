@@ -4,24 +4,9 @@
 
 ### Features
 
-- **notifications**: update notifications utils to v1.0.0 (#126)
-- **PushNotifications**: Updating OptOut behaviour and always registering for remote notifications (#125)
-- **PushNotifications**: Adding a `userProfile` parameter to the `identifyUser` API (#122)
-- **PushNotifications**: Adding a suffix to the User-Agent for Pinpoint requests, so we can differenciate Analytics vs PushNotifications traffic. (#119)
-- **PushNotifications**: Updating API and errors (#113)
-- **PushNotifications**: Implementing the Pinpoint Push Notifications plugin (#112)
-- **PushNotifications**: Adding support for the Push Notifications category (#110)
+**PushNotifications**: Add Amplify Push Notifications category and AWSPinpoint Push Notifications plugin. [(#2794)](https://github.com/aws-amplify/amplify-swift/pull/2794)
 
-### Bug Fixes
-
-- **notifications**: fix verifyRequestNotificationsPermissions integration test (#2797)
-- Making OptOut nil when no address is present on the endpoint. (#2796)
-- **notifications**: rename hub payload event requestNotificationsPermissions (#2795)
-- **notifications**: update recordNotification log message (#124)
-- don't request notification permission by default (#121)
-- **notifications**: update config to match final CLI format (#118)
-- update folder structure for pinpoint plugins (#115)
-- **PushNotifications**: Fixing issue when attempting to store APNs token for the first time. (#114)
+The **Push Notifications** category allows you to integrate push notifications in your app with Amazon Pinpoint targeting, campaign, and journey management support. You can segment your users, trigger push notifications to your app, and record metrics in Pinpoint when users receive or open notifications.  We use Amazon Pinpoint since it helps you to create messaging campaigns and journeys targeted to specific user segments or demographics and collect interaction metrics with push notifications. 
 
 ## 2.4.2 (2023-03-08)
 
