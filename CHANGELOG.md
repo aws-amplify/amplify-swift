@@ -4,7 +4,9 @@
 
 ### Features
 
-- **PushNotifications**: Add Amplify Push Notifications category and AWSPinpoint Push Notifications plugin. The Push Notifications category allows you to integrate push notifications in your app with Amazon Pinpoint targeting, campaign, and journey management support. You can segment your users, trigger push notifications to your app, and record metrics in Pinpoint when users receive or open notifications.  We use Amazon Pinpoint since it helps you to create messaging campaigns and journeys targeted to specific user segments or demographics and collect interaction metrics with push notifications. [(#2794)](https://github.com/aws-amplify/amplify-swift/pull/2794)
+**PushNotifications**: Add Amplify Push Notifications category and AWSPinpoint Push Notifications plugin.
+
+The **Push Notifications** category allows you to integrate push notifications in your app with Amazon Pinpoint targeting, campaign, and journey management support. You can segment your users, trigger push notifications to your app, and record metrics in Pinpoint when users receive or open notifications.  We use Amazon Pinpoint since it helps you to create messaging campaigns and journeys targeted to specific user segments or demographics and collect interaction metrics with push notifications. [(#2794)](https://github.com/aws-amplify/amplify-swift/pull/2794)
 
 ## 2.4.2 (2023-03-08)
 
