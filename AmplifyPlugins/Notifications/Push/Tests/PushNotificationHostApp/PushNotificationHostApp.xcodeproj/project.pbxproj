@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		60020D8A2968E2ED0035D5F8 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 60020D892968E2ED0035D5F8 /* AWSPinpointAnalyticsPlugin */; };
-		600B385E2966269B007897BD /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 600B385D2966269B007897BD /* Amplify */; };
-		600B38602966269F007897BD /* AWSPinpointPushNotificationsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 600B385F2966269F007897BD /* AWSPinpointPushNotificationsPlugin */; };
-		600B38632966400F007897BD /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 600B38622966400F007897BD /* AWSCognitoAuthPlugin */; };
+		5C4EA91129B91A2600ED7924 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 5C4EA91029B91A2600ED7924 /* Amplify */; };
+		5C4EA91329B91A2600ED7924 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 5C4EA91229B91A2600ED7924 /* AWSCognitoAuthPlugin */; };
+		5C4EA91529B91A2600ED7924 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 5C4EA91429B91A2600ED7924 /* AWSPinpointAnalyticsPlugin */; };
+		5C4EA91729B91A2600ED7924 /* AWSPinpointPushNotificationsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 5C4EA91629B91A2600ED7924 /* AWSPinpointPushNotificationsPlugin */; };
+		5C4EA91929B91A2600ED7924 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5C4EA91829B91A2600ED7924 /* AWSPluginsCore */; };
 		6084F1AF2967B87200434CBF /* PushNotificationHostAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6084F1AE2967B87200434CBF /* PushNotificationHostAppUITests.swift */; };
 		6084F1BC2967CE5D00434CBF /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6084F1BB2967CE5D00434CBF /* TestConfigHelper.swift */; };
 		6084F1C02968A7ED00434CBF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6084F1BF2968A7ED00434CBF /* README.md */; };
@@ -33,7 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6079DFD32965094C00E8E9D0 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../../..; sourceTree = "<group>"; };
+		5C4EA90F29B919D800ED7924 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../../..; sourceTree = "<group>"; };
 		6084F1AC2967B87200434CBF /* PushNotificationHostAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PushNotificationHostAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6084F1AE2967B87200434CBF /* PushNotificationHostAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationHostAppUITests.swift; sourceTree = "<group>"; };
 		6084F1BB2967CE5D00434CBF /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -61,10 +62,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				600B385E2966269B007897BD /* Amplify in Frameworks */,
-				60020D8A2968E2ED0035D5F8 /* AWSPinpointAnalyticsPlugin in Frameworks */,
-				600B38602966269F007897BD /* AWSPinpointPushNotificationsPlugin in Frameworks */,
-				600B38632966400F007897BD /* AWSCognitoAuthPlugin in Frameworks */,
+				5C4EA91129B91A2600ED7924 /* Amplify in Frameworks */,
+				5C4EA91529B91A2600ED7924 /* AWSPinpointAnalyticsPlugin in Frameworks */,
+				5C4EA91329B91A2600ED7924 /* AWSCognitoAuthPlugin in Frameworks */,
+				5C4EA91729B91A2600ED7924 /* AWSPinpointPushNotificationsPlugin in Frameworks */,
+				5C4EA91929B91A2600ED7924 /* AWSPluginsCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +83,7 @@
 		6079DFD22965094C00E8E9D0 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				6079DFD32965094C00E8E9D0 /* amplify-ios-staging */,
+				5C4EA90F29B919D800ED7924 /* amplify-swift */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -175,10 +177,11 @@
 			);
 			name = PushNotificationHostApp;
 			packageProductDependencies = (
-				600B385D2966269B007897BD /* Amplify */,
-				600B385F2966269F007897BD /* AWSPinpointPushNotificationsPlugin */,
-				600B38622966400F007897BD /* AWSCognitoAuthPlugin */,
-				60020D892968E2ED0035D5F8 /* AWSPinpointAnalyticsPlugin */,
+				5C4EA91029B91A2600ED7924 /* Amplify */,
+				5C4EA91229B91A2600ED7924 /* AWSCognitoAuthPlugin */,
+				5C4EA91429B91A2600ED7924 /* AWSPinpointAnalyticsPlugin */,
+				5C4EA91629B91A2600ED7924 /* AWSPinpointPushNotificationsPlugin */,
+				5C4EA91829B91A2600ED7924 /* AWSPluginsCore */,
 			);
 			productName = PushNotificationHostApp;
 			productReference = 60F60D8F2965040600B2D13D /* PushNotificationHostApp.app */;
@@ -540,21 +543,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		60020D892968E2ED0035D5F8 /* AWSPinpointAnalyticsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSPinpointAnalyticsPlugin;
-		};
-		600B385D2966269B007897BD /* Amplify */ = {
+		5C4EA91029B91A2600ED7924 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
 		};
-		600B385F2966269F007897BD /* AWSPinpointPushNotificationsPlugin */ = {
+		5C4EA91229B91A2600ED7924 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		5C4EA91429B91A2600ED7924 /* AWSPinpointAnalyticsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPinpointAnalyticsPlugin;
+		};
+		5C4EA91629B91A2600ED7924 /* AWSPinpointPushNotificationsPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSPinpointPushNotificationsPlugin;
 		};
-		600B38622966400F007897BD /* AWSCognitoAuthPlugin */ = {
+		5C4EA91829B91A2600ED7924 /* AWSPluginsCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
+			productName = AWSPluginsCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
