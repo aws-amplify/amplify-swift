@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.2 (2023-03-08)
+
+### Bug Fixes
+
+- **api**: Remove optional cleanUp() method from AWSAPIPlugin.reset() (#2585)
+
 ## 2.4.1 (2023-03-06)
 
 ### Bug Fixes
