@@ -14,13 +14,10 @@ import AWSPluginsCore
 
 class DataStoreConfigurationTests: XCTestCase {
 
-    override func setUp() async throws {
-        await Amplify.reset()
-    }
-
     override func tearDown() async throws {
         try await Amplify.DataStore.clear()
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
 
     func testConfigureWithSameSchemaDoesNotDeleteDatabase() async throws {
