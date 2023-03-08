@@ -7,7 +7,7 @@
 
 import Amplify
 import XCTest
-
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 
 // swiftlint:disable:next type_name
@@ -219,7 +219,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 return
             }
             XCTAssertEqual(errorDescription,
-                           AnalyticsPluginErrorConstant.pinpointAnalyticsConfigurationExpected.errorDescription)
+                           AWSPinpointErrorConstants.pinpointConfigurationExpected.errorDescription)
         }
     }
 
@@ -237,7 +237,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.missingAppId.errorDescription)
+            XCTAssertEqual(errorDescription, AWSPinpointErrorConstants.missingAppId.errorDescription)
         }
     }
 
@@ -257,7 +257,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyAppId.errorDescription)
+            XCTAssertEqual(errorDescription, AWSPinpointErrorConstants.emptyAppId.errorDescription)
         }
     }
 
@@ -277,7 +277,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.invalidAppId.errorDescription)
+            XCTAssertEqual(errorDescription, AWSPinpointErrorConstants.invalidAppId.errorDescription)
         }
     }
 
@@ -295,7 +295,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.missingRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AWSPinpointErrorConstants.missingRegion.errorDescription)
         }
     }
 
@@ -315,7 +315,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AWSPinpointErrorConstants.emptyRegion.errorDescription)
         }
     }
 
@@ -335,7 +335,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AWSPinpointErrorConstants.emptyRegion.errorDescription)
         }
     }
 

@@ -6,10 +6,18 @@
 //
 
 import Amplify
+@testable import AmplifyTestCommon
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import XCTest
 
 class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBase {
+    
+    override func setUp() async throws {
+        AWSPinpointFactory.credentialsProvider = MockCredentialsProvider()
+        try await super.setUp()
+    }
+    
     // MARK: Plugin Key test
 
     func testPluginKey() {
@@ -49,8 +57,6 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             try analyticsPlugin.configure(using: analyticsPluginConfig)
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)
-            XCTAssertNotNil(analyticsPlugin.authService)
-            XCTAssertNotNil(analyticsPlugin.autoFlushEventsTimer)
             XCTAssertNotNil(analyticsPlugin.globalProperties)
             XCTAssertNotNil(analyticsPlugin.isEnabled)
         } catch {

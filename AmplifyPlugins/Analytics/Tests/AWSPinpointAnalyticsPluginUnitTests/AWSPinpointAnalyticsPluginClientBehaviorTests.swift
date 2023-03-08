@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPinpoint
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 @testable import AmplifyTestCommon
 import XCTest
@@ -278,9 +279,13 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.registerGlobalProperties is invoked with the properties
     /// Then: The properties are set on the AnalyticsPlugin.globalProperties
     func testRegisterGlobalProperties() {
+        mockPinpoint.addGlobalPropertyExpectation = expectation(description: "Add global property called")
+        mockPinpoint.addGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
+        
         analyticsPlugin.registerGlobalProperties(testProperties)
+        
+        waitForExpectations(timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, testProperties.count)
-
         XCTAssertTrue(mockPinpoint.addGlobalMetricCalled > 0)
         XCTAssertTrue(mockPinpoint.addGlobalAttributeCalled > 0)
     }
@@ -303,9 +308,13 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.unregisterGlobalProperties is invoked with some property keys
     /// Then: The corresponding property keys are removed from the AnalyticsPlugin.globalProperties
     func testUnregisterGlobalProperties() {
-        analyticsPlugin.globalProperties = testProperties
+        mockPinpoint.removeGlobalPropertyExpectation = expectation(description: "Remove global property called")
+        mockPinpoint.removeGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
+        
+        analyticsPlugin.globalProperties = AtomicDictionary(initialValue: testProperties)
         analyticsPlugin.unregisterGlobalProperties(Set<String>(testProperties.keys))
 
+        waitForExpectations(timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, 0)
         XCTAssertTrue(mockPinpoint.removeGlobalMetricCalled > 0)
         XCTAssertTrue(mockPinpoint.removeGlobalAttributeCalled > 0)
@@ -315,10 +324,13 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.unregisterGlobalProperties is invoked with no properties
     /// Then: All of the global properties are removed
     func testAllUnregisterGlobalProperties() {
-        analyticsPlugin.globalProperties = testProperties
+        mockPinpoint.removeGlobalPropertyExpectation = expectation(description: "Remove global property called")
+        mockPinpoint.removeGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
+        analyticsPlugin.globalProperties = AtomicDictionary(initialValue: testProperties)
 
         analyticsPlugin.unregisterGlobalProperties(nil)
 
+        waitForExpectations(timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, 0)
         XCTAssertTrue(mockPinpoint.removeGlobalMetricCalled > 0)
         XCTAssertTrue(mockPinpoint.removeGlobalAttributeCalled > 0)

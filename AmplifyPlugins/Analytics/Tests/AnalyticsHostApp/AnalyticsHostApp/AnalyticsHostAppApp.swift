@@ -1,8 +1,8 @@
 //
-//  AnalyticsHostAppApp.swift
-//  AnalyticsHostApp
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Villena, Sebastian on 2022-08-18.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import SwiftUI

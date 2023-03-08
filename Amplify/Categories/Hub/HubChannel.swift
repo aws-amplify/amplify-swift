@@ -25,6 +25,8 @@ public enum HubChannel {
     case logging
 
     case predictions
+    
+    case pushNotifications
 
     case storage
 
@@ -61,6 +63,8 @@ extension HubChannel: Equatable {
             return true
         case (.predictions, .predictions):
             return true
+        case (.pushNotifications, .pushNotifications):
+            return true
         case (.storage, .storage):
             return true
         case (.custom(let lhsValue), .custom(let rhsValue)):
@@ -90,6 +94,8 @@ extension HubChannel {
             self = .logging
         case .predictions:
             self = .predictions
+        case .pushNotifications:
+            self = .pushNotifications
         case .storage:
             self = .storage
         }
