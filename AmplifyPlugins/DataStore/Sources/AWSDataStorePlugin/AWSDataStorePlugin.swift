@@ -44,17 +44,17 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// The DataStore configuration
     let dataStoreConfiguration: DataStoreConfiguration
 
-    /// A queue that regulates the execution of operations. This will be instantiated during initalization phase,
-    /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
-    var operationQueue: OperationQueue!
-
     let validAPIPluginKey: String
 
     let validAuthPluginKey: String
 
     var storageEngine: StorageEngineBehavior!
+
+    /// A queue to allow synchronize access to the storage engine for start/stop/clear operations.
     var storageEngineInitQueue = DispatchQueue(label: "AWSDataStorePlugin.storageEngineInitQueue")
+
     var queue = DispatchQueue(label: "AWSDataStorePlugin.queue", target: DispatchQueue.global())
+
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
@@ -80,7 +80,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
-        self.operationQueue = OperationQueue()
+
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
         self.storageEngineBehaviorFactory =
@@ -99,7 +99,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
          validAuthPluginKey: String) {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
-        self.operationQueue = operationQueue
+
         self.isSyncEnabled = false
         self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
             StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
@@ -248,9 +248,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     public func reset() async {
-        if operationQueue != nil {
-            operationQueue = nil
-        }
         dispatchedModelSyncedEvents = [:]
         if let listener = hubListener {
             Amplify.Hub.removeListener(listener)
