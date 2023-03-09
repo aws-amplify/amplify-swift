@@ -46,7 +46,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                                                 sortInput: sortInput?.asSortDescriptors(),
                                                 storageEngine: storageEngine,
                                                 dataStorePublisher: dataStorePublisher,
-                                                dataStoreConfiguration: internalConfiguration.pluginConfiguration,
+                                                dataStoreConfiguration: configuration.pluginConfiguration,
                                                 dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
                                                 dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         return taskRunner.sequence
