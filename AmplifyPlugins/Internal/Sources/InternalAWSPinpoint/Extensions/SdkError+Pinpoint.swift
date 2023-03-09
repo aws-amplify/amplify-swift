@@ -52,7 +52,7 @@ extension SdkError {
         return putEventsError
     }
 
-    var errorDescription: String {
+    public var errorDescription: String {
         guard let putEventsOutputError = putEventsOutputError else {
             return crtError?.message ?? localizedDescription
         }

@@ -15,7 +15,7 @@ actor MockEndpointClient: EndpointClientBehaviour {
 
     class MockCredentialsProvider: CredentialsProvider {
         func getCredentials() async throws -> AWSCredentials {
-            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: 1000)
+            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: Date().addingTimeInterval(1000))
         }
     }
 

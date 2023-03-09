@@ -89,14 +89,26 @@ private extension HttpClientEngine {
 }
 
 private class MockSDKRuntimeConfiguration: SDKRuntimeConfiguration {
+    var encoder: ClientRuntime.RequestEncoder?
+    var decoder: ClientRuntime.ResponseDecoder?
+    var httpClientConfiguration: ClientRuntime.HttpClientConfiguration
+    var idempotencyTokenGenerator: ClientRuntime.IdempotencyTokenGenerator
+    var clientLogMode: ClientRuntime.ClientLogMode
+    var partitionID: String?
+    
     let logger: LogAgent
     let retryer: SDKRetryer
     var endpoint: String? = nil
     private let mockedHttpClientEngine : HttpClientEngine
 
     init(httpClientEngine: HttpClientEngine) throws {
+        let defaultSDKRuntimeConfig = try DefaultSDKRuntimeConfiguration("MockSDKRuntimeConfiguration")
+        httpClientConfiguration = defaultSDKRuntimeConfig.httpClientConfiguration
+        idempotencyTokenGenerator = defaultSDKRuntimeConfig.idempotencyTokenGenerator
+        clientLogMode = defaultSDKRuntimeConfig.clientLogMode
+        
         logger = MockLogAgent()
-        retryer = try SDKRetryer(options: .init(backOffRetryOptions: .init()))
+        retryer = try SDKRetryer(options: RetryOptions(jitterMode: .default))
         mockedHttpClientEngine = httpClientEngine
     }
 

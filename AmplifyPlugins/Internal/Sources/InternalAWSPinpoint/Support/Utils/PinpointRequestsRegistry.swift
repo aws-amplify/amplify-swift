@@ -75,10 +75,6 @@ private struct CustomPinpointHttpClientEngine: HttpClientEngine {
         return try await httpClientEngine.execute(request: request)
     }
 
-    func close() async {
-        await httpClientEngine.close()
-    }
-
     private func userAgent(for api: PinpointRequestsRegistry.API) async -> String? {
         let sources = await PinpointRequestsRegistry.shared.sources(for: api)
         if sources.isEmpty {
