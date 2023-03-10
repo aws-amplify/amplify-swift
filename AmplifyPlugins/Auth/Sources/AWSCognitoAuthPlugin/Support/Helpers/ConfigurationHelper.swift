@@ -94,7 +94,11 @@ struct ConfigurationHelper {
                                            scopes: scopesArray,
                                            signInRedirectURI: signInRedirectURI,
                                            signOutRedirectURI: signOutRedirectURI)
-        return HostedUIConfigurationData(clientId: appClientId, oauth: oauth, clientSecret: nil)
+        var clientSecret: String?
+        if case .string(let appClientSecret) = configuration?.value(at: "AppClientSecret") {
+            clientSecret = appClientSecret
+        }
+        return HostedUIConfigurationData(clientId: appClientId, oauth: oauth, clientSecret: clientSecret)
     }
 
     static func parseIdentityPoolData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
