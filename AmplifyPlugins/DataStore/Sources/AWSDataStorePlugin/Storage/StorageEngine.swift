@@ -13,10 +13,13 @@ import AWSPluginsCore
 typealias StorageEngineBehaviorFactory =
     (Bool,
     DataStoreConfiguration,
+    DatabaseNameProvider?,
     String,
     String,
     String,
     UserDefaults) throws -> StorageEngineBehavior
+
+public typealias DatabaseNameProvider = () -> String
 
 // swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
@@ -89,13 +92,14 @@ final class StorageEngine: StorageEngineBehavior {
 
     convenience init(isSyncEnabled: Bool,
                      dataStoreConfiguration: DataStoreConfiguration,
+                     databaseNameProvider: DatabaseNameProvider?,
                      validAPIPluginKey: String = "awsAPIPlugin",
                      validAuthPluginKey: String = "awsCognitoAuthPlugin",
                      modelRegistryVersion: String,
                      userDefault: UserDefaults = UserDefaults.standard) throws {
 
         let key = kCFBundleNameKey as String
-        let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String ?? "app"
+        let databaseName = databaseNameProvider?() ?? Bundle.main.object(forInfoDictionaryKey: key) as? String ?? "app"
 
         let storageAdapter = try SQLiteStorageEngineAdapter(version: modelRegistryVersion, databaseName: databaseName)
 

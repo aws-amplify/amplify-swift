@@ -37,6 +37,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// The DataStore configuration
     var configuration: InternalDatastoreConfiguration
+    
+    /// The database name provider
+    let databaseNameProvider: DatabaseNameProvider?
 
     var storageEngine: StorageEngineBehavior!
 
@@ -63,18 +66,21 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// No-argument init that uses defaults for all providers
     public init(modelRegistration: AmplifyModelRegistration,
-                configuration dataStoreConfiguration: DataStoreConfiguration = .default) {
+                configuration dataStoreConfiguration: DataStoreConfiguration = .default,
+                databaseNameProvider: DatabaseNameProvider? = nil) {
         self.modelRegistration = modelRegistration
         self.configuration = InternalDatastoreConfiguration(
             isSyncEnabled: false,
             validAPIPluginKey: "awsAPIPlugin",
             validAuthPluginKey: "awsCognitoAuthPlugin",
             pluginConfiguration: dataStoreConfiguration)
+        self.databaseNameProvider = databaseNameProvider
 
         self.storageEngineBehaviorFactory =
         StorageEngine.init(
             isSyncEnabled:
                 dataStoreConfiguration:
+                databaseNameProvider:
                 validAPIPluginKey:
                 validAuthPluginKey:
                 modelRegistryVersion:
@@ -87,6 +93,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// Internal initializer for testing
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
+         databaseNameProvider: DatabaseNameProvider? = nil,
          storageEngineBehaviorFactory: StorageEngineBehaviorFactory? = nil,
          dataStorePublisher: ModelSubcriptionBehavior,
          operationQueue: OperationQueue = OperationQueue(),
@@ -98,11 +105,13 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             validAPIPluginKey: validAPIPluginKey,
             validAuthPluginKey: validAuthPluginKey,
             pluginConfiguration: dataStoreConfiguration)
+        self.databaseNameProvider = databaseNameProvider
 
         self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
         StorageEngine.init(
             isSyncEnabled:
                 dataStoreConfiguration:
+                databaseNameProvider:
                 validAPIPluginKey:
                 validAuthPluginKey:
                 modelRegistryVersion:
@@ -178,6 +187,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         storageEngine = try storageEngineBehaviorFactory(
             configuration.isSyncEnabled,
             dataStoreConfiguration,
+            databaseNameProvider,
             configuration.validAPIPluginKey,
             configuration.validAuthPluginKey,
             modelRegistration.version,
