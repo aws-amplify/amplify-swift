@@ -26,12 +26,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
 
-    /// `true` if any models are syncable. Resolved during configuration phase
-    var isSyncEnabled: Bool
-
-    /// The listener on hub events unsubscribe token
-    var hubListener: UnsubscribeToken?
-
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?
     
@@ -42,22 +36,19 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     let modelRegistration: AmplifyModelRegistration
 
     /// The DataStore configuration
-    let dataStoreConfiguration: DataStoreConfiguration
+    var configuration: InternalDatastoreConfiguration
     
     /// The database name provider
     let databaseNameProvider: DatabaseNameProvider?
 
-    /// A queue that regulates the execution of operations. This will be instantiated during initalization phase,
-    /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
-    var operationQueue: OperationQueue!
-
-    let validAPIPluginKey: String
-
-    let validAuthPluginKey: String
-
     var storageEngine: StorageEngineBehavior!
+
+    /// A queue to allow synchronize access to the storage engine for start/stop/clear operations.
     var storageEngineInitQueue = DispatchQueue(label: "AWSDataStorePlugin.storageEngineInitQueue")
+
+    /// A queue used for async callback out from`storageEngineInitQueue`
     var queue = DispatchQueue(label: "AWSDataStorePlugin.queue", target: DispatchQueue.global())
+
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?
@@ -72,24 +63,29 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             iStorageEngineSink = newValue
         }
     }
-    
-    /// Configuration of the query against the local storage, whether it should load the belongs-to/has-one associations
-    /// or not.
-    var isEagerLoad: Bool = true
 
     /// No-argument init that uses defaults for all providers
     public init(modelRegistration: AmplifyModelRegistration,
                 configuration dataStoreConfiguration: DataStoreConfiguration = .default,
                 databaseNameProvider: DatabaseNameProvider? = nil) {
         self.modelRegistration = modelRegistration
-        self.dataStoreConfiguration = dataStoreConfiguration
+        self.configuration = InternalDatastoreConfiguration(
+            isSyncEnabled: false,
+            validAPIPluginKey: "awsAPIPlugin",
+            validAuthPluginKey: "awsCognitoAuthPlugin",
+            pluginConfiguration: dataStoreConfiguration)
         self.databaseNameProvider = databaseNameProvider
-        self.isSyncEnabled = false
-        self.operationQueue = OperationQueue()
-        self.validAPIPluginKey =  "awsAPIPlugin"
-        self.validAuthPluginKey = "awsCognitoAuthPlugin"
+
         self.storageEngineBehaviorFactory =
-        StorageEngine.init(isSyncEnabled:dataStoreConfiguration:databaseNameProvider:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
+        StorageEngine.init(
+            isSyncEnabled:
+                dataStoreConfiguration:
+                databaseNameProvider:
+                validAPIPluginKey:
+                validAuthPluginKey:
+                modelRegistryVersion:
+                userDefault:
+        )
         self.dataStorePublisher = DataStorePublisher()
         self.dispatchedModelSyncedEvents = [:]
     }
@@ -104,16 +100,25 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
          validAPIPluginKey: String,
          validAuthPluginKey: String) {
         self.modelRegistration = modelRegistration
-        self.dataStoreConfiguration = dataStoreConfiguration
+        self.configuration = InternalDatastoreConfiguration(
+            isSyncEnabled: false,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey,
+            pluginConfiguration: dataStoreConfiguration)
         self.databaseNameProvider = databaseNameProvider
-        self.operationQueue = operationQueue
-        self.isSyncEnabled = false
+
         self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
-        StorageEngine.init(isSyncEnabled:dataStoreConfiguration:databaseNameProvider:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
+        StorageEngine.init(
+            isSyncEnabled:
+                dataStoreConfiguration:
+                databaseNameProvider:
+                validAPIPluginKey:
+                validAuthPluginKey:
+                modelRegistryVersion:
+                userDefault:
+        )
         self.dataStorePublisher = dataStorePublisher
         self.dispatchedModelSyncedEvents = [:]
-        self.validAPIPluginKey = validAPIPluginKey
-        self.validAuthPluginKey = validAuthPluginKey
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -124,11 +129,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         
         for modelSchema in ModelRegistry.modelSchemas {
             dispatchedModelSyncedEvents[modelSchema.name] = AtomicValue(initialValue: false)
-            // `isEagerLoad` is true by default, unless the models contain the rootPath
-            // which is indication of the codegen that supports for lazy loading.
-            if isEagerLoad && ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil {
-                isEagerLoad = false
-            }
+            configuration.updateIsEagerLoad(modelSchema: modelSchema)
         }
         resolveSyncEnabled()
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
@@ -148,7 +149,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 if self.dataStorePublisher == nil {
                     self.dataStorePublisher = DataStorePublisher()
                 }
-                try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
+                try resolveStorageEngine(dataStoreConfiguration: configuration.pluginConfiguration)
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
                 try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
 
@@ -183,13 +184,15 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             return
         }
 
-        storageEngine = try storageEngineBehaviorFactory(isSyncEnabled,
-                                                         dataStoreConfiguration,
-                                                         databaseNameProvider,
-                                                         validAPIPluginKey,
-                                                         validAuthPluginKey,
-                                                         modelRegistration.version,
-                                                         UserDefaults.standard)
+        storageEngine = try storageEngineBehaviorFactory(
+            configuration.isSyncEnabled,
+            dataStoreConfiguration,
+            databaseNameProvider,
+            configuration.validAPIPluginKey,
+            configuration.validAuthPluginKey,
+            modelRegistration.version,
+            UserDefaults.standard
+        )
 
         setupStorageSink()
     }
@@ -197,7 +200,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     // MARK: Private
 
     private func resolveSyncEnabled() {
-        isSyncEnabled = ModelRegistry.hasSyncableModels
+        configuration.updateIsSyncEnabled(ModelRegistry.hasSyncableModels)
     }
 
     private func setupStorageSink() {
@@ -256,14 +259,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     public func reset() async {
-        if operationQueue != nil {
-            operationQueue = nil
-        }
         dispatchedModelSyncedEvents = [:]
-        if let listener = hubListener {
-            Amplify.Hub.removeListener(listener)
-            hubListener = nil
-        }
         if let resettable = storageEngine as? Resettable {
             log.verbose("Resetting storageEngine")
             await resettable.reset()

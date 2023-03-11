@@ -29,6 +29,8 @@ extension QueryOperator {
             return "between ? and ?"
         case .beginsWith, .contains:
             return "like ?"
+        case .notContains:
+            return "not like ?"
         }
     }
 
@@ -47,6 +49,8 @@ extension QueryOperator {
             return ["%\(value)%"]
         case .beginsWith(let value):
             return ["\(value)%"]
+        case .notContains(let value):
+            return ["%\(value)%"]
         }
     }
 }
