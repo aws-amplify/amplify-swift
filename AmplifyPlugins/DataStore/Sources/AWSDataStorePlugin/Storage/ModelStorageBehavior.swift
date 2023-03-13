@@ -8,8 +8,11 @@
 import Amplify
 
 protocol ModelStorageBehavior {
+
+    /// Setup the model store with the given schema
     func setUp(modelSchemas: [ModelSchema]) throws
 
+    /// Apply any data migration logic for the given schemas in the underlying data store.
     func applyModelMigrations(modelSchemas: [ModelSchema]) throws
 
     func save<M: Model>(_ model: M,

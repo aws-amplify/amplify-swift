@@ -9,6 +9,11 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
+/// Migrates `MutationSyncMetadata` to the new format.
+///
+/// Format of the `id` in `MutationSyncMetadata` has changed to support unique ids
+/// across mutiple model types. Earlier model id is repalced with id of the format `{modelName}|{modelId}`
+///
 class MutationSyncMetadataMigration: ModelMigration {
 
     weak var delegate: MutationSyncMetadataMigrationDelegate?
