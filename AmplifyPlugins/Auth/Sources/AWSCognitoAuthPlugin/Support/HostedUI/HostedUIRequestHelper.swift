@@ -116,6 +116,7 @@ struct HostedUIRequestHelper {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.httpBody = body.data(using: .utf8)
+        urlRequest.addHeaders(using: configuration)
         return urlRequest
     }
 
@@ -145,6 +146,7 @@ struct HostedUIRequestHelper {
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = "POST"
             urlRequest.httpBody = body.data(using: .utf8)
+            urlRequest.addHeaders(using: configuration)
             return urlRequest
         }
 
@@ -152,5 +154,16 @@ struct HostedUIRequestHelper {
         return content.replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "=", with: "")
+    }
+}
+
+private extension URLRequest {
+    mutating func addHeaders(using configuration: HostedUIConfigurationData) {
+        guard let clientSecret = configuration.clientSecret,
+              let value = "\(configuration.clientId):\(clientSecret)".data(using: .utf8) else {
+            return
+        }
+
+        setValue("Basic \(value.base64EncodedString())", forHTTPHeaderField: "Authorization")
     }
 }
