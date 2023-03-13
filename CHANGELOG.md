@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.6.0 (2023-03-13)
+
+### Features
+
+- **datastore**: add notContains query operator (#2789)
+
+### Bug Fixes
+
+- **Auth**: Adding missing Authorization header when a Client Secret is defined. (#2807)
+
 ## 2.5.0 (2023-03-08)
 
 ### Features
