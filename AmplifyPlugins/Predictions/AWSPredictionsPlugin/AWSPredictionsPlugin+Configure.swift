@@ -8,7 +8,6 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
-import AWSCore
 
 extension AWSPredictionsPlugin {
 
@@ -21,7 +20,7 @@ extension AWSPredictionsPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-
+        /*
         guard let jsonValueConfiguration = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError(PluginErrorMessage.decodeConfigurationError.errorDescription,
                                                        PluginErrorMessage.decodeConfigurationError.recoverySuggestion)
@@ -40,8 +39,10 @@ extension AWSPredictionsPlugin {
                   coreMLSerivce: coremlService,
                   authService: authService,
                   config: predictionsConfiguration)
+         */
     }
 
+    /*
     func configure(predictionsService: AWSPredictionsService,
                    coreMLSerivce: CoreMLPredictionBehavior,
                    authService: AWSAuthServiceBehavior,
@@ -53,4 +54,5 @@ extension AWSPredictionsPlugin {
         self.config = config
         self.queue = queue
     }
+     */
 }

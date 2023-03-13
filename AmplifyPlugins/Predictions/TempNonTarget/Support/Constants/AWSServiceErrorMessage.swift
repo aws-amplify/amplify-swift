@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSCore
 
 typealias AWSServiceErrorMessageString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
