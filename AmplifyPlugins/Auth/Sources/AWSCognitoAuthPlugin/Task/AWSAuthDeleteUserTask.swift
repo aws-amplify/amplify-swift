@@ -73,8 +73,7 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
             return
         }
         log.verbose("User not found, signing out")
-        let signOutData = SignOutEventData(
-            globalSignOut: true)
+        let signOutData = SignOutEventData(globalSignOut: true)
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
         await authStateMachine.send(event)
         _ = await taskHelper.didSignOut()
