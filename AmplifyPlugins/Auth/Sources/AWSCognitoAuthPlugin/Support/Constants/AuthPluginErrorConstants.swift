@@ -332,4 +332,8 @@ extension AuthPluginErrorConstants {
     Check if you are allowed to make this request based on the web ACL thats associated with your user pool. 
     """
 
+    static let concurrentModificationException: RecoverySuggestion = """
+    Make sure the requests sent are controlled and concurrent operations are handled properly
+    """
+
 }

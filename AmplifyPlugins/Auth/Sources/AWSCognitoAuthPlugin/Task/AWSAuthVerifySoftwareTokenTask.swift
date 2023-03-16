@@ -70,6 +70,5 @@ class AWSAuthVerifySoftwareTokenTask: AuthVerifySoftwareTokenTask, DefaultLogger
             throw AuthError.service("Unknown error", error)
         }
 
-
     }
 }
