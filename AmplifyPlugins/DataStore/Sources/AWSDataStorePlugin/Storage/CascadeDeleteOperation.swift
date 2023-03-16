@@ -181,27 +181,34 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [String]) async -> [(ModelName, Model)] {
         var associatedModels: [(ModelName, Model)] = []
         for (_, modelField) in modelSchema.fields {
-            guard modelField.hasAssociation,
-                  modelField.isOneToOne || modelField.isOneToMany,
-                  let associatedModelName = modelField.associatedModelName,
-                  let associatedField = modelField.associatedField,
-                  let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
+            guard
+                modelField.hasAssociation,
+                modelField.isOneToOne || modelField.isOneToMany,
+                let associatedModelName = modelField.associatedModelName,
+                let associatedField = modelField.associatedField,
+                let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName)
+            else {
                 continue
             }
             _log(
                 "[CascadeDelete.2] Querying for \(modelSchema.name)'s associated model \(associatedModelSchema.name)."
             )
-            let queriedModels = await queryAssociatedModels(associatedModelSchema: associatedModelSchema,
-                                                            associatedField: associatedField,
-                                                            ids: ids)
+            let queriedModels = await queryAssociatedModels(
+                associatedModelSchema: associatedModelSchema,
+                associatedField: associatedField,
+                ids: ids)
 
-            let associatedModelIds = queriedModels.map { $0.1.identifier(schema: associatedModelSchema).stringValue }
+            let associatedModelIds = queriedModels.map {
+                $0.1.identifier(schema: associatedModelSchema).stringValue
+            }
 
             _log("[CascadeDelete.2] Queried for \(associatedModelSchema.name), retrieved ids for deletion: \(associatedModelIds)")
 
             associatedModels.append(contentsOf: queriedModels)
-            associatedModels.append(contentsOf: await recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
-                                                                                   ids: associatedModelIds))
+            associatedModels.append(contentsOf: await recurseQueryAssociatedModels(
+                modelSchema: associatedModelSchema,
+                ids: associatedModelIds)
+            )
         }
         
         return associatedModels
@@ -239,29 +246,32 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     private func collapseResults<M: Model>(
         queryResult: DataStoreResult<[M]>?,
         deleteResult: DataStoreResult<[M]>?,
-        associatedModels: [(ModelName, Model)]) -> DataStoreResult<QueryAndDeleteResult<M>> {
-            guard let queryResult = queryResult else {
-                return .failure(.unknown("queryResult not set during transaction", "coding error", nil))
+        associatedModels: [(ModelName, Model)]
+    ) -> DataStoreResult<QueryAndDeleteResult<M>> {
+
+        guard let queryResult = queryResult else {
+            return .failure(.unknown("queryResult not set during transaction", "coding error", nil))
+        }
+
+        switch queryResult {
+        case .success(let models):
+            guard let deleteResult = deleteResult else {
+                return .failure(.unknown("deleteResult not set during transaction", "coding error", nil))
             }
-            switch queryResult {
-            case .success(let models):
-                guard let deleteResult = deleteResult else {
-                    return .failure(.unknown("deleteResult not set during transaction", "coding error", nil))
-                }
 
-                switch deleteResult {
-                case .success:
-                    _log("[CascadeDelete.3] Local cascade delete of \(modelSchema.name) successful!")
-                    return .success(QueryAndDeleteResult(deletedModels: models,
-                                                         associatedModels: associatedModels))
-                case .failure(let error):
-                    return .failure(error)
-                }
-
+            switch deleteResult {
+            case .success:
+                _log("[CascadeDelete.3] Local cascade delete of \(modelSchema.name) successful!")
+                return .success(QueryAndDeleteResult(deletedModels: models,
+                                                     associatedModels: associatedModels))
             case .failure(let error):
                 return .failure(error)
             }
+
+        case .failure(let error):
+            return .failure(error)
         }
+    }
 
     func syncIfNeededAndFinish(_ transactionResult: DataStoreResult<QueryAndDeleteResult<M>>) {
         switch transactionResult {

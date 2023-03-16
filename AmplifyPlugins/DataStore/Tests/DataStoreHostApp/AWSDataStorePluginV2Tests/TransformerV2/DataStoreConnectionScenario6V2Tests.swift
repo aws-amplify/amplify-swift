@@ -373,7 +373,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testCascadeDeleteBlogDeletesPostAndComments() async throws {
-        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
+        await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
         guard let blog = await saveBlog(name: "name"),
               let post = await savePost(title: "title", blog: blog),
