@@ -11,7 +11,7 @@ import Amplify
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
-
+import AWSClientRuntime
 import ClientRuntime
 
 extension AWSCognitoAuthPlugin {
@@ -87,6 +87,7 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+                credentialsProvider: DummyCredentialsProvider(),
                 endpointResolver: userPoolConfig.endpoint?.resolver,
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: userPoolConfig.region
@@ -249,3 +250,15 @@ extension AWSCognitoAuthPlugin {
 extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}
 
 extension CognitoIdentityClient: CognitoIdentityBehavior {}
+
+
+public struct DummyCredentialsProvider: CredentialsProvider {
+    /// Resolves `AWSCredentials` through custom means
+    public func getCredentials() async throws -> AWSClientRuntime.AWSCredentials {
+        return AWSCredentials(
+            accessKey: "ACCESS_KEY_ID",
+            secret: "SECRET_ACCESS_KEY",
+            expirationTimeout: 4234234234,
+            sessionToken: "SESSION_TOKEN")
+    }
+}
