@@ -166,4 +166,33 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             return try await task.value
         }
     }
+
+    public func associateSoftwareToken() async throws -> AuthAssociateSoftwareTokenResult {
+
+        let options = AuthAssociateSoftwareTokenRequest.Options()
+        let request = AuthAssociateSoftwareTokenRequest(options: options)
+        let task = AWSAuthAssociateSoftwareTokenTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthAssociateSoftwareTokenResult
+    }
+
+
+    public func verifySoftwareToken(with verificationCode: String) async throws -> AuthAssociateSoftwareTokenResult {
+
+        let options = AuthVerifySoftwareTokenRequest.Options()
+        let request = AuthVerifySoftwareTokenRequest(
+            verificationCode: verificationCode,
+            options: options)
+        let task = AWSAuthVerifySoftwareTokenTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthAssociateSoftwareTokenResult
+    }
 }

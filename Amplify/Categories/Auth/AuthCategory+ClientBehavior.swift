@@ -74,4 +74,12 @@ extension AuthCategory: AuthCategoryBehavior {
     ) async throws {
         try await plugin.confirmResetPassword(for: username, with: newPassword, confirmationCode: confirmationCode, options: options)
     }
+
+    public func associateSoftwareToken() async throws -> AuthAssociateSoftwareTokenResult {
+        try await plugin.associateSoftwareToken()
+    }
+
+    public func verifySoftwareToken(with verificationCode: String) async throws -> AuthAssociateSoftwareTokenResult {
+        try await plugin.verifySoftwareToken(with: verificationCode)
+    }
 }

@@ -125,4 +125,9 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - options: Parameters specific to plugin behavior
     func confirmResetPassword(for username: String, with newPassword: String, confirmationCode: String, options: AuthConfirmResetPasswordRequest.Options?) async throws
 
+
+    func associateSoftwareToken() async throws -> AuthAssociateSoftwareTokenResult
+
+    func verifySoftwareToken(with verificationCode: String) async throws -> AuthAssociateSoftwareTokenResult
+
 }

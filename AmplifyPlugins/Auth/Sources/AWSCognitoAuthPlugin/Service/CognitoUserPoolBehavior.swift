@@ -77,4 +77,13 @@ protocol CognitoUserPoolBehavior {
     /// Throws ConfirmDeviceOutputError
     func confirmDevice(input: ConfirmDeviceInput) async throws -> ConfirmDeviceOutputResponse
 
+    /// Creates a new request to associate a new software token for the user
+    /// Throws AssociateSoftwareTokenOutputError
+    func associateSoftwareToken(input: AssociateSoftwareTokenInput) async throws -> AssociateSoftwareTokenOutputResponse
+
+    /// Register a user's entered time-based one-time password (TOTP) code and mark the user's software token MFA status as "verified" if successful.
+    ///  Throws VerifySoftwareTokenOutputError
+    func verifySoftwareToken(input: VerifySoftwareTokenInput) async throws -> VerifySoftwareTokenOutputResponse
+
+
 }
