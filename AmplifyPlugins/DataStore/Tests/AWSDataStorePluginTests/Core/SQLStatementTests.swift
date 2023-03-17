@@ -1092,8 +1092,6 @@ class SQLStatementTests: XCTestCase {
           )
         """, statement.stringValue)
 
-        // "content" like ?
-        // or "title" like ?
         let variables = statement.variables
         XCTAssertEqual(variables[0] as? Int, 1)
         XCTAssertEqual(variables[1] as? Int, 0)
@@ -1327,8 +1325,6 @@ class SQLStatementTests: XCTestCase {
               )
             """
 
-        // "root"."content" like ?
-        // or "root"."title" like ?
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
