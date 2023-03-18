@@ -65,7 +65,6 @@ final class StorageEngine: StorageEngineBehavior {
         return [
             ModelSyncMetadata.schema,
             MutationEvent.schema,
-            MutationSyncMetadata.schema.name
             MutationSyncMetadata.schema
         ]
     }
