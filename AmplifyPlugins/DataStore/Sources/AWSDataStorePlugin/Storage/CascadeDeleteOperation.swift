@@ -88,11 +88,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         self.deleteInput = deleteInput
         self.completionForWithId = completionForWithId
         self.completionForWithFilter = completionForWithFilter
-        self.isDeveloperDefinedModel = !Set([
-            MutationEvent.modelName,
-            ModelSyncMetadata.modelName,
-            MutationSyncMetadata.modelName
-        ]).contains(modelSchema.name)
+        self.isDeveloperDefinedModel = StorageEngine
+            .systemModelSchemas
+            .contains { $0.name != modelSchema.name }
         super.init()
     }
 
@@ -162,7 +160,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
         
         let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
-        _log("[CascadeDelete.1] Deleting \(modelSchema.name) with identifiers: \(modelIds)")
+        logMessage("[CascadeDelete.1] Deleting \(modelSchema.name) with identifiers: \(modelIds)")
         
         associatedModels = await self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
 
@@ -190,7 +188,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             else {
                 continue
             }
-            _log(
+            logMessage(
                 "[CascadeDelete.2] Querying for \(modelSchema.name)'s associated model \(associatedModelSchema.name)."
             )
             let queriedModels = await queryAssociatedModels(
@@ -202,7 +200,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 $0.1.identifier(schema: associatedModelSchema).stringValue
             }
 
-            _log("[CascadeDelete.2] Queried for \(associatedModelSchema.name), retrieved ids for deletion: \(associatedModelIds)")
+            logMessage("[CascadeDelete.2] Queried for \(associatedModelSchema.name), retrieved ids for deletion: \(associatedModelIds)")
 
             associatedModels.append(contentsOf: queriedModels)
             associatedModels.append(contentsOf: await recurseQueryAssociatedModels(
@@ -261,7 +259,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
             switch deleteResult {
             case .success:
-                _log("[CascadeDelete.3] Local cascade delete of \(modelSchema.name) successful!")
+                logMessage("[CascadeDelete.3] Local cascade delete of \(modelSchema.name) successful!")
                 return .success(QueryAndDeleteResult(deletedModels: models,
                                                      associatedModels: associatedModels))
             case .failure(let error):
@@ -276,7 +274,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     func syncIfNeededAndFinish(_ transactionResult: DataStoreResult<QueryAndDeleteResult<M>>) {
         switch transactionResult {
         case .success(let queryAndDeleteResult):
-            _log(
+            logMessage(
                 "[CascadeDelete.4] sending a total of \(queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count) delete mutations"
             )
             switch deleteInput {
@@ -445,7 +443,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                syncEngine: RemoteSyncEngineBehavior,
                                dataStoreError: DataStoreError?,
                                completion: @escaping DataStoreCallback<Void>) {
-        _log("[CascadeDelete.4] Begin syncing \(models.count) \(modelSchema.name) model for deletion")
+        logMessage("[CascadeDelete.4] Begin syncing \(models.count) \(modelSchema.name) model for deletion")
         var graphQLFilterJSON: String?
         if let predicate = predicate {
             do {
@@ -506,7 +504,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         syncEngine.submit(mutationEvent, completion: completion)
     }
 
-    private func _log(
+    private func logMessage(
         _ message: @escaping @autoclosure () -> String,
         level log: (() -> String) -> Void = log.debug) {
             guard isDeveloperDefinedModel else { return }
