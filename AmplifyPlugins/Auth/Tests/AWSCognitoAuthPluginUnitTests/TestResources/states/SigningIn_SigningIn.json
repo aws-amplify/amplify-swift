@@ -19,6 +19,6 @@
         }
     },
     "AuthorizationState": {
-        "type": "AuthorizationState.SigningIn"
+        "type": "AuthorizationState.Configured"
     }
 }

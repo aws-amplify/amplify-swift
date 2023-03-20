@@ -31,7 +31,7 @@ extension Model {
     /// Returns the input used for mutations
     /// - Parameter modelSchema: model's schema
     /// - Returns: A key-value map of the GraphQL mutation input
-    func graphQLInputForMutation(_ modelSchema: ModelSchema) -> GraphQLInput {
+    func graphQLInputForMutation(_ modelSchema: ModelSchema, mutationType: GraphQLMutationType) -> GraphQLInput {
         var input: GraphQLInput = [:]
 
         // filter existing non-readonly fields
@@ -39,11 +39,16 @@ extension Model {
 
         for (modelField, modelFieldValue) in fields {
             let name = modelField.name
-
+            
             guard let value = modelFieldValue else {
-                // Special case for associated models when the value is `nil`, by setting all of the associated
-                // model's primary key fields (targetNames) to `nil`.
-                if case .model = modelField.type {
+                // Scenario: When there is no model field value, set `nil` for removal of values or deassociation.
+                // 1. It is unnessessary to set `nil` values for create mutations.
+                if mutationType == .create {
+                    continue
+                }
+                // 2. On update/delete mutations, set the current model's associated model's primary key fields (which
+                // are the targetNames) to `nil`. on the current model.
+                if case .model = modelField.type { // add it for "belongs-to" and "has-one" associations.
                     let fieldNames = getFieldNameForAssociatedModels(modelField: modelField)
                     for fieldName in fieldNames {
                         // Only set to `nil` if it has not been set already. For hasOne relationships, where the
@@ -51,15 +56,16 @@ extension Model {
                         // cannot guarantee which field is processed first, thus if there is a value for the explicit
                         // field and was already set, don't overwrite it.
                         if input[fieldName] == nil {
-                            // Always setting the value to `nil` is not necessary for create mutations, since leaving it
-                            // out will also reflect that there's no associated model. However, we always set it to `nil`
-                            // to account for the update mutation use cases where the caller may be de-associating the
-                            // model from the associated model, which is why the `nil` is required in input variables
-                            // to persist the removal the association.
+                            // we always set it to `nil` to account for the update mutation use cases where the caller
+                            // may be de-associating the model from the associated model, which is why the `nil` is
+                            // required in input variables to persist the removal the association.
                             input.updateValue(nil, forKey: fieldName)
                         }
                     }
+                } else if case .collection = modelField.type { // skip all "has-many"
+                    continue
                 } else {
+                    // 3. Set field values to `nil` for removal of values.
                     input.updateValue(nil, forKey: name)
                 }
                 
@@ -82,9 +88,10 @@ extension Model {
                 // get the associated model target names and their values
                 let associatedModelIds = associatedModelIdentifierFields(fromModelValue: value,
                                                                          field: modelField,
-                                                                         associatedModelName: associateModelName)
+                                                                         associatedModelName: associateModelName,
+                                                                         mutationType: mutationType)
                 for (fieldName, fieldValue) in associatedModelIds {
-                    input[fieldName] = fieldValue
+                    input.updateValue(fieldValue, forKey: fieldName)
                 }
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
@@ -152,25 +159,26 @@ extension Model {
     ///            and `value` its value in the associated model
     private func associatedModelIdentifierFields(fromModelValue value: Any,
                                                  field: ModelField,
-                                                 associatedModelName: String) -> [(String, Persistable)] {
+                                                 associatedModelName: String,
+                                                 mutationType: GraphQLMutationType) -> [(String, Persistable?)] {
         guard let associateModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
             preconditionFailure("Associated model \(associatedModelName) not found.")
         }
 
         let fieldNames = getFieldNameForAssociatedModels(modelField: field)
-        let values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
-
-        // if the field is required, the associated field keys and values should match
-        if fieldNames.count != values.count, field.isRequired {
-            preconditionFailure(
-                """
-                Associated model target names and values for field \(field.name) of model \(modelName) mismatch.
-                There is a possibility that is an issue with the generated models.
-                """
-            )
+        var values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
+        if values.count != fieldNames.count {
+            values = [Persistable?](repeating: nil, count: fieldNames.count)
         }
 
-        return Array(zip(fieldNames, values))
+        let associatedModelIdentifiers = zip(fieldNames, values).map { ($0.0, $0.1)}
+        if mutationType != .update {
+            return associatedModelIdentifiers.compactMap { key, value in
+                value.map { (key, $0) }
+            }
+        } else {
+            return associatedModelIdentifiers
+        }
     }
 
     /// Given a model and its schema, returns the values of its identifier (primary key).
@@ -179,12 +187,28 @@ extension Model {
     ///   - value: model value
     ///   - modelSchema: model's schema
     /// - Returns: array of values of its primary key
-    private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable] {
+    private func getModelIdentifierValues(
+        from value: Any,
+        modelSchema: ModelSchema
+    ) -> [Persistable?] {
         if let modelValue = value as? Model {
             return modelValue.identifier(schema: modelSchema).values
         } else if let optionalModel = value as? Model?,
                   let modelValue = optionalModel {
             return modelValue.identifier(schema: modelSchema).values
+        } else if let lazyModel = value as? (any _LazyReferenceValue) {
+            switch lazyModel._state {
+            case .notLoaded(let identifiers):
+                if let identifiers = identifiers {
+                    return identifiers.map { identifier in
+                        return identifier.value
+                    }
+                }
+            case .loaded(let model):
+                if let model = model {
+                    return model.identifier(schema: modelSchema).values
+                }
+            }
         } else if let value = value as? [String: JSONValue] {
             var primaryKeyValues = [Persistable]()
             for field in modelSchema.primaryKey.fields {
@@ -217,7 +241,7 @@ extension Model {
         if let jsonModel = self as? JSONValueHolder {
             return jsonModel.jsonValue(for: modelFieldName, modelSchema: modelSchema) ?? nil
         } else {
-            return self[modelFieldName] ?? nil
+            return self[modelFieldName] ?? self["_\(modelFieldName)"] ?? nil
         }
     }
 }

@@ -10,7 +10,9 @@ import SQLite
 
 extension SQLiteStorageEngineAdapter {
 
-    func save(untypedModel: Model, completion: DataStoreCallback<Model>) {
+    func save(untypedModel: Model,
+              eagerLoad: Bool = true,
+              completion: DataStoreCallback<Model>) {
         guard let connection = connection else {
             completion(.failure(.nilSQLiteConnection()))
             return
@@ -33,8 +35,6 @@ extension SQLiteStorageEngineAdapter {
             let shouldUpdate = try exists(modelSchema,
                                           withIdentifier: untypedModel.identifier(schema: modelSchema))
 
-            // TODO serialize result and create a new instance of the model
-            // (some columns might be auto-generated after DB insert/update)
             if shouldUpdate {
                 let statement = UpdateStatement(model: untypedModel, modelSchema: modelSchema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -42,8 +42,23 @@ extension SQLiteStorageEngineAdapter {
                 let statement = InsertStatement(model: untypedModel, modelSchema: modelSchema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
-
-            completion(.success(untypedModel))
+            
+            query(modelSchema: modelSchema,
+                  predicate: untypedModel.identifier(schema: modelSchema).predicate,
+                  eagerLoad: eagerLoad) {
+                switch $0 {
+                case .success(let result):
+                    if let saved = result.first {
+                        completion(.success(saved))
+                    } else {
+                        completion(.failure(.nonUniqueResult(model: modelSchema.name,
+                                                             count: result.count)))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+            
         } catch {
             completion(.failure(causedBy: error))
         }
@@ -51,15 +66,20 @@ extension SQLiteStorageEngineAdapter {
 
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate? = nil,
+               eagerLoad: Bool = true,
                completion: DataStoreCallback<[Model]>) {
         guard let connection = connection else {
             completion(.failure(.nilSQLiteConnection()))
             return
         }
         do {
-            let statement = SelectStatement(from: modelSchema, predicate: predicate)
+            let statement = SelectStatement(from: modelSchema,
+                                            predicate: predicate,
+                                            eagerLoad: eagerLoad)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-            let result: [Model] = try rows.convertToUntypedModel(using: modelSchema, statement: statement)
+            let result: [Model] = try rows.convertToUntypedModel(using: modelSchema,
+                                                                 statement: statement,
+                                                                 eagerLoad: eagerLoad)
             completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))

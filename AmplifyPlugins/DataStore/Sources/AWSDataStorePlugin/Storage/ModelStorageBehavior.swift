@@ -8,17 +8,22 @@
 import Amplify
 
 protocol ModelStorageBehavior {
+
+    /// Setup the model store with the given schema
     func setUp(modelSchemas: [ModelSchema]) throws
 
+    /// Apply any data migration logic for the given schemas in the underlying data store.
     func applyModelMigrations(modelSchemas: [ModelSchema]) throws
 
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition: QueryPredicate?,
+                        eagerLoad: Bool,
                         completion: @escaping DataStoreCallback<M>)
 
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
+                        eagerLoad: Bool,
                         completion: @escaping DataStoreCallback<M>)
 
     @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")
@@ -43,6 +48,7 @@ protocol ModelStorageBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>)
 
     func query<M: Model>(_ modelType: M.Type,
@@ -50,6 +56,7 @@ protocol ModelStorageBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>)
 
 }

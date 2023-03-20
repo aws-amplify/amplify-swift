@@ -130,10 +130,14 @@ extension GraphQLConnectionScenario3Tests {
 
         let post = Post3.keys
         let predicate = post.id == uuid && post.title == uniqueTitle
-        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate))
-        guard case let .success(posts) = graphQLResponse else {
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate, limit: 1000))
+        guard case var .success(posts) = graphQLResponse else {
             XCTFail("Missing successful response")
             return
+        }
+        
+        while posts.count == 0 && posts.hasNextPage() {
+            posts = try await posts.getNextPage()
         }
         XCTAssertEqual(posts.count, 1)
         guard let singlePost = posts.first else {
@@ -155,14 +159,18 @@ extension GraphQLConnectionScenario3Tests {
             XCTFail("Could not create comment")
             return
         }
+
         let predicate = Comment3.keys.postID.eq(post.id)
-        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate))
-        switch result {
-        case .success(let comments):
-            XCTAssertEqual(comments.count, 1)
-        case .failure(let response):
-            XCTFail("Failed with: \(response)")
+        guard case .success(var comments) = try await Amplify.API.query(request: .list(Comment3.self, where: predicate))
+        else {
+            XCTFail("Failed to retrieve comments")
+            return
         }
+
+        while comments.count == 0 && comments.hasNextPage() {
+            comments = try await comments.getNextPage()
+        }
+        XCTAssertEqual(comments.count, 1)
     }
 
     /// Test paginated list query returns a List containing pagination functionality. This test also aggregates page
@@ -189,7 +197,7 @@ extension GraphQLConnectionScenario3Tests {
         }
         var results: List<Comment3>?
         let predicate = Comment3.keys.postID.eq(post.id)
-        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 1))
+        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 100))
         switch result {
         case .success(let comments):
             results = comments

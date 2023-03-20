@@ -26,30 +26,33 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     }
 
     func intercept(_ request: URLRequest) async throws -> URLRequest {
-        guard let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
-            throw APIError.unknown("Could not get mutable request", "")
-        }
-        guard let url = mutableRequest.url else {
+        var request = request
+
+        guard let url = request.url else {
             throw APIError.unknown("Could not get url from mutable request", "")
         }
         guard let host = url.host else {
             throw APIError.unknown("Could not get host from mutable request", "")
         }
 
-        mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson, forHTTPHeaderField: URLRequestConstants.Header.contentType)
-        mutableRequest.setValue(host, forHTTPHeaderField: "host")
-        mutableRequest.setValue(AWSAPIPluginsCore.baseUserAgent(), forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        request.setValue(URLRequestConstants.ContentType.applicationJson, forHTTPHeaderField: URLRequestConstants.Header.contentType)
+        request.setValue(host, forHTTPHeaderField: "host")
+        request.setValue(AWSAPIPluginsCore.baseUserAgent(), forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
-        let httpMethod = HttpMethodType(rawValue: mutableRequest.httpMethod.uppercased()) ?? .get
+        let httpMethod = (request.httpMethod?.uppercased())
+            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
+
+        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
 
         let requestBuilder = SdkHttpRequestBuilder()
             .withHost(host)
             .withPath(url.path)
+            .withQueryItems(queryItems)
             .withMethod(httpMethod)
             .withPort(443)
             .withProtocol(.https)
-            .withHeaders(.init(mutableRequest.allHTTPHeaderFields ?? [:]))
-            .withBody(.data(mutableRequest.httpBody))
+            .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
+            .withBody(.data(request.httpBody))
 
         let signingName: String
         switch endpointType {
@@ -57,21 +60,22 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
             signingName = URLRequestConstants.appSyncServiceName
         case .rest:
             signingName = URLRequestConstants.apiGatewayServiceName
-
         }
 
-        guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(requestBuilder: requestBuilder,
-                                                                                    credentialsProvider: iamCredentialsProvider.getCredentialsProvider(),
-                                                                                    signingName: signingName,
-                                                                                    signingRegion: region,
-                                                                                    date: Date()) else {
+        guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
+            requestBuilder: requestBuilder,
+            credentialsProvider: iamCredentialsProvider.getCredentialsProvider(),
+            signingName: signingName,
+            signingRegion: region,
+            date: Date()
+        ) else {
             throw APIError.unknown("Unable to sign request", "")
         }
 
         for header in urlRequest.headers.headers {
-            mutableRequest.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
+            request.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
         }
 
-        return mutableRequest as URLRequest
+        return request
     }
 }

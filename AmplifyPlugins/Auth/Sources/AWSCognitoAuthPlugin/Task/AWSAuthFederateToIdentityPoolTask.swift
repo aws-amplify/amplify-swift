@@ -17,7 +17,7 @@ public extension HubPayload.EventName.Auth {
     static let federateToIdentityPoolAPI = "Auth.federatedToIdentityPool"
 }
 
-public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
+public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, DefaultLogger {
 
     private let request: AuthFederateToIdentityPoolRequest
     private let authStateMachine: AuthStateMachine
@@ -34,6 +34,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
     }
 
     public func execute() async throws -> FederateToIdentityPoolResult {
+        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
         let state = await authStateMachine.currentState
         guard case .configured(let authNState, let authZState) = state  else {
@@ -55,6 +56,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
 
         await sendStartFederatingToIdentityPoolEvent()
         let stateSequences = await authStateMachine.listen()
+        log.verbose("Waiting for federation to complete")
         for await state in stateSequences {
             guard  case .configured(let authNState, let authZState) = state else {
                 continue

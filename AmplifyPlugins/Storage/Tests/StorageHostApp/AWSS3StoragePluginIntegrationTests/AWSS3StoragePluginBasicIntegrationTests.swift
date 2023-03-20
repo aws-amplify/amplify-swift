@@ -8,9 +8,7 @@
 import XCTest
 @testable import Amplify
 import AWSS3StoragePlugin
-import var CommonCrypto.CC_MD5_DIGEST_LENGTH
-import func CommonCrypto.CC_MD5
-import typealias CommonCrypto.CC_LONG
+import CryptoKit
 
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
@@ -185,7 +183,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with the key retrieved
     func testListFromPublic() async throws {
         let key = UUID().uuidString
-        let expectedMD5Hex = "\"\(MD5(string: key).map { String(format: "%02hhx", $0) }.joined())\""
+        let expectedMD5Hex = "\"\(key.md5())\""
         await uploadData(key: key, dataString: key)
         let options = StorageListRequest.Options(accessLevel: .guest,
                                                  targetIdentityId: nil,
@@ -348,24 +346,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
     }
+}
 
-    // Copied from accepted answer here:
-    // https://stackoverflow.com/questions/32163848/how-can-i-convert-a-string-to-an-md5-hash-in-ios-using-swift
-    func MD5(string: String) -> Data {
-        let length = Int(CC_MD5_DIGEST_LENGTH)
-        let messageData = string.data(using: .utf8)!
-        var digestData = Data(count: length)
-
-        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
-            messageData.withUnsafeBytes { messageBytes -> UInt8 in
-                if let messageBytesBaseAddress = messageBytes.baseAddress,
-                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
-                    let messageLength = CC_LONG(messageData.count)
-                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
-                }
-                return 0
-            }
-        }
-        return digestData
+private extension String {
+    func md5() -> String {
+        let digest = Insecure.MD5.hash(data: data(using: .utf8) ?? Data())
+        return digest.map { String(format: "%02hhx", $0) }.joined()
     }
 }

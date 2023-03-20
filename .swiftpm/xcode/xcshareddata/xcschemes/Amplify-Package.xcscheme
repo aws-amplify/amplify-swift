@@ -280,20 +280,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPinpointAnalyticsPluginTests"
-               BuildableName = "AWSPinpointAnalyticsPluginTests"
-               BlueprintName = "AWSPinpointAnalyticsPluginTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSPluginsCoreTests"
                BuildableName = "AWSPluginsCoreTests"
                BlueprintName = "AWSPluginsCoreTests"
@@ -325,6 +311,34 @@
                BlueprintIdentifier = "AmplifyAsyncTesting"
                BuildableName = "AmplifyAsyncTesting"
                BlueprintName = "AmplifyAsyncTesting"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalAWSPinpoint"
+               BuildableName = "InternalAWSPinpoint"
+               BlueprintName = "InternalAWSPinpoint"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPinpointPushNotificationsPlugin"
+               BuildableName = "AWSPinpointPushNotificationsPlugin"
+               BlueprintName = "AWSPinpointPushNotificationsPlugin"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -458,6 +472,26 @@
                BlueprintIdentifier = "AmplifyAsyncTestingTests"
                BuildableName = "AmplifyAsyncTestingTests"
                BlueprintName = "AmplifyAsyncTestingTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalAWSPinpointUnitTests"
+               BuildableName = "InternalAWSPinpointUnitTests"
+               BlueprintName = "InternalAWSPinpointUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPinpointPushNotificationsPluginUnitTests"
+               BuildableName = "AWSPinpointPushNotificationsPluginUnitTests"
+               BlueprintName = "AWSPinpointPushNotificationsPluginUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

@@ -18,7 +18,8 @@ public extension HubPayload.EventName.Auth {
     static let clearedFederationToIdentityPoolAPI = "Auth.federationToIdentityPoolCleared"
 }
 
-public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask {
+public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask,
+                                                       DefaultLogger {
     private let authStateMachine: AuthStateMachine
     private let clearFederationHelper: ClearFederationOperationHelper
     private let taskHelper: AWSAuthTaskHelper
@@ -34,7 +35,10 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
     }
 
     public func execute() async throws {
+        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
-        return try await clearFederationHelper.clearFederation(authStateMachine)
+        try await clearFederationHelper.clearFederation(authStateMachine)
+        log.verbose("Cleared federation")
+        return
     }
 }

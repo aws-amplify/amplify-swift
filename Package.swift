@@ -4,10 +4,11 @@ import PackageDescription
 
 let platforms: [SupportedPlatform] = [.iOS(.v13), .macOS(.v10_15)]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.6.0"),
-    .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.6.1"),
+    .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.0.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.13.2"),
-    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
+    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.0.0")
 ]
 
 let amplifyTargets: [Target] = [
@@ -262,15 +263,35 @@ let geoTargets: [Target] = [
     )
 ]
 
-let analyticsTargets: [Target] = [
+let internalPinpointTargets: [Target] = [
     .target(
-        name: "AWSPinpointAnalyticsPlugin",
+        name: "InternalAWSPinpoint",
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
-            .product(name: "AWSPinpoint", package: "aws-sdk-swift")],
+            .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
+            .product(name: "AmplifyUtilsNotifications", package: "amplify-swift-utils-notifications")
+        ],
+        path: "AmplifyPlugins/Internal/Sources/InternalAWSPinpoint"
+    ),
+    .testTarget(
+        name: "InternalAWSPinpointUnitTests",
+        dependencies: [
+            "InternalAWSPinpoint",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Internal/Tests/InternalAWSPinpointUnitTests"
+    )
+]
+
+let analyticsTargets: [Target] = [
+    .target(
+        name: "AWSPinpointAnalyticsPlugin",
+        dependencies: [
+            .target(name: "InternalAWSPinpoint")
+        ],
         path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin"
     ),
     .testTarget(
@@ -283,8 +304,26 @@ let analyticsTargets: [Target] = [
     )
 ]
 
+let pushNotificationsTargets: [Target] = [
+    .target(
+        name: "AWSPinpointPushNotificationsPlugin",
+        dependencies: [
+            .target(name: "InternalAWSPinpoint")
+        ],
+        path: "AmplifyPlugins/Notifications/Push/Sources/AWSPinpointPushNotificationsPlugin"
+    ),
+    .testTarget(
+        name: "AWSPinpointPushNotificationsPluginUnitTests",
+        dependencies: [
+            "AWSPinpointPushNotificationsPlugin",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Notifications/Push/Tests/AWSPinpointPushNotificationsPluginUnitTests"
+    )
+]
+
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets +
-                        geoTargets + analyticsTargets
+                        geoTargets + analyticsTargets + pushNotificationsTargets + internalPinpointTargets
 
 let package = Package(
     name: "Amplify",
@@ -321,6 +360,10 @@ let package = Package(
         .library(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
+        ),
+        .library(
+            name: "AWSPinpointPushNotificationsPlugin",
+            targets: ["AWSPinpointPushNotificationsPlugin"]
         )
     ],
     dependencies: dependencies,

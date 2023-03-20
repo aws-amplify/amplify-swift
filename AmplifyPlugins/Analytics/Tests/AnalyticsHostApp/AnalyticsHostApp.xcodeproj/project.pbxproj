@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C2E096829551E3100673FF9 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2E096729551E3100673FF9 /* Amplify */; };
+		5C2E096A29551E3F00673FF9 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2E096929551E3F00673FF9 /* AWSPinpointAnalyticsPlugin */; };
+		5C2E096C2955210C00673FF9 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2E096B2955210C00673FF9 /* AWSPluginsCore */; };
 		6857646028AE94D9000CE2E9 /* AnalyticsHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857645F28AE94D9000CE2E9 /* AnalyticsHostAppApp.swift */; };
 		6857646228AE94D9000CE2E9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857646128AE94D9000CE2E9 /* ContentView.swift */; };
 		6857647928AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
-		6857648528AE97FF000CE2E9 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 6857648428AE97FF000CE2E9 /* Amplify */; };
-		6857648728AE97FF000CE2E9 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 6857648628AE97FF000CE2E9 /* AWSPinpointAnalyticsPlugin */; };
 		6857648928AE9951000CE2E9 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857648828AE9951000CE2E9 /* TestConfigHelper.swift */; };
 		9737697629519E050074B63A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697029519DEC0074B63A /* AsyncTesting.swift */; };
 		9737697729519E050074B63A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697129519DEC0074B63A /* AsyncExpectation.swift */; };
@@ -42,12 +43,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5C2E096629551CDD00673FF9 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 		6857645C28AE94D9000CE2E9 /* AnalyticsHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnalyticsHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6857645F28AE94D9000CE2E9 /* AnalyticsHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHostAppApp.swift; sourceTree = "<group>"; };
 		6857646128AE94D9000CE2E9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6857647628AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntegrationTests.swift; sourceTree = "<group>"; };
-		6857648128AE96B1000CE2E9 /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
 		6857648828AE9951000CE2E9 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		9737697029519DEC0074B63A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		9737697129519DEC0074B63A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
@@ -62,8 +63,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6857648528AE97FF000CE2E9 /* Amplify in Frameworks */,
-				6857648728AE97FF000CE2E9 /* AWSPinpointAnalyticsPlugin in Frameworks */,
+				5C2E096829551E3100673FF9 /* Amplify in Frameworks */,
+				5C2E096A29551E3F00673FF9 /* AWSPinpointAnalyticsPlugin in Frameworks */,
+				5C2E096C2955210C00673FF9 /* AWSPluginsCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,7 +130,7 @@
 		6857648028AE9688000CE2E9 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				6857648128AE96B1000CE2E9 /* amplify-ios */,
+				5C2E096629551CDD00673FF9 /* amplify-swift */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -177,8 +179,9 @@
 			);
 			name = AnalyticsHostApp;
 			packageProductDependencies = (
-				6857648428AE97FF000CE2E9 /* Amplify */,
-				6857648628AE97FF000CE2E9 /* AWSPinpointAnalyticsPlugin */,
+				5C2E096729551E3100673FF9 /* Amplify */,
+				5C2E096929551E3F00673FF9 /* AWSPinpointAnalyticsPlugin */,
+				5C2E096B2955210C00673FF9 /* AWSPluginsCore */,
 			);
 			productName = AnalyticsHostApp;
 			productReference = 6857645C28AE94D9000CE2E9 /* AnalyticsHostApp.app */;
@@ -659,13 +662,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6857648428AE97FF000CE2E9 /* Amplify */ = {
+		5C2E096729551E3100673FF9 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
 		};
-		6857648628AE97FF000CE2E9 /* AWSPinpointAnalyticsPlugin */ = {
+		5C2E096929551E3F00673FF9 /* AWSPinpointAnalyticsPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSPinpointAnalyticsPlugin;
+		};
+		5C2E096B2955210C00673FF9 /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPluginsCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

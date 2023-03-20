@@ -114,8 +114,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
-        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: self,
-                                                                                 modelSchemas: modelSchemas)
+        let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
+            storageAdapter: self,
+            modelSchemas: modelSchemas)
         let modelMigration = MutationSyncMetadataMigration(delegate: delegate)
         let modelMigrations = ModelMigrations(modelMigrations: [modelMigration])
         do {
@@ -126,11 +127,22 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     // MARK: - Save
-    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
-         save(model, modelSchema: model.schema, condition: condition, completion: completion)
+    func save<M: Model>(_ model: M,
+                        condition: QueryPredicate? = nil,
+                        eagerLoad: Bool = true,
+                        completion: @escaping DataStoreCallback<M>) {
+         save(model,
+              modelSchema: model.schema,
+              condition: condition,
+              eagerLoad: eagerLoad,
+              completion: completion)
      }
 
-    func save<M: Model>(_ model: M, modelSchema: ModelSchema, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition: QueryPredicate? = nil,
+                        eagerLoad: Bool = true,
+                        completion: DataStoreCallback<M>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
@@ -175,7 +187,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
 
             // load the recent saved instance and pass it back to the callback
-            query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
+            query(modelType, modelSchema: modelSchema,
+                  predicate: model.identifier(schema: modelSchema).predicate,
+                  eagerLoad: eagerLoad) {
                 switch $0 {
                 case .success(let result):
                     if let saved = result.first {
@@ -285,12 +299,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
+                         eagerLoad: Bool = true,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
               modelSchema: modelType.schema,
               predicate: predicate,
               sort: sort,
               paginationInput: paginationInput,
+              eagerLoad: eagerLoad,
               completion: completion)
     }
 
@@ -299,6 +315,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
+                         eagerLoad: Bool = true,
                          completion: DataStoreCallback<[M]>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
@@ -308,11 +325,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let statement = SelectStatement(from: modelSchema,
                                             predicate: predicate,
                                             sort: sort,
-                                            paginationInput: paginationInput)
+                                            paginationInput: paginationInput,
+                                            eagerLoad: eagerLoad)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType,
                                                withSchema: modelSchema,
-                                               using: statement)
+                                               using: statement,
+                                               eagerLoad: eagerLoad)
             completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))

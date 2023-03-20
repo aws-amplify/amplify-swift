@@ -35,7 +35,7 @@ public struct AnalyticsUserProfile {
     public init(name: String? = nil,
                 email: String? = nil,
                 plan: String? = nil,
-                location: Location?,
+                location: Location? = nil,
                 properties: AnalyticsProperties? = nil) {
         self.name = name
         self.email = email
@@ -48,46 +48,11 @@ public struct AnalyticsUserProfile {
 extension AnalyticsUserProfile {
 
     /// Location specific data
-    public struct Location {
+    public typealias Location = UserProfileLocation
+}
 
-        /// The user's latitude
-        public var latitude: Double?
-
-        /// The user's longitude
-        public var longitude: Double?
-
-        /// The user's postal code
-        public var postalCode: String?
-
-        /// The user's city
-        public var city: String?
-
-        /// The user's region
-        public var region: String?
-
-        /// The user's country
-        public var country: String?
-
-        /// Initializer
-        /// - Parameters:
-        ///   - latitude: The user's latitude
-        ///   - longitude: The user's longitude
-        ///   - postalCode: The user's postal code
-        ///   - city: The user's city
-        ///   - region: The user's region
-        ///   - country: The user's country
-        public init(latitude: Double? = nil,
-                    longitude: Double? = nil,
-                    postalCode: String? = nil,
-                    city: String? = nil,
-                    region: String? = nil,
-                    country: String? = nil) {
-            self.latitude = latitude
-            self.longitude = longitude
-            self.postalCode = postalCode
-            self.city = city
-            self.region = region
-            self.country = country
-        }
+extension AnalyticsUserProfile: UserProfile {
+    public var customProperties: [String: UserProfilePropertyValue]? {
+        properties as? [String: UserProfilePropertyValue]
     }
 }

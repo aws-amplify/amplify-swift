@@ -21,6 +21,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
         ModelRegistry.register(modelType: Post4.self)
         ModelRegistry.register(modelType: Comment4.self)
         ModelListDecoderRegistry.registerDecoder(AppSyncListDecoder.self)
+        ModelProviderRegistry.registerDecoder(AppSyncModelDecoder.self)
 
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy

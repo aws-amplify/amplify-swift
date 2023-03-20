@@ -2,14 +2,15 @@ opt_out_usage
 default_platform(:ios)
 
 platform :ios do
-  before_all do 
-    # Perform a fetch before inferring the next version 
+  before_all do
+    # Perform a fetch before inferring the next version
     # to reduce race conditions with simultaneous pipelines attempting to create the same tag
     sh('git', 'fetch', '--tags', '-f')
     sh('git', 'fetch')
   end
+
   desc "Create a pre-release version by pushing a tag to GitHub"
-  lane :unstable do 
+  lane :unstable do
     next_version = calculate_next_canary_version
 
     UI.message("Releasing unstable version: #{next_version}")
@@ -22,7 +23,7 @@ platform :ios do
 
   end
 
-  desc "Create a release version by building and committing a changelog, pushing a tag to GitHub"  
+  desc "Create a release version by building and committing a changelog, pushing a tag to GitHub"
   lane :release do
     next_version, commits = calculate_next_release_version
 
@@ -33,7 +34,7 @@ platform :ios do
 
     changelog = build_changelog(version: next_version, commits: commits)
 
-    # Commit and push 
+    # Commit and push
     release_commit(version: next_version)
 
     # Create tag and push to origin
@@ -47,7 +48,7 @@ platform :ios do
     version = options[:version].to_s
     set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "amplifyVersion", value: version)
   end
-  
+
   desc "Commit and push"
   private_lane :release_commit do |options|
     next_version = options[:version]
@@ -61,11 +62,11 @@ platform :ios do
     # push to origin
     sh('git', 'push', 'origin', 'release')
   end
-  
+
   desc "Tag in git and push to GitHub"
   private_lane :add_tag do |options|
     next_version = options[:version]
-    next_tag = "v#{next_version}"
+    next_tag = "#{next_version}"
 
     add_git_tag(tag: next_tag)
     push_git_tags(tag: next_tag)
@@ -75,7 +76,7 @@ platform :ios do
   private_lane :post_release do |options|
     version = options[:version].to_s
     changelog = options[:changelog]
-    tag = "v#{version}"
+    tag = "#{version}"
   
     sh('bundle', 'exec', 'swift', 'package', 'update')
 

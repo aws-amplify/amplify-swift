@@ -30,8 +30,8 @@ struct InitiateAuthDeviceSRP: Action {
 
             // Get device metadata
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: environment,
-                with: username)
+                for: username,
+                with: environment)
 
             let srpStateData = SRPStateData(
                 username: username,
@@ -39,7 +39,6 @@ struct InitiateAuthDeviceSRP: Action {
                 NHexValue: nHexValue,
                 gHexValue: gHexValue,
                 srpKeyPair: srpKeyPair,
-                deviceMetadata: deviceMetadata,
                 clientTimestamp: Date())
 
             let request = RespondToAuthChallengeInput.deviceSRP(

@@ -22,7 +22,8 @@ final class MutationEventClearState {
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
                              sort: [sort],
-                             paginationInput: nil) { result in
+                             paginationInput: nil,
+                             eagerLoad: true) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     log.error("Failed on clearStateOutgoingMutations: \(dataStoreError)")
@@ -42,7 +43,7 @@ final class MutationEventClearState {
         for mutationEvent in mutationEvents {
             var inProcessEvent = mutationEvent
             inProcessEvent.inProcess = false
-            storageAdapter.save(inProcessEvent, condition: nil, completion: { result in
+            storageAdapter.save(inProcessEvent, condition: nil, eagerLoad: true, completion: { result in
                 switch result {
                 case .success:
                     numMutationEventsUpdated += 1

@@ -1,5 +1,87 @@
 # Changelog
 
+## 2.6.0 (2023-03-13)
+
+### Features
+
+- **datastore**: add notContains query operator (#2789)
+
+### Bug Fixes
+
+- **Auth**: Adding missing Authorization header when a Client Secret is defined. (#2807)
+
+## 2.5.0 (2023-03-08)
+
+### Features
+
+**PushNotifications**: Add Amplify Push Notifications category and AWSPinpoint Push Notifications plugin. [(#2794)](https://github.com/aws-amplify/amplify-swift/pull/2794)
+
+The **Push Notifications** category allows you to integrate push notifications in your app with Amazon Pinpoint targeting, campaign, and journey management support. You can segment your users, trigger push notifications to your app, and record metrics in Pinpoint when users receive or open notifications.  We use Amazon Pinpoint since it helps you to create messaging campaigns and journeys targeted to specific user segments or demographics and collect interaction metrics with push notifications. 
+
+## 2.4.2 (2023-03-08)
+
+### Bug Fixes
+
+- **api**: Remove optional cleanUp() method from AWSAPIPlugin.reset() (#2585)
+
+## 2.4.1 (2023-03-06)
+
+### Bug Fixes
+
+- **datastore**: mutation event got ignored while executing parallel saving (#2781)
+- upgrade to aws-sdk-swift v0.6.1 (#2774)
+- **auth**: Build failure due to typo in device binding (#2719)
+- **auth**: Device binding add retry incase of device not found (#2699)
+- **auth**: Pass deviceMetadata in RespondToAuthChallenge for signIn challenges
+- **auth**: Remove static deviceMetaData in auth flow (#2694)
+- **api**: build selection set bottom up (#2763)
+
+## 2.4.0 (2023-02-08)
+
+### Features
+
+- DataStore and API Lazy Loading with Custom Selection Set (#2583)
+
+### Bug Fixes
+
+- **test**: DS transformer V2 tests should be update mutation on existing model (#2753)
+- **test**: compare model identifier for deletion events (#2752)
+- **datastore**: load hasOne and belongsTo lazy reference with composite key (#2737)
+- DefaultModelProvider return nil from not loaded state (#2746)
+- CPK uni-directional has-many lazy list load (#2730)
+- do not set nil values for create mutation graphQL input translation (#2701)
+- Add missing PropertyPath types double and int (#2689)
+- **datastore**: observe API mutation event decode to model successfully (#2684)
+
+## 2.3.2 (2023-02-03)
+
+### Bug Fixes
+
+- **api**: add default user-agent header to API subscription requests (#2709)
+- **auth**: Delete user api get stuck on no network (#2656)
+- **auth**: Unblock fetchAuthSession call during a signIn flow (#2687)
+
+## 2.3.1 (2023-01-18)
+
+### Bug Fixes
+
+- **API**: remove encoding step before feeding request to signer (#2666)
+
+## 2.3.0 (2023-01-18)
+
+### Features
+
+- **api**: Update url cache for storage and api to nil (#2647)
+
+### Bug Fixes
+
+- **datastore**: skip has-many model to graphQL translation (#2661)
+- **auth**: Return session expired on revoke token (#2652)
+- **core**: Add proper handling of expired credentials (#2637)
+- Add missing integration test scheme for Storage and Analytics (#2646)
+- Change Integration Test Github action to run only integration test scheme (#2645)
+- upgrade to aws-sdk-swift v0.6.0 (#2620)
+
 ## 2.2.1 (2022-12-19)
 
 ### Bug Fixes

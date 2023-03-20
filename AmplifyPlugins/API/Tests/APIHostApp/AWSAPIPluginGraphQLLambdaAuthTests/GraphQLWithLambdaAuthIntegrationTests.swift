@@ -38,9 +38,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The operation completes successfully with no errors and todo in response
     ///
-    func testCreateTodoMutation() async {
-        let completeInvoked = expectation(description: "request completed")
-
+    func testCreateTodoMutation() async throws {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
@@ -49,30 +47,21 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
                                                                              name: expectedName,
                                                                              description: expectedDescription),
                                      responseType: CreateTodoMutation.Data.self)
-        let operation = Amplify.API.mutate(request: request) { event in
-            switch event {
-            case .success(let graphQLResponse):
-                guard case let .success(data) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-                guard let todo = data.createTodo else {
-                    XCTFail("Missing Todo")
-                    return
-                }
-
-                XCTAssertEqual(todo.id, expectedId)
-                XCTAssertEqual(todo.name, expectedName)
-                XCTAssertEqual(todo.description, expectedDescription)
-                XCTAssertEqual(todo.typename, String(describing: Todo.self))
-
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.mutate(request: request)
+        guard case let .success(data) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
         }
-        XCTAssertNotNil(operation)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        guard let todo = data.createTodo else {
+            XCTFail("Missing Todo")
+            return
+        }
+        
+        XCTAssertEqual(todo.id, expectedId)
+        XCTAssertEqual(todo.name, expectedName)
+        XCTAssertEqual(todo.description, expectedDescription)
+        XCTAssertEqual(todo.typename, String(describing: Todo.self))
+
     }
 
     /// Test paginated query
@@ -84,26 +73,20 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     ///    - The operation completes successfully with no errors and a list of todos in response
     ///
     func testQueryTodos() async {
-        let completeInvoked = expectation(description: "request completed")
+        let completeInvoked = asyncExpectation(description: "request completed")
         let request = GraphQLRequest<Todo>.list(Todo.self)
-        let sink = Amplify.API.query(request: request)
-            .resultPublisher
-            .sink {
-                if case let .failure(error) = $0 {
-                    XCTFail("Query failure with error \(error)")
-                }
+        let sink = Amplify.Publisher.create {
+            try await Amplify.API.query(request: request)
+        }.sink {
+            if case let .failure(error) = $0 {
+                XCTFail("Query failure with error \(error)")
             }
-            receiveValue: {
-                switch $0 {
-                case .failure(let error):
-                    XCTFail("Received failure \(error)")
-                case .success(let result):
-                    XCTAssertNotNil(result)
-                    completeInvoked.fulfill()
-                }
-            }
+            Task { await completeInvoked.fulfill() }
+        } receiveValue: {
+            XCTAssertNotNil($0)
+        }
         XCTAssertNotNil(sink)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
@@ -114,83 +97,55 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The subscription should receive mutation events corresponding to the API calls performed.
     ///
-    func testOnCreateTodoSubscription() async {
-        let connectedInvoked = expectation(description: "Connection established")
+    func testOnCreateTodoSubscription() async throws {
+        let connectedInvoked = asyncExpectation(description: "Connection established")
         
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let name = String("\(#function)".dropLast(2))
-        var onValueHandler: GraphQLSubscriptionOperation<Todo>.InProcessListener = { event in
-            switch event {
-            case .connection(let state):
-                switch state {
-                case .connecting, .disconnected:
-                    break
-                case .connected:
-                    connectedInvoked.fulfill()
-                }
-            case .data:
-                break
-            }
-        }
-        let operation = Amplify.API.subscribe(
-            request: .subscription(of: Todo.self, type: .onCreate),
-            valueListener: { onValueHandler($0)},
-            completionListener: { event in
-                switch event {
-                case .failure(let error):
-                    XCTFail("Unexpected .failed event: \(error)")
-                case .success:
-                    break
-                }
-            })
-
-        XCTAssertNotNil(operation)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-
-        let progressInvoked = expectation(description: "progress invoked")
-        progressInvoked.expectedFulfillmentCount = 2
-        onValueHandler = { event in
-            switch event {
-            case .connection:
-                break
-            case .data(let result):
-                switch result {
-                case .success(let todo):
-                    if todo.id == uuid || todo.id == uuid2 {
-                        progressInvoked.fulfill()
-                    }
-                case .failure(let error):
-                    XCTFail("\(error)")
-                }
-            }
-        }
+        let subscriptions = Amplify.API.subscribe(request: .subscription(of: Todo.self, type: .onCreate))
         
-        let createdTodo1 = expectation(description: "created todo")
-        let createdTodo2 = expectation(description: "created todo")
-        await _ = createTodo(id: uuid, name: name, expect: createdTodo1)
-        await _ = createTodo(id: uuid2, name: name, expect: createdTodo2)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+
+        Task {
+            for try await event in subscriptions {
+                switch event {
+                case .connection(let state):
+                    switch state {
+                    case .connecting, .disconnected:
+                        break
+                    case .connected:
+                        await connectedInvoked.fulfill()
+                    }
+                case .data(let result):
+                    switch result {
+                    case .success(let todo):
+                        if todo.id == uuid || todo.id == uuid2 {
+                            await progressInvoked.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+            }
+        }
+        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        try await createTodo(id: uuid, name: name)
+        try await createTodo(id: uuid2, name: name)
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: - Helpers
 
-    func createTodo(id: String, name: String, expect: XCTestExpectation) async {
+    func createTodo(id: String, name: String) async throws {
         let todo = Todo(id: id, name: name)
-
-        _ = Amplify.API.mutate(request: .create(todo)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    print("created post \(post)")
-                default:
-                    XCTFail("Create Todo was not successful: \(data)")
-                }
-                expect.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .create(todo))
+        switch data {
+        case .success(let post):
+            print("created post \(post)")
+        default:
+            XCTFail("Create Todo was not successful: \(data)")
         }
     }
 

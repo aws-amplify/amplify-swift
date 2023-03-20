@@ -1,18 +1,27 @@
 {
   "pins" : [
     {
+      "identity" : "amplify-swift-utils-notifications",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aws-amplify/amplify-swift-utils-notifications.git",
+      "state" : {
+        "revision" : "d4fd3c17e8d40efc821f448d3d6cff75b8f3b0dd",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "aws-appsync-realtime-client-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
       "state" : {
-        "revision" : "da88cf1cab82e281e7277cd9feb9efc87a057041",
-        "version" : "2.1.1"
+        "revision" : "3de274c68a3cb60c8aec18b5bc0a8c07860219cd",
+        "version" : "3.0.0"
       }
     },
     {
       "identity" : "aws-crt-swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awslabs/aws-crt-swift.git",
+      "location" : "https://github.com/awslabs/aws-crt-swift",
       "state" : {
         "revision" : "afe23a2a2f6cf78e6d8803d7c9e0c8e6f50b6915",
         "version" : "0.4.0"
@@ -23,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-sdk-swift.git",
       "state" : {
-        "revision" : "c54c028cfc3ee70fde8c077547a1a1f6ef1137d9",
-        "version" : "0.6.0"
+        "revision" : "30649be4b9d0788f987ae851c48d48ac6d00f2c2",
+        "version" : "0.6.1"
       }
     },
     {
@@ -48,10 +57,10 @@
     {
       "identity" : "smithy-swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awslabs/smithy-swift.git",
+      "location" : "https://github.com/awslabs/smithy-swift",
       "state" : {
-        "revision" : "f59ed07c29d4e03f91ea8324edf7a2486bd86a9c",
-        "version" : "0.6.0"
+        "revision" : "3e9e420f69c28dee260c03b19c3e93b392128d42",
+        "version" : "0.6.1"
       }
     },
     {
@@ -86,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
-        "revision" : "6fe203dc33195667ce1759bf0182975e4653ba1c",
-        "version" : "1.4.4"
+        "revision" : "32e8d724467f8fe623624570367e3d50c5638e46",
+        "version" : "1.5.2"
       }
     },
     {

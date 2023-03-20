@@ -43,8 +43,7 @@ protocol AWSS3StorageServiceBehaviour {
 
     func getPreSignedURL(serviceKey: String,
                          signingOperation: AWSS3SigningOperation,
-                         expires: Int,
-                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler)
+                         expires: Int) async throws -> URL
 
     func upload(serviceKey: String,
                 uploadSource: UploadSource,
@@ -59,17 +58,8 @@ protocol AWSS3StorageServiceBehaviour {
                          onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
 
     func list(prefix: String,
-              path: String?,
-              onEvent: @escaping StorageServiceListEventHandler)
+              options: StorageListRequest.Options) async throws -> StorageListResult
 
     func delete(serviceKey: String,
                 onEvent: @escaping StorageServiceDeleteEventHandler)
-}
-
-extension AWSS3StorageServiceBehaviour {
-    func getPreSignedURL(serviceKey: String,
-                         expires: Int,
-                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
-        getPreSignedURL(serviceKey: serviceKey, signingOperation: .getObject, expires: expires, onEvent: onEvent)
-    }
 }

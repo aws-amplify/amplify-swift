@@ -32,6 +32,7 @@ class AWSRESTOperationTests: OperationTestBase {
         throw XCTSkip("Not yet implemented")
     }
 
+    // TODO: Fix this test
     func testGetReturnsOperation() throws {
         try setUpPlugin(endpointType: .rest)
 

@@ -11,6 +11,7 @@ parameters:
     default: platform=macOS,arch=x86_64
 
 orbs:
+  aws-cli: circleci/aws-cli@3.1.4
   # Using inline orb for now
   getting-started-smoke-test:
     orbs:
@@ -228,7 +229,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - '7a:f2:7f:a6:62:1a:9e:0f:f1:03:8c:fc:86:93:77:6e'
+            - '3f:b4:9f:aa:0b:d7:c5:16:fb:44:44:35:cb:a7:70:e0'
       - *restore_repo
       - restore_gems
       - check_bundle
@@ -236,6 +237,47 @@ jobs:
           name: Release Amplify for Swift
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
+  
+  fortify_scan:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - run:
+          name: Make source directory
+          command: |
+            mkdir source
+            cp -r Amplify source
+            cp -r AmplifyPlugins source
+      - aws-cli/setup:
+          role-arn: 'arn:aws:iam::971028514469:role/CircleCiOIDC'
+          role-session-name: 'aws-s3-session'
+      - run:
+          name: Download License
+          command: |
+            aws s3 cp s3://amplify-swift-fortify-prod/fortify.license fortify.license
+      - run:
+          name: Download Installer
+          command: |
+            aws s3 cp s3://amplify-swift-fortify-prod/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+            tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+            unzip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
+      - run:
+          name: Download Scripts
+          command: |
+            aws s3 cp s3://amplify-swift-fortify-prod/amplify_swift_fortify_scan.sh fortify_scan.sh
+      - run:
+          name: Run Installer
+          command: |
+            Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+            export PATH=~/amplify-swift/Fortify/bin:$PATH
+            echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
+            fortifyupdate -acceptKey
+            sourceanalyzer -version
+      - run:
+          name: Run Scan
+          command: |
+            sh ./fortify_scan.sh source
+
 
 deploy_requires: &deploy_requires
   requires:
@@ -248,6 +290,7 @@ deploy_requires: &deploy_requires
     - ios_unit_test_auth
     - ios_unit_test_datastore
     - ios_unit_test_geo
+    - ios_unit_test_push_notifications
     - ios_unit_test_storage
     - macos_unit_test_amplify
     - macos_unit_test_awspluginscore
@@ -256,7 +299,9 @@ deploy_requires: &deploy_requires
     - macos_unit_test_auth
     - macos_unit_test_datastore
     - macos_unit_test_geo
+    - macos_unit_test_push_notifications
     - macos_unit_test_storage
+    - fortify_scan
 
 workflows:
   build_test_deploy:
@@ -268,12 +313,17 @@ workflows:
       - install_gems:
           requires:
             - checkout_code
-      - build_amplify_ios_spm:
+      - fortify_scan:
+          context:
+            - amplify-swift-aws-s3-download
           requires:
             - install_gems
+      - build_amplify_ios_spm:
+          requires:
+            - fortify_scan
       - build_amplify_macos_spm:
           requires:
-            - install_gems         
+            - fortify_scan         
       - unit_test:
           name: ios_unit_test_amplify
           scheme: Amplify
@@ -319,6 +369,13 @@ workflows:
       - unit_test:
           name: ios_unit_test_geo
           scheme: AWSLocationGeoPlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_push_notifications
+          scheme: AWSPinpointPushNotificationsPlugin
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
@@ -375,6 +432,13 @@ workflows:
       - unit_test:
           name: macos_unit_test_geo
           scheme: AWSLocationGeoPlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_push_notifications
+          scheme: AWSPinpointPushNotificationsPlugin
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:

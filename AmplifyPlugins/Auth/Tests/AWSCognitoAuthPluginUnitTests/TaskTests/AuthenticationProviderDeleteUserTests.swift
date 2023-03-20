@@ -12,10 +12,132 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
+import AwsCommonRuntimeKit
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
     func testDeleteUserSuccess() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }, mockGlobalSignOutResponse: { _ in
+                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            },
+            mockDeleteUserOutputResponse: { _ in
+                try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
+    /// Test a deleteUser when sign out failed
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   sign out failure
+    ///
+    /// - When:
+    ///    - I invoke deleteUser
+    /// - Then:
+    ///    - I should still be able to get a success for delete user
+    ///
+    func testSignOutFailureWhenDeleteUserIsSuccess() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                throw RevokeTokenOutputError.unsupportedTokenTypeException(.init())
+            }, mockGlobalSignOutResponse: { _ in
+                throw GlobalSignOutOutputError.internalErrorException(.init())
+            },
+            mockDeleteUserOutputResponse: { _ in
+                try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
+
+    /// Test a deleteUser with network error from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   network error
+    ///
+    /// - When:
+    ///    - I invoke deleteUser
+    /// - Then:
+    ///    - I should get a .service error with .network as underlying error
+    ///
+    func testOfflineDeleteUser() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }, mockGlobalSignOutResponse: { _ in
+                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            },
+            mockDeleteUserOutputResponse: { _ in
+                let crtError = ClientRuntime.ClientError.retryError(
+                    CRTError.crtError(
+                        AWSError(errorCode: 1059)))
+                throw SdkError<DeleteUserOutputError>.client(crtError)
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            XCTFail("Should not get success")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .network = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce network error instead of \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a deleteUser with network error from service and retry with success on no network error
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   network error for the first call and mock an actual result on the second call
+    ///
+    /// - When:
+    ///    - I invoke deleteUser and retry it
+    /// - Then:
+    ///    - I should get a .service error with .network as underlying error for the first call
+    ///    - I should get a valid response for the second call
+    ///
+    func testOfflineDeleteUserAndRetry() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }, mockGlobalSignOutResponse: { _ in
+                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            },
+            mockDeleteUserOutputResponse: { _ in
+                let crtError = ClientRuntime.ClientError.retryError(
+                    CRTError.crtError(
+                        AWSError(errorCode: 1059)))
+                throw SdkError<DeleteUserOutputError>.client(crtError)
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            XCTFail("Should not get success")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .network = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce network error instead of \(error)")
+                return
+            }
+        }
+
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -281,6 +403,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     ///    - I invoke deleteUser
     /// - Then:
     ///    - I should get a .service error with .userNotFound error
+    ///      AuthN should be in signedOut state
     ///
     func testDeleteUserWithUserNotFoundException() async {
         mockIdentityProvider = MockIdentityProvider(
@@ -303,6 +426,19 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce userNotFound error but instead produced \(error)")
                 return
             }
+        }
+
+        switch await plugin.authStateMachine.currentState {
+        case .configured(let authNState, let authZState):
+            switch (authNState, authZState) {
+            case (.signedOut, .configured):
+                print("AuthN and AuthZ are in a valid state")
+            default:
+                XCTFail("AuthN should be in signed out state")
+            }
+        default:
+            XCTFail("Auth should be in configured state")
+
         }
     }
 

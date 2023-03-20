@@ -1,0 +1,391 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+
+# LL.1. Explicit Bi-Directional Belongs-to Has-many PostComment4V2
+# 11 Explicit Bi-Directional Belongs to Relationship
+
+type Post4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  comments: [Comment4V2] @hasMany(indexName: "byPost4", fields: ["id"])
+}
+
+type Comment4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  postID: ID @index(name: "byPost4", sortKeyFields: ["content"])
+  content: String!
+  post: Post4V2 @belongsTo(fields: ["postID"])
+}
+
+# LL.2. BlogPostComment
+# 15
+# This is to address optional associations use case (Post can exist without a Blog)
+# See issue https://github.com/aws-amplify/amplify-ios/issues/1792 for more details
+
+type Blog8V2 @model {
+  id: ID!
+  name: String!
+  customs: [MyCustomModel8]
+  notes: [String]
+  posts: [Post8V2] @hasMany(indexName: "postByBlog", fields: ["id"])
+}
+
+type Post8V2 @model {
+  id: ID!
+  name: String!
+  blogId: ID @index(name: "postByBlog")
+  randomId: String @index(name: "byRandom")
+  blog: Blog8V2 @belongsTo(fields: ["blogId"])
+  comments: [Comment8V2] @hasMany(indexName: "commentByPost", fields: ["id"])
+}
+
+type Comment8V2 @model {
+  id: ID!
+  content: String
+  postId: ID @index(name: "commentByPost")
+  post: Post8V2 @belongsTo(fields: ["postId"])
+}
+
+type MyCustomModel8 {
+  id: ID!
+  name: String!
+  desc: String
+  children: [MyNestedModel8]
+}
+
+type MyNestedModel8 {
+  id: ID!
+  nestedName: String!
+  notes: [String]
+}
+
+# LL.3. Has-Many/Belongs-To With Composite Key
+# iOS.7. A Has-Many/Belongs-To relationship, each with a composite key
+# Post with `id` and `title`, Comment with `id` and `content`
+
+type PostWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  comments: [CommentWithCompositeKey] @hasMany
+}
+
+type CommentWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["content"])
+  content: String!
+  post: PostWithCompositeKey @belongsTo
+}
+
+# LL.4. Many-To-Many relationship With Composite Key
+# iOS.8. A Many-To-Many relationship, each with a composite key
+# Post with `id` and `title`, Tag with `id` and `name`
+
+type PostWithTagsCompositeKey @model {
+  postId: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  tags: [TagWithCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+type TagWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["name"])
+  name: String!
+  posts: [PostWithTagsCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+# LL.5. Implicit Bi-directional Has One
+# CLI.1. Implicit Bi-directional Has One
+
+type Project1 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team1 @hasOne
+}
+type Team1 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  project: Project1 @belongsTo
+}
+
+# LL.6. Implicit Uni-directional Has One
+# CLI.2. Implicit Uni-directional Has One
+
+type Project2 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team2 @hasOne
+}
+type Team2 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+}
+
+# LL.7. Implicit Uni-directional Has Many
+# CLI.4. Implicit Uni-directional Has Many
+
+type Post4 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment4] @hasMany
+}
+type Comment4 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+}
+
+# LL.8. Explicit Bi-directional Has One
+# CLI.5. Explicit Bi-directional Has One
+
+type Project5 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team5 @hasOne(fields:["teamId", "teamName"])
+  teamId: ID # customized foreign key for child primary key
+  teamName: String # customized foreign key for child sort key
+}
+type Team5 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  project: Project5 @belongsTo(fields:["projectId", "projectName"])
+  projectId: ID # customized foreign key for parent primary key
+  projectName: String # customized foreign key for parent sort key
+}
+
+# LL.9. Explicit Uni-directional Has One
+# CLI.6. Explicit Uni-directional Has One
+
+type Project6 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team6 @hasOne(fields:["teamId", "teamName"])
+  teamId: ID # customized foreign key for child primary key
+  teamName: String # customized foreign key for child sort key
+}
+type Team6 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+}
+
+# LL.10. Explicit Bi-directional Has Many
+# CLI.7. Explicit Bi-directional Has Many
+
+type Post7 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment7] @hasMany(indexName:"byPost", fields:["postId", "title"])
+}
+type Comment7 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  post: Post7 @belongsTo(fields:["postId", "postTitle"])
+  postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
+  postTitle: String # customized foreign key for parent sort key
+}
+
+# LL.11. Explicit Uni-directional Has Many
+# CLI.8. Explicit Uni-directional Has Many
+
+type Post8 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment8] @hasMany(indexName:"byPost", fields:["postId", "title"])
+}
+type Comment8 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
+  postTitle: String # customized foreign key for parent sort key
+}
+
+# LL.12. JS Schema
+
+type HasOneParent @model {
+  id: ID! @primaryKey
+  child: HasOneChild @hasOne
+}
+
+type HasOneChild @model {
+  id: ID! @primaryKey
+  content: String
+}
+
+type DefaultPKParent @model {
+  id: ID! @primaryKey
+  content: String
+  children: [DefaultPKChild] @hasMany
+}
+
+type DefaultPKChild @model {
+  id: ID! @primaryKey
+  content: String
+  parent: DefaultPKParent @belongsTo
+}
+
+type CompositePKParent @model {
+  customId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  children: [CompositePKChild] @hasMany(indexName:"byParent", fields:["customId", "content"])
+  implicitChildren: [ImplicitChild] @hasMany
+  strangeChildren: [StrangeExplicitChild] @hasMany(indexName: "byCompositePKParentX", fields: ["customId", "content"])
+  childrenSansBelongsTo: [ChildSansBelongsTo] @hasMany
+}
+
+type CompositePKChild @model {
+  childId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  parent: CompositePKParent @belongsTo(fields:["parentId", "parentTitle"])
+  parentId: ID @index(name: "byParent", sortKeyFields:["parentTitle"])
+  parentTitle: String
+}
+
+type ImplicitChild @model {
+  childId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  parent: CompositePKParent! @belongsTo
+}
+
+type StrangeExplicitChild @model {
+  strangeId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  parent: CompositePKParent! @belongsTo(fields:["strangeParentId", "strangeParentTitle"])
+  strangeParentId: ID @index(name: "byCompositePKParentX", sortKeyFields:["strangeParentTitle"])
+  strangeParentTitle: String # customized foreign key for parent sort key
+}
+
+type ChildSansBelongsTo @model {
+  childId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  compositePKParentChildrenSansBelongsToCustomId: ID! @index(name: "byParent", sortKeyFields: ["compositePKParentChildrenSansBelongsToContent"])
+  compositePKParentChildrenSansBelongsToContent: String
+}
+
+# LL.13 PhoneCall - Two BelongsTo to Person, Bidirectional HasOne to Transcript
+
+type PhoneCall @model {
+  id: ID!
+  callerId: ID! @index(name: "byCaller")
+  calleeId: ID! @index(name: "byCallee")
+  caller: Person! @belongsTo(fields: ["callerId"])
+  callee: Person! @belongsTo(fields: ["calleeId"])
+  transcript: Transcript @hasOne
+}
+
+type Person @model {
+  id: ID!
+  name: String!
+  callerOf: [PhoneCall!] @hasMany(indexName: "byCaller")
+  calleeOf: [PhoneCall!] @hasMany(indexName: "byCallee")
+}
+
+type Transcript @model {
+  id: ID!
+  text: String!
+  language: String
+  phoneCall: PhoneCall @belongsTo
+}
+
+# LL.14
+
+enum PostStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type User14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: String!
+  posts: [Post14] @hasMany
+  comments: [Comment14] @hasMany
+  settings: UserSettings14 @hasOne
+}
+
+type UserSettings14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  language: String
+  user: User14! @belongsTo
+}
+
+type Post14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  rating: Int!
+  status: PostStatus!
+  comments: [Comment14] @hasMany
+  author: User14! @belongsTo
+}
+
+type Comment14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  content: String
+  post: Post14 @belongsTo
+  author: User14! @belongsTo
+}
+
+## LL.15
+
+type ScalarContainer @model {
+   id: ID!
+   myString: String
+   myInt: Int
+   myDouble: Float
+   myBool: Boolean
+   myDate: AWSDate
+   myTime: AWSTime
+   myDateTime: AWSDateTime
+   myTimeStamp: AWSTimestamp
+   myEmail: AWSEmail
+   myJSON: AWSJSON
+   myPhone: AWSPhone
+   myURL: AWSURL
+   myIPAddress: AWSIPAddress
+}
+
+type ListIntContainer @model {
+  id: ID!
+  test: Int!
+  nullableInt: Int
+  intList: [Int!]!
+  intNullableList: [Int!]
+  nullableIntList: [Int]!
+  nullableIntNullableList: [Int]
+}
+
+type ListStringContainer @model {
+  id: ID!
+  test: String!
+  nullableString: String
+  stringList: [String!]!
+  stringNullableList: [String!]
+  nullableStringList: [String]!
+  nullableStringNullableList: [String]
+}
+
+type EnumTestModel @model {
+  id: ID!
+  enumVal: TestEnum!
+  nullableEnumVal: TestEnum
+  enumList: [TestEnum!]!
+  enumNullableList: [TestEnum!]
+  nullableEnumList: [TestEnum]!
+  nullableEnumNullableList: [TestEnum]
+}
+
+enum TestEnum {
+  VALUE_ONE
+  VALUE_TWO
+}
+
+type NestedTypeTestModel @model {
+  id: ID!
+  nestedVal: Nested!
+  nullableNestedVal: Nested
+  nestedList: [Nested!]!
+  nestedNullableList: [Nested!]
+  nullableNestedList: [Nested]!
+  nullableNestedNullableList: [Nested]
+}
+
+type Nested {
+  valueOne: Int
+  valueTwo: String
+}

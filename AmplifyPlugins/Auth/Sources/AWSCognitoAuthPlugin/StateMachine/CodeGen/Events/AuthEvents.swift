@@ -22,6 +22,8 @@ struct AuthEvent: StateMachineEvent {
         case authenticationConfigured(AuthConfiguration, AmplifyCredentials)
 
         case authorizationConfigured
+
+        case reconfigure(AuthConfiguration)
     }
 
     var id: String
@@ -38,6 +40,7 @@ struct AuthEvent: StateMachineEvent {
         case .authenticationConfigured: return "AuthEvent.authenticationConfigured"
         case .authorizationConfigured: return "AuthEvent.authorizationConfigured"
         case .validateCredentialAndConfiguration: return "AuthEvent.validateCredentialAndConfiguration"
+        case .reconfigure: return "AuthEvent.reconfigure"
         }
     }
 

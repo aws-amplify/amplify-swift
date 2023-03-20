@@ -107,7 +107,7 @@ extension ModelField: SQLColumn {
 
     /// Default foreign value used to reference a model with a composite primary key.
     /// It's only used for the local storage, the individual values will be sent to the cloud.
-    private func foreignKeySqlName(withAssociationTargets targetNames: [String]) -> String {
+    func foreignKeySqlName(withAssociationTargets targetNames: [String]) -> String {
         // default name for legacy models without a target name
         if targetNames.isEmpty {
             return name + "Id"

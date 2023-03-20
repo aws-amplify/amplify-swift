@@ -33,9 +33,16 @@ class HubEventsIntegrationTestBase: XCTestCase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
+    }
+
+    override func tearDown() async throws {
+        storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Post")) { _ in }
+        storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Comment")) { _ in }
+        await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
 
     func startAmplify(withModels models: AmplifyModelRegistration) async {
@@ -50,12 +57,5 @@ class HubEventsIntegrationTestBase: XCTestCase {
             XCTFail(String(describing: error))
             return
         }
-    }
-
-    override func tearDown() async throws {
-        print("Amplify reset")
-        storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Post")) { _ in }
-        storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Comment")) { _ in }
-        await Amplify.reset()
     }
 }

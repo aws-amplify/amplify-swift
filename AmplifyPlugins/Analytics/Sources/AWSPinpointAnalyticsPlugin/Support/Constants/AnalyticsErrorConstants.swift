@@ -26,46 +26,6 @@ struct AnalyticsPluginErrorConstant {
         "Add the `PinpointAnalytics` section to the plugin."
     )
 
-    static let pinpointAnalyticsConfigurationExpected: AnalyticsPluginErrorString = (
-        "Configuration at `PinpointAnalytics` is not a dictionary literal",
-        "Make sure the value for the `PinpointAnalytics` is a dictionary literal with `AppId` and `Region`"
-    )
-
-    static let pinpointTargetingConfigurationExpected: AnalyticsPluginErrorString = (
-        "Configuration at `PinpointTargeting` is not a dictionary literal",
-        "Make sure the value for the `PinpointTargeting` is a dictionary literal with `Region`"
-    )
-
-    static let missingAppId: AnalyticsPluginErrorString = (
-        "AppId is missing",
-        "Add AppId to the configuration"
-    )
-
-    static let invalidAppId: AnalyticsPluginErrorString = (
-        "AppId is not a string",
-        "Ensure AppId is a string"
-    )
-
-    static let emptyAppId: AnalyticsPluginErrorString = (
-        "AppId is specified but is empty",
-        "AppId should not be empty"
-    )
-
-    static let missingRegion: AnalyticsPluginErrorString = (
-        "Region is missing",
-        "Add region to the configuration"
-    )
-
-    static let invalidRegion: AnalyticsPluginErrorString = (
-        "Region is invalid",
-        "Ensure Region is a valid region value"
-    )
-
-    static let emptyRegion: AnalyticsPluginErrorString = (
-        "Region is empty",
-        "Ensure should not be empty"
-    )
-
     static let invalidAutoFlushEventsInterval: AnalyticsPluginErrorString = (
         "AutoFlushEventsInterval is not a number or is less than 0",
         "Ensure AutoFlushEventsInterval is zero or positive number"
@@ -91,10 +51,5 @@ struct AnalyticsPluginErrorConstant {
     static let pinpointTargetingServiceConfigurationError: AnalyticsPluginErrorString = (
         "Could not instantiate service configuration from pinpoint targeting region",
         "Make sure the pinpoint targeting region and cognito credentials provider are correct"
-    )
-    
-    static let deviceOffline: AnalyticsPluginErrorString = (
-        "The device does not have internet access. Please ensure the device is online and try again.",
-        ""
     )
 }

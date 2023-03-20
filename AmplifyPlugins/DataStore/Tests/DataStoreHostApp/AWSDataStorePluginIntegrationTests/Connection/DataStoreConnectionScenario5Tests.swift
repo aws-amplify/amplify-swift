@@ -69,7 +69,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let post = try await savePost(title: "title")
         let user = try await saveUser(username: "username")
-        try await savePostEditor(post: post, editor: user)
+        _ = try await savePostEditor(post: post, editor: user)
         let predicateByUserId = PostEditor5.keys.editor.eq(user.id)
         _ = try await Amplify.DataStore.query(PostEditor5.self, where: predicateByUserId)
     }
@@ -79,7 +79,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let post = try await savePost(title: "title")
         let user = try await saveUser(username: "username")
-        let postEditor = try await savePostEditor(post: post, editor: user)
+        _ = try await savePostEditor(post: post, editor: user)
 
         let queriedPostOptional = try await Amplify.DataStore.query(Post5.self, byId: post.id)
         guard let queriedPost = queriedPostOptional else {
@@ -100,7 +100,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let post = try await savePost(title: "title")
         let user = try await saveUser(username: "username")
-        let postEditor = try await savePostEditor(post: post, editor: user)
+        _ = try await savePostEditor(post: post, editor: user)
         
         let queriedUserOptional = try await Amplify.DataStore.query(User5.self, byId: user.id)
         guard let queriedUser = queriedUserOptional else {
@@ -123,7 +123,6 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
 
     func saveUser(id: String = UUID().uuidString, username: String) async throws -> User5 {
         let user = User5(id: id, username: username)
-        var result: User5?
         return try await Amplify.DataStore.save(user)
     }
 

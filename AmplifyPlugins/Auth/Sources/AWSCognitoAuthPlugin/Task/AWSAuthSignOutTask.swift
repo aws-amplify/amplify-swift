@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-class AWSAuthSignOutTask: AuthSignOutTask {
+class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
 
     private let request: AuthSignOutRequest
     private let authStateMachine: AuthStateMachine
@@ -25,16 +25,17 @@ class AWSAuthSignOutTask: AuthSignOutTask {
     }
 
     func execute() async -> AuthSignOutResult {
+        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
 
         guard case .configured(let authNState, _) = await authStateMachine.currentState else {
             return invalidStateResult()
-
         }
 
         if isValidAuthNStateToStart(authNState) {
+            log.verbose("Sending signOut event")
             await sendSignOutEvent()
-            return await doSignOut()
+            return await taskHelper.didSignOut()
         } else if case .federatedToIdentityPool = authNState {
             let invalidStateError = AuthError.invalidState(
                 "The user is currently federated to identity pool. You must call clearFederationToIdentityPool to clear credentials.",
@@ -44,38 +45,6 @@ class AWSAuthSignOutTask: AuthSignOutTask {
             return invalidStateResult()
         }
 
-    }
-
-    private func doSignOut() async -> AuthSignOutResult {
-
-        let stateSequences = await authStateMachine.listen()
-        for await state in stateSequences {
-            guard case .configured(let authNState, _) = state else {
-                return invalidStateResult()
-            }
-
-            switch authNState {
-            case .signedOut(let data):
-                if data.revokeTokenError != nil ||
-                    data.globalSignOutError != nil ||
-                    data.hostedUIError != nil {
-                    return AWSCognitoSignOutResult.partial(
-                        revokeTokenError: data.revokeTokenError,
-                        globalSignOutError: data.globalSignOutError,
-                        hostedUIError: data.hostedUIError)
-                }
-                return AWSCognitoSignOutResult.complete
-            case .signingIn:
-                await authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
-            case .signingOut(let state):
-                if case .error(let error) = state {
-                    return AWSCognitoSignOutResult.failed(error.authError)
-                }
-            default:
-                continue
-            }
-        }
-        fatalError()
     }
 
     func isValidAuthNStateToStart(_ authNState: AuthenticationState) -> Bool {

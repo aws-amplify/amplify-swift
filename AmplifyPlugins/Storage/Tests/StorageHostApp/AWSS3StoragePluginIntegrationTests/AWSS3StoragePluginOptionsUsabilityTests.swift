@@ -11,6 +11,10 @@ import AWSS3StoragePlugin
 import AWSS3
 
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
+    
+    override func setUpWithError() throws {
+        self.continueAfterFailure = false
+    }
 
     /// Given: An object in storage
     /// When: Call the GetURL API with 10 second expiry time
@@ -28,6 +32,9 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
         let dataTaskCompleteInvoked = expectation(description: "Completion of retrieving data at URL is invoked")
         let task = URLSession.shared.dataTask(with: remoteURL) { data, response, error in
+            defer {
+                dataTaskCompleteInvoked.fulfill()
+            }
             if let error = error {
                 XCTFail("Failed to received data from url with error \(error)")
                 return
@@ -45,7 +52,6 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
             let dataString = String(data: data, encoding: .utf8)!
             XCTAssertEqual(dataString, key)
-            dataTaskCompleteInvoked.fulfill()
         }
         task.resume()
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -54,6 +60,9 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
         let urlExpired = expectation(description: "Retrieving expired url should have bad response")
         let task2 = URLSession.shared.dataTask(with: remoteURL) { _, response, error in
+            defer {
+                urlExpired.fulfill()
+            }
             if let error = error {
                 XCTFail("Failed to received data from url with error \(error)")
                 return
@@ -65,7 +74,6 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             }
 
             XCTAssertEqual(response.statusCode, 403)
-            urlExpired.fulfill()
         }
         task2.resume()
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)

@@ -331,7 +331,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
                              sort: nil,
-                             paginationInput: nil) { result in
+                             paginationInput: nil,
+                             eagerLoad: true) { result in
             switch result {
             case .success(let events):
                 self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
@@ -354,7 +355,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                      data: outboxMutationProcessedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: payload)
         } catch {
-            log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName)")
+            log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName) \(error)")
+            log.error("\(#function) Couldn't decode from \(mutationEvent.json)")
             return
         }
     }
@@ -369,7 +371,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                      data: outboxMutationEnqueuedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: payload)
         } catch {
-            log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName)")
+            log.error("\(#function) Couldn't decode local model as \(mutationEvent.modelName) \(error)")
+            log.error("\(#function) Couldn't decode from \(mutationEvent.json)")
             return
         }
     }

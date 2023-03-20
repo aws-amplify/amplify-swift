@@ -92,6 +92,29 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
     }
 
+    /// Given: An unreadable file
+    /// When: An attempt to upload it is made
+    /// Then: A StorageError.accessDenied error is propagated to the caller
+    func testUploadUnreadableFile() async throws {
+        let key = UUID().uuidString
+        let path = NSTemporaryDirectory() + key + ".tmp"
+        FileManager.default.createFile(atPath: path,
+                                       contents: Data(key.utf8),
+                                       attributes: [FileAttributeKey.posixPermissions: 000])
+        defer {
+            try? FileManager.default.removeItem(atPath: path)
+        }
+
+        let url = URL(fileURLWithPath: path)
+        do {
+            _ = try await Amplify.Storage.uploadFile(key: key, local: url, options: nil).value
+        } catch StorageError.accessDenied(let description, let recommendation, let underlyingError) {
+            XCTAssertEqual(description, "Access to local file denied: \(path)")
+            XCTAssertEqual(recommendation, "Please ensure that \(url) is readable")
+            XCTAssertNil(underlyingError)
+        }
+    }
+
     // TODO: possibly after understanding content-type
 //    func testPutWithInvalidContentType() {
 //

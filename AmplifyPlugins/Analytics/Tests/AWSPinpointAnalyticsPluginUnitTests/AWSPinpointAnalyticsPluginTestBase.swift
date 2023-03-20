@@ -7,13 +7,13 @@
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import XCTest
 
 class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     var analyticsPlugin: AWSPinpointAnalyticsPlugin!
     var mockPinpoint: MockAWSPinpoint!
-    var authService: MockAWSAuthService!
     var mockNetworkMonitor: MockNetworkMonitor!
 
     let testAppId = "56e6f06fd4f244c6b202bc1234567890"
@@ -34,12 +34,9 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
         analyticsPlugin = AWSPinpointAnalyticsPlugin()
 
         mockPinpoint = MockAWSPinpoint()
-        authService = MockAWSAuthService()
         mockNetworkMonitor = MockNetworkMonitor()
 
         analyticsPlugin.configure(pinpoint: mockPinpoint,
-                                  authService: authService,
-                                  autoFlushEventsTimer: nil,
                                   networkMonitor: mockNetworkMonitor)
 
         await Amplify.reset()

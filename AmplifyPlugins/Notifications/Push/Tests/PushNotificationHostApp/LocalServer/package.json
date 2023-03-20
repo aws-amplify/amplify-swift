@@ -1,0 +1,14 @@
+{
+  "name": "localserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "author": "Aws Amplify",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
       "state" : {
-        "revision" : "da88cf1cab82e281e7277cd9feb9efc87a057041",
-        "version" : "2.1.1"
+        "revision" : "3de274c68a3cb60c8aec18b5bc0a8c07860219cd",
+        "version" : "3.0.0"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-sdk-swift.git",
       "state" : {
-        "revision" : "c54c028cfc3ee70fde8c077547a1a1f6ef1137d9",
-        "version" : "0.6.0"
+        "revision" : "30649be4b9d0788f987ae851c48d48ac6d00f2c2",
+        "version" : "0.6.1"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/smithy-swift.git",
       "state" : {
-        "revision" : "f59ed07c29d4e03f91ea8324edf7a2486bd86a9c",
-        "version" : "0.6.0"
+        "revision" : "3e9e420f69c28dee260c03b19c3e93b392128d42",
+        "version" : "0.6.1"
       }
     },
     {

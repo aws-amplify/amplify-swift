@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import AWSPinpoint
 import AWSPluginsCore
 import Foundation
+@_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 import Network
 
 /// The AWSPinpointAnalyticsPlugin implements the Analytics APIs for Pinpoint
@@ -16,19 +16,12 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An instance of the AWS Pinpoint service
     var pinpoint: AWSPinpointBehavior!
 
-    /// An instance of the authentication service
-    var authService: AWSAuthServiceBehavior!
-
     // The collection of properties applied to every event
-    var globalProperties: [String: AnalyticsPropertyValue]!
+    var globalProperties: AtomicDictionary<String, AnalyticsPropertyValue>!
 
     /// Specifies whether the plugin is enabled
     var isEnabled: Bool!
 
-    /// Optional timer is nil when auto flush is disabled
-    /// Otherwise automatically flushes the events that have been recorded on an interval
-    var autoFlushEventsTimer: DispatchSourceTimer?
-    
     /// An observer to monitor connectivity changes
     var networkMonitor: NetworkMonitor!
 

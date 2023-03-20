@@ -44,7 +44,7 @@ struct InitializeRefreshSession: Action {
                                                     region: config.region,
                                                     poolId: config.poolId)
             if isForceRefresh ||
-                tokens.doesExpire(in: FetchAuthSessionOperationHelper.expiryBufferInSeconds) {
+                tokens.doesExpire(in: AmplifyCredentials.expiryBufferInSeconds) {
                 event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(signedInData, identityID))
             } else {
                 event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,

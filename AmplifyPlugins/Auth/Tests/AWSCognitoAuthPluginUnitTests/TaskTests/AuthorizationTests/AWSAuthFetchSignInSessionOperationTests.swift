@@ -690,4 +690,52 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
             return
         }
     }
+
+    /// Test fetchAuthSession on a in progress signIn. The library is waiting for confirm signIn to complete and require user input
+    ///
+    /// - Given: Given an auth plugin with waiting for confirm signIn input and identityPool enabled
+    /// - When:
+    ///    - I invoke fetchAuthSession
+    /// - Then:
+    ///    - I should get an a valid session with the following details:
+    ///         - isSignedIn = false
+    ///         - aws credentails = valid values
+    ///         - identity id = valid values
+    ///
+    func testSessionWhenWaitingConfirmSignIn() async throws {
+        let signInMethod = SignInMethod.apiBased(.userSRP)
+        let challenge = SignInChallengeState.waitingForAnswer(.testData, signInMethod)
+        let initialState = AuthState.configured(
+            AuthenticationState.signingIn(
+                .resolvingChallenge(challenge, .smsMfa, signInMethod)),
+            AuthorizationState.configured
+        )
+
+        let getId: MockIdentity.MockGetIdResponse = { _ in
+            return .init(identityId: "mockIdentityId")
+        }
+
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
+                                                                     expiration: Date(),
+                                                                     secretKey: "secret",
+                                                                     sessionToken: "session")
+            return .init(credentials: credentials, identityId: "responseIdentityID")
+        }
+
+        let plugin = configurePluginWith(identityPool: {
+            MockIdentity(mockGetIdResponse: getId,
+                         mockGetCredentialsResponse: getCredentials) },
+                                         initialState: initialState)
+
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        XCTAssertFalse(session.isSignedIn)
+
+        let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+        XCTAssertNotNil(creds?.accessKeyId)
+        XCTAssertNotNil(creds?.secretAccessKey)
+
+        let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+        XCTAssertNotNil(identityId)
+    }
 }

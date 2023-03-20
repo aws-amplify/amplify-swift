@@ -32,16 +32,33 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
-    func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
-
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
+    }
 
+    override func tearDown() async throws {
+        try await super.tearDown()
+        try await stopDataStore()
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
+    }
+
+    func setUp(
+        withModels models: AmplifyModelRegistration,
+        logLevel: LogLevel = .error,
+        dataStoreConfiguration: DataStoreConfiguration? = nil
+    ) async {
         Amplify.Logging.logLevel = logLevel
 
         do {
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            try Amplify.add(
+                plugin: AWSDataStorePlugin(
+                    modelRegistration: models,
+                    configuration: dataStoreConfiguration ?? .custom(syncMaxRecords: 100)
+                )
+            )
         } catch {
             XCTFail(String(describing: error))
             return
@@ -56,9 +73,13 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         try await Amplify.DataStore.clear()
     }
 
-    func startAmplify() throws {
-        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+    func getTestConfiguration() throws -> AmplifyConfiguration {
+        try TestConfigHelper.retrieveAmplifyConfiguration(
             forResource: Self.amplifyConfigurationFile)
+    }
+
+    func startAmplify() throws {
+        let amplifyConfig = try getTestConfiguration()
         do {
             try Amplify.configure(amplifyConfig)
         } catch {
@@ -75,8 +96,9 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     }
 
     private func startAmplifyAndWait(for eventName: String) async throws {
-        let eventReceived = expectation(description: "DataStore \(eventName) event")
+        try startAmplify()
 
+        let eventReceived = expectation(description: "DataStore \(eventName) event")
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(to: .dataStore,
                                    eventName: eventName) { _ in
@@ -89,10 +111,13 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             return
         }
 
-        try startAmplify()
         try await Amplify.DataStore.start()
+        await waitForExpectations(timeout: 10.0)
 
-        await waitForExpectations(timeout: 100.0)
+        try await deleteMutationEvents()
     }
-
+    
+    func deleteMutationEvents() async throws {
+        try await Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all)
+    }
 }

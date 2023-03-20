@@ -185,6 +185,8 @@ extension QueryOperator {
             return "between"
         case .beginsWith:
             return "beginsWith"
+        case .notContains:
+            return "notContains"
         }
     }
 
@@ -207,6 +209,8 @@ extension QueryOperator {
         case .between(let start, let end):
             return [start.graphQLValue(), end.graphQLValue()]
         case .beginsWith(let value):
+            return value
+        case .notContains(let value):
             return value
         }
     }

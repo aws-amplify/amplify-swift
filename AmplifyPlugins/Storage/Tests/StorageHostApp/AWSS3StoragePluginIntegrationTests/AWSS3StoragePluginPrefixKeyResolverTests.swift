@@ -107,7 +107,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
                 let notDone = asyncExpectation(description: "not done", isInverted: true)
                 let caughtError = asyncExpectation(description: "caught error")
                 do {
-                    let data = try await Amplify.Storage.downloadData(key: key).value
+                    _ = try await Amplify.Storage.downloadData(key: key).value
                     await notDone.fulfill()
                 } catch {
                     guard case .keyNotFound = error as? StorageError else {

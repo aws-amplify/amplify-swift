@@ -68,7 +68,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     }
 
     func testCancelSendsCompletion() async {
-        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
                 let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in
                 })
@@ -149,7 +149,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     }
     
     func testFailureOnConnection() async {
-        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             throw APIError.invalidConfiguration("something went wrong", "", nil)
         })
 
@@ -190,7 +190,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
 
     func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async {
         let connectionCreation = expectation(description: "connection factory called")
-        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             connectionCreation.fulfill()
             return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
                 let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in

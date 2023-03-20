@@ -56,7 +56,6 @@ class AuthStressBaseTest: XCTestCase {
         let region = JSONValue(stringLiteral: "xx")
         let userPoolID = JSONValue(stringLiteral: "xx")
         let userPooldAppClientID = JSONValue(stringLiteral: "xx")
-        let userPooldAppClientSecret = JSONValue(stringLiteral: "xx")
 
         let identityPoolID = JSONValue(stringLiteral: "xx")
         do {

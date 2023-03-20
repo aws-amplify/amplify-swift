@@ -18,6 +18,7 @@ extension RefreshSessionState {
                      byApplying event: StateMachineEvent) -> StateResolution<RefreshSessionState> {
 
             switch oldState {
+
             case .notStarted:
 
                 if case .refreshCognitoUserPool(let signedInData) = event.isRefreshSessionEvent {

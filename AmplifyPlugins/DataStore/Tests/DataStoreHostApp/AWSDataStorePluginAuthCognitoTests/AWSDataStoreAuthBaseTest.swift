@@ -217,7 +217,7 @@ extension AWSDataStoreAuthBaseTest {
     func signOut(file: StaticString = #file,
                  line: UInt = #line) async throws {
         do {
-            _ = try await Amplify.Auth.signOut()
+            _ = await Amplify.Auth.signOut()
             print("signOut successfull")
             let isSignedIn = try await isSignedIn()
             XCTAssertFalse(isSignedIn)

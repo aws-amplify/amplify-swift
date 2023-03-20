@@ -10,7 +10,7 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-class AWSAuthTaskHelper {
+class AWSAuthTaskHelper: DefaultLogger {
 
     private let authStateMachine: AuthStateMachine
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
@@ -21,10 +21,48 @@ class AWSAuthTaskHelper {
     }
 
     func didStateMachineConfigured() async {
+        log.verbose("Check if authstate configured")
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
-            if case .configured = state { return }
+            if case .configured = state {
+                log.verbose("Auth state configured")
+                return
+            }
         }
+    }
+
+    func didSignOut() async -> AuthSignOutResult {
+        let stateSequences = await authStateMachine.listen()
+        log.verbose("Waiting for signOut completion")
+        for await state in stateSequences {
+            guard case .configured(let authNState, _) = state else {
+                let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError, nil)
+                return AWSCognitoSignOutResult.failed(error)
+            }
+
+            switch authNState {
+            case .signedOut(let data):
+                if data.revokeTokenError != nil ||
+                    data.globalSignOutError != nil ||
+                    data.hostedUIError != nil {
+                    return AWSCognitoSignOutResult.partial(
+                        revokeTokenError: data.revokeTokenError,
+                        globalSignOutError: data.globalSignOutError,
+                        hostedUIError: data.hostedUIError)
+                }
+                return AWSCognitoSignOutResult.complete
+            case .signingIn:
+                log.verbose("Cancel if a signIn is in progress")
+                await authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
+            case .signingOut(let state):
+                if case .error(let error) = state {
+                    return AWSCognitoSignOutResult.failed(error.authError)
+                }
+            default:
+                continue
+            }
+        }
+        fatalError()
     }
 
     func getAccessToken() async throws -> String {
