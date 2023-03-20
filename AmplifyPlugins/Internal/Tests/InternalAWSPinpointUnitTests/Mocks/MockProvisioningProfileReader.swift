@@ -9,11 +9,7 @@ import Foundation
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class MockProvisioningProfileReader: ProvisioningProfileReader {
-    var mockedProfile: ProvisioningProfile? {
-        didSet {
-            print("ROBOCITO: Set mockedProfile to \(mockedProfile)")
-        }
-    }
+    var mockedProfile: ProvisioningProfile?
 
     func profile() -> ProvisioningProfile? {
         return mockedProfile
