@@ -48,6 +48,7 @@ extension RespondToAuthChallenge {
         switch challenge {
         case .customChallenge: return "ANSWER"
         case .smsMfa: return "SMS_MFA_CODE"
+        case .softwareTokenMfa: return "SOFTWARE_TOKEN_MFA_CODE"
         case .newPasswordRequired: return "NEW_PASSWORD"
         default:
             let message = "UnSupported challenge response \(challenge)"

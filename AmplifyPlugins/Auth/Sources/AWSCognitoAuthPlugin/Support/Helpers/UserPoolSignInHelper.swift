@@ -54,6 +54,8 @@ struct UserPoolSignInHelper: DefaultLogger {
         case .smsMfa:
             let delivery = challenge.codeDeliveryDetails
             return .init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters))
+        case .softwareTokenMfa:
+            return .init(nextStep: .confirmSignInWithSoftwareToken(challenge.parameters))
         case .customChallenge:
             return .init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters))
         case .newPasswordRequired:
@@ -123,7 +125,7 @@ struct UserPoolSignInHelper: DefaultLogger {
                     parameters: parameters)
 
                 switch challengeName {
-                case .smsMfa, .customChallenge, .newPasswordRequired:
+                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
