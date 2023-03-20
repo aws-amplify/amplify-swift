@@ -7,8 +7,7 @@
 
 import Foundation
 
-@_spi(InternalAWSPinpoint)
-public struct ProvisioningProfile {
+struct ProvisioningProfile {
     enum APSEnvironment: String {
         case development
         case production
@@ -17,20 +16,17 @@ public struct ProvisioningProfile {
     var apsEnvironment: APSEnvironment?
 }
 
-@_spi(InternalAWSPinpoint)
-public protocol ProvisioningProfileReader {
+protocol ProvisioningProfileReader {
     func profile() -> ProvisioningProfile?
 }
 
-@_spi(InternalAWSPinpoint)
-public extension ProvisioningProfileReader where Self == DefaultProvisioningProfileReader {
+extension ProvisioningProfileReader where Self == DefaultProvisioningProfileReader {
     static var `default`: ProvisioningProfileReader {
         DefaultProvisioningProfileReader()
     }
 }
 
-@_spi(InternalAWSPinpoint)
-public struct DefaultProvisioningProfileReader: ProvisioningProfileReader {
+struct DefaultProvisioningProfileReader: ProvisioningProfileReader {
     private struct Keys {
         static let entitlements = "Entitlements"
         static var apsEnvironment: String {
@@ -91,7 +87,7 @@ public struct DefaultProvisioningProfileReader: ProvisioningProfileReader {
         return "\(plist)</plist>".data(using: .isoLatin1)
     }
 
-    public func profile() -> ProvisioningProfile? {
+    func profile() -> ProvisioningProfile? {
         guard let contents = contents,
               let provisioning = try? PropertyListSerialization.propertyList(
                   from: contents,
