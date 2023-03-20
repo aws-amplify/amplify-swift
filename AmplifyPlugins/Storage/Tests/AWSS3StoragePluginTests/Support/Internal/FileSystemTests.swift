@@ -46,7 +46,7 @@ extension Bytes {
 
 class FileSystemTests: XCTestCase {
 
-    func testMoveFile() throws {
+    func testMoveFile_Succeeds_WhenMoveFileExecuted() throws {
         let fs = FileSystem()
         let directoryURL = fs.createTemporaryDirectoryURL()
         try fs.createDirectory(at: directoryURL)
@@ -61,7 +61,7 @@ class FileSystemTests: XCTestCase {
         fs.removeDirectoryIfExists(directoryURL: destinationUrl)
     }
     
-    func testMoveDuplicateFile() throws {
+    func testMoveFile_Succeeds_WhenFileAlreadyExists() throws {
         let fs = FileSystem()
         let directoryURL = fs.createTemporaryDirectoryURL()
         try fs.createDirectory(at: directoryURL)
