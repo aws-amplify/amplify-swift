@@ -209,6 +209,11 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
 
         log.verbose("Resetting reconcileAndSaveQueue")
         reconcileAndSaveQueue.cancelAllOperations()
+        await withCheckedContinuation({ (continuation: CheckedContinuation<Void, Never>) in
+            reconcileAndSaveQueue.waitUntilOperationsAreFinished()
+            continuation.resume()
+        })
+
         // Reset is used in internal testing only. Some operations get kicked off at this point and do not finish
         // We're sometimes hitting a deadlock when waiting for them to finish. Commenting this out and letting
         // the tests continue onto the next works pretty well, but ideally ReconcileAndLocalSaveOperation's should 

@@ -379,6 +379,8 @@ final class StorageEngine: StorageEngineBehavior {
 extension StorageEngine: Resettable {
     func reset() async {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
+        operationQueue.cancelAllOperations()
+
         if let resettable = syncEngine as? Resettable {
             log.verbose("Resetting syncEngine")
             await resettable.reset()

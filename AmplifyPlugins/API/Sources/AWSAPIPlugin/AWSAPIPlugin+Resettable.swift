@@ -12,7 +12,7 @@ extension AWSAPIPlugin: Resettable {
 
     public func reset() async {
         mapper.reset()
-
+        queue.cancelAllOperations()
         await session.cancelAndReset()
 
         session = nil

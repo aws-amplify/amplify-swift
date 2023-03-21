@@ -51,52 +51,10 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     func testSaveRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee) else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
-        let createReceived = expectation(description: "Create notification received")
-        createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
-        let hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-                if let attendeeEvent = try? mutationEvent.decodeModel() as? Attendee8V2,
-                    attendeeEvent.id == attendee.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(meetingEvent.title, meeting.title)
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                    registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let attendee = try await createModelUntilSynced(data: randomAttendee())
+        let meeting = try await createModelUntilSynced(data: randomMeeting())
+        try await createModelUntilSynced(data: randomRegistration(meeting: meeting, attendee: attendee))
+
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
             XCTFail("Could not get attendee")
@@ -117,85 +75,15 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     func testUpdateRegistrationToAnotherAttendee() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let attendee = await saveAttendee(),
-              let attendee2 = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              var registration = await saveRegistration(meeting: meeting, attendee: attendee) else {
-                  XCTFail("Could not create attendee, meeting, registration")
-                  return
-              }
-        let createReceived = expectation(description: "Create notification received")
-        createReceived.expectedFulfillmentCount = 4 // 4 models (2 attendees and 1 meeting and 1 registration)
-        var hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                else {
-                    XCTFail("Can't cast payload as mutation event")
-                    return
-                }
-                if let attendeeEvent = try? mutationEvent.decodeModel() as? Attendee8V2,
-                   attendeeEvent.id == attendee.id || attendeeEvent.id == attendee2.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
+        let attendee = try await createModelUntilSynced(data: randomAttendee())
+        let attendee2 = try await createModelUntilSynced(data: randomAttendee())
+        let meeting = try await createModelUntilSynced(data: randomMeeting())
+        var registration = try await createModelUntilSynced(data: randomRegistration(meeting: meeting, attendee: attendee))
 
-                }
-
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(meetingEvent.title, meeting.title)
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                   registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-            }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
-        let updateReceived = expectation(description: "Update notification received")
-        hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                else {
-                    XCTFail("Can't cast payload as mutation event")
-                    return
-                }
-
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                   registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 2)
-                        updateReceived.fulfill()
-                        return
-                    }
-                }
-            }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        
         registration.attendee = attendee2
-        let updatedRegistration = try await Amplify.DataStore.save(registration)
+        let updatedRegistration = try await updateModelWaitForSync(data: registration, isEqual: { $0.identifier == $1.identifier })
         XCTAssertEqual(updatedRegistration.attendee.id, attendee2.id)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
+
         var queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
             XCTFail("Could not get attendee")
@@ -216,77 +104,12 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee) else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
-        let createReceived = expectation(description: "Create notification received")
-        createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
-        var hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-                if let attendeeEvent = try? mutationEvent.decodeModel() as? Attendee8V2,
-                    attendeeEvent.id == attendee.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(meetingEvent.title, meeting.title)
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                    registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
-        let deleteRegistrationRecieved = expectation(description: "Delete registration received")
-        hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                    registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 2)
-                        deleteRegistrationRecieved.fulfill()
-                    }
-                }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        let _ = try await Amplify.DataStore.delete(registration)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
+        let attendee = try await createModelUntilSynced(data: randomAttendee())
+        let meeting = try await createModelUntilSynced(data: randomMeeting())
+        let registration = try await createModelUntilSynced(data: randomRegistration(meeting: meeting, attendee: attendee))
+
+        let _ = try await deleteModelWaitForSync(data: registration)
+
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
             XCTFail("Could not get attendee")
@@ -307,91 +130,12 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteAttendeeShouldCascadeDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee) else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
-        let createReceived = expectation(description: "Create notification received")
-        createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
-        var hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-                if let attendeeEvent = try? mutationEvent.decodeModel() as? Attendee8V2,
-                    attendeeEvent.id == attendee.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(meetingEvent.title, meeting.title)
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                    registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
-        let deleteReceived = expectation(description: "Delete received")
-        deleteReceived.expectedFulfillmentCount = 2 // attendee and registration
-        hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-                if let attendeeEvent = try? mutationEvent.decodeModel() as? Attendee8V2,
-                    attendeeEvent.id == attendee.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 2)
-                        deleteReceived.fulfill()
-                        return
-                    }
-                }
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(meetingEvent.title, meeting.title)
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                    registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 2)
-                        deleteReceived.fulfill()
-                    }
-                }
-        }
-        
-        _ = try await Amplify.DataStore.delete(attendee)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
+        let attendee = try await createModelUntilSynced(data: randomAttendee())
+        let meeting = try await createModelUntilSynced(data: randomMeeting())
+        try await createModelUntilSynced(data: randomRegistration(meeting: meeting, attendee: attendee))
+
+        _ = try await deleteModelWaitForSync(data: attendee)
+
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         XCTAssertNil(queriedAttendeeOptional)
         
@@ -407,82 +151,12 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
     func testDeleteMeetingShouldCascadeDeleteRegistration() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let attendee = await saveAttendee(),
-              let meeting = await saveMeeting(),
-              let registration = await saveRegistration(meeting: meeting, attendee: attendee) else {
-                  XCTFail("Could not create attendee, meeting, registration")
-            return
-        }
-        let createReceived = expectation(description: "Create notification received")
-        createReceived.expectedFulfillmentCount = 3 // 3 models (1 attendee and 1 meeting and 1 registration)
-        var hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-                if let attendeeEvent = try? mutationEvent.decodeModel() as? Attendee8V2,
-                    attendeeEvent.id == attendee.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(meetingEvent.title, meeting.title)
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                    registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 1)
-                        createReceived.fulfill()
-                        return
-                    }
-                }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
-        let deleteReceived = expectation(description: "Delete received")
-        deleteReceived.expectedFulfillmentCount = 2 // meeting and registration
-        hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-                if let meetingEvent = try? mutationEvent.decodeModel() as? Meeting8V2, meetingEvent.id == meeting.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 2)
-                        deleteReceived.fulfill()
-                        return
-                    }
-                }
-                if let registrationEvent = try? mutationEvent.decodeModel() as? Registration8V2,
-                    registrationEvent.id == registration.id {
-                    if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                        XCTAssertEqual(mutationEvent.version, 2)
-                        deleteReceived.fulfill()
-                    }
-                }
-        }
-        
-        _ = try await Amplify.DataStore.delete(meeting)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        
+        let attendee = try await createModelUntilSynced(data: randomAttendee())
+        let meeting = try await createModelUntilSynced(data: randomMeeting())
+        try await createModelUntilSynced(data: randomRegistration(meeting: meeting, attendee: attendee))
+
+        _ = try await deleteModelWaitForSync(data: meeting)
+
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
             XCTFail("Could not get meeting")
@@ -495,37 +169,15 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         XCTAssertNil(queriedMeetingOptional)
     }
 
-    func saveAttendee() async -> Attendee8V2? {
-        let attendee = Attendee8V2()
-        var result: Attendee8V2?
-        do {
-            result = try await Amplify.DataStore.save(attendee)
-        } catch(let error) {
-            XCTFail("Failed \(error)")
-        }
-        return result
+    private func randomAttendee() -> Attendee8V2 {
+        Attendee8V2()
     }
 
-    func saveMeeting() async -> Meeting8V2? {
-        let meeting = Meeting8V2(title: "title")
-        var result: Meeting8V2?
-        do {
-            result = try await Amplify.DataStore.save(meeting)
-        } catch(let error) {
-            XCTFail("Failed \(error)")
-        }
-        return result
+    private func randomMeeting() -> Meeting8V2 {
+        Meeting8V2(title: UUID().uuidString)
     }
 
-    func saveRegistration(meeting: Meeting8V2, attendee: Attendee8V2) async -> Registration8V2? {
-        let registration = Registration8V2(meeting: meeting, attendee: attendee)
-        var result: Registration8V2?
-        do {
-            result = try await Amplify.DataStore.save(registration)
-        } catch(let error) {
-            XCTFail("Failed \(error)")
-        }
-        return result
+    private func randomRegistration(meeting: Meeting8V2, attendee: Attendee8V2) -> Registration8V2 {
+        Registration8V2(meeting: meeting, attendee: attendee)
     }
-
 }

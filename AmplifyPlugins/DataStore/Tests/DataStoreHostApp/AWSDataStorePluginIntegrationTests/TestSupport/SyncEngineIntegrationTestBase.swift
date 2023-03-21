@@ -120,4 +120,74 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     func deleteMutationEvents() async throws {
         try await Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all)
     }
+
+    private func extractMutationEvent(event: DataStoreHubEvent) -> MutationEvent? {
+        if case .syncReceived(let mutationEvent) = event {
+            return mutationEvent
+        }
+        return nil
+    }
+
+    func createModelUntilSynced<T: Model>(data: T) async throws -> T {
+        let expection = AsyncExpectation(description: "Wait for creating [\(data.modelName): \(data.identifier)]")
+        let cancellable = Amplify.Hub.publisher(for: .dataStore)
+            .map { DataStoreHubEvent(payload: $0) }
+            .compactMap(extractMutationEvent(event:))
+            .filter { $0.modelName == T.modelName }
+            .filter { $0.mutationType == MutationEvent.MutationType.create.rawValue }
+            .compactMap { try? $0.decodeModel() as? T }
+            .filter { $0.identifier == data.identifier }
+            .sink { _ in
+                Task { await expection.fulfill() }
+            }
+        defer { cancellable.cancel() }
+
+        let model = try await Amplify.DataStore.save(data)
+        await waitForExpectations([expection], timeout: 10)
+        return model
+    }
+
+    @discardableResult
+    func updateModelWaitForSync<T: Model & Equatable>(data: T) async throws -> T {
+        try await updateModelWaitForSync(data: data, isEqual: { $0 == $1 })
+    }
+
+    @discardableResult
+    func updateModelWaitForSync<T: Model>(data: T, isEqual: @escaping (T, T) -> Bool) async throws -> T {
+        let expection = AsyncExpectation(description: "Wait for updating [\(data.modelName): \(data.identifier)]")
+        let cancellable = Amplify.Hub.publisher(for: .dataStore)
+            .map { DataStoreHubEvent(payload: $0) }
+            .compactMap(extractMutationEvent(event:))
+            .filter { $0.modelName == T.modelName }
+            .filter { $0.mutationType == MutationEvent.MutationType.update.rawValue }
+            .compactMap { try? $0.decodeModel() as? T }
+            .filter { isEqual($0, data) }
+            .sink { _ in
+                Task { await expection.fulfill() }
+            }
+        defer { cancellable.cancel() }
+
+        let model = try await Amplify.DataStore.save(data)
+        await waitForExpectations([expection], timeout: 10)
+        return model
+    }
+
+
+    func deleteModelWaitForSync<T: Model>(data: T, predicate: QueryPredicate? = nil) async throws {
+        let expection = AsyncExpectation(description: "Wait for deleting [\(data.modelName): \(data.identifier)]")
+        let cancellable = Amplify.Hub.publisher(for: .dataStore)
+            .map { DataStoreHubEvent(payload: $0) }
+            .compactMap(extractMutationEvent(event:))
+            .filter { $0.modelName == T.modelName }
+            .filter { $0.mutationType == MutationEvent.MutationType.delete.rawValue }
+            .compactMap { try? $0.decodeModel() as? T }
+            .filter { $0.identifier == data.identifier }
+            .sink { _ in
+                Task { await expection.fulfill() }
+            }
+        defer { cancellable.cancel() }
+
+        try await Amplify.DataStore.delete(data, where: predicate)
+        await waitForExpectations([expection], timeout: 10)
+    }
 }

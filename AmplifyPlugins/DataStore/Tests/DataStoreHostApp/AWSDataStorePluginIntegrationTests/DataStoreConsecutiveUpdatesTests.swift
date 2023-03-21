@@ -43,7 +43,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         updatedPost.title = "MyUpdatedPost"
         updatedPost.content = "This is my updated post."
 
-        let updateSyncReceived = expectation(description: "Received update mutation event on subscription for Post")
+        let updateSyncReceived = asyncExpectation(description: "Received update mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
@@ -63,7 +63,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
             if mutationEvent.version == 2 {
                 XCTAssertEqual(post, updatedPost)
-                updateSyncReceived.fulfill()
+                Task { await updateSyncReceived.fulfill() }
             }
 
         }
@@ -81,7 +81,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = try await queryPost(byId: updatedPost.id)
         XCTAssertEqual(queryResult, updatedPost)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await waitForExpectations([updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)
@@ -119,11 +119,12 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                           rating: 3,
                           status: .published)
 
-        let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
+        let deleteSyncReceived = asyncExpectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
@@ -137,10 +138,9 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 XCTAssertEqual(post, newPost)
             }
 
-            if mutationEvent.version == 2 {
+            if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
                 XCTAssertEqual(post, newPost)
-                XCTAssertEqual(mutationEvent.mutationType, MutationEvent.MutationType.delete.rawValue)
-                deleteSyncReceived.fulfill()
+                Task { await deleteSyncReceived.fulfill() }
             }
         }
 
@@ -157,7 +157,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = try await queryPost(byId: newPost.id)
         XCTAssertNil(queryResult)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await waitForExpectations([deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: newPost.id)
@@ -287,8 +287,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let updatedPostDefaultTitle = "MyUpdatedPost"
         let updateCount = 10
 
-        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
-        let updateSyncReceived = expectation(description: "Received update mutation event on subscription for Post")
+        let saveSyncReceived = asyncExpectation(description: "Received create mutation event on subscription for Post")
+        let updateSyncReceived = asyncExpectation(description: "Received update mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
@@ -305,14 +305,12 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
             if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                 XCTAssertEqual(post, newPost)
                 XCTAssertEqual(mutationEvent.version, 1)
-                saveSyncReceived.fulfill()
-                return
+                Task { await saveSyncReceived.fulfill() }
             }
 
             if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                 if post.title == updatedPostDefaultTitle + String(updateCount) {
-                    updateSyncReceived.fulfill()
-                    return
+                    Task { await updateSyncReceived.fulfill() }
                 }
             }
 
@@ -324,14 +322,13 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(newPost)
-        wait(for: [saveSyncReceived], timeout: networkTimeout)
+        await waitForExpectations([saveSyncReceived], timeout: networkTimeout)
 
         for index in 1 ... updateCount {
             updatedPost.title = updatedPostDefaultTitle + String(index)
             _ = try await Amplify.DataStore.save(updatedPost)
         }
-
-        wait(for: [updateSyncReceived], timeout: networkTimeout)
+        await waitForExpectations([updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)

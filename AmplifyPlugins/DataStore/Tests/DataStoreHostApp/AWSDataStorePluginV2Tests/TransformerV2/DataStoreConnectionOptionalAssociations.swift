@@ -71,47 +71,38 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startAmplifyAndWaitForSync()
 
-        guard let comment = try await saveComment() else {
-            XCTFail("Failed to save comment")
-            return
-        }
-        _ = try await queryComment(id: comment.id)
+        let comment = try await createModelUntilSynced(data: randomComment())
+        let quriedComment = try await queryComment(id: comment.id)
+        XCTAssertEqual(comment.identifier, quriedComment?.identifier)
     }
 
     func testSavePostThenQuery() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
 
-        guard let post = try await savePost() else {
-            XCTFail("Failed to save post")
-            return
-        }
-        _ = try await queryPost(id: post.id)
+        let post = try await createModelUntilSynced(data: randomPost())
+        let quiredPost = try await queryPost(id: post.id)
+        XCTAssertEqual(post.identifier, quiredPost?.identifier)
     }
 
     func testSaveBlogThenQuery() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
 
-        guard let blog = try await saveBlog() else {
-            XCTFail("Failed to save blog ")
-            return
-        }
-        _ = try await queryBlog(id: blog.id)
+        let blog = try await createModelUntilSynced(data: randomBlog())
+        let queriedBlog = try await queryBlog(id: blog.id)
+        XCTAssertEqual(blog.identifier, queriedBlog?.identifier)
     }
 
     func testSaveCommentThenUpdateWithPost() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard var comment = try await saveComment(),
-              let post = try await savePost() else {
-            XCTFail("Failed to save comment and post")
-            return
-        }
+        var comment = try await createModelUntilSynced(data: randomComment())
+        let post = try await createModelUntilSynced(data: randomPost())
         comment.post = post
-        guard let comment = try await saveComment(comment),
-              let queriedComment = try await queryComment(id: comment.id) else {
-            XCTFail("Failed to update and query comment")
+        let updatedComment = try await updateModelWaitForSync(data: comment, isEqual: { $0.identifier == $1.identifier })
+        guard let queriedComment = try await queryComment(id: comment.id) else {
+            XCTFail("Failed to query comment")
             return
         }
         XCTAssertNotNil(queriedComment.post)
@@ -126,22 +117,19 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             XCTFail("Couldn't get first comment")
             return
         }
-        XCTAssertEqual(firstLazyComment.id, comment.id)
+        XCTAssertEqual(firstLazyComment.id, queriedComment.id)
         XCTAssertEqual(queriedPost.comments?.count, 1)
     }
 
     func testSavePostThenUpdateWithBlog() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard var post = try await savePost(),
-              let blog = try await saveBlog() else {
-            XCTFail("Failed to save post and blog")
-            return
-        }
+        var post = try await createModelUntilSynced(data: randomPost())
+        let blog = try await createModelUntilSynced(data: randomBlog())
         post.blog = blog
-        guard let post = try await savePost(post),
-              let queriedPost = try await queryPost(id: post.id) else {
-            XCTFail("Failed to update and query post ")
+        let updatedPost = try await updateModelWaitForSync(data: post, isEqual: { $0.identifier == $1.identifier })
+        guard let queriedPost = try await queryPost(id: post.id) else {
+            XCTFail("Failed to query post ")
             return
         }
         XCTAssertNotNil(queriedPost.blog)
@@ -156,29 +144,27 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             XCTFail("Couldn't get first post")
             return
         }
-        XCTAssertEqual(firstLazyPost.id, post.id)
+        XCTAssertEqual(firstLazyPost.id, updatedPost.id)
         XCTAssertEqual(queriedBlog.posts?.count, 1)
     }
 
     func testUpdateCommentWithPostAndPostWithBlog() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard var comment = try await saveComment(),
-              var post = try await savePost(),
-              let blog = try await saveBlog() else {
-            XCTFail("Failed to save comment and post and blog")
-            return
-        }
+        var comment = try await createModelUntilSynced(data: randomComment())
+        var post = try await createModelUntilSynced(data: randomPost())
+        let blog = try await createModelUntilSynced(data: randomBlog())
+
         comment.post = post
         post.blog = blog
-        guard let post = try await savePost(post),
-              let comment = try await saveComment(comment),
-              let queriedComment = try await queryComment(id: comment.id) else {
-            XCTFail("Failed to update post, comment, and query comment")
+        let updatedPost = try await updateModelWaitForSync(data: post, isEqual: { $0.identifier == $1.identifier })
+        let updatedComment = try await updateModelWaitForSync(data: comment, isEqual: { $0.identifier == $1.identifier })
+        guard let queriedComment = try await queryComment(id: updatedComment.id) else {
+            XCTFail("Failed to query comment!")
             return
         }
         XCTAssertNotNil(queriedComment.post)
-        XCTAssertEqual(queriedComment.post?.id, post.id)
+        XCTAssertEqual(queriedComment.post?.id, updatedPost.id)
         XCTAssertNotNil(queriedComment.post?.blog)
         XCTAssertEqual(queriedComment.post?.blog?.id, blog.id)
     }
@@ -186,12 +172,10 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
     func testRemovePostFromCommentAndBlogFromPost() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let blog = try await saveBlog(),
-              let post = try await savePost(withBlog: blog),
-              let comment = try await saveComment(withPost: post) else {
-            XCTFail("Failed to save blog, post, comment")
-            return
-        }
+        let blog = try await createModelUntilSynced(data: randomBlog())
+        let post = try await createModelUntilSynced(data: randomPost(with: blog))
+        let comment = try await createModelUntilSynced(data: randomComment(with: post))
+
         guard var queriedComment = try await queryComment(id: comment.id),
               var queriedPost = try await queryPost(id: post.id) else {
             XCTFail("Failed to query comment and post")
@@ -215,12 +199,12 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             XCTFail("Failed to retrieve input object from GraphQL variables")
             return
         }
-        
-        guard try await saveComment(queriedComment) != nil else {
-            XCTFail("Failed to update comment")
-            return
-        }
-        guard let queriedCommentWithoutPost = try await  queryComment(id: comment.id) else {
+
+        try await updateModelWaitForSync(data: queriedComment, isEqual: { lhs, rhs in
+            lhs.identifier == rhs.identifier
+        })
+
+        guard let queriedCommentWithoutPost = try await queryComment(id: comment.id) else {
             XCTFail("Failed to query comment without post")
             return
         }
@@ -228,11 +212,9 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertNil(queriedCommentWithoutPost.post)
         
         queriedPost.blog = nil
-        guard try await  savePost(queriedPost) != nil else {
-            XCTFail("Failed to update post")
-            return
-        }
-        
+        try await updateModelWaitForSync(data: queriedPost, isEqual: { lhs, rhs in
+            lhs.identifier == rhs.identifier
+        })
         guard let queriedPostWithoutBlog = try await queryPost(id: post.id) else {
             XCTFail("Failed to query post")
             return
@@ -247,96 +229,24 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertTrue(!queriedPosts.isEmpty)
     }
 
-    func saveComment(_ comment: Comment8? = nil, withPost post: Post8? = nil) async throws -> Comment8? {
-        let commentToSave: Comment8
-        if let comment = comment {
-            commentToSave = comment
-        } else {
-            commentToSave = Comment8(content: "content", post: post)
-        }
-
-        let waitForSync = asyncExpectation(description: "synced")
-        token = Amplify.Hub.listen(to: .dataStore) { payload in
-            let event = DataStoreHubEvent(payload: payload)
-            switch event {
-            case .syncReceived(let mutationEvent):
-                if mutationEvent.modelId == commentToSave.id {
-                    Task { await waitForSync.fulfill() }
-                    if let token = self.token {
-                        Amplify.Hub.removeListener(token)
-                    }
-                }
-            default:
-                break
-            }
-        }
-        let savedComment = try await Amplify.DataStore.save(commentToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
-        return savedComment
+    func randomComment(with post: Post8? = nil) -> Comment8 {
+        Comment8(content: UUID().uuidString, post: post)
     }
 
-    func savePost(_ post: Post8? = nil, withBlog blog: Blog8? = nil) async throws -> Post8? {
-        let postToSave: Post8
-        if let post = post {
-            postToSave = post
-        } else {
-            postToSave = Post8(name: "name", randomId: "randomId", blog: blog)
-        }
-
-        let waitForSync = asyncExpectation(description: "synced")
-        token = Amplify.Hub.listen(to: .dataStore) { payload in
-            let event = DataStoreHubEvent(payload: payload)
-            switch event {
-            case .syncReceived(let mutationEvent):
-                if mutationEvent.modelId == postToSave.id {
-                    Task { await waitForSync.fulfill() }
-                    if let token = self.token {
-                        Amplify.Hub.removeListener(token)
-                    }
-                }
-            default:
-                break
-            }
-        }
-        let savedPost = try await Amplify.DataStore.save(postToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
-        return savedPost
+    func randomBlog() -> Blog8 {
+        let notes = [UUID().uuidString, UUID().uuidString]
+        let nestedModel = MyNestedModel8(id: UUID().uuidString,
+                                         nestedName: UUID().uuidString,
+                                         notes: notes)
+        let customModel = MyCustomModel8(id: UUID().uuidString,
+                                         name: UUID().uuidString,
+                                         desc: UUID().uuidString,
+                                         children: [nestedModel])
+        return Blog8(name: UUID().uuidString, customs: [customModel], notes: notes)
     }
 
-    func saveBlog(_ blog: Blog8? = nil) async throws -> Blog8? {
-        let blogToSave: Blog8
-        if let blog = blog {
-            blogToSave = blog
-        } else {
-            let nestedModel = MyNestedModel8(id: UUID().uuidString,
-                                             nestedName: "nestedName",
-                                             notes: ["notes1", "notes2"])
-            let customModel = MyCustomModel8(id: UUID().uuidString,
-                                             name: "name",
-                                             desc: "desc",
-                                             children: [nestedModel])
-            blogToSave = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
-        }
-
-        let waitForSync = asyncExpectation(description: "synced")
-        token = Amplify.Hub.listen(to: .dataStore) { payload in
-            let event = DataStoreHubEvent(payload: payload)
-            switch event {
-            case .syncReceived(let mutationEvent):
-                if mutationEvent.modelId == blogToSave.id {
-                    Task { await waitForSync.fulfill() }
-                    if let token = self.token {
-                        Amplify.Hub.removeListener(token)
-                    }
-                }
-
-            default:
-                break
-            }
-        }
-        let savedBlog = try await Amplify.DataStore.save(blogToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
-        return savedBlog
+    func randomPost(with blog: Blog8? = nil ) -> Post8 {
+        Post8(name: UUID().uuidString, blog: blog)
     }
 
     func queryComment(id: String) async throws -> Comment8? {

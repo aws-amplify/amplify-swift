@@ -149,6 +149,9 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                       enumNullableList: [.valueTwo],
                                       nullableEnumList: [.valueOne, .valueTwo],
                                       nullableEnumNullableList: [.valueTwo, .valueOne])
+        let savedModel = try await createModelUntilSynced(data: container)
+        XCTAssertEqual(savedModel, container)
+
         let updatedContainer = EnumTestModel(id: container.id,
                                              enumVal: .valueTwo,
                                              nullableEnumVal: nil,
@@ -156,13 +159,13 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                              enumNullableList: [.valueTwo, .valueOne],
                                              nullableEnumList: [.valueTwo, .valueOne],
                                              nullableEnumNullableList: [.valueOne, .valueTwo])
-        let savedModel = try await Amplify.DataStore.save(container)
-        XCTAssertEqual(savedModel, container)
-        let updatedModel = try await Amplify.DataStore.save(updatedContainer)
+        let updatedModel = try await updateModelWaitForSync(data: updatedContainer)
         XCTAssertEqual(updatedModel, updatedContainer)
+
         let queriedModel = try await Amplify.DataStore.query(EnumTestModel.self, byId: container.id)
         XCTAssertEqual(queriedModel, updatedContainer)
-        try await Amplify.DataStore.delete(updatedContainer)
+
+        try await deleteModelWaitForSync(data: updatedContainer)
         let emptyModel = try await Amplify.DataStore.query(EnumTestModel.self, byId: container.id)
         XCTAssertNil(emptyModel)
     }

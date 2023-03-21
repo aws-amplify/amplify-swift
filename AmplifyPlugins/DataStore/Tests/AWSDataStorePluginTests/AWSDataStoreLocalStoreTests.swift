@@ -40,7 +40,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let post = Post.keys
         let predicate = (post.id <= 1 && post.title == "title1")
             || (post.rating > 2 && post.status == PostStatus.private)
-        
+
         let queriedPosts = try await Amplify.DataStore.query(Post.self, where: predicate)
         XCTAssertEqual(queriedPosts.count, 2)
     }
@@ -59,11 +59,11 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let queriedPosts = try await Amplify.DataStore.query(Post.self, paginate: .page(0, limit: 10))
         XCTAssertEqual(queriedPosts.count, 10)
         posts.append(contentsOf: queriedPosts)
-        
+
         let queriedPosts2 = try await Amplify.DataStore.query(Post.self, paginate: .page(1, limit: 10))
         XCTAssertEqual(queriedPosts2.count, 5)
         posts.append(contentsOf: queriedPosts2)
-        
+
         let idSet = Set(posts.map { $0.id })
         XCTAssertEqual(idSet.count, 15)
     }
@@ -239,7 +239,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         let queriedPosts = try await Amplify.DataStore.query(Post.self,
                                                       where: Post.keys.rating >= 2)
-            
+
         var posts = [Post]()
         var currentPage: UInt = 0
         var shouldRepeat = true

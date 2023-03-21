@@ -415,6 +415,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             storageAdapter.save(inProcessModel.syncMetadata,
                                 condition: nil,
                                 eagerLoad: self.isEagerLoad) { result in
+                if self.isFinished || self.isCancelled {
+                    promise(.successfulVoid)
+                    return
+                }
+
                 switch result {
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)
@@ -436,6 +441,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     private func notify(savedModel: AppliedModel,
                         mutationType: MutationEvent.MutationType) {
+        if self.isFinished || self.isCancelled {
+            return
+        }
+
         let version = savedModel.syncMetadata.version
 
         // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,

@@ -137,7 +137,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         try await startAmplifyAndWaitForSync()
 
         let post = Post4V2(title: "title")
-        let createReceived = expectation(description: "received post from sync event")
+        let createReceived = AsyncExpectation(description: "received post from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -146,8 +146,9 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             }
 
             if let syncedPost = try? mutationEvent.decodeModel() as? Post4V2,
-               syncedPost.id == post.id {
-                createReceived.fulfill()
+               syncedPost.id == post.id
+            {
+                Task { await createReceived.fulfill() }
             }
         }
         
@@ -156,7 +157,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let queriedPost = try await Amplify.DataStore.query(Post4V2.self, byId: post.id)
         XCTAssertEqual(queriedPost, post)
@@ -167,7 +168,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         try await startAmplifyAndWaitForSync()
 
         var post = Post4V2(title: "title")
-        let createReceived = expectation(description: "received post from sync event")
+        let createReceived = AsyncExpectation(description: "received post from sync event")
         var hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -179,7 +180,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
                syncedPost.id == post.id {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
-                    createReceived.fulfill()
+                    Task { await createReceived.fulfill() }
                 }
             }
         }
@@ -188,10 +189,10 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let updatedTitle = "updatedTitle"
-        let updateReceived = expectation(description: "received updated post from sync event")
+        let updateReceived = AsyncExpectation(description: "received updated post from sync event")
         hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -204,7 +205,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
                 if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                     XCTAssertEqual(syncedPost.title, updatedTitle)
                     XCTAssertEqual(mutationEvent.version, 2)
-                    updateReceived.fulfill()
+                    Task { await updateReceived.fulfill() }
                 }
             }
         }
@@ -215,7 +216,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         
         post.title = updatedTitle
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([updateReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostWithSync() async throws {
@@ -224,7 +225,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
         let post = Post4V2(title: "title")
         
-        let createReceived = expectation(description: "received post from sync event")
+        let createReceived = AsyncExpectation(description: "received post from sync event")
         var hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -236,7 +237,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
                syncedPost == post {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
-                    createReceived.fulfill()
+                    Task { await createReceived.fulfill() }
                 }
             }
         }
@@ -245,9 +246,9 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([createReceived], timeout: TestCommonConstants.networkTimeout)
 
-        let deleteReceived = expectation(description: "received deleted post from sync event")
+        let deleteReceived = AsyncExpectation(description: "received deleted post from sync event")
         hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -259,7 +260,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
                syncedPost == post {
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     XCTAssertEqual(mutationEvent.version, 2)
-                    deleteReceived.fulfill()
+                    Task { await deleteReceived.fulfill() }
                 }
 
             }
@@ -269,7 +270,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.delete(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostCascadeToComments() async throws {

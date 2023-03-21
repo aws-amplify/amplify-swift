@@ -2,11 +2,11 @@ name: DataStore TransformerV2 Tests
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, 5d/fix-datastore-integration-test]
 
 permissions:
     id-token: write
-    contents: read 
+    contents: read
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -56,4 +56,4 @@ jobs:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginV2Tests
 
- 
+
