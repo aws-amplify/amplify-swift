@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.6.1 (2023-03-21)
+
+### Bug Fixes
+
+- **datastore**: swap `like` for `instr` in sql queries (#2818)
+- **storage**: update storage to support downloading if a file already exist locally (#2825)
+- **Auth**: Sign out when user does not exist during delete user task (#2812)
+
 ## 2.6.0 (2023-03-13)
 
 ### Features
