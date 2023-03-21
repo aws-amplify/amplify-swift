@@ -38,6 +38,8 @@ struct SignInEvent: StateMachineEvent {
 
         case respondDevicePasswordVerifier(SRPStateData, SignInResponseBehavior)
 
+        case initiateSoftwareTokenSetup(Username, SignInResponseBehavior)
+
         case throwPasswordVerifierError(SignInError)
 
         case finalizeSignIn(SignedInData)
@@ -76,6 +78,7 @@ struct SignInEvent: StateMachineEvent {
         case .receivedChallenge: return "SignInEvent.receivedChallenge"
         case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
         case .retryRespondPasswordVerifier: return "SignInEvent.retryRespondPasswordVerifier"
+        case .initiateSoftwareTokenSetup: return "SignInEvent.initiateSoftwareTokenSetup"
         }
     }
 
@@ -109,7 +112,8 @@ extension SignInEvent.EventType: Equatable {
             (.throwAuthError, .throwAuthError),
             (.receivedChallenge, .receivedChallenge),
             (.verifySMSChallenge, .verifySMSChallenge),
-            (.retryRespondPasswordVerifier, .retryRespondPasswordVerifier):
+            (.retryRespondPasswordVerifier, .retryRespondPasswordVerifier),
+            (.initiateSoftwareTokenSetup, .initiateSoftwareTokenSetup):
             return true
         default: return false
         }

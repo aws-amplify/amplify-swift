@@ -98,6 +98,14 @@ extension SignInState {
                                  actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateSoftwareTokenSetup(_, let challengeResponse) = signInEvent.eventType {
+                    let action = StartSoftwareTokenSetup(
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingSoftwareTokenSetup(.notStarted, signInEventData),
+                                 actions: [action])
+                }
+
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
                                                                    byApplying: event)
                 let signingInWithSRP = SignInState.signingInWithSRP(resolution.newState,
@@ -250,6 +258,48 @@ extension SignInState {
                 let signingInWithSRP = SignInState.signingInWithSRPCustom(resolution.newState,
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
+
+
+            case .resolvingSoftwareTokenSetup(let setupSoftwareTokenState, let signInEventData):
+
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInEventData.signInMethod)
+                    let subState = SignInChallengeState.notStarted
+                    return .init(newState: .resolvingChallenge(
+                        subState,
+                        challenge.challenge.authChallengeType,
+                        signInEventData.signInMethod
+                    ), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
+                let resolution = SignInSetupSoftwareTokenState.Resolver(
+                    signInEventData: signInEventData).resolve(
+                        oldState: setupSoftwareTokenState,
+                        byApplying: event)
+                let settingUpSoftwareTokenState = SignInState.resolvingSoftwareTokenSetup(
+                    resolution.newState,
+                    signInEventData)
+                return .init(newState: settingUpSoftwareTokenState, actions: resolution.actions)
+
+
             case .resolvingDeviceSrpa(let deviceSrpState):
                 let signInMethod = SignInMethod.apiBased(.userSRP)
                 if let signInEvent = event as? SignInEvent,

@@ -43,6 +43,13 @@ struct UserPoolSignInHelper: DefaultLogger {
         } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
                   case .waitingForAnswer(let challenge, _) = challengeState {
             return try validateResult(for: challengeType, with: challenge)
+        } else if case .resolvingSoftwareTokenSetup(let softwareTokenSetupState, _) = signInState,
+                  case .error(let signInError) = softwareTokenSetupState {
+            return try validateError(signInError: signInError)
+
+        } else if case .resolvingSoftwareTokenSetup(let softwareTokenSetupState, _) = signInState,
+                  case .waitingForAnswer(let challenge) = softwareTokenSetupState {
+            return .init(nextStep: .setupTOTPMFAWithSecretCode(challenge.secretCode, [:]))
         }
         return nil
     }
@@ -129,6 +136,10 @@ struct UserPoolSignInHelper: DefaultLogger {
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
+                case .mfaSetup:
+                    return SignInEvent(
+                        eventType: .initiateSoftwareTokenSetup(
+                            username, response))
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)

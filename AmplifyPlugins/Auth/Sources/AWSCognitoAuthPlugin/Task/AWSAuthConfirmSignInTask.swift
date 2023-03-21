@@ -49,17 +49,26 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             AuthPluginErrorConstants.invalidStateError, nil)
 
         guard case .configured(let authNState, _) = await authStateMachine.currentState,
-              case .signingIn(let signInState) = authNState,
-              case .resolvingChallenge(let challengeState, _, _) = signInState else {
+              case .signingIn(let signInState) = authNState else {
             throw invalidStateError
         }
 
-        switch challengeState {
-        case .waitingForAnswer, .error:
-            log.verbose("Sending confirm signIn event: \(challengeState)")
-            await sendConfirmSignInEvent()
-        default:
-            throw invalidStateError
+        if case .resolvingChallenge(let challengeState, _, _) = signInState {
+            switch challengeState {
+            case .waitingForAnswer, .error:
+                log.verbose("Sending confirm signIn event: \(challengeState)")
+                await sendConfirmSignInEvent()
+            default:
+                throw invalidStateError
+            }
+        } else if case .resolvingSoftwareTokenSetup(let resolvingSetupTokenState, _) = signInState {
+            switch resolvingSetupTokenState {
+            case .waitingForAnswer, .error:
+                log.verbose("Sending confirm signIn event: \(resolvingSetupTokenState)")
+                await sendConfirmSoftwareTokenSetupEvent()
+            default:
+                throw invalidStateError
+            }
         }
 
         let stateSequences = await authStateMachine.listen()
@@ -108,6 +117,16 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             attributes: attributes,
             metadata: pluginOptions?.metadata)
         let event = SignInChallengeEvent(
+            eventType: .verifyChallengeAnswer(confirmSignInData))
+        await authStateMachine.send(event)
+    }
+
+    func sendConfirmSoftwareTokenSetupEvent() async {
+        let confirmSignInData = ConfirmSignInEventData(
+            answer: self.request.challengeResponse,
+            attributes: [:],
+            metadata: nil)
+        let event = SetupSoftwareTokenEvent(
             eventType: .verifyChallengeAnswer(confirmSignInData))
         await authStateMachine.send(event)
     }
