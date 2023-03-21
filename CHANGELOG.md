@@ -1,5 +1,14 @@
 # Changelog
 ## Unreleased
+## 1.29.1 (2023-03-21)
+
+### Bug Fixes
+
+- **datastore**: v1 swap `like` for `instr` in sql queries (#2819)
+- **datastore-v1**: mutation event got ignored while executing parallel saving (#2782)
+- revert CPK has-one associatedFields (#2750)
+- **v1**: CPK has-many has-one associatedFields (#2734)
+
 ## 1.29.0 (2023-01-30)
 
 ### Features
