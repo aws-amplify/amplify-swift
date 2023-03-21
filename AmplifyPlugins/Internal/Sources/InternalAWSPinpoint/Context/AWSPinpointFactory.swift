@@ -21,6 +21,8 @@ public class AWSPinpointFactory {
     private init() {}
     
     static var credentialsProvider = AWSAuthService().getCredentialsProvider()
+
+    static var provisioningProfileReader: ProvisioningProfileReader = .default
     
     public static func sharedPinpoint(appId: String,
                                       region: String) throws -> AWSPinpointBehavior {
@@ -29,10 +31,18 @@ public class AWSPinpointFactory {
             return existingContext
         }
 
-        var isDebug = false
+        var isDebug: Bool
+        /// Check for the APS Environment entitlement in a provisioning profile first
+        if let apsEnvironment = provisioningProfileReader.profile()?.apsEnvironment {
+            isDebug = apsEnvironment == .development
+        } else {
+        /// Fallback to the DEBUG flag
         #if DEBUG
             isDebug = true
+        #else
+            isDebug = false
         #endif
+        }
         let configuration = PinpointContextConfiguration(
             appId: appId,
             region: region,
@@ -45,3 +55,4 @@ public class AWSPinpointFactory {
         return pinpointContext
     }
 }
+
