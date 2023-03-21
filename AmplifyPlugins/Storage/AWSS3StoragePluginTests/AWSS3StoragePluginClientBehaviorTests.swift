@@ -9,6 +9,7 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
+// swiftlint:disable:next type_body_length
 class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
 
     // MARK: GetURL API Tests

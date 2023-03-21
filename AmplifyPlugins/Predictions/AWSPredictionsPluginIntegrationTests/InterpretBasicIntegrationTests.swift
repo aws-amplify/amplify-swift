@@ -39,8 +39,8 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
         waitForExpectations(timeout: networkTimeout)
     }
 
-    /// Test if we can make successful calls to interpret when different input texts containing one or more emoji ZWJ (zero width joiner)/modifier
-    /// sequences.
+    /// Test if we can make successful calls to interpret when different input texts containing one or more
+    /// emoji ZWJ (zero width joiner)/modifier sequences.
     ///
     /// - Given: Configured Amplify with prediction added
     /// - When:

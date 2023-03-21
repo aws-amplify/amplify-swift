@@ -13,6 +13,7 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable:next type_body_length
 class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {

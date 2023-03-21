@@ -87,7 +87,7 @@ import Foundation
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelAssociation {
-    case hasMany(associatedFieldName: String?)
+    case hasMany(associatedFieldName: String?, associatedFieldNames: [String] = [])
     case hasOne(associatedFieldName: String?, targetNames: [String])
     case belongsTo(associatedFieldName: String?, targetNames: [String])
 
@@ -98,8 +98,10 @@ public enum ModelAssociation {
         return .belongsTo(associatedFieldName: nil, targetNames: targetNames)
     }
 
-    public static func hasMany(associatedWith: CodingKey?) -> ModelAssociation {
-        return .hasMany(associatedFieldName: associatedWith?.stringValue)
+    public static func hasMany(associatedWith: CodingKey? = nil,
+                               associatedFields: [CodingKey] = []) -> ModelAssociation {
+        return .hasMany(associatedFieldName: associatedWith?.stringValue,
+                        associatedFieldNames: associatedFields.map { $0.stringValue })
     }
 
     @available(*, deprecated, message: "Use hasOne(associatedWith:targetNames:)")
@@ -234,13 +236,10 @@ extension ModelField {
         if hasAssociation {
             let associatedModel = requiredAssociatedModelName
             switch association {
-            case .belongsTo(let associatedKey, _):
-                // TODO handle modelName casing (convert to camelCase)
-                let key = associatedKey ?? associatedModel
-                let schema = ModelRegistry.modelSchema(from: associatedModel)
-                return schema?.field(withName: key)
-            case .hasOne(let associatedKey, _),
-                 .hasMany(let associatedKey):
+            case .belongsTo(let associatedKey, _),
+                    .hasOne(let associatedKey, _),
+                    .hasMany(let associatedKey, _):
+                // swiftlint:disable:next todo
                 // TODO handle modelName casing (convert to camelCase)
                 let key = associatedKey ?? associatedModel
                 let schema = ModelRegistry.modelSchema(from: associatedModel)

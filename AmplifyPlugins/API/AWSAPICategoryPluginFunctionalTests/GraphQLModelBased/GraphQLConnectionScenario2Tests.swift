@@ -29,6 +29,7 @@ import XCTest
  ```
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
  */
+// swiftlint:disable:next type_body_length
 class GraphQLConnectionScenario2Tests: XCTestCase {
 
     override func setUp() {
@@ -55,6 +56,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     // Create Project2 in different ways, then retrieve it
     // 1. `teamID` and `team`
     // 2. With random `teamID` and `team`
+    // swiftlint:disable:next cyclomatic_complexity
     func testCreateAndGetProject() throws {
         guard let team2 = createTeam2(name: "name") else {
             XCTFail("Could not create team")
@@ -140,6 +142,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         wait(for: [updateProject2Successful], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAndGetProject() {
         guard let team = createTeam2(name: "name") else {
             XCTFail("Could not create team")

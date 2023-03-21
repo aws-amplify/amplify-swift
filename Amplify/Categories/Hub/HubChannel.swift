@@ -43,6 +43,7 @@ public enum HubChannel {
 }
 
 extension HubChannel: Equatable {
+    // swiftlint:disable:next cyclomatic_complexity
     public static func == (lhs: HubChannel, rhs: HubChannel) -> Bool {
         switch (lhs, rhs) {
         case (.analytics, .analytics):

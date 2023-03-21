@@ -12,7 +12,8 @@ import XCTest
 @testable import AWSAPICategoryPluginTestCommon
 
 /*
- (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type that already have a one-to-many connection.
+ (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type
+ that already have a one-to-many connection.
  ```
  type Post4 @model {
    id: ID!
@@ -30,6 +31,7 @@ import XCTest
  ```
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
  */
+// swiftlint:disable:next type_body_length
 class GraphQLConnectionScenario4Tests: XCTestCase {
 
     override func setUp() {
@@ -86,6 +88,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testGetPostThenFetchComments() {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")
@@ -195,6 +198,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         wait(for: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAndGetComment() {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")

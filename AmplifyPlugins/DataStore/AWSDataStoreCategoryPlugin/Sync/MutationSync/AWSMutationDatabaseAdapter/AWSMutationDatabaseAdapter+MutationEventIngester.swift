@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(OptionalExtension) import Amplify
 import Combine
 import Foundation
 
@@ -40,6 +40,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         // to query.
         var mutationEvent = mutationEvent
         do {
+            // swiftlint:disable:next todo
             // TODO: Refactor this so that it's clear that the storage engine is not responsible for setting the version
             // perhaps as simple as renaming to `submit(unversionedMutationEvent:)` or similar
             let syncMetadata = try storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId,
@@ -143,6 +144,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         case .dropCandidateWithError(let dataStoreError):
             completionPromise(.failure(dataStoreError))
         case .dropCandidateAndDeleteLocal:
+            // swiftlint:disable:next todo
             // TODO: Handle errors from delete, and convert to async
             let group = DispatchGroup()
             localEvents.forEach {
@@ -168,6 +170,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             }
 
             if localEvents.count > 1 {
+                // swiftlint:disable:next todo
                 // TODO: Handle errors from delete
                 localEvents
                     .suffix(from: 1)
@@ -205,24 +208,31 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
     /// Saves the deconflicted mutationEvent, invokes `nextEventPromise` if it exists, and the save was successful,
     /// and finally invokes the completion promise from the future of the original invocation of `submit`
-    func save(mutationEvent: MutationEvent,
-              storageAdapter: StorageEngineAdapter,
-              completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
-
+    func save(
+        mutationEvent: MutationEvent,
+        storageAdapter: StorageEngineAdapter,
+        completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise
+    ) {
         log.verbose("\(#function) mutationEvent: \(mutationEvent)")
+        let nextEventPromise = self.nextEventPromise.getAndSet(nil)
         var eventToPersist = mutationEvent
-        if nextEventPromise.get() != nil {
+        if nextEventPromise != nil {
             eventToPersist.inProcess = true
         }
+
         storageAdapter.save(eventToPersist, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
                 self.log.verbose("\(#function): Error saving mutation event: \(dataStoreError)")
+                // restore the `nextEventPromise` value when failed to save mutation event
+                // as nextEventPromise is expecting to hanlde error of querying unprocessed mutaiton events
+                // not the failure of saving mutaiton event operation
+                nextEventPromise.ifSome(self.nextEventPromise.set(_:))
             case .success(let savedMutationEvent):
                 self.log.verbose("\(#function): saved \(savedMutationEvent)")
-                if let nextEventPromise = self.nextEventPromise.getAndSet(nil) {
+                nextEventPromise.ifSome {
                     self.log.verbose("\(#function): invoking nextEventPromise with \(savedMutationEvent)")
-                    nextEventPromise(.success(savedMutationEvent))
+                    $0(.success(savedMutationEvent))
                 }
             }
             self.log.verbose("\(#function): invoking completionPromise with \(result)")

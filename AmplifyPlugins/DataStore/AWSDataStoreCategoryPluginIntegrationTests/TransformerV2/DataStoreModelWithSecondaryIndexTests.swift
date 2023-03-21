@@ -34,6 +34,7 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveModelAndSync() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -54,7 +55,8 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
                         XCTFail("Can't cast payload as mutation event")
                         return
                 }
-                guard let customerEvent = try? mutationEvent.decodeModel() as? CustomerSecondaryIndexV2, customerEvent.id == customer.id else {
+                guard let customerEvent = try? mutationEvent.decodeModel() as? CustomerSecondaryIndexV2,
+                      customerEvent.id == customer.id else {
                     return
                 }
 
@@ -134,4 +136,3 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
         return result
     }
 }
-

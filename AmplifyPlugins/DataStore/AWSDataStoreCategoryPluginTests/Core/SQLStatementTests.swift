@@ -14,6 +14,8 @@ import XCTest
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
+// swiftlint:disable line_length
+// swiftlint:disable:next todo
 // TODO: Refactor this into separate test suites
 class SQLStatementTests: XCTestCase {
 
@@ -1024,6 +1026,7 @@ class SQLStatementTests: XCTestCase {
                 XCTAssertEqual(bindings.count, statement.variables.count)
                 bindings.enumerated().forEach {
                     if let one = $0.element, let other = statement.variables[$0.offset] {
+                        // swiftlint:disable:next todo
                         // TODO find better way to test `Binding` equality
                         XCTAssertEqual(String(describing: one), String(describing: other))
                     }
@@ -1044,11 +1047,11 @@ class SQLStatementTests: XCTestCase {
                         matches: "\"root\".\"rating\" between ? and ?",
                         bindings: [3, 5])
         assertPredicate(post.title.beginsWith("gelato"),
-                        matches: "\"root\".\"title\" like ?",
-                        bindings: ["gelato%"])
+                        matches: "instr(\"root\".\"title\", ?) = 1",
+                        bindings: ["gelato"])
         assertPredicate(post.title ~= "gelato",
-                        matches: "\"root\".\"title\" like ?",
-                        bindings: ["%gelato%"])
+                        matches: "instr(\"root\".\"title\", ?) > 0",
+                        bindings: ["gelato"])
     }
 
     /// - Given: a grouped predicate
@@ -1078,8 +1081,8 @@ class SQLStatementTests: XCTestCase {
             and "status" <> ?
             and "updatedAt" is null
             and (
-              "content" like ?
-              or "title" like ?
+              instr("content", ?) > 0
+              or instr("title", ?) = 1
             )
           )
         """, statement.stringValue)
@@ -1090,8 +1093,8 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[2] as? Int, 2)
         XCTAssertEqual(variables[3] as? Int, 4)
         XCTAssertEqual(variables[4] as? String, PostStatus.draft.rawValue)
-        XCTAssertEqual(variables[5] as? String, "%gelato%")
-        XCTAssertEqual(variables[6] as? String, "ice cream%")
+        XCTAssertEqual(variables[5] as? String, "gelato")
+        XCTAssertEqual(variables[6] as? String, "ice cream")
     }
 
     /// - Given: a `Model` type
@@ -1311,11 +1314,12 @@ class SQLStatementTests: XCTestCase {
                 and "root"."rating" between ? and ?
                 and "root"."updatedAt" is null
                 and (
-                  "root"."content" like ?
-                  or "root"."title" like ?
+                  instr("root"."content", ?) > 0
+                  or instr("root"."title", ?) = 1
                 )
               )
             """
+
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
@@ -1323,8 +1327,8 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[1] as? Int, 0)
         XCTAssertEqual(variables[2] as? Int, 2)
         XCTAssertEqual(variables[3] as? Int, 4)
-        XCTAssertEqual(variables[4] as? String, "%gelato%")
-        XCTAssertEqual(variables[5] as? String, "ice cream%")
+        XCTAssertEqual(variables[4] as? String, "gelato")
+        XCTAssertEqual(variables[5] as? String, "ice cream")
     }
 
     func testTranslateQueryPredicateWithNameSpaceWhenFieldNameSpecified() {

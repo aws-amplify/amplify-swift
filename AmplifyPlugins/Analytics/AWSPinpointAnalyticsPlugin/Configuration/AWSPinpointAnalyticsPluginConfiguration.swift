@@ -206,6 +206,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
+        // swiftlint:disable:next todo
         // TODO: more upper limit validation here due to some iOS background processing limitations
         if autoSessionTrackingIntervalValue < 0 {
             throw PluginError.pluginConfigurationError(

@@ -624,4 +624,4 @@ class AWSDataStorePluginTests: XCTestCase {
 
         waitForExpectations(timeout: 1.0)
     }
-}
+} // swiftlint:disable:this file_length

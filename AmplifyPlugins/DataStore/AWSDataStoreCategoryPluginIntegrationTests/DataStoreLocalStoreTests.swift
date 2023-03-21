@@ -146,7 +146,8 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
     /// - Given: 50 posts that has been saved
     /// - When:
-    ///    - attempt to query existing posts firstly sorted by rating in ascending order and secondly sorted by title in descending order
+    ///    - attempt to query existing posts firstly sorted by rating in ascending order and
+    ///      secondly sorted by title in descending order
     /// - Then:
     ///    - the existing data will be returned in expected order
     func testQueryWithMultipleSortsReturnsPosts() throws {
@@ -188,7 +189,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let postsDic = Dictionary(grouping: posts, by: { $0.rating! })
         for (_, pairs) in postsDic {
             for index in 0 ..< pairs.count - 1 {
-                if pairs[index].title < pairs[index + 1].title {
+                if pairs[index].title < pairs[index + 1].title { // swiftlint:disable:this for_where
                     XCTFail("title should be in descending order")
                 }
             }
@@ -281,7 +282,8 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
     /// - Given: 50 posts that has been saved
     /// - When:
-    ///    - attempt to query the first 10 existing posts that mathches a condition and are sorted by rating in ascending order
+    ///    - attempt to query the first 10 existing posts that mathches a condition and are sorted by
+    ///      rating in ascending order
     /// - Then:
     ///    - 10 or less existing data that matches the given condition will be returned in ascending order by rating
     func testQueryWithPredicateAndSortAndPagintate() throws {
@@ -331,7 +333,8 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
     /// - Given: 50 posts that has been saved
     /// - When:
-    ///    - attempt to query the every existing posts that mathches a condition and are sorted by rating in ascending order
+    ///    - attempt to query the every existing posts that mathches a condition and are sorted by
+    ///      rating in ascending order
     /// - Then:
     ///    - the existing data that matches the given condition will be returned in ascending order by rating
     func testQueryWithPredicateAndSortWithMultiplePages() throws {
@@ -437,6 +440,177 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         wait(for: [allSnapshotsReceived], timeout: 100)
         XCTAssertTrue(snapshotCount >= 2)
         sink.cancel()
+    }
+
+    /// Given: Saved `Post`s containing SQL pattern matching symbols `%` and `_`
+    /// When: Querying with predicates containing those symbols.
+    /// Then: The query results should only contain values matching the predicate without
+    /// treating `%` and `_` as pattern matching symbols.
+    func testQueryPatternMatchingSymbols() async throws {
+        setUp(withModels: TestModelRegistration())
+
+        let posts = [
+            Post(
+                title: "_bc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "abc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "de%",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "def",
+                content: "",
+                createdAt: .now()
+            )
+        ]
+
+        for post in posts {
+            let saveExpectation = expectation(description: "Save post completed")
+            Amplify.DataStore.save(post) { result in
+                switch result {
+                case .success:
+                    saveExpectation.fulfill()
+                case .failure(let error):
+                    XCTFail("Error saving post: \(post) - \(error)")
+                }
+            }
+            wait(for: [saveExpectation], timeout: 2)
+        }
+
+        let beginsWithExpectation = expectation(description: "query with beginsWith predicate completed")
+        // This should only contain 1 Post with the title "_bc"
+        // It should not contain the Post with the title "abc"
+        Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.beginsWith("_b")
+        ) { result in
+            switch result {
+            case .success(let posts):
+                XCTAssertEqual(posts.count, 1)
+                XCTAssertEqual(posts[0].title, "_bc")
+                beginsWithExpectation.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [beginsWithExpectation], timeout: 1)
+
+        let containsExpectation = expectation(description: "query with contains predicate completed")
+        // This should only contain the Post with the title "de%"
+        // It should not contain the Post with the title "def"
+        Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains("%")
+        ) { result in
+            switch result {
+            case .success(let posts):
+                XCTAssertEqual(posts.count, 1)
+                XCTAssertEqual(posts[0].title, "de%")
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [containsExpectation], timeout: 1)
+    }
+
+    /// Given: Saved `Post`s containing SQL pattern matching symbols `%` and `_`
+    /// When: Deleting with predicates containing those symbols and subsequently querying
+    /// for all `Post`s.
+    /// Then: The query results should only contain values matching the predicate without
+    /// treating `%` and `_` as pattern matching symbols.
+    func testDeletePatternMatchingSymbols() async throws {
+        setUp(withModels: TestModelRegistration())
+
+        let posts = [
+            Post(
+                title: "_bc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "abc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "de%",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "def",
+                content: "",
+                createdAt: .now()
+            )
+        ]
+
+        for post in posts {
+            let saveExpectation = expectation(description: "Save post completed")
+            Amplify.DataStore.save(post) { result in
+                switch result {
+                case .success:
+                    saveExpectation.fulfill()
+                case .failure(let error):
+                    XCTFail("Error saving post: \(post) - \(error)")
+                }
+            }
+            wait(for: [saveExpectation], timeout: 2)
+        }
+
+        let beginsWithExpectation = expectation(description: "delete + query with beginsWith predicate completed")
+        // This should only delete 1 Post with the title "_bc"
+        // It should not delete the Post with the title "abc"
+        Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.beginsWith("_b")
+        ) { deleteResult in
+            guard case .success = deleteResult else {
+                return XCTFail("Delete request failed")
+            }
+            Amplify.DataStore.query(Post.self) { result in
+                switch result {
+                case .success(let posts):
+                    XCTAssertEqual(posts.count, 3)
+                    XCTAssertTrue(posts.filter { $0.title == "_bc" }.isEmpty)
+                    beginsWithExpectation.fulfill()
+                case .failure(let error):
+                    XCTFail("\(error)")
+
+                }
+            }
+        }
+        wait(for: [beginsWithExpectation], timeout: 1)
+
+        let containsExpectation = expectation(description: "delete + query with contains predicate completed")
+        // This should only delete the Post with the title "de%"
+        // It should not delete the Post with the title "def"
+        Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.contains("%")
+        ) { deleteResult in
+            guard case .success = deleteResult else {
+                return XCTFail("Delete request failed")
+            }
+            Amplify.DataStore.query(Post.self) { result in
+                switch result {
+                case .success(let posts):
+                    XCTAssertEqual(posts.count, 2)
+                    XCTAssertTrue(posts.filter { $0.title == "de%" }.isEmpty)
+                    containsExpectation.fulfill()
+                case .failure(let error):
+                    XCTFail("\(error)")
+                }
+            }
+        }
+        wait(for: [containsExpectation], timeout: 1)
     }
 
     func testDeleteModelTypeWithPredicate() {
@@ -552,4 +726,4 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             wait(for: [saveSuccess], timeout: 10)
         }
     }
-}
+} // swiftlint:disable:this file_length

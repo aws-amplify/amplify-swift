@@ -28,7 +28,7 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testHasManyWithCodingKeys() {
         let hasMany = ModelAssociation.hasMany(associatedWith: Comment.keys.post)
-        guard case .hasMany(let fieldName) = hasMany else {
+        guard case .hasMany(let fieldName, _) = hasMany else {
             XCTFail("Should create hasMany association")
             return
         }

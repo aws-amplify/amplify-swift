@@ -89,7 +89,10 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration(
-                    "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
+                    """
+                    Using function as auth provider requires passing in an APIAuthProvider \
+                    with a Function AuthProvider
+                    """,
                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
             authInterceptor = AuthenticationTokenAuthInterceptor(authTokenProvider: functionAuthProvider)

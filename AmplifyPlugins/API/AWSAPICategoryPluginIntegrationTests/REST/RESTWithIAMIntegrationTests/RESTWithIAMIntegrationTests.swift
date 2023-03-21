@@ -123,7 +123,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
-
     func testPutAPISuccess() {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")

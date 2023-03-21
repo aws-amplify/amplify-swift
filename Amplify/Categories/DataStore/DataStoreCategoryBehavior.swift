@@ -51,6 +51,7 @@ public protocol DataStoreBaseBehavior {
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
                                                                                M.IdentifierFormat == ModelIdentifierFormat.Default
+    // swiftlint:disable:previous line_length
 
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
@@ -58,8 +59,8 @@ public protocol DataStoreBaseBehavior {
                           completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable
 
     func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate,
-                           completion: @escaping DataStoreCallback<Void>)
+                          where predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<Void>)
 
     /**
      Synchronization starts automatically whenever you run any DataStore operation (query(), save(), delete())

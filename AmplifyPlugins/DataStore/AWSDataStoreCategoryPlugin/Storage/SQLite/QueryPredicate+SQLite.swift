@@ -11,24 +11,26 @@ import SQLite
 
 extension QueryOperator {
 
-    var sqlOperation: String {
+    func sqlOperation(column: String) -> String {
         switch self {
         case .notEqual(let value):
-            return value == nil ? "is not null" : "<> ?"
+            return value == nil ? "\(column) is not null" : "\(column) <> ?"
         case .equals(let value):
-            return value == nil ? "is null" : "= ?"
+            return value == nil ? "\(column) is null" : "\(column) = ?"
         case .lessOrEqual:
-            return "<= ?"
+            return "\(column) <= ?"
         case .lessThan:
-            return "< ?"
+            return "\(column) < ?"
         case .greaterOrEqual:
-            return ">= ?"
+            return "\(column) >= ?"
         case .greaterThan:
-            return "> ?"
+            return "\(column) > ?"
         case .between:
-            return "between ? and ?"
-        case .beginsWith, .contains:
-            return "like ?"
+            return "\(column) between ? and ?"
+        case .beginsWith:
+            return "instr(\(column), ?) = 1"
+        case .contains:
+            return "instr(\(column), ?) > 0"
         }
     }
 
@@ -43,10 +45,9 @@ extension QueryOperator {
              .greaterOrEqual(let value),
              .greaterThan(let value):
             return [value.asBinding()]
-        case .contains(let value):
-            return ["%\(value)%"]
-        case .beginsWith(let value):
-            return ["\(value)%"]
+        case .contains(let value),
+             .beginsWith(let value):
+            return [value.asBinding()]
         }
     }
 }

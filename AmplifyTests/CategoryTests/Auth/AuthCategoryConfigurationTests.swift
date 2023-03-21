@@ -434,4 +434,4 @@ class AuthCategoryConfigurationTests: XCTestCase {
         }
 
     }
-}
+} // swiftlint:disable:this file_length

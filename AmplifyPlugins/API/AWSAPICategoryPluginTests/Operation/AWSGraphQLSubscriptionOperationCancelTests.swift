@@ -67,6 +67,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     }
 
     func testCancelSendsCompletion() {
+        // swiftlint:disable:next line_length
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
                 let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in
@@ -126,6 +127,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     }
 
     func testFailureOnConnection() {
+        // swiftlint:disable:next line_length
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             throw APIError.invalidConfiguration("something went wrong", "", nil)
         })

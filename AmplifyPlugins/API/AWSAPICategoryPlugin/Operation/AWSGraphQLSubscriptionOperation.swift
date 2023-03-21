@@ -105,7 +105,9 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                                            authType: pluginOptions?.authType,
                                            apiAuthProviderFactory: apiAuthProviderFactory)
             } catch {
-                let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
+                let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)",
+                                                    "",
+                                                    error)
                 dispatch(result: .failure(error))
                 finish()
                 return
@@ -178,6 +180,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             dispatch(result: .failure(error))
             finish()
         } catch {
+            // swiftlint:disable:next todo
             // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
             // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
             // leave the subscription alive.

@@ -15,6 +15,7 @@ import AWSPluginsCore
 /// 2. When there is a "conditional request failed" error, then emit to the Hub a 'conditionalSaveFailed' event.
 /// 3. When there is a "conflict unahandled" error, trigger the conflict handler and reconcile the state of the system.
 @available(iOS 13.0, *)
+// swiftlint:disable:next type_body_length
 class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
     typealias MutationSyncAPIRequest = GraphQLRequest<MutationSyncResult>
@@ -48,6 +49,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         super.init()
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     override func main() {
         log.verbose(#function)
 
@@ -59,6 +61,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             if isAuthSignedOutError(apiError: apiError) {
                 log.verbose("User is signed out, passing error back to the error handler, and removing mutation event.")
             } else if let underlyingError = apiError.underlyingError {
+                // swiftlint:disable:next line_length
                 log.debug("Received APIError: \(apiError.localizedDescription) with underlying error: \(underlyingError.localizedDescription)")
             } else {
                 log.debug("Received APIError: \(apiError.localizedDescription)")
@@ -446,4 +449,4 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 }
 
 @available(iOS 13.0, *)
-extension ProcessMutationErrorFromCloudOperation: DefaultLogger { }
+extension ProcessMutationErrorFromCloudOperation: DefaultLogger { } // swiftlint:disable:this file_length

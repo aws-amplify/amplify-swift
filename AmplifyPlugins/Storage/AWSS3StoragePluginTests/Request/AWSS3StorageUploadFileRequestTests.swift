@@ -115,6 +115,7 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
         XCTAssertEqual(recovery, StorageErrorConstants.metadataKeysInvalid.recoverySuggestion)
     }
 
+    // swiftlint:disable:next todo
     // TODO: testValidateMetadataValuesTooLarge
 //    func testValidateMetadataValuesTooLarge() {
 //

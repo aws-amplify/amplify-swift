@@ -38,7 +38,9 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         let outboxMutationEnqueued = expectation(description: "Mutation enqueued, outboxMutationEnqueued received")
 
         let outboxStatusFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
-        let outboxMutationEnqueuedFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxMutationEnqueued)
+        let outboxMutationEnqueuedFilter = HubFilters.forEventName(
+            HubPayload.EventName.DataStore.outboxMutationEnqueued
+        )
         let filters = HubFilters.any(filters: outboxStatusFilter, outboxMutationEnqueuedFilter)
         let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
             if payload.eventName == HubPayload.EventName.DataStore.outboxStatus {

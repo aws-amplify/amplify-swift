@@ -12,6 +12,7 @@ import AWSPredictionsPlugin
 import AWSRekognition
 import XCTest
 
+// swiftlint:disable:next type_body_length
 class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
     /// Given: An Image

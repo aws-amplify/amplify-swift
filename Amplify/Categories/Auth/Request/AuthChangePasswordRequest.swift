@@ -32,6 +32,7 @@ public extension AuthChangePasswordRequest {
 
     struct Options {
 
+        // swiftlint:disable:next todo
         // TODO: Move this metadata to plugin options. All other request has the metadata
         // inside the plugin options.
 

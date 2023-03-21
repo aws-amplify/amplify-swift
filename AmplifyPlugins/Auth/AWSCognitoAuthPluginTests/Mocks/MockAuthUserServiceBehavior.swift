@@ -71,7 +71,6 @@ class MockAuthUserServiceBehavior: AuthUserServiceBehavior {
         confirmAttributeHandler(request, completionHandler)
     }
 
-    // swiftlint:disable line_length
     var changePasswordHandler: (AuthChangePasswordRequest, ChangePasswordCompletion) -> Void = { _, completion in
         completion(.success(()))
     }

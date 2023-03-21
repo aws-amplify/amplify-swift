@@ -111,6 +111,7 @@ extension ObserveQuerySubscription: DefaultLogger { }
 /// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
 /// remain thread-safe.
 @available(iOS 13.0, *)
+// swiftlint:disable:next type_body_length
 public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation, DataStoreObserveQueryOperation {
 
     private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
@@ -441,4 +442,4 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 }
 
 @available(iOS 13.0, *)
-extension AWSDataStoreObserveQueryOperation: DefaultLogger { }
+extension AWSDataStoreObserveQueryOperation: DefaultLogger { } // swiftlint:disable:this file_length

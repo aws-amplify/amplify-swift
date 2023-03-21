@@ -13,6 +13,7 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable:next type_body_length
 class RemoteSyncEngineTests: XCTestCase {
     var apiPlugin: MockAPICategoryPlugin!
 
@@ -77,7 +78,7 @@ class RemoteSyncEngineTests: XCTestCase {
 
         let advice = RequestRetryAdvice.init(shouldRetry: false)
         mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
-        mockRequestRetryablePolicy.setOnRetryRequestAdvice { urlError, httpURLResponse, attemptNumber in
+        mockRequestRetryablePolicy.setOnRetryRequestAdvice { urlError, _, _ in
             XCTAssertNotNil(urlError)
             retryAdviceReceivedNetworkError.fulfill()
         }

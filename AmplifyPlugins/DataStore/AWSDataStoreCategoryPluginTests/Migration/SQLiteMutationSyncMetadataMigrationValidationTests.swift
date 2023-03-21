@@ -13,6 +13,7 @@ import SQLite
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
+// swiftlint:disable:next type_name
 class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMigrationTestBase {
 
     // MARK: - Precondition tests

@@ -44,7 +44,6 @@ public struct GraphQLRequest<R: Decodable> {
     }
 }
 
-
 // MARK: GraphQLRequest + Options
 
 public extension GraphQLRequest {

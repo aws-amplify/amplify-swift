@@ -13,7 +13,8 @@ import AmplifyPlugins
 @testable import AWSDataStoreCategoryPlugin
 
 /* 11 Explicit Bi-Directional Belongs to Relationship
- (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type that already have a one-to-many connection.
+ (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type
+ that already have a one-to-many connection.
  ```
  type Post4V2 @model @auth(rules: [{allow: public}]) {
    id: ID!
@@ -31,6 +32,7 @@ import AmplifyPlugins
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
  */
 
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -345,6 +347,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [deletePostSuccess, deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeletePostCascadeToComments() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -447,4 +450,4 @@ extension Post4V2: Equatable {
         return lhs.id == rhs.id
             && lhs.title == rhs.title
     }
-}
+} // swiftlint:disable:this file_length

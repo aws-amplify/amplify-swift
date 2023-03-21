@@ -352,7 +352,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
     func testProcessMutationErrorFromCloudOperationSuccessForOperationDisabled() throws {
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
-        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError(.operationDisabled)])
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error(
+            [graphQLError(.operationDisabled)]
+        )
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
@@ -391,7 +393,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
     func testProcessMutationErrorFromCloudOperationSuccessForUnknownError() throws {
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
-        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError(.unknown("unknownErrorType"))])
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error(
+            [graphQLError(.unknown("unknownErrorType"))]
+        )
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
@@ -1170,11 +1174,13 @@ extension ProcessMutationErrorFromCloudOperationTests {
         Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                 storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
-                                                 dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin",
-                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
+        let dataStorePlugin = AWSDataStorePlugin(
+            modelRegistration: TestModelRegistration(),
+            storageEngineBehaviorFactory: MockStorageEngineBehavior.mockStorageEngineBehaviorFactory,
+            dataStorePublisher: dataStorePublisher,
+            validAPIPluginKey: "MockAPICategoryPlugin",
+            validAuthPluginKey: "MockAuthCategoryPlugin"
+        )
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

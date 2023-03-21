@@ -30,7 +30,7 @@ class ModelMetadataTests: XCTestCase {
 
     func testShouldAddMetadataFalse_MissingTypename() {
         let model: JSONValue = [
-            "id": "id",
+            "id": "id"
         ]
         XCTAssertFalse(AppSyncModelMetadataUtils.shouldAddMetadata(toModel: model))
     }

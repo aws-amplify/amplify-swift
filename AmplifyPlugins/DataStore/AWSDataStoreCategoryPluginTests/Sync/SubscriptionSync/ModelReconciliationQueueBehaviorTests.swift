@@ -13,6 +13,7 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
+// swiftlint:disable:next type_body_length
 class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
     /// - Given: A new AWSModelReconciliationQueue
@@ -300,7 +301,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     ///    - I submit a new event
     /// - Then:
     ///    - The new event immediately processes
-    func testProcessesNewEvents() throws {
+    func testProcessesNewEvents() throws { // swiftlint:disable:this cyclomatic_complexity
         // Return a successful MockSynced save
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
             completion(.success(model))
@@ -512,4 +513,4 @@ enum EventState {
     case notStarted
     case processing
     case finished
-}
+} // swiftlint:disable:this file_length

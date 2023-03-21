@@ -55,8 +55,7 @@ extension AWSS3StorageService {
     private static func makeMultiPartUploadTaskCreatedHandler(
         onEvent: @escaping StorageServiceMultiPartUploadEventHandler) -> MultiPartUploadTaskCreatedHandler {
 
-        let block: MultiPartUploadTaskCreatedHandler = {
-            (task: AWSTask<AWSS3TransferUtilityMultiPartUploadTask>) -> Any? in
+        let block: MultiPartUploadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityMultiPartUploadTask>) -> Any? in // swiftlint:disable:this line_length
 
             guard task.error == nil else {
                 let error = task.error! as NSError
@@ -80,7 +79,7 @@ extension AWSS3StorageService {
 
     private static func makeOnMultiPartUploadProgressHandler(
         onEvent: @escaping StorageServiceMultiPartUploadEventHandler) -> AWSS3TransferUtilityMultiPartProgressBlock {
-        let block: AWSS3TransferUtilityMultiPartProgressBlock = {task, progress in
+        let block: AWSS3TransferUtilityMultiPartProgressBlock = {_, progress in
             onEvent(StorageEvent.inProcess(progress))
         }
 
@@ -91,7 +90,7 @@ extension AWSS3StorageService {
         onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
         -> AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock {
 
-        let block: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock = { (task, error) -> Void in
+        let block: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock = { (_, error) -> Void in
             guard error == nil else {
                 let error = error! as NSError
                 let storageError = StorageErrorHelper.mapTransferUtilityError(error)

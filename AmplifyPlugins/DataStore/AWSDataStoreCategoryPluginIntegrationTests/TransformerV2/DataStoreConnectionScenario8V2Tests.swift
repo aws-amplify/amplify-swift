@@ -50,6 +50,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveRegistration() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -129,6 +130,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getMeetingCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testUpdateRegistrationToAnotherAttendee() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -229,6 +231,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getAttendeesCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteRegistration() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -321,6 +324,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getMeetingCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAttendeeShouldCascadeDeleteRegistration() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -414,6 +418,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getMeetingCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteMeetingShouldCascadeDeleteRegistration() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -559,4 +564,4 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         return result
     }
 
-}
+} // swiftlint:disable:this file_length

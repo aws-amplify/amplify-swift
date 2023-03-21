@@ -12,6 +12,7 @@ import Foundation
 // We're using a `class` in order to circumvent a
 // circular reference issues with structs and a
 // hasOne+belongsTo relationship
+// swiftlint:disable:next todo
 // TODO: replace this with a struct when the above issue is solved.
 public class UserProfile: Model {
 

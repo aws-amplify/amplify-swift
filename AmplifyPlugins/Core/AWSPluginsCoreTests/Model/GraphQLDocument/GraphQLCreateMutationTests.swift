@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable:next type_body_length
 class GraphQLCreateMutationTests: XCTestCase {
 
     override func setUp() {

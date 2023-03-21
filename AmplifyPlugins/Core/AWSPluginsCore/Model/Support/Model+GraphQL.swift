@@ -32,6 +32,7 @@ extension Model {
     /// - Parameter modelSchema: model's schema
     /// - Returns: A key-value map of the GraphQL mutation input
     func graphQLInputForMutation(_ modelSchema: ModelSchema) -> GraphQLInput {
+        // swiftlint:disable:previous cyclomatic_complexity
         var input: GraphQLInput = [:]
 
         // filter existing non-readonly fields
@@ -50,9 +51,9 @@ extension Model {
                         // target name of the associated model is explicitly on this model as a field property, we
                         // cannot guarantee which field is processed first, thus if there is a value for the explicit
                         // field and was already set, don't overwrite it.
-                        if input[fieldName] == nil {
+                        if input[fieldName] == nil { // swiftlint:disable:this for_where
                             // Always setting the value to `nil` is not necessary for create mutations, since leaving it
-                            // out will also reflect that there's no associated model. However, we always set it to `nil`
+                            // out will also reflect that there's no associated model. However, we set it to `nil`
                             // to account for the update mutation use cases where the caller may be de-associating the
                             // model from the associated model, which is why the `nil` is required in input variables
                             // to persist the removal the association.

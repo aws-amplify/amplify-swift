@@ -97,7 +97,8 @@ class IAMAuthInterceptor: AuthInterceptor {
     /// 1. A request is created with the IAM based auth headers (date,  accept, content encoding, content type, and
     /// additional headers from the `mutableRequest`.
     ///
-    /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
+    /// 2. The request is SigV4 signed by using all the available headers on the request.
+    /// By signing the request, the signature is added to
     /// the request headers as authorization and security token.
     ///
     /// 3. The signed request headers are stored in an `IAMAuthenticationHeader` object, used for further encoding to

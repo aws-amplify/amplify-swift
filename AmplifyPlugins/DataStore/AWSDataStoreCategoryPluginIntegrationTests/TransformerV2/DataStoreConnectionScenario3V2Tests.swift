@@ -30,6 +30,7 @@ import AmplifyPlugins
 See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
 */
 
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -374,6 +375,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [deletePostSuccess, deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeletePostCascadeToComments() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -434,6 +436,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deletePostSuccess], timeout: TestCommonConstants.networkTimeout)
 
+        // swiftlint:disable:next todo
         // TODO: Deleting the comment should not be necessary. Cascade delete is not working
         let deleteCommentSuccess = expectation(description: "delete comment")
         Amplify.DataStore.delete(comment) { result in
@@ -494,4 +497,4 @@ extension Comment3V2: Equatable {
             && lhs.postID == rhs.postID
             && lhs.content == rhs.content
     }
-}
+} // swiftlint:disable:this file_length

@@ -55,6 +55,7 @@ import AWSMobileClient
  }
  */
 
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
 
     var token: UnsubscribeToken?
@@ -434,4 +435,4 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
         return resultBlog
     }
-}
+} // swiftlint:disable:this file_length

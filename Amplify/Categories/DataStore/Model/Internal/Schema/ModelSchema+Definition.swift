@@ -65,6 +65,7 @@ public enum ModelFieldType {
         return .embedded(type: type, schema: nil)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     public static func from(type: Any.Type) -> ModelFieldType {
         if type is String.Type {
             return .string
@@ -239,6 +240,19 @@ public enum ModelFieldDefinition {
                       isReadOnly: isReadOnly,
                       ofType: .collection(of: type),
                       association: .hasMany(associatedWith: associatedKey))
+    }
+
+    public static func hasMany(_ key: CodingKey,
+                               is nullability: ModelFieldNullability = .required,
+                               isReadOnly: Bool = false,
+                               ofType type: Model.Type,
+                               associatedFields associatedKeys: [CodingKey]) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      isReadOnly: isReadOnly,
+                      ofType: .collection(of: type),
+                      association: .hasMany(associatedWith: associatedKeys.first,
+                                            associatedFields: associatedKeys))
     }
 
     public static func hasOne(_ key: CodingKey,

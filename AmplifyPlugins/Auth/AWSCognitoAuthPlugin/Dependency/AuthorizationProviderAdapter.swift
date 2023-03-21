@@ -36,6 +36,8 @@ class AuthorizationProviderAdapter: AuthorizationProviderBehavior {
         case .signedOut,
              .unknown:
             fetchSignedOutSession(completionHandler)
+        @unknown default:
+            fetchSignedOutSession(completionHandler)
         }
     }
 

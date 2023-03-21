@@ -10,9 +10,9 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-//swiftlint:disable type_body_length
-//swiftlint:disable file_length
-//swiftlint:disable line_length
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
+// swiftlint:disable line_length
 class QueryPredicateEvaluateGeneratedDateTests: XCTestCase {
     func testTemporalDateTemporal_Date_nownotEqualTemporalDateTemporal_Date_now() throws {
         let predicate = QPredGen.keys.myDate.ne(Temporal.Date.now())

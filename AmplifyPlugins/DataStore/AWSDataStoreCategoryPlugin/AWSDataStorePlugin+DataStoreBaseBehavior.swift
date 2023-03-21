@@ -24,6 +24,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
         initStorageEngineAndStartSync()
 
+        // swiftlint:disable:next todo
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
         let modelExists: Bool
@@ -51,7 +52,9 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
             case .success(let model):
+                // swiftlint:disable:next todo
                 // TODO: Differentiate between save & update
+                // swiftlint:disable:next todo
                 // TODO: Handle errors from mutation event creation
                 self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: mutationType)
             case .failure:
@@ -90,6 +93,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                 byIdentifier identifier: String,
                                 completion: DataStoreCallback<M?>) where M: ModelIdentifiable,
                                                                          M.IdentifierFormat == ModelIdentifierFormat.Default {
+        // swiftlint:disable:previous line_length
         queryByIdentifier(modelType,
                           modelSchema: modelType.schema,
                           identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier),
@@ -183,6 +187,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
                                                                                       M.IdentifierFormat == ModelIdentifierFormat.Default {
+       // swiftlint:disable:previous line_length
        deleteByIdentifier(modelType,
                           modelSchema: modelType.schema,
                           identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier),
@@ -206,6 +211,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                               identifier: ModelIdentifierProtocol,
                                               where predicate: QueryPredicate?,
                                               completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
+          // swiftlint:disable:previous line_length
           initStorageEngineAndStartSync()
           storageEngine.delete(modelType,
                                modelSchema: modelSchema,
@@ -395,4 +401,4 @@ extension AWSDataStorePlugin {
                            where: predicate,
                            completion: completion)
     }
-}
+} // swiftlint:disable:this file_length

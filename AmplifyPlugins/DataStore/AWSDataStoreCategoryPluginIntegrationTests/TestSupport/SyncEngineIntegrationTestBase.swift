@@ -16,6 +16,7 @@ import AWSMobileClient
 
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
+    // swiftlint:disable:next line_length
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)
@@ -133,4 +134,17 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         wait(for: [eventReceived], timeout: 100.0)
     }
 
+}
+
+extension XCTestCase {
+
+  func wait(for seconds: TimeInterval) {
+      let waitExpectation = expectation(description: "Waiting")
+
+      let when = DispatchTime.now() + seconds
+      DispatchQueue.main.asyncAfter(deadline: when) {
+          waitExpectation.fulfill()
+      }
+      wait(for: [waitExpectation], timeout: seconds + 0.5)
+  }
 }

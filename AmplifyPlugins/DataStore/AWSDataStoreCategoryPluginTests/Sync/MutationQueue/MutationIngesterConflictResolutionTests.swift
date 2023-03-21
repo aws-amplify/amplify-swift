@@ -14,6 +14,7 @@ import XCTest
 
 // swiftlint:disable file_length
 // swiftlint:disable type_body_length
+// swiftlint:disable:next todo
 // TODO: Split these tests into separate suites
 
 /// Tests in this class have a naming convention of `test_<existing>_<candidate>`, which is to say: given that the

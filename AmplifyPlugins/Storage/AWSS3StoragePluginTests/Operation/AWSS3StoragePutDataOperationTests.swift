@@ -217,5 +217,6 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
                                                  metadata: expectedMetadata)
     }
 
+    // swiftlint:disable:next todo
     // TODO: test pause, resume, canel, etc.
 }

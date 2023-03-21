@@ -60,6 +60,7 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
         Amplify.reset()
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testGetBlogThenFetchPostsThenFetchComments() {
         guard let blog = createBlog(name: "name"),
               let post1 = createPost(title: "title", blog: blog),

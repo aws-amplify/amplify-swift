@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyPlugins
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_name
 class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTest {
 
     /// Given: a user signed in with IAM, a model with `allow private`  auth rule with IAM as provider

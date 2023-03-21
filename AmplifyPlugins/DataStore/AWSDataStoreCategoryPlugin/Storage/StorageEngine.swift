@@ -20,6 +20,7 @@ typealias StorageEngineBehaviorFactory =
 
 // swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
+    // swiftlint:disable:next todo
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
@@ -134,6 +135,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     @available(iOS 13.0, *)
+    // swiftlint:disable:next cyclomatic_complexity
     func onReceive(receiveValue: RemoteSyncEngineEvent) {
         switch receiveValue {
         case .storageAdapterAvailable:
@@ -184,6 +186,7 @@ final class StorageEngine: StorageEngineBehavior {
                                condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
 
+        // swiftlint:disable:next todo
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
         let modelExists: Bool
@@ -247,11 +250,14 @@ final class StorageEngine: StorageEngineBehavior {
                           withId id: Model.Identifier,
                           condition: QueryPredicate? = nil,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
-        let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                                            syncEngine: syncEngine,
-                                                            modelType: modelType, modelSchema: modelSchema,
-                                                            withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
-                                                            condition: condition) { completion($0) }
+        let cascadeDeleteOperation = CascadeDeleteOperation(
+            storageAdapter: storageAdapter,
+            syncEngine: syncEngine,
+            modelType: modelType, modelSchema: modelSchema,
+            withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
+            condition: condition,
+            completion: { completion($0) }
+        )
         operationQueue.addOperation(cascadeDeleteOperation)
     }
 
@@ -281,6 +287,7 @@ final class StorageEngine: StorageEngineBehavior {
         operationQueue.addOperation(cascadeDeleteOperation)
     }
 
+    // swiftlint:disable:next function_parameter_count
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
                          predicate: QueryPredicate?,
@@ -413,4 +420,4 @@ extension StorageEngine: Resettable {
     }
 }
 
-extension StorageEngine: DefaultLogger { }
+extension StorageEngine: DefaultLogger { } // swiftlint:disable:this file_length
