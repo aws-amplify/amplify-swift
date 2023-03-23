@@ -88,6 +88,7 @@ public protocol StorageCategoryBehavior {
     /// Handles background events which are related to URLSession
     /// - Parameter identifier: identifier
     /// - Returns: returns true if the identifier is handled by Amplify
-    func handleBackgroundEvents(identifier: String) async -> Bool
+    @discardableResult
+    func handleEventsForBackgroundURLSession(identifier: String) async -> Bool
 
 }

@@ -140,10 +140,8 @@ extension AWSS3StoragePlugin {
         return result
     }
 
-    public func handleBackgroundEvents(identifier: String) async -> Bool {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-            StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
-        }
+    public func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
+        await StorageBackgroundEventsRegistry.shared.handleEventsForBackgroundURLSession(identifier: identifier)
     }
 
 }

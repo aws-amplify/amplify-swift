@@ -53,13 +53,15 @@ extension StorageServiceSessionDelegate: URLSessionDelegate {
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         logURLSessionActivity("Session did finish background events")
 
-        if let identifier = storageService?.identifier,
-           let continuation = StorageBackgroundEventsRegistry.getContinuation(for: identifier) {
-            // Must be run on main thread as covered by Apple Developer docs.
-            Task { @MainActor in
-                continuation.resume(returning: true)
+        Task {
+            if let identifier = session.configuration.identifier,
+               let continuation = await StorageBackgroundEventsRegistry.shared.getContinuation(for: identifier) {
+                // Must be run on main thread as covered by Apple Developer docs.
+                Task { @MainActor in
+                    continuation.resume(returning: true)
+                }
+                await StorageBackgroundEventsRegistry.shared.removeContinuation(for: identifier)
             }
-            StorageBackgroundEventsRegistry.removeContinuation(for: identifier)
         }
     }
 

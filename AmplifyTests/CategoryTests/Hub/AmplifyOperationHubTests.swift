@@ -217,7 +217,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return operation
     }
 
-    func handleBackgroundEvents(identifier: String) async -> Bool {
+    func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
         false
     }
 
