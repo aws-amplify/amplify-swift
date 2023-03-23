@@ -12,6 +12,21 @@ import CryptoKit
 
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
+    var uploadedKeys: [String]!
+
+    override func setUp() async throws {
+        try await super.setUp()
+        uploadedKeys = []
+    }
+
+    override func tearDown() async throws {
+        for key in uploadedKeys {
+            await self.remove(key: key)
+        }
+        uploadedKeys = nil
+        try await super.tearDown()
+    }
+
     /// Given: An data object
     /// When: Upload the data
     /// Then: The operation completes successfully
@@ -201,6 +216,49 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         // Remove the key
         await remove(key: key)
+    }
+
+    /// Given: A collection of objects in storage numbering `objectCount`.
+    /// When: The list API is invoked twice using a pageSize of `((objectCount/2) - 1)` and its
+    ///      corresponding token options.
+    /// Then: All objects are listed.
+    func testListTwoPages() async throws {
+        let objectCount = UInt.random(in: 16..<32)
+        // One more than half in order to ensure there are only two pages
+        let pageSize = UInt(objectCount/2) + 1
+        let path = "pagination-\(UUID().uuidString)"
+        for i in 0..<objectCount {
+            let key = "\(path)/\(i).txt"
+            let data = Data("\(i)".utf8)
+            await uploadData(key: key, data: data)
+            uploadedKeys.append(key)
+        }
+
+        // First half of listing
+        let firstResult = try await Amplify.Storage.list(options: .init(
+            accessLevel: .guest,
+            path: path,
+            pageSize: pageSize
+        ))
+        let firstPage = try XCTUnwrap(firstResult.items)
+        XCTAssertEqual(firstPage.count, Int(pageSize))
+        let firstNextToken = try XCTUnwrap(firstResult.nextToken)
+
+        // Second half of listing
+        let secondResult = try await Amplify.Storage.list(options: .init(
+            accessLevel: .guest,
+            path: path,
+            pageSize: pageSize,
+            nextToken: firstNextToken
+        ))
+        let secondPage = try XCTUnwrap(secondResult.items)
+        XCTAssertEqual(secondPage.count, Int(objectCount - pageSize))
+        XCTAssertNil(secondResult.nextToken)
+
+        XCTAssertEqual(
+            uploadedKeys.sorted(),
+            Array((firstPage + secondPage).map { $0.key }).sorted()
+        )
     }
 
     /// Given: No object in storage for the key
