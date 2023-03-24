@@ -219,7 +219,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "storage adapter error")
 
         storageAdapter = nil
-        operation.queryPendingMutations(forModelIds: [anyPostMutationSync.model.id])
+        operation.queryPendingMutations(forModels: [anyPostMutationSync.model])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -239,7 +239,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "should complete successfully for empty input")
         expect.expectedFulfillmentCount = 2
 
-        operation.queryPendingMutations(forModelIds: [])
+        operation.queryPendingMutations(forModels: [])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -263,7 +263,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             return .success([self.anyPostMutationEvent])
         }
         storageAdapter.responders[.queryModelTypePredicate] = queryResponder
-        operation.queryPendingMutations(forModelIds: [anyPostMutationSync.model.id])
+        operation.queryPendingMutations(forModels: [anyPostMutationSync.model])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -294,7 +294,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }
         }.store(in: &cancellables)
         storageAdapter.responders[.queryModelTypePredicate] = queryResponder
-        operation.queryPendingMutations(forModelIds: [anyPostMutationSync.model.id])
+        operation.queryPendingMutations(forModels: [anyPostMutationSync.model])
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
@@ -694,6 +694,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     func testApplyRemoteModels_deleteDisposition() {
@@ -750,6 +751,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     func testApplyRemoteModels_multipleDispositions() {
@@ -826,6 +828,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
+        Amplify.Hub.removeListener(hubListener)
     }
 
     func testApplyRemoteModels_saveFail() throws {

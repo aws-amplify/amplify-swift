@@ -9,26 +9,70 @@ import Amplify
 import Dispatch
 
 extension MutationEvent {
-    static func pendingMutationEvents(for modelId: Model.Identifier,
-                                      storageAdapter: StorageEngineAdapter,
-                                      completion: DataStoreCallback<[MutationEvent]>) {
 
-        pendingMutationEvents(for: [modelId], storageAdapter: storageAdapter, completion: completion)
+    static func pendingMutationEvents(
+        forModel model: Model,
+        storageAdapter: StorageEngineAdapter,
+        completion: DataStoreCallback<[MutationEvent]>
+    ) {
+        pendingMutationEvents(
+            forModels: [model],
+            storageAdapter: storageAdapter,
+            completion: completion
+        )
     }
 
-    static func pendingMutationEvents(for modelIds: [Model.Identifier],
-                                      storageAdapter: StorageEngineAdapter,
-                                      completion: DataStoreCallback<[MutationEvent]>) {
+    static func pendingMutationEvents(
+        forModels models: [Model],
+        storageAdapter: StorageEngineAdapter,
+        completion: DataStoreCallback<[MutationEvent]>
+    ) {
+        pendingMutationEvents(
+            for: models.map { ($0.identifier, $0.modelName) },
+            storageAdapter: storageAdapter,
+            completion: completion
+        )
+    }
+
+    static func pendingMutationEvents(
+        forMutationEvent mutationEvent: MutationEvent,
+        storageAdapter: StorageEngineAdapter,
+        completion: DataStoreCallback<[MutationEvent]>
+    ) {
+        pendingMutationEvents(
+            forMutationEvents: [mutationEvent],
+            storageAdapter: storageAdapter,
+            completion: completion
+        )
+    }
+
+    static func pendingMutationEvents(
+        forMutationEvents mutationEvents: [MutationEvent],
+        storageAdapter: StorageEngineAdapter,
+        completion: DataStoreCallback<[MutationEvent]>
+    ) {
+        pendingMutationEvents(
+            for: mutationEvents.map { ($0.modelId, $0.modelName) },
+            storageAdapter: storageAdapter,
+            completion: completion
+        )
+    }
+
+    private static func pendingMutationEvents(
+        for modelIds: [(String, String)],
+        storageAdapter: StorageEngineAdapter,
+        completion: DataStoreCallback<[MutationEvent]>
+    ) {
         let fields = MutationEvent.keys
         let predicate = (fields.inProcess == false || fields.inProcess == nil)
         var queriedMutationEvents: [MutationEvent] = []
         var queryError: DataStoreError?
         let chunkedArrays = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
-            var queryPredicates: [QueryPredicateOperation] = []
-            for id in chunkedArray {
-                queryPredicates.append(QueryPredicateOperation(field: fields.modelId.stringValue,
-                                                               operator: .equals(id)))
+            var queryPredicates: [QueryPredicateGroup] = []
+            for (id, name) in chunkedArray {
+                let opration = fields.modelId == id && fields.modelName == name
+                queryPredicates.append(opration)
             }
             let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
             let final = QueryPredicateGroup(type: .and, predicates: [groupedQueryPredicates, predicate])
