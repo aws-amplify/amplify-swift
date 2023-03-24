@@ -13,7 +13,7 @@ import AWSCognitoIdentityProvider
 
 class ConfirmSignUpInputTests: XCTestCase {
 
-    func testSignUpInputWithClientSecret() throws {
+    func testConfirmSignUpInputWithClientSecretAndAsfDeviceId() throws {
         let username = "jeff"
         let clientSecret = UUID().uuidString
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
@@ -37,9 +37,8 @@ class ConfirmSignUpInputTests: XCTestCase {
         XCTAssertNotNil(confirmSignUpInput.userContextData)
     }
 
-    func testSignUpInputWithoutClientSecret() throws {
+    func testConfirmSignUpInputWithoutClientSecretAndAsfDeviceId() throws {
         let username = "jeff"
-        let password = "a2z"
 
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
                                                               clientId: "123456",
