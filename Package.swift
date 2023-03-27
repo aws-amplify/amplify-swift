@@ -340,6 +340,11 @@ let predictionsTargets: [Target] = [
         exclude: [
             "Resources/Info.plist"
         ]
+    ),
+    .testTarget(
+        name: "AWSPredictionsPluginUnitTests",
+        dependencies: ["AWSPredictionsPlugin"],
+        path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests"
     )
 ]
 
