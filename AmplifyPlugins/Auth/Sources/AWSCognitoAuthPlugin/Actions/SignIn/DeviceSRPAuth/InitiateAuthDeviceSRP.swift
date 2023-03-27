@@ -33,6 +33,10 @@ struct InitiateAuthDeviceSRP: Action {
                 for: username,
                 with: environment)
 
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.authEnvironment().credentialsClient)
+
             let srpStateData = SRPStateData(
                 username: username,
                 password: "",
@@ -45,6 +49,7 @@ struct InitiateAuthDeviceSRP: Action {
                 username: username,
                 environment: userPoolEnv,
                 deviceMetadata: deviceMetadata,
+                asfDeviceId: asfDeviceId,
                 session: authResponse.session,
                 publicHexValue: srpKeyPair.publicKeyHexValue)
 

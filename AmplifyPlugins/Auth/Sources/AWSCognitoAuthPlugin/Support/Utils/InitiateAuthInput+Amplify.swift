@@ -100,7 +100,7 @@ extension InitiateAuthInput {
                            authFlowType: CognitoIdentityProviderClientTypes.AuthFlowType,
                            authParameters: [String: String],
                            clientMetadata: [String: String],
-                           asfDeviceId: String? = nil,
+                           asfDeviceId: String?,
                            deviceMetadata: DeviceMetadata,
                            environment: UserPoolEnvironment) -> InitiateAuthInput {
 

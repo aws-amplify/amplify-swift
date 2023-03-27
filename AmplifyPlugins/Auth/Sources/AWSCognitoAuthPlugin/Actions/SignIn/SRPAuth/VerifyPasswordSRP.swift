@@ -41,6 +41,10 @@ struct VerifyPasswordSRP: Action {
             let secretBlock = try secretBlock(secretBlockString)
             let serverPublicB = try serverPublic(parameters)
 
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.authEnvironment().credentialsClient)
+
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
                 with: environment)
@@ -57,6 +61,7 @@ struct VerifyPasswordSRP: Action {
                 secretBlock: secretBlockString,
                 signature: signature,
                 deviceMetadata: deviceMetadata,
+                asfDeviceId: asfDeviceId,
                 environment: userPoolEnv)
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
