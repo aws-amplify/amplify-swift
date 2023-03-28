@@ -26,7 +26,7 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
     func testInstantiation() {
         let frameworkMetaData = AmplifyAWSServiceConfiguration.frameworkMetaData()
         XCTAssertNotNil(frameworkMetaData)
-        XCTAssertEqual(frameworkMetaData.sanitizedName, "amplify-ios")
+        XCTAssertEqual(frameworkMetaData.sanitizedName, "amplify-swift")
         XCTAssertEqual(frameworkMetaData.sanitizedVersion, AmplifyAWSServiceConfiguration.amplifyVersion)
     }
 
@@ -46,6 +46,6 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         XCTAssertEqual(frameworkMetaData.sanitizedVersion, "1.1")
 
         XCTAssertNotNil(frameworkMetaData.extras)
-        XCTAssertEqual(frameworkMetaData.extras["amplify-ios"], AmplifyAWSServiceConfiguration.amplifyVersion)
+        XCTAssertEqual(frameworkMetaData.extras["amplify-swift"], AmplifyAWSServiceConfiguration.amplifyVersion)
     }
 }
