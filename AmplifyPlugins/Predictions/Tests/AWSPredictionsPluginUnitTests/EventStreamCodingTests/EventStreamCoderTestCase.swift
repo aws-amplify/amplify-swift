@@ -8,7 +8,7 @@
 import XCTest
 @testable import AWSPredictionsPlugin
 
-class EventStreamCoderTestCase: XCTestCase {
+final class EventStreamCoderTestCase: XCTestCase {
     struct Model: Codable, Equatable {
         let foo: Int
         let bar: String
