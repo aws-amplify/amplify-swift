@@ -18,7 +18,7 @@ extension SignUpInput {
          clientMetadata: [String: String]?,
          validationData: [String: String]?,
          attributes: [String: String],
-         asfDeviceId: String? = nil,
+         asfDeviceId: String?,
          environment: UserPoolEnvironment) {
 
         let configuration = environment.userPoolConfiguration
