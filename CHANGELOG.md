@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.7.0 (2023-03-28)
+
+### Features
+
+- **storage**: Add pagination support.
+
+### Bug Fixes
+
+- **datastore**: detect duplicate mutation event by both modelName and modelId (#2834)
+- **Auth**: Adding ASF DeviceId as an input for Cognito APIs (#2833)
+- **PushNotifications**: Checking if there is a Provisioning Profile with the APS Entitlement in order to determine the ChannelType (#2824)
+
 ## 2.6.1 (2023-03-21)
 
 ### Bug Fixes
