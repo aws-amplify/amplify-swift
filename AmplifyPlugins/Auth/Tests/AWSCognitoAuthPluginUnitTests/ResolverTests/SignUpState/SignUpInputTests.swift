@@ -31,9 +31,11 @@ class SignUpInputTests: XCTestCase {
                                 clientMetadata: [:],
                                 validationData: [:],
                                 attributes: [:],
+                                asfDeviceId: "asFDeviceId",
                                 environment: environment)
 
         XCTAssertNotNil(input.secretHash)
+        XCTAssertNotNil(input.userContextData)
     }
 
     func testSignUpInputWithoutClientSecret() throws {
@@ -54,9 +56,11 @@ class SignUpInputTests: XCTestCase {
                                 clientMetadata: [:],
                                 validationData: [:],
                                 attributes: [:],
+                                asfDeviceId: nil,
                                 environment: environment)
 
         XCTAssertNil(input.secretHash)
+        XCTAssertNil(input.userContextData)
     }
 
     func testSignUpInputValidationData() throws {
@@ -78,9 +82,12 @@ class SignUpInputTests: XCTestCase {
                                 clientMetadata: [:],
                                 validationData: [:],
                                 attributes: [:],
+                                asfDeviceId: "asFDeviceId",
                                 environment: environment)
 
         XCTAssertNotNil(input.validationData)
+        XCTAssertNotNil(input.userContextData)
+
         XCTAssertGreaterThan(input.validationData?.count ?? 0, 0)
         if let validationData = input.validationData {
             assertHasAttributeType(name: "cognito:iOSVersion", validationData: validationData)

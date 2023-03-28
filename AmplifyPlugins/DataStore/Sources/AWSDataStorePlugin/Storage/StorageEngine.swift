@@ -356,7 +356,7 @@ final class StorageEngine: StorageEngineBehavior {
             case .failure(let dataStoreError):
                 completion(.failure(dataStoreError))
             case .success(let mutationEvent):
-                self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
+                self.log.verbose("\(#function) successfully submitted \(mutationEvent.modelName) to sync engine \(mutationEvent)")
                 completion(.success(savedModel))
             }
         }

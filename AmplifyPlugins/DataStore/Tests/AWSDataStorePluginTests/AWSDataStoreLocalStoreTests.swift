@@ -345,13 +345,13 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         let postsContaining1InTitle = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.contains("1")
+            where: Post.keys.title.contains("_1_")
         )
         XCTAssertEqual(postsContaining1InTitle.count, 1)
 
         let postsNotContaining1InTitle = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.notContains("1")
+            where: Post.keys.title.notContains("_1_")
         )
         XCTAssertEqual(
             posts.count - postsContaining1InTitle.count,
@@ -360,7 +360,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         XCTAssertTrue(
             postsNotContaining1InTitle.filter(
-                { $0.title.contains("1") }
+                { $0.title.contains("_1_") }
             ).isEmpty
         )
     }
@@ -423,7 +423,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let randomTitleNumber = String(Int.random(in: 0..<numberOfPosts))
 
         let postWithDuplicateTitleAndDifferentStatus = Post(
-            title: "title_\(randomTitleNumber)",
+            title: "title_\(randomTitleNumber)_",
             content: "content",
             createdAt: .now(),
             status: .published
@@ -433,7 +433,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         let postsContainingRandomTitleNumber = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.contains(randomTitleNumber)
+            where: Post.keys.title.contains("_\(randomTitleNumber)_")
         )
 
         XCTAssertEqual(postsContainingRandomTitleNumber.count, 2)
@@ -455,7 +455,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         let postsContainingRandomTitleNumberAndNotContainingDraftStatus = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.contains(randomTitleNumber)
+            where: Post.keys.title.contains("_\(randomTitleNumber)_")
             && Post.keys.status.notContains(PostStatus.published.rawValue)
         )
 
@@ -466,7 +466,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         XCTAssertEqual(
             postsContainingRandomTitleNumberAndNotContainingDraftStatus[0].title,
-            "title_\(randomTitleNumber)"
+            "title_\(randomTitleNumber)_"
         )
 
         XCTAssertNotEqual(
@@ -486,12 +486,12 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         try await Amplify.DataStore.delete(
             Post.self,
-            where: Post.keys.title.notContains("1")
+            where: Post.keys.title.notContains("_1_")
         )
 
         let postsIncluding1InTitle = try await Amplify.DataStore.query(Post.self)
         XCTAssertEqual(postsIncluding1InTitle.count, 1)
-        XCTAssertEqual(postsIncluding1InTitle[0].title, "title_1")
+        XCTAssertEqual(postsIncluding1InTitle[0].title, "title_1_")
     }
 
 
@@ -505,9 +505,9 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             .init(title: title, content: content, createdAt: .now())
         }
 
-        let post1 = post(title: "title_1", content: "a")
-        let post2 = post(title: "title_1", content: "b")
-        let post3 = post(title: "title_3", content: "c")
+        let post1 = post(title: "title_1_", content: "a")
+        let post2 = post(title: "title_1_", content: "b")
+        let post3 = post(title: "title_3_", content: "c")
 
         _ = try await Amplify.DataStore.save(post1)
         _ = try await Amplify.DataStore.save(post2)
@@ -518,7 +518,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         try await Amplify.DataStore.delete(
             Post.self,
-            where: Post.keys.title.notContains("1")
+            where: Post.keys.title.notContains("_1_")
             || Post.keys.content.notContains("a")
         )
 
@@ -527,11 +527,125 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(postsAfterDeletingNotContains1andNotContainsA[0].content, "a")
     }
 
+    /// Given: Saved `Post`s containing SQL pattern matching symbols `%` and `_`
+    /// When: Querying with predicates containing those symbols.
+    /// Then: The query results should only contain values matching the predicate without
+    /// treating `%` and `_` as pattern matching symbols.
+    func testQueryPatternMatchingSymbols() async throws {
+        setUp(withModels: TestModelRegistration())
+
+        let posts = [
+            Post(
+                title: "_bc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "abc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "de%",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "def",
+                content: "",
+                createdAt: .now()
+            )
+        ]
+
+        for post in posts {
+            try await Amplify.DataStore.save(post)
+        }
+
+        // This should only contain 1 Post with the title "_bc"
+        // It should not contain the Post with the title "abc"
+        let postBeginsWithUnderscore = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.beginsWith("_b")
+        )
+
+        XCTAssertEqual(postBeginsWithUnderscore.count, 1)
+        XCTAssertEqual(postBeginsWithUnderscore[0].title, "_bc")
+
+        // This should only contain the Post with the title "de%"
+        // It should not contain the Post with the title "def"
+        let postContainingPercent = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains("%")
+        )
+
+        XCTAssertEqual(postContainingPercent.count, 1)
+        XCTAssertEqual(postContainingPercent[0].title, "de%")
+    }
+
+    /// Given: Saved `Post`s containing SQL pattern matching symbols `%` and `_`
+    /// When: Deleting with predicates containing those symbols and subsequently querying
+    /// for all `Post`s.
+    /// Then: The query results should only contain values matching the predicate without
+    /// treating `%` and `_` as pattern matching symbols.
+    func testDeletePatternMatchingSymbols() async throws {
+        setUp(withModels: TestModelRegistration())
+
+        let posts = [
+            Post(
+                title: "_bc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "abc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "de%",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "def",
+                content: "",
+                createdAt: .now()
+            )
+        ]
+
+        for post in posts {
+            try await Amplify.DataStore.save(post)
+        }
+
+        // This should only delete 1 Post with the title "_bc"
+        // It should not delete the Post with the title "abc"
+        try await Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.beginsWith("_b")
+        )
+
+        let p1 = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(p1.count, 3)
+        XCTAssertTrue(p1.filter { $0.title == "_bc" }.isEmpty)
+
+
+        try await Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.contains("%")
+        )
+
+        // This should only delete the Post with the title "de%"
+        // It should not delete the Post with the title "def"
+        let p2 = try await Amplify.DataStore.query(Post.self)
+
+        XCTAssertEqual(p2.count, 2)
+        XCTAssertTrue(p2.filter { $0.title == "de%" }.isEmpty)
+    }
 
     func setUpLocalStore(numberOfPosts: Int) async throws -> [Post] {
         let posts = (0..<numberOfPosts).map {
             Post(
-                title: "title_\($0)",
+                title: "title_\($0)_",
                 content: "content",
                 createdAt: .now(),
                 rating: Double(Int.random(in: 0 ... 5)),
