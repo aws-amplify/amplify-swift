@@ -159,14 +159,18 @@ extension GraphQLConnectionScenario3Tests {
             XCTFail("Could not create comment")
             return
         }
+
         let predicate = Comment3.keys.postID.eq(post.id)
-        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate))
-        switch result {
-        case .success(let comments):
-            XCTAssertEqual(comments.count, 1)
-        case .failure(let response):
-            XCTFail("Failed with: \(response)")
+        guard case .success(var comments) = try await Amplify.API.query(request: .list(Comment3.self, where: predicate))
+        else {
+            XCTFail("Failed to retrieve comments")
+            return
         }
+
+        while comments.count == 0 && comments.hasNextPage() {
+            comments = try await comments.getNextPage()
+        }
+        XCTAssertEqual(comments.count, 1)
     }
 
     /// Test paginated list query returns a List containing pagination functionality. This test also aggregates page

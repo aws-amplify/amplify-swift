@@ -6,9 +6,9 @@
 //
 
 import Amplify
-import AWSPinpoint
 import AWSPluginsCore
 import Foundation
+@_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 import Network
 
 extension AWSPinpointAnalyticsPlugin {
@@ -33,64 +33,57 @@ extension AWSPinpointAnalyticsPlugin {
 
     /// Configure AWSPinpointAnalyticsPlugin programatically using AWSPinpointAnalyticsPluginConfiguration
     public func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
-        let authService = AWSAuthService()
-        let credentialsProvider = authService.getCredentialsProvider()
-
-        var isDebug = false
-        #if DEBUG
-        isDebug = true
-        log.verbose("Setting PinpointContextConfiguration.isDebug to true")
-        #endif
-
-        let sessionBackgroundTimeout: TimeInterval
-        if configuration.autoSessionTrackingInterval == .max {
-            sessionBackgroundTimeout = .infinity
-        } else {
-            sessionBackgroundTimeout = TimeInterval(configuration.autoSessionTrackingInterval)
+        let pinpoint = try AWSPinpointFactory.sharedPinpoint(
+            appId: configuration.appId,
+            region: configuration.region
+        )
+        
+        let interval = TimeInterval(configuration.autoFlushEventsInterval)
+        pinpoint.setAutomaticSubmitEventsInterval(interval) { result in
+            switch result {
+            case .success(let events):
+                Amplify.Hub.dispatchFlushEvents(events.asAnalyticsEventArray())
+            case .failure(let error):
+                Amplify.Hub.dispatchFlushEvents(AnalyticsErrorHelper.getDefaultError(error))
+            }
         }
-        let contextConfiguration = PinpointContextConfiguration(appId: configuration.appId,
-                                                                region: configuration.region,
-                                                                credentialsProvider: credentialsProvider,
-                                                                isDebug: isDebug,
-                                                                shouldTrackAppSessions: configuration.trackAppSessions,
-                                                                sessionBackgroundTimeout: sessionBackgroundTimeout)
-        let pinpoint = try PinpointContext(with: contextConfiguration)
-
-        var autoFlushEventsTimer: DispatchSourceTimer?
-        if configuration.autoFlushEventsInterval != 0 {
-            let timeInterval = TimeInterval(configuration.autoFlushEventsInterval)
-            autoFlushEventsTimer = RepeatingTimer.createRepeatingTimer(
-                timeInterval: timeInterval,
-                eventHandler: { [weak self] in
-                    self?.log.debug("AutoFlushTimer triggered, flushing events")
-                    self?.flushEvents()
-            })
+        
+        if configuration.trackAppSessions {
+            let sessionBackgroundTimeout: TimeInterval
+            if configuration.autoSessionTrackingInterval == .max {
+                sessionBackgroundTimeout = .infinity
+            } else {
+                sessionBackgroundTimeout = TimeInterval(configuration.autoSessionTrackingInterval)
+            }
+            
+            pinpoint.startTrackingSessions(backgroundTimeout: sessionBackgroundTimeout)
         }
+        
+        let networkMonitor = NWPathMonitor()
+        networkMonitor.startMonitoring(
+            using: DispatchQueue(
+                label: "com.amazonaws.Amplify.AWSPinpointAnalyticsPlugin.NetworkMonitor"
+            )
+        )
 
-        configure(pinpoint: pinpoint,
-                  authService: authService,
-                  autoFlushEventsTimer: autoFlushEventsTimer,
-                  networkMonitor: NWPathMonitor())
+        configure(
+            pinpoint: pinpoint,
+            networkMonitor: networkMonitor,
+            globalProperties: [:],
+            isEnabled: true
+        )
     }
 
     // MARK: Internal
 
     /// Internal configure method to set the properties of the plugin
     func configure(pinpoint: AWSPinpointBehavior,
-                   authService: AWSAuthServiceBehavior,
-                   autoFlushEventsTimer: DispatchSourceTimer?,
-                   networkMonitor: NetworkMonitor) {
+                   networkMonitor: NetworkMonitor,
+                   globalProperties: AtomicDictionary<String, AnalyticsPropertyValue> = [:],
+                   isEnabled: Bool = true) {
         self.pinpoint = pinpoint
-        self.authService = authService
-        globalProperties = [:]
-        isEnabled = true
-        self.autoFlushEventsTimer = autoFlushEventsTimer
-        self.autoFlushEventsTimer?.resume()
         self.networkMonitor = networkMonitor
-        self.networkMonitor.startMonitoring(
-            using: DispatchQueue(
-                label: "com.amazonaws.Amplify.AWSPinpointAnalyticsPlugin.NetworkMonitor"
-            )
-        )
+        self.globalProperties = globalProperties
+        self.isEnabled = isEnabled
     }
 }

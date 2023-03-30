@@ -68,7 +68,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         storageEngine.save(model,
                            modelSchema: modelSchema,
                            condition: condition,
-                           eagerLoad: isEagerLoad,
+                           eagerLoad: configuration.isEagerLoad,
                            completion: publishingCompletion)
     }
     
@@ -218,7 +218,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                             predicate: predicate,
                             sort: sortInput,
                             paginationInput: paginationInput,
-                            eagerLoad: isEagerLoad,
+                            eagerLoad: configuration.isEagerLoad,
                             completion: completion)
     }
     
@@ -500,7 +500,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     private func publishMutationEvent<M: Model>(from model: M,
                                                 modelSchema: ModelSchema,
                                                 mutationType: MutationEvent.MutationType) {
-
         let metadata = MutationSyncMetadata.keys
         let metadataId = MutationSyncMetadata.identifier(modelName: modelSchema.name,
                                                          modelId: model.identifier(schema: modelSchema).stringValue)

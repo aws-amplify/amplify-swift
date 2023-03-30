@@ -12,7 +12,7 @@ extension ConfirmSignUpInput {
     init(username: String,
          confirmationCode: String,
          clientMetadata: [String: String]?,
-         asfDeviceId: String? = nil,
+         asfDeviceId: String?,
          environment: UserPoolEnvironment
     ) {
 
@@ -38,6 +38,7 @@ extension ConfirmSignUpInput {
             clientMetadata: clientMetadata,
             confirmationCode: confirmationCode,
             secretHash: secretHash,
-            userContextData: userContextData, username: username)
+            userContextData: userContextData,
+            username: username)
     }
 }

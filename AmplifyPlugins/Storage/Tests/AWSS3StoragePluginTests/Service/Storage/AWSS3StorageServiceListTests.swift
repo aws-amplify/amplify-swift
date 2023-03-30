@@ -50,6 +50,25 @@ final class AWSS3StorageServiceListTests: XCTestCase {
         systemUnderTest = nil
     }
 
+    /// Given: Any S3 bucket (client)
+    /// When: A listing of it is requested using pagination options
+    /// Then: The service propagates the pagination options to its underlying S3 client.
+    func testPaginationOptionsPropagation() async throws {
+        var inputs: [ListObjectsV2Input] = []
+        client.listObjectsV2Handler = { input in
+            inputs.append(input)
+            return .init(contents: [])
+        }
+        let pageSize: UInt = UInt.random(in: 1..<1_000)
+        let nextToken = UUID().uuidString
+        let options = StorageListRequest.Options(pageSize: pageSize,
+                                                 nextToken: nextToken)
+        let listing = try await systemUnderTest.list(prefix: prefix, options: options)
+        XCTAssertEqual(listing.items.map { $0.key }, [])
+        XCTAssertEqual(inputs.map { $0.continuationToken }, [nextToken])
+        XCTAssertEqual(inputs.map { $0.maxKeys }, [Int(pageSize)])
+    }
+
     /// Given: A empty S3 bucket (client)
     /// When: A listing of it is requested using typical parameters
     /// Then: The service returns an empty list of StorageListResult.Item

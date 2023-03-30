@@ -15,6 +15,7 @@ public enum QueryOperator {
     case greaterOrEqual(_ value: Persistable)
     case greaterThan(_ value: Persistable)
     case contains(_ value: String)
+    case notContains(_ value: String)
     case between(start: Persistable, end: Persistable)
     case beginsWith(_ value: String)
 
@@ -37,6 +38,10 @@ public enum QueryOperator {
                 return targetString.contains(predicateString)
             }
             return false
+        case .notContains(let predicateString):
+            if let targetString = target as? String {
+                return !targetString.contains(predicateString)
+            }
         case .between(let start, let end):
             return PersistableHelper.isBetween(start, end, target)
         case .beginsWith(let predicateValue):

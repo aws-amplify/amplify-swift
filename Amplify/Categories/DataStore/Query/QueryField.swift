@@ -34,6 +34,7 @@ public protocol QueryFieldOperation {
     func beginsWith(_ value: String) -> QueryPredicateOperation
     func between(start: Persistable, end: Persistable) -> QueryPredicateOperation
     func contains(_ value: String) -> QueryPredicateOperation
+    func notContains(_ value: String) -> QueryPredicateOperation
     func eq(_ value: Persistable?) -> QueryPredicateOperation
     func eq(_ value: EnumPersistable) -> QueryPredicateOperation
     func ge(_ value: Persistable) -> QueryPredicateOperation
@@ -82,6 +83,11 @@ public struct QueryField: QueryFieldOperation {
 
     public static func ~= (key: Self, value: String) -> QueryPredicateOperation {
         return key.contains(value)
+    }
+
+    // MARK: - not contains
+    public func notContains(_ value: String) -> QueryPredicateOperation {
+        return QueryPredicateOperation(field: name, operator: .notContains(value))
     }
 
     // MARK: - eq

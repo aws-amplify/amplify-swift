@@ -31,11 +31,12 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
         let accessToken = try await taskHelper.getAccessToken()
 
         do {
-            try  await deleteUser(with: accessToken)
+            try await deleteUser(with: accessToken)
             log.verbose("Received Success")
         } catch {
             log.verbose("Delete user failed, reconfiguring auth state. \(error)")
             await waitForReConfigure()
+            await signOutIfUserWasNotFound(with: error)
             throw error
         }
     }
@@ -64,6 +65,18 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
                 continue
             }
         }
+    }
+
+    private func signOutIfUserWasNotFound(with error: Error) async {
+        guard case AuthError.service(_, _, let underlyingError) = error,
+              case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            return
+        }
+        log.verbose("User not found, signing out")
+        let signOutData = SignOutEventData(globalSignOut: true)
+        let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
+        await authStateMachine.send(event)
+        _ = await taskHelper.didSignOut()
     }
 
     private func waitForReConfigure() async {

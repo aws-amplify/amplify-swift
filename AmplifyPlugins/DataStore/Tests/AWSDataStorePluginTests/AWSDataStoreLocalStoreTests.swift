@@ -333,10 +333,319 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         XCTAssertEqual(posts.count, 0)
     }
 
+
+    /// Given: 5 `Posts` with titles containing 0...4
+    /// When: Querying `Posts` where title`notContains("1")`
+    /// Then: 4 posts should be returned, none of which contain `"1"` in the title
+    func testQueryNotContains() async throws {
+        setUp(withModels: TestModelRegistration())
+        _ = try await setUpLocalStore(numberOfPosts: 5)
+        let posts = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(posts.count, 5)
+
+        let postsContaining1InTitle = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains("_1_")
+        )
+        XCTAssertEqual(postsContaining1InTitle.count, 1)
+
+        let postsNotContaining1InTitle = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.notContains("_1_")
+        )
+        XCTAssertEqual(
+            posts.count - postsContaining1InTitle.count,
+            postsNotContaining1InTitle.count
+        )
+
+        XCTAssertTrue(
+            postsNotContaining1InTitle.filter(
+                { $0.title.contains("_1_") }
+            ).isEmpty
+        )
+    }
+
+
+    /// Given: 50 `Posts` with titles containing 0...49
+    /// When: Querying posts with multiple `notContains(...)` chained with `&&`
+    /// e.g. `notContains(a) && notContains(b)`
+    /// Then: Posts returned should not contain either `a` or `b`
+    func testQueryMultipleNotContains() async throws {
+        setUp(withModels: TestModelRegistration())
+        _ = try await setUpLocalStore(numberOfPosts: 50)
+        let posts = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(posts.count, 50)
+
+        let titleValueOne = "25", titleValueTwo = "42"
+
+        let postsContaining25or42InTitle = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains(titleValueOne)
+            || Post.keys.title.contains(titleValueTwo)
+        )
+        XCTAssertEqual(postsContaining25or42InTitle.count, 2)
+
+        let postsNotContaining25or42InTitle = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.notContains(titleValueOne)
+            && Post.keys.title.notContains(titleValueTwo)
+        )
+
+        XCTAssertEqual(
+            posts.count - postsContaining25or42InTitle.count,
+            postsNotContaining25or42InTitle.count
+        )
+
+        XCTAssertTrue(
+            postsNotContaining25or42InTitle.filter(
+                { $0.title.contains(titleValueOne) }
+            ).isEmpty
+        )
+
+        XCTAssertTrue(
+            postsNotContaining25or42InTitle.filter(
+                { $0.title.contains(titleValueTwo) }
+            ).isEmpty
+        )
+    }
+
+    /// Given: 50 saved `Post`s
+    /// When: Querying for posts with `contains(a)` and `notContains()`
+    /// where `a` == `<char in 2 posts>` and `b` == `<status of 1 / 2 posts>`
+    /// Then: The result should contain a single `Post` that contains `a` but doesn't contain `b`
+    func testQueryNotContainsAndContains() async throws {
+        let numberOfPosts = 50
+        setUp(withModels: TestModelRegistration())
+        _ = try await setUpLocalStore(numberOfPosts: numberOfPosts)
+        let posts = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(posts.count, numberOfPosts)
+
+        let randomTitleNumber = String(Int.random(in: 0..<numberOfPosts))
+
+        let postWithDuplicateTitleAndDifferentStatus = Post(
+            title: "title_\(randomTitleNumber)_",
+            content: "content",
+            createdAt: .now(),
+            status: .published
+        )
+
+        _ = try await Amplify.DataStore.save(postWithDuplicateTitleAndDifferentStatus)
+
+        let postsContainingRandomTitleNumber = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains("_\(randomTitleNumber)_")
+        )
+
+        XCTAssertEqual(postsContainingRandomTitleNumber.count, 2)
+        XCTAssertEqual(
+            postsContainingRandomTitleNumber
+                .lazy
+                .filter({ $0.status == .draft })
+                .count,
+            1
+        )
+
+        XCTAssertEqual(
+            postsContainingRandomTitleNumber
+                .lazy
+                .filter({ $0.status == .published })
+                .count,
+            1
+        )
+
+        let postsContainingRandomTitleNumberAndNotContainingDraftStatus = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains("_\(randomTitleNumber)_")
+            && Post.keys.status.notContains(PostStatus.published.rawValue)
+        )
+
+        XCTAssertEqual(
+            postsContainingRandomTitleNumberAndNotContainingDraftStatus.count,
+            1
+        )
+
+        XCTAssertEqual(
+            postsContainingRandomTitleNumberAndNotContainingDraftStatus[0].title,
+            "title_\(randomTitleNumber)_"
+        )
+
+        XCTAssertNotEqual(
+            postsContainingRandomTitleNumberAndNotContainingDraftStatus[0].status,
+            .published
+        )
+    }
+
+    /// Given: 5 saved `Post`s
+    /// When: Deleting with `notContains(a)` where `a` is contained in only one post
+    /// Then: All but one `Post` should be deleted. The `Post` containing `a` should remain.
+    func testDeleteNotContains() async throws {
+        setUp(withModels: TestModelRegistration())
+        _ = try await setUpLocalStore(numberOfPosts: 5)
+        let posts = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(posts.count, 5)
+
+        try await Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.notContains("_1_")
+        )
+
+        let postsIncluding1InTitle = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(postsIncluding1InTitle.count, 1)
+        XCTAssertEqual(postsIncluding1InTitle[0].title, "title_1_")
+    }
+
+
+    /// Given: 3 saved `Post`s where  2 `Post` titles contain `x` and 1 of those `Post`s content field contain `y`
+    /// When: Deleting with `notContains(x) || notContains(y)`. Then querying for remaining `Post`s
+    /// Then: The query should return a single `Post` that does **not** contain `x` in the title but **does** contain `y` in the content.
+    func testDeleteJoinedOrNotContains() async throws {
+        setUp(withModels: TestModelRegistration())
+
+        func post(title: String, content: String) -> Post {
+            .init(title: title, content: content, createdAt: .now())
+        }
+
+        let post1 = post(title: "title_1_", content: "a")
+        let post2 = post(title: "title_1_", content: "b")
+        let post3 = post(title: "title_3_", content: "c")
+
+        _ = try await Amplify.DataStore.save(post1)
+        _ = try await Amplify.DataStore.save(post2)
+        _ = try await Amplify.DataStore.save(post3)
+
+        let posts = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(posts.count, 3)
+
+        try await Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.notContains("_1_")
+            || Post.keys.content.notContains("a")
+        )
+
+        let postsAfterDeletingNotContains1andNotContainsA = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(postsAfterDeletingNotContains1andNotContainsA.count, 1)
+        XCTAssertEqual(postsAfterDeletingNotContains1andNotContainsA[0].content, "a")
+    }
+
+    /// Given: Saved `Post`s containing SQL pattern matching symbols `%` and `_`
+    /// When: Querying with predicates containing those symbols.
+    /// Then: The query results should only contain values matching the predicate without
+    /// treating `%` and `_` as pattern matching symbols.
+    func testQueryPatternMatchingSymbols() async throws {
+        setUp(withModels: TestModelRegistration())
+
+        let posts = [
+            Post(
+                title: "_bc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "abc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "de%",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "def",
+                content: "",
+                createdAt: .now()
+            )
+        ]
+
+        for post in posts {
+            try await Amplify.DataStore.save(post)
+        }
+
+        // This should only contain 1 Post with the title "_bc"
+        // It should not contain the Post with the title "abc"
+        let postBeginsWithUnderscore = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.beginsWith("_b")
+        )
+
+        XCTAssertEqual(postBeginsWithUnderscore.count, 1)
+        XCTAssertEqual(postBeginsWithUnderscore[0].title, "_bc")
+
+        // This should only contain the Post with the title "de%"
+        // It should not contain the Post with the title "def"
+        let postContainingPercent = try await Amplify.DataStore.query(
+            Post.self,
+            where: Post.keys.title.contains("%")
+        )
+
+        XCTAssertEqual(postContainingPercent.count, 1)
+        XCTAssertEqual(postContainingPercent[0].title, "de%")
+    }
+
+    /// Given: Saved `Post`s containing SQL pattern matching symbols `%` and `_`
+    /// When: Deleting with predicates containing those symbols and subsequently querying
+    /// for all `Post`s.
+    /// Then: The query results should only contain values matching the predicate without
+    /// treating `%` and `_` as pattern matching symbols.
+    func testDeletePatternMatchingSymbols() async throws {
+        setUp(withModels: TestModelRegistration())
+
+        let posts = [
+            Post(
+                title: "_bc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "abc",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "de%",
+                content: "",
+                createdAt: .now()
+            ),
+            Post(
+                title: "def",
+                content: "",
+                createdAt: .now()
+            )
+        ]
+
+        for post in posts {
+            try await Amplify.DataStore.save(post)
+        }
+
+        // This should only delete 1 Post with the title "_bc"
+        // It should not delete the Post with the title "abc"
+        try await Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.beginsWith("_b")
+        )
+
+        let p1 = try await Amplify.DataStore.query(Post.self)
+        XCTAssertEqual(p1.count, 3)
+        XCTAssertTrue(p1.filter { $0.title == "_bc" }.isEmpty)
+
+
+        try await Amplify.DataStore.delete(
+            Post.self,
+            where: Post.keys.title.contains("%")
+        )
+
+        // This should only delete the Post with the title "de%"
+        // It should not delete the Post with the title "def"
+        let p2 = try await Amplify.DataStore.query(Post.self)
+
+        XCTAssertEqual(p2.count, 2)
+        XCTAssertTrue(p2.filter { $0.title == "de%" }.isEmpty)
+    }
+
     func setUpLocalStore(numberOfPosts: Int) async throws -> [Post] {
         let posts = (0..<numberOfPosts).map {
             Post(
-                title: "title_\($0)",
+                title: "title_\($0)_",
                 content: "content",
                 createdAt: .now(),
                 rating: Double(Int.random(in: 0 ... 5)),

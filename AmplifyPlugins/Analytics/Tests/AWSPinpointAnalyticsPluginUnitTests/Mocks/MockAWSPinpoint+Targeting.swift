@@ -6,6 +6,7 @@
 //
 
 import AWSPinpoint
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import Foundation
 
@@ -24,7 +25,8 @@ extension MockAWSPinpoint {
         }
     }
 
-    public func update(_ endpointProfile: PinpointEndpointProfile) async throws {
+    public func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
+                               source: AWSPinpointSource) async throws {
         updateEndpointProfileCalled += 1
         updateEndpointProfileValue = endpointProfile
 

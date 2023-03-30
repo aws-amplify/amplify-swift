@@ -10,9 +10,10 @@ import Foundation
 import StoreKit
 import XCTest
 
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 
-public class MockAWSPinpoint: AWSPinpointBehavior {
+class MockAWSPinpoint: AWSPinpointBehavior {
     let applicationId = "applicationId"
     let endpointId = "endpointId"
 
@@ -80,6 +81,9 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
     var createAppleMonetizationEventResult: PinpointEvent?
     var createVirtualMonetizationEventResult: PinpointEvent?
     var submitEventsResult: Result<[PinpointEvent], Error>?
+    
+    var addGlobalPropertyExpectation: XCTestExpectation?
+    var removeGlobalPropertyExpectation: XCTestExpectation?
 
     public init() {}
 
@@ -106,6 +110,9 @@ extension MockAWSPinpoint {
             return
         }
 
+        XCTAssertEqual(actualEndpointProfile.attributes.count, endpointProfile.attributes.count)
+        XCTAssertEqual(actualEndpointProfile.metrics.count, endpointProfile.metrics.count)
+
         let actualLocation = actualEndpointProfile.location
         let expectedLocation = endpointProfile.location
         XCTAssertEqual(actualLocation.latitude, expectedLocation.latitude)
@@ -118,6 +125,7 @@ extension MockAWSPinpoint {
         let actualUser = actualEndpointProfile.user
         let expectedUser = endpointProfile.user
         XCTAssertEqual(actualUser.userId, expectedUser.userId)
+        XCTAssertEqual(actualUser.userAttributes?.count, expectedUser.userAttributes?.count)
     }
 
     public func verifyAddAttribute(_ theValue: [Any], forKey theKey: String) {

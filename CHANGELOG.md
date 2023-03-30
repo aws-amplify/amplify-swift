@@ -1,5 +1,63 @@
 # Changelog
 
+## 2.7.1 (2023-03-28)
+
+## 2.7.0 (2023-03-28)
+
+### Features
+
+- **storage**: Add pagination support.
+
+### Bug Fixes
+
+- **datastore**: detect duplicate mutation event by both modelName and modelId (#2834)
+- **Auth**: Adding ASF DeviceId as an input for Cognito APIs (#2833)
+- **PushNotifications**: Checking if there is a Provisioning Profile with the APS Entitlement in order to determine the ChannelType (#2824)
+
+## 2.6.1 (2023-03-21)
+
+### Bug Fixes
+
+- **datastore**: swap `like` for `instr` in sql queries (#2818)
+- **storage**: update storage to support downloading if a file already exist locally (#2825)
+- **Auth**: Sign out when user does not exist during delete user task (#2812)
+
+## 2.6.0 (2023-03-13)
+
+### Features
+
+- **datastore**: add notContains query operator (#2789)
+
+### Bug Fixes
+
+- **Auth**: Adding missing Authorization header when a Client Secret is defined. (#2807)
+
+## 2.5.0 (2023-03-08)
+
+### Features
+
+**PushNotifications**: Add Amplify Push Notifications category and AWSPinpoint Push Notifications plugin. [(#2794)](https://github.com/aws-amplify/amplify-swift/pull/2794)
+
+The **Push Notifications** category allows you to integrate push notifications in your app with Amazon Pinpoint targeting, campaign, and journey management support. You can segment your users, trigger push notifications to your app, and record metrics in Pinpoint when users receive or open notifications.  We use Amazon Pinpoint since it helps you to create messaging campaigns and journeys targeted to specific user segments or demographics and collect interaction metrics with push notifications. 
+
+## 2.4.2 (2023-03-08)
+
+### Bug Fixes
+
+- **api**: Remove optional cleanUp() method from AWSAPIPlugin.reset() (#2585)
+
+## 2.4.1 (2023-03-06)
+
+### Bug Fixes
+
+- **datastore**: mutation event got ignored while executing parallel saving (#2781)
+- upgrade to aws-sdk-swift v0.6.1 (#2774)
+- **auth**: Build failure due to typo in device binding (#2719)
+- **auth**: Device binding add retry incase of device not found (#2699)
+- **auth**: Pass deviceMetadata in RespondToAuthChallenge for signIn challenges
+- **auth**: Remove static deviceMetaData in auth flow (#2694)
+- **api**: build selection set bottom up (#2763)
+
 ## 2.4.0 (2023-02-08)
 
 ### Features

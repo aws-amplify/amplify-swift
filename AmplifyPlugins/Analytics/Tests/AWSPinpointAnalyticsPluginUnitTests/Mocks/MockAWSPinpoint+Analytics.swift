@@ -7,12 +7,13 @@
 
 import Amplify
 import AWSPinpoint
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import Foundation
 import StoreKit
 
 extension MockAWSPinpoint {
-    public func addGlobalProperty(withValue value: AnalyticsPropertyValue, forKey: String) {
+    public func addGlobalProperty(_ value: AnalyticsPropertyValue, forKey: String) {
         if let value = value as? String {
             addGlobalAttribute(value, forKey: forKey)
         } else if let value = value as? Int {
@@ -22,14 +23,16 @@ extension MockAWSPinpoint {
         } else if let value = value as? Bool {
             addGlobalAttribute(String(value), forKey: forKey)
         }
+        addGlobalPropertyExpectation?.fulfill()
     }
 
-    public func removeGlobalProperty(withValue value: AnalyticsPropertyValue, forKey: String) {
+    public func removeGlobalProperty(_ value: AnalyticsPropertyValue, forKey: String) {
         if value is String || value is Bool {
             removeGlobalAttribute(forKey: forKey)
         } else if value is Int || value is Double {
             removeGlobalMetric(forKey: forKey)
         }
+        removeGlobalPropertyExpectation?.fulfill()
     }
 
     public func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
@@ -142,5 +145,18 @@ extension MockAWSPinpoint {
     private func createEmptyEvent() -> PinpointEvent {
         return PinpointEvent(eventType: "",
                              session: PinpointSession(appId: "", uniqueId: ""))
+    }
+    
+    public func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
+                                                 onSubmit: AnalyticsClientBehaviour.SubmitResult?) {
+        
+    }
+    
+    public func startTrackingSessions(backgroundTimeout: TimeInterval) {
+        
+    }
+
+    func setRemoteGlobalAttributes(_ attributes: [String : String]) async {
+
     }
 }

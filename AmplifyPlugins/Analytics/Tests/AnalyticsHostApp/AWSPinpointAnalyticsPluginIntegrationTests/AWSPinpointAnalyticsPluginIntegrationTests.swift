@@ -9,6 +9,7 @@ import XCTest
 import AWSPinpoint
 
 @testable import Amplify
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import AWSCognitoAuthPlugin
 import Network

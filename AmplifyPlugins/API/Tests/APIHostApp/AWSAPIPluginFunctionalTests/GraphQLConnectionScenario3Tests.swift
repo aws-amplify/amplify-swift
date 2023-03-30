@@ -49,6 +49,7 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
 
     func testQuerySinglePost() async throws {

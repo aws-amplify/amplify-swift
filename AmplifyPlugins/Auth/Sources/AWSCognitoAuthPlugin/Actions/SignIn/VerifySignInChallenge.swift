@@ -31,6 +31,10 @@ struct VerifySignInChallenge: Action {
             let challengeType = challenge.challenge
             let responseKey = try challenge.getChallengeKey()
 
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.authEnvironment().credentialsClient)
+
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                             for: username,
                             with: environment)
@@ -42,6 +46,7 @@ struct VerifySignInChallenge: Action {
                 responseKey: responseKey,
                 answer: confirmSignEventData.answer,
                 clientMetadata: confirmSignEventData.metadata,
+                asfDeviceId: asfDeviceId,
                 attributes: confirmSignEventData.attributes,
                 deviceMetadata: deviceMetadata,
                 environment: userpoolEnv)

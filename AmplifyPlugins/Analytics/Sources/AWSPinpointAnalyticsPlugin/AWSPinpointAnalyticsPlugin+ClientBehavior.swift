@@ -8,6 +8,7 @@
 import Amplify
 import AWSPinpoint
 import Foundation
+@_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
 extension AWSPinpointAnalyticsPlugin {
     public func identifyUser(userId: String, userProfile: AnalyticsUserProfile?) {
@@ -23,7 +24,8 @@ extension AWSPinpointAnalyticsPlugin {
                 currentEndpointProfile.addUserProfile(userProfile)
             }
             do {
-                try await pinpoint.update(currentEndpointProfile)
+                try await pinpoint.updateEndpoint(with: currentEndpointProfile,
+                                                  source: .analytics)
                 Amplify.Hub.dispatchIdentifyUser(userId, userProfile: userProfile)
             } catch {
                 Amplify.Hub.dispatchIdentifyUser(AnalyticsErrorHelper.getDefaultError(error))
@@ -68,28 +70,14 @@ extension AWSPinpointAnalyticsPlugin {
                 """)
             }
         }
-
-        properties.forEach { key, newValue in
-            globalProperties.updateValue(newValue, forKey: key)
-            pinpoint.addGlobalProperty(withValue: newValue, forKey: key)
+        Task {
+            await registerGlobalProperties(properties)
         }
     }
 
     public func unregisterGlobalProperties(_ keys: Set<String>?) {
-        guard let keys = keys else {
-            globalProperties.forEach { key, value in
-                pinpoint.removeGlobalProperty(withValue: value, forKey: key)
-            }
-            globalProperties.removeAll()
-
-            return
-        }
-
-        keys.forEach { key in
-            if let value = globalProperties[key] {
-                pinpoint.removeGlobalProperty(withValue: value, forKey: key)
-                globalProperties.removeValue(forKey: key)
-            }
+        Task {
+            await unregisterGlobalProperties(keys)
         }
     }
 
@@ -101,7 +89,7 @@ extension AWSPinpointAnalyticsPlugin {
 
         // Do not attempt to submit events if we detect the device is offline, as it's gonna fail anyway
         guard networkMonitor.isOnline else {
-            let errorMessage = "Cannot flushEvents. \(AnalyticsPluginErrorConstant.deviceOffline.errorDescription)"
+            let errorMessage = "Cannot flushEvents. \(AWSPinpointErrorConstants.deviceOffline.errorDescription)"
             log.error(errorMessage)
             Amplify.Hub.dispatchFlushEvents(.unknown(errorMessage))
             return
@@ -130,5 +118,29 @@ extension AWSPinpointAnalyticsPlugin {
     /// - Returns: PinpointClientProtocol instance
     public func getEscapeHatch() -> PinpointClientProtocol {
         pinpoint.pinpointClient
+    }
+
+    private func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) async {
+        for (key, value) in properties {
+            globalProperties[key] = value
+            await pinpoint.addGlobalProperty(value, forKey: key)
+        }
+    }
+
+    private func unregisterGlobalProperties(_ keys: Set<String>?) async {
+        guard let keys = keys else {
+            for (key, value) in globalProperties {
+                await pinpoint.removeGlobalProperty(value, forKey: key)
+            }
+            globalProperties.removeAll()
+            return
+        }
+        
+        for key in keys {
+            if let value = globalProperties[key] {
+                await pinpoint.removeGlobalProperty(value, forKey: key)
+                globalProperties[key] = nil
+            }
+        }
     }
 }

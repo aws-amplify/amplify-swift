@@ -9,8 +9,9 @@ import Foundation
 import AWSClientRuntime
 
 public class AmplifyAWSServiceConfiguration {
-    public static let amplifyVersion = "2.4.0"
-    public static let platformName = "amplify-ios"
+
+    public static let amplifyVersion = "2.7.1"
+    public static let platformName = "amplify-swift"
 
     public static func frameworkMetaData() -> FrameworkMetadata {
 

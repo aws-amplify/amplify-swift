@@ -31,9 +31,9 @@ private func translateQueryPredicate(from modelSchema: ModelSchema,
         if let operation = pred as? QueryPredicateOperation {
             let column = resolveColumn(operation)
             if predicateIndex == 0 {
-                sql.append("\(indent)\(column) \(operation.operator.sqlOperation)")
+                sql.append("\(indent)\(operation.operator.sqlOperation(column: column))")
             } else {
-                sql.append("\(indent)\(groupType.rawValue) \(column) \(operation.operator.sqlOperation)")
+                sql.append("\(indent)\(groupType.rawValue) \(operation.operator.sqlOperation(column: column))")
             }
 
             bindings.append(contentsOf: operation.operator.bindings)
