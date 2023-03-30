@@ -201,7 +201,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '3f:b4:9f:aa:0b:d7:c5:16:fb:44:44:35:cb:a7:70:e0'
-      - shallow_checkout
+      - checkout
       - ruby/install-deps
       - run:
           name: Release Amplify for Swift
