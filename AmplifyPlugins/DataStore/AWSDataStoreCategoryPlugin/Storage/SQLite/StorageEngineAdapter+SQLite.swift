@@ -78,7 +78,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter { // swiftlint:disa
         pragma case_sensitive_like = off;
         """
 
-        try connection.execute(databaseInitializationStatement)
+        try executeWithRetry { try connection.execute(databaseInitializationStatement) }
     }
 
     static func getDbFilePath(databaseName: String) -> URL {
@@ -483,6 +483,38 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter { // swiftlint:disa
         }
 
         return false
+    }
+
+    /// A smiple retry function to do execution upto maxRetryCount times.
+    /// - Parameters:
+    ///     - maxRetryCount: number of retries.
+    ///     - backOffInterval: time interval before doing next execution.
+    ///     - runnable: closure to run.
+    /// - Returns:
+    ///     - the return value of runnable closure
+    ///       or throw the error from the last failed execution.
+    static func executeWithRetry<T>(
+        maxRetryCount: UInt = 3,
+        backOffInterval: DispatchTimeInterval = .milliseconds(200),
+        runnable: () throws -> T
+    ) throws -> T {
+        var count = 0
+        var capturedError: Error!
+
+        let semaphore = DispatchSemaphore(value: 1)
+        defer { semaphore.signal() }
+
+        while count < maxRetryCount {
+            count += 1
+            do {
+                return try runnable()
+            } catch {
+                capturedError = error
+                _ = semaphore.wait(timeout: .now() + backOffInterval)
+            }
+        }
+
+        throw capturedError
     }
 
     static func clearIfNewVersion(version: String,

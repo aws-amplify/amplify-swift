@@ -829,4 +829,80 @@ extension SQLiteStorageEngineAdapterTests {
         }
         wait(for: [transactionQueried, groupQueried, rowQueried], timeout: 1)
     }
+
+    /// - Given: execution always succeed
+    /// - When: perform execution with executionWithRetry
+    /// - Then:
+    ///     - no retry is happened
+    ///     - result is returned correctly
+    func testExecuteWithRetry_withSuccessExecution_noRetryHappen() throws {
+        let startTime = Date()
+        let expectedResult = UUID().uuidString
+        let backOffInterval = 100
+        let execution: () -> String = { expectedResult }
+        let result = try SQLiteStorageEngineAdapter.executeWithRetry(backOffInterval: .milliseconds(backOffInterval)) {
+            execution()
+        }
+        let endTime = Date()
+
+        XCTAssertEqual(expectedResult, result)
+        XCTAssertTrue(startTime.distance(to: endTime) * 1_000 <  Double(backOffInterval))
+    }
+
+    /// - Given: execution always fail
+    /// - When: perform execution with executionWithRetry
+    /// - Then:
+    ///     - retry to the maxRetryCount
+    ///     - error is rethrowed
+    func testExecuteWithRetry_withFailureExecution_retryWithError() throws {
+        let startTime = Date()
+        let backOffInterval = 100
+        let maxRetryCount: UInt = 5
+        let error = DataStoreError.unknown("Test", "Test", nil)
+        let execution: () throws -> Int = { throw error }
+
+        XCTAssertThrowsError(
+            try SQLiteStorageEngineAdapter.executeWithRetry(
+                maxRetryCount: maxRetryCount,
+                backOffInterval: .milliseconds(backOffInterval)
+            ) { try execution() }, ""
+        ) {
+            XCTAssertTrue($0 is DataStoreError)
+        }
+
+        let endTime = Date()
+        XCTAssertTrue(startTime.distance(to: endTime) * 1_000 > Double((maxRetryCount - 1) * UInt(backOffInterval)))
+    }
+
+    /// - Given: execution succeed on thrid execution
+    /// - When: perform execution with executionWithRetry
+    /// - Then:
+    ///     - retry twice
+    ///     - result is returned on the thrid execution
+    func testExecuteWithRetry_withSuccessOnThridExecution_retryWithSucceed() throws {
+        let startTime = Date()
+        let expectedResult = UUID().uuidString
+        let backOffInterval = 100
+        let maxRetryCount: UInt = 5
+        let successRetryCount: UInt = 3
+        let error = DataStoreError.unknown("Test", "Test", nil)
+
+        var executionCount = 0
+        let execution: () throws -> String = {
+            defer { executionCount += 1 }
+            if executionCount < successRetryCount {
+                throw error
+            }
+            return expectedResult
+        }
+        let result = try SQLiteStorageEngineAdapter.executeWithRetry(
+            maxRetryCount: maxRetryCount,
+            backOffInterval: .milliseconds(backOffInterval)
+        ) { try execution() }
+
+        let endTime = Date()
+        XCTAssertEqual(expectedResult, result)
+        XCTAssertTrue(startTime.distance(to: endTime) * 1_000 > Double((successRetryCount - 1) * UInt(backOffInterval)))
+        XCTAssertTrue(startTime.distance(to: endTime) * 1_000 < Double(successRetryCount * UInt(backOffInterval)))
+    }
 }
