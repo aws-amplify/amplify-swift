@@ -28,14 +28,13 @@ extension URL {
         return value
     }
 
-    func appending(queryString: String) -> URL {
+    func replacing(queryString: String) -> URL {
         let split = absoluteString.split(separator: "?")
         let url: URL?
         if split.count == 2 {
             let baseURL = String(split[0])
-            let existingQueryString = String(split[1])
             url = URL(
-                string: baseURL + "?" + existingQueryString + "&" + queryString
+                string: baseURL + "?" + queryString
             )
         } else {
             url = URL(string: absoluteString + "?" + queryString)

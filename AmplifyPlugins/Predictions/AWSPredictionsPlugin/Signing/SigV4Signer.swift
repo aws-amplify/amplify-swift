@@ -165,7 +165,7 @@ struct SigV4Signer {
     /// - Returns: A SigV4 Signed URL
     func sign(
         url: URL,
-        method: HTTPMethod,
+        method: HTTPMethod = .get,
         body: RequestBody? = nil,
         headers: [String: String] = [:],
         date: () -> Date = { .init() },
@@ -232,7 +232,7 @@ struct SigV4Signer {
         _storage.previousSignature = signature
 
         let queryString = canonicalQueryString + "&X-Amz-Signature=\(signature)"
-        let signedURL = url.appending(queryString: queryString)
+        let signedURL = url.replacing(queryString: queryString)
 
         return signedURL
     }
