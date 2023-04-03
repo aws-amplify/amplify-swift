@@ -126,6 +126,7 @@
 		21FDBBDB2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FDBBDA2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift */; };
 		21FE027E25890B2F00B81D72 /* DataStoreListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FE027D25890B2F00B81D72 /* DataStoreListProvider.swift */; };
 		3AC75F1100634561C7A480BE /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3689EBBD76A66F01A7ABFF16 /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework */; };
+		60D7BDB429DB4CE700EFC9C3 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D7BDB329DB4CE700EFC9C3 /* Promise.swift */; };
 		6B01B71D23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71C23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift */; };
 		6B01B72023A4672500AD0E97 /* RequestRetryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71E23A4672500AD0E97 /* RequestRetryable.swift */; };
 		6B01B72223A4672500AD0E97 /* RequestRetryablePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B01B71F23A4672500AD0E97 /* RequestRetryablePolicy.swift */; };
@@ -570,6 +571,7 @@
 		32AD9436C9FB473423CA9786 /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		3689EBBD76A66F01A7ABFF16 /* Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginFlutterIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B62423E457D3149264ADA1F /* Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginFlutterIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		60D7BDB329DB4CE700EFC9C3 /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		6A1D332BE6CF885805360B3D /* Pods_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6B01B71C23A4615900AD0E97 /* SyncMutationToCloudOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMutationToCloudOperationTests.swift; sourceTree = "<group>"; };
 		6B01B71E23A4672500AD0E97 /* RequestRetryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestRetryable.swift; sourceTree = "<group>"; };
@@ -1248,6 +1250,7 @@
 			children = (
 				21A4EE4A259D508600E1047D /* DataStoreListDecoder.swift */,
 				21FE027D25890B2F00B81D72 /* DataStoreListProvider.swift */,
+				60D7BDB329DB4CE700EFC9C3 /* Promise.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -2590,6 +2593,7 @@
 				21DDCE282732F74000D9B297 /* StorageEngineMigrationAdapter+SQLite.swift in Sources */,
 				21BBF64F2729BD1900B8A856 /* ModelMigrations.swift in Sources */,
 				FA3B3EFF238F13B2002EFDB3 /* MutationEventIngester.swift in Sources */,
+				60D7BDB429DB4CE700EFC9C3 /* Promise.swift in Sources */,
 				D8D1DED4252E2CB400681DA8 /* ReadyEventEmitter.swift in Sources */,
 				214B6B65264B0D6700A9311D /* Stopwatch.swift in Sources */,
 				FAC010EE23956DDE00FCE7BB /* RemoteSyncReconciler.swift in Sources */,

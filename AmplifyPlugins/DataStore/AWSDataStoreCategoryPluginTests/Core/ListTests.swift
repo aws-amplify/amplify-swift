@@ -20,11 +20,10 @@ class ListTests: BaseDataStoreTests {
     /// - Then:
     ///   - the list should be correctly loaded and populated
     func testSynchronousLazyLoad() {
-        let expect = expectation(description: "a lazy list should return the correct results")
-
         let postId = preparePostDataForTest()
-
+        let expect = expectation(description: "a lazy list should return the correct results")
         Amplify.DataStore.query(Post.self, byId: postId) {
+            defer { expect.fulfill() }
             switch $0 {
             case .success(let result):
                 if let post = result {
@@ -44,14 +43,12 @@ class ListTests: BaseDataStoreTests {
                 } else {
                     XCTFail("Failed to query recently saved post by id")
                 }
-                expect.fulfill()
             case .failure(let error):
                 XCTFail(error.errorDescription)
-                expect.fulfill()
             }
         }
 
-        wait(for: [expect], timeout: 1)
+        wait(for: [expect], timeout: 5)
     }
 
     /// - Given: a list a `Post` and a few comments associated with it
@@ -60,10 +57,8 @@ class ListTests: BaseDataStoreTests {
     /// - Then:
     ///   - the list should be correctly loaded and populated
     func testAsynchronousLazyLoadWithCallback() {
-        let expect = expectation(description: "a lazy list should return the correct results")
-
         let postId = preparePostDataForTest()
-
+        let expect = expectation(description: "a lazy list should return the correct results")
         func checkComments(_ comments: List<Comment>) {
             guard case .notLoaded = comments.loadedState else {
                 XCTFail("Should not be loaded")
@@ -99,7 +94,7 @@ class ListTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expect], timeout: 1)
+        wait(for: [expect], timeout: 5)
     }
 
     /// - Given: a list a `Post` and a few comments associated with it
@@ -108,10 +103,8 @@ class ListTests: BaseDataStoreTests {
     /// - Then:
     ///   - the list should be correctly loaded and populated through a `Publisher`
     func testAsynchronousLazyLoadWithCombine() {
-        let expect = expectation(description: "a lazy list should return the correct results")
-
         let postId = preparePostDataForTest()
-
+        let expect = expectation(description: "a lazy list should return the correct results")
         func checkComments(_ comments: List<Comment>) {
             guard case .notLoaded = comments.loadedState else {
                 XCTFail("Should not be loaded")
@@ -151,7 +144,7 @@ class ListTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expect], timeout: 1)
+        wait(for: [expect], timeout: 5)
     }
 
     // MARK: - Helpers

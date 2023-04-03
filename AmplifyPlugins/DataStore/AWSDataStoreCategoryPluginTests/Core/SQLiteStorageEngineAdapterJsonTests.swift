@@ -57,6 +57,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                                                  validAPIPluginKey: validAPIPluginKey,
                                                  validAuthPluginKey: validAuthPluginKey)
 
+        let expectation = expectation(description: "StorageEngine started")
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true
         ])
@@ -66,7 +67,8 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
 
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(amplifyConfig)
-            Amplify.DataStore.start(completion: {_ in})
+            Amplify.DataStore.start(completion: {_ in expectation.fulfill() })
+            wait(for: [expectation], timeout: 10)
         } catch {
             XCTFail(String(describing: error))
             return

@@ -181,10 +181,12 @@ final class StorageEngine: StorageEngineBehavior {
         try storageAdapter.applyModelMigrations(modelSchemas: modelSchemas)
     }
 
-    public func save<M: Model>(_ model: M,
-                               modelSchema: ModelSchema,
-                               condition: QueryPredicate? = nil,
-                               completion: @escaping DataStoreCallback<M>) {
+    public func save<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate? = nil,
+        completion: @escaping DataStoreCallback<M>
+    ) {
 
         // swiftlint:disable:next todo
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
@@ -240,6 +242,24 @@ final class StorageEngine: StorageEngineBehavior {
                             completion: wrappedCompletion)
     }
 
+    func save<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate? = nil
+    ) -> Promise<(M, MutationEvent.MutationType), DataStoreError> {
+        Promise { completion in
+            switch self.isModelExist(model: model, modelSchema: modelSchema) {
+            case .success(let exist):
+                let mutationType: MutationEvent.MutationType = exist ? .update : .create
+                self.save(model, modelSchema: modelSchema, completion: { result in
+                    completion(result.map { ($0, mutationType) })
+                })
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
         save(model, modelSchema: model.schema, condition: condition, completion: completion)
     }
@@ -261,6 +281,25 @@ final class StorageEngine: StorageEngineBehavior {
         operationQueue.addOperation(cascadeDeleteOperation)
     }
 
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        withId id: Model.Identifier,
+        condition: QueryPredicate? = nil
+    ) -> Promise<M?, DataStoreError> {
+        Promise { completion in
+            let cascadeDeleteOperation = CascadeDeleteOperation(
+                storageAdapter: self.storageAdapter,
+                syncEngine: self.syncEngine,
+                modelType: modelType,
+                modelSchema: modelSchema,
+                withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
+                condition: condition
+            ) { completion($0) }
+            self.operationQueue.addOperation(cascadeDeleteOperation)
+        }
+    }
+
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withIdentifier identifier: ModelIdentifierProtocol,
@@ -268,11 +307,31 @@ final class StorageEngine: StorageEngineBehavior {
                           completion: @escaping DataStoreCallback<M?>) {
         let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                             syncEngine: syncEngine,
-                                                            modelType: modelType, modelSchema: modelSchema,
+                                                            modelType: modelType,
+                                                            modelSchema: modelSchema,
                                                             withIdentifier: identifier,
                                                             condition: condition) { completion($0) }
         operationQueue.addOperation(cascadeDeleteOperation)
 
+    }
+
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?
+    ) -> Promise<M?, DataStoreError> {
+        Promise { completion in
+            let cascadeDeleteOperation = CascadeDeleteOperation(
+                storageAdapter: self.storageAdapter,
+                syncEngine: self.syncEngine,
+                modelType: modelType,
+                modelSchema: modelSchema,
+                withIdentifier: identifier,
+                condition: condition
+            ) { completion($0) }
+            self.operationQueue.addOperation(cascadeDeleteOperation)
+        }
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -285,6 +344,24 @@ final class StorageEngine: StorageEngineBehavior {
                                                             modelSchema: modelSchema,
                                                             filter: filter) { completion($0) }
         operationQueue.addOperation(cascadeDeleteOperation)
+    }
+
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        filter: QueryPredicate
+    ) -> Promise<[M], DataStoreError> {
+        Promise { completion in
+            let cascadeDeleteOperation = CascadeDeleteOperation(
+                storageAdapter: self.storageAdapter,
+                syncEngine: self.syncEngine,
+                modelType: modelType,
+                modelSchema: modelSchema,
+                filter: filter
+            ) { completion($0) }
+            self.operationQueue.addOperation(cascadeDeleteOperation)
+        }
+
     }
 
     // swiftlint:disable:next function_parameter_count
@@ -300,6 +377,26 @@ final class StorageEngine: StorageEngineBehavior {
                                     sort: sort,
                                     paginationInput: paginationInput,
                                     completion: completion)
+    }
+
+    func query<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        predicate: QueryPredicate?,
+        sort: [QuerySortDescriptor]?,
+        paginationInput: QueryPaginationInput?
+    ) -> Promise<[M], DataStoreError> {
+        Promise { completion in
+            self.storageAdapter.query(
+                modelType,
+                modelSchema: modelSchema,
+                predicate: predicate,
+                sort: sort,
+                paginationInput: paginationInput,
+                completion: completion
+            )
+        }
+
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -374,6 +471,26 @@ final class StorageEngine: StorageEngineBehavior {
         submitToSyncEngine(mutationEvent: mutationEvent,
                            syncEngine: syncEngine,
                            completion: mutationEventCallback)
+    }
+
+    private func isModelExist<M: Model>(
+        model: M,
+        modelSchema: ModelSchema
+    ) -> Result<Bool, DataStoreError> {
+        do {
+            return .success(try storageAdapter.exists(
+                modelSchema,
+                withIdentifier: model.identifier(schema: modelSchema),
+                predicate: nil
+            ))
+        } catch {
+            if let dataStoreError = error as? DataStoreError {
+                return .failure(dataStoreError)
+            }
+
+            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
+            return .failure(dataStoreError)
+        }
     }
 
     @available(iOS 13.0, *)

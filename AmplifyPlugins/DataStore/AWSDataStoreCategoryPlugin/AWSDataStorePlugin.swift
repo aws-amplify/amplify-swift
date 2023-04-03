@@ -114,58 +114,35 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
     }
 
-    /// Initializes the underlying storage engine
-    /// - Returns: success if the engine is successfully initialized or
-    ///            a failure with a DataStoreError
-    func initStorageEngine() -> InitStorageEngineResult {
-        storageEngineInitQueue.sync {
-            if storageEngine != nil {
-                return .alreadyInitialized
+    func initStorageEngineAsync() -> Promise<StorageEngineBehavior, DataStoreError> {
+        Promise(runOn: storageEngineInitQueue) { completion in
+            if let storageEngine = self.storageEngine {
+                completion(.success(storageEngine))
+            } else {
+                completion(self.initStorageEngine())
             }
-
-            do {
-                if #available(iOS 13.0, *) {
-                    if self.dataStorePublisher == nil {
-                        self.dataStorePublisher = DataStorePublisher()
-                    }
-                }
-                try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
-                try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-                try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-
-                return .successfullyInitialized
-            } catch {
-                log.error(error: error)
-                return .failure(.invalidOperation(causedBy: error))
-            }
-
         }
     }
 
-    /// Initializes the underlying storage engine and starts the syncing process
-    /// - Parameter completion: completion handler called with a success if the sync process started
-    ///                         or with a DataStoreError in case of failure
-    func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
-        if storageEngine != nil {
-            completion(.successfulVoid)
-            return
-        }
-
-        switch initStorageEngine() {
-        case .alreadyInitialized:
-            completion(.successfulVoid)
-        case .successfullyInitialized:
-            storageEngine.startSync { result in
-
-                self.operationQueue.operations.forEach { operation in
-                    if let operation = operation as? DataStoreObserveQueryOperation {
-                        operation.startObserveQuery(with: self.storageEngine)
-                    }
-                }
-                completion(result)
+    func startSyncStorageEngine() -> Promise<StorageEngineBehavior, DataStoreError> {
+        Promise(runOn: storageEngineInitQueue) { completion in
+            if let storageEngine = self.storageEngine {
+                return completion(.success(storageEngine))
             }
-        case .failure(let error):
-            completion(.failure(causedBy: error))
+
+            switch self.initStorageEngine() {
+            case .success(let storageEngine):
+                storageEngine.startSync { result in
+                    self.operationQueue.operations.forEach { operation in
+                        if let operation = operation as? DataStoreObserveQueryOperation {
+                            operation.startObserveQuery(with: self.storageEngine)
+                        }
+                    }
+                    completion(result.map { _ in storageEngine})
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 
@@ -187,6 +164,24 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     // MARK: Private
+
+    private func initStorageEngine() -> Result<StorageEngineBehavior, DataStoreError> {
+        do {
+            if #available(iOS 13.0, *) {
+                if self.dataStorePublisher == nil {
+                    self.dataStorePublisher = DataStorePublisher()
+                }
+            }
+
+            try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
+            try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
+            try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
+            return .success(storageEngine)
+        } catch {
+            log.error(error: error)
+            return .failure(.invalidOperation(causedBy: error))
+        }
+    }
 
     private func resolveSyncEnabled() {
         if #available(iOS 13.0, *) {

@@ -12,7 +12,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
 
     @available(iOS 13.0, *)
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
-        initStorageEngineAndStartSync()
+        startSyncStorageEngine()
         // Force-unwrapping: The optional 'dataStorePublisher' is expected
         // to exist for deployment targets >=iOS13.0
         return dataStorePublisher!.publisher
@@ -45,7 +45,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                                        where predicate: QueryPredicate? = nil,
                                        sort sortInput: [QuerySortDescriptor]? = nil)
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
-        initStorageEngineAndStartSync()
+        startSyncStorageEngine()
 
         guard let dataStorePublisher = dataStorePublisher else {
             return Fail(error: DataStoreError.unknown(

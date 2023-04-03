@@ -62,6 +62,7 @@ class BaseDataStoreTests: XCTestCase {
         ])
 
         // Since these tests use syncable models, we have to set up an API category also
+        let expectation = expectation(description: "StorageEngine started")
         let apiConfig = APICategoryConfiguration(plugins: ["MockAPICategoryPlugin": true])
         let apiPlugin = MockAPICategoryPlugin()
 
@@ -72,7 +73,8 @@ class BaseDataStoreTests: XCTestCase {
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(amplifyConfig)
             XCTAssertEqual(dataStorePlugin.dispatchedModelSyncedEvents.count, ModelRegistry.modelSchemas.count)
-            Amplify.DataStore.start(completion: {_ in})
+            Amplify.DataStore.start(completion: {_ in expectation.fulfill()})
+            wait(for: [expectation], timeout: 10)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -82,31 +84,18 @@ class BaseDataStoreTests: XCTestCase {
     // MARK: - Utilities
 
     func populateData<M: Model>(_ models: [M]) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let expectation = expectation(description: "Data is saved")
+        expectation.expectedFulfillmentCount = models.count
 
-        func save(model: M, index: Int) {
+        for model in models {
             storageAdapter.save(model) {
-                switch $0 {
-                case .success:
-                    let nextIndex = index + 1
-                    if nextIndex < models.endIndex {
-                        save(model: models[nextIndex], index: nextIndex)
-                    } else {
-                        semaphore.signal()
-                    }
-                case .failure(let error):
+                defer { expectation.fulfill() }
+                if case .failure(let error) = $0 {
                     XCTFail(error.errorDescription)
-                    semaphore.signal()
                 }
             }
         }
 
-        if let model = models.first {
-            save(model: model, index: 0)
-            semaphore.wait()
-        } else {
-            semaphore.signal()
-        }
-
+        wait(for: [expectation], timeout: 5)
     }
 }

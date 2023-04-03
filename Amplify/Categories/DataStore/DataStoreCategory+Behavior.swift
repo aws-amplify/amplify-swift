@@ -14,13 +14,13 @@ extension DataStoreCategory: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
-                                completion: DataStoreCallback<M?>) {
+                                completion: @escaping DataStoreCallback<M?>) {
         plugin.query(modelType, byId: id, completion: completion)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byIdentifier id: String,
-                                completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
+                                completion: @escaping (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
                                                                                  M.IdentifierFormat == ModelIdentifierFormat.Default {
         // swiftlint:disable:previous line_length
         plugin.query(modelType, byIdentifier: id, completion: completion)
@@ -28,7 +28,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
-                                completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable {
+                                completion: @escaping (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable {
         plugin.query(modelType, byIdentifier: identifier, completion: completion)
     }
 
@@ -36,7 +36,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                 where predicate: QueryPredicate? = nil,
                                 sort sortInput: QuerySortInput? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil,
-                                completion: DataStoreCallback<[M]>) {
+                                completion: @escaping DataStoreCallback<[M]>) {
         plugin.query(modelType, where: predicate, sort: sortInput, paginate: paginationInput, completion: completion)
     }
 

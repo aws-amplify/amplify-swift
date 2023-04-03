@@ -66,7 +66,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         return loadResult
     }
 
-    public func load(completion: (Result<[Element], CoreError>) -> Void) {
+    public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         switch loadedState {
         case .loaded(let elements):
             completion(.success(elements))

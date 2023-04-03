@@ -19,22 +19,22 @@ public protocol DataStoreBaseBehavior {
     @available(*, deprecated, message: "Use query(:byIdentifier:completion)")
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
-                         completion: DataStoreCallback<M?>)
+                         completion: @escaping DataStoreCallback<M?>)
 
     func query<M: Model>(_ modelType: M.Type,
                          byIdentifier id: String,
-                         completion: DataStoreCallback<M?>) where M: ModelIdentifiable,
+                         completion: @escaping DataStoreCallback<M?>) where M: ModelIdentifiable,
                                                                   M.IdentifierFormat == ModelIdentifierFormat.Default
 
     func query<M: Model>(_ modelType: M.Type,
                          byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                         completion: DataStoreCallback<M?>) where M: ModelIdentifiable
+                         completion: @escaping DataStoreCallback<M?>) where M: ModelIdentifiable
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          sort sortInput: QuerySortInput?,
                          paginate paginationInput: QueryPaginationInput?,
-                         completion: DataStoreCallback<[M]>)
+                         completion: @escaping DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate?,

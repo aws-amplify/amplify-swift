@@ -342,7 +342,6 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         Amplify
             .Hub
             .publisher(for: .dataStore)
-            .print("### DataStore listener \(Date()) - ")
             .filter { $0.eventName == HubPayload.EventName.DataStore.networkStatus }
             .sink { payload in
                 guard let networkStatusEvent = payload.data as? NetworkStatusEvent else {
