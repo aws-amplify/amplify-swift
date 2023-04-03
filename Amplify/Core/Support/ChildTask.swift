@@ -11,11 +11,11 @@ import Foundation
 /// Child Task is cancelled it will also cancel the parent.
 actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
     typealias Element = InProcess
-    let parent: Cancellable
-    var inProcessChannel: AmplifyAsyncSequence<InProcess>? = nil
-    var valueContinuations: [CheckedContinuation<Success, Error>] = []
-    var storedResult: Result<Success, Failure>? = nil
-    var isCancelled = false
+    private let parent: Cancellable
+    private var inProcessChannel: AmplifyAsyncSequence<InProcess>? = nil
+    private var valueContinuations: [CheckedContinuation<Success, Error>] = []
+    private var storedResult: Result<Success, Failure>? = nil
+    private var isCancelled = false
 
     var inProcess: AmplifyAsyncSequence<InProcess> {
         let channel: AmplifyAsyncSequence<InProcess>
@@ -75,9 +75,11 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
     func finish(_ result: Result<Success, Failure>) {
         if !valueContinuations.isEmpty {
             send(result)
-        } else {
-            // store result for when the value property is used
-            self.storedResult = result
+        }
+        // store result for when the value property is used
+        self.storedResult = result
+        if let channel = inProcessChannel {
+            channel.finish()
         }
     }
 
