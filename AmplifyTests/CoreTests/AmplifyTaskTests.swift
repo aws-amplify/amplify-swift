@@ -66,39 +66,33 @@ class AmplifyTaskTests: XCTestCase {
     }
 #endif
 
+    /// Given: A operation with discrete steps (10)
+    /// When: Its progress sequence is iterated
+    /// Then: It reports each step up to a `fractionCompleted` value that represents 100% completion
     func testLongOperation() async throws {
-        var success = false
-        var output: String? = nil
-        var thrown: Error? = nil
-
         let request = LongOperationRequest(steps: 10, delay: 0.01)
         let longTask = await runLongOperation(request: request)
 
-        Task {
-            var progressCount = 0
-            var lastProgress: Double = 0
-
-            await longTask.progress.forEach { progress in
-                lastProgress = progress.fractionCompleted
-                progressCount += 1
-            }
-
-            XCTAssertEqual(progressCount, 11)
-            XCTAssertEqual(lastProgress, 100)
+        var progressCount = 0
+        var lastProgress: Double = 0
+        await longTask.progress.forEach { progress in
+            lastProgress = progress.fractionCompleted
+            progressCount += 1
         }
 
-        do {
-            let value = try await longTask.value
-            output = value.id
-            success = true
-        } catch {
-            thrown = error
-        }
+        // The first progress report happens on `fractionCompleted` 0.0
+        XCTAssertEqual(progressCount, 11)
 
-        XCTAssertTrue(success)
+        // Note that `fractionComleted` is calculated by dividing
+        // `completedUnitCount` by `totalUnitCount`. See:
+        //https://developer.apple.com/documentation/foundation/progress/1408579-fractioncompleted
+        XCTAssertEqual(lastProgress, 1.0)
+
+        let value = try await longTask.value
+        let output = value.id
+
         XCTAssertNotNil(output)
         XCTAssertFalse(output.isEmpty)
-        XCTAssertNil(thrown)
     }
 
 #if canImport(Combine)
