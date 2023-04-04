@@ -221,7 +221,15 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
             })
-            wait(for: [startExpectation, stopExpectation, startExpectationOnSecondStart], timeout: 1, enforceOrder: true)
+            wait(
+                for: [
+                    startExpectation,
+                    stopExpectation,
+                    startExpectationOnSecondStart
+                ],
+                timeout: 1,
+                enforceOrder: true
+            )
             wait(for: [finishNotReceived], timeout: 1)
             sink.cancel()
         } catch {
@@ -234,10 +242,17 @@ class AWSDataStorePluginTests: XCTestCase {
         let clearExpectation = expectation(description: "Clear should be called")
         let startExpectationOnSecondStart = expectation(description: "Start Sync should be called again")
 
+        var count = 0
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            startExpectation.fulfill()
+            defer { count += 1 }
+            switch count {
+            case 0: startExpectation.fulfill()
+            case 1: startExpectationOnSecondStart.fulfill()
+            default: XCTFail("StorageEngine should be only initialized twice")
+            }
         }
+
         storageEngine.responders[.clear] = ClearResponder { _ in
             clearExpectation.fulfill()
         }
@@ -282,10 +297,6 @@ class AWSDataStorePluginTests: XCTestCase {
                 semaphore.signal()
             })
             semaphore.wait()
-            storageEngine.responders[.startSync] = StartSyncResponder {_ in
-                startExpectationOnSecondStart.fulfill()
-            }
-
             plugin.start(completion: { _ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)

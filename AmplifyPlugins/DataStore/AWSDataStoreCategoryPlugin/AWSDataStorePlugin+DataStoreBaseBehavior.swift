@@ -230,7 +230,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                     condition: predicate
                 )
             }
-            .map { model in self.onDeleteCompletion(model: model, modelSchema: modelSchema) }
+            .map { self.onDeleteCompletion(model: $0, modelSchema: modelSchema) }
             .exec { completion($0) }
     }
 

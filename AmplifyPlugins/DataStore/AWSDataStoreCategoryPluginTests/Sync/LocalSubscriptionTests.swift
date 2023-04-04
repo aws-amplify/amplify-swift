@@ -241,8 +241,10 @@ class LocalSubscriptionTests: XCTestCase {
                          content: "Test Post Content",
                          createdAt: .now())
 
-        Amplify.DataStore.save(model) { _ in }
-        Amplify.DataStore.delete(model) { _ in }
+        Amplify.DataStore.save(model) { _ in
+            Amplify.DataStore.delete(model) { _ in }
+        }
+
         wait(for: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
