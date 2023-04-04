@@ -32,9 +32,10 @@ extension Promise {
 
     // Promise Result A -> A -> B -> Promise Result B
     func map<NextOutput>(
-        _ transform: @escaping (Output) -> NextOutput
+        _ transform: @escaping (Output) -> NextOutput,
+        runOn dispatchQueue: DispatchQueue = .global()
     ) -> Promise<NextOutput, Failure> {
-        Promise<NextOutput, Failure> { nextOutputCallback in
+        Promise<NextOutput, Failure>(runOn: dispatchQueue) { nextOutputCallback in
             self.exec { outputResult in
                 nextOutputCallback(outputResult.map(transform))
             }
@@ -43,9 +44,10 @@ extension Promise {
 
     // Promise Result A -> A -> Result B -> Promise Result B
     func flatMapOnResult<NextOutput>(
-        _ transform: @escaping (Output) -> Result<NextOutput, Failure>
+        _ transform: @escaping (Output) -> Result<NextOutput, Failure>,
+        runOn dispatchQueue: DispatchQueue = .global()
     ) -> Promise<NextOutput, Failure> {
-        Promise<NextOutput, Failure> { nextOutputCallback in
+        Promise<NextOutput, Failure>(runOn: dispatchQueue) { nextOutputCallback in
             self.exec { outputResult in
                 nextOutputCallback(outputResult.flatMap(transform))
             }
@@ -54,9 +56,10 @@ extension Promise {
 
     // Promise Result A -> A -> Promise Result B -> Promise Result B
     func flatMap<NextOutput>(
-        _ transform: @escaping (Output) -> Promise<NextOutput, Failure>
+        _ transform: @escaping (Output) -> Promise<NextOutput, Failure>,
+        runOn dispatchQueue: DispatchQueue = .global()
     ) -> Promise<NextOutput, Failure> {
-        Promise<NextOutput, Failure> { nextOutputCallback in
+        Promise<NextOutput, Failure>(runOn: dispatchQueue) { nextOutputCallback in
             self.exec { outputResult in
                 switch outputResult.map(transform) {
                 case .success(let nextPromise):

@@ -48,7 +48,7 @@ class ListTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expect], timeout: 5)
+        wait(for: [expect], timeout: 1)
     }
 
     /// - Given: a list a `Post` and a few comments associated with it
@@ -94,7 +94,7 @@ class ListTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expect], timeout: 5)
+        wait(for: [expect], timeout: 1)
     }
 
     /// - Given: a list a `Post` and a few comments associated with it
@@ -144,7 +144,7 @@ class ListTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expect], timeout: 5)
+        wait(for: [expect], timeout: 1)
     }
 
     // MARK: - Helpers
