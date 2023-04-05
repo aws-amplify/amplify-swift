@@ -12,6 +12,7 @@ parameters:
 
 orbs:
   aws-cli: circleci/aws-cli@3.1.4
+  ruby: circleci/ruby@2.0.0
   # Using inline orb for now
   getting-started-smoke-test:
     orbs:
@@ -96,34 +97,31 @@ orbs:
 defaults: &defaults
   macos:
     xcode: '14.0.0'
-  working_directory: ~/amplify-swift
   environment:
-    BUNDLE_PATH: vendor/bundle
-
-references:
-  repo_cache_key: &repo_cache_key v2-repo-{{ .Branch }}-{{ .Revision }}
-
-  restore_repo: &restore_repo
-    restore_cache:
-      keys:
-        - *repo_cache_key
-        - v2-repo-{{ .Branch }}
-        - v2-repo
+    BUNDLE_JOBS: 4
+    BUNDLE_RETRY: 3
 
 commands:
-
-  restore_gems:
-    steps:
-      - restore_cache:
-          keys:
-            - v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
-            - v2-gems-
-
-  check_bundle:
+  shallow_checkout:
     steps:
       - run:
-          name: Check bundle
-          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
+          name: Checkout code shallow and change to working directory
+          command: |
+            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" $CIRCLE_WORKING_DIRECTORY
+            cd $CIRCLE_WORKING_DIRECTORY
+
+            if [ -n "$CIRCLE_TAG" ]; then
+              echo 'Fetch tag'
+              git fetch --depth 1 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
+            elif [[ $(echo $CIRCLE_PULL_REQUEST | grep -E "${CIRCLE_BRANCH}$") ]]; then
+              echo 'Fetch pull request'
+              git fetch --depth 1 --force origin "$CIRCLE_BRANCH/head:remotes/origin/$CIRCLE_BRANCH"
+            else
+              echo 'Fetch branch'
+              git fetch --depth 1 --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
+            fi
+            echo "Checking out the CI HEAD"
+            git reset --hard "$CIRCLE_SHA1"
 
   make_artifacts_directory:
     steps:
@@ -137,36 +135,10 @@ commands:
           path: artifacts
 
 jobs:
-  checkout_code:
-    <<: *defaults
-    steps:
-      - *restore_repo
-      - checkout
-      - save_cache:
-          key: *repo_cache_key
-          paths:
-            - ~/amplify-swift
-
-  install_gems:
-    <<: *defaults
-    steps:
-      - *restore_repo
-      - restore_gems
-      - run:
-          name: Bundle install
-          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
-          environment:
-            BUNDLE_JOBS: 4
-            BUNDLE_RETRY: 3
-      - save_cache:
-          key: v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-
   build_amplify_ios_spm:
     <<: *defaults
     steps:
-      - *restore_repo
+      - shallow_checkout
       - make_artifacts_directory
       - run:
           name: Build amplify for ios SPM
@@ -174,7 +146,7 @@ jobs:
   build_amplify_macos_spm:
     <<: *defaults
     steps:
-      - *restore_repo
+      - shallow_checkout
       - make_artifacts_directory
       - run:
           name: Build amplify for macos SPM
@@ -194,7 +166,7 @@ jobs:
         type: string
     description: << parameters.scheme >> unit test
     steps:
-      - *restore_repo
+      - shallow_checkout
       - make_artifacts_directory
       - run:
           name: Build << parameters.scheme >>
@@ -204,7 +176,7 @@ jobs:
           command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>"  | tee "artifacts/test-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.scheme >> coverage report to Codecov
-          command: bash ~/amplify-swift/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
+          command: bash $CIRCLE_WORKING_DIRECTORY/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
@@ -212,12 +184,11 @@ jobs:
   generate_api_docs:
     <<: *defaults
     steps:
-      - *restore_repo
-      - restore_gems
-      - check_bundle
+      - shallow_checkout
+      - ruby/install-deps
       - run:
           name: Jazzy API doc generation
-          command: bash ~/amplify-swift/CircleciScripts/jazzy_doc_gen.sh
+          command: bash $CIRCLE_WORKING_DIRECTORY/CircleciScripts/jazzy_doc_gen.sh
 
   deploy:
     <<: *defaults
@@ -230,18 +201,17 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '3f:b4:9f:aa:0b:d7:c5:16:fb:44:44:35:cb:a7:70:e0'
-      - *restore_repo
-      - restore_gems
-      - check_bundle
+      - checkout
+      - ruby/install-deps
       - run:
           name: Release Amplify for Swift
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
-  
+
   fortify_scan:
     <<: *defaults
     steps:
-      - *restore_repo
+      - shallow_checkout
       - run:
           name: Make source directory
           command: |
@@ -269,8 +239,8 @@ jobs:
           name: Run Installer
           command: |
             Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
-            export PATH=~/amplify-swift/Fortify/bin:$PATH
-            echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
+            export PATH=$CIRCLE_WORKING_DIRECTORY/Fortify/bin:$PATH
+            echo "export PATH=$CIRCLE_WORKING_DIRECTORY/Fortify/bin:\$PATH" >> "$BASH_ENV"
             fortifyupdate -acceptKey
             sourceanalyzer -version
       - run:
@@ -309,21 +279,15 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - checkout_code
-      - install_gems:
-          requires:
-            - checkout_code
       - fortify_scan:
           context:
             - amplify-swift-aws-s3-download
-          requires:
-            - install_gems
       - build_amplify_ios_spm:
           requires:
             - fortify_scan
       - build_amplify_macos_spm:
           requires:
-            - fortify_scan         
+            - fortify_scan
       - unit_test:
           name: ios_unit_test_amplify
           scheme: Amplify
@@ -456,7 +420,7 @@ workflows:
           filters:
             branches:
               only:
-                - main 
+                - main
       - deploy:
           name: deploy stable
           lane: release
