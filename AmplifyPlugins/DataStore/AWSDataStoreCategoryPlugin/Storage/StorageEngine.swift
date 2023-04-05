@@ -251,7 +251,7 @@ final class StorageEngine: StorageEngineBehavior {
             switch self.isModelExist(model: model, modelSchema: modelSchema) {
             case .success(let exist):
                 let mutationType: MutationEvent.MutationType = exist ? .update : .create
-                self.save(model, modelSchema: modelSchema, completion: { result in
+                self.save(model, modelSchema: modelSchema, condition: condition, completion: { result in
                     completion(result.map { ($0, mutationType) })
                 })
             case .failure(let error):

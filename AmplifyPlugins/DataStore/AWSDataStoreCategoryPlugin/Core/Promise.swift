@@ -7,23 +7,44 @@
 
 import Foundation
 
-/// Promise represents a runnable computation and a continuation closure on the result
+/// Promise represents a computation that take a continuation closure on the result
 struct Promise<Output, Failure: Error> {
+
+    /// Continuation closure type, take computation result as input and no return value
     typealias Closure = (Result<Output, Failure>) -> Void
+
+    /// the computation that take the continuation closure
     private let run: (@escaping Closure) -> Void
-    private let dispatchQueue: DispatchQueue
+
+    /// the dispatch queue that computation runs on
+    private let runDispatchQueue: DispatchQueue
+
+    /// the dispatch queue that continuation closure runs on.
+    /// if not privided, use the computation thread.
+    private let receiveDisptachQueue: DispatchQueue?
 
     init(
-        runOn dispatchQueue: DispatchQueue = .global(),
+        runOn runDispatchQueue: DispatchQueue = .global(),
+        receiveOn receiveDispatchQueue: DispatchQueue? = nil,
         run: @escaping (@escaping Closure) -> Void
     ) {
-        self.dispatchQueue = dispatchQueue
+        self.runDispatchQueue = runDispatchQueue
+        self.receiveDisptachQueue = receiveDispatchQueue
         self.run = run
     }
 
+    /// take a continuation closure and trigger it when computation is done
     func execute(_ closure: @escaping Closure) {
-        dispatchQueue.async {
-            self.run(closure)
+        runDispatchQueue.async {
+            self.run { result in
+                if let receiveDisptachQueue = receiveDisptachQueue {
+                    receiveDisptachQueue.async {
+                        closure(result)
+                    }
+                } else {
+                    closure(result)
+                }
+            }
         }
     }
 }
@@ -42,12 +63,15 @@ extension Promise {
     ///     triggers the closure on designated closure dispatchQueue
     func map<NextOutput>(
         _ transform: @escaping (Output) -> NextOutput,
-        runOn dispatchQueue: DispatchQueue = .global(),
-        receiveOn closureDispatchQueue: DispatchQueue? = nil
+        runOn runDispatchQueue: DispatchQueue = .global(),
+        receiveOn receiveDispatchQueue: DispatchQueue? = nil
     ) -> Promise<NextOutput, Failure> {
-        Promise<NextOutput, Failure>(runOn: dispatchQueue) { nextOutputCallback in
+        Promise<NextOutput, Failure>(
+            runOn: runDispatchQueue,
+            receiveOn: receiveDispatchQueue
+        ) { nextOutputCallback in
             self.execute { outputResult in
-                Self.tryExecuteOn(closureDispatchQueue) { nextOutputCallback(outputResult.map(transform)) }
+                nextOutputCallback(outputResult.map(transform))
             }
         }
     }
@@ -64,12 +88,15 @@ extension Promise {
     ///
     func flatMapOnResult<NextOutput>(
         _ transform: @escaping (Output) -> Result<NextOutput, Failure>,
-        runOn dispatchQueue: DispatchQueue = .global(),
-        receiveOn closureDispatchQueue: DispatchQueue? = nil
+        runOn runDispatchQueue: DispatchQueue = .global(),
+        receiveOn receiveDispatchQueue: DispatchQueue? = nil
     ) -> Promise<NextOutput, Failure> {
-        Promise<NextOutput, Failure>(runOn: dispatchQueue) { nextOutputCallback in
+        Promise<NextOutput, Failure>(
+            runOn: runDispatchQueue,
+            receiveOn: receiveDispatchQueue
+        ) { nextOutputCallback in
             self.execute { outputResult in
-                Self.tryExecuteOn(closureDispatchQueue) { nextOutputCallback(outputResult.flatMap(transform)) }
+                nextOutputCallback(outputResult.flatMap(transform))
             }
         }
     }
@@ -88,30 +115,24 @@ extension Promise {
     ///
     func flatMap<NextOutput>(
         _ transform: @escaping (Output) -> Promise<NextOutput, Failure>,
-        runOn dispatchQueue: DispatchQueue = .global(),
-        receiveOn closureDispatchQueue: DispatchQueue? = nil
+        runOn runDispatchQueue: DispatchQueue = .global(),
+        receiveOn receiveDispatchQueue: DispatchQueue? = nil
     ) -> Promise<NextOutput, Failure> {
-        Promise<NextOutput, Failure>(runOn: dispatchQueue) { nextOutputCallback in
+        Promise<NextOutput, Failure>(
+            runOn: runDispatchQueue,
+            receiveOn: receiveDispatchQueue
+        ) { nextOutputCallback in
             self.execute { outputResult in
                 switch outputResult.map(transform) {
                 case .success(let nextPromise):
                     nextPromise.execute { nextOutput in
-                        Self.tryExecuteOn(closureDispatchQueue) { nextOutputCallback(nextOutput) }
+                       nextOutputCallback(nextOutput)
                     }
                 case .failure(let error):
-                    Self.tryExecuteOn(closureDispatchQueue) { nextOutputCallback(.failure(error)) }
+                    nextOutputCallback(.failure(error))
                 }
             }
         }
     }
 
-    private static func tryExecuteOn(_ dispatchQueue: DispatchQueue?, runnable: @escaping () -> Void) {
-        if let dispatchQueue = dispatchQueue {
-            dispatchQueue.async {
-                runnable()
-            }
-        } else {
-            runnable()
-        }
-    }
 }

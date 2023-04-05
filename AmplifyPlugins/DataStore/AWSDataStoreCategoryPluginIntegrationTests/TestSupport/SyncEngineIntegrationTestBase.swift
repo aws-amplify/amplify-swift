@@ -143,6 +143,10 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         wait(for: [eventReceived], timeout: 100.0)
     }
 
+    override class func tearDown() {
+        Amplify.reset()
+        super.tearDown()
+    }
 }
 
 extension XCTestCase {
