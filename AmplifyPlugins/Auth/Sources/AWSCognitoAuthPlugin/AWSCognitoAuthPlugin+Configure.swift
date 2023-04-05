@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import Amplify
+@_spi(InternalAmplifyUserAgent) import Amplify
 
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
-import AWSPluginsCore
+@_spi(InternalAmplifyUserAgent) import AWSPluginsCore
 
 import ClientRuntime
 
@@ -28,6 +28,8 @@ extension AWSCognitoAuthPlugin {
                 AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
                 AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
+
+        jsonConfiguration = jsonValueConfiguration
 
         let authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
 
@@ -89,6 +91,15 @@ extension AWSCognitoAuthPlugin {
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: userPoolConfig.region
             )
+
+            if let provider = self as? UserAgentSuffixProvider, !provider.userAgentSuffix.isEmpty {
+                let sdkEngine = configuration.httpClientEngine
+                configuration.httpClientEngine = UserAgentSuffixAppender(
+                    suffix: provider.userAgentSuffix,
+                    using: sdkEngine
+                )
+            }
+
             return CognitoIdentityProviderClient(config: configuration)
         default:
             fatalError()

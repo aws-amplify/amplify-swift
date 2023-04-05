@@ -29,6 +29,9 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var taskQueue: TaskQueue<Any>!
 
+    @_spi(InternalAmplifyConfiguration)
+    internal(set) public var jsonConfiguration: JSONValue?
+
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"
