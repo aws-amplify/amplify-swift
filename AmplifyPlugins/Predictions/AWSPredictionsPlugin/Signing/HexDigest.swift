@@ -6,11 +6,9 @@
 //
 
 import Foundation
-import Amplify
 
-extension AWSPredictionsPlugin {
-    public func reset() async {
-        // TODO: Reset services
-        queue = nil
+extension Sequence where Element == UInt8 {
+    func hexDigest() -> String {
+        map { String(format: "%02x", $0) }.joined()
     }
 }

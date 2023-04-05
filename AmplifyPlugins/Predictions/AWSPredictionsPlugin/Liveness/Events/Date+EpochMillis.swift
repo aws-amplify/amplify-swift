@@ -6,11 +6,9 @@
 //
 
 import Foundation
-import Amplify
 
-extension AWSPredictionsPlugin {
-    public func reset() async {
-        // TODO: Reset services
-        queue = nil
+extension Date {
+    var epochMilliseconds: UInt64 {
+        UInt64(self.timeIntervalSince1970 * 1_000)
     }
 }

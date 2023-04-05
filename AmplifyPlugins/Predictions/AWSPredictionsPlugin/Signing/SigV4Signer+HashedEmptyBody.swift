@@ -6,11 +6,8 @@
 //
 
 import Foundation
-import Amplify
+import CryptoKit
 
-extension AWSPredictionsPlugin {
-    public func reset() async {
-        // TODO: Reset services
-        queue = nil
-    }
+extension SigV4Signer {
+    static let hashedEmptyBody = SHA256.hash(data: [UInt8]()).hexDigest()
 }

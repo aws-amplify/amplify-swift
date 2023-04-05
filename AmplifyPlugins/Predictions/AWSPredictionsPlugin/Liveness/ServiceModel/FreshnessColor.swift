@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import Amplify
 
-extension AWSPredictionsPlugin {
-    public func reset() async {
-        // TODO: Reset services
-        queue = nil
+public struct FreshnessColor: Codable {
+    public let rgb: [Int]
+
+    enum CodingKeys: String, CodingKey {
+        case rgb = "RGB"
     }
 }

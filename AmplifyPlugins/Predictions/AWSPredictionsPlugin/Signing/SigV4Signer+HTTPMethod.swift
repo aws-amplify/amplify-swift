@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import Amplify
 
-extension AWSPredictionsPlugin {
-    public func reset() async {
-        // TODO: Reset services
-        queue = nil
+extension SigV4Signer {
+    struct HTTPMethod {
+        let verb: String
+
+        static let get = Self(verb: "GET")
     }
 }
