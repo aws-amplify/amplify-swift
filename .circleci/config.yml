@@ -184,7 +184,7 @@ jobs:
   generate_api_docs:
     <<: *defaults
     steps:
-      - shallow_checkout
+      - checkout
       - ruby/install-deps
       - run:
           name: Jazzy API doc generation
