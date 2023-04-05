@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.8.0 (2023-04-05)
+
+### Features
+
+- **liveness**: add session + websocket client (#134)
+- **liveness**: add spi models (#132)
+- **predictions**: add support for sigv4 signing (#130)
+- **predictions**: EventStream Encoding and Decoding Support (#129)
+
+### Bug Fixes
+
+- **liveness**: misc minor changes (#135)
+- **storage**: Ensure progress from Amplify.Storage.uploadFile completes
+
 ## 2.7.1 (2023-03-28)
 
 ## 2.7.0 (2023-03-28)
