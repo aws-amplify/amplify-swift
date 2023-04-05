@@ -24,7 +24,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         completion: @escaping DataStoreCallback<M>
     ) {
         log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
-        startSyncStorageEngine()
+        initStorageEngineAndStartSyncing()
             .flatMapOnResult(asStorageEngine(storageEngineBehavior:))
             .flatMap { $0.save(model, modelSchema: modelSchema, condition: condition)}
             .map { modelAndMutationType in
@@ -32,7 +32,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: mutationType)
                 return model
             }
-            .exec { completion($0) }
+            .execute { completion($0) }
     }
 
     // MARK: - Query
@@ -128,7 +128,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         paginate paginationInput: QueryPaginationInput? = nil,
         completion: @escaping DataStoreCallback<[M]>
     ) {
-        startSyncStorageEngine()
+        initStorageEngineAndStartSyncing()
             .flatMapOnResult(asStorageEngine(storageEngineBehavior:))
             .flatMap { storageEngine in
                 storageEngine.query(
@@ -138,7 +138,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                     sort: sortInput,
                     paginationInput: paginationInput
                 )
-            }.exec { completion($0) }
+            }.execute { completion($0) }
     }
 
     // MARK: - Delete
@@ -157,13 +157,13 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  withId id: String,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
-        startSyncStorageEngine()
+        initStorageEngineAndStartSyncing()
             .flatMapOnResult(asStorageEngine(storageEngineBehavior:))
             .flatMap { storageEngine in
                 storageEngine.delete(modelType, modelSchema: modelSchema, withId: id, condition: predicate)
             }
             .map { self.onDeleteCompletion(model: $0, modelSchema: modelSchema) }
-            .exec { completion($0) }
+            .execute { completion($0) }
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
@@ -196,7 +196,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                               where predicate: QueryPredicate?,
                                               completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
           // swiftlint:disable:previous line_length
-          startSyncStorageEngine()
+          initStorageEngineAndStartSyncing()
             .flatMapOnResult(asStorageEngine(storageEngineBehavior:))
             .flatMap { storageEngine in
                 storageEngine.delete(
@@ -207,7 +207,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 )
             }
             .map { self.onDeleteCompletion(model: $0, modelSchema: modelSchema) }
-            .exec { completion($0) }
+            .execute { completion($0) }
     }
 
     public func delete<M: Model>(_ model: M,
@@ -220,7 +220,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
-        startSyncStorageEngine()
+        initStorageEngineAndStartSyncing()
             .flatMapOnResult(asStorageEngine(storageEngineBehavior:))
             .flatMap { storageEngine in
                 storageEngine.delete(
@@ -231,7 +231,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 )
             }
             .map { self.onDeleteCompletion(model: $0, modelSchema: modelSchema) }
-            .exec { completion($0) }
+            .execute { completion($0) }
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
@@ -244,7 +244,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate,
                                  completion: @escaping DataStoreCallback<Void>) {
-        startSyncStorageEngine()
+        initStorageEngineAndStartSyncing()
             .flatMapOnResult(asStorageEngine(storageEngineBehavior:))
             .flatMap { storageEngine in
                 storageEngine.delete(
@@ -254,23 +254,23 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 )
             }
             .map { $0.map { model in self.onDeleteCompletion(model: model, modelSchema: modelSchema) } }
-            .exec { completion($0.map {_ in () }) }
+            .execute { completion($0.map {_ in () }) }
     }
 
     public func start(completion: @escaping DataStoreCallback<Void>) {
-        startSyncStorageEngine().exec { result in
+        initStorageEngineAndStartSyncing().execute { result in
             completion(result.map { _ in () })
         }
     }
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
-        stopAsync().exec { completion($0) }
+        stopAsync().execute { completion($0) }
     }
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         initStorageEngineAsync()
             .flatMap { _ in self.clearAsync() }
-            .exec { completion($0) }
+            .execute { completion($0) }
     }
 
     // MARK: Private

@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		061FD5B1AF28D70F20D52407 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE4710DB0051BDB010053AA /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */; };
-		2104FE60284E7288007CF949 /* SchemaDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5D284E7288007CF949 /* SchemaDrift.swift */; };
-		2104FE61284E7288007CF949 /* SchemaDrift+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */; };
-		2104FE62284E7288007CF949 /* EnumDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5F284E7288007CF949 /* EnumDrift.swift */; };
 		2104FE4728490338007CF949 /* Blog8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE3F28490337007CF949 /* Blog8+Schema.swift */; };
 		2104FE4828490338007CF949 /* MyNestedModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4028490337007CF949 /* MyNestedModel8.swift */; };
 		2104FE4928490338007CF949 /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4128490338007CF949 /* MyCustomModel8+Schema.swift */; };
@@ -21,6 +18,9 @@
 		2104FE4E28490338007CF949 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4628490338007CF949 /* Post8+Schema.swift */; };
 		2104FE562849115B007CF949 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE542849115B007CF949 /* Comment8+Schema.swift */; };
 		2104FE572849115B007CF949 /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE552849115B007CF949 /* Comment8.swift */; };
+		2104FE60284E7288007CF949 /* SchemaDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5D284E7288007CF949 /* SchemaDrift.swift */; };
+		2104FE61284E7288007CF949 /* SchemaDrift+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */; };
+		2104FE62284E7288007CF949 /* EnumDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5F284E7288007CF949 /* EnumDrift.swift */; };
 		210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922492359634B00CEC295 /* AnalyticsProfile.swift */; };
 		210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */; };
 		210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922562359693800CEC295 /* BasicAnalyticsEvent.swift */; };
@@ -973,10 +973,6 @@
 		0671E539A66859A57E071091 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
 		09D90ABD9EDED6D6B1780253 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.release.xcconfig"; sourceTree = "<group>"; };
 		1FA86170C161C5E46E57A5F9 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
-		2104FE5D284E7288007CF949 /* SchemaDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaDrift.swift; sourceTree = "<group>"; };
-		2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SchemaDrift+Schema.swift"; sourceTree = "<group>"; };
-		2104FE5F284E7288007CF949 /* EnumDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumDrift.swift; sourceTree = "<group>"; };
-		2104FE3D2849010D007CF949 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		2104FE3F28490337007CF949 /* Blog8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog8+Schema.swift"; sourceTree = "<group>"; };
 		2104FE4028490337007CF949 /* MyNestedModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNestedModel8.swift; sourceTree = "<group>"; };
 		2104FE4128490338007CF949 /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
@@ -987,6 +983,9 @@
 		2104FE4628490338007CF949 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
 		2104FE542849115B007CF949 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
 		2104FE552849115B007CF949 /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
+		2104FE5D284E7288007CF949 /* SchemaDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaDrift.swift; sourceTree = "<group>"; };
+		2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SchemaDrift+Schema.swift"; sourceTree = "<group>"; };
+		2104FE5F284E7288007CF949 /* EnumDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumDrift.swift; sourceTree = "<group>"; };
 		210922492359634B00CEC295 /* AnalyticsProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProfile.swift; sourceTree = "<group>"; };
 		2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsPropertyValue.swift; sourceTree = "<group>"; };
 		210922562359693800CEC295 /* BasicAnalyticsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAnalyticsEvent.swift; sourceTree = "<group>"; };
@@ -1965,16 +1964,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2104FE5C284E7263007CF949 /* SchemaDrift */ = {
-			isa = PBXGroup;
-			children = (
-				2104FE5F284E7288007CF949 /* EnumDrift.swift */,
-				2104FE5D284E7288007CF949 /* SchemaDrift.swift */,
-				2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */,
-			);
-			path = SchemaDrift;
-			sourceTree = "<group>";
-		};
 		2104FE3B28490087007CF949 /* OptionalAssociations */ = {
 			isa = PBXGroup;
 			children = (
@@ -1990,6 +1979,16 @@
 				2104FE4628490338007CF949 /* Post8+Schema.swift */,
 			);
 			path = OptionalAssociations;
+			sourceTree = "<group>";
+		};
+		2104FE5C284E7263007CF949 /* SchemaDrift */ = {
+			isa = PBXGroup;
+			children = (
+				2104FE5F284E7288007CF949 /* EnumDrift.swift */,
+				2104FE5D284E7288007CF949 /* SchemaDrift.swift */,
+				2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */,
+			);
+			path = SchemaDrift;
 			sourceTree = "<group>";
 		};
 		21092258235969D000CEC295 /* Event */ = {

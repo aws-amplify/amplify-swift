@@ -14,10 +14,10 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     @available(iOS 13.0, *)
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
         let passthroughSubject = PassthroughSubject<MutationEvent, DataStoreError>()
-        startSyncStorageEngine()
+        initStorageEngineAndStartSyncing()
             .flatMapOnResult { _ in self.extractDataStorePublisher(self.dataStorePublisher) }
             .map(\.publisher)
-            .exec { result in
+            .execute { result in
                 switch result {
                 case .success(let publisher):
                     _ = publisher
@@ -65,12 +65,12 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
                                        sort sortInput: [QuerySortDescriptor]? = nil)
     -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
         let passthroughSubject = PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>()
-        startSyncStorageEngine()
+        initStorageEngineAndStartSyncing()
             .flatMapOnResult { _ in self.extractDataStorePublisher(self.dataStorePublisher) }
             .flatMapOnResult { dataStorePublisher in
                 self.extractDispatchedModelSyncedEvent(with: modelSchema.name).map { (dataStorePublisher, $0) }
             }
-            .exec { result in
+            .execute { result in
                 switch result {
                 case let .success((dataStorePublisher, dispatchedModelSyncedEvent)):
                     let operation = AWSDataStoreObserveQueryOperation(

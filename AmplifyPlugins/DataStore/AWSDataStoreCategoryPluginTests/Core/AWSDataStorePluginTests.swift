@@ -163,9 +163,16 @@ class AWSDataStorePluginTests: XCTestCase {
         let stopExpectation = expectation(description: "stop should be called")
         let startExpectationOnSecondStart = expectation(description: "Start Sync should be called again")
 
+        var count = 0
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            startExpectation.fulfill()
+            defer { count += 1 }
+            switch count {
+            case 0: startExpectation.fulfill()
+            case 1: startExpectationOnSecondStart.fulfill()
+            default: XCTFail("StorageEngine should be only init twice")
+            }
+
         }
         storageEngine.responders[.stopSync] = StopSyncResponder { _ in
             stopExpectation.fulfill()
@@ -212,10 +219,6 @@ class AWSDataStorePluginTests: XCTestCase {
                 semaphore.signal()
             })
             semaphore.wait()
-
-            storageEngine.responders[.startSync] = StartSyncResponder { _ in
-                startExpectationOnSecondStart.fulfill()
-            }
 
             plugin.start(completion: { _ in
                 XCTAssertNotNil(plugin.storageEngine)

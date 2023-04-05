@@ -124,7 +124,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    func startSyncStorageEngine() -> Promise<StorageEngineBehavior, DataStoreError> {
+    func initStorageEngineAndStartSyncing() -> Promise<StorageEngineBehavior, DataStoreError> {
         Promise(runOn: storageEngineInitQueue) { completion in
             if let storageEngine = self.storageEngine {
                 return completion(.success(storageEngine))
