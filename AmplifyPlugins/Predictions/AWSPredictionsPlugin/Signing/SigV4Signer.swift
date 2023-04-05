@@ -318,16 +318,19 @@ struct SigV4Signer {
         + "&X-Amz-Expires=\(expires)"
         + "&X-Amz-SignedHeaders=\(signedHeaders)"
         + (credential.sessionToken
-            .map(PercentEncoding.uri.encode)
             .map { "&X-Amz-Security-Token=\($0)" } ?? "")
 
         let sorted = canonicalQueryString.split(separator: "&")
+            .map {
+                String($0).split(separator: "=")
+                    .map(String.init)
+                    .map(PercentEncoding.uri.encode)
+                    .joined(separator: "=")
+            }
             .sorted()
             .joined(separator: "&")
 
-        let queryEncoded = PercentEncoding.query.encode(sorted)
-
-        return queryEncoded
+        return sorted
     }
 
     /// String to Sign portion of the signed url
