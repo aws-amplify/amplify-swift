@@ -42,14 +42,4 @@ extension URL {
 
         return url ?? self
     }
-
-    func _appending(queryItem: URLQueryItem) -> URL {
-        if #available(iOS 16, *) {
-            return appending(queryItems: [queryItem])
-        } else {
-            var components = URLComponents(url: self, resolvingAgainstBaseURL: false)
-            components?.queryItems?.append(queryItem)
-            return components?.url ?? self
-        }
-    }
 }
