@@ -784,7 +784,62 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(expectedResult, Set(posts.map(\.title)))
     }
 
+    func testStop_whenSavingInProgress() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplifyAndWaitForReady()
+
+        let postCount = 100
+        let posts = (0 ..< postCount).map { _ in
+            Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
+        }
+
+        let saveFinished = expectation(description: "Posts are saved")
+        saveFinished.expectedFulfillmentCount = postCount
+        let stopped = expectation(description: "DataStore plugin stopped")
+
+        let queryLocalFinished = expectation(description: "Query local finished")
+        queryLocalFinished.expectedFulfillmentCount = postCount
+
+        for post in posts {
+            Task {
+                try await sleepMill(UInt64.random(in: 200 ..< 2_000))
+                Amplify.DataStore.save(post) { result in
+                    defer { saveFinished.fulfill() }
+                    if case .success(let savedPost) = result {
+                        XCTAssertEqual(post, savedPost)
+                    }
+                }
+            }
+        }
+
+        Task {
+            try await sleepMill(1_000)
+             Amplify.DataStore.stop { _ in
+                 stopped.fulfill()
+             }
+        }
+
+        wait(for: [saveFinished, stopped], timeout: 30)
+
+        var localSuccess = 0
+        for post in posts {
+            Amplify.DataStore.query(Post.self, byId: post.id) { result in
+                defer { queryLocalFinished.fulfill() }
+                if case .success(let savedPost) = result {
+                    XCTAssertEqual(post, savedPost)
+                    localSuccess += 1
+                }
+            }
+        }
+        wait(for: [queryLocalFinished], timeout: 30)
+        XCTAssertEqual(localSuccess, postCount)
+    }
+
     // MARK: - Helpers
+
+    private func sleepMill(_ milliseconds: UInt64) async throws {
+        try await Task.sleep(nanoseconds: milliseconds * NSEC_PER_MSEC)
+    }
 
     func validateSavePost() throws {
         let date = Temporal.DateTime.now()
