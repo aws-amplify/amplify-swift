@@ -57,6 +57,6 @@ class OptionalExtensionTests: XCTestCase {
 
 }
 
-fileprivate struct TestRuntimeError: Error, Equatable {
+private struct TestRuntimeError: Error, Equatable {
     let id = UUID()
 }

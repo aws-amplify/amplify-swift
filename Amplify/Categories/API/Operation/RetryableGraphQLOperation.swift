@@ -64,7 +64,7 @@ extension RetryableGraphQLOperationBehavior {
         let wrappedResultListener: OperationResultListener = { result in
             if case let .failure(error) = result, self.shouldRetry(error: error as? APIError) {
                 self.log.debug("\(error)")
-                self.requestFactory() { [weak self] request in
+                self.requestFactory { [weak self] request in
                     self?.start(request: request)
                 }
 
@@ -109,7 +109,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
         self.resultListener = resultListener
     }
     public override func main() {
-        self.requestFactory() { [weak self] request in
+        requestFactory { [weak self] request in
             self?.start(request: request)
         }
     }
@@ -159,7 +159,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
         self.resultListener = resultListener
     }
     public override func main() {
-        self.requestFactory() { [weak self] request in
+        requestFactory { [weak self] request in
             self?.start(request: request)
         }
     }

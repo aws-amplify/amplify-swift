@@ -24,7 +24,6 @@ public protocol URLRequestInterceptor {
     /// Inspect and optionally modify the request, returning either the original
     /// unmodified request or a modified copy.
     /// - Parameter request: The URLRequest
-    @available(*, deprecated, message: "Use async interceptor with chaining intercept(:completion:)")
     func intercept(_ request: URLRequest) throws -> URLRequest
 
     func intercept(_ request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void)
@@ -32,9 +31,9 @@ public protocol URLRequestInterceptor {
 
 extension URLRequestInterceptor {
 
-    func intercept(_ request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+    public func intercept(_ request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         do {
-            let request = try self.intercept(request)
+            let request = try intercept(request)
             completion(.success(request))
         } catch {
             completion(.failure(error))
