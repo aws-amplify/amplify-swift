@@ -196,40 +196,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     }
 
     // swiftlint:disable:next function_parameter_count
-    static func makeAPIRequest(for modelSchema: ModelSchema,
-                               subscriptionType: GraphQLSubscriptionType,
-                               api: APICategoryGraphQLBehavior,
-                               auth: AuthCategoryBehavior?,
-                               authType: AWSAuthorizationType?,
-                               awsAuthService: AWSAuthServiceBehavior) -> GraphQLRequest<Payload> {
-        let request: GraphQLRequest<Payload>
-        if modelSchema.hasAuthenticationRules,
-            auth != nil,
-            case .success(let tokenString) = awsAuthService.getToken(),
-            case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           claims: claims,
-                                                           authType: authType)
-        } else if modelSchema.hasAuthenticationRules,
-            let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
-            case .success(let tokenString) = oidcAuthProvider.getLatestAuthToken(),
-            case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           claims: claims,
-                                                           authType: authType)
-        } else {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
-                                                           subscriptionType: subscriptionType,
-                                                           authType: authType)
-        }
-
-        return request
-    }
-
-    // swiftlint:disable:next function_parameter_count
-    static func makeAPIRequest2(
+    static func makeAPIRequest(
         for modelSchema: ModelSchema,
         subscriptionType: GraphQLSubscriptionType,
         api: APICategoryGraphQLBehavior,
@@ -390,7 +357,7 @@ extension IncomingAsyncSubscriptionEventPublisher {
         // swiftlint:disable:previous line_length
         var authTypes = authTypeProvider
         return { completion in
-            return IncomingAsyncSubscriptionEventPublisher.makeAPIRequest2(
+            return IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(
                 for: modelSchema,
                 subscriptionType: subscriptionType,
                 api: api,
