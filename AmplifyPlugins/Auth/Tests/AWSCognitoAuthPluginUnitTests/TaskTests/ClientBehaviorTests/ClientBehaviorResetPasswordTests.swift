@@ -12,6 +12,7 @@ import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
@@ -170,7 +171,10 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
-                throw ForgotPasswordOutputError.internalErrorException(InternalErrorException(message: "internal error"))
+                throw SdkError.service(
+                    ForgotPasswordOutputError.internalErrorException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

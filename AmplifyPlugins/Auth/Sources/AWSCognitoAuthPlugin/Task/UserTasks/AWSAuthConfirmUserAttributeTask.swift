@@ -35,7 +35,7 @@ class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             try await confirmUserAttribute(with: accessToken)
-        } catch let error as VerifyUserAttributeOutputError {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error

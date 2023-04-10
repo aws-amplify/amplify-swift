@@ -9,6 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
@@ -66,7 +67,10 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithAliasExistsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.aliasExistsException(.init())
+            throw SdkError.service(
+                UpdateUserAttributesOutputError.aliasExistsException(
+                    .init()),
+                    .init(body: .empty, statusCode: .accepted))
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))

@@ -9,6 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class UserBehaviorFetchAttributesTests: BasePluginTest {
 
@@ -128,7 +129,10 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.notAuthorizedException(.init())
+            throw SdkError.service(
+                GetUserOutputError.notAuthorizedException(
+                    .init()),
+                .init(body: .empty, statusCode: .accepted))
         })
 
         do {

@@ -38,9 +38,7 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask {
             let accessToken = try await taskHelper.getAccessToken()
             let username = try await getCurrentUsername()
             try await forgetDevice(with: accessToken, username: username)
-        } catch let error as ForgetDeviceOutputError {
-            throw error.authError
-        } catch let error as SdkError<ForgetDeviceOutputError> {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error
