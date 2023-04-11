@@ -18,6 +18,7 @@ import Combine
 /// using serialized JSON models
 class LocalSubscriptionWithJSONModelTests: XCTestCase { // swiftlint:disable:this type_body_length
     var dataStorePlugin: AWSDataStorePlugin!
+    var syncEngine: RemoteSyncEngine!
 
     override func setUp() {
         super.setUp()
@@ -41,7 +42,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase { // swiftlint:disable:thi
             stateMachine = MockStateMachine(initialState: .notStarted,
                                             resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
-            let syncEngine = RemoteSyncEngine(
+            syncEngine = RemoteSyncEngine(
                 storageAdapter: storageAdapter,
                 dataStoreConfiguration: .default,
                 authModeStrategy: AWSDefaultAuthModeStrategy(),
@@ -57,15 +58,15 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase { // swiftlint:disable:thi
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
         } catch {
             XCTFail(String(describing: error))
             return
         }
 
-        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = { _, _, _, _, _  throws in
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()

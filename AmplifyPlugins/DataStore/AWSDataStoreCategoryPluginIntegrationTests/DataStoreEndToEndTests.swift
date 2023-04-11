@@ -518,15 +518,18 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     func testConfigureAmplifyThenStartStopStart() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplify()
-        let startStopSuccess = expectation(description: "start then stop successful")
+        let startSuccess = expectation(description: "start twice")
+        startSuccess.expectedFulfillmentCount = 2
+        let stopSuccess = expectation(description: "stop once")
         Amplify.DataStore.start { result in
             switch result {
             case .success:
+                startSuccess.fulfill()
                 Amplify.DataStore.stop { result in
                     switch result {
                     case .success:
-                        self.startDataStore()
-                        startStopSuccess.fulfill()
+                        stopSuccess.fulfill()
+                        self.startDataStore(expectation: startSuccess)
                     case .failure(let error):
                         XCTFail("\(error)")
                     }
@@ -535,8 +538,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [startStopSuccess], timeout: networkTimeout)
-
+        wait(for: [startSuccess, stopSuccess], timeout: networkTimeout)
     }
 
     /// Ensure the DataStore is automatically started when querying for the first time
@@ -575,7 +577,14 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Saving a post should be successful
     ///
     func testClearStart() throws {
-        setUp(withModels: TestModelRegistration())
+        let startTime = Temporal.DateTime.now()
+        let syncExpression = DataStoreSyncExpression.syncExpression(
+            Post.schema, where: { Post.keys.createdAt > startTime }
+        )
+        setUp(
+            withModels: TestModelRegistration(),
+            dataStoreConfiguration: .custom(syncExpressions: [syncExpression])
+        )
         try startAmplifyAndWaitForSync()
         let clearStartSuccess = expectation(description: "clear then start successful")
         Amplify.DataStore.clear { result in
@@ -731,11 +740,17 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Given: DataStore with clean state
     /// - When:
     ///     - do some mutaions to ensure MutationEventPublisher works fine
-    ///     - wait 1 second for OutgoingMutationQueue stateMachine transform to waitingForEventToProcess state
     ///     - do some mutations in parallel
     /// - Then: verify no mutaiton loss
     func testParallelMutations_whenWaitingForEventToProcess_noMutationLoss() throws {
-        setUp(withModels: TestModelRegistration())
+        let startTime = Temporal.DateTime.now()
+        let syncExpression = DataStoreSyncExpression(modelSchema: Post.schema) {
+            Post.keys.createdAt >= startTime
+        }
+        setUp(
+            withModels: TestModelRegistration(),
+            dataStoreConfiguration: .custom(syncExpressions: [syncExpression])
+        )
         try startAmplifyAndWaitForReady()
         let parallelSize = 100
         let initExpectation = expectation(description: "expect MutationEventPublisher works fine")
@@ -773,7 +788,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         _ = Amplify.DataStore.save(newPost)
         wait(for: [initExpectation], timeout: 5)
-        wait(for: 1)
 
         for post in posts {
             _ = Amplify.DataStore.save(post)
@@ -784,7 +798,68 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(expectedResult, Set(posts.map(\.title)))
     }
 
+    func testStop_whenSavingInProgress() throws {
+        let startTime = Temporal.DateTime.now()
+        let syncExpression = DataStoreSyncExpression(modelSchema: Post.schema) {
+            Post.keys.createdAt >= startTime
+        }
+        setUp(
+            withModels: TestModelRegistration(),
+            dataStoreConfiguration: .custom(syncExpressions: [syncExpression])
+        )
+        try startAmplifyAndWaitForSync()
+
+        let postCount = 100
+        let posts = (0 ..< postCount).map { _ in
+            Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
+        }
+
+        let saveFinished = expectation(description: "Posts are saved")
+        saveFinished.expectedFulfillmentCount = postCount
+        let stopped = expectation(description: "DataStore plugin stopped")
+
+        let queryLocalFinished = expectation(description: "Query local finished")
+        queryLocalFinished.expectedFulfillmentCount = postCount
+
+        for post in posts {
+            Task {
+                try await sleepMill(UInt64.random(in: 200 ..< 2_000))
+                Amplify.DataStore.save(post) { result in
+                    defer { saveFinished.fulfill() }
+                    if case .success(let savedPost) = result {
+                        XCTAssertEqual(post, savedPost)
+                    }
+                }
+            }
+        }
+
+        Task {
+            try await sleepMill(500)
+             Amplify.DataStore.stop { _ in
+                 stopped.fulfill()
+             }
+        }
+
+        wait(for: [saveFinished, stopped], timeout: 30)
+
+        var localSuccess = 0
+        for post in posts {
+            Amplify.DataStore.query(Post.self, byId: post.id) { result in
+                defer { queryLocalFinished.fulfill() }
+                if case .success(let savedPost) = result {
+                    XCTAssertEqual(post, savedPost)
+                    localSuccess += 1
+                }
+            }
+        }
+        wait(for: [queryLocalFinished], timeout: 30)
+        XCTAssertEqual(localSuccess, postCount)
+    }
+
     // MARK: - Helpers
+    private func sleepMill(_ milliseconds: UInt64) async throws {
+        try await Task.sleep(nanoseconds: milliseconds * NSEC_PER_MSEC)
+    }
 
     func validateSavePost() throws {
         let date = Temporal.DateTime.now()

@@ -43,8 +43,6 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
         continueAfterFailure = false
 
-        Amplify.reset()
-        sleep(2)
         Amplify.Logging.logLevel = logLevel
 
         do {
@@ -61,17 +59,15 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
     }
 
-    func startDataStore() {
-        let started = expectation(description: "DataStore started")
+    func startDataStore(expectation: XCTestExpectation) {
         Amplify.DataStore.start { result in
             switch result {
             case .success:
-                started.fulfill()
+                expectation.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
         }
-        wait(for: [started], timeout: 2)
     }
 
     func stopDataStore() {
@@ -116,6 +112,19 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     func startAmplifyAndWaitForReady() throws {
         try startAmplifyAndWait(for: HubPayload.EventName.DataStore.ready)
+    }
+
+    func clearMutationEvents() throws {
+        let finished = expectation(description: "Finished clear mutation events")
+        Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all) { result in
+            switch result {
+            case .success:
+                finished.fulfill()
+            case let .failure(error):
+                XCTFail(error.localizedDescription)
+            }
+        }
+        wait(for: [finished], timeout: 10)
     }
 
     private func startAmplifyAndWait(for eventName: String) throws {

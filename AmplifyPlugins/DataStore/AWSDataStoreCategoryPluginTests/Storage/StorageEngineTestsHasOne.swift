@@ -29,9 +29,9 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
             ModelRegistry.register(modelType: Team.self)
             ModelRegistry.register(modelType: Project.self)
 

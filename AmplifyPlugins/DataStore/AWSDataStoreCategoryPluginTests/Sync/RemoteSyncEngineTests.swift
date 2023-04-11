@@ -24,6 +24,12 @@ class RemoteSyncEngineTests: XCTestCase {
 
     let defaultAsyncWaitTimeout = 2.0
 
+    override func tearDown() {
+        Amplify.reset()
+        sleep(1)
+        super.tearDown()
+    }
+
     override func setUp() {
         super.setUp()
         apiPlugin = MockAPICategoryPlugin()

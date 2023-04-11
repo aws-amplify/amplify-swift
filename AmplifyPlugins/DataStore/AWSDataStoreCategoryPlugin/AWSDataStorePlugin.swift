@@ -45,21 +45,26 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     let validAuthPluginKey: String
 
     var storageEngine: StorageEngineBehavior!
-    var storageEngineInitQueue = DispatchQueue(label: "AWSDataStorePlugin.storageEngineInitQueue")
-    let queue = DispatchQueue(label: "AWSDataStorePlugin.queue", target: DispatchQueue.global())
+    var syncEngine: RemoteSyncEngineBehavior? {
+        didSet {
+            if #available(iOS 13.0, *) {
+                syncEngineSink = syncEngine?.publisher.sink(
+                    receiveCompletion: self.onReceiveCompletion(completed:),
+                    receiveValue: self.onReceiveValue(receiveValue:)
+                )
+            }
+        }
+    }
+
+    let initQueue = DispatchQueue(label: "AWSDataStorePlugin.initQueue")
+    let initCompletionQueue = DispatchQueue(label: "AWSDataStorePlugin.initCompletionQueue", target: DispatchQueue.global())
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
-    var iStorageEngineSink: Any?
-    @available(iOS 13.0, *)
-    var storageEngineSink: AnyCancellable? {
-        get {
-            if let iStorageEngineSink = iStorageEngineSink as? AnyCancellable {
-                return iStorageEngineSink
+    var syncEngineSink: Any? {
+        didSet {
+            if #available(iOS 13.0, *), let cancellable = oldValue as? AnyCancellable {
+                cancellable.cancel()
             }
-            return nil
-        }
-        set {
-            iStorageEngineSink = newValue
         }
     }
 
@@ -73,13 +78,19 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.validAPIPluginKey =  "awsAPIPlugin"
         self.validAuthPluginKey = "awsCognitoAuthPlugin"
         self.storageEngineBehaviorFactory =
-            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
+            StorageEngine.init(dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
             self.dataStorePublisher = nil
         }
         self.dispatchedModelSyncedEvents = [:]
+    }
+
+    deinit {
+        if #available(iOS 13.0, *), let cancellable = syncEngineSink as? AnyCancellable {
+            cancellable.cancel()
+        }
     }
 
     /// Internal initializer for testing
@@ -95,7 +106,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.operationQueue = operationQueue
         self.isSyncEnabled = false
         self.storageEngineBehaviorFactory = storageEngineBehaviorFactory ??
-            StorageEngine.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
+            StorageEngine.init(dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
         self.dataStorePublisher = dataStorePublisher
         self.dispatchedModelSyncedEvents = [:]
         self.validAPIPluginKey = validAPIPluginKey
@@ -117,10 +128,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// Initializes the underlying storage engine
     /// - Returns: success if the engine is successfully initialized or
     ///            a failure with a DataStoreError
-    func initStorageEngine() -> InitStorageEngineResult {
-        storageEngineInitQueue.sync {
+    func initStorageEngine() -> Result<StorageEngineBehavior, DataStoreError> {
+        initQueue.sync {
             if storageEngine != nil {
-                return .alreadyInitialized
+                return .success(storageEngine)
             }
 
             do {
@@ -133,7 +144,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
                 try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
 
-                return .successfullyInitialized
+                return .success(storageEngine)
             } catch {
                 log.error(error: error)
                 return .failure(.invalidOperation(causedBy: error))
@@ -146,26 +157,42 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Parameter completion: completion handler called with a success if the sync process started
     ///                         or with a DataStoreError in case of failure
     func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
-        if storageEngine != nil {
-            completion(.successfulVoid)
-            return
-        }
+        completion(initStorageEngine()
+            .flatMap(initSyncEngine(storageEngine:))
+            .map { _ in () }
+        )
+    }
 
-        switch initStorageEngine() {
-        case .alreadyInitialized:
-            completion(.successfulVoid)
-        case .successfullyInitialized:
-            storageEngine.startSync { result in
-
-                self.operationQueue.operations.forEach { operation in
-                    if let operation = operation as? DataStoreObserveQueryOperation {
-                        operation.startObserveQuery(with: self.storageEngine)
-                    }
-                }
-                completion(result)
+    func initSyncEngine(storageEngine: StorageEngineBehavior) -> Result<RemoteSyncEngineBehavior?, DataStoreError> {
+        initQueue.sync {
+            if #available(iOS 13.0, *), syncEngine == nil, isSyncEnabled {
+                self.syncEngine = try? RemoteSyncEngine(
+                    storageAdapter: storageEngine.storageAdapter,
+                    dataStoreConfiguration: dataStoreConfiguration
+                )
             }
-        case .failure(let error):
-            completion(.failure(causedBy: error))
+            storageEngine.syncEngine = self.syncEngine
+
+            if let syncEngine = syncEngine, !syncEngine.isSyncing() {
+                return getApiPlugin().flatMap { api in
+                    let authPluginRequired = Self.requiresAuthPlugin(api)
+                    if authPluginRequired {
+                        return getAuthPlugin().map { (api, Optional.some($0)) }
+                    } else {
+                        return .success((api, Optional.none))
+                    }
+                }.map { plugins in
+                    syncEngine.start(api: plugins.0, auth: plugins.1)
+                    self.operationQueue.operations.forEach { operation in
+                        if let operation = operation as? DataStoreObserveQueryOperation {
+                            operation.startObserveQuery(with: storageEngine)
+                        }
+                    }
+                    return syncEngine
+                }
+            } else {
+                return .success(syncEngine)
+            }
         }
     }
 
@@ -174,16 +201,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             return
         }
 
-        storageEngine = try storageEngineBehaviorFactory(isSyncEnabled,
-                                                         dataStoreConfiguration,
+        storageEngine = try storageEngineBehaviorFactory(dataStoreConfiguration,
                                                          validAPIPluginKey,
                                                          validAuthPluginKey,
                                                          modelRegistration.version,
                                                          UserDefaults.standard)
-
-        if #available(iOS 13.0, *) {
-            setupStorageSink()
-        }
     }
 
     // MARK: Private
@@ -192,16 +214,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         if #available(iOS 13.0, *) {
             isSyncEnabled = ModelRegistry.hasSyncableModels
         }
-    }
-
-    @available(iOS 13.0, *)
-    private func setupStorageSink() {
-        storageEngineSink = storageEngine
-            .publisher
-            .sink(
-                receiveCompletion: { [weak self] in self?.onReceiveCompletion(completed: $0) },
-                receiveValue: { [weak self] in self?.onReceiveValue(receiveValue: $0) }
-            )
     }
 
     @available(iOS 13.0, *)
@@ -224,27 +236,41 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     @available(iOS 13.0, *)
-    func onReceiveValue(receiveValue: StorageEngineEvent) {
+    func onReceiveValue(receiveValue: RemoteSyncEngineEvent) {
         guard let dataStorePublisher = self.dataStorePublisher else {
             log.error("Data store publisher not initalized")
             return
         }
 
         switch receiveValue {
-        case .started:
-            break
+        case .storageAdapterAvailable,
+             .subscriptionsPaused,
+             .mutationsPaused,
+             .clearedStateOutgoingMutations,
+             .subscriptionsInitialized,
+             .performedInitialSync,
+             .subscriptionsActivated,
+             .mutationQueueStarted,
+             .syncStarted,
+             .cleanedUp,
+             .cleanedUpForTermination,
+             .schedulingRestart: break
+
         case .mutationEvent(let mutationEvent):
             dataStorePublisher.send(input: mutationEvent)
+
         case .modelSyncedEvent(let modelSyncedEvent):
             log.verbose("Emitting DataStore event: modelSyncedEvent \(modelSyncedEvent)")
             dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
             let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                      data: modelSyncedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+
         case .syncQueriesReadyEvent:
             log.verbose("[Lifecycle event 4]: syncQueriesReady")
             let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
             Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesReadyEventPayload)
+
         case .readyEvent:
             log.verbose("[Lifecycle event 6]: ready")
             let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.ready)
@@ -262,6 +288,15 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             hubListener = nil
         }
         let group = DispatchGroup()
+        if let resettable = syncEngine as? Resettable {
+            log.verbose("Resetting syncEngine")
+            group.enter()
+            resettable.reset {
+                self.log.verbose("Resetting syncEngine: finished")
+                group.leave()
+            }
+        }
+
         if let resettable = storageEngine as? Resettable {
             log.verbose("Resetting storageEngine")
             group.enter()
@@ -275,6 +310,84 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         onComplete()
     }
 
+    private func getApiPlugin() -> Result<APICategoryPlugin, DataStoreError> {
+        do {
+            return .success(try Amplify.API.getPlugin(for: validAPIPluginKey))
+        } catch {
+            log.error("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
+            return .failure(.configuration(
+                "Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
+                "Ensure the API category has been setup and configured for your project",
+                error)
+            )
+        }
+    }
+
+    private func getAuthPlugin() -> Result<AuthCategoryBehavior, DataStoreError> {
+        do {
+            return .success(try Amplify.Auth.getPlugin(for: validAuthPluginKey))
+        } catch {
+            log.error("Unable to find suitable Auth plugin for syncEngine. Models require auth")
+            return .failure(.configuration(
+                "Unable to find suitable Auth plugin for syncEngine. Models require auth",
+                "Ensure the Auth category has been setup and configured for your project",
+                error
+            ))
+        }
+    }
+
 }
 
 extension AWSDataStorePlugin: AmplifyVersionable { }
+
+extension AWSDataStorePlugin {
+    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin) -> Bool {
+        let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains { schema in
+            guard schema.isSyncable  else {
+                return false
+            }
+            return Self.requiresAuthPlugin(apiPlugin, authRules: schema.authRules)
+        }
+
+        return modelsRequireAuthPlugin
+    }
+
+    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin, authRules: [AuthRule]) -> Bool {
+        if let rulesRequireAuthPlugin = authRules.requireAuthPlugin {
+            return rulesRequireAuthPlugin
+        }
+
+        // Fall back to the endpoint's auth type if a determination cannot be made from the auth rules. This can
+        // occur for older generation of the auth rules which do not have provider information such as the initial
+        // single auth rule use cases. The auth type from the API is used to determine whether or not the auth
+        // plugin is required.
+        if let awsAPIAuthInfo = apiPlugin as? AWSAPIAuthInformation {
+            do {
+                return try awsAPIAuthInfo.defaultAuthType().requiresAuthPlugin
+            } catch {
+                log.error(error: error)
+            }
+        }
+
+        log.warn("""
+            Could not determine whether the auth plugin is required or not. The auth rules present
+            may be missing provider information. When this happens, the API Plugin is used to determine
+            whether the default auth type requires the auth plugin. The default auth type could not be determined.
+        """)
+
+        // If both checks above cannot determine if auth plugin is required, fallback to previous logic
+        let apiAuthProvider = (apiPlugin as APICategoryAuthProviderFactoryBehavior).apiAuthProviderFactory()
+        if apiAuthProvider.oidcAuthProvider() != nil {
+            log.verbose("Found OIDC Auth Provider from the API Plugin.")
+            return false
+        }
+
+        if apiAuthProvider.functionAuthProvider() != nil {
+            log.verbose("Found Function Auth Provider from the API Plugin.")
+            return false
+        }
+
+        // There are auth rules and no ODIC/Function providers on the API plugin, then return true.
+        return true
+    }
+}

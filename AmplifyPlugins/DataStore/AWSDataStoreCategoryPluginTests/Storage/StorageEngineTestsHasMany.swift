@@ -30,9 +30,10 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
-                                          validAuthPluginKey: validAuthPluginKey)
+                                          validAuthPluginKey: validAuthPluginKey
+            )
+            storageEngine.syncEngine = syncEngine
             ModelRegistry.register(modelType: Restaurant.self)
             ModelRegistry.register(modelType: Menu.self)
             ModelRegistry.register(modelType: Dish.self)

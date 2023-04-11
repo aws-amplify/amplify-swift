@@ -39,8 +39,6 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
 
         continueAfterFailure = false
 
-        Amplify.reset()
-        sleep(2)
         Amplify.Logging.logLevel = logLevel
 
         do {

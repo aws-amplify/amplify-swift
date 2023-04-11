@@ -272,12 +272,12 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func start(completion: @escaping DataStoreCallback<Void>) {
         initStorageEngineAndStartSync { result in
-            completion(result)
+            self.initCompletionQueue.async { completion(result) }
         }
     }
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
-        storageEngineInitQueue.sync {
+        initQueue.sync {
             operationQueue.operations.forEach { operation in
                 if let operation = operation as? DataStoreObserveQueryOperation {
                     operation.resetState()
@@ -286,29 +286,20 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
                 dispatchedModelSynced.set(false)
             }
-            if storageEngine == nil {
-                queue.async {
-                    completion(.successfulVoid)
-                }
-                return
-            }
 
-            storageEngine.stopSync { result in
-                self.storageEngine = nil
-                self.queue.async {
-                    completion(result)
-                }
+            stopSyncEngine { result in
+                self.initCompletionQueue.async { completion(result) }
             }
         }
     }
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         if case let .failure(error) = initStorageEngine() {
-            completion(.failure(causedBy: error))
+            self.initCompletionQueue.async { completion(.failure(causedBy: error)) }
             return
         }
 
-        storageEngineInitQueue.sync {
+        initQueue.sync {
             operationQueue.operations.forEach { operation in
                 if let operation = operation as? DataStoreObserveQueryOperation {
                     operation.resetState()
@@ -317,22 +308,45 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
                 dispatchedModelSynced.set(false)
             }
-            if storageEngine == nil {
-                queue.async {
-                    completion(.successfulVoid)
-                }
-                return
-            }
-            storageEngine.clear { result in
-                self.storageEngine = nil
-                self.queue.async {
-                    completion(result)
+
+            stopSyncEngine { _ in
+                self.stopStorageEngine { result in
+                    self.initCompletionQueue.async {
+                        completion(result)
+                    }
                 }
             }
+
         }
     }
 
     // MARK: Private
+
+    private func stopSyncEngine(completion: @escaping DataStoreCallback<Void>) {
+        if let syncEngine = syncEngine {
+            log.verbose("\(#function) Stopping syncEngine")
+            syncEngine.stop(completion: { result in
+                self.syncEngine = nil
+                self.log.verbose("\(#function) Stopped syncEngine")
+                completion(result)
+            })
+        } else {
+            completion(.successfulVoid)
+        }
+    }
+
+    private func stopStorageEngine(completion: @escaping DataStoreCallback<Void>) {
+        if let storageEngine = storageEngine {
+            log.verbose("\(#function) Stopping storageEngine")
+            storageEngine.clear { result in
+                self.storageEngine = nil
+                self.log.verbose("\(#function) Stopped storageEngine")
+                completion(result)
+            }
+        } else {
+            completion(.successfulVoid)
+        }
+    }
 
     private func onDeleteCompletion<M: Model>(result: DataStoreResult<M?>,
                                               modelSchema: ModelSchema,

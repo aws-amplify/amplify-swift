@@ -41,10 +41,14 @@ class SyncEngineTestBase: XCTestCase {
 
     // MARK: - Setup
 
+    override func tearDown() {
+        Amplify.reset()
+        sleep(1)
+        super.tearDown()
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
-
-        Amplify.reset()
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "MockAPICategoryPlugin": true
@@ -141,10 +145,10 @@ class SyncEngineTestBase: XCTestCase {
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
-        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _  throws in
             return storageEngine
         }
         let publisher = DataStorePublisher()
@@ -153,7 +157,7 @@ class SyncEngineTestBase: XCTestCase {
                                                  dataStorePublisher: publisher,
                                                  validAPIPluginKey: validAPIPluginKey,
                                                  validAuthPluginKey: validAuthPluginKey)
-
+        dataStorePlugin.syncEngine = syncEngine
         try Amplify.add(plugin: dataStorePlugin)
     }
 
@@ -166,11 +170,12 @@ class SyncEngineTestBase: XCTestCase {
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
     func startAmplifyAndWaitForSync() throws {
-
         let syncStarted = expectation(description: "Sync started")
-        let token = Amplify.Hub.listen(to: .dataStore,
-                                       eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
-                                        syncStarted.fulfill()
+        let token = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncStarted
+        ) { _ in
+            syncStarted.fulfill()
         }
 
         guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {

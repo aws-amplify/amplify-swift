@@ -186,7 +186,7 @@ extension AWSInitialSyncOrchestrator: DefaultLogger { }
 extension AWSInitialSyncOrchestrator: Resettable {
     func reset(onComplete: @escaping BasicClosure) {
         syncOperationQueue.cancelAllOperations()
-        syncOperationQueue.waitUntilAllOperationsAreFinished()
+//        syncOperationQueue.waitUntilAllOperationsAreFinished()
         onComplete()
     }
 }

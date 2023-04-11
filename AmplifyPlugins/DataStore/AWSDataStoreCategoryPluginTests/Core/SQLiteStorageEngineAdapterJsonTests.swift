@@ -19,14 +19,20 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
 
     var connection: Connection!
     var storageEngine: StorageEngine!
+    var syncEngine: RemoteSyncEngine!
     var storageAdapter: SQLiteStorageEngineAdapter!
 
     // MARK: - Lifecycle
 
+    override func tearDown() {
+        Amplify.reset()
+        sleep(1)
+        super.tearDown()
+    }
+
     override func setUp() {
         super.setUp()
-        sleep(2)
-        Amplify.reset()
+
         Amplify.Logging.logLevel = .warn
 
         let validAPIPluginKey = "MockAPICategoryPlugin"
@@ -36,18 +42,18 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+            syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
                                                   dataStoreConfiguration: .default)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
         } catch {
             XCTFail(String(describing: error))
             return
         }
-        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _  throws in
             return self.storageEngine
         }
         let dataStorePublisher = DataStorePublisher()

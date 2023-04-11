@@ -282,19 +282,25 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
+    var syncEngine: AWSDataStoreCategoryPlugin.RemoteSyncEngineBehavior?
+
+    var storageAdapter: AWSDataStoreCategoryPlugin.StorageEngineAdapter
+
     static let mockStorageEngineBehaviorFactory =
-        MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
+        MockStorageEngineBehavior.init(dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
     var responders = [ResponderKeys: Any]()
 
     init() {
+        self.storageAdapter = MockSQLiteStorageEngineAdapter()
     }
 
-    init(isSyncEnabled: Bool,
-         dataStoreConfiguration: DataStoreConfiguration,
+    init(dataStoreConfiguration: DataStoreConfiguration,
          validAPIPluginKey: String = "awsAPIPlugin",
          validAuthPluginKey: String = "awsCognitoAuthPlugin",
          modelRegistryVersion: String,
-         userDefault: UserDefaults = UserDefaults.standard) throws {
+         userDefault: UserDefaults = UserDefaults.standard
+    ) throws {
+        self.storageAdapter = MockSQLiteStorageEngineAdapter()
     }
 
     func setupPublisher() {

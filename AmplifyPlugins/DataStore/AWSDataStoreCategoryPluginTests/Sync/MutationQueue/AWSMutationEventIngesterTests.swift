@@ -43,11 +43,10 @@ class AWSMutationEventIngesterTests: XCTestCase {
             let validAuthPluginKey = "MockAuthCategoryPlugin"
             let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                               dataStoreConfiguration: .default,
-                                              syncEngine: syncEngine,
                                               validAPIPluginKey: validAPIPluginKey,
                                               validAuthPluginKey: validAuthPluginKey)
-
-            let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            storageEngine.syncEngine = syncEngine
+            let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _  throws in
                 return storageEngine
             }
             let publisher = DataStorePublisher()

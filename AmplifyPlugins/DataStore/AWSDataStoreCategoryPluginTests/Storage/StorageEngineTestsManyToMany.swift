@@ -29,9 +29,9 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
             ModelRegistry.register(modelType: M2MPost.self)
             ModelRegistry.register(modelType: M2MPostEditor.self)
             ModelRegistry.register(modelType: M2MUser.self)

@@ -13,6 +13,10 @@ import AWSPluginsCore
 @available(iOS 13.0, *)
 // swiftlint:disable:next type_body_length
 class RemoteSyncEngine: RemoteSyncEngineBehavior {
+    func isSyncing() -> Bool {
+        stateMachine.state.displayName != State.notStarted.displayName
+    }
+
 
     weak var storageAdapter: StorageEngineAdapter?
 
@@ -419,8 +423,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     func cleanup() {
         reconciliationQueue?.cancel()
         reconciliationQueue = nil
+        reconciliationQueueSink?.cancel()
         reconciliationQueueSink = nil
         syncEventEmitter = nil
+        syncEventEmitterSink?.cancel()
         syncEventEmitterSink = nil
         readyEventEmitter = nil
     }

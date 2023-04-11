@@ -17,6 +17,7 @@ class APICategoryDependencyTests: XCTestCase {
 
     // Tests in this class will directly access the database to validate persistent queue behavior
     var storageAdapter: SQLiteStorageEngineAdapter!
+    var syncEngine: RemoteSyncEngine!
 
     /// - Given: An Amplify system configured with a DataStore but no API category
     /// - When:
@@ -66,16 +67,16 @@ extension APICategoryDependencyTests {
         storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-        let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+        syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
                                               dataStoreConfiguration: .default)
         let validAPIPluginKey = "MockAPICategoryPlugin"
         let validAuthPluginKey = "MockAuthCategoryPlugin"
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
-        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+        storageEngine.syncEngine = syncEngine
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _  throws in
             return storageEngine
         }
 

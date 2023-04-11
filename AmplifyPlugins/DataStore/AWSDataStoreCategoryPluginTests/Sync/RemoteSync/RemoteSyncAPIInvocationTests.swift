@@ -23,12 +23,16 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// and so we need to wait to configure during the actual test.
     var amplifyConfig: AmplifyConfiguration!
 
+    override func tearDown() {
+        Amplify.reset()
+        sleep(1)
+        super.tearDown()
+    }
+
     override func setUp() {
         super.setUp()
 
         // Allows any previously-running API calls to finish up before unconfiguring the category
-        sleep(2)
-        Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
         apiPlugin = MockAPICategoryPlugin()
@@ -46,14 +50,14 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
                                                   dataStoreConfiguration: .default)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
         } catch {
             XCTFail(String(describing: error))
             return
         }
-        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _  throws in
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()

@@ -55,15 +55,15 @@ class LocalSubscriptionTests: XCTestCase {
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
         } catch {
             XCTFail(String(describing: error))
             return
         }
 
-        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _  throws in
             return storageEngine
         }
         let dataStorePublisher = DataStorePublisher()

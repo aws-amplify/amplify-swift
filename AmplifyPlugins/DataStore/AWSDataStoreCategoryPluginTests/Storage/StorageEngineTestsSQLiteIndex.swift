@@ -35,10 +35,9 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
-
+            storageEngine.syncEngine = syncEngine
             ModelRegistry.register(modelType: CustomerSecondaryIndexV2.self)
             ModelRegistry.register(modelType: CustomerMultipleSecondaryIndexV2.self)
 

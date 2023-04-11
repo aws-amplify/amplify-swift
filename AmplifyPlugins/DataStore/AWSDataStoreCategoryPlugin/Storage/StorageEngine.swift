@@ -11,8 +11,7 @@ import Foundation
 import AWSPluginsCore
 
 typealias StorageEngineBehaviorFactory =
-    (Bool,
-    DataStoreConfiguration,
+    (DataStoreConfiguration,
     String,
     String,
     String,
@@ -23,47 +22,15 @@ final class StorageEngine: StorageEngineBehavior {
     // swiftlint:disable:next todo
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
-    var syncEngine: RemoteSyncEngineBehavior?
+
     let validAPIPluginKey: String
     let validAuthPluginKey: String
     var signInListener: UnsubscribeToken?
 
-    private let dataStoreConfiguration: DataStoreConfiguration
+    let dataStoreConfiguration: DataStoreConfiguration
     private let operationQueue: OperationQueue
 
-    var iSyncEngineSink: Any?
-    @available(iOS 13.0, *)
-    var syncEngineSink: AnyCancellable? {
-        get {
-            if let iSyncEngineSink = iSyncEngineSink as? AnyCancellable {
-                return iSyncEngineSink
-            }
-            return nil
-        }
-        set {
-            iSyncEngineSink = newValue
-        }
-    }
-
-    var iStorageEnginePublisher: Any?
-    @available(iOS 13.0, *)
-    var storageEnginePublisher: PassthroughSubject<StorageEngineEvent, DataStoreError> {
-        get {
-            if iStorageEnginePublisher == nil {
-                iStorageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
-            }
-            // swiftlint:disable:next force_cast
-            return iStorageEnginePublisher as! PassthroughSubject<StorageEngineEvent, DataStoreError>
-        }
-        set {
-            iStorageEnginePublisher = newValue
-        }
-    }
-
-    @available(iOS 13.0, *)
-    var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> {
-        return storageEnginePublisher.eraseToAnyPublisher()
-    }
+    weak var syncEngine: RemoteSyncEngineBehavior?
 
     static var systemModelSchemas: [ModelSchema] {
         return [
@@ -77,12 +44,12 @@ final class StorageEngine: StorageEngineBehavior {
     // storageAdapter must have already been set up with system models
     init(storageAdapter: StorageEngineAdapter,
          dataStoreConfiguration: DataStoreConfiguration,
-         syncEngine: RemoteSyncEngineBehavior?,
          validAPIPluginKey: String,
-         validAuthPluginKey: String) {
+         validAuthPluginKey: String
+    ) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
-        self.syncEngine = syncEngine
+        self.syncEngine = nil
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
 
@@ -91,8 +58,7 @@ final class StorageEngine: StorageEngineBehavior {
         self.operationQueue = operationQueue
     }
 
-    convenience init(isSyncEnabled: Bool,
-                     dataStoreConfiguration: DataStoreConfiguration,
+    convenience init(dataStoreConfiguration: DataStoreConfiguration,
                      validAPIPluginKey: String = "awsAPIPlugin",
                      validAuthPluginKey: String = "awsCognitoAuthPlugin",
                      modelRegistryVersion: String,
@@ -105,71 +71,17 @@ final class StorageEngine: StorageEngineBehavior {
 
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
         if #available(iOS 13.0, *) {
-            let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter,
-                                                                   dataStoreConfiguration: dataStoreConfiguration) : nil
             self.init(storageAdapter: storageAdapter,
                       dataStoreConfiguration: dataStoreConfiguration,
-                      syncEngine: syncEngine,
                       validAPIPluginKey: validAPIPluginKey,
-                      validAuthPluginKey: validAuthPluginKey)
-            self.storageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
-            syncEngineSink = syncEngine?.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
-                                                        receiveValue: onReceive(receiveValue:))
+                      validAuthPluginKey: validAuthPluginKey
+            )
         } else {
             self.init(storageAdapter: storageAdapter,
                       dataStoreConfiguration: dataStoreConfiguration,
-                      syncEngine: nil,
                       validAPIPluginKey: validAPIPluginKey,
-                      validAuthPluginKey: validAuthPluginKey)
-        }
-    }
-
-    @available(iOS 13.0, *)
-    private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
-        switch receiveCompletion {
-        case .failure(let dataStoreError):
-            storageEnginePublisher.send(completion: .failure(dataStoreError))
-        case .finished:
-            storageEnginePublisher.send(completion: .finished)
-        }
-    }
-
-    @available(iOS 13.0, *)
-    // swiftlint:disable:next cyclomatic_complexity
-    func onReceive(receiveValue: RemoteSyncEngineEvent) {
-        switch receiveValue {
-        case .storageAdapterAvailable:
-            break
-        case .subscriptionsPaused:
-            break
-        case .mutationsPaused:
-            break
-        case .clearedStateOutgoingMutations:
-            break
-        case .subscriptionsInitialized:
-            break
-        case .performedInitialSync:
-            break
-        case .subscriptionsActivated:
-            break
-        case .mutationQueueStarted:
-            break
-        case .syncStarted:
-            break
-        case .cleanedUp:
-            break
-        case .cleanedUpForTermination:
-            break
-        case .mutationEvent(let mutationEvent):
-            storageEnginePublisher.send(.mutationEvent(mutationEvent))
-        case .modelSyncedEvent(let modelSyncedEvent):
-            storageEnginePublisher.send(.modelSyncedEvent(modelSyncedEvent))
-        case .syncQueriesReadyEvent:
-            storageEnginePublisher.send(.syncQueriesReadyEvent)
-        case .readyEvent:
-            storageEnginePublisher.send(.readyEvent)
-        case .schedulingRestart:
-            break
+                      validAuthPluginKey: validAuthPluginKey
+            )
         }
     }
 
@@ -211,7 +123,7 @@ final class StorageEngine: StorageEngineBehavior {
         }
 
         let wrappedCompletion: DataStoreCallback<M> = { result in
-            guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
+            guard modelSchema.isSyncable else {
                 completion(result)
                 return
             }
@@ -221,7 +133,7 @@ final class StorageEngine: StorageEngineBehavior {
                 return
             }
 
-            if #available(iOS 13.0, *) {
+            if #available(iOS 13.0, *), let syncEngine = self.syncEngine {
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
                 self.syncMutation(of: savedModel,
                                   modelSchema: modelSchema,
@@ -316,23 +228,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
-        if let syncEngine = syncEngine {
-            syncEngine.stop(completion: { _ in
-                self.storageAdapter.clear(completion: completion)
-            })
-        } else {
-            storageAdapter.clear(completion: completion)
-        }
-    }
-
-    func stopSync(completion: @escaping DataStoreCallback<Void>) {
-        if let syncEngine = syncEngine {
-            syncEngine.stop { _ in
-                completion(.successfulVoid)
-            }
-        } else {
-            completion(.successfulVoid)
-        }
+        storageAdapter.clear(completion: completion)
     }
 
     @available(iOS 13.0, *)
@@ -405,17 +301,6 @@ final class StorageEngine: StorageEngineBehavior {
 extension StorageEngine: Resettable {
     func reset(onComplete: @escaping BasicClosure) {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
-        let group = DispatchGroup()
-        if #available(iOS 13.0, *), let resettable = syncEngine as? Resettable {
-            log.verbose("Resetting syncEngine")
-            group.enter()
-            resettable.reset {
-                self.log.verbose("Resetting syncEngine: finished")
-                group.leave()
-            }
-        }
-
-        group.wait()
         onComplete()
     }
 }

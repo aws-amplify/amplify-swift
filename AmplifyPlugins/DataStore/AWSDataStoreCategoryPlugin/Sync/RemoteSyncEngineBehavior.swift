@@ -51,4 +51,6 @@ protocol RemoteSyncEngineBehavior: AnyObject {
 
     @available(iOS 13.0, *)
     var publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError> { get }
+
+    func isSyncing() -> Bool
 }

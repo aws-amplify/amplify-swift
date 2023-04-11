@@ -30,9 +30,9 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
             ModelRegistry.register(modelType: Blog8.self)
             ModelRegistry.register(modelType: Post8.self)
             ModelRegistry.register(modelType: Comment8.self)

@@ -17,80 +17,80 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
 
     func testRequiresAuthPluginFalseForMissingAuthRules() {
         let apiPlugin = MockAPICategoryPlugin()
-        let result = StorageEngine.requiresAuthPlugin(apiPlugin)
+        let result = AWSDataStorePlugin.requiresAuthPlugin(apiPlugin)
         XCTAssertFalse(result)
     }
 
     func testRequiresAuthPluginSingleAuthRuleAPIKey() {
         let apiPlugin = MockAPICategoryPlugin()
         let authRules = [AuthRule(allow: .owner, provider: .apiKey)]
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginSingleAuthRuleOIDC() {
         let apiPlugin = MockAPICategoryPlugin()
         let authRules = [AuthRule(allow: .owner, provider: .oidc)]
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginSingleAuthRuleFunction() {
         let apiPlugin = MockAPICategoryPlugin()
         let authRules = [AuthRule(allow: .private, provider: .function)]
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginSingleAuthRuleUserPools() {
         let apiPlugin = MockAPICategoryPlugin()
         let authRules = [AuthRule(allow: .owner, provider: .userPools)]
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertTrue(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginSingleAuthRuleIAM() {
         let apiPlugin = MockAPICategoryPlugin()
         let authRules = [AuthRule(allow: .owner, provider: .iam)]
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertTrue(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeFunction() {
         let authRules = [AuthRule(allow: .owner)]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .function
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeAPIKey() {
         let authRules = [AuthRule(allow: .owner)]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .apiKey
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeUserPools() {
         let authRules = [AuthRule(allow: .owner)]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .amazonCognitoUserPools
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertTrue(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeIAM() {
         let authRules = [AuthRule(allow: .owner)]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .awsIAM
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertTrue(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeODIC() {
         let authRules = [AuthRule(allow: .owner)]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = .openIDConnect
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginNoProvidersWithAuthTypeNone() {
         let authRules = [AuthRule(allow: .owner)]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.authType = AWSAuthorizationType.none
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginOIDCProvider() {
@@ -99,7 +99,7 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
         apiPlugin.defaultAuthTypeError = APIError.unknown("Could not get default auth type", "", nil)
         let oidcProvider = MockOIDCAuthProvider()
         apiPlugin.authProviderFactory = MockAPIAuthProviderFactory(oidcProvider: oidcProvider)
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginFunctionProvider() {
@@ -108,14 +108,14 @@ class StorageEngineSyncRequirementsTests: XCTestCase {
         apiPlugin.defaultAuthTypeError = APIError.unknown("Could not get default auth type", "", nil)
         let functionProvider = MockFunctionAuthProvider()
         apiPlugin.authProviderFactory = MockAPIAuthProviderFactory(functionProvider: functionProvider)
-        XCTAssertFalse(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertFalse(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     func testRequiresAuthPluginWithAuthRules() {
         let authRules = [AuthRule(allow: .owner)]
         let apiPlugin = MockAPIAuthInformationPlugin()
         apiPlugin.defaultAuthTypeError = APIError.unknown("Could not get default auth type", "", nil)
-        XCTAssertTrue(StorageEngine.requiresAuthPlugin(apiPlugin, authRules: authRules))
+        XCTAssertTrue(AWSDataStorePlugin.requiresAuthPlugin(apiPlugin, authRules: authRules))
     }
 
     // MARK: - AuthRules tests

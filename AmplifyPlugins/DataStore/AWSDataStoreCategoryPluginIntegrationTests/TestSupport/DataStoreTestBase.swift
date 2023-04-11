@@ -7,10 +7,17 @@
 
 import Foundation
 import XCTest
-import Amplify
+@testable import Amplify
 @testable import AmplifyTestCommon
 
 class DataStoreTestBase: XCTestCase {
+
+    override func tearDown() {
+        Amplify.reset()
+        sleep(1)
+        super.tearDown()
+    }
+
     func saveModel<M: Model>(_ model: M) -> DataStoreResult<M> {
         let saveFinished = expectation(description: "Save finished")
         var result: DataStoreResult<M>?
@@ -58,4 +65,5 @@ class DataStoreTestBase: XCTestCase {
         }
         return deleteResult
     }
+
 }

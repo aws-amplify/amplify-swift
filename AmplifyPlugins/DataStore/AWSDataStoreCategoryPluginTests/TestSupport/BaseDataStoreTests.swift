@@ -18,15 +18,20 @@ class BaseDataStoreTests: XCTestCase {
 
     var connection: Connection!
     var storageEngine: StorageEngine!
+    var syncEngine: RemoteSyncEngineBehavior!
     var storageAdapter: SQLiteStorageEngineAdapter!
     var dataStorePlugin: AWSDataStorePlugin!
 
     // MARK: - Lifecycle
 
+    override func tearDown() {
+        Amplify.reset()
+        sleep(1)
+        super.tearDown()
+    }
+
     override func setUp() {
         super.setUp()
-        sleep(2)
-        Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
         let validAPIPluginKey = "MockAPICategoryPlugin"
@@ -36,18 +41,18 @@ class BaseDataStoreTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+            syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
                                                   dataStoreConfiguration: .default)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
+            storageEngine.syncEngine = syncEngine
         } catch {
             XCTFail(String(describing: error))
             return
         }
-        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _  throws in
             return self.storageEngine
         }
         let dataStorePublisher = DataStorePublisher()
@@ -82,31 +87,19 @@ class BaseDataStoreTests: XCTestCase {
     // MARK: - Utilities
 
     func populateData<M: Model>(_ models: [M]) {
-        let semaphore = DispatchSemaphore(value: 0)
-
-        func save(model: M, index: Int) {
-            storageAdapter.save(model) {
-                switch $0 {
-                case .success:
-                    let nextIndex = index + 1
-                    if nextIndex < models.endIndex {
-                        save(model: models[nextIndex], index: nextIndex)
-                    } else {
-                        semaphore.signal()
+        let expectation = expectation(description: "Data is populated")
+        expectation.expectedFulfillmentCount = models.count
+        for model in models {
+            Task {
+                self.storageAdapter.save(model) { result in
+                    defer { expectation.fulfill() }
+                    if case .failure(let error) = result {
+                        XCTFail(error.errorDescription)
                     }
-                case .failure(let error):
-                    XCTFail(error.errorDescription)
-                    semaphore.signal()
                 }
             }
         }
-
-        if let model = models.first {
-            save(model: model, index: 0)
-            semaphore.wait()
-        } else {
-            semaphore.signal()
-        }
-
+        wait(for: [expectation], timeout: 5)
     }
+
 }
