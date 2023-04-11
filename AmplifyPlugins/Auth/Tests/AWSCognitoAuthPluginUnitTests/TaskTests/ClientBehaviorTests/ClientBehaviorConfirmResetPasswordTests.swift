@@ -13,6 +13,7 @@ import AWSCognitoIdentityProvider
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
 
 class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
@@ -244,7 +245,10 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     func testConfirmResetPasswordWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
-                throw ConfirmForgotPasswordOutputError.invalidLambdaResponseException(InvalidLambdaResponseException(message: "invalid lambda"))
+                throw SdkError.service(
+                    ConfirmForgotPasswordOutputError.invalidLambdaResponseException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

@@ -11,6 +11,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class UserBehaviorChangePasswordTests: BasePluginTest {
 
@@ -126,7 +127,10 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithLimitExceededException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw ChangePasswordOutputError.limitExceededException(.init(message: "limit exceeded exception"))
+            throw SdkError.service(
+                ChangePasswordOutputError.limitExceededException(
+                    .init()),
+                .init(body: .empty, statusCode: .accepted))
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")

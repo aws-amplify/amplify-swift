@@ -39,8 +39,10 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
             let accessToken = try await taskHelper.getAccessToken()
             try await changePassword(with: accessToken)
             log.verbose("Received success")
-        } catch let error as ChangePasswordOutputError {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
+        } catch let error as AuthError {
+            throw error
         } catch let error {
             throw AuthError.configuration("Unable to execute auth task", AuthPluginErrorConstants.configurationError, error)
         }

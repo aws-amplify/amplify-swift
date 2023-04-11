@@ -35,7 +35,7 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
             let accessToken = try await taskHelper.getAccessToken()
             let devices = try await initiateGettingVerificationCode(with: accessToken)
             return devices
-        } catch let error as GetUserAttributeVerificationCodeOutputError {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error

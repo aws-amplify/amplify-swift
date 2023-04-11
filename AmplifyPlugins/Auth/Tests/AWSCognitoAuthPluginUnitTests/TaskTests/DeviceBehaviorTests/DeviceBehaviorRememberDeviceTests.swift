@@ -12,6 +12,7 @@ import AWSCognitoIdentityProvider
 import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
 
 class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
@@ -136,7 +137,10 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.invalidUserPoolConfigurationException(InvalidUserPoolConfigurationException(message: "invalid user pool configuration"))
+                throw SdkError.service(
+                    UpdateDeviceStatusOutputError.invalidUserPoolConfigurationException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

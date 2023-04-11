@@ -12,6 +12,7 @@ import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 
@@ -147,7 +148,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.codeDeliveryFailureException(CodeDeliveryFailureException(message: "Code delivery failure"))
+                throw SdkError.service(
+                    ResendConfirmationCodeOutputError.codeDeliveryFailureException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {
