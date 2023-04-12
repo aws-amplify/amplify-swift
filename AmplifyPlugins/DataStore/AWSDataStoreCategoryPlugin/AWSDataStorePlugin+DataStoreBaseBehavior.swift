@@ -272,7 +272,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func start(completion: @escaping DataStoreCallback<Void>) {
         initStorageEngineAndStartSync { result in
-            completion(result)
+            self.queue.async { completion(result) }
         }
     }
 
@@ -294,7 +294,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             }
 
             storageEngine.stopSync { result in
-                self.storageEngine = nil
                 self.queue.async {
                     completion(result)
                 }
@@ -355,6 +354,11 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         guard #available(iOS 13.0, *) else {
             return
         }
+
+        guard let storageEngine = storageEngine else {
+            return
+        }
+
         let metadata = MutationSyncMetadata.keys
         let metadataId = MutationSyncMetadata.identifier(modelName: modelSchema.name,
                                                          modelId: model.identifier(schema: modelSchema).stringValue)

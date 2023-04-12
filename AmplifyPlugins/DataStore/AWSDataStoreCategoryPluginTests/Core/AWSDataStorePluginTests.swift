@@ -161,16 +161,16 @@ class AWSDataStorePluginTests: XCTestCase {
 
     func testStorageEngineStartStopStart() throws {
         let startExpectation = expectation(description: "Start Sync should be called with start")
+        startExpectation.assertForOverFulfill = false
         let stopExpectation = expectation(description: "stop should be called")
         let startExpectationOnSecondStart = expectation(description: "Start Sync should be called again")
-        var count = 0
 
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            count = self.expect(startExpectation, count, 1)
+            startExpectation.fulfill()
         }
         storageEngine.responders[.stopSync] = StopSyncResponder { _ in
-            count = self.expect(stopExpectation, count, 2)
+            stopExpectation.fulfill()
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -200,30 +200,31 @@ class AWSDataStorePluginTests: XCTestCase {
                 }
             } receiveValue: { _ in }
 
-            let semaphore = DispatchSemaphore(value: 0)
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
-            })
-            semaphore.wait()
 
-            plugin.stop(completion: { _ in
-                XCTAssertNil(plugin.storageEngine)
-                XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
-            })
-            semaphore.wait()
+                plugin.stop(completion: { _ in
+                    XCTAssertNotNil(plugin.storageEngine)
+                    XCTAssertNotNil(plugin.dataStorePublisher)
+                    storageEngine.responders[.startSync] = StartSyncResponder { _ in
+                        startExpectationOnSecondStart.fulfill()
+                    }
 
-            storageEngine.responders[.startSync] = StartSyncResponder { _ in
-                count = self.expect(startExpectationOnSecondStart, count, 3)
-            }
+                    plugin.start(completion: { _ in
+                        XCTAssertNotNil(plugin.storageEngine)
+                        XCTAssertNotNil(plugin.dataStorePublisher)
+                    })
 
-            plugin.start(completion: { _ in
-                XCTAssertNotNil(plugin.storageEngine)
-                XCTAssertNotNil(plugin.dataStorePublisher)
+                })
             })
-            waitForExpectations(timeout: 1.0)
+
+            wait(
+                for: [startExpectation, stopExpectation, startExpectationOnSecondStart],
+                timeout: 1,
+                enforceOrder: true
+            )
+            wait(for: [finishNotReceived], timeout: 1)
             sink.cancel()
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
@@ -232,15 +233,16 @@ class AWSDataStorePluginTests: XCTestCase {
 
     func testStorageEngineStartClearStart() throws {
         let startExpectation = expectation(description: "Start Sync should be called with start")
+        startExpectation.assertForOverFulfill = false
         let clearExpectation = expectation(description: "Clear should be called")
         let startExpectationOnSecondStart = expectation(description: "Start Sync should be called again")
-        var count = 0
+
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            count = self.expect(startExpectation, count, 1)
+            startExpectation.fulfill()
         }
         storageEngine.responders[.clear] = ClearResponder { _ in
-            count = self.expect(clearExpectation, count, 2)
+            clearExpectation.fulfill()
         }
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return storageEngine
@@ -269,29 +271,28 @@ class AWSDataStorePluginTests: XCTestCase {
                 }
             } receiveValue: { _ in }
 
-            let semaphore = DispatchSemaphore(value: 0)
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                plugin.clear(completion: { _ in
+                    XCTAssertNil(plugin.storageEngine)
+                    XCTAssertNotNil(plugin.dataStorePublisher)
+                    storageEngine.responders[.startSync] = StartSyncResponder {_ in
+                        startExpectationOnSecondStart.fulfill()
+                    }
+                    plugin.start(completion: { _ in
+                        XCTAssertNotNil(plugin.storageEngine)
+                        XCTAssertNotNil(plugin.dataStorePublisher)
+                    })
+                })
             })
-            semaphore.wait()
 
-            plugin.clear(completion: { _ in
-                XCTAssertNil(plugin.storageEngine)
-                XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
-            })
-            semaphore.wait()
-            storageEngine.responders[.startSync] = StartSyncResponder {_ in
-                count = self.expect(startExpectationOnSecondStart, count, 3)
-            }
-
-            plugin.start(completion: { _ in
-                XCTAssertNotNil(plugin.storageEngine)
-                XCTAssertNotNil(plugin.dataStorePublisher)
-            })
-            waitForExpectations(timeout: 1.0)
+            wait(
+                for: [startExpectation, clearExpectation, startExpectationOnSecondStart],
+                timeout: 1,
+                enforceOrder: true
+            )
+            wait(for: [finishNotReceived], timeout: 1)
             sink.cancel()
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
@@ -386,15 +387,15 @@ class AWSDataStorePluginTests: XCTestCase {
 
     func testStorageEngineStartClearSend() {
         let startExpectation = expectation(description: "Start Sync should be called with start")
+        startExpectation.assertForOverFulfill = false
         let clearExpectation = expectation(description: "Clear should be called")
 
-        var count = 0
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            count = self.expect(startExpectation, count, 1)
+            startExpectation.fulfill()
         }
         storageEngine.responders[.clear] = ClearResponder { _ in
-            count = self.expect(clearExpectation, count, 2)
+            clearExpectation.fulfill()
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -430,27 +431,24 @@ class AWSDataStorePluginTests: XCTestCase {
                 publisherReceivedValue.fulfill()
             }
 
-            let semaphore = DispatchSemaphore(value: 0)
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
-            })
-            semaphore.wait()
 
-            plugin.clear(completion: { _ in
-                XCTAssertNil(plugin.storageEngine)
-                XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                plugin.clear(completion: { _ in
+                    XCTAssertNil(plugin.storageEngine)
+                    XCTAssertNotNil(plugin.dataStorePublisher)
+                })
             })
-            semaphore.wait()
+
 
             let mockModel = MockSynced(id: "12345")
             try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
                                                                      modelSchema: mockModel.schema,
                                                                      mutationType: .create))
 
-            waitForExpectations(timeout: 1.0)
+            wait(for: [startExpectation, clearExpectation], timeout: 1, enforceOrder: true)
+            wait(for: [finishNotReceived, publisherReceivedValue], timeout: 1)
             sink.cancel()
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
@@ -465,15 +463,15 @@ class AWSDataStorePluginTests: XCTestCase {
     /// - Then: The subscriber to plugin's publisher should receive the mutation
     func testStorageEngineStartStopSend() {
         let startExpectation = expectation(description: "Start Sync should be called with start")
+        startExpectation.assertForOverFulfill = false
         let stopExpectation = expectation(description: "Stop should be called")
 
-        var count = 0
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
-            count = self.expect(startExpectation, count, 1)
+            startExpectation.fulfill()
         }
         storageEngine.responders[.stopSync] = StopSyncResponder { _ in
-            count = self.expect(stopExpectation, count, 2)
+            stopExpectation.fulfill()
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -509,27 +507,22 @@ class AWSDataStorePluginTests: XCTestCase {
                 publisherReceivedValue.fulfill()
             }
 
-            let semaphore = DispatchSemaphore(value: 0)
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                plugin.stop(completion: { _ in
+                    XCTAssertNotNil(plugin.storageEngine)
+                    XCTAssertNotNil(plugin.dataStorePublisher)
+                })
             })
-            semaphore.wait()
-
-            plugin.stop(completion: { _ in
-                XCTAssertNil(plugin.storageEngine)
-                XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
-            })
-            semaphore.wait()
 
             let mockModel = MockSynced(id: "12345")
             try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
                                                                      modelSchema: mockModel.schema,
                                                                      mutationType: .create))
 
-            waitForExpectations(timeout: 1.0)
+            wait(for: [startExpectation, stopExpectation], timeout: 1, enforceOrder: true)
+            wait(for: [finishNotReceived, publisherReceivedValue], timeout: 1)
             sink.cancel()
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")

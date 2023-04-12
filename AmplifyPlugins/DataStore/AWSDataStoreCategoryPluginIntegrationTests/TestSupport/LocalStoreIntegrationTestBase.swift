@@ -35,6 +35,7 @@ class LocalStoreIntegrationTestBase: XCTestCase {
         }
         semaphore.wait()
         Amplify.reset()
+        sleep(1)
     }
 
 }

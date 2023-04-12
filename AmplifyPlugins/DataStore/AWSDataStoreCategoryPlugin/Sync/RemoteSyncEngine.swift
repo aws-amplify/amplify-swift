@@ -232,6 +232,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         stateMachine.notify(action: .finished)
     }
 
+    func isSyncing() -> Bool {
+        stateMachine.state.displayName != State.notStarted.displayName
+    }
+
     func terminate() {
         remoteSyncTopicPublisher.send(completion: .finished)
         cleanup()
