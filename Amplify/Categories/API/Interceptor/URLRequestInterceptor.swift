@@ -25,20 +25,4 @@ public protocol URLRequestInterceptor {
     /// unmodified request or a modified copy.
     /// - Parameter request: The URLRequest
     func intercept(_ request: URLRequest) throws -> URLRequest
-
-    func intercept(_ request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void)
 }
-
-extension URLRequestInterceptor {
-
-    public func intercept(_ request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-        do {
-            let request = try intercept(request)
-            completion(.success(request))
-        } catch {
-            completion(.failure(error))
-        }
-
-    }
-}
-
