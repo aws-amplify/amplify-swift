@@ -286,6 +286,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     static let mockStorageEngineBehaviorFactory =
         MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
     var responders = [ResponderKeys: Any]()
+    var startedSync = false
 
     init() {
     }
@@ -308,16 +309,22 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func startSync() -> Result<AWSDataStoreCategoryPlugin.SyncEngineInitResult, DataStoreError> {
-        if let responder = responders[.startSync] as? StartSyncResponder {
-            responder.callback("")
+        if !startedSync {
+            if let responder = responders[.startSync] as? StartSyncResponder {
+                responder.callback("")
+            }
+            startedSync = true
+            return .success(.successfullyInitialized)
+        } else {
+            return .success(.alreadyInitialized)
         }
-        return .success(.alreadyInitialized)
     }
 
     func stopSync(completion: @escaping DataStoreCallback<Void>) {
         if let responder = responders[.stopSync] as? StopSyncResponder {
             responder.callback("")
         }
+        startedSync = false
         completion(.successfulVoid)
     }
 
@@ -391,6 +398,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
+        startedSync = false
         completion(.successfulVoid)
         if let responder = responders[.clear] as? ClearResponder {
             return responder.callback("")

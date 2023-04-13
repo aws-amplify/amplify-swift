@@ -161,7 +161,6 @@ class AWSDataStorePluginTests: XCTestCase {
 
     func testStorageEngineStartStopStart() throws {
         let startExpectation = expectation(description: "Start Sync should be called with start")
-        startExpectation.assertForOverFulfill = false
         let stopExpectation = expectation(description: "stop should be called")
         let startExpectationOnSecondStart = expectation(description: "Start Sync should be called again")
 
@@ -233,7 +232,6 @@ class AWSDataStorePluginTests: XCTestCase {
 
     func testStorageEngineStartClearStart() throws {
         let startExpectation = expectation(description: "Start Sync should be called with start")
-        startExpectation.assertForOverFulfill = false
         let clearExpectation = expectation(description: "Clear should be called")
         let startExpectationOnSecondStart = expectation(description: "Start Sync should be called again")
 
@@ -387,7 +385,6 @@ class AWSDataStorePluginTests: XCTestCase {
 
     func testStorageEngineStartClearSend() {
         let startExpectation = expectation(description: "Start Sync should be called with start")
-        startExpectation.assertForOverFulfill = false
         let clearExpectation = expectation(description: "Clear should be called")
 
         let storageEngine = MockStorageEngineBehavior()
@@ -463,7 +460,6 @@ class AWSDataStorePluginTests: XCTestCase {
     /// - Then: The subscriber to plugin's publisher should receive the mutation
     func testStorageEngineStartStopSend() {
         let startExpectation = expectation(description: "Start Sync should be called with start")
-        startExpectation.assertForOverFulfill = false
         let stopExpectation = expectation(description: "Stop should be called")
 
         let storageEngine = MockStorageEngineBehavior()

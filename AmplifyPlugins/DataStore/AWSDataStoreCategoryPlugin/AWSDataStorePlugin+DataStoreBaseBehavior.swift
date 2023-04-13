@@ -356,8 +356,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
         guard let storageEngine = storageEngine else {
             log.info(
-                "StorageEngine is nil; " +
-                "Skip publishing the mutaitonEvent for \(mutationType) - \(modelSchema.name)"
+                """
+                StorageEngine is nil;
+                Skip publishing the mutaitonEvent for \(mutationType) - \(modelSchema.name)
+                """
             )
             return
         }
