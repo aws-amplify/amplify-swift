@@ -6,11 +6,11 @@
 //
 
 import Foundation
-@_spi(InternalAmplifyUserAgent) import Amplify
+import Amplify
 
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
-@_spi(InternalAmplifyUserAgent) import AWSPluginsCore
+import AWSPluginsCore
 
 import ClientRuntime
 
@@ -92,12 +92,10 @@ extension AWSCognitoAuthPlugin {
                 region: userPoolConfig.region
             )
 
-            if let provider = self as? UserAgentSuffixProvider, !provider.userAgentSuffix.isEmpty {
+            if let customHttpEngine = customHttpEngine {
                 let sdkEngine = configuration.httpClientEngine
-                configuration.httpClientEngine = UserAgentSuffixAppender(
-                    suffix: provider.userAgentSuffix,
-                    using: sdkEngine
-                )
+                customHttpEngine.setHttpClientEngine(sdkEngine)
+                configuration.httpClientEngine = customHttpEngine
             }
 
             return CognitoIdentityProviderClient(config: configuration)

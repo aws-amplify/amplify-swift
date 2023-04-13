@@ -7,7 +7,5 @@
 
 import Foundation
 
-@_spi(InternalAmplifyUserAgent)
-public protocol UserAgentSuffixProvider {
-    var userAgentSuffix: String { get }
-}
+@_spi(InternalAmplifyPluginExtension)
+public protocol AWSPluginExtension {}

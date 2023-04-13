@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 
 public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
@@ -28,6 +29,8 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     var analyticsHandler: UserPoolAnalyticsBehavior!
 
     var taskQueue: TaskQueue<Any>!
+
+    var customHttpEngine: CustomHttpEngine?
 
     @_spi(InternalAmplifyConfiguration)
     internal(set) public var jsonConfiguration: JSONValue?
