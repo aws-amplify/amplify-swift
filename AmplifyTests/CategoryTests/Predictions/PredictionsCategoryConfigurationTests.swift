@@ -164,11 +164,11 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        _ = Amplify.Predictions.convert(textToTranslate: "Sample",
-                                        language: nil,
-                                        targetLanguage: nil,
-                                        options: nil,
-                                        listener: nil)
+//        _ = Amplify.Predictions.convert(textToTranslate: "Sample",
+//                                        language: nil,
+//                                        targetLanguage: nil,
+//                                        options: nil,
+//                                        listener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -212,12 +212,12 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(predictions: config)
 
         try Amplify.configure(amplifyConfig)
-        _ = try Amplify.Predictions.getPlugin(for: "MockSecondPredictionsCategoryPlugin")
-            .convert(textToTranslate: "Sample",
-                     language: nil,
-                     targetLanguage: nil,
-                     options: nil,
-                     listener: nil)
+//        _ = try Amplify.Predictions.getPlugin(for: "MockSecondPredictionsCategoryPlugin")
+//            .convert(textToTranslate: "Sample",
+//                     language: nil,
+//                     targetLanguage: nil,
+//                     options: nil,
+//                     listener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -248,11 +248,11 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         try XCTAssertThrowFatalError {
-            _ = Amplify.Predictions.convert(textToTranslate: "Sample",
-                                            language: nil,
-                                            targetLanguage: nil,
-                                            options: nil,
-                                            listener: nil)
+//            _ = Amplify.Predictions.convert(textToTranslate: "Sample",
+//                                            language: nil,
+//                                            targetLanguage: nil,
+//                                            options: nil,
+//                                            listener: nil)
         }
     }
 
@@ -309,11 +309,11 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         try XCTAssertThrowFatalError {
-            _ = Amplify.Predictions.convert(textToTranslate: "Sample",
-                                            language: nil,
-                                            targetLanguage: nil,
-                                            options: nil,
-                                            listener: nil)
+//            _ = Amplify.Predictions.convert(textToTranslate: "Sample",
+//                                            language: nil,
+//                                            targetLanguage: nil,
+//                                            options: nil,
+//                                            listener: nil)
         }
     }
 

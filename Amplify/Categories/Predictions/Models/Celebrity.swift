@@ -16,7 +16,11 @@ public struct Celebrity {
     public let boundingBox: CGRect
     public let landmarks: [Landmark]
 
-    public init(metadata: CelebrityMetadata, boundingBox: CGRect, landmarks: [Landmark]) {
+    public init(
+        metadata: CelebrityMetadata,
+        boundingBox: CGRect,
+        landmarks: [Landmark]
+    ) {
         self.metadata = metadata
         self.boundingBox = boundingBox
         self.landmarks = landmarks
@@ -30,7 +34,12 @@ public struct CelebrityMetadata {
     public let urls: [URL]
     public let pose: Pose
 
-    public init(name: String, identifier: String, urls: [URL], pose: Pose) {
+    public init(
+        name: String,
+        identifier: String,
+        urls: [URL],
+        pose: Pose
+    ) {
         self.name = name
         self.identifier = identifier
         self.urls = urls

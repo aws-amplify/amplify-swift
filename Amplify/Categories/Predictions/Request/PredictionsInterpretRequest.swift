@@ -7,22 +7,22 @@
 
 import Foundation
 
-public struct PredictionsInterpretRequest: AmplifyOperationRequest {
+//public struct PredictionsInterpretRequest: AmplifyOperationRequest {
+//
+//    /// The text to be interpreted.
+//    public let textToInterpret: String
+//
+//    /// Options to adjust the behavior of this request, including plugin options
+//    public let options: Options
+//
+//    public init(textToInterpret: String,
+//                options: Options) {
+//        self.textToInterpret = textToInterpret
+//        self.options = options
+//    }
+//}
 
-    /// The text to be interpreted.
-    public let textToInterpret: String
-
-    /// Options to adjust the behavior of this request, including plugin options
-    public let options: Options
-
-    public init(textToInterpret: String,
-                options: Options) {
-        self.textToInterpret = textToInterpret
-        self.options = options
-    }
-}
-
-public extension PredictionsInterpretRequest {
+public extension Predictions.Interpret {
 
     struct Options {
 

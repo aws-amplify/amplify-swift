@@ -18,13 +18,15 @@ public struct Entity {
     public let metadata: EntityMetadata
     public let emotions: [Emotion]?
 
-    public init(boundingBox: CGRect,
-                landmarks: [Landmark],
-                ageRange: AgeRange?,
-                attributes: [Attribute]?,
-                gender: GenderAttribute?,
-                metadata: EntityMetadata,
-                emotions: [Emotion]?) {
+    public init(
+        boundingBox: CGRect,
+        landmarks: [Landmark],
+        ageRange: AgeRange?,
+        attributes: [Attribute]?,
+        gender: GenderAttribute?,
+        metadata: EntityMetadata,
+        emotions: [Emotion]?
+    ) {
         self.boundingBox = boundingBox
         self.landmarks = landmarks
         self.ageRange = ageRange

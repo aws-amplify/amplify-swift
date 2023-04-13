@@ -12,7 +12,11 @@ public struct Selection {
     public let polygon: Polygon
     public let isSelected: Bool
 
-    public init(boundingBox: CGRect, polygon: Polygon, isSelected: Bool) {
+    public init(
+        boundingBox: CGRect,
+        polygon: Polygon,
+        isSelected: Bool
+    ) {
         self.boundingBox = boundingBox
         self.polygon = polygon
         self.isSelected = isSelected

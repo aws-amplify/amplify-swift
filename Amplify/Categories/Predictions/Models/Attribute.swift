@@ -13,7 +13,11 @@ public struct Attribute {
     public let value: Bool
     public let confidence: Double
 
-    public init(name: String, value: Bool, confidence: Double) {
+    public init(
+        name: String,
+        value: Bool,
+        confidence: Double
+    ) {
         self.name = name
         self.value = value
         self.confidence = confidence
@@ -26,7 +30,10 @@ public struct GenderAttribute {
     public var gender: GenderType
     public var confidence: Double
 
-    public init(gender: GenderType, confidence: Double) {
+    public init(
+        gender: GenderType,
+        confidence: Double
+    ) {
         self.gender = gender
         self.confidence = confidence
     }

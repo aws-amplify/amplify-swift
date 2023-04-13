@@ -10,14 +10,12 @@ import Foundation
 import AWSPluginsCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
-
     let awsPredictionsPluginKey = "awsPredictionsPlugin"
 
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
     /// An instance of the predictions  service
-     /*
     var predictionsService: AWSPredictionsService!
 
     var coreMLService: CoreMLPredictionBehavior!
@@ -25,7 +23,6 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     var authService: AWSAuthServiceBehavior!
 
     var config: PredictionsPluginConfiguration!
-     */
 
     /// public limit rekognition has on number of faces it can detect.
     public static let rekognitionMaxEntitiesLimit = 50
@@ -35,13 +32,14 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
         return awsPredictionsPluginKey
     }
 
-    /*
-    public func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
-        return predictionsService.getEscapeHatch(key: key)
-    }
-     */
+    // TODO: Re-implement escape hatch since AWSService no longer exists
+//    public func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
+//        return predictionsService.getEscapeHatch(key: key)
+//    }
 
-    init() {}
+    public init() {}
+
+    public func reset() async {}
 }
 
 extension AWSPredictionsPlugin: AmplifyVersionable { }

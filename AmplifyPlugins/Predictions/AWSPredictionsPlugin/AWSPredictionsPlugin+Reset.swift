@@ -8,9 +8,19 @@
 import Foundation
 import Amplify
 
-extension AWSPredictionsPlugin {
-    public func reset() async {
-        // TODO: Reset services
-        queue = nil
-    }
-}
+//extension AWSPredictionsPlugin {
+//    public func reset() async  {
+//        if predictionsService != nil {
+//            predictionsService.reset()
+//            predictionsService = nil
+//        }
+//
+//        if authService != nil {
+//            authService = nil
+//        }
+//
+//        if queue != nil {
+//            queue = nil
+//        }
+//    }
+//}

@@ -10,20 +10,28 @@ import Speech
 
 class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
 
-    func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void) {
+    // TODO: Change up flow, this is confusing
+    func getTranscription(_ audioData: URL) async throws -> SpeechToTextResult? {
         let request = SFSpeechURLRecognitionRequest(url: audioData)
         request.requiresOnDeviceRecognition = true
         let recognizer = SFSpeechRecognizer()
-        recognizer?.recognitionTask(with: request) { result, _ in
-            guard let result = result else {
-                callback(nil)
-                return
-            }
 
-            if result.isFinal {
-                let speechToTextResult = SpeechToTextResult(transcription: result.bestTranscription.formattedString)
-                callback(speechToTextResult)
-            }
+        let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<SFSpeechRecognitionResult, Error>) in
+            recognizer?.recognitionTask(
+                with: request,
+                resultHandler: { result, _ in
+                    guard let result = result else {
+                        continuation.resume(with: .failure(SomeError()))
+                        return
+                    }
+                    continuation.resume(with: .success(result))
+                })
         }
+
+        if result.isFinal {
+            let speechToTextResult = SpeechToTextResult(transcription: result.bestTranscription.formattedString)
+            return speechToTextResult
+        }
+        throw SomeError()
     }
 }

@@ -8,7 +8,6 @@
 import CoreGraphics
 
 public struct Polygon {
-
     public let points: [CGPoint]
 
     public init(points: [CGPoint]) {

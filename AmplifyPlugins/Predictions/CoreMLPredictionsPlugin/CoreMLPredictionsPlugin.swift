@@ -10,7 +10,6 @@ import Amplify
 
 /// Predictions plugin that uses CoreML service to get results.
 final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
-
     let coreMLPredictionsPluginKey = "CoreMLPredictionsPlugin"
 
     var coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior!
@@ -27,8 +26,10 @@ final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
         return coreMLPredictionsPluginKey
     }
 
-    public init() {
-    }
+    public init() {}
+
+    // TODO: Implement
+    public func reset() async {}
 }
 
 extension CoreMLPredictionsPlugin: AmplifyVersionable { }

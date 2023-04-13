@@ -13,7 +13,10 @@ public struct EntityMatch {
     public let boundingBox: CGRect
     public let metadata: EntityMatchMetadata
 
-    public init(boundingBox: CGRect, metadata: EntityMatchMetadata) {
+    public init(
+        boundingBox: CGRect,
+        metadata: EntityMatchMetadata
+    ) {
         self.boundingBox = boundingBox
         self.metadata = metadata
     }
@@ -23,7 +26,10 @@ public struct EntityMatchMetadata {
     public let externalImageId: String?
     public let similarity: Double
 
-    public init(externalImageId: String?, similarity: Double) {
+    public init(
+        externalImageId: String?, 
+        similarity: Double
+    ) {
         self.externalImageId = externalImageId
         self.similarity = similarity
     }

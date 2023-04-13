@@ -8,7 +8,6 @@
 import Foundation
 
 extension PredictionsCategory: Resettable {
-
     public func reset() async {
         await withTaskGroup(of: Void.self) { taskGroup in
             for plugin in plugins.values {

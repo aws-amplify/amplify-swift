@@ -6,7 +6,6 @@
 //
 
 extension PredictionsCategory: CategoryConfigurable {
-
     func configure(using configuration: CategoryConfiguration?) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
@@ -24,5 +23,4 @@ extension PredictionsCategory: CategoryConfigurable {
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
-
 }

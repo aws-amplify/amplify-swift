@@ -11,7 +11,7 @@ public protocol PredictionsIdentifyOperation: AmplifyOperation<
     PredictionsIdentifyRequest,
     IdentifyResult,
     PredictionsError
-> { }
+> {}
 
 public extension HubPayload.EventName.Predictions {
     static let identifyLabels = "Predictions.identifyLabels"

@@ -7,11 +7,11 @@
 
 import Foundation
 
-public protocol PredictionsInterpretOperation: AmplifyOperation<
-    PredictionsInterpretRequest,
-    InterpretResult,
-    PredictionsError
-> { }
+//public protocol PredictionsInterpretOperation: AmplifyOperation<
+//    PredictionsInterpretRequest,
+//    InterpretResult,
+//    PredictionsError
+//> { }
 
 public extension HubPayload.EventName.Predictions {
     static let interpret = "Predictions.interpret"

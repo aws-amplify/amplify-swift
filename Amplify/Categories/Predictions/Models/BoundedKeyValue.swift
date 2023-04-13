@@ -17,7 +17,13 @@ public struct BoundedKeyValue {
     public let boundingBox: CGRect
     public let polygon: Polygon
 
-    public init(key: String, value: String, isSelected: Bool, boundingBox: CGRect, polygon: Polygon) {
+    public init(
+        key: String,
+        value: String,
+        isSelected: Bool,
+        boundingBox: CGRect,
+        polygon: Polygon
+    ) {
         self.key = key
         self.value = value
         self.isSelected = isSelected

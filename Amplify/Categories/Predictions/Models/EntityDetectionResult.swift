@@ -13,10 +13,12 @@ public struct EntityDetectionResult {
     public let score: Float?
     public let range: Range<String.Index>
 
-    public init(type: EntityType,
-                targetText: String,
-                score: Float?,
-                range: Range<String.Index>) {
+    public init(
+        type: EntityType,
+        targetText: String,
+        score: Float?,
+        range: Range<String.Index>
+    ) {
         self.type = type
         self.targetText = targetText
         self.score = score

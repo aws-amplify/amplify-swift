@@ -10,7 +10,10 @@ public struct PartOfSpeech {
     public let tag: SpeechType
     public let score: Float?
 
-    public init(tag: SpeechType, score: Float?) {
+    public init(
+        tag: SpeechType,
+        score: Float?
+    ) {
         self.tag = tag
         self.score = score
     }
