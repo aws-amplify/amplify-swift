@@ -113,7 +113,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                              modelSchema: ModelSchema,
                                              identifier: ModelIdentifierProtocol,
                                              completion: DataStoreCallback<M?>) {
-        initStorageEngineAndStartSync()
         query(modelType,
               modelSchema: modelSchema,
               where: identifier.predicate,
@@ -356,6 +355,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
 
         guard let storageEngine = storageEngine else {
+            log.info(
+                "StorageEngine is nil; " +
+                "Skip publishing the mutaitonEvent for \(mutationType) - \(modelSchema.name)"
+            )
             return
         }
 

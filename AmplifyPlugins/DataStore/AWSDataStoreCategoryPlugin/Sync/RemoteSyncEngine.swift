@@ -233,7 +233,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     func isSyncing() -> Bool {
-        stateMachine.state.displayName != State.notStarted.displayName
+        if case .notStarted = stateMachine.state {
+            return false
+        }
+        return true
     }
 
     func terminate() {
