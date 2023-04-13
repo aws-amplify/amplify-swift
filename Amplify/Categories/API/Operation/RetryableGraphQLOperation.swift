@@ -21,7 +21,7 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     /// GraphQLOperation concrete type
     associatedtype OperationType: AnyGraphQLOperation
 
-    typealias RequestFactory = () -> GraphQLRequest<Payload>
+    typealias RequestFactory = (@escaping (GraphQLRequest<Payload>) -> Void) -> Void
     typealias OperationFactory = (GraphQLRequest<Payload>, @escaping OperationResultListener) -> OperationType
     typealias OperationResultListener = OperationType.ResultListener
 
@@ -64,7 +64,10 @@ extension RetryableGraphQLOperationBehavior {
         let wrappedResultListener: OperationResultListener = { result in
             if case let .failure(error) = result, self.shouldRetry(error: error as? APIError) {
                 self.log.debug("\(error)")
-                self.start(request: self.requestFactory())
+                self.requestFactory { [weak self] request in
+                    self?.start(request: request)
+                }
+
                 return
             }
 
@@ -95,7 +98,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
 
-    public init(requestFactory: @escaping () -> GraphQLRequest<Payload>,
+    public init(requestFactory: @escaping RetryableGraphQLOperation<Payload>.RequestFactory,
                 maxRetries: Int,
                 resultListener: @escaping OperationResultListener,
                 _ operationFactory: @escaping OperationFactory) {
@@ -106,7 +109,9 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
         self.resultListener = resultListener
     }
     public override func main() {
-        start(request: requestFactory())
+        requestFactory { [weak self] request in
+            self?.start(request: request)
+        }
     }
 
     public override func cancel() {
@@ -154,7 +159,9 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
         self.resultListener = resultListener
     }
     public override func main() {
-        start(request: requestFactory())
+        requestFactory { [weak self] request in
+            self?.start(request: request)
+        }
     }
 
     public override func cancel() {
