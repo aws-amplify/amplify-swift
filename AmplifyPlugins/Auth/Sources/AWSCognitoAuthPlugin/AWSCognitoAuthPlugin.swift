@@ -30,7 +30,7 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var taskQueue: TaskQueue<Any>!
 
-    var customHttpEngine: CustomHttpEngine?
+    var httpClientEngineProxy: HttpClientEngineProxy?
 
     @_spi(InternalAmplifyConfiguration)
     internal(set) public var jsonConfiguration: JSONValue?

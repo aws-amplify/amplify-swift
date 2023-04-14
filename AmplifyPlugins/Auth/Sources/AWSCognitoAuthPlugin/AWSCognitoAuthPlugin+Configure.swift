@@ -92,10 +92,10 @@ extension AWSCognitoAuthPlugin {
                 region: userPoolConfig.region
             )
 
-            if let customHttpEngine = customHttpEngine {
+            if var httpClientEngineProxy = httpClientEngineProxy {
                 let sdkEngine = configuration.httpClientEngine
-                customHttpEngine.setHttpClientEngine(sdkEngine)
-                configuration.httpClientEngine = customHttpEngine
+                httpClientEngineProxy.target = sdkEngine
+                configuration.httpClientEngine = httpClientEngineProxy
             }
 
             return CognitoIdentityProviderClient(config: configuration)

@@ -11,9 +11,9 @@ import ClientRuntime
 
 extension AWSCognitoAuthPlugin {
     @_spi(InternalAmplifyPluginExtension)
-    public func addPluginExtension(_ pluginExtension: AWSPluginExtension) {
-        if let customHttpEngine = pluginExtension as? CustomHttpEngine {
-            self.customHttpEngine = customHttpEngine
+    public func add(pluginExtension: AWSPluginExtension) {
+        if let customHttpEngine = pluginExtension as? HttpClientEngineProxy {
+            self.httpClientEngineProxy = customHttpEngine
         }
     }
 }

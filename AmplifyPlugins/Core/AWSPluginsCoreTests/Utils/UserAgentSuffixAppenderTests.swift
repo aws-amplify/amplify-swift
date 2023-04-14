@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAmplifyPluginExtension) @_spi(InternalCustomHttpEngine) import AWSPluginsCore
+@_spi(InternalAmplifyPluginExtension) @_spi(InternalHttpEngineProxy) import AWSPluginsCore
 import ClientRuntime
 import XCTest
 
@@ -18,7 +18,7 @@ class UserAgentSuffixAppenderTests: XCTestCase {
     override func setUp() {
         appender = UserAgentSuffixAppender(suffix: customSuffix)
         httpClientEngine = MockHttpClientEngine()
-        appender.setHttpClientEngine(httpClientEngine)
+        appender.target = httpClientEngine
     }
 
     override func tearDown() {
