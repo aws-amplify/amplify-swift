@@ -1,23 +1,23 @@
 PODS:
-  - Amplify (1.29.1):
-    - Amplify/Default (= 1.29.1)
-  - Amplify/Default (1.29.1)
-  - AmplifyPlugins/AWSCognitoAuthPlugin (1.29.1):
+  - Amplify (1.29.2):
+    - Amplify/Default (= 1.29.2)
+  - Amplify/Default (1.29.2)
+  - AmplifyPlugins/AWSCognitoAuthPlugin (1.29.2):
     - AWSAuthCore (~> 2.30.1)
     - AWSCognitoIdentityProvider (~> 2.30.1)
     - AWSCognitoIdentityProviderASF (~> 2.30.1)
     - AWSCore (~> 2.30.1)
     - AWSMobileClient (~> 2.30.1)
-    - AWSPluginsCore (= 1.29.1)
-  - AmplifyTestCommon (1.29.1):
-    - Amplify (= 1.29.1)
-    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.29.1)
+    - AWSPluginsCore (= 1.29.2)
+  - AmplifyTestCommon (1.29.2):
+    - Amplify (= 1.29.2)
+    - AmplifyTestCommon/AWSPluginsTestCommon (= 1.29.2)
     - CwlPreconditionTesting (~> 2.0)
-  - AmplifyTestCommon/AWSPluginsTestCommon (1.29.1):
-    - Amplify (= 1.29.1)
+  - AmplifyTestCommon/AWSPluginsTestCommon (1.29.2):
+    - Amplify (= 1.29.2)
     - AWSCore (~> 2.30.1)
     - AWSMobileClient (~> 2.30.1)
-    - AWSPluginsCore (= 1.29.1)
+    - AWSPluginsCore (= 1.29.2)
     - CwlPreconditionTesting (~> 2.0)
   - AWSAuthCore (2.30.4):
     - AWSCore (= 2.30.4)
@@ -34,8 +34,8 @@ PODS:
     - AWSCognitoIdentityProvider (= 2.30.4)
     - AWSCognitoIdentityProviderASF (= 2.30.4)
     - AWSCore (= 2.30.4)
-  - AWSPluginsCore (1.29.1):
-    - Amplify (= 1.29.1)
+  - AWSPluginsCore (1.29.2):
+    - Amplify (= 1.29.2)
     - AWSCore (~> 2.30.1)
   - AWSPolly (2.30.4):
     - AWSCore (= 2.30.4)
@@ -47,11 +47,11 @@ PODS:
     - AWSCore (= 2.30.4)
   - AWSTranslate (2.30.4):
     - AWSCore (= 2.30.4)
-  - CwlCatchException (2.1.1):
-    - CwlCatchExceptionSupport (~> 2.1.1)
-  - CwlCatchExceptionSupport (2.1.1)
-  - CwlMachBadInstructionHandler (2.1.0)
-  - CwlPosixPreconditionTesting (2.1.0)
+  - CwlCatchException (2.1.2):
+    - CwlCatchExceptionSupport (~> 2.1.2)
+  - CwlCatchExceptionSupport (2.1.2)
+  - CwlMachBadInstructionHandler (2.1.2)
+  - CwlPosixPreconditionTesting (2.1.2)
   - CwlPreconditionTesting (2.1.0):
     - CwlCatchException (~> 2.1.1)
     - CwlMachBadInstructionHandler (~> 2.1.0)
@@ -113,25 +113,25 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-  Amplify: b72bc02515114147a7be8c4f76ef4ecc41350a23
-  AmplifyPlugins: f8fa63aafd782a44cf48abef656e759dcab3eb71
-  AmplifyTestCommon: 777dc9000ac521fc879ceac1beb639ea8357cbf0
+  Amplify: 955400b4b5f29832357f682e15c659d049028306
+  AmplifyPlugins: 9ce2e86f2051f0ec38fcf4376efb936b6c617cce
+  AmplifyTestCommon: 9b452352797cd82faa67e296669bb94bd531a5eb
   AWSAuthCore: 42e2d4927d94e5e323b63b2ae885f287c51b5889
   AWSCognitoIdentityProvider: 2331f5f4c8c1775c6a228bb2dae2d353198401e8
   AWSCognitoIdentityProviderASF: d905c2acab3d2e7016b643d53ba553d5217fa929
   AWSComprehend: ca6525ac6d9fead3da765812abd16a74cbdbd22c
   AWSCore: 19b8233fe2d0ed3ccf5cff833a615814282cdc90
   AWSMobileClient: 7d9c81e47ef27c6b5604858477006548eb1db342
-  AWSPluginsCore: d2c3685072cf896a05f09b55686af476db7c0596
+  AWSPluginsCore: 787b6199af91f6662171cbd66ad9a876530aed50
   AWSPolly: 740a9ca000c360728685ff176459ba8aafc66470
   AWSRekognition: faa9cb79db6a7c8094fa04f751d373057de7bb97
   AWSTextract: 5adbfe57a4dbbf60573203006323c00eec740630
   AWSTranscribeStreaming: dda8f6ee1acaf5de39710aff9b2dde33e77604de
   AWSTranslate: 094f154abdb802ec7078c21806aabd059c868739
-  CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
-  CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
-  CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8
-  CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
+  CwlCatchException: 76542d5ea479c79ce16ddd6e7bc9d42c7ec63300
+  CwlCatchExceptionSupport: 42bf8c5e4e5e663f51100ddfa68caf7cfcf64ab6
+  CwlMachBadInstructionHandler: b982c7e3e44fcfa1c680e8046f6bba35f3476d65
+  CwlPosixPreconditionTesting: 4011f0660c0be460b088d10bcfdf351c7e036ac4
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5

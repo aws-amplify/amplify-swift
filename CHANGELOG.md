@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.29.2 (2023-04-14)
+
+### Bug Fixes
+
+- **api**: Change the getToken to async (#2856)
+- **datastore-v1**: detect duplicate mutation event by both modelName and modelId (#2835)
+
 ## 1.29.1 (2023-03-21)
 
 ### Bug Fixes
