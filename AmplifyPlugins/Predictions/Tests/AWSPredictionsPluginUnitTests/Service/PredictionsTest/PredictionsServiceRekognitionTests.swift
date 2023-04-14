@@ -55,6 +55,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
             }
             """
         }
+
         do {
             let mockConfiguration = try JSONDecoder().decode(
                 PredictionsPluginConfiguration.self,

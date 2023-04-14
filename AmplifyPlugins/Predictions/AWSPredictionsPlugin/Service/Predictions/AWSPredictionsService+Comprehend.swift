@@ -12,9 +12,7 @@ import Amplify
 extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
     func comprehend(text: String) async throws -> Predictions.Interpret.Result {
-
         // We have to find the dominant language first and then invoke features.
-
         let (dominantLanguage, score) = try await fetchPredominantLanguage(text)
         var interpretResultBuilder = try await analyzeText(text, for: dominantLanguage)
         let languageDetected = LanguageDetectionResult(languageCode: dominantLanguage, score: score)
@@ -54,6 +52,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func analyzeText(_ text: String, for languageCode: LanguageType) async throws -> Predictions.Interpret.Result.Builder {
         let comprehendLanguageCode = languageCode.toComprehendLanguage()
         let syntaxLanguageCode = languageCode.toSyntaxLanguage()
+
         async let sentimentResult = try fetchSentimentResult(text, languageCode: comprehendLanguageCode)
         async let entitiesResult = try detectEntities(text, languageCode: comprehendLanguageCode)
         async let keyPhrasesResult = try fetchKeyPhrases(text, languageCode: comprehendLanguageCode)
@@ -70,6 +69,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             keyPhrasesResult,
             syntaxResult
         )
+
         var interpretResultBuilder = Predictions.Interpret.Result.Builder()
         interpretResultBuilder.with(sentiment: sentiment)
         interpretResultBuilder.with(entities: entities)
@@ -81,14 +81,13 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func fetchSyntax(
         _ text: String,
         languageCode: ComprehendClientTypes.SyntaxLanguageCode
-    ) async throws -> [SyntaxToken] {
+    ) async throws -> [SyntaxToken]? {
 
         let syntaxRequest = DetectSyntaxInput(languageCode: languageCode, text: text)
         let syntax = try await awsComprehend.detectSyntax(request: syntaxRequest)
         guard let syntaxTokens = syntax.syntaxTokens
         else {
-            // TODO: Replace with applicable error type (e.g. `MissingTokens`)
-            throw NSError(domain: "", code: 42, userInfo: nil)
+            return nil
         }
 
         // TODO: Rewrite as ([A]) -> [B]
@@ -125,15 +124,14 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func fetchKeyPhrases(
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
-    ) async throws -> [KeyPhrase] {
+    ) async throws -> [KeyPhrase]? {
 
         let keyPhrasesRequest = DetectKeyPhrasesInput(languageCode: languageCode, text: text)
 
         let keyPhrasesResponse = try await awsComprehend.detectKeyPhrases(request: keyPhrasesRequest)
         guard let keyPhrases = keyPhrasesResponse.keyPhrases
         else {
-            // TODO: Replace with applicable error type
-            throw NSError(domain: "", code: 42, userInfo: nil)
+            return nil
         }
 
         var keyPhrasesResult = [KeyPhrase]()
@@ -159,18 +157,13 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func fetchSentimentResult(
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
-    ) async throws -> Sentiment {
-
+    ) async throws -> Sentiment? {
         let sentimentRequest = DetectSentimentInput(languageCode: languageCode, text: text)
         let sentimentResponse = try await awsComprehend.detectSentiment(request: sentimentRequest)
 
-
         guard let sentiment = sentimentResponse.sentiment?.toAmplifySentimentType(),
               let sentimentScore = sentimentResponse.sentimentScore
-        else {
-            // TODO: Replace with applicable error type
-            throw NSError(domain: "", code: 42, userInfo: nil)
-        }
+        else { return nil }
 
         let score: [SentimentType: Double] = [
             .positive: sentimentScore.positive.map(Double.init) ?? 0,
@@ -179,24 +172,21 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             .neutral: sentimentScore.neutral.map(Double.init) ?? 0
         ]
 
-
         return Sentiment(
             predominantSentiment: sentiment,
             sentimentScores: score
         )
-
     }
 
     private func detectEntities(
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
-    ) async throws -> [EntityDetectionResult] {
+    ) async throws -> [EntityDetectionResult]? {
         let entitiesRequest = DetectEntitiesInput(languageCode: languageCode, text: text)
         let entitiesResponse = try await awsComprehend.detectEntities(request: entitiesRequest)
         guard let entities = entitiesResponse.entities
         else {
-            // TODO: Replace with applicable error type
-            throw NSError(domain: "", code: 42, userInfo: nil)
+            return nil
         }
 
         // TODO: Convert to ([A]) -> [B]

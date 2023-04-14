@@ -24,13 +24,23 @@ import Amplify
 //        """.data(using: .utf8)!
 //
 //        do {
-//            let clientDelegate = NativeWSTranscribeStreamingClientDelegate()
-//            let dispatchQueue = DispatchQueue(label: "TranscribeStreamingTests")
-//            let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: clientDelegate,
-//                                                                  callbackQueue: dispatchQueue)
-//            let mockConfiguration = try JSONDecoder().decode(PredictionsPluginConfiguration.self,
-//                                                             from: mockConfigurationJSON)
-//            predictionsService = AWSPredictionsService(identifier: "",
+//            let mockConfiguration = try JSONDecoder().decode(
+//                PredictionsPluginConfiguration.self,
+//                from: mockConfigurationJSON
+//            )
+//
+//            predictionsService = AWSPredictionsService(
+//                identifier: "",
+//                awsTranslate: MockTranslateBehavior(),
+//                awsRekognition: MockRekognitionBehavior(),
+//                awsTextract: mockTextract,
+//                awsComprehend: MockComprehendBehavior(),
+//                awsPolly: MockPollyBehavior(),
+//                configuration: mockConfiguration
+//            )
+//
+//
+//            AWSPredictionsService(identifier: "",
 //                                                       awsTranslate: MockTranslateBehavior(),
 //                                                       awsRekognition: MockRekognitionBehavior(),
 //                                                       awsTextract: MockTextractBehavior(),
