@@ -124,11 +124,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
 
-        let remoteModelIds = remoteModels.map { $0.model.identifier }
-
         do {
             try storageAdapter.transaction {
-                queryPendingMutations(forModelIds: remoteModelIds)
+                queryPendingMutations(forModels: remoteModels.map(\.model))
                     .subscribe(on: workQueue)
                     .flatMap { mutationEvents -> Future<([RemoteModel], [LocalMetadata]), DataStoreError> in
                         let remoteModelsToApply = self.reconcile(remoteModels, pendingMutations: mutationEvents)
@@ -159,7 +157,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
     }
 
-    func queryPendingMutations(forModelIds modelIds: [Model.Identifier]) -> Future<[MutationEvent], DataStoreError> {
+    func queryPendingMutations(forModels models: [Model]) -> Future<[MutationEvent], DataStoreError> {
         Future<[MutationEvent], DataStoreError> { promise in
             var result: Result<[MutationEvent], DataStoreError> = .failure(Self.unfulfilledDataStoreError())
             defer {
@@ -172,21 +170,23 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             }
             guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.nilStorageAdapter()
-                self.notifyDropped(count: modelIds.count, error: error)
+                self.notifyDropped(count: models.count, error: error)
                 result = .failure(error)
                 return
             }
 
-            guard !modelIds.isEmpty else {
+            guard !models.isEmpty else {
                 result = .success([])
                 return
             }
 
-            MutationEvent.pendingMutationEvents(for: modelIds,
-                                                storageAdapter: storageAdapter) { queryResult in
+            MutationEvent.pendingMutationEvents(
+                forModels: models,
+                storageAdapter: storageAdapter
+            ) { queryResult in
                 switch queryResult {
                 case .failure(let dataStoreError):
-                    self.notifyDropped(count: modelIds.count, error: dataStoreError)
+                    self.notifyDropped(count: models.count, error: dataStoreError)
                     result = .failure(dataStoreError)
                 case .success(let mutationEvents):
                     result = .success(mutationEvents)

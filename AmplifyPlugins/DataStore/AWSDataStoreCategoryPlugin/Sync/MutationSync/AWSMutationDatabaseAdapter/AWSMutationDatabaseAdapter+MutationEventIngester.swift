@@ -51,7 +51,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         }
 
         MutationEvent.pendingMutationEvents(
-            for: mutationEvent.modelId,
+            forMutationEvent: mutationEvent,
             storageAdapter: storageAdapter) { result in
                 switch result {
                 case .failure(let dataStoreError):

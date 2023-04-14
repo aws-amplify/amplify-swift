@@ -679,6 +679,54 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         sink.cancel()
     }
 
+    /// Create model instances for different models but same primary key value
+    ///
+    /// Given - DataStore with clean state
+    /// When
+    ///     - create post and comment with the same random id
+    /// Then
+    ///     - all instances should be created successfully with the same id
+    func testCreateModelInstances_withSamePrimaryKeyForDifferentModels_allSucceed() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplifyAndWaitForSync()
+
+        let uuid = UUID().uuidString
+        let newPost = Post(
+            id: uuid,
+            title: UUID().uuidString,
+            content: UUID().uuidString,
+            createdAt: .now()
+        )
+
+        let postCreateExpectation = expectation(description: "Post is created")
+        var createdPost: Post?
+        Amplify.DataStore.save(newPost) { result in
+            defer { postCreateExpectation.fulfill() }
+            if case .success(let post) = result {
+                createdPost = post
+            }
+        }
+        let newComment = Comment(
+            id: uuid,
+            content: UUID().uuidString,
+            createdAt: .now(),
+            post: newPost
+        )
+        var createdComment: Comment?
+        let commentCreateExpectation = expectation(description: "Comment is created")
+        Amplify.DataStore.save(newComment) { result in
+            defer { commentCreateExpectation.fulfill() }
+            if case .success(let comment) = result {
+                createdComment = comment
+            }
+        }
+        wait(for: [postCreateExpectation, commentCreateExpectation], timeout: 5)
+
+        XCTAssertNotNil(createdPost)
+        XCTAssertNotNil(createdComment)
+        XCTAssertEqual(createdPost?.id, createdComment?.id)
+    }
+
     ///
     /// - Given: DataStore with clean state
     /// - When:

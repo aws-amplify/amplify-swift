@@ -18,9 +18,12 @@ class MutationEventQueryTests: BaseDataStoreTests {
 
     func testQueryPendingMutation_EmptyResult() {
         let querySuccess = expectation(description: "query mutation events success")
-        let modelIds = [UUID().uuidString, UUID().uuidString]
+        let mutationEvents = [generateMutationEvent(), generateMutationEvent()]
 
-        MutationEvent.pendingMutationEvents(for: modelIds, storageAdapter: storageAdapter) { result in
+        MutationEvent.pendingMutationEvents(
+            forMutationEvents: mutationEvents,
+            storageAdapter: storageAdapter
+        ) { result in
             switch result {
             case .success(let mutationEvents):
                 XCTAssertTrue(mutationEvents.isEmpty)
@@ -33,19 +36,16 @@ class MutationEventQueryTests: BaseDataStoreTests {
     }
 
     func testQueryPendingMutationEvent() {
-        let mutationEvent = MutationEvent(id: UUID().uuidString,
-                                          modelId: UUID().uuidString,
-                                          modelName: Post.modelName,
-                                          json: "",
-                                          mutationType: .create)
-
+        let mutationEvent = generateMutationEvent()
         let querySuccess = expectation(description: "query for pending mutation events")
 
         storageAdapter.save(mutationEvent) { result in
             switch result {
             case .success:
-                MutationEvent.pendingMutationEvents(for: mutationEvent.modelId,
-                                                    storageAdapter: self.storageAdapter) { result in
+                MutationEvent.pendingMutationEvents(
+                    forMutationEvent: mutationEvent,
+                    storageAdapter: self.storageAdapter
+                ) { result in
                     switch result {
                     case .success(let mutationEvents):
                         XCTAssertEqual(mutationEvents.count, 1)
@@ -61,16 +61,8 @@ class MutationEventQueryTests: BaseDataStoreTests {
     }
 
     func testQueryPendingMutationEventsForModelIds() {
-        let mutationEvent1 = MutationEvent(id: UUID().uuidString,
-                                           modelId: UUID().uuidString,
-                                           modelName: Post.modelName,
-                                           json: "",
-                                           mutationType: .create)
-        let mutationEvent2 = MutationEvent(id: UUID().uuidString,
-                                           modelId: UUID().uuidString,
-                                           modelName: Post.modelName,
-                                           json: "",
-                                           mutationType: .create)
+        let mutationEvent1 = generateMutationEvent()
+        let mutationEvent2 = generateMutationEvent()
 
         let saveMutationEvent1 = expectation(description: "save mutationEvent1 success")
         storageAdapter.save(mutationEvent1) { result in
@@ -93,10 +85,10 @@ class MutationEventQueryTests: BaseDataStoreTests {
         wait(for: [saveMutationEvent2], timeout: 1)
 
         let querySuccess = expectation(description: "query for metadata success")
-        var modelIds = [mutationEvent1.modelId]
-        modelIds.append(contentsOf: (1 ... 999).map { _ in UUID().uuidString })
-        modelIds.append(mutationEvent2.modelId)
-        MutationEvent.pendingMutationEvents(for: modelIds,
+        var mutationEvents = [mutationEvent1]
+        mutationEvents.append(contentsOf: (1 ... 999).map { _ in generateMutationEvent() })
+        mutationEvents.append(mutationEvent2)
+        MutationEvent.pendingMutationEvents(forMutationEvents: mutationEvents,
                                             storageAdapter: storageAdapter) { result in
             switch result {
             case .success(let mutationEvents):
@@ -107,5 +99,15 @@ class MutationEventQueryTests: BaseDataStoreTests {
         }
 
         wait(for: [querySuccess], timeout: 1)
+    }
+
+    private func generateMutationEvent() -> MutationEvent {
+        MutationEvent(
+            id: UUID().uuidString,
+            modelId: UUID().uuidString,
+            modelName: Post.modelName,
+            json: "",
+            mutationType: .create
+        )
     }
 }

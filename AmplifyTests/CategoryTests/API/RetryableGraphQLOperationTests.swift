@@ -29,10 +29,9 @@ class RetryableGraphQLOperationTests: XCTestCase {
             resultExpectation.fulfill()
         }
 
-        let requestFactory: RequestFactory = {
+        let requestFactory: RequestFactory = { completion in
             requestFactoryExpectation.fulfill()
-            return self.makeTestRequest()
-
+            self.makeTestRequestAsync(completion: completion)
         }
 
         let operation = RetryableGraphQLOperation<Payload>(requestFactory: requestFactory,
@@ -69,10 +68,9 @@ class RetryableGraphQLOperationTests: XCTestCase {
             resultExpectation.fulfill()
         }
 
-        let requestFactory: RequestFactory = {
+        let requestFactory: RequestFactory = { completion in
             requestFactoryExpectation.fulfill()
-            return self.makeTestRequest()
-
+            completion(self.makeTestRequest())
         }
 
         let operation = RetryableGraphQLOperation<Payload>(requestFactory: requestFactory,
@@ -103,10 +101,9 @@ class RetryableGraphQLOperationTests: XCTestCase {
             resultExpectation.fulfill()
         }
 
-        let requestFactory: RequestFactory = {
+        let requestFactory: RequestFactory = { completion in
             requestFactoryExpectation.fulfill()
-            return self.makeTestRequest()
-
+            completion(self.makeTestRequest())
         }
 
         let operation = RetryableGraphQLOperation<Payload>(requestFactory: requestFactory,
@@ -131,6 +128,16 @@ extension RetryableGraphQLOperationTests {
         GraphQLRequest<Payload>(apiName: testApiName,
                                        document: "",
                                        responseType: Payload.self)
+    }
+
+    private func makeTestRequestAsync(completion: @escaping (GraphQLRequest<Payload>) -> Void ) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+            let request = GraphQLRequest<Payload>(apiName: self.testApiName,
+                                           document: "",
+                                           responseType: Payload.self)
+            completion(request)
+        }
+
     }
 
     private func makeTestOperation() -> GraphQLOperation<Payload> {

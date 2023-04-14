@@ -140,15 +140,16 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         var authTypes = authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                             operation: .read)
+                                                      operation: .read)
 
-        RetryableGraphQLOperation(requestFactory: {
-            GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
-                                                      where: queryPredicate,
-                                                      limit: limit,
-                                                      nextToken: nextToken,
-                                                      lastSync: lastSyncTime,
-                                                      authType: authTypes.next())
+        RetryableGraphQLOperation(requestFactory: { completion in
+            completion(GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
+                                                                 where: queryPredicate,
+                                                                 limit: limit,
+                                                                 nextToken: nextToken,
+                                                                 lastSync: lastSyncTime,
+                                                                 authType: authTypes.next()))
+
         },
                                   maxRetries: authTypes.count,
                                   resultListener: completionListener, { nextRequest, wrappedCompletionListener in
