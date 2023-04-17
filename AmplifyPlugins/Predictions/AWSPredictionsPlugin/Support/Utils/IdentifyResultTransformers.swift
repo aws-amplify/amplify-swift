@@ -11,22 +11,51 @@ import AWSRekognition
 import AWSTextract
 import CoreGraphics
 
-class IdentifyResultTransformers {
 
+//extension CGRect {
+//    init?(rekognitionBoundingBox: RekognitionClientTypes.BoundingBox?) {
+//        guard let height = rekognitionBoundingBox?.height.map(Double.init),
+//              let left = rekognitionBoundingBox?.left.map(Double.init),
+//              let top = rekognitionBoundingBox?.top.map(Double.init),
+//              let width = rekognitionBoundingBox?.width.map(Double.init)
+//        else { return nil }
+//        self = .init(x: left, y: top, width: width, height: height)
+//    }
+//}
+//
+//extension Polygon {
+//    init?(rekognitionPolygonPoints: [RekognitionClientTypes.Point]?) {
+//        guard let rekognitionPolygonPoints = rekognitionPolygonPoints else {
+//            return nil
+//        }
+//        var points = [CGPoint]()
+//        for rekognitionPoint in rekognitionPolygonPoints {
+//            guard let xPosition = rekognitionPoint.x,
+//                  let yPosition = rekognitionPoint.y else {
+//                continue
+//            }
+//            let point = CGPoint(x: Double(xPosition), y: Double(yPosition))
+//            points.append(point)
+//        }
+//        self = Polygon(points: points)
+//    }
+//}
+
+enum IdentifyResultTransformers {
     static func processBoundingBox(_ rekognitionBoundingBox: RekognitionClientTypes.BoundingBox?) -> CGRect? {
         guard let height = rekognitionBoundingBox?.height.map(Double.init),
-            let left = rekognitionBoundingBox?.left.map(Double.init),
-            let top = rekognitionBoundingBox?.top.map(Double.init),
-            let width = rekognitionBoundingBox?.width.map(Double.init)
+              let left = rekognitionBoundingBox?.left.map(Double.init),
+              let top = rekognitionBoundingBox?.top.map(Double.init),
+              let width = rekognitionBoundingBox?.width.map(Double.init)
         else { return nil }
         return CGRect(x: left, y: top, width: width, height: height)
     }
 
     static func processBoundingBox(_ textractBoundingBox: TextractClientTypes.BoundingBox?) -> CGRect? {
         guard let height = (textractBoundingBox?.height).map(Double.init),
-            let left = (textractBoundingBox?.left).map(Double.init),
-            let top = (textractBoundingBox?.top).map(Double.init),
-            let width = (textractBoundingBox?.width).map(Double.init)
+              let left = (textractBoundingBox?.left).map(Double.init),
+              let top = (textractBoundingBox?.top).map(Double.init),
+              let width = (textractBoundingBox?.width).map(Double.init)
         else { return nil }
         return CGRect(x: left, y: top, width: width, height: height)
     }
@@ -38,8 +67,8 @@ class IdentifyResultTransformers {
         var points = [CGPoint]()
         for rekognitionPoint in rekognitionPolygonPoints {
             guard let xPosition = rekognitionPoint.x,
-                let yPosition = rekognitionPoint.y else {
-                    continue
+                  let yPosition = rekognitionPoint.y else {
+                continue
             }
             let point = CGPoint(x: Double(xPosition), y: Double(yPosition)) // TODO: What about Truncating???
             points.append(point)
@@ -84,7 +113,7 @@ class IdentifyResultTransformers {
         for rekognitionLandmark in rekognitionLandmarks {
             guard let xPosition = rekognitionLandmark.x.map(Double.init),
                   let yPosition = rekognitionLandmark.y.map(Double.init) else {
-                    continue
+                continue
             }
             let point = CGPoint(x: xPosition, y: yPosition)
             allPoints.append(point)
@@ -116,10 +145,10 @@ class IdentifyResultTransformers {
             case .rightpupil:
                 rightPupilPoints.append(point)
             case .upperjawlineleft,
-                 .midjawlineleft,
-                 .chinbottom,
-                 .midjawlineright,
-                 .upperjawlineright:
+                    .midjawlineleft,
+                    .chinbottom,
+                    .midjawlineright,
+                    .upperjawlineright:
                 faceContourPoints.append(point)
             case .none, .sdkUnknown:
                 continue

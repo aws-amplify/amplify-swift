@@ -11,10 +11,7 @@ import AWSPluginsCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     let awsPredictionsPluginKey = "awsPredictionsPlugin"
-
-    /// A queue that regulates the execution of operations.
-    var queue: OperationQueue!
-
+    
     /// An instance of the predictions  service
     var predictionsService: AWSPredictionsService!
 
@@ -32,10 +29,9 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
         return awsPredictionsPluginKey
     }
 
-    // TODO: Re-implement escape hatch since AWSService no longer exists
-//    public func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
-//        return predictionsService.getEscapeHatch(key: key)
-//    }
+    public func getEscapeHatch<T>(key: PredictionsAWSService<T>) -> T {
+        predictionsService.getEscapeHatch(client: key)
+    }
 
     public init() {}
 

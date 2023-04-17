@@ -49,6 +49,7 @@ class PredictionsServiceTextractTests: XCTestCase {
                 awsTextract: mockTextract,
                 awsComprehend: MockComprehendBehavior(),
                 awsPolly: MockPollyBehavior(),
+                awsTranscribeStreaming: MockTranscribeBehavior(),
                 configuration: mockConfiguration
             )
         } catch {

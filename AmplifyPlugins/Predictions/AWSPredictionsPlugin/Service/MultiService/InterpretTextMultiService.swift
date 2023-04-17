@@ -8,10 +8,6 @@
 import Amplify
 
 class InterpretTextMultiService: MultiServiceBehavior {
-
-//    typealias Event = PredictionsEvent<InterpretResult, PredictionsError>
-//    typealias InterpretTextEventHandler = (Event) -> Void
-
     var textToInterpret: String?
     weak var coreMLService: CoreMLPredictionBehavior?
     weak var predictionsService: AWSPredictionsService?
@@ -65,8 +61,6 @@ class InterpretTextMultiService: MultiServiceBehavior {
         textToInterpret = text
     }
 
-    // MARK: -
-
     func mergeResults(
         offlineResult: Predictions.Interpret.Result?,
         onlineResult: Predictions.Interpret.Result?
@@ -80,7 +74,7 @@ class InterpretTextMultiService: MultiServiceBehavior {
 
         guard let finalOfflineResult = offlineResult else {
             // We are sure that the value will be non-nil aat this point.
-            return onlineResult! // TODO: How sure are we about ^ ???
+            return onlineResult!
         }
 
         guard let finalOnlineResult = onlineResult else {
@@ -188,7 +182,6 @@ class InterpretTextMultiService: MultiServiceBehavior {
 }
 
 extension SyntaxToken: Hashable {
-
     public static func == (
         lhs: SyntaxToken,
         rhs: SyntaxToken
@@ -203,7 +196,6 @@ extension SyntaxToken: Hashable {
 }
 
 extension KeyPhrase: Hashable {
-
     public static func == (
         lhs: KeyPhrase,
         rhs: KeyPhrase
@@ -219,7 +211,6 @@ extension KeyPhrase: Hashable {
 }
 
 extension EntityDetectionResult: Hashable {
-
     public static func == (
         lhs: EntityDetectionResult,
         rhs: EntityDetectionResult

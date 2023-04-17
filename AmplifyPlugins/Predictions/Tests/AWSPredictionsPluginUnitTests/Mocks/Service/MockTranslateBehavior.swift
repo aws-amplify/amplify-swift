@@ -18,7 +18,7 @@ class MockTranslateBehavior: AWSTranslateBehavior {
         return try await translateTextResult(request)
     }
 
-    func getTranslate() async throws -> TranslateClient {
-        try await TranslateClient()
+    func getTranslate() -> AWSTranslate.TranslateClient {
+        try! .init(region: "us-east-1")
     }
 }

@@ -7,10 +7,10 @@
 
 import Foundation
 import Amplify
-
-enum PredictionsEvent<CompletedType, ErrorType: AmplifyError> {
-
-    case completed(CompletedType)
-
-    case failed(ErrorType)
-}
+//
+//enum PredictionsEvent<CompletedType, ErrorType: AmplifyError> {
+//
+//    case completed(CompletedType)
+//
+//    case failed(ErrorType)
+//}

@@ -119,8 +119,8 @@ extension IdentifyTextResultTransformers {
             }
         }
 
-        guard let boundingBox = processBoundingBox(textractBoundingBox),
-            let polygon = processPolygon(texttractPolygon) else {
+        guard let boundingBox = IdentifyResultTransformers.processBoundingBox(textractBoundingBox),
+              let polygon = IdentifyResultTransformers.processPolygon(texttractPolygon) else {
                 return nil
         }
 

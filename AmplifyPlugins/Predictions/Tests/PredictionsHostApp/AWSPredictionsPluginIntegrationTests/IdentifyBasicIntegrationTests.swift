@@ -29,7 +29,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
         let result = try await Amplify.Predictions.identify(
             .labels(type: .labels),
-            in: url
+            in: url,
+            options: .init()
         )
         print(#function, result)
         XCTAssertNotNil(result)
@@ -42,8 +43,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
             in: url,
             options: .init()
         )
-        print(#function, result)
-        XCTAssertNotNil(result)
+
+        XCTAssert(result.unsafeContent == false)
     }
 
     func testIdentifyAllLabels() async throws {
@@ -115,7 +116,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let result = try await Amplify.Predictions.identify(
             .textInDocument(textFormatType: .all),
             in: url,
-            options: .init()
+            options: .init() //.(defaultNetworkPolicy: .offline)
         )
 
         XCTAssertNotNil(result)
@@ -175,7 +176,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let result = try await Amplify.Predictions.identify(
             .textInDocument(textFormatType: .table),
             in: url,
-            options: PredictionsIdentifyRequest.Options()
+            options: .init()
         )
 
         XCTAssertNotNil(result)

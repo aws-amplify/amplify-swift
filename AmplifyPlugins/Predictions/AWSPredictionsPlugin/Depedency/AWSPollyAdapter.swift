@@ -9,7 +9,6 @@ import Foundation
 import AWSPolly
 
 class AWSPollyAdapter: AWSPollyBehavior {
-
     let awsPolly: PollyClient
 
     init(_ awsPolly: PollyClient) {
@@ -25,5 +24,4 @@ class AWSPollyAdapter: AWSPollyBehavior {
     func getPolly() -> PollyClient {
         return awsPolly
     }
-
 }

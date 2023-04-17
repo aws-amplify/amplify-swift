@@ -27,9 +27,11 @@ class CoreMLPredictionsPluginTestBase: XCTestCase {
         visionBehavior = MockCoreMLVisionAdapter()
         speechBehavior = MockCoreMLSpeechAdapter()
         queue = MockOperationQueue()
-        coreMLPredictionsPlugin.configure(naturalLanguageBehavior: naturalLanguageBehavior,
-                                          visionBehavior: visionBehavior,
-                                          speechBehavior: speechBehavior,
-                                          queue: queue)
+        coreMLPredictionsPlugin.configure(
+            naturalLanguageBehavior: naturalLanguageBehavior,
+            visionBehavior: visionBehavior,
+            speechBehavior: speechBehavior,
+            queue: queue
+        )
     }
 }

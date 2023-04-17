@@ -8,7 +8,7 @@
 import AWSRekognition
 import Amplify
 
-class IdentifyEntitiesResultTransformers: IdentifyResultTransformers {
+enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
 
     static func processFaces(
         _ rekognitionFaces: [RekognitionClientTypes.FaceDetail]
@@ -16,10 +16,10 @@ class IdentifyEntitiesResultTransformers: IdentifyResultTransformers {
         var entities = [Entity]()
         for rekognitionFace in rekognitionFaces {
 
-            guard let boundingBox = processBoundingBox(rekognitionFace.boundingBox) else {
+            guard let boundingBox = IdentifyResultTransformers.processBoundingBox(rekognitionFace.boundingBox) else {
                 continue
             }
-            let landmarks = processLandmarks(rekognitionFace.landmarks)
+            let landmarks = IdentifyResultTransformers.processLandmarks(rekognitionFace.landmarks)
             let emotions = processEmotions(rekognitionFace.emotions)
             let ageRange = AgeRange(
                 low: rekognitionFace.ageRange?.low ?? 0,
@@ -71,7 +71,7 @@ class IdentifyEntitiesResultTransformers: IdentifyResultTransformers {
         var entities = [EntityMatch]()
         for rekognitionFace in rekognitionFaces {
 
-            guard let boundingBox = processBoundingBox(rekognitionFace.face?.boundingBox) else {
+            guard let boundingBox = IdentifyResultTransformers.processBoundingBox(rekognitionFace.face?.boundingBox) else {
                 continue
             }
 

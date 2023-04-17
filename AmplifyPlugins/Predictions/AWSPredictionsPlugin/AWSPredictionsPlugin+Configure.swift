@@ -58,13 +58,11 @@ extension AWSPredictionsPlugin {
         predictionsService: AWSPredictionsService,
         coreMLSerivce: CoreMLPredictionBehavior,
         authService: AWSAuthServiceBehavior,
-        config: PredictionsPluginConfiguration,
-        queue: OperationQueue = OperationQueue()
+        config: PredictionsPluginConfiguration
     ) {
         self.predictionsService = predictionsService
-        coreMLService = coreMLSerivce
+        self.coreMLService = coreMLSerivce
         self.authService = authService
         self.config = config
-        self.queue = queue
     }
 }

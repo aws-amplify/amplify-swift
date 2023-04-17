@@ -18,7 +18,7 @@ class MockPollyBehavior: AWSPollyBehavior {
         return try await synthesizeSpeechResult(request)
     }
 
-    func getPolly() async throws -> PollyClient {
-        try await PollyClient()
+    func getPolly() -> PollyClient {
+        try! .init(region: "us-east-1")
     }
 }

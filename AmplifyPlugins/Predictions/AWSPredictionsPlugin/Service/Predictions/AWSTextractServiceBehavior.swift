@@ -11,13 +11,13 @@ import Foundation
 
 protocol AWSTextractServiceBehavior {
 
-    typealias TextractServiceEventHandler = (TextractServiceEvent) -> Void
-    typealias TextractServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
+//    typealias TextractServiceEventHandler = (TextractServiceEvent) -> Void
+//    typealias TextractServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
 
     func analyzeDocument(
         image: URL,
         features: [String]
-    ) async throws -> IdentifyDocumentTextResult
+    ) async throws -> Predictions.Identify.DocumentText.Result
 
     func detectDocumentText(
         image: Data

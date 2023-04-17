@@ -9,7 +9,6 @@ import Foundation
 import AWSComprehend
 
 protocol AWSComprehendBehavior {
-
     func detectSentiment(
         request: DetectSentimentInput
     ) async throws -> DetectSentimentOutputResponse
@@ -30,5 +29,5 @@ protocol AWSComprehendBehavior {
         request: DetectKeyPhrasesInput
     ) async throws -> DetectKeyPhrasesOutputResponse
 
-    func getComprehend() async throws -> ComprehendClient
+    func getComprehend() -> ComprehendClient
 }

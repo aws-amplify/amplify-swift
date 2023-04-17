@@ -11,13 +11,9 @@ import XCTest
 import AVFoundation
 
 class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
-
-    // TODO: Transcribe
     func testConvertSpeechToText() async throws {
         let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "audio", withExtension: "wav") else {
-            return XCTFail("")
-        }
+        let url = try XCTUnwrap(testBundle.url(forResource: "audio", withExtension: "wav"))
 
         let options = PredictionsSpeechToTextRequest.Options(
             defaultNetworkPolicy: .auto,
@@ -25,7 +21,9 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
             pluginOptions: nil
         )
 
-        let result = try await Amplify.Predictions.convert(.speechToText(url: url), options: options)
+        let result = try await Amplify.Predictions.convert(
+            .speechToText(url: url), options: options
+        )
         let responses = result.map(\.transcription)
         
         for try await response in responses {
@@ -35,7 +33,7 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         XCTAssertNotNil(result, "Result should contain value")
     }
 
-    func testConvertTranslateText_Alt() async throws {
+    func testConvertTranslateText() async throws {
         let result = try await Amplify.Predictions.convert(
             .textToTranslate("Hello, world!", from: .english, to: .german)
         )
@@ -43,10 +41,11 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         XCTAssertEqual(result.text, "Hallo, Welt!")
     }
 
-    func testConvertTextToSpeech_alt() async throws {
+    func testConvertTextToSpeech() async throws {
         let result = try await Amplify.Predictions.convert(
             .textToSpeech("Hello, world!")
         )
+
         let player = try AVAudioPlayer(data: result.audioData)
         player.play()
         try await Task.sleep(for: .seconds(2))

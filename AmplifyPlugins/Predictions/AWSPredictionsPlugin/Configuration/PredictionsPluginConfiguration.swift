@@ -15,7 +15,6 @@ public struct PredictionsPluginConfiguration {
 }
 
 extension PredictionsPluginConfiguration: Decodable {
-
     enum CodingKeys: String, CodingKey {
         case identify
         case interpret

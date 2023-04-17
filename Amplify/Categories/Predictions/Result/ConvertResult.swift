@@ -5,4 +5,4 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol ConvertResult {}
+//public protocol ConvertResult {}

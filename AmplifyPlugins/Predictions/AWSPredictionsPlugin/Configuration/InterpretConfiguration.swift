@@ -16,7 +16,6 @@ public struct InterpretConfiguration {
 }
 
 extension InterpretConfiguration: Decodable {
-
     enum CodingKeys: String, CodingKey {
         case interpretText
     }

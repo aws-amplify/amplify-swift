@@ -34,6 +34,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                 awsTextract: MockTextractBehavior(),
                 awsComprehend: MockComprehendBehavior(),
                 awsPolly: MockPollyBehavior(),
+                awsTranscribeStreaming: MockTranscribeBehavior(),
                 configuration: mockConfiguration
             )
         } catch {
@@ -124,6 +125,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                 awsTextract: MockTextractBehavior(),
                 awsComprehend: MockComprehendBehavior(),
                 awsPolly: MockPollyBehavior(),
+                awsTranscribeStreaming: MockTranscribeBehavior(),
                 configuration: mockConfiguration
             )
         } catch {

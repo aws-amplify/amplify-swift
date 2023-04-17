@@ -11,7 +11,6 @@ import Amplify
 @testable import CoreMLPredictionsPlugin
 
 class CoreMLSpeechAdapterTests: XCTestCase {
-
     var coreMLSpeechAdapter: MockCoreMLSpeechAdapter!
 
     override func setUp() {
@@ -33,7 +32,7 @@ class CoreMLSpeechAdapterTests: XCTestCase {
         guard let url = testBundle.url(forResource: "audio", withExtension: "wav") else {
             return
         }
-        let mockResult = SpeechToTextResult(transcription: "This is a test")
+        let mockResult = Predictions.Convert.SpeechToText.Result(transcription: "This is a test")
         coreMLSpeechAdapter.setResponse(result: mockResult)
         let result = try await coreMLSpeechAdapter.getTranscription(url)
         XCTAssertNotNil(result)

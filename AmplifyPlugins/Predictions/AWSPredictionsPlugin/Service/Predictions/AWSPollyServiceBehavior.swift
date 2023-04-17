@@ -10,12 +10,8 @@ import Amplify
 import AWSPolly
 
 protocol AWSPollyServiceBehavior {
-
-//    typealias TextToSpeechServiceEventHandler = (TextToSpeechServiceEvent) -> Void
-//    typealias TextToSpeechServiceEvent = PredictionsEvent<TextToSpeechResult, PredictionsError>
-
     func synthesizeText(
         text: String,
         voiceId: PollyClientTypes.VoiceId
-    ) async throws -> TextToSpeechResult
+    ) async throws -> Predictions.Convert.TextToSpeech.Result
 }

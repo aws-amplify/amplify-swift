@@ -7,14 +7,13 @@
 
 import XCTest
 import Amplify
+import XCTest
 
 class CoreMLPredictionsPluginIntegrationTest: AWSPredictionsPluginTestBase {
 
     func testIdentify() async throws {
         let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "people", withExtension: "jpg") else {
-            return
-        }
+        let url = try XCTUnwrap(testBundle.url(forResource: "people", withExtension: "jpg"))
 
         let result = try await Amplify.Predictions.identify(
             .labels(type: .all),

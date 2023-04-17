@@ -9,7 +9,6 @@ import Foundation
 import AWSTextract
 
 class AWSTextractAdapter: AWSTextractBehavior {
-
     let awsTextract: TextractClient
 
     init(_ awsTextract: TextractClient) {
@@ -31,5 +30,4 @@ class AWSTextractAdapter: AWSTextractBehavior {
     func getTextract() -> TextractClient {
         awsTextract
     }
-
 }

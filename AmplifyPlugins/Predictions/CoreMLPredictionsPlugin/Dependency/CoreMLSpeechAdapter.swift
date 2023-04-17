@@ -9,9 +9,7 @@ import Amplify
 import Speech
 
 class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
-
-    // TODO: Change up flow, this is confusing
-    func getTranscription(_ audioData: URL) async throws -> SpeechToTextResult? {
+    func getTranscription(_ audioData: URL) async throws -> Predictions.Convert.SpeechToText.Result? {
         let request = SFSpeechURLRecognitionRequest(url: audioData)
         request.requiresOnDeviceRecognition = true
         let recognizer = SFSpeechRecognizer()
@@ -29,7 +27,7 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
         }
 
         if result.isFinal {
-            let speechToTextResult = SpeechToTextResult(transcription: result.bestTranscription.formattedString)
+            let speechToTextResult = Predictions.Convert.SpeechToText.Result(transcription: result.bestTranscription.formattedString)
             return speechToTextResult
         }
         throw SomeError()

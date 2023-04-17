@@ -9,13 +9,12 @@ import Amplify
 import AWSTranslate
 
 protocol AWSTranslateServiceBehavior {
-
-    typealias TranslateTextServiceEventHandler = (TranslateTextServiceEvent) -> Void
-    typealias TranslateTextServiceEvent = PredictionsEvent<TranslateTextResult, PredictionsError>
+//    typealias TranslateTextServiceEventHandler = (TranslateTextServiceEvent) -> Void
+//    typealias TranslateTextServiceEvent = PredictionsEvent<TranslateTextResult, PredictionsError>
 
     func translateText(
         text: String,
         language: LanguageType?,
         targetLanguage: LanguageType?
-    ) async throws -> TranslateTextResult
+    ) async throws -> Predictions.Convert.TranslateText.Result
 }

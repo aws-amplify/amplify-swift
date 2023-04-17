@@ -12,7 +12,6 @@ import Foundation
 
 // swiftlint:disable file_length
 extension AWSPredictionsService: AWSRekognitionServiceBehavior {
-
     func detectLabels(
         image: URL,
         type: LabelType
@@ -23,7 +22,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         case .labels:
             let labelsResult: DetectLabelsOutputResponse
             do {
-                labelsResult = try await detectRekognitionLabels(image: imageData) //, onEvent: { _ in })
+                labelsResult = try await detectRekognitionLabels(image: imageData)
             } catch {
                 let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 throw PredictionsError.network(
@@ -31,8 +30,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     predictionsErrorString.recoverySuggestion
                 )
             }
-
-
+            
             guard let labels = labelsResult.labels else {
                 throw PredictionsError.network(
                     AWSRekognitionErrorMessage.noResultFound.errorDescription,
@@ -45,7 +43,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         case .moderation:
             let moderationLabelsResult: DetectModerationLabelsOutputResponse
             do {
-                moderationLabelsResult = try await detectModerationLabels(image: imageData, onEvent: { _ in })
+                moderationLabelsResult = try await detectModerationLabels(image: imageData)
             } catch {
                 let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 throw PredictionsError.network(
@@ -72,7 +70,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     func detectCelebrities(
         image: URL
-    ) async throws -> IdentifyCelebritiesResult {
+    ) async throws -> Predictions.Identify.Celebrities.Result {
         let imageData = try dataFromImage(url: image)
 
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
@@ -98,7 +96,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
 
         let newCelebs = IdentifyCelebritiesResultTransformers.processCelebs(celebrities)
-        return IdentifyCelebritiesResult(celebrities: newCelebs)
+        return Predictions.Identify.Celebrities.Result(celebrities: newCelebs)
     }
 
     func detectEntitiesCollection(
@@ -146,7 +144,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     func detectEntities(
         image: URL
-    ) async throws -> IdentifyEntitiesResult {
+    ) async throws -> Predictions.Identify.Entities.Result {
         let imageData = try dataFromImage(url: image)
 
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
@@ -171,7 +169,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         }
 
         let newFaces = IdentifyEntitiesResultTransformers.processFaces(faces)
-        return IdentifyEntitiesResult(entities: newFaces)
+        return Predictions.Identify.Entities.Result(entities: newFaces)
     }
 
 
@@ -238,7 +236,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     func detectDocumentText(
         image: URL,
         format: TextFormatType
-    ) async throws -> IdentifyDocumentTextResult {
+    ) async throws -> Predictions.Identify.DocumentText.Result {
         return try await analyzeDocument(
             image: image,
             features: format.textractServiceFormatType
@@ -318,8 +316,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     }
 
     private func detectModerationLabels(
-        image: Data,
-        onEvent: @escaping RekognitionServiceEventHandler
+        image: Data
     ) async throws -> DetectModerationLabelsOutputResponse {
         let image = RekognitionClientTypes.Image(bytes: image)
         let request = DetectModerationLabelsInput(
@@ -330,8 +327,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     }
 
     private func detectRekognitionLabels(
-        image: Data//,
-//        onEvent: @escaping RekognitionServiceEventHandler
+        image: Data
     ) async throws -> DetectLabelsOutputResponse {
         let image = RekognitionClientTypes.Image(bytes: image)
         let request = DetectLabelsInput(
@@ -365,7 +361,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         let moderationLabelsResult: DetectModerationLabelsOutputResponse
         do {
-             moderationLabelsResult = try await detectModerationLabels(image: image, onEvent: { _ in })
+             moderationLabelsResult = try await detectModerationLabels(image: image)
         } catch {
             let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
             throw PredictionsError.network(

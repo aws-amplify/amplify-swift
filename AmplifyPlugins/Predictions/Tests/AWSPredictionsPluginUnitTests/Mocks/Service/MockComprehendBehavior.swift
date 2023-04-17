@@ -40,7 +40,7 @@ class MockComprehendBehavior: AWSComprehendBehavior {
         return try await keyPhrasesResponse(request)
     }
 
-    func getComprehend() async throws -> ComprehendClient {
-        return try await ComprehendClient()
+    func getComprehend() -> ComprehendClient {
+        try! ComprehendClient(region: "us-east-1")
     }
 }

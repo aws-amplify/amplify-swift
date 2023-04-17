@@ -50,37 +50,56 @@ extension ConvertConfiguration: Decodable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         var awsRegion: String?
 
-        if let configuration = try values.decodeIfPresent(TranslateTextConfiguration.self,
-                                                          forKey: .translateText) {
+        if let configuration = try values.decodeIfPresent(
+            TranslateTextConfiguration.self,
+            forKey: .translateText
+        ) {
             self.translateText = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self,
-                                                             forKey: .translateText)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .translateText
+            )
+
             awsRegion = awsRegion ?? ConvertConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.translateText = nil
         }
 
-        if let configuration = try values.decodeIfPresent(SpeechGeneratorConfiguration.self,
-                                                          forKey: .speechGenerator) {
+        if let configuration = try values.decodeIfPresent(
+            SpeechGeneratorConfiguration.self,
+            forKey: .speechGenerator
+        ) {
             self.speechGenerator = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self,
-                                                             forKey: .speechGenerator)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .speechGenerator
+            )
+
             awsRegion = awsRegion ?? ConvertConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.speechGenerator = nil
         }
 
-        if let configuration = try values.decodeIfPresent(TranscriptionConfiguration.self, forKey: .transcription) {
+        if let configuration = try values.decodeIfPresent(
+            TranscriptionConfiguration.self,
+            forKey: .transcription
+        ) {
             self.transcription = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self, forKey: .transcription)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .transcription
+            )
+
             awsRegion = awsRegion ?? ConvertConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.transcription = nil
         }
 
-        guard  let region = awsRegion else {
-            throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
-                                                       PluginErrorMessage.missingRegion.recoverySuggestion)
+        guard let region = awsRegion else {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorMessage.missingRegion.errorDescription,
+                PluginErrorMessage.missingRegion.recoverySuggestion
+            )
         }
         self.region = region
     }
@@ -94,7 +113,6 @@ extension ConvertConfiguration: Decodable {
 }
 
 extension TranslateTextConfiguration: Decodable {
-
     enum CodingKeys: String, CodingKey {
         case sourceLanguage = "sourceLang"
         case targetLanguage = "targetLang"

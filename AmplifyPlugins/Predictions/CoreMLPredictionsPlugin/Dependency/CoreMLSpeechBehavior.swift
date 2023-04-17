@@ -9,6 +9,5 @@ import Foundation
 import Amplify
 
 protocol CoreMLSpeechBehavior: AnyObject {
-
-    func getTranscription(_ audioData: URL) async throws -> SpeechToTextResult?
+    func getTranscription(_ audioData: URL) async throws -> Predictions.Convert.SpeechToText.Result?
 }

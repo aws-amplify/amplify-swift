@@ -17,5 +17,5 @@ protocol AWSTextractBehavior {
         request: DetectDocumentTextInput
     ) async throws -> DetectDocumentTextOutputResponse
 
-    func getTextract() async throws -> TextractClient
+    func getTextract() -> TextractClient
 }

@@ -12,23 +12,26 @@ import AWSPolly
 import AWSComprehend
 import AWSTextract
 
-public enum PredictionsAWSService {
-    case rekognition
-    case translate
-//    case transcribe TODO: transcribe
-    case polly
-    case comprehend
-    case textract
+public struct PredictionsAWSService<T> {
+    let fetch: (AWSPredictionsService) -> T
 }
 
-//struct PredictionsAWSService<Service, Client> {
-//    let escape: (Service) -> Client
-//}
-//
-//extension PredictionsAWSService where Service == AWSTranslateBehavior,
-//                                        Client == TranslateClient {
-//
-//    static let translate: Self = .init() { translateBehavior in
-//        return translateBehavior.getTranslate()
-//    }
-//}
+extension PredictionsAWSService where T == RekognitionClient {
+    public static let rekognition = Self(fetch: { $0.awsRekognition.getRekognition() })
+}
+
+extension PredictionsAWSService where T == TranslateClient {
+    public static let translate = Self(fetch: { $0.awsTranslate.getTranslate() })
+}
+
+extension PredictionsAWSService where T == PollyClient {
+    public static let polly = Self(fetch: { $0.awsPolly.getPolly() })
+}
+
+extension PredictionsAWSService where T == ComprehendClient {
+    public static let comprehend = Self(fetch: { $0.awsComprehend.getComprehend() })
+}
+
+extension PredictionsAWSService where T == TextractClient {
+    public static let textract = Self(fetch: { $0.awsTextract.getTextract() })
+}

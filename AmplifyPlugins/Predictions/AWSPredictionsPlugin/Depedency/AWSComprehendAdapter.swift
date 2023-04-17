@@ -9,7 +9,6 @@ import Foundation
 import AWSComprehend
 
 class AWSComprehendAdapter: AWSComprehendBehavior {
-
     let awsComprehend: ComprehendClient
 
     init(_ awsComprehend: ComprehendClient) {

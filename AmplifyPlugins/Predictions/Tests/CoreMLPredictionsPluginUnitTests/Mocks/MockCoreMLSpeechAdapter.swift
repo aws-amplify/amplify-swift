@@ -10,18 +10,13 @@ import Amplify
 @testable import CoreMLPredictionsPlugin
 
 class MockCoreMLSpeechAdapter: CoreMLSpeechBehavior {
-    var response: SpeechToTextResult?
+    var response: Predictions.Convert.SpeechToText.Result?
 
-    func getTranscription(_ audioData: URL) async throws -> SpeechToTextResult? {
+    func getTranscription(_ audioData: URL) async throws -> Predictions.Convert.SpeechToText.Result? {
         response
     }
 
-
-//    func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void) {
-//        callback(response)
-//    }
-
-    func setResponse(result: SpeechToTextResult?) {
+    func setResponse(result: Predictions.Convert.SpeechToText.Result?) {
         response = result
     }
 }

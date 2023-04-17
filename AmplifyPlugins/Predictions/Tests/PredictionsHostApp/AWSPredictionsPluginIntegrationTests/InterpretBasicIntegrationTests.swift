@@ -74,7 +74,7 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
     ///    - Should return no empty result
     ///
     func testInterpretTextOffline() async throws {
-        let options = PredictionsInterpretRequest.Options(
+        let options = Predictions.Interpret.Options(
             defaultNetworkPolicy: .offline,
             pluginOptions: nil
         )

@@ -55,11 +55,11 @@ extension IdentifyTextResultTransformers {
             }
         }
 
-        guard let boundingBox = processBoundingBox(keyBlock.geometry?.boundingBox) else {
+        guard let boundingBox = IdentifyResultTransformers.processBoundingBox(keyBlock.geometry?.boundingBox) else {
             return nil
         }
 
-        guard let polygon = processPolygon(keyBlock.geometry?.polygon) else {
+        guard let polygon = IdentifyResultTransformers.processPolygon(keyBlock.geometry?.polygon) else {
             return nil
         }
 

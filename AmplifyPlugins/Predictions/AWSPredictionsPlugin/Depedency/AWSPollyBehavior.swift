@@ -13,5 +13,5 @@ protocol AWSPollyBehavior {
         request: SynthesizeSpeechInput
     ) async throws -> SynthesizeSpeechOutputResponse
     
-    func getPolly() async throws -> PollyClient
+    func getPolly() -> PollyClient
 }

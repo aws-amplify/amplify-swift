@@ -6,7 +6,6 @@
 //
 
 import Amplify
-//import AWSCore
 import AWSTextract
 @testable import AWSPredictionsPlugin
 
@@ -30,7 +29,7 @@ class MockTextractBehavior: AWSTextractBehavior {
         return try await detectDocumentTextResult(request)
     }
 
-    func getTextract() async throws -> TextractClient {
-        try await TextractClient()
+    func getTextract() -> AWSTextract.TextractClient {
+        try! .init(region: "us-east-1")
     }
 }

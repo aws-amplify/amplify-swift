@@ -10,7 +10,6 @@ import Amplify
 @testable import CoreMLPredictionsPlugin
 
 class CoreMLPredictionsPluginTests: CoreMLPredictionsPluginTestBase {
-
     func testPluginInterpretText() async throws {
         let result = try await coreMLPredictionsPlugin.interpret(
             text: "",
@@ -18,7 +17,5 @@ class CoreMLPredictionsPluginTests: CoreMLPredictionsPluginTestBase {
         )
 
         XCTAssertNotNil(result, "Should return a valid operation")
-        XCTAssertEqual(queue.size, 1)
     }
-
 }

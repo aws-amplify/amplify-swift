@@ -33,7 +33,7 @@ struct ContentView: View {
 
     func identify() async throws {
         let imageURL = URL(string: "")!
-        let identifyTextOptions = Identify.Options(
+        let identifyTextOptions = Predictions.Identify.Options(
             defaultNetworkPolicy: .auto,
             uploadToRemote: false,
             pluginOptions: nil

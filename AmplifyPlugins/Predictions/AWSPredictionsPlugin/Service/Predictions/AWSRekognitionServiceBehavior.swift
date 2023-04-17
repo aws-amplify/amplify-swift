@@ -10,10 +10,6 @@ import AWSRekognition
 import Foundation
 
 protocol AWSRekognitionServiceBehavior {
-
-    typealias RekognitionServiceEventHandler = (RekognitionServiceEvent) -> Void
-    typealias RekognitionServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
-
     func detectLabels(
         image: URL,
         type: LabelType
@@ -21,12 +17,12 @@ protocol AWSRekognitionServiceBehavior {
 
     func detectCelebrities(
         image: URL
-    ) async throws -> IdentifyCelebritiesResult
+    ) async throws -> Predictions.Identify.Celebrities.Result
 
     func detectDocumentText(
         image: URL,
         format: TextFormatType
-    ) async throws -> IdentifyDocumentTextResult
+    ) async throws -> Predictions.Identify.DocumentText.Result
 
     func detectPlainText(
         image: URL
@@ -34,7 +30,7 @@ protocol AWSRekognitionServiceBehavior {
 
     func detectEntities(
         image: URL
-    ) async throws -> IdentifyEntitiesResult
+    ) async throws -> Predictions.Identify.Entities.Result
 
     func detectEntitiesCollection(
         image: URL,

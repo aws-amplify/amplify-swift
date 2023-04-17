@@ -9,7 +9,6 @@ import Foundation
 import AWSTranslate
 
 class AWSTranslateAdapter: AWSTranslateBehavior {
-
     let awsTranslate: TranslateClient
 
     init(_ awsTranslate: TranslateClient) {
@@ -25,5 +24,4 @@ class AWSTranslateAdapter: AWSTranslateBehavior {
     func getTranslate() -> TranslateClient {
         return awsTranslate
     }
-
 }

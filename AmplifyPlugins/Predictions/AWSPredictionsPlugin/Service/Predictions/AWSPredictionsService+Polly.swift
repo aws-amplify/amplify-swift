@@ -14,7 +14,7 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
     func synthesizeText(
         text: String,
         voiceId: PollyClientTypes.VoiceId
-    ) async throws -> TextToSpeechResult {
+    ) async throws -> Predictions.Convert.TextToSpeech.Result {
 
         let request = SynthesizeSpeechInput(
             outputFormat: .mp3,
@@ -40,7 +40,7 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
             )
         }
 
-        let textToSpeechResult = TextToSpeechResult(audioData: speech.toBytes().toData())
+        let textToSpeechResult = Predictions.Convert.TextToSpeech.Result(audioData: speech.toBytes().toData())
 
         return textToSpeechResult
     }

@@ -51,7 +51,7 @@ class AWSRekognitionAdapter: AWSRekognitionBehavior {
         try await awsRekognition.searchFacesByImage(input: request)
     }
 
-    func getRekognition() async throws -> RekognitionClient {
+    func getRekognition() -> RekognitionClient {
         return awsRekognition
     }
 

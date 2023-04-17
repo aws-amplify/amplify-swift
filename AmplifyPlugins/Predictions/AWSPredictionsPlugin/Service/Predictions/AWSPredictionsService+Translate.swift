@@ -14,8 +14,9 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
         text: String,
         language: LanguageType?,
         targetLanguage: LanguageType?
-    ) async throws -> TranslateTextResult {
-
+    ) async throws -> Predictions.Convert.TranslateText.Result {
+        // prefer passed in language. If it's not there, try to grab it from the config,
+        // If that doesn't exist, we can't progress any further and throw an error
         guard let sourceLanguage = language ?? predictionsConfig.convert.translateText?.sourceLanguage else {
             throw PredictionsError.configuration(
                 AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
@@ -23,10 +24,13 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
                 nil
             )
         }
+
+        // prefer passed in language. If it's not there, try to grab it from the config,
+        // If that doesn't exist, we can't progress any further and throw an error
         guard let finalTargetLanguage = targetLanguage ?? predictionsConfig.convert.translateText?.targetLanguage else {
             throw PredictionsError.configuration(
-                AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
-                AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
+                AWSTranslateErrorMessage.targetLanguageNotProvided.errorDescription,
+                AWSTranslateErrorMessage.targetLanguageNotProvided.errorDescription,
                 nil
             )
         }
@@ -55,7 +59,7 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
         }
 
         let targetLanguage = LanguageType(rawValue: textTranslateResult.targetLanguageCode ?? "")
-        let translateTextResult = TranslateTextResult(
+        let translateTextResult = Predictions.Convert.TranslateText.Result(
             text: translatedText,
             targetLanguage: targetLanguage ?? finalTargetLanguage
         )

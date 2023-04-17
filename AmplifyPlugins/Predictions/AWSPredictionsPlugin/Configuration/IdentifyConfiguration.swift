@@ -9,7 +9,6 @@
 import Amplify
 
 public struct IdentifyConfiguration {
-
     public let region: String
     public let identifyLabels: IdentifyLabelsConfiguration?
     public let identifyEntities: IdentifyEntitiesConfiguration?
@@ -52,40 +51,56 @@ extension IdentifyConfiguration: Decodable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         var awsRegion: String?
 
-        if let configuration = try values.decodeIfPresent(IdentifyLabelsConfiguration.self,
-                                                          forKey: .identifyLabels) {
+        if let configuration = try values.decodeIfPresent(
+            IdentifyLabelsConfiguration.self,
+            forKey: .identifyLabels
+        ) {
             self.identifyLabels = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self,
-                                                            forKey: .identifyLabels)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .identifyLabels
+            )
+
             awsRegion = awsRegion ?? IdentifyConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.identifyLabels = nil
         }
 
-        if let configuration = try values.decodeIfPresent(IdentifyEntitiesConfiguration.self,
-                                                          forKey: .identifyEntities) {
+        if let configuration = try values.decodeIfPresent(
+            IdentifyEntitiesConfiguration.self,
+            forKey: .identifyEntities
+        ) {
             self.identifyEntities = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self,
-                                                              forKey: .identifyEntities)
-            awsRegion = awsRegion ?? IdentifyConfiguration.getRegionIfPresent(nestedContainer)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .identifyEntities
+            )
 
+            awsRegion = awsRegion ?? IdentifyConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.identifyEntities = nil
         }
 
-        if let configuration  = try values.decodeIfPresent(IdentifyTextConfiguration.self,
-                                                           forKey: .identifyText) {
+        if let configuration  = try values.decodeIfPresent(
+            IdentifyTextConfiguration.self,
+            forKey: .identifyText
+        ) {
             self.identifyText = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self,
-                                                             forKey: .identifyText)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .identifyText
+            )
+
             awsRegion = awsRegion ?? IdentifyConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.identifyText = nil
         }
 
         guard  let region = awsRegion else {
-            throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
-                                                       PluginErrorMessage.missingRegion.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(
+                PluginErrorMessage.missingRegion.errorDescription,
+                PluginErrorMessage.missingRegion.recoverySuggestion
+            )
         }
         self.region = region
     }
@@ -110,9 +125,8 @@ extension IdentifyLabelsConfiguration: Decodable {
 }
 
 extension LabelType: Decodable {
-
     enum CodingError: Error {
-           case unknownValue
+        case unknownValue
     }
 
     public init(from decoder: Decoder) throws {
@@ -143,9 +157,8 @@ extension IdentifyTextConfiguration: Decodable {
 }
 
 extension TextFormatType: Decodable {
-
     enum CodingError: Error {
-           case unknownValue
+        case unknownValue
     }
 
     public init(from decoder: Decoder) throws {

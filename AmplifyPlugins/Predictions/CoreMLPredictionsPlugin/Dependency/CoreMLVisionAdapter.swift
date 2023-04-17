@@ -15,10 +15,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNClassifyImageRequest()
         try? handler.perform([request])
-
-        guard let observations = request.results as? [VNClassificationObservation] else {
-            return nil
-        }
+        guard let observations = request.results else { return nil }
 
         let categories = observations.filter { $0.hasMinimumRecall(0.01, forPrecision: 0.9) }
         for category in categories {
@@ -34,10 +31,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
         try? handler.perform([request])
-
-        guard let observations = request.results as? [VNRecognizedTextObservation] else {
-            return nil
-        }
+        guard let observations = request.results else { return nil }
 
         var identifiedLines = [IdentifiedLine]()
         var rawLineText = [String]()
@@ -49,10 +43,12 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
             // Converting the y coordinate to iOS coordinate space and create a CGrect
             // out of it.
-            let boundingbox = CGRect(x: detectedTextX,
-                                     y: 1 - detectedTextHeight - detectedTextY,
-                                     width: detectedTextWidth,
-                                     height: detectedTextHeight)
+            let boundingbox = CGRect(
+                x: detectedTextX,
+                y: 1 - detectedTextHeight - detectedTextY,
+                width: detectedTextWidth,
+                height: detectedTextHeight
+            )
 
             let topPredictions = observation.topCandidates(1)
             let prediction = topPredictions[0]
@@ -64,93 +60,58 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         return IdentifyTextResult(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
     }
 
-    func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult? {
+    func detectEntities(_ imageURL: URL) -> Predictions.Identify.Entities.Result? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let faceLandmarksRequest = VNDetectFaceLandmarksRequest()
         try? handler.perform([faceLandmarksRequest])
-        guard let observations = faceLandmarksRequest.results as? [VNFaceObservation] else {
-            return nil
-        }
+        guard let observations = faceLandmarksRequest.results else { return nil }
 
         var entities: [Entity] = []
         for observation in observations {
             let pose = Pose(pitch: 0.0, // CoreML doesnot return pitch
-                roll: observation.roll?.doubleValue ?? 0.0,
-                yaw: observation.yaw?.doubleValue ?? 0.0)
+                            roll: observation.roll?.doubleValue ?? 0.0,
+                            yaw: observation.yaw?.doubleValue ?? 0.0)
             let entityMetaData = EntityMetadata(confidence: Double(observation.confidence),
                                                 pose: pose)
-            let entity = Entity(boundingBox: observation.boundingBox,
-                                landmarks: mapLandmarks(observation.landmarks),
-                                ageRange: nil,
-                                attributes: nil,
-                                gender: nil,
-                                metadata: entityMetaData,
-                                emotions: nil)
+            let entity = Entity(
+                boundingBox: observation.boundingBox,
+                landmarks: mapLandmarks(observation.landmarks),
+                ageRange: nil,
+                attributes: nil,
+                gender: nil,
+                metadata: entityMetaData,
+                emotions: nil
+            )
             entities.append(entity)
         }
-        return IdentifyEntitiesResult(entities: entities)
+        return Predictions.Identify.Entities.Result(entities: entities)
+    }
+
+    private func landmark(_ keyPath: KeyPath<VNFaceLandmarks2D, VNFaceLandmarkRegion2D?>, from landmarks: VNFaceLandmarks2D, type: LandmarkType) -> Landmark? {
+        if let value = landmarks[keyPath: keyPath] {
+            return Landmark(type: type, points: value.normalizedPoints)
+        }
+        return nil
     }
 
     // swiftlint:disable cyclomatic_complexity
     private func mapLandmarks(_ coreMLLandmarks: VNFaceLandmarks2D?) -> [Landmark] {
-        var finalLandmarks: [Landmark] = []
-        guard let landmarks = coreMLLandmarks else {
-            return finalLandmarks
-        }
-
-        if let allPoints = landmarks.allPoints {
-            finalLandmarks.append(Landmark(type: .allPoints,
-                                            points: allPoints.normalizedPoints))
-        }
-        if let faceContour = landmarks.faceContour {
-            finalLandmarks.append(Landmark(type: .faceContour,
-                                            points: faceContour.normalizedPoints))
-        }
-        if let leftEye = landmarks.leftEye {
-            finalLandmarks.append(Landmark(type: .leftEye,
-                                            points: leftEye.normalizedPoints))
-        }
-        if let rightEye = landmarks.rightEye {
-            finalLandmarks.append(Landmark(type: .rightEye,
-                                            points: rightEye.normalizedPoints))
-        }
-        if let leftEyebrow = landmarks.leftEyebrow {
-            finalLandmarks.append(Landmark(type: .leftEyebrow,
-                                            points: leftEyebrow.normalizedPoints))
-        }
-        if let rightEyebrow = landmarks.rightEyebrow {
-            finalLandmarks.append(Landmark(type: .rightEyebrow,
-                                            points: rightEyebrow.normalizedPoints))
-        }
-        if let nose = landmarks.nose {
-            finalLandmarks.append(Landmark(type: .nose,
-                                            points: nose.normalizedPoints))
-        }
-        if let noseCrest = landmarks.noseCrest {
-            finalLandmarks.append(Landmark(type: .noseCrest,
-                                            points: noseCrest.normalizedPoints))
-        }
-        if let medianLine = landmarks.medianLine {
-            finalLandmarks.append(Landmark(type: .medianLine,
-                                            points: medianLine.normalizedPoints))
-        }
-        if let outerLips = landmarks.outerLips {
-            finalLandmarks.append(Landmark(type: .outerLips,
-                                            points: outerLips.normalizedPoints))
-        }
-        if let innerLips = landmarks.innerLips {
-            finalLandmarks.append(Landmark(type: .innerLips,
-                                            points: innerLips.normalizedPoints))
-        }
-        if let leftPupil = landmarks.leftPupil {
-            finalLandmarks.append(Landmark(type: .leftPupil,
-                                            points: leftPupil.normalizedPoints))
-        }
-        if let rightPupil = landmarks.rightPupil {
-            finalLandmarks.append(Landmark(type: .rightPupil,
-                                            points: rightPupil.normalizedPoints))
-        }
-        return finalLandmarks
+        guard let landmarks = coreMLLandmarks else { return [] }
+        return [
+            landmark(\.allPoints, from: landmarks, type: .allPoints),
+            landmark(\.faceContour, from: landmarks, type: .faceContour),
+            landmark(\.leftEye, from: landmarks, type: .leftEye),
+            landmark(\.rightEye, from: landmarks, type: .rightEye),
+            landmark(\.leftEyebrow, from: landmarks, type: .leftEyebrow),
+            landmark(\.rightEyebrow, from: landmarks, type: .rightEyebrow),
+            landmark(\.nose, from: landmarks, type: .nose),
+            landmark(\.noseCrest, from: landmarks, type: .noseCrest),
+            landmark(\.medianLine, from: landmarks, type: .medianLine),
+            landmark(\.outerLips, from: landmarks, type: .outerLips),
+            landmark(\.innerLips, from: landmarks, type: .innerLips),
+            landmark(\.leftPupil, from: landmarks, type: .leftPupil),
+            landmark(\.rightPupil, from: landmarks, type: .rightPupil)
+        ]
+            .compactMap { $0 }
     }
-
 }

@@ -33,5 +33,5 @@ protocol AWSRekognitionBehavior {
         request: SearchFacesByImageInput
     ) async throws -> SearchFacesByImageOutputResponse
 
-    func getRekognition() async throws -> RekognitionClient
+    func getRekognition() -> RekognitionClient
 }

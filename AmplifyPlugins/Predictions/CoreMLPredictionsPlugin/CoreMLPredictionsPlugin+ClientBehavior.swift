@@ -74,11 +74,11 @@ extension CoreMLPredictionsPlugin {
         case let .speechToText(lift):
             let options = lift.optionsGenericToSpecific(options) ?? .init()
             let input = lift.inputGenericToSpecific(request.input)
-            let request = PredictionsSpeechToTextRequest(
+            let request = Predictions.Convert.SpeechToText.Request(
                 speechToText: input,
                 options: options
             )
-            let stream = AsyncThrowingStream<SpeechToTextResult, Error> { continuation in
+            let stream = AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error> { continuation in
                 Task {
                     let result = try await coreMLSpeech.getTranscription(
                         request.speechToText

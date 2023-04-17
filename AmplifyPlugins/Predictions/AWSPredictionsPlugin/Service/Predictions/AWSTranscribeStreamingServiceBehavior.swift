@@ -5,15 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// TODO: Transribe
+import Foundation
+import Amplify
 
-//import Amplify
-////import AWSTranscribeStreaming
-//
-//protocol AWSTranscribeStreamingServiceBehavior {
-//
-//    typealias TranscribeServiceEventHandler = (TranscribeServiceEvent) -> Void
-//    typealias TranscribeServiceEvent = PredictionsEvent<SpeechToTextResult, PredictionsError>
-//
-//    func transcribe(speechToText: URL, language: LanguageType?, onEvent: @escaping TranscribeServiceEventHandler)
-//}
+protocol AWSTranscribeStreamingServiceBehavior {
+    func transcribe(
+        speechToText: URL,
+        language: LanguageType?,
+        region: String
+    ) async throws -> AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error>
+}

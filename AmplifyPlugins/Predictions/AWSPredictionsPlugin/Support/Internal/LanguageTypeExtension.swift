@@ -7,7 +7,7 @@
 
 import Amplify
 import AWSComprehend
-//import AWSTranscribeStreaming
+import AWSTranscribeStreaming
 
 extension LanguageType {
 
@@ -50,24 +50,21 @@ extension LanguageType {
     }
 
 
-    // TODO: remove/refactor/rename after adding transcribe streaming support
-    /*
-    func toTranscribeLanguage() -> AWSTranscribeStreamingLanguageCode {
+    func toTranscribeLanguage() -> TranscribeStreamingClientTypes.LanguageCode {
         switch self {
         case .usEnglish,
              .english:
-            return .enUS
+            return .enUs
         case .french:
-            return .frFR
+            return .frFr
         case .canadianFrench:
-            return .frCA
+            return .frCa
         case .britishEnglish:
-            return .enGB
+            return .enGb
         case .usSpanish:
-            return .esUS
+            return .esUs
         default:
-            return .unknown
+            return .sdkUnknown(rawValue)
         }
     }
-     */
 }

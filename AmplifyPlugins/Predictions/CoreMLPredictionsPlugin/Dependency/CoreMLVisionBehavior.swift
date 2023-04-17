@@ -9,10 +9,7 @@ import Foundation
 import Amplify
 
 protocol CoreMLVisionBehavior: AnyObject {
-
     func detectLabels(_ imageURL: URL) -> IdentifyLabelsResult?
-
     func detectText(_ imageURL: URL) -> IdentifyTextResult?
-
-    func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult?
+    func detectEntities(_ imageURL: URL) -> Predictions.Identify.Entities.Result?
 }

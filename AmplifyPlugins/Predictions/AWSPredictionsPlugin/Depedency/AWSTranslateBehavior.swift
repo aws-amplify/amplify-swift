@@ -33,5 +33,5 @@ protocol AWSTranslateBehavior {
         request: TranslateTextInput
     ) async throws -> TranslateTextOutputResponse
 
-    func getTranslate() async throws -> TranslateClient
+    func getTranslate() -> TranslateClient
 }
