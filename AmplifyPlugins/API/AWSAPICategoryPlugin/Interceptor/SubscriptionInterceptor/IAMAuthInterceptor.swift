@@ -28,6 +28,14 @@ class IAMAuthInterceptor: AuthInterceptor {
         self.region = region
     }
 
+    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL, completion: @escaping (AppSyncMessage) -> Void) {
+
+    }
+
+    func interceptConnection(_ request: AppSyncConnectionRequest, for endpoint: URL, completion: @escaping (AppSyncConnectionRequest) -> Void) {
+
+    }
+
     func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
         switch message.messageType {
         case .subscribe:
