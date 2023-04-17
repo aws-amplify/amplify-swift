@@ -328,7 +328,6 @@ let predictionsTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-//            .target(name: "CoreMLPredictionsPlugin"), TODO: Re-add
             .product(name: "AWSComprehend", package: "aws-sdk-swift"),
             .product(name: "AWSPolly", package: "aws-sdk-swift"),
             .product(name: "AWSRekognition", package: "aws-sdk-swift"),
@@ -337,9 +336,7 @@ let predictionsTargets: [Target] = [
             .product(name: "AWSTranslate", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Predictions/AWSPredictionsPlugin",
-        exclude: [
-            "Resources/Info.plist"
-        ]
+        exclude: []
     ),
     .testTarget(
         name: "AWSPredictionsPluginUnitTests",

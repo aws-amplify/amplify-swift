@@ -36,9 +36,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger {
             let result = try await resetPassword()
             log.verbose("Received result")
             return result
-        } catch let error as ForgotPasswordOutputError {
-            throw error.authError
-        } catch let error as SdkError<ForgotPasswordOutputError> {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error
