@@ -472,8 +472,9 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             )
         ]
 
+        let saveExpectation = expectation(description: "Save post completed")
+        saveExpectation.expectedFulfillmentCount = posts.count
         for post in posts {
-            let saveExpectation = expectation(description: "Save post completed")
             Amplify.DataStore.save(post) { result in
                 switch result {
                 case .success:
@@ -482,8 +483,8 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
                     XCTFail("Error saving post: \(post) - \(error)")
                 }
             }
-            wait(for: [saveExpectation], timeout: 2)
         }
+        wait(for: [saveExpectation], timeout: 2)
 
         let beginsWithExpectation = expectation(description: "query with beginsWith predicate completed")
         // This should only contain 1 Post with the title "_bc"
@@ -514,6 +515,7 @@ class DataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             case .success(let posts):
                 XCTAssertEqual(posts.count, 1)
                 XCTAssertEqual(posts[0].title, "de%")
+                containsExpectation.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }

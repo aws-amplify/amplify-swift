@@ -61,19 +61,6 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
     }
 
-    func startDataStore() {
-        let started = expectation(description: "DataStore started")
-        Amplify.DataStore.start { result in
-            switch result {
-            case .success:
-                started.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [started], timeout: 2)
-    }
-
     func stopDataStore() {
         let stopped = expectation(description: "DataStore stopped")
         Amplify.DataStore.stop { result in
@@ -134,13 +121,13 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
 
         try startAmplify()
-        Amplify.DataStore.start { result in
+        Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all) { result in
             if case .failure(let error) = result {
                 XCTFail("\(error)")
             }
         }
 
-        wait(for: [eventReceived], timeout: 100.0)
+        wait(for: [eventReceived], timeout: networkTimeout)
     }
 
 }
