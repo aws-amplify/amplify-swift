@@ -25,8 +25,20 @@ open class APIAuthProviderFactory {
 }
 
 public protocol AmplifyAuthTokenProvider {
+
     typealias AuthToken = String
+
     func getLatestAuthToken() -> Result<AuthToken, Error>
+
+    func getLatestAuthToken(completion: @escaping (Result<AuthToken, Error>) -> Void)
+}
+
+public extension AmplifyAuthTokenProvider {
+
+    func getLatestAuthToken(completion: @escaping (Result<AuthToken, Error>) -> Void) {
+        let result = getLatestAuthToken()
+        completion(result)
+    }
 }
 
 /// Amplify OIDC Auth Provider

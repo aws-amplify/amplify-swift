@@ -54,7 +54,7 @@ DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AppSyncRealTimeClient (~> 3.0)
+  - AppSyncRealTimeClient (from `https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git`, branch `main`)
   - AWSPluginsCore (from `../../`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)
@@ -62,7 +62,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AppSyncRealTimeClient
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -83,6 +82,9 @@ EXTERNAL SOURCES:
     :path: "../../"
   AmplifyTestCommon:
     :path: "../../"
+  AppSyncRealTimeClient:
+    :branch: main
+    :git: https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git
   AWSPluginsCore:
     :path: "../../"
   CwlPreconditionTesting:
@@ -90,6 +92,9 @@ EXTERNAL SOURCES:
     :tag: 2.1.0
 
 CHECKOUT OPTIONS:
+  AppSyncRealTimeClient:
+    :commit: 814d7a42a99371949732fc1e0fd72ad0edfcf6a9
+    :git: https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git
   CwlPreconditionTesting:
     :git: https://github.com/mattgallagher/CwlPreconditionTesting.git
     :tag: 2.1.0
@@ -114,6 +119,6 @@ SPEC CHECKSUMS:
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
 
-PODFILE CHECKSUM: 5170578806036f2ba018abb8868d56e448fb0ada
+PODFILE CHECKSUM: ed8a1897b59148645b469aec7b84a6aa25e10fd2
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
