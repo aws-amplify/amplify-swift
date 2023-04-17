@@ -10,7 +10,7 @@ import Vision
 
 class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
-    public func detectLabels(_ imageURL: URL) -> IdentifyLabelsResult? {
+    public func detectLabels(_ imageURL: URL) -> Predictions.Identify.Labels.Result? {
         var labelsResult = [Label]()
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNClassifyImageRequest()
@@ -23,10 +23,10 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             let label = Label(name: category.identifier.capitalized, metadata: metaData)
             labelsResult.append(label)
         }
-        return IdentifyLabelsResult(labels: labelsResult)
+        return Predictions.Identify.Labels.Result(labels: labelsResult)
     }
 
-    public func detectText(_ imageURL: URL) -> IdentifyTextResult? {
+    public func detectText(_ imageURL: URL) -> Predictions.Identify.Text.Result? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
@@ -57,7 +57,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             identifiedLines.append(line)
             rawLineText.append(identifiedText)
         }
-        return IdentifyTextResult(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
+        return Predictions.Identify.Text.Result(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
     }
 
     func detectEntities(_ imageURL: URL) -> Predictions.Identify.Entities.Result? {

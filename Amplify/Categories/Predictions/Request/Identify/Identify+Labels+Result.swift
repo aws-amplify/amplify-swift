@@ -7,18 +7,19 @@
 
 import CoreGraphics
 
-/// Results are mapped to IdentifyLabelsResult when .labels in passed to .detectLabels
-/// in the type: field in identify() API
-public struct IdentifyLabelsResult: IdentifyResult {
-    public let labels: [Label]
-    public let unsafeContent: Bool?
+extension Predictions.Identify.Labels {
+    /// Results are mapped to IdentifyLabelsResult when .labels in passed to .detectLabels
+    /// in the type: field in identify() API
+    public struct Result {
+        public let labels: [Label]
+        public let unsafeContent: Bool?
 
-    public init(labels: [Label], unsafeContent: Bool? = nil) {
-        self.labels = labels
-        self.unsafeContent = unsafeContent
+        public init(labels: [Label], unsafeContent: Bool? = nil) {
+            self.labels = labels
+            self.unsafeContent = unsafeContent
+        }
     }
 }
-
 /// Describes a real world object (e.g., chair, desk) identified in an image
 public struct Label {
     public let name: String

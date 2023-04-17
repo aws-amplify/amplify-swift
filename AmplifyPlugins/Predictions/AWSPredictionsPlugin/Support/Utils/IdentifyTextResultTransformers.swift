@@ -12,7 +12,7 @@ import AWSTextract
 
 enum IdentifyTextResultTransformers {
 
-    static func processText(_ rekognitionTextBlocks: [RekognitionClientTypes.TextDetection]) -> IdentifyTextResult {
+    static func processText(_ rekognitionTextBlocks: [RekognitionClientTypes.TextDetection]) -> Predictions.Identify.Text.Result {
         var words = [IdentifiedWord]()
         var lines = [String]()
         var identifiedLines = [IdentifiedLine]()
@@ -53,10 +53,12 @@ enum IdentifyTextResultTransformers {
             }
         }
 
-        return IdentifyTextResult(fullText: fullText,
-                                  words: words,
-                                  rawLineText: lines,
-                                  identifiedLines: identifiedLines)
+        return Predictions.Identify.Text.Result(
+            fullText: fullText,
+            words: words,
+            rawLineText: lines,
+            identifiedLines: identifiedLines
+        )
     }
 
     static func processText(_ textractTextBlocks: [TextractClientTypes.Block]) -> Predictions.Identify.DocumentText.Result {

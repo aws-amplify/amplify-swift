@@ -13,7 +13,7 @@ protocol AWSRekognitionServiceBehavior {
     func detectLabels(
         image: URL,
         type: LabelType
-    ) async throws -> IdentifyLabelsResult
+    ) async throws -> Predictions.Identify.Labels.Result
 
     func detectCelebrities(
         image: URL
@@ -26,7 +26,7 @@ protocol AWSRekognitionServiceBehavior {
 
     func detectPlainText(
         image: URL
-    ) async throws -> IdentifyTextResult
+    ) async throws -> Predictions.Identify.Text.Result
 
     func detectEntities(
         image: URL
@@ -35,5 +35,5 @@ protocol AWSRekognitionServiceBehavior {
     func detectEntitiesCollection(
         image: URL,
         collectionID: String
-    ) async throws -> IdentifyEntityMatchesResult
+    ) async throws -> Predictions.Identify.EntityMatches.Result
 }

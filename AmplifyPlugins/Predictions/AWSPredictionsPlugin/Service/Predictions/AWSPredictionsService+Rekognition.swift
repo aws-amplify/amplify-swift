@@ -15,7 +15,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     func detectLabels(
         image: URL,
         type: LabelType
-    ) async throws -> IdentifyLabelsResult  {
+    ) async throws -> Predictions.Identify.Labels.Result  {
         let imageData = try dataFromImage(url: image)
 
         switch type {
@@ -39,7 +39,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             }
 
             let newLabels = IdentifyLabelsResultTransformers.processLabels(labels)
-            return IdentifyLabelsResult(labels: newLabels, unsafeContent: nil)
+            return Predictions.Identify.Labels.Result(labels: newLabels, unsafeContent: nil)
         case .moderation:
             let moderationLabelsResult: DetectModerationLabelsOutputResponse
             do {
@@ -62,7 +62,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             let unsafeContent: Bool = !moderationRekognitionlabels.isEmpty
 
             let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationRekognitionlabels)
-            return IdentifyLabelsResult(labels: labels, unsafeContent: unsafeContent)
+            return Predictions.Identify.Labels.Result(labels: labels, unsafeContent: unsafeContent)
         case .all:
             return try await detectAllLabels(image: imageData)
         }
@@ -102,7 +102,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     func detectEntitiesCollection(
         image: URL,
         collectionID: String
-    ) async throws -> IdentifyEntityMatchesResult {
+    ) async throws -> Predictions.Identify.EntityMatches.Result {
         guard !collectionID.isEmpty else {
             throw NSError(domain: "", code: -1)
         }
@@ -139,7 +139,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         }
 
         let faceMatches = IdentifyEntitiesResultTransformers.processCollectionFaces(faces)
-        return IdentifyEntityMatchesResult(entities: faceMatches)
+        return Predictions.Identify.EntityMatches.Result(entities: faceMatches)
     }
 
     func detectEntities(
@@ -173,7 +173,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     }
 
 
-    func detectPlainText(image: URL) async throws -> IdentifyTextResult {
+    func detectPlainText(image: URL) async throws -> Predictions.Identify.Text.Result {
         let imageData = try dataFromImage(url: image)
 
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
@@ -248,7 +248,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     private func detectTextRekognition(
         image: URL
-    ) async throws -> IdentifyResult {
+    ) async throws -> Predictions.Identify.Text.Result {
         let imageData: Data
         do {
             imageData = try Data(contentsOf: image)
@@ -310,7 +310,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return identifyTextResult
             } else {
                 let textractResult = IdentifyTextResultTransformers.processText(textractTextDetections)
-                return textractResult
+                fatalError() // TODO: Combine types
+//                return textractResult
             }
         }
     }
@@ -337,7 +338,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         return try await awsRekognition.detectLabels(request: request)
     }
 
-    private func detectAllLabels(image: Data) async throws -> IdentifyLabelsResult {
+    private func detectAllLabels(image: Data) async throws -> Predictions.Identify.Labels.Result {
         let labelsResult: DetectLabelsOutputResponse
         do {
             labelsResult = try await detectRekognitionLabels(image: image) //, onEvent: { _ in })
@@ -379,7 +380,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         let unsafeContent = !moderationRekognitionLabels.isEmpty
 
-        return IdentifyLabelsResult(labels: allLabels, unsafeContent: unsafeContent)
+        return Predictions.Identify.Labels.Result(labels: allLabels, unsafeContent: unsafeContent)
     }
 
 

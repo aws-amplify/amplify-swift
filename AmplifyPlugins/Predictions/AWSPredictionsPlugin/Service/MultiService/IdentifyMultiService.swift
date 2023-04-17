@@ -110,14 +110,14 @@ class IdentifyMultiService<Output> {
     }
 
     private func mergeTextResult(
-        offline: IdentifyTextResult,
-        online: IdentifyTextResult
-    ) -> IdentifyTextResult {
+        offline: Predictions.Identify.Text.Result,
+        online: Predictions.Identify.Text.Result
+    ) -> Predictions.Identify.Text.Result {
         // If the online `IdentifyTextResult` doesn't have
         // any `identifiedLines`, replace the `identifiedLines`
         // property with the offline `IdentifyTextResult`s value.
         guard let onlineLines = online.identifiedLines else {
-            return IdentifyTextResult(
+            return Predictions.Identify.Text.Result(
                 fullText: online.fullText,
                 words: online.words,
                 rawLineText: online.rawLineText,
@@ -140,7 +140,7 @@ class IdentifyMultiService<Output> {
         // offline only returns identified lines,
         // so merging them with the other properties from
         // online is the merged result
-        return IdentifyTextResult(
+        return Predictions.Identify.Text.Result(
             fullText: online.fullText,
             words: online.words,
             rawLineText: online.rawLineText,
@@ -150,9 +150,9 @@ class IdentifyMultiService<Output> {
     }
 
     private func mergeLabelResult(
-        offline: IdentifyLabelsResult,
-        online: IdentifyLabelsResult
-    ) -> IdentifyLabelsResult {
+        offline: Predictions.Identify.Labels.Result,
+        online: Predictions.Identify.Labels.Result
+    ) -> Predictions.Identify.Labels.Result {
         let onlineLabelSet = Set(online.labels)
         let offlineLabelSet = Set(offline.labels)
         let intersection = onlineLabelSet.intersection(offlineLabelSet)
@@ -171,7 +171,7 @@ class IdentifyMultiService<Output> {
         combinedLabels.formUnion(onlineLabelSet)
         combinedLabels.formUnion(offlineLabelSet)
 
-        return IdentifyLabelsResult(
+        return Predictions.Identify.Labels.Result(
             labels: Array(combinedLabels),
             unsafeContent: online.unsafeContent
         )

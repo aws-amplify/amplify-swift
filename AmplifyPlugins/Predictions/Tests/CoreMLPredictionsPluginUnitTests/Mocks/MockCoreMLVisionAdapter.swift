@@ -10,16 +10,15 @@ import Amplify
 @testable import CoreMLPredictionsPlugin
 
 class MockCoreMLVisionAdapter: CoreMLVisionBehavior {
-
-    func detectLabels(_ imageURL: URL) -> IdentifyLabelsResult? {
+    func detectLabels(_ imageURL: URL) -> Predictions.Identify.Labels.Result? {
         return nil
     }
 
-    func detectText(_ imageURL: URL) -> IdentifyTextResult? {
+    func detectText(_ imageURL: URL) -> Predictions.Identify.Text.Result? {
         return nil
     }
 
-    func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult? {
+    func detectEntities(_ imageURL: URL) -> Predictions.Identify.Entities.Result? {
         return nil
     }
 }

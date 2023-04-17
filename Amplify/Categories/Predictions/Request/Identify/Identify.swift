@@ -53,12 +53,12 @@ extension Predictions.Identify.Request {
 
         case detectEntitiesCollection(
             String,
-            Lift<IdentifyEntityMatchesResult, Output>
+            Lift<Predictions.Identify.EntityMatches.Result, Output>
         )
 
         case detectLabels(
             LabelType,
-            Lift<IdentifyLabelsResult, Output>
+            Lift<Predictions.Identify.Labels.Result, Output>
         )
 
         case detectTextInDocument(
@@ -67,7 +67,7 @@ extension Predictions.Identify.Request {
         )
 
         case detectText(
-            Lift<IdentifyTextResult, Output>
+            Lift<Predictions.Identify.Text.Result, Output>
         )
     }
 }

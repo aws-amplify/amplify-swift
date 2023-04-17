@@ -7,7 +7,11 @@
 
 import Foundation
 
-extension Predictions.Identify.Request where Output == IdentifyLabelsResult {
+extension Predictions.Identify {
+    public enum Labels {}
+}
+
+extension Predictions.Identify.Request where Output == Predictions.Identify.Labels.Result {
     public static func labels(type: LabelType) -> Self {
         .init(kind: .detectLabels(type, .lift))
     }

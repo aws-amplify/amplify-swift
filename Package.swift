@@ -362,7 +362,7 @@ let predictionsTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Predictions/Tests/CoreMLPredictionsPluginUnitTests",
-        resources: [.copy("TestResources")]
+        resources: [.copy("TestResources/TestImages")]
     )
 ]
 
