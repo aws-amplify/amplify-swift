@@ -15,6 +15,14 @@ public protocol AuthTokenProvider {
     func getToken(completion: @escaping (Result<String, AuthError>) -> Void)
 }
 
+public extension AuthTokenProvider {
+
+    func getToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+        let result = getToken()
+        completion(result)
+    }
+}
+
 public struct BasicUserPoolTokenProvider: AuthTokenProvider {
 
     let authService: AWSAuthServiceBehavior
