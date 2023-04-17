@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.1 (2023-04-17)
+
+### Bug Fixes
+
+- **Auth**: Fixing handling of service SdkError in Auth tasks (#2859)
+- **predictions**: make predictions plugin init internal (#2855)
+
 ## 2.8.0 (2023-04-05)
 
 ### Features
