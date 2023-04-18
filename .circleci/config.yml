@@ -260,6 +260,7 @@ deploy_requires: &deploy_requires
     - ios_unit_test_auth
     - ios_unit_test_datastore
     - ios_unit_test_geo
+    - ios_unit_test_internal_pinpoint
     - ios_unit_test_push_notifications
     - ios_unit_test_storage
     - macos_unit_test_amplify
@@ -269,6 +270,7 @@ deploy_requires: &deploy_requires
     - macos_unit_test_auth
     - macos_unit_test_datastore
     - macos_unit_test_geo
+    - macos_unit_test_internal_pinpoint
     - macos_unit_test_push_notifications
     - macos_unit_test_storage
     - fortify_scan
