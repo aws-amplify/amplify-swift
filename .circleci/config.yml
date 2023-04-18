@@ -338,6 +338,13 @@ workflows:
           requires:
             - build_amplify_ios_spm
       - unit_test:
+          name: ios_unit_test_internal_pinpoint
+          scheme: InternalAWSPinpointUnitTests
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
           name: ios_unit_test_push_notifications
           scheme: AWSPinpointPushNotificationsPlugin
           sdk: iphonesimulator
@@ -396,6 +403,13 @@ workflows:
       - unit_test:
           name: macos_unit_test_geo
           scheme: AWSLocationGeoPlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_internal_pinpoint
+          scheme: InternalAWSPinpointUnitTests
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
