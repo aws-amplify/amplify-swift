@@ -114,6 +114,9 @@ SPEC CHECKSUMS:
   Amplify: 955400b4b5f29832357f682e15c659d049028306
   AmplifyPlugins: a82d1c5ddb2b5a8fcd23dd447f84b04f93dc00c2
   AmplifyTestCommon: 9b452352797cd82faa67e296669bb94bd531a5eb
+<<<<<<< HEAD
+>>>>>>> 6d33bd24f (feat(api): Add async protocol implementation for token request interceptors (#2870))
+=======
 >>>>>>> 6d33bd24f (feat(api): Add async protocol implementation for token request interceptors (#2870))
   AppSyncRealTimeClient: 49901c6f21e541bec09281854c5695a6c1309bf7
   AWSAuthCore: 42e2d4927d94e5e323b63b2ae885f287c51b5889
