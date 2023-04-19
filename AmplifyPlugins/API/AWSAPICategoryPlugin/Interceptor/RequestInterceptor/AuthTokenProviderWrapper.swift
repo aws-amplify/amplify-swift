@@ -29,4 +29,19 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
         }
     }
 
+    func getToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+        wrappedAuthTokenProvider.getLatestAuthToken { result in
+            switch result {
+            case .success(let token):
+                completion(.success(token))
+                return
+            case .failure(let error):
+                completion(.failure(AuthError.service("Unable to get latest auth token",
+                                                      "",
+                                                      error)))
+                return
+            }
+        }
+    }
+
 }
