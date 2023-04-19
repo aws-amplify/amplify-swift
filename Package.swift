@@ -280,7 +280,8 @@ let internalPinpointTargets: [Target] = [
         name: "InternalAWSPinpointUnitTests",
         dependencies: [
             "InternalAWSPinpoint",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "AmplifyAsyncTesting"
         ],
         path: "AmplifyPlugins/Internal/Tests/InternalAWSPinpointUnitTests"
     )
