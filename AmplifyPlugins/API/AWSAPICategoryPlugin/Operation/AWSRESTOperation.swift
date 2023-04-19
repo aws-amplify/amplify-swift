@@ -92,37 +92,63 @@ final public class AWSRESTOperation: AmplifyOperation<
         }
 
         // Construct URL Request with url and request body
-        let urlRequest = RESTOperationRequestUtils.constructURLRequest(with: url,
-                                                                       operationType: request.operationType,
-                                                                       headers: request.headers,
-                                                                       requestPayload: request.body)
+        let urlRequest = RESTOperationRequestUtils.constructURLRequest(
+            with: url,
+            operationType: request.operationType,
+            headers: request.headers,
+            requestPayload: request.body)
 
         // Intercept request
-        let finalRequest = requestInterceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
-            do {
-                return try interceptor.intercept(request)
-            } catch let error as APIError {
-                dispatch(result: .failure(error))
-                cancel()
-                return request
-            } catch {
-                dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
-                                                                  "Something wrong with the interceptor",
-                                                                  error)))
-                cancel()
-                return request
+        chainInterceptors(iterator: requestInterceptors.makeIterator(),
+                          request: urlRequest) { finalRequest in
+            if self.isCancelled {
+                self.finish()
+                return
             }
+
+            // Begin network task
+            let task = self.session.dataTaskBehavior(with: finalRequest)
+            self.mapper.addPair(operation: self, task: task)
+            task.resume()
         }
+    }
+
+    private func chainInterceptors<I: IteratorProtocol>(
+        iterator: I,
+        request: URLRequest,
+        completion: @escaping (URLRequest) -> Void
+    ) where I.Element == URLRequestInterceptor {
 
         if isCancelled {
-            finish()
+            completion(request)
             return
         }
 
-        // Begin network task
-        let task = session.dataTaskBehavior(with: finalRequest)
-        mapper.addPair(operation: self, task: task)
-        task.resume()
+        var mutableIterator = iterator
+        guard let interceptor = mutableIterator.next() else {
+            completion(request)
+            return
+        }
+        interceptor.intercept(request) { result in
+            do {
+                let interceptedRequest = try result.get()
+                completion(interceptedRequest)
+                return
+            } catch let error as APIError {
+                self.dispatch(result: .failure(error))
+                self.cancel()
+                completion(request)
+                return
+            } catch {
+                self.dispatch(result: .failure(
+                    APIError.operationError("Failed to intercept request fully.",
+                                            "Something wrong with the interceptor",
+                                            error)))
+                self.cancel()
+                completion(request)
+                return
+            }
+
+        }
     }
 }
-
