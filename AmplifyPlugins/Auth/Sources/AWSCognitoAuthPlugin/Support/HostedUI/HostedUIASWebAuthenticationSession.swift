@@ -18,36 +18,43 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                       inPrivate: Bool,
                       presentationAnchor: AuthUIPresentationAnchor?,
                       callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
-
-        self.webPresentation = presentationAnchor
-        let aswebAuthenticationSession = ASWebAuthenticationSession(
-            url: url,
-            callbackURLScheme: callbackScheme,
-            completionHandler: { url, error in
-                if let url = url {
-                    let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
-                    let queryItems = urlComponents?.queryItems ?? []
-
-                    if let error = queryItems.first(where: { $0.name == "error" })?.value {
-                        callback(.failure(.serviceMessage(error)))
-                        return
+        
+        if #available(tvOS 16, watchOS 6.2, *) {
+            
+            self.webPresentation = presentationAnchor
+            let aswebAuthenticationSession = ASWebAuthenticationSession(
+                url: url,
+                callbackURLScheme: callbackScheme,
+                completionHandler: { url, error in
+                    if let url = url {
+                        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                        let queryItems = urlComponents?.queryItems ?? []
+                        
+                        if let error = queryItems.first(where: { $0.name == "error" })?.value {
+                            callback(.failure(.serviceMessage(error)))
+                            return
+                        }
+                        callback(.success(queryItems))
+                    } else if let error = error {
+                        callback(.failure(self.convertHostedUIError(error)))
+                        
+                    } else {
+                        callback(.failure(.unknown))
                     }
-                    callback(.success(queryItems))
-                } else if let error = error {
-                    callback(.failure(self.convertHostedUIError(error)))
-
-                } else {
-                    callback(.failure(.unknown))
-                }
-            })
-        aswebAuthenticationSession.presentationContextProvider = self
-        aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
-
-        DispatchQueue.main.async {
-            aswebAuthenticationSession.start()
+                })
+#if os(iOS) || os(macOS)
+            aswebAuthenticationSession.presentationContextProvider = self
+#endif
+#if !os(tvOS)
+            aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
+#endif
+            DispatchQueue.main.async {
+                aswebAuthenticationSession.start()
+            }
         }
     }
 
+    @available(tvOS 16, watchOS 6.2, *)
     private func convertHostedUIError(_ error: Error) -> HostedUIError {
         if let asWebAuthError = error as? ASWebAuthenticationSessionError {
             switch asWebAuthError.code {
@@ -65,9 +72,11 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
     }
 }
 
+#if os(iOS) || os(macOS)
 extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationContextProviding {
 
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return webPresentation ?? ASPresentationAnchor()
     }
 }
+#endif

@@ -46,6 +46,7 @@ extension AWSPinpointPushNotificationsPlugin {
         )
     }
 
+#if !os(tvOS)
     public func recordNotificationOpened(_ response: UNNotificationResponse) async throws {
         let applicationState = await self.applicationState
         await recordNotification(
@@ -54,6 +55,7 @@ extension AWSPinpointPushNotificationsPlugin {
             action: .opened
         )
     }
+#endif
 
     private func recordNotification(_ userInfo: [String: Any],
                                     applicationState: ApplicationState,

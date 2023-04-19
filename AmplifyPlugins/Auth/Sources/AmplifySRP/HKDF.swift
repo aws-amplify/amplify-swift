@@ -16,7 +16,7 @@ public enum HMACKeyDerivationFunction {
                                           salt: Data,
                                           info: String?,
                                           outputLength: Int) -> Data {
-        if #available(macOS 11.0, iOS 14.0, tvOS 14.0, *) {
+        if #available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *) {
             return generateHKDF(keyingMaterial: keyingMaterial,
                                 salt: salt,
                                 info: info,
@@ -27,7 +27,7 @@ public enum HMACKeyDerivationFunction {
         }
     }
 
-    @available(macOS 11.0, iOS 14.0, tvOS 14.0, *)
+    @available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *)
     private static func generateHKDF(keyingMaterial: Data,
                              salt: Data,
                              info: String?,
