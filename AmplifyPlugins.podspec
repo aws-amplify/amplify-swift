@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'AWSAPIPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
-    ss.dependency 'AppSyncRealTimeClient', "~> 3.0"
+    ss.dependency 'AppSyncRealTimeClient', "~> 3.1"
   end
 
   s.subspec 'AWSCognitoAuthPlugin' do |ss|

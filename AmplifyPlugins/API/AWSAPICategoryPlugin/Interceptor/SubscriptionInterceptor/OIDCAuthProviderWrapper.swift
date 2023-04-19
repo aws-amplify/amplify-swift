@@ -20,4 +20,8 @@ class OIDCAuthProviderWrapper: OIDCAuthProvider {
     func getLatestAuthToken() -> Result<String, Error> {
         return authTokenProvider.getLatestAuthToken()
     }
+
+    func getLatestAuthToken(completion: @escaping (Result<String, Error>) -> Void ) {
+        authTokenProvider.getLatestAuthToken(completion: completion)
+    }
 }
