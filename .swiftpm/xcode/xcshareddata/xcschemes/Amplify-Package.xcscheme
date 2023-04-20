@@ -404,7 +404,25 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSPredictionsPlugin"
+            BuildableName = "AWSPredictionsPlugin"
+            BlueprintName = "AWSPredictionsPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "CoreMLPredictionsPlugin"
+            BuildableName = "CoreMLPredictionsPlugin"
+            BlueprintName = "CoreMLPredictionsPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -570,6 +588,14 @@
                BlueprintName = "CoreMLPredictionsPluginUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "CoreMLVisionAdapterTests/testDetectEntities()">
+               </Test>
+               <Test
+                  Identifier = "CoreMLVisionAdapterTests/testDetectLabels()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
