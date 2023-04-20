@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-#if !os(watchOS)
+//#if !os(watchOS)
 
 struct HostedUIOptions {
 
@@ -50,4 +50,4 @@ extension HostedUIOptions: Codable {
 
 extension HostedUIOptions: Equatable { }
 
-#endif
+//#endif

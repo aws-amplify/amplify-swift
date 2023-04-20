@@ -14,8 +14,10 @@ public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 public typealias AuthUIPresentationAnchor = FakeAuthUIPresentationAnchor
 #endif
 
-public class FakeAuthUIPresentationAnchor {
-    
+public class FakeAuthUIPresentationAnchor: Equatable {
+    public static func == (lhs: FakeAuthUIPresentationAnchor, rhs: FakeAuthUIPresentationAnchor) -> Bool {
+        true
+    }
 }
 
 /// Behavior of the Auth category that clients will use
