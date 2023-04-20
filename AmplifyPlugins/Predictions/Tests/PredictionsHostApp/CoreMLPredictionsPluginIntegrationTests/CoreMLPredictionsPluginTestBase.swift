@@ -22,7 +22,7 @@ class AWSPredictionsPluginTestBase: XCTestCase {
     override func tearDown() async throws {
         print("Amplify reset")
         await Amplify.reset()
-        sleep(5)
+//        sleep(5)
     }
 
     private func setupAmplify() {

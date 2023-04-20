@@ -46,13 +46,16 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                                 transcription: transcription.transcript?.results?.first?.alternatives?.first?.transcript ?? ""
                             )
                         )
+                        let isPartial = transcription.transcript?.results?.map(\.isPartial) ?? []
+                        let shouldContinue = isPartial.allSatisfy { $0 }
+                        if !shouldContinue { continuation.finish() }
                     }
                 } catch let error as URLError {
                     continuation.finish(
                         throwing: PredictionsError.network(
-                        "URLError encountered while trying to establish connection",
-                        "Ensure your configuration is properly set up.",
-                        error
+                            "URLError encountered while trying to establish connection",
+                            "Ensure your configuration is properly set up.",
+                            error
                         )
                     )
                 } catch {

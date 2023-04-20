@@ -105,11 +105,11 @@ extension AWSPredictionsPlugin {
     }
 
     private func reconcileVoiceID(
-        voice: String?,
+        voice: Predictions.Convert.TextToSpeech.Options.Voice?,
         config: PredictionsPluginConfiguration
     ) -> PollyClientTypes.VoiceId {
         if let voice = voice,
-           let pollyVoiceID = PollyClientTypes.VoiceId(rawValue: voice) {
+           let pollyVoiceID = PollyClientTypes.VoiceId(rawValue: voice.id) {
             return pollyVoiceID
         }
 

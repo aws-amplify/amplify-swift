@@ -25,81 +25,61 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     /// When: Image is sent to Rekognition
     /// Then: The operation completes successfully
     func testIdentifyLabels() async throws {
-        let url = try imageURL(for: "testImageLabels")
+        let image = try imageURL(for: "testImageLabels")
+        let result = try await Amplify.Predictions
+            .identify(.labels(type: .labels), in: image)
 
-        let result = try await Amplify.Predictions.identify(
-            .labels(type: .labels),
-            in: url,
-            options: .init()
+        let electronicsLabel = try XCTUnwrap(
+            result.labels.first(where: { $0.name == "Electronics" })?.metadata
         )
-        print(#function, result)
+        let isConfidentImageContainsElectronics = electronicsLabel.confidence >= 99
         XCTAssertNotNil(result)
     }
 
     func testIdentifyModerationLabels() async throws {
-        let url = try imageURL(for: "testImageLabels")
-        let result = try await Amplify.Predictions.identify(
-            .labels(type: .moderation),
-            in: url,
-            options: .init()
-        )
+        let image = try imageURL(for: "testImageLabels")
+        let result = try await Amplify.Predictions
+            .identify(.labels(type: .moderation), in: image)
 
         XCTAssert(result.unsafeContent == false)
     }
 
     func testIdentifyAllLabels() async throws {
-        let url = try imageURL(for: "testImageLabels")
-        let result = try await Amplify.Predictions.identify(
-            .labels(type: .all),
-            in: url,
-            options: .init()
+        let image = try imageURL(for: "testImageLabels")
+        let result = try await Amplify.Predictions
+            .identify(.labels(type: .all), in: image)
+
+        let imageContainsElectronics = result.labels.contains(
+            where: { $0.name == "Electronics" }
         )
-        print(#function, result)
-        XCTAssertNotNil(result)
+        XCTAssert(imageContainsElectronics)
     }
 
     func testIdentifyCelebrities() async throws {
-        let url = try imageURL(for: "testImageCeleb")
-        let result = try await Amplify.Predictions.identify(
-            .celebrities,
-            in: url,
-            options: .init()
+        let image = try imageURL(for: "testImageCeleb")
+        let result = try await Amplify.Predictions.identify(.celebrities, in: image)
+        let imageContainsBillClinton = result.celebrities.contains(
+            where: { $0.metadata.name == "Bill Clinton" }
         )
-        print(#function, result)
-        XCTAssertNotNil(result)
-    }
-
-    func testIdentifyEntityMatches() async throws {
-        let url = try imageURL(for: "testImageEntities")
-        let result = try await Amplify.Predictions.identify(
-            .entities,
-            in: url,
-            options: .init()
-        )
-        print(#function, result)
-        XCTAssertNotNil(result)
+        XCTAssert(imageContainsBillClinton)
     }
 
     func testIdentifyEntities() async throws {
-        let url = try imageURL(for: "testImageEntities")
-        let result = try await Amplify.Predictions.identify(
-            .entities,
-            in: url,
-            options: .init()
-        )
-        print(#function, result)
-        XCTAssertNotNil(result)
+        let image = try imageURL(for: "testImageEntities")
+        let result = try await Amplify.Predictions.identify(.entities, in: image)
+        let imageContainsTwoEntities = result.entities.count == 2
+        XCTAssert(imageContainsTwoEntities)
     }
 
     func testIdentifyTextPlain() async throws {
-        let url = try imageURL(for: "testImageText")
-        let result = try await Amplify.Predictions.identify(
-            .textInDocument(textFormatType: .plain),
-            in: url,
-            options: .init()
-        )
-        print(#function, result)
-        XCTAssertNotNil(result)
+        let image = try imageURL(for: "testImageText")
+        let result = try await Amplify.Predictions
+            .identify(.textInDocument(textFormatType: .plain), in: image)
+
+        let foundWords = Set(result.words.map(\.text))
+        let expectedWordsSample = Set(["ANAGRAM", "BETTER", "IDEAS", "THIS"])
+        let didFindExpectedWords = expectedWordsSample.subtracting(foundWords).isEmpty
+        XCTAssert(didFindExpectedWords)
     }
 
     /// Given:
@@ -112,12 +92,9 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     /// - keyValues from returned data is not empty
     /// - tables from returned data is not empty
     func testIdentifyTextAll() async throws {
-        let url = try imageURL(for: "testImageTextAll")
-        let result = try await Amplify.Predictions.identify(
-            .textInDocument(textFormatType: .all),
-            in: url,
-            options: .init() //.(defaultNetworkPolicy: .offline)
-        )
+        let image = try imageURL(for: "testImageTextAll")
+        let result = try await Amplify.Predictions
+            .identify(.textInDocument(textFormatType: .all), in: image)
 
         XCTAssertNotNil(result)
         XCTAssertFalse(result.fullText.isEmpty)
@@ -143,12 +120,9 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     /// - fullText from returned data is not empty
     /// - keyValues from returned data is not empty
     func testIdentifyTextForms() async throws {
-        let url = try imageURL(for: "testImageTextForms")
-        let result = try await Amplify.Predictions.identify(
-            .textInDocument(textFormatType: .form),
-            in: url,
-            options: .init()
-        )
+        let image = try imageURL(for: "testImageTextForms")
+        let result = try await Amplify.Predictions
+            .identify(.textInDocument(textFormatType: .form), in: image)
 
         XCTAssertNotNil(result)
         XCTAssertFalse(result.fullText.isEmpty)
@@ -171,13 +145,9 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     /// - fullText from returned data is not empty
     /// - tables from returned data is not empty
     func testIdentifyTextTables() async throws {
-        let url = try imageURL(for: "testImageTextWithTables")
-
-        let result = try await Amplify.Predictions.identify(
-            .textInDocument(textFormatType: .table),
-            in: url,
-            options: .init()
-        )
+        let image = try imageURL(for: "testImageTextWithTables")
+        let result = try await Amplify.Predictions
+            .identify(.textInDocument(textFormatType: .table), in: image)
 
         XCTAssertNotNil(result)
         XCTAssertFalse(result.fullText.isEmpty)
@@ -200,7 +170,5 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         XCTAssertEqual(result.tables[0].cells[2].rowIndex, 3)
         XCTAssertEqual(result.tables[0].cells[2].columnIndex, 3)
         XCTAssertEqual(result.tables[0].cells[2].text, "Bottom right")
-
     }
-
 }

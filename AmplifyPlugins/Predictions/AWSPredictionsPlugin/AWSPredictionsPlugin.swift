@@ -35,7 +35,16 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
     public init() {}
 
-    public func reset() async {}
+    public func reset() async {
+        if predictionsService != nil {
+            predictionsService.reset()
+            predictionsService = nil
+        }
+
+        if authService != nil {
+            authService = nil
+        }
+    }
 }
 
 extension AWSPredictionsPlugin: AmplifyVersionable { }

@@ -15,7 +15,7 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let testBundle = Bundle(for: type(of: self))
         let url = try XCTUnwrap(testBundle.url(forResource: "audio", withExtension: "wav"))
 
-        let options = PredictionsSpeechToTextRequest.Options(
+        let options = Predictions.Convert.SpeechToText.Options(
             defaultNetworkPolicy: .auto,
             language: .usEnglish,
             pluginOptions: nil
@@ -43,7 +43,8 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
     func testConvertTextToSpeech() async throws {
         let result = try await Amplify.Predictions.convert(
-            .textToSpeech("Hello, world!")
+            .textToSpeech("Hello, world!"),
+            options: .init(voice: .brazPortugueseMaleRicardo)
         )
 
         let player = try AVAudioPlayer(data: result.audioData)
