@@ -94,24 +94,23 @@ class IAMAuthInterceptorTests: XCTestCase {
     }
 
     func testInterceptConnection() {
-        let mockAuthService = MockAWSAuthService()
-        let interceptor = IAMAuthInterceptor(mockAuthService.getCredentialsProvider(), region: .USWest2)
         let url = URL(string: "https://abc.appsync-api.us-west-2.amazonaws.com/graphql")!
         let request = NSMutableURLRequest(url: url)
         request.addValue("headerValue", forHTTPHeaderField: "extra-header")
         let signer = MockAWSSignatureV4Signer()
-        let authHeader = interceptor.getAuthHeader(host: "host",
-                                               mutableRequest: request,
-                                               signer: signer,
-                                               amzDate: "date",
-                                               payload: "payload")
-
-        XCTAssertNotNil(authHeader.authorization)
-        XCTAssertNotNil(authHeader.securityToken)
-        XCTAssertEqual(authHeader.amzDate, "date")
-        XCTAssertEqual(authHeader.accept, "application/json, text/javascript")
-        XCTAssertEqual(authHeader.contentEncoding, "amz-1.0")
-        XCTAssertEqual(authHeader.contentType, "application/json; charset=UTF-8")
-        XCTAssertEqual(authHeader.additionalHeaders, ["extra-header": "headerValue"])
+        let signingHelper = HeaderIAMSigningHelper(
+            endpoint: url,
+            payload: "payload",
+            region: .USWest2,
+            dateString: "date")
+        signingHelper?.sign(signer: signer, mutableRequest: request) { authHeader in
+            XCTAssertNotNil(authHeader.authorization)
+            XCTAssertNotNil(authHeader.securityToken)
+            XCTAssertEqual(authHeader.amzDate, "date")
+            XCTAssertEqual(authHeader.accept, "application/json, text/javascript")
+            XCTAssertEqual(authHeader.contentEncoding, "amz-1.0")
+            XCTAssertEqual(authHeader.contentType, "application/json; charset=UTF-8")
+            XCTAssertEqual(authHeader.additionalHeaders, ["extra-header": "headerValue"])
+        }
     }
 }

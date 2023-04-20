@@ -63,7 +63,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AppSyncRealTimeClient
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -84,6 +83,9 @@ EXTERNAL SOURCES:
     :path: "../../"
   AmplifyTestCommon:
     :path: "../../"
+  AppSyncRealTimeClient:
+    :branch: main
+    :git: https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git
   AWSPluginsCore:
     :path: "../../"
   CwlPreconditionTesting:
@@ -91,6 +93,9 @@ EXTERNAL SOURCES:
     :tag: 2.1.0
 
 CHECKOUT OPTIONS:
+  AppSyncRealTimeClient:
+    :commit: 814d7a42a99371949732fc1e0fd72ad0edfcf6a9
+    :git: https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git
   CwlPreconditionTesting:
     :git: https://github.com/mattgallagher/CwlPreconditionTesting.git
     :tag: 2.1.0
