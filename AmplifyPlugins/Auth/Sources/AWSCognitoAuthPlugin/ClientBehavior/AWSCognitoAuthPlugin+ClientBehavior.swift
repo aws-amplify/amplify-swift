@@ -47,7 +47,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! AuthCodeDeliveryDetails
     }
 
-#if !os(watchOS)
+//#if !os(watchOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
@@ -81,7 +81,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             return try await task.value
         } as! AuthSignInResult
     }
-#endif
+//#endif
 
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {

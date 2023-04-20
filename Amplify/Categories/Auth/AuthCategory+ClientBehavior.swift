@@ -29,7 +29,7 @@ extension AuthCategory: AuthCategoryBehavior {
         return try await plugin.signIn(username: username, password: password, options: options)
     }
 
-#if !os(watchOS)
+//#if !os(watchOS)
     public func signInWithWebUI(
         presentationAnchor: AuthUIPresentationAnchor? = nil,
         options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
@@ -44,7 +44,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                       presentationAnchor: presentationAnchor,
                                       options: options)
     }
-#endif
+//#endif
 
     public func confirmSignIn(challengeResponse: String, options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         return try await plugin.confirmSignIn(challengeResponse: challengeResponse, options: options)
