@@ -17,13 +17,19 @@ enum StorageEngineEvent {
     case readyEvent
 }
 
+enum SyncEngineInitResult {
+    case alreadyInitialized
+    case successfullyInitialized
+    case failure(DataStoreError)
+}
+
 protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior {
 
     @available(iOS 13.0, *)
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> { get }
 
     /// start remote sync, based on if sync is enabled and/or authentication is required
-    func startSync(completion: @escaping DataStoreCallback<Void>)
+    func startSync() -> Result<SyncEngineInitResult, DataStoreError>
     func stopSync(completion: @escaping DataStoreCallback<Void>)
     func clear(completion: @escaping DataStoreCallback<Void>)
 }

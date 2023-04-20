@@ -12,36 +12,57 @@ import AWSPluginsCore
 
 extension StorageEngine {
 
-    func startSync(completion: @escaping DataStoreCallback<Void>) {
-        guard let api = tryGetAPIPlugin() else {
-            log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
-            completion(.failure(.configuration(
-                "Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
-                "Ensure the API category has been setup and configured for your project",
-                nil
-            )))
-            return
+    func startSync() -> Result<SyncEngineInitResult, DataStoreError> {
+        let (result, syncEngine) = initalizeSyncEngine()
+
+        if let syncEngine = syncEngine, !syncEngine.isSyncing() {
+            guard let api = tryGetAPIPlugin() else {
+                log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
+                return .failure(.configuration(
+                    "Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
+                    "Ensure the API category has been setup and configured for your project",
+                    nil
+                ))
+            }
+
+            let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
+
+            guard authPluginRequired else {
+                syncEngine.start(api: api, auth: nil)
+                return .success(.successfullyInitialized)
+            }
+
+            guard let auth = tryGetAuthPlugin() else {
+                log.warn("Unable to find suitable Auth plugin for syncEngine. Models require auth")
+                return .failure(.configuration(
+                    "Unable to find suitable Auth plugin for syncEngine. Models require auth",
+                    "Ensure the Auth category has been setup and configured for your project",
+                    nil
+                ))
+            }
+            syncEngine.start(api: api, auth: auth)
         }
 
-        let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
+        return .success(result)
+    }
 
-        guard authPluginRequired else {
-            syncEngine?.start(api: api, auth: nil)
-            completion(.successfulVoid)
-            return
-        }
+    private func initalizeSyncEngine() -> (SyncEngineInitResult, RemoteSyncEngineBehavior?) {
+        if let syncEngine = syncEngine {
+            return (.alreadyInitialized, syncEngine)
+        } else {
+            if #available(iOS 13.0, *), isSyncEnabled, syncEngine == nil {
+                self.syncEngine = try? RemoteSyncEngine(
+                    storageAdapter: storageAdapter,
+                    dataStoreConfiguration: dataStoreConfiguration
+                )
 
-        guard let auth = tryGetAuthPlugin() else {
-            log.warn("Unable to find suitable Auth plugin for syncEngine. Models require auth")
-            completion(.failure(.configuration(
-                "Unable to find suitable Auth plugin for syncEngine. Models require auth",
-                "Ensure the Auth category has been setup and configured for your project",
-                nil
-            )))
-            return
+                self.syncEngineSink = syncEngine?.publisher.sink(
+                    receiveCompletion: onReceiveCompletion(receiveCompletion:),
+                    receiveValue: onReceive(receiveValue:)
+                )
+            }
+            return (.successfullyInitialized, syncEngine)
         }
-        syncEngine?.start(api: api, auth: auth)
-        completion(.successfulVoid)
     }
 
     private func tryGetAPIPlugin() -> APICategoryPlugin? {

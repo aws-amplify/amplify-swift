@@ -15,6 +15,7 @@ import Combine
 
 typealias OnSubmitCallBack = (MutationEvent) -> Void
 class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
+    var syncing = false
 
     let remoteSyncTopicPublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>
     var callbackOnSubmit: OnSubmitCallBack?
@@ -28,11 +29,16 @@ class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
         self.remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
     }
     func start(api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
-
+        syncing = true
     }
 
     func stop(completion: @escaping DataStoreCallback<Void>) {
+        syncing = false
+        completion(.successfulVoid)
+    }
 
+    func isSyncing() -> Bool {
+        return syncing
     }
 
     @available(iOS 13.0, *)

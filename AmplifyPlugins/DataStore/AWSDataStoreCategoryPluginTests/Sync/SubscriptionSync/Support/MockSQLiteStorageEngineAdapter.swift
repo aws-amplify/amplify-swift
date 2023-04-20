@@ -282,9 +282,11 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
+
     static let mockStorageEngineBehaviorFactory =
         MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:) // swiftlint:disable:this line_length
     var responders = [ResponderKeys: Any]()
+    var startedSync = false
 
     init() {
     }
@@ -306,18 +308,24 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
         mockPublisher.eraseToAnyPublisher()
     }
 
-    func startSync(completion: @escaping DataStoreCallback<Void>) {
-        completion(.successfulVoid)
-        if let responder = responders[.startSync] as? StartSyncResponder {
-            return responder.callback("")
+    func startSync() -> Result<AWSDataStoreCategoryPlugin.SyncEngineInitResult, DataStoreError> {
+        if !startedSync {
+            if let responder = responders[.startSync] as? StartSyncResponder {
+                responder.callback("")
+            }
+            startedSync = true
+            return .success(.successfullyInitialized)
+        } else {
+            return .success(.alreadyInitialized)
         }
     }
 
     func stopSync(completion: @escaping DataStoreCallback<Void>) {
-        completion(.successfulVoid)
         if let responder = responders[.stopSync] as? StopSyncResponder {
-            return responder.callback("")
+            responder.callback("")
         }
+        startedSync = false
+        completion(.successfulVoid)
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {
@@ -390,6 +398,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
+        startedSync = false
         completion(.successfulVoid)
         if let responder = responders[.clear] as? ClearResponder {
             return responder.callback("")
