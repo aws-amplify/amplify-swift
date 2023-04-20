@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-//#if !os(watchOS)
 import Foundation
 
 /// Request to initiate sign in using a web UI.
@@ -50,4 +49,3 @@ public extension AuthWebUISignInRequest {
         }
     }
 }
-//#endif

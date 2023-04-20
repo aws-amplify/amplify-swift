@@ -6,9 +6,9 @@
 //
 
 import Foundation
-#if !os(watchOS)
 import AuthenticationServices
 
+#if !os(watchOS)
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #else
 public typealias AuthUIPresentationAnchor = FakeAuthUIPresentationAnchor
