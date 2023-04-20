@@ -28,4 +28,4 @@ jobs:
           REPO_URL: ${{github.event.repository.html_url}}
           ACTION_NAME: ${{github.event.action}}
         shell: bash
-        run: echo $VERSION | xargs -I {} curl -s POST "$WEBHOOK_URL" -H "Content-Type:application/json" --data '{"action":"$ACTION_NAME", "repo":"$REPO_URL", "version":"{}"}'
+        run: echo $VERSION | xargs -I {} curl -s POST "$WEBHOOK_URL" -H "Content-Type:application/json" --data '{"action":"'$ACTION_NAME'", "repo":"'$REPO_URL'", "version":"{}"}'
