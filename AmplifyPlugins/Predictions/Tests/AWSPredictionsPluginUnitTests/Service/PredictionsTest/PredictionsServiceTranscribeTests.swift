@@ -72,90 +72,91 @@ class PredictionsServiceTranscribeTests: XCTestCase {
 
             continuation.finish()
         }
+    }
 
-        /// Test whether we can make a successful transcribe call
-        ///
-        /// - Given: Predictions service with transcribe behavior
-        /// - When:
-        ///    - I invoke transcribe api in predictions service
-        /// - Then:
-        ///    - I should get back a result
-        func testTranscribeService() async throws {
-            let mockResponse = createMockTranscribeResponse()
-            mockTranscribe.startStreamingResult = { _, _ in
-                mockResponse
+    /// Test whether we can make a successful transcribe call
+    ///
+    /// - Given: Predictions service with transcribe behavior
+    /// - When:
+    ///    - I invoke transcribe api in predictions service
+    /// - Then:
+    ///    - I should get back a result
+    func testTranscribeService() async throws {
+        let mockResponse = createMockTranscribeResponse()
+        mockTranscribe.startStreamingResult = { _, _ in
+            mockResponse
+        }
+        let expectedTranscription = "This is a test"
+
+        let result = try await predictionsService.transcribe(
+            speechToText: audioFile,
+            language: .usEnglish,
+            region: "us-east-1"
+        )
+
+        for try await transcript in result.map(\.transcription) {
+            print(transcript)
+            XCTAssertEqual(transcript, expectedTranscription, "transcribed text should be the same")
+            break
+        }
+    }
+
+    /// Test whether error is correctly propogated
+    ///
+    /// - Given: Predictions service with transcribe behavior
+    /// - When:
+    ///    - I invoke an invalid request
+    /// - Then:
+    ///    - I should get back a service error
+    func testTranscribeServiceWithError() async throws {
+        mockTranscribe.startStreamingResult = { _, _ in throw self.mockError }
+
+        do {
+            let result = try await predictionsService.transcribe(speechToText: audioFile, language: .usEnglish, region: "us-east-1")
+            for try await value in result {
+                XCTFail("Should not produce value: \(value)")
             }
-            let expectedTranscription = "This is a test"
-
-            let result = try await predictionsService.transcribe(
-                speechToText: audioFile,
-                language: .usEnglish,
-                region: "us-east-1"
-            )
-
-            for try await transcript in result.map(\.transcription) {
-                print(transcript)
-                XCTAssertEqual(transcript, expectedTranscription, "transcribed text should be the same")
-                break
-            }
+        } catch {
+            XCTAssertNotNil(error, "Should produce an error")
         }
 
-        /// Test whether error is correctly propogated
-        ///
-        /// - Given: Predictions service with transcribe behavior
-        /// - When:
-        ///    - I invoke an invalid request
-        /// - Then:
-        ///    - I should get back a service error
-        func testTranscribeServiceWithError() async throws {
-            mockTranscribe.startStreamingResult = { _, _ in throw self.mockError }
+    }
 
-            do {
-                let result = try await predictionsService.transcribe(speechToText: audioFile, language: .usEnglish, region: "us-east-1")
-                for try await value in result {
-                    XCTFail("Should not produce value: \(value)")
-                }
-            } catch {
-                XCTAssertNotNil(error, "Should produce an error")
+    /// Test whether error is correctly propogated
+    ///
+    /// - Given: Predictions service with transcribe behavior
+    /// - When:
+    ///    - I invoke an invalid request with Unreachable host
+    /// - Then:
+    ///    - I should get back a connection error
+    ///
+    func testTranscribeServiceWithCannotFindHostError() async throws {
+        let urlError = URLError(.cannotFindHost)
+        mockTranscribe.startStreamingResult = { _, _ in throw urlError }
+
+        do {
+            let result = try await predictionsService.transcribe(speechToText: audioFile, language: .usEnglish, region: "us-east-1")
+            for try await value in result {
+                XCTFail("Should not produce value: \(value)")
             }
-
-        }
-
-        /// Test whether error is correctly propogated
-        ///
-        /// - Given: Predictions service with transcribe behavior
-        /// - When:
-        ///    - I invoke an invalid request with Unreachable host
-        /// - Then:
-        ///    - I should get back a connection error
-        ///
-        func testTranscribeServiceWithCannotFindHostError() async throws {
-            let urlError = URLError(.cannotFindHost)
-            mockTranscribe.startStreamingResult = { _, _ in throw urlError }
-
-            do {
-                let result = try await predictionsService.transcribe(speechToText: audioFile, language: .usEnglish, region: "us-east-1")
-                for try await value in result {
-                    XCTFail("Should not produce value: \(value)")
-                }
-            } catch let error as PredictionsError {
-                guard case .network = error else {
-                    XCTFail("Should produce an network error instead of \(error)")
-                    return
-                }
+        } catch let error as PredictionsError {
+            guard case .network = error else {
+                XCTFail("Should produce an network error instead of \(error)")
+                return
             }
         }
+    }
 
-        /// Test if language from configuration is picked up
-        ///
-        /// - Given: Predictions service with transcribe behavior. And language is set in config
-        /// - When:
-        ///    - Invoke transcribe
-        /// - Then:
-        ///    - I should get a successful result
-        ///
-        func testLanguageFromConfiguration() async throws {
-            let mockConfigurationJSON = """
+    /// Test if language from configuration is picked up
+    ///
+    /// - Given: Predictions service with transcribe behavior. And language is set in config
+    /// - When:
+    ///    - Invoke transcribe
+    /// - Then:
+    ///    - I should get a successful result
+    ///
+    func testLanguageFromConfiguration() async throws {
+        let mockConfigurationJSON = """
                 {
                     "defaultRegion": "us-east-1",
                     "convert": {
@@ -167,33 +168,33 @@ class PredictionsServiceTranscribeTests: XCTestCase {
                 }
                 """
 
-            let mockConfiguration = try JSONDecoder().decode(
-                PredictionsPluginConfiguration.self,
-                from: Data(mockConfigurationJSON.utf8)
-            )
-            predictionsService = AWSPredictionsService(
-                identifier: "",
-                awsTranslate: MockTranslateBehavior(),
-                awsRekognition: MockRekognitionBehavior(),
-                awsTextract: MockTextractBehavior(),
-                awsComprehend: MockComprehendBehavior(),
-                awsPolly: MockPollyBehavior(),
-                awsTranscribeStreaming: mockTranscribe,
-                configuration: mockConfiguration
-            )
+        let mockConfiguration = try JSONDecoder().decode(
+            PredictionsPluginConfiguration.self,
+            from: Data(mockConfigurationJSON.utf8)
+        )
+        predictionsService = AWSPredictionsService(
+            identifier: "",
+            awsTranslate: MockTranslateBehavior(),
+            awsRekognition: MockRekognitionBehavior(),
+            awsTextract: MockTextractBehavior(),
+            awsComprehend: MockComprehendBehavior(),
+            awsPolly: MockPollyBehavior(),
+            awsTranscribeStreaming: mockTranscribe,
+            configuration: mockConfiguration
+        )
 
 
-            let mockResponse = createMockTranscribeResponse()
-            mockTranscribe.startStreamingResult = { _, _ in mockResponse }
+        let mockResponse = createMockTranscribeResponse()
+        mockTranscribe.startStreamingResult = { _, _ in mockResponse }
 
-            let expectedTranscription = "This is a test"
+        let expectedTranscription = "This is a test"
 
 
-            let result = try await predictionsService.transcribe(speechToText: audioFile, language: nil, region: "us-east-1")
-            for try await value in result {
-                XCTAssertEqual(value.transcription, expectedTranscription, "Transcribed text should be the same")
-                break
-            }
+        let result = try await predictionsService.transcribe(speechToText: audioFile, language: nil, region: "us-east-1")
+        for try await value in result {
+            XCTAssertEqual(value.transcription, expectedTranscription, "Transcribed text should be the same")
+            break
         }
     }
 }
+
