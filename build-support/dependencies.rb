@@ -24,4 +24,6 @@ def include_test_utilities!
   pod 'CwlPreconditionTesting',
     git: 'https://github.com/mattgallagher/CwlPreconditionTesting.git',
     tag: '2.1.0'
+
+  pod 'CwlCatchException', '2.1.1' 
 end
