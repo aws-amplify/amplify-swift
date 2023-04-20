@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-#if canImport(AuthenticationServices)
+#if !os(watchOS)
 
 struct HostedUIOptions {
 

@@ -5,7 +5,8 @@ import PackageDescription
 let platforms: [SupportedPlatform] = [
     .iOS(.v13),
     .macOS(.v10_15),
-    .tvOS(.v13)
+    .tvOS(.v13),
+    .watchOS(.v7)
 ]
 let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.13.0"),

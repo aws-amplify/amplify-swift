@@ -6,11 +6,17 @@
 //
 
 import Foundation
-#if canImport(AuthenticationServices)
+#if !os(watchOS)
 import AuthenticationServices
 
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
+#else
+public typealias AuthUIPresentationAnchor = FakeAuthUIPresentationAnchor
 #endif
+
+public class FakeAuthUIPresentationAnchor {
+    
+}
 
 /// Behavior of the Auth category that clients will use
 public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior {
@@ -60,7 +66,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 password: String?,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
-#if canImport(AuthenticationServices)
+#if !os(watchOS)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface

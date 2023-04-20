@@ -40,7 +40,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-#if canImport(AuthenticationServices)
+#if !os(watchOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()

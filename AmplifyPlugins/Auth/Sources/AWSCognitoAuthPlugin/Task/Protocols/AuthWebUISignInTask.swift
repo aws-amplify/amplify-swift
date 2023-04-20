@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(AuthenticationServices)
+#if !os(watchOS)
 import Foundation
 import Amplify
 
