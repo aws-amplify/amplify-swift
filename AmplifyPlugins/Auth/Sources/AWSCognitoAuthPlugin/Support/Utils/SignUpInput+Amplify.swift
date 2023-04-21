@@ -61,7 +61,7 @@ extension SignUpInput {
     }
 
     private static var cognitoValidationData: [CognitoIdentityProviderClientTypes.AttributeType]? {
-#if os(iOS)
+#if os(iOS) || os(tvOS)
         let device = UIDevice.current
         let bundle = Bundle.main
         let bundleVersion = bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String
