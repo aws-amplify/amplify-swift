@@ -7,25 +7,12 @@
 
 import Foundation
 
-//public struct PredictionsInterpretRequest: AmplifyOperationRequest {
-//
-//    /// The text to be interpreted.
-//    public let textToInterpret: String
-//
-//    /// Options to adjust the behavior of this request, including plugin options
-//    public let options: Options
-//
-//    public init(textToInterpret: String,
-//                options: Options) {
-//        self.textToInterpret = textToInterpret
-//        self.options = options
-//    }
-//}
+extension Predictions {
+    public enum Interpret {}
+}
 
 public extension Predictions.Interpret {
-
     struct Options {
-
         /// The defaultNetworkPolicy for the operation. The default value will be `auto`.
         public let defaultNetworkPolicy: DefaultNetworkPolicy
 

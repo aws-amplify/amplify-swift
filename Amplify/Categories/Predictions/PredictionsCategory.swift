@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+public enum Predictions {}
+
 final public class PredictionsCategory: Category {
-
     public let categoryType = CategoryType.predictions
-
     var plugins = [PluginKey: PredictionsCategoryPlugin]()
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins

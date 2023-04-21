@@ -7,19 +7,6 @@
 
 import Foundation
 
-public enum Predictions {}
-
-extension Predictions {
-    public enum Interpret {}
-}
-
-//extension Predictions.Interpret {
-//    public struct Options {
-//        publinc
-//    }
-//
-//}
-
 /// Behavior of the Predictions category that clients will use
 public protocol PredictionsCategoryBehavior {
 
