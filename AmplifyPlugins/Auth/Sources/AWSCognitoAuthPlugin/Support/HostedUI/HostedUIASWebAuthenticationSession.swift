@@ -19,7 +19,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                       presentationAnchor: AuthUIPresentationAnchor?,
                       callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
         
-        if #available(tvOS 16, watchOS 6.2, *) {
+        if #available(tvOS 16, *) {
             
             self.webPresentation = presentationAnchor
             let aswebAuthenticationSession = ASWebAuthenticationSession(
@@ -54,7 +54,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         }
     }
 
-    @available(tvOS 16, watchOS 6.2, *)
+    @available(tvOS 16, *)
     private func convertHostedUIError(_ error: Error) -> HostedUIError {
         if let asWebAuthError = error as? ASWebAuthenticationSessionError {
             switch asWebAuthError.code {
