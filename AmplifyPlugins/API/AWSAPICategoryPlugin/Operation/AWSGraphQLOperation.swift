@@ -139,7 +139,10 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         interceptor.intercept(request) { result in
             do {
                 let interceptedRequest = try result.get()
-                completion(interceptedRequest)
+                self.chainInterceptors(
+                    iterator: mutableIterator,
+                    request: interceptedRequest,
+                    completion: completion)
                 return
             } catch let error as APIError {
                 self.dispatch(result: .failure(error))

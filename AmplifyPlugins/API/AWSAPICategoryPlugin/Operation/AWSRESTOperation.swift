@@ -132,7 +132,10 @@ final public class AWSRESTOperation: AmplifyOperation<
         interceptor.intercept(request) { result in
             do {
                 let interceptedRequest = try result.get()
-                completion(interceptedRequest)
+                self.chainInterceptors(
+                    iterator: mutableIterator,
+                    request: interceptedRequest,
+                    completion: completion)
                 return
             } catch let error as APIError {
                 self.dispatch(result: .failure(error))
