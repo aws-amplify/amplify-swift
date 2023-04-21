@@ -47,8 +47,8 @@ PODS:
     - AWSCore (= 2.30.4)
   - AWSTranslate (2.30.4):
     - AWSCore (= 2.30.4)
-  - CwlCatchException (2.1.2):
-    - CwlCatchExceptionSupport (~> 2.1.2)
+  - CwlCatchException (2.1.1):
+    - CwlCatchExceptionSupport (~> 2.1.1)
   - CwlCatchExceptionSupport (2.1.2)
   - CwlMachBadInstructionHandler (2.1.2)
   - CwlPosixPreconditionTesting (2.1.2)
@@ -70,6 +70,7 @@ DEPENDENCIES:
   - AWSTextract (~> 2.30.1)
   - AWSTranscribeStreaming (~> 2.30.1)
   - AWSTranslate (~> 2.30.1)
+  - CwlCatchException (= 2.1.1)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)
   - SwiftLint (= 0.49.1)
@@ -128,7 +129,7 @@ SPEC CHECKSUMS:
   AWSTextract: 5adbfe57a4dbbf60573203006323c00eec740630
   AWSTranscribeStreaming: dda8f6ee1acaf5de39710aff9b2dde33e77604de
   AWSTranslate: 094f154abdb802ec7078c21806aabd059c868739
-  CwlCatchException: 76542d5ea479c79ce16ddd6e7bc9d42c7ec63300
+  CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
   CwlCatchExceptionSupport: 42bf8c5e4e5e663f51100ddfa68caf7cfcf64ab6
   CwlMachBadInstructionHandler: b982c7e3e44fcfa1c680e8046f6bba35f3476d65
   CwlPosixPreconditionTesting: 4011f0660c0be460b088d10bcfdf351c7e036ac4
@@ -138,4 +139,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f96d753f1be77936c8d187f6834c2082b94be4f4
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
