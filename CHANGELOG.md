@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.29.3 (2023-04-21)
+
+### Bug Fixes
+
+- **datastore-v1**: stop datastore only stop sync engine (#2863)
+
 ## 1.29.2 (2023-04-14)
 
 ### Bug Fixes
