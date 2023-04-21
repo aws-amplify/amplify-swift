@@ -30,12 +30,14 @@ extension AuthCategory: AuthCategoryBehavior {
     }
 
 //#if !os(watchOS)
+    @available(tvOS 16, *)
     public func signInWithWebUI(
         presentationAnchor: AuthUIPresentationAnchor? = nil,
         options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
             return try await plugin.signInWithWebUI(presentationAnchor: presentationAnchor, options: options)
         }
 
+    @available(tvOS 16, *)
     public func signInWithWebUI(
         for authProvider: AuthProvider,
         presentationAnchor: AuthUIPresentationAnchor? = nil,

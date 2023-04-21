@@ -13,6 +13,7 @@ import XCTest
 import AuthenticationServices
 import AWSCognitoIdentityProvider
 
+@available(tvOS 16, *)
 class AWSAuthHostedUISignInTests: XCTestCase {
 
     var plugin: AWSCognitoAuthPlugin!

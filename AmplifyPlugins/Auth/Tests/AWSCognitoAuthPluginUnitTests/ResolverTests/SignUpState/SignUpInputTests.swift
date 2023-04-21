@@ -63,7 +63,7 @@ class SignUpInputTests: XCTestCase {
         XCTAssertNil(input.userContextData)
     }
 
-#if os(iOS) || os(tvOS)
+#if canImport(UIKit)
     func testSignUpInputValidationData() throws {
         let username = "jeff"
         let password = "a2z"

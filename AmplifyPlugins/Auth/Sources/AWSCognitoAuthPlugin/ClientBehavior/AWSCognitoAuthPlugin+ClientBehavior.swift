@@ -48,6 +48,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
 //#if !os(watchOS)
+    @available(tvOS 16, *)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
@@ -64,6 +65,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! AuthSignInResult
     }
 
+    @available(tvOS 16, *)
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
