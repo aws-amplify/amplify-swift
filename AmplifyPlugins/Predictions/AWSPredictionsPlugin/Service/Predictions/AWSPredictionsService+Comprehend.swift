@@ -189,7 +189,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             return nil
         }
 
-        // TODO: Convert to ([A]) -> [B]
         var entitiesResult = [EntityDetectionResult]()
         for entity in entities {
             let beginOffSet = entity.beginOffset ?? 0
