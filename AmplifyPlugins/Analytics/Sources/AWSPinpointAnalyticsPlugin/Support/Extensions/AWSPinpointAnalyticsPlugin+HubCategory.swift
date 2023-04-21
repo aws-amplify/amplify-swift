@@ -10,7 +10,7 @@ import AWSPinpoint
 import Foundation
 
 extension HubCategory {
-    func dispatchIdentifyUser(_ identityId: String, userProfile: AnalyticsUserProfile?) {
+    func dispatchIdentifyUser(_ identityId: String, userProfile: UserProfile?) {
         let payload = HubPayload(eventName: HubPayload.EventName.Analytics.identifyUser,
                                  data: (identityId, userProfile))
         dispatch(to: .analytics, payload: payload)

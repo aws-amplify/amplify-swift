@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import protocol Amplify.UserProfile
 import AWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
@@ -29,13 +30,115 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                      region: "WA",
                                                      country: "USA")
 
+    let testUserProfileProperties: [String: UserProfilePropertyValue] = [
+        "keyString": "value",
+        "keyStrings": ["one", "two", "three"],
+        "keyInt": 123,
+        "keyDouble": 1.2,
+        "keyBool": true
+    ]
+
+    let testUserProfileLocation = UserProfileLocation(
+        latitude: 12,
+        longitude: 34,
+        postalCode: "98122",
+        city: "Seattle",
+        region: "WA",
+        country: "USA"
+    )
+
     // MARK: IdentifyUser API
+
+    /// Given: A fully populated BasicUserProfile
+    /// When: AnalyticsPlugin.identifyUser is invoked with the user profile
+    /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
+    ///     and Hub Analytics.identifyUser event is dispatched with the input data
+    func testIdentifyUser_withBasicUserProfile() throws {
+        let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
+                analyticsEventReceived.fulfill()
+                guard let data = payload.data as? (String, BasicUserProfile?) else {
+                    XCTFail("Missing data")
+                    return
+                }
+                XCTAssertNotNil(data)
+                XCTAssertEqual(data.0, self.testIdentityId)
+                XCTAssertEqual(data.1?.name, self.testName)
+            }
+        }
+
+        let userProfile = BasicUserProfile(
+            name: testName,
+            email: testEmail,
+            plan: testPlan,
+            location: testUserProfileLocation,
+            customProperties: testUserProfileProperties
+        )
+
+        let expectedEndpointProfile = PinpointEndpointProfile(
+            applicationId: "appId",
+            endpointId: "endpointId"
+        )
+        expectedEndpointProfile.addUserId(testIdentityId)
+        expectedEndpointProfile.addUserProfile(userProfile)
+
+        analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: userProfile)
+
+        waitForExpectations(timeout: 1)
+        mockPinpoint.verifyCurrentEndpointProfile()
+        mockPinpoint.verifyUpdate(expectedEndpointProfile)
+    }
+
+    /// Given: A fully populated PinpointUserProfile
+    /// When: AnalyticsPlugin.identifyUser is invoked with the user profile
+    /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
+    ///     and Hub Analytics.identifyUser event is dispatched with the input data
+    func testIdentifyUser_withPinpointUserProfile() throws {
+        let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
+                analyticsEventReceived.fulfill()
+                guard let data = payload.data as? (String, PinpointUserProfile?) else {
+                    XCTFail("Missing data")
+                    return
+                }
+                XCTAssertNotNil(data)
+                XCTAssertEqual(data.0, self.testIdentityId)
+                XCTAssertEqual(data.1?.name, self.testName)
+            }
+        }
+
+        let userProfile = PinpointUserProfile(
+            name: testName,
+            email: testEmail,
+            plan: testPlan,
+            location: testLocation,
+            customProperties: testUserProfileProperties,
+            userAttributes: [
+                "attributes": ["one", "two", "three"]
+            ]
+        )
+
+        let expectedEndpointProfile = PinpointEndpointProfile(
+            applicationId: "appId",
+            endpointId: "endpointId"
+        )
+        expectedEndpointProfile.addUserId(testIdentityId)
+        expectedEndpointProfile.addUserProfile(userProfile)
+
+        analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: userProfile)
+
+        waitForExpectations(timeout: 1)
+        mockPinpoint.verifyCurrentEndpointProfile()
+        mockPinpoint.verifyUpdate(expectedEndpointProfile)
+    }
 
     /// Given: A fully populated AnalyticsUserProfile
     /// When: AnalyticsPlugin.identifyUser is invoked with the user profile
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with the input data
-    func testIdentifyUser() throws {
+    func testIdentifyUser_withAnalyticsUserProfile() throws {
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in

@@ -12,6 +12,10 @@ import Foundation
 
 extension AWSPinpointAnalyticsPlugin {
     public func identifyUser(userId: String, userProfile: AnalyticsUserProfile?) {
+        identifyUser(userId: userId, userProfile: userProfile as UserProfile?)
+    }
+
+    public func identifyUser(userId: String, userProfile: UserProfile?) {
         if !isEnabled {
             log.warn("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
