@@ -12,7 +12,7 @@ import AuthenticationServices
 #if os(watchOS)
 typealias AuthUIPresentationAnchor = FakeAuthUIPresentationAnchor
 
-public class FakeAuthUIPresentationAnchor: Equatable {
+class FakeAuthUIPresentationAnchor: Equatable {
     public static func == (lhs: FakeAuthUIPresentationAnchor, rhs: FakeAuthUIPresentationAnchor) -> Bool {
         true
     }
