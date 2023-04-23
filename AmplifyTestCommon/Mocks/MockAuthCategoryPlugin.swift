@@ -40,7 +40,18 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-//#if !os(watchOS)
+#if os(watchOS)
+    @available(tvOS 16, *)
+    public func signInWithWebUI(options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        fatalError()
+    }
+
+    @available(tvOS 16, *)
+    public func signInWithWebUI(for authProvider: AuthProvider,
+                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        fatalError()
+    }
+#else
     @available(tvOS 16, *)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
@@ -53,7 +64,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
-//#endif
+#endif
 
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
