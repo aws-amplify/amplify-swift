@@ -191,7 +191,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
 
         do {
-            _ = try await plugin.signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor(), options: nil)
+            try await signInWithWebUI()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
@@ -224,7 +224,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
         do {
-            _ = try await plugin.signInWithWebUI(for: .amazon, presentationAnchor: AuthUIPresentationAnchor(), options: nil)
+            try await signInWithWebUI()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
@@ -482,6 +482,17 @@ class AuthHubEventHandlerTests: XCTestCase {
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: authHandler,
             analyticsHandler: MockAnalyticsHandler())
+    }
+    
+    @available(tvOS 16, *)
+    private func signInWithWebUI() async throws {
+#if os(watchOS)
+        _ = try await plugin.signInWithWebUI(for: .amazon,  options: nil)
+#else
+        _ = try await plugin.signInWithWebUI(for: .amazon,
+                                             presentationAnchor: AuthUIPresentationAnchor(),
+                                             options: nil)
+#endif
     }
 
     override func tearDown() async throws {

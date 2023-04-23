@@ -10,15 +10,7 @@ import AuthenticationServices
 
 #if !os(watchOS)
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
-#else
-public typealias AuthUIPresentationAnchor = FakeAuthUIPresentationAnchor
 #endif
-
-public class FakeAuthUIPresentationAnchor: Equatable {
-    public static func == (lhs: FakeAuthUIPresentationAnchor, rhs: FakeAuthUIPresentationAnchor) -> Bool {
-        true
-    }
-}
 
 /// Behavior of the Auth category that clients will use
 public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior {
@@ -68,7 +60,31 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 password: String?,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
-//#if !os(watchOS)
+#if os(watchOS)
+    /// SignIn using pre configured web UI.
+    ///
+    /// Calling this method will always launch the Auth plugin's default web user interface
+    ///
+    /// - Parameters:
+    ///   - presentationAnchor: Anchor on which the UI is presented.
+    ///   - options: Parameters specific to plugin behavior.
+    @available(tvOS 16, *)
+    func signInWithWebUI(options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
+
+    /// SignIn using an auth provider on a web UI
+    ///
+    /// Calling this method will invoke the AuthProvider's default web user interface. Depending on the plugin
+    /// implementation and the authentication state with the provider, this method might complete without showing
+    /// any UI.
+    ///
+    /// - Parameters:
+    ///   - authProvider: Auth provider used to signIn.
+    ///   - presentationAnchor: Anchor on which the UI is presented.
+    ///   - options: Parameters specific to plugin behavior.
+    @available(tvOS 16, *)
+    func signInWithWebUI(for authProvider: AuthProvider,
+                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
+#else
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface
@@ -94,7 +110,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func signInWithWebUI(for authProvider: AuthProvider,
                          presentationAnchor: AuthUIPresentationAnchor?,
                          options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
-//#endif
+#endif
 
     /// Confirms a next step in signIn flow.
     ///

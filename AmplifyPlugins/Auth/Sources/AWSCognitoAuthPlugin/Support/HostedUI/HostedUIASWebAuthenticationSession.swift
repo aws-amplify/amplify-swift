@@ -9,6 +9,16 @@ import Foundation
 import Amplify
 import AuthenticationServices
 
+#if os(watchOS)
+typealias AuthUIPresentationAnchor = FakeAuthUIPresentationAnchor
+
+public class FakeAuthUIPresentationAnchor: Equatable {
+    public static func == (lhs: FakeAuthUIPresentationAnchor, rhs: FakeAuthUIPresentationAnchor) -> Bool {
+        true
+    }
+}
+#endif
+
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
     weak var webPresentation: AuthUIPresentationAnchor?

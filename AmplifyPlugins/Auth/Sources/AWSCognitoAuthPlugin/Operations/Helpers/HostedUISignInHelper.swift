@@ -118,10 +118,17 @@ struct HostedUISignInHelper: DefaultLogger {
         let providerInfo = HostedUIProviderInfo(authProvider: request.authProvider,
                                                 idpIdentifier: idpIdentifier)
         let scopeFromConfig = oauthConfiguration.scopes
+#if os(watchOS)
+        let hostedUIOptions = HostedUIOptions(scopes: request.options.scopes ?? scopeFromConfig,
+                                              providerInfo: providerInfo,
+                                              presentationAnchor: nil,
+                                              preferPrivateSession: privateSession)
+#else
         let hostedUIOptions = HostedUIOptions(scopes: request.options.scopes ?? scopeFromConfig,
                                               providerInfo: providerInfo,
                                               presentationAnchor: request.presentationAnchor,
                                               preferPrivateSession: privateSession)
+#endif
         let signInData = SignInEventData(username: nil,
                                          password: nil,
                                          signInMethod: .hostedUI(hostedUIOptions))

@@ -47,7 +47,36 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! AuthCodeDeliveryDetails
     }
 
-//#if !os(watchOS)
+#if os(watchOS)
+    public func signInWithWebUI(options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
+        let options = options ?? AuthWebUISignInRequest.Options()
+        let request = AuthWebUISignInRequest(options: options)
+        let task = AWSAuthWebUISignInTask(
+            request,
+            authConfiguration: authConfiguration,
+            authStateMachine: authStateMachine,
+            eventName: HubPayload.EventName.Auth.webUISignInAPI
+        )
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthSignInResult
+    }
+
+    public func signInWithWebUI(for authProvider: AuthProvider,
+                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
+        let options = options ?? AuthWebUISignInRequest.Options()
+        let request = AuthWebUISignInRequest(authProvider: authProvider, options: options)
+        let task = AWSAuthWebUISignInTask(
+            request,
+            authConfiguration: authConfiguration,
+            authStateMachine: authStateMachine,
+            eventName: HubPayload.EventName.Auth.socialWebUISignInAPI
+        )
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthSignInResult
+    }
+#else
     @available(tvOS 16, *)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
@@ -83,7 +112,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             return try await task.value
         } as! AuthSignInResult
     }
-//#endif
+#endif
 
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {

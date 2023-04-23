@@ -29,7 +29,20 @@ extension AuthCategory: AuthCategoryBehavior {
         return try await plugin.signIn(username: username, password: password, options: options)
     }
 
-//#if !os(watchOS)
+#if os(watchOS)
+    @available(tvOS 16, *)
+    public func signInWithWebUI(
+        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+            return try await plugin.signInWithWebUI(options: options)
+        }
+
+    @available(tvOS 16, *)
+    public func signInWithWebUI(
+        for authProvider: AuthProvider,
+        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        return try await plugin.signInWithWebUI(for: authProvider, options: options)
+    }
+#else
     @available(tvOS 16, *)
     public func signInWithWebUI(
         presentationAnchor: AuthUIPresentationAnchor? = nil,
@@ -46,7 +59,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                       presentationAnchor: presentationAnchor,
                                       options: options)
     }
-//#endif
+#endif
 
     public func confirmSignIn(challengeResponse: String, options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         return try await plugin.confirmSignIn(challengeResponse: challengeResponse, options: options)

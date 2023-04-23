@@ -62,9 +62,15 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
     }
 
     private func sendSignOutEvent() async {
+#if os(watchOS)
+        let signOutData = SignOutEventData(
+            globalSignOut: request.options.globalSignOut,
+            presentationAnchor: nil)
+#else
         let signOutData = SignOutEventData(
             globalSignOut: request.options.globalSignOut,
             presentationAnchor: request.options.presentationAnchorForWebUI)
+#endif
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
         await authStateMachine.send(event)
     }

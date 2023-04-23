@@ -12,15 +12,21 @@ import Foundation
 /// Note that this call would also be used for sign up, forgot password, confirm password, and similar flows.
 public struct AuthWebUISignInRequest: AmplifyOperationRequest {
 
-    /// Presentation anchor on which the webUI is displayed
-    public let presentationAnchor: AuthUIPresentationAnchor?
-
     /// Optional auth provider to directly sign in with the provider
     public let authProvider: AuthProvider?
 
     /// Extra request options defined in `AuthWebUISignInRequest.Options`
     public var options: Options
 
+#if os(watchOS)
+    public init(authProvider: AuthProvider? = nil, options: Options) {
+        self.authProvider = authProvider
+        self.options = options
+    }
+#else
+    /// Presentation anchor on which the webUI is displayed
+    public let presentationAnchor: AuthUIPresentationAnchor?
+    
     public init(presentationAnchor: AuthUIPresentationAnchor?,
                 authProvider: AuthProvider? = nil,
                 options: Options) {
@@ -28,6 +34,7 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
         self.authProvider = authProvider
         self.options = options
     }
+#endif
 }
 
 public extension AuthWebUISignInRequest {
