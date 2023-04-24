@@ -41,4 +41,29 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         mutableRequest.setValue(token, forHTTPHeaderField: "authorization")
         return mutableRequest as URLRequest
     }
+
+    func intercept(_ request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        guard let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
+            completion(.failure(APIError.unknown("Could not get mutable request", "")))
+            return
+        }
+
+        authTokenProvider.getToken { result in
+            do {
+                let token = try result.get()
+                mutableRequest.setValue(NSDate().aws_stringValue(AWSDateISO8601DateFormat2),
+                                        forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
+                mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson,
+                                        forHTTPHeaderField: URLRequestConstants.Header.contentType)
+                mutableRequest.setValue(AmplifyAWSServiceConfiguration.baseUserAgent(),
+                                        forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+                mutableRequest.setValue(token, forHTTPHeaderField: "authorization")
+                completion(.success(mutableRequest as URLRequest))
+                return
+            } catch {
+                let apiError = APIError.operationError("Failed to retrieve authorization token.", "", error)
+                completion(.failure(apiError))
+            }
+        }
+    }
 }

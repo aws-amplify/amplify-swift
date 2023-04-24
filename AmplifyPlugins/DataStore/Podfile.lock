@@ -3,7 +3,7 @@ PODS:
     - Amplify/Default (= 1.29.3)
   - Amplify/Default (1.29.3)
   - AmplifyPlugins/AWSAPIPlugin (1.29.3):
-    - AppSyncRealTimeClient (~> 3.0)
+    - AppSyncRealTimeClient (~> 3.1)
     - AWSCore (~> 2.30.1)
     - AWSPluginsCore (= 1.29.3)
   - AmplifyPlugins/AWSCognitoAuthPlugin (1.29.3):
@@ -106,15 +106,9 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-<<<<<<< HEAD
   Amplify: e5b6bd8f5229d43abe147bc7390d7dce3007acea
-  AmplifyPlugins: da16305d9b3b76d20c10517c815082eed0589a8e
+  AmplifyPlugins: 7c517b9fd824e6c20922335c9a0a252138388de7
   AmplifyTestCommon: 95c7c6c3849f7de46458754afbaf62f1d5158128
-=======
-  Amplify: 955400b4b5f29832357f682e15c659d049028306
-  AmplifyPlugins: a82d1c5ddb2b5a8fcd23dd447f84b04f93dc00c2
-  AmplifyTestCommon: 9b452352797cd82faa67e296669bb94bd531a5eb
->>>>>>> 6d33bd24f (feat(api): Add async protocol implementation for token request interceptors (#2870))
   AppSyncRealTimeClient: 49901c6f21e541bec09281854c5695a6c1309bf7
   AWSAuthCore: 42e2d4927d94e5e323b63b2ae885f287c51b5889
   AWSCognitoIdentityProvider: 2331f5f4c8c1775c6a228bb2dae2d353198401e8
@@ -134,4 +128,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 0bab7193bebdf470839514f327440893b0d26090
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
