@@ -76,8 +76,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             return try await task.value
         } as! AuthSignInResult
     }
-#else
-    @available(tvOS 16, *)
+#elseif !os(tvOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
@@ -94,7 +93,6 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! AuthSignInResult
     }
 
-    @available(tvOS 16, *)
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {

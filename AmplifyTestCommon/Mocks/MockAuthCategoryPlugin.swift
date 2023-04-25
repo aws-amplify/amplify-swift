@@ -41,24 +41,20 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 
 #if os(watchOS)
-    @available(tvOS 16, *)
     public func signInWithWebUI(options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    @available(tvOS 16, *)
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
-#else
-    @available(tvOS 16, *)
+#elseif !os(tvOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    @available(tvOS 16, *)
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {

@@ -164,6 +164,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         await waitForExpectations(timeout: networkTimeout)
     }
 
+#if !os(tvOS)
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
     /// - Given: A listener to hub events
@@ -172,7 +173,6 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
-    @available(tvOS 16, *)
     @MainActor
     func testWebUISignedInHubEvent() async {
         let mockIdentityProvider = MockIdentityProvider()
@@ -206,7 +206,6 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
-    @available(tvOS 16, *)
     @MainActor
     func testSocialWebUISignedInHubEvent() async {
         let mockIdentityProvider = MockIdentityProvider()
@@ -230,6 +229,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
         wait(for: [hubEventExpectation], timeout: 10)
     }
+#endif
 
     /// Test whether HubEvent emits a federatedToIdentityPool event for mocked federated operation
     ///
@@ -484,7 +484,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             analyticsHandler: MockAnalyticsHandler())
     }
     
-    @available(tvOS 16, *)
+#if !os(tvOS)
     private func signInWithWebUI() async throws {
 #if os(watchOS)
         _ = try await plugin.signInWithWebUI(for: .amazon,  options: nil)
@@ -494,6 +494,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                                              options: nil)
 #endif
     }
+#endif
 
     override func tearDown() async throws {
         plugin = nil

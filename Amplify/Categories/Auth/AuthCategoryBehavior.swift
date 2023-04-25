@@ -68,7 +68,6 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    @available(tvOS 16, *)
     func signInWithWebUI(options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 
     /// SignIn using an auth provider on a web UI
@@ -81,10 +80,9 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - authProvider: Auth provider used to signIn.
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    @available(tvOS 16, *)
     func signInWithWebUI(for authProvider: AuthProvider,
                          options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
-#else
+#elseif !os(tvOS)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface
@@ -92,7 +90,6 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    @available(tvOS 16, *)
     func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor?,
                          options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 
@@ -106,7 +103,6 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - authProvider: Auth provider used to signIn.
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    @available(tvOS 16, *)
     func signInWithWebUI(for authProvider: AuthProvider,
                          presentationAnchor: AuthUIPresentationAnchor?,
                          options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult

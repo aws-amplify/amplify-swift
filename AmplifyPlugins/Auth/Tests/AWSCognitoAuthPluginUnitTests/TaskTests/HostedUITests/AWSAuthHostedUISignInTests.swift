@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if !os(tvOS)
+
 import Foundation
 
 import XCTest
@@ -13,7 +15,6 @@ import XCTest
 import AuthenticationServices
 import AWSCognitoIdentityProvider
 
-@available(tvOS 16, *)
 class AWSAuthHostedUISignInTests: XCTestCase {
 
     var plugin: AWSCognitoAuthPlugin!
@@ -289,3 +290,5 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 #endif
     }
 }
+
+#endif

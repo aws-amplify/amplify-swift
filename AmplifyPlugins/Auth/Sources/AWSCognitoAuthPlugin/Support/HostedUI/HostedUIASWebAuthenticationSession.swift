@@ -20,51 +20,50 @@ class FakeAuthUIPresentationAnchor: Equatable {
 #endif
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
-
+    
     weak var webPresentation: AuthUIPresentationAnchor?
-
+    
     func showHostedUI(url: URL,
                       callbackScheme: String,
                       inPrivate: Bool,
                       presentationAnchor: AuthUIPresentationAnchor?,
                       callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
-        
-        if #available(tvOS 16, *) {
-            
-            self.webPresentation = presentationAnchor
-            let aswebAuthenticationSession = ASWebAuthenticationSession(
-                url: url,
-                callbackURLScheme: callbackScheme,
-                completionHandler: { url, error in
-                    if let url = url {
-                        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
-                        let queryItems = urlComponents?.queryItems ?? []
-                        
-                        if let error = queryItems.first(where: { $0.name == "error" })?.value {
-                            callback(.failure(.serviceMessage(error)))
-                            return
-                        }
-                        callback(.success(queryItems))
-                    } else if let error = error {
-                        callback(.failure(self.convertHostedUIError(error)))
-                        
-                    } else {
-                        callback(.failure(.unknown))
-                    }
-                })
-#if os(iOS) || os(macOS)
-            aswebAuthenticationSession.presentationContextProvider = self
-#endif
 #if !os(tvOS)
-            aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
+        self.webPresentation = presentationAnchor
+        let aswebAuthenticationSession = ASWebAuthenticationSession(
+            url: url,
+            callbackURLScheme: callbackScheme,
+            completionHandler: { url, error in
+                if let url = url {
+                    let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                    let queryItems = urlComponents?.queryItems ?? []
+                    
+                    if let error = queryItems.first(where: { $0.name == "error" })?.value {
+                        callback(.failure(.serviceMessage(error)))
+                        return
+                    }
+                    callback(.success(queryItems))
+                } else if let error = error {
+                    callback(.failure(self.convertHostedUIError(error)))
+                    
+                } else {
+                    callback(.failure(.unknown))
+                }
+            })
+#if os(iOS) || os(macOS)
+        aswebAuthenticationSession.presentationContextProvider = self
 #endif
-            DispatchQueue.main.async {
-                aswebAuthenticationSession.start()
-            }
+        
+        aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
+        
+        DispatchQueue.main.async {
+            print(aswebAuthenticationSession.canStart)
+            aswebAuthenticationSession.start()
         }
+#endif
     }
-
-    @available(tvOS 16, *)
+    
+#if !os(tvOS)
     private func convertHostedUIError(_ error: Error) -> HostedUIError {
         if let asWebAuthError = error as? ASWebAuthenticationSessionError {
             switch asWebAuthError.code {
@@ -80,6 +79,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         }
         return .unknown
     }
+#endif
 }
 
 #if os(iOS) || os(macOS)
