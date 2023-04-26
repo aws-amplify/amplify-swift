@@ -22,7 +22,7 @@ extension Predictions {
             /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
             /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
             /// key/values
-            let pluginOptions: Any?
+            public let pluginOptions: Any?
 
             public init(
                 defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
@@ -37,7 +37,6 @@ extension Predictions {
     }
 }
 
-
 extension Predictions.Identify.Request {
     @_spi(PredictionsIdentifyRequestKind)
     public enum Kind {
@@ -46,5 +45,3 @@ extension Predictions.Identify.Request {
         // TODO: Add request kind cases
     }
 }
-
-
