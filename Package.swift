@@ -343,6 +343,16 @@ let predictionsTargets: [Target] = [
         name: "AWSPredictionsPluginUnitTests",
         dependencies: ["AWSPredictionsPlugin"],
         path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests"
+    ),
+    .target(
+        name: "CoreMLPredictionsPlugin",
+        dependencies: [
+            .target(name: "Amplify")
+        ],
+        path: "AmplifyPlugins/Predictions/CoreMLPredictionsPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
     )
 ]
 
@@ -400,6 +410,10 @@ let package = Package(
         .library(
             name: "AWSPredictionsPlugin",
             targets: ["AWSPredictionsPlugin"]
+        ),
+        .library(
+            name: "CoreMLPredictionsPlugin",
+            targets: ["CoreMLPredictionsPlugin"]
         )
     ],
     dependencies: dependencies,

@@ -7,8 +7,8 @@
 
 import Foundation
 import Amplify
+import Speech
 
 protocol CoreMLSpeechBehavior: AnyObject {
-
-    func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void)
+    func getTranscription(_ audioData: URL) async throws -> SFSpeechRecognitionResult
 }
