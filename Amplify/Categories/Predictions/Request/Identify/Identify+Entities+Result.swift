@@ -11,9 +11,9 @@ extension Predictions.Identify.Entities {
     /// are needed to be detected
     public struct Result {
         /// List of 'Entity' as a result of Identify query
-        public let entities: [Entity]
+        public let entities: [Predictions.Entity]
 
-        public init(entities: [Entity]) {
+        public init(entities: [Predictions.Entity]) {
             self.entities = entities
         }
     }

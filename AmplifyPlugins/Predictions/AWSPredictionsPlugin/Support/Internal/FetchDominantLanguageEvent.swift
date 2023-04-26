@@ -10,7 +10,7 @@ import Amplify
 enum FetchDominantLanguageEvent {
 
     /// Fetch dominant language event with language fetched and its score
-    case completed(LanguageType, Double?)
+    case completed(Predictions.Language, Double?)
 
     /// Fetch dominant langauge failed with error
     case failed(PredictionsError)

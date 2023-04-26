@@ -102,8 +102,8 @@ import Amplify
 enum IdentifyLabelsResultTransformers { //: IdentifyResultTransformers {
     static func processLabels(
         _ rekognitionLabels: [RekognitionClientTypes.Label]
-    ) -> [Label] {
-        var labels = [Label]()
+    ) -> [Predictions.Label] {
+        var labels = [Predictions.Label]()
         for rekognitionLabel in rekognitionLabels {
 
             guard let name = rekognitionLabel.name else {
@@ -112,14 +112,14 @@ enum IdentifyLabelsResultTransformers { //: IdentifyResultTransformers {
 
             let parents = processParents(rekognitionLabel.parents)
 
-            let metadata = LabelMetadata(
+            let metadata = Predictions.Label.Metadata(
                 confidence: Double(rekognitionLabel.confidence ?? 0.0),
                 parents: parents
             )
 
             let boundingBoxes = processInstances(rekognitionLabel.instances)
 
-            let label = Label(
+            let label = Predictions.Label(
                 name: name,
                 metadata: metadata,
                 boundingBoxes: boundingBoxes
@@ -132,21 +132,23 @@ enum IdentifyLabelsResultTransformers { //: IdentifyResultTransformers {
 
     static func processModerationLabels(
         _ rekognitionLabels: [RekognitionClientTypes.ModerationLabel]
-    ) -> [Label] {
-        var labels = [Label]()
+    ) -> [Predictions.Label] {
+        var labels = [Predictions.Label]()
         for rekognitionLabel in rekognitionLabels {
 
             guard let name = rekognitionLabel.name else {
                 continue
             }
-            var parents = [Parent]()
+            var parents = [Predictions.Parent]()
             if let parentName = rekognitionLabel.parentName {
-                let parent = Parent(name: parentName)
+                let parent = Predictions.Parent(name: parentName)
                 parents.append(parent)
             }
-            let metadata = LabelMetadata(confidence: Double(rekognitionLabel.confidence ?? 0), parents: parents)
+            let metadata = Predictions.Label.Metadata(
+                confidence: Double(rekognitionLabel.confidence ?? 0), parents: parents
+            )
 
-            let label = Label(name: name, metadata: metadata, boundingBoxes: nil)
+            let label = Predictions.Label(name: name, metadata: metadata, boundingBoxes: nil)
 
             labels.append(label)
         }
@@ -155,15 +157,15 @@ enum IdentifyLabelsResultTransformers { //: IdentifyResultTransformers {
 
     static func processParents(
         _ rekognitionParents: [RekognitionClientTypes.Parent]?
-    ) -> [Parent] {
-        var parents = [Parent]()
+    ) -> [Predictions.Parent] {
+        var parents = [Predictions.Parent]()
         guard let rekognitionParents = rekognitionParents else {
             return parents
         }
 
         for parent in rekognitionParents {
             if let name = parent.name {
-                parents.append(Parent(name: name))
+                parents.append(Predictions.Parent(name: name))
             }
         }
         return parents

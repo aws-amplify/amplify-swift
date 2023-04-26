@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension Predictions.Convert.TextToSpeech.Options {
+extension Predictions {
     public struct Voice {
         public let id: String
 

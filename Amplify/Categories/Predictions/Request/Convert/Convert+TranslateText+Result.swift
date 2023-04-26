@@ -13,9 +13,9 @@ extension Predictions.Convert.TranslateText {
         public let text: String
 
         /// Language to which the text was translated.
-        public let targetLanguage: LanguageType
+        public let targetLanguage: Predictions.Language
 
-        public init(text: String, targetLanguage: LanguageType) {
+        public init(text: String, targetLanguage: Predictions.Language) {
             self.text = text
             self.targetLanguage = targetLanguage
         }

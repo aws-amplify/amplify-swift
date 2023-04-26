@@ -7,10 +7,12 @@
 
 import CoreGraphics
 
-public struct Polygon {
-    public let points: [CGPoint]
+extension Predictions {
+    public struct Polygon {
+        public let points: [CGPoint]
 
-    public init(points: [CGPoint]) {
-        self.points = points
+        public init(points: [CGPoint]) {
+            self.points = points
+        }
     }
 }

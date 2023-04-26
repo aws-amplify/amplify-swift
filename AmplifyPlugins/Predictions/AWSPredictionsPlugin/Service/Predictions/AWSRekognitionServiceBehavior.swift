@@ -12,7 +12,7 @@ import Foundation
 protocol AWSRekognitionServiceBehavior {
     func detectLabels(
         image: URL,
-        type: LabelType
+        type: Predictions.LabelType
     ) async throws -> Predictions.Identify.Labels.Result
 
     func detectCelebrities(
@@ -21,7 +21,7 @@ protocol AWSRekognitionServiceBehavior {
 
     func detectDocumentText(
         image: URL,
-        format: TextFormatType
+        format: Predictions.TextFormatType
     ) async throws -> Predictions.Identify.DocumentText.Result
 
     func detectPlainText(

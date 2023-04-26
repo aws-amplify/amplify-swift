@@ -117,7 +117,7 @@ extension CoreMLPredictionsPlugin {
         if let dominantLanguage = naturalLanguageAdapter.detectDominantLanguage(
             for: text // request.textToInterpret
         ) {
-            let languageResult = LanguageDetectionResult(
+            let languageResult = Predictions.Language.DetectionResult(
                 languageCode: dominantLanguage,
                 score: nil
             )
@@ -140,16 +140,16 @@ extension CoreMLPredictionsPlugin {
         interpretResultBuilder.with(entities: entities)
 
         let sentiment = naturalLanguageAdapter.getSentiment(for: text) //request.textToInterpret)
-        let amplifySentiment: Sentiment
+        let amplifySentiment: Predictions.Sentiment
         switch sentiment {
         case 0.0:
-            amplifySentiment = Sentiment(predominantSentiment: .neutral, sentimentScores: nil)
+            amplifySentiment = Predictions.Sentiment(predominantSentiment: .neutral, sentimentScores: nil)
         case -1.0 ..< 0.0:
-            amplifySentiment = Sentiment(predominantSentiment: .negative, sentimentScores: nil)
+            amplifySentiment = Predictions.Sentiment(predominantSentiment: .negative, sentimentScores: nil)
         case 0.0 ... 1.0:
-            amplifySentiment = Sentiment(predominantSentiment: .positive, sentimentScores: nil)
+            amplifySentiment = Predictions.Sentiment(predominantSentiment: .positive, sentimentScores: nil)
         default:
-            amplifySentiment = Sentiment(predominantSentiment: .mixed, sentimentScores: nil)
+            amplifySentiment = Predictions.Sentiment(predominantSentiment: .mixed, sentimentScores: nil)
         }
         interpretResultBuilder.with(sentiment: amplifySentiment)
 

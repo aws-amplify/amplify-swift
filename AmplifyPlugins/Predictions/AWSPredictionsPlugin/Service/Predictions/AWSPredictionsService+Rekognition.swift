@@ -14,7 +14,7 @@ import Foundation
 extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     func detectLabels(
         image: URL,
-        type: LabelType
+        type: Predictions.LabelType
     ) async throws -> Predictions.Identify.Labels.Result  {
         let imageData = try dataFromImage(url: image)
 
@@ -235,7 +235,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     func detectDocumentText(
         image: URL,
-        format: TextFormatType
+        format: Predictions.TextFormatType
     ) async throws -> Predictions.Identify.DocumentText.Result {
         return try await analyzeDocument(
             image: image,

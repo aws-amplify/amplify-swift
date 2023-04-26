@@ -85,8 +85,8 @@ extension AWSPredictionsPlugin {
 
     private func convertTextToTranslate(
         _ text: String,
-        fromLanguage: LanguageType?,
-        toLanguage: LanguageType?,
+        fromLanguage: Predictions.Language?,
+        toLanguage: Predictions.Language?,
         options: Predictions.Convert.TranslateText.Options?
     ) async throws -> Predictions.Convert.TranslateText.Result {
         let request = Predictions.Convert.TranslateText.Request(
@@ -105,7 +105,7 @@ extension AWSPredictionsPlugin {
     }
 
     private func reconcileVoiceID(
-        voice: Predictions.Convert.TextToSpeech.Options.Voice?,
+        voice: Predictions.Voice?,
         config: PredictionsPluginConfiguration
     ) -> PollyClientTypes.VoiceId {
         if let voice = voice,

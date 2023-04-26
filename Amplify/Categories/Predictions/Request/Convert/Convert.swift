@@ -40,7 +40,7 @@ extension Predictions.Convert.Request {
 
         case textToTranslate(
             Lift<
-            (String, LanguageType?, LanguageType?), Input,
+            (String, Predictions.Language?, Predictions.Language?), Input,
             Predictions.Convert.TranslateText.Options?, Options?,
             Predictions.Convert.TranslateText.Result, Output
             >

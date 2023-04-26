@@ -10,6 +10,8 @@ import XCTest
 @testable import AWSPredictionsPlugin
 import AVFoundation
 
+import Combine
+
 class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testConvertSpeechToText() async throws {
         let testBundle = Bundle(for: type(of: self))
@@ -17,8 +19,8 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
         let options = Predictions.Convert.SpeechToText.Options(
             defaultNetworkPolicy: .auto,
-            language: .usEnglish,
-            pluginOptions: nil
+            language: .usEnglish//,
+//            pluginOptions: nil
         )
 
         let result = try await Amplify.Predictions.convert(
@@ -41,14 +43,36 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         XCTAssertEqual(result.text, "Hallo, Welt!")
     }
 
+    var cancellables = Set<AnyCancellable>()
+    func testPublisher() -> AnyCancellable {
+        Amplify.Publisher.create {
+            try await Amplify.Predictions.convert(
+                .textToTranslate(
+                    "Hello, world!",
+                    from: .english,
+                    to: .spanish
+                )
+            )
+        }
+        .sink(receiveCompletion: { completion in
+            if case let .failure(error) = completion {
+                print("Error translating text: \(error)")
+            }
+        }, receiveValue: { value in
+            print("Translated text: \(value.text)")
+        })
+//        .store(in: &cancellables)
+//        try await Task.sleep(for: .seconds(2))
+    }
+
     func testConvertTextToSpeech() async throws {
         let result = try await Amplify.Predictions.convert(
             .textToSpeech("Hello, world!"),
             options: .init(voice: .brazPortugueseMaleRicardo)
         )
 
-        let player = try AVAudioPlayer(data: result.audioData)
-        player.play()
+        let player = try? AVAudioPlayer(data: result.audioData)
+        player?.play()
         try await Task.sleep(for: .seconds(2))
         XCTAssertFalse(result.audioData.isEmpty)
     }

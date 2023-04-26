@@ -129,7 +129,7 @@ class IdentifyMultiService<Output> {
             return online
         }
 
-        var combinedLines = Set<IdentifiedLine>()
+        var combinedLines = Set<Predictions.IdentifiedLine>()
         let onlineLineSet = Set(onlineLines)
         let offlineLineSet = Set(offlineLines)
 
@@ -157,7 +157,7 @@ class IdentifyMultiService<Output> {
         let offlineLabelSet = Set(offline.labels)
         let intersection = onlineLabelSet.intersection(offlineLabelSet)
 
-        var combinedLabels = Set<Label>()
+        var combinedLabels = Set<Predictions.Label>()
         for label in intersection {
             let onlineIndex = onlineLabelSet.firstIndex(of: label)!
             let offlineIndex = offlineLabelSet.firstIndex(of: label)!
@@ -179,9 +179,9 @@ class IdentifyMultiService<Output> {
 }
 
 
-extension Label: Hashable {
+extension Predictions.Label: Hashable {
 
-    public static func == (lhs: Label, rhs: Label) -> Bool {
+    public static func == (lhs: Predictions.Label, rhs: Predictions.Label) -> Bool {
         return lhs.name.lowercased() == rhs.name.lowercased()
     }
 
@@ -189,7 +189,7 @@ extension Label: Hashable {
         hasher.combine(name.lowercased())
     }
 
-    func higherConfidence(compareTo: Label) -> Label {
+    func higherConfidence(compareTo: Predictions.Label) -> Predictions.Label {
         guard let firstMetadata = metadata,
             let secondMetadata = compareTo.metadata else {
                 return self
@@ -198,22 +198,20 @@ extension Label: Hashable {
     }
 }
 
-extension LabelMetadata: Equatable, Comparable {
+extension Predictions.Label.Metadata: Equatable, Comparable {
 
-    public static func == (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
-        let value = lhs.confidence == rhs.confidence
-        return value
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.confidence == rhs.confidence
     }
 
-    public static func < (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
-        let value = lhs.confidence < rhs.confidence
-        return value
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.confidence < rhs.confidence
     }
 }
 
-extension IdentifiedLine: Hashable {
+extension Predictions.IdentifiedLine: Hashable {
 
-    public static func == (lhs: IdentifiedLine, rhs: IdentifiedLine) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.text == rhs.text
             && lhs.boundingBox.intersects(rhs.boundingBox)
     }

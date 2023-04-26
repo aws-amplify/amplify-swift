@@ -9,7 +9,7 @@ import Amplify
 import AWSComprehend
 import AWSTranscribeStreaming
 
-extension LanguageType {
+extension Predictions.Language {
 
     func toComprehendLanguage() -> ComprehendClientTypes.LanguageCode {
         switch self {
@@ -26,7 +26,7 @@ extension LanguageType {
         case .portuguese:
             return .pt
         default:
-            return .sdkUnknown(rawValue)
+            return .sdkUnknown(code)
         }
     }
 
@@ -45,7 +45,7 @@ extension LanguageType {
         case .portuguese:
             return .pt
         default:
-            return .sdkUnknown(rawValue)
+            return .sdkUnknown(code)
         }
     }
 
@@ -64,7 +64,7 @@ extension LanguageType {
         case .usSpanish:
             return .esUs
         default:
-            return .sdkUnknown(rawValue)
+            return .sdkUnknown(code)
         }
     }
 }

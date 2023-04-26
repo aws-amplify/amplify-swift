@@ -115,16 +115,16 @@ class InterpretTextMultiService: MultiServiceBehavior {
     }
 
     func mergeLanguage(
-        onlineResult: LanguageDetectionResult?,
-        offlineResult: LanguageDetectionResult?
-    ) -> LanguageDetectionResult? {
+        onlineResult: Predictions.Language.DetectionResult?,
+        offlineResult: Predictions.Language.DetectionResult?
+    ) -> Predictions.Language.DetectionResult? {
         return onlineResult ?? offlineResult
     }
 
     func mergeSentiment(
-        onlineResult: Sentiment?,
-        offlineResult: Sentiment?
-    ) -> Sentiment? {
+        onlineResult: Predictions.Sentiment?,
+        offlineResult: Predictions.Sentiment?
+    ) -> Predictions.Sentiment? {
         guard let onlineSentiment = onlineResult,
             onlineSentiment.predominantSentiment != .unknown else {
                 return offlineResult
@@ -133,13 +133,13 @@ class InterpretTextMultiService: MultiServiceBehavior {
     }
 
     func mergeKeyPhrases(
-        onlineResult: [KeyPhrase]?,
-        offlineResult: [KeyPhrase]?
-    ) -> [KeyPhrase]? {
+        onlineResult: [Predictions.KeyPhrase]?,
+        offlineResult: [Predictions.KeyPhrase]?
+    ) -> [Predictions.KeyPhrase]? {
         if let onlineKeyPhrases = onlineResult,
             let offlineKeyPhrases = offlineResult {
-            let onlineKeyPhraseSet = Set<KeyPhrase>(onlineKeyPhrases)
-            let offlineKeyPhraseSet = Set<KeyPhrase>(offlineKeyPhrases)
+            let onlineKeyPhraseSet = Set<Predictions.KeyPhrase>(onlineKeyPhrases)
+            let offlineKeyPhraseSet = Set<Predictions.KeyPhrase>(offlineKeyPhrases)
             return Array(onlineKeyPhraseSet.union(offlineKeyPhraseSet))
         }
         if let onlineKeyPrases = onlineResult {
@@ -149,13 +149,13 @@ class InterpretTextMultiService: MultiServiceBehavior {
     }
 
     func mergeEntities(
-        onlineResult: [EntityDetectionResult]?,
-        offlineResult: [EntityDetectionResult]?
-    ) -> [EntityDetectionResult]? {
+        onlineResult: [Predictions.Entity.DetectionResult]?,
+        offlineResult: [Predictions.Entity.DetectionResult]?
+    ) -> [Predictions.Entity.DetectionResult]? {
         if let onlineEntities = onlineResult,
             let offlineEntities = offlineResult {
-            let onlineEntitiesSet = Set<EntityDetectionResult>(onlineEntities)
-            let offlineEntitiesSet = Set<EntityDetectionResult>(offlineEntities)
+            let onlineEntitiesSet = Set<Predictions.Entity.DetectionResult>(onlineEntities)
+            let offlineEntitiesSet = Set<Predictions.Entity.DetectionResult>(offlineEntities)
             return Array(onlineEntitiesSet.union(offlineEntitiesSet))
         }
         if let onlineEntities = onlineResult {
@@ -165,13 +165,13 @@ class InterpretTextMultiService: MultiServiceBehavior {
     }
 
     func mergeSyntax(
-        onlineResult: [SyntaxToken]?,
-        offlineResult: [SyntaxToken]?
-    ) -> [SyntaxToken]? {
+        onlineResult: [Predictions.SyntaxToken]?,
+        offlineResult: [Predictions.SyntaxToken]?
+    ) -> [Predictions.SyntaxToken]? {
         if let onlineSyntax = onlineResult,
             let offlineSyntax = offlineResult {
-            let onlineSyntaxSet = Set<SyntaxToken>(onlineSyntax)
-            let offlineSyntaxSet = Set<SyntaxToken>(offlineSyntax)
+            let onlineSyntaxSet = Set<Predictions.SyntaxToken>(onlineSyntax)
+            let offlineSyntaxSet = Set<Predictions.SyntaxToken>(offlineSyntax)
             return Array(onlineSyntaxSet.union(offlineSyntaxSet))
         }
         if let onlineSyntax = onlineResult {
@@ -181,10 +181,10 @@ class InterpretTextMultiService: MultiServiceBehavior {
     }
 }
 
-extension SyntaxToken: Hashable {
+extension Predictions.SyntaxToken: Hashable {
     public static func == (
-        lhs: SyntaxToken,
-        rhs: SyntaxToken
+        lhs: Self,
+        rhs: Self
     ) -> Bool {
         lhs.text == rhs.text
         && lhs.range == rhs.range
@@ -195,10 +195,10 @@ extension SyntaxToken: Hashable {
     }
 }
 
-extension KeyPhrase: Hashable {
+extension Predictions.KeyPhrase: Hashable {
     public static func == (
-        lhs: KeyPhrase,
-        rhs: KeyPhrase
+        lhs: Self,
+        rhs: Self
     ) -> Bool {
         lhs.text == rhs.text
         && lhs.range == rhs.range
@@ -210,10 +210,10 @@ extension KeyPhrase: Hashable {
     }
 }
 
-extension EntityDetectionResult: Hashable {
+extension Predictions.Entity.DetectionResult: Hashable {
     public static func == (
-        lhs: EntityDetectionResult,
-        rhs: EntityDetectionResult
+        lhs: Self,
+        rhs: Self
     ) -> Bool {
         lhs.targetText == rhs.targetText
         && lhs.range == rhs.range

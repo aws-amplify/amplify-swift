@@ -12,7 +12,7 @@ extension Predictions.Identify {
 }
 
 extension Predictions.Identify.Request where Output == Predictions.Identify.DocumentText.Result {
-    public static func textInDocument(textFormatType: TextFormatType) -> Self {
+    public static func textInDocument(textFormatType: Predictions.TextFormatType) -> Self {
         .init(kind: .detectTextInDocument(textFormatType, .lift))
     }
 }

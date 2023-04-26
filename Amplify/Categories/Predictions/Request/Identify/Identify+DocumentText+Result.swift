@@ -11,23 +11,22 @@ extension Predictions.Identify.DocumentText {
     /// in identify() API
     public struct Result {
         public let fullText: String
-        public let words: [IdentifiedWord]
+        public let words: [Predictions.IdentifiedWord]
         public let rawLineText: [String]
-        public let identifiedLines: [IdentifiedLine]
-        public let selections: [Selection]
-        public let tables: [Table]
-        public let keyValues: [BoundedKeyValue]
+        public let identifiedLines: [Predictions.IdentifiedLine]
+        public let selections: [Predictions.Selection]
+        public let tables: [Predictions.Table]
+        public let keyValues: [Predictions.BoundedKeyValue]
 
         public init(
             fullText: String,
-            words: [IdentifiedWord],
+            words: [Predictions.IdentifiedWord],
             rawLineText: [String],
-            identifiedLines: [IdentifiedLine],
-            selections: [Selection],
-            tables: [Table],
-            keyValues: [BoundedKeyValue]
+            identifiedLines: [Predictions.IdentifiedLine],
+            selections: [Predictions.Selection],
+            tables: [Predictions.Table],
+            keyValues: [Predictions.BoundedKeyValue]
         ) {
-
             self.fullText = fullText
             self.words = words
             self.rawLineText = rawLineText
@@ -36,5 +35,24 @@ extension Predictions.Identify.DocumentText {
             self.tables = tables
             self.keyValues = keyValues
         }
+
+//        public init(
+//            fullText: String,
+//            words: [IdentifiedWord],
+//            rawLineText: [String],
+//            identifiedLines: [IdentifiedLine],
+//            selections: [Selection],
+//            tables: [Table],
+//            keyValues: [BoundedKeyValue]
+//        ) {
+//
+//            self.fullText = fullText
+//            self.words = words
+//            self.rawLineText = rawLineText
+//            self.identifiedLines = identifiedLines
+//            self.selections = selections
+//            self.tables = tables
+//            self.keyValues = keyValues
+//        }
     }
 }

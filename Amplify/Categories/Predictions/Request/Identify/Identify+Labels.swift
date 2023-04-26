@@ -12,7 +12,7 @@ extension Predictions.Identify {
 }
 
 extension Predictions.Identify.Request where Output == Predictions.Identify.Labels.Result {
-    public static func labels(type: LabelType) -> Self {
+    public static func labels(type: Predictions.LabelType = .labels) -> Self {
         .init(kind: .detectLabels(type, .lift))
     }
 }

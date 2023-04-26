@@ -14,8 +14,8 @@ extension IdentifyTextResultTransformers {
     static func processKeyValues(
         keyValueBlocks: [TextractClientTypes.Block],
         blockMap: [String: TextractClientTypes.Block]
-    ) -> [BoundedKeyValue] {
-        var keyValues =  [BoundedKeyValue]()
+    ) -> [Predictions.BoundedKeyValue] {
+        var keyValues =  [Predictions.BoundedKeyValue]()
         for keyValueBlock in keyValueBlocks {
             if let keyValue = processKeyValue(keyValueBlock, blockMap: blockMap) {
                 keyValues.append(keyValue)
@@ -27,7 +27,7 @@ extension IdentifyTextResultTransformers {
     static func processKeyValue(
         _ keyBlock: TextractClientTypes.Block,
         blockMap: [String: TextractClientTypes.Block]
-    ) -> BoundedKeyValue? {
+    ) -> Predictions.BoundedKeyValue? {
         guard keyBlock.blockType == .keyValueSet,
               keyBlock.entityTypes?.contains(.key) ?? false,
             let relationships = keyBlock.relationships else {
@@ -63,7 +63,7 @@ extension IdentifyTextResultTransformers {
             return nil
         }
 
-        return BoundedKeyValue(
+        return Predictions.BoundedKeyValue(
             key: keyText,
             value: valueText,
             isSelected: valueSelected,

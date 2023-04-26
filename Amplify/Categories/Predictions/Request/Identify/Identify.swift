@@ -57,12 +57,12 @@ extension Predictions.Identify.Request {
         )
 
         case detectLabels(
-            LabelType,
+            Predictions.LabelType,
             Lift<Predictions.Identify.Labels.Result, Output>
         )
 
         case detectTextInDocument(
-            TextFormatType,
+            Predictions.TextFormatType,
             Lift<Predictions.Identify.DocumentText.Result, Output>
         )
 

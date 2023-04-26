@@ -7,6 +7,41 @@
 
 import Foundation
 
+public enum _PredictionsError {
+
+    /// Access denied while executing the operation
+//    case accessDenied(ErrorDescription, RecoverySuggestion, Error? = nil)
+    //    case httpStatus(Int, RecoverySuggestion, Error? = nil)
+    case auth( ErrorDescription, RecoverySuggestion, Error? = nil)
+    case configuration(ConfigurationError)
+    case network(NetworkError)
+    case service(ServiceError)
+    case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    public struct AuthError {
+
+    }
+
+    public struct ConfigurationError {
+        public let description: ErrorDescription
+        public let recoverySuggestion: RecoverySuggestion
+        public let underlyingError: Error?
+    }
+
+    public struct NetworkError {
+        public let description: ErrorDescription
+        public let recoverySuggestion: RecoverySuggestion
+        public let underlyingError: Error?
+    }
+
+    public struct ServiceError {
+        public let description: ErrorDescription
+        public let recoverySuggestion: RecoverySuggestion
+        public let httpStatusCode: Int?
+        public let underlyingError: Error?
+    }
+}
+
 /// Error occured while using Prediction category
 public enum PredictionsError {
 
@@ -37,7 +72,6 @@ extension PredictionsError: AmplifyError {
         case .service(let errorDescription, _, _):
             return "A service error occurred with message:\(errorDescription)"
         }
-
     }
 
     public var recoverySuggestion: RecoverySuggestion {

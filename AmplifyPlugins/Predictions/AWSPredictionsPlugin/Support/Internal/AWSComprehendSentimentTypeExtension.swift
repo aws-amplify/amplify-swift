@@ -10,7 +10,7 @@ import AWSComprehend
 
 extension ComprehendClientTypes.SentimentType {
 
-    func toAmplifySentimentType() -> SentimentType {
+    func toAmplifySentimentType() -> Predictions.Sentiment.Kind {
         switch self {
         case .positive:
             return .positive

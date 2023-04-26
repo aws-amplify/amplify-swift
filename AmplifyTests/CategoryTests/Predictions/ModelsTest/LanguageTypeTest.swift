@@ -11,18 +11,18 @@ import Amplify
 class LanguageTypeTest: XCTestCase {
 
     func testInitialization() {
-        let enLanguage = LanguageType(rawValue: "en")
-        XCTAssertEqual(enLanguage, LanguageType.english)
+        let enLanguage = Predictions.Language(rawValue: "en")
+        XCTAssertEqual(enLanguage, Predictions.Language.english)
     }
 
     func testInitWithLocale() {
         let currentLocale = Locale.current
-        let languageType = LanguageType(locale: currentLocale)
-        XCTAssertNotEqual(languageType, LanguageType.undetermined)
+        let languageType = Predictions.Language(locale: currentLocale)
+        XCTAssertNotEqual(languageType, Predictions.Language.undetermined)
     }
 
     func testConvertEnglishToLocale() {
-        let enLangauage = LanguageType.afrikaans
+        let enLangauage = Predictions.Language.afrikaans
         let locale = Locale(identifier: enLangauage.rawValue)
         XCTAssertEqual(locale.languageCode, "af")
     }

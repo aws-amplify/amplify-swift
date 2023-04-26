@@ -13,7 +13,7 @@ extension Predictions.Convert.SpeechToText {
         public let defaultNetworkPolicy: DefaultNetworkPolicy
 
         /// The language of the audio file you are transcribing
-        public let language: LanguageType?
+        public let language: Predictions.Language?
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not
         /// provide a way to utilize the underlying storage system's functionality. See plugin documentation for
@@ -22,7 +22,7 @@ extension Predictions.Convert.SpeechToText {
 
         public init(
             defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
-            language: LanguageType? = nil,
+            language: Predictions.Language? = nil,
             pluginOptions: Any? = nil
         ) {
             self.defaultNetworkPolicy = defaultNetworkPolicy

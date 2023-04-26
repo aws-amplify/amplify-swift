@@ -13,8 +13,8 @@ enum IdentifyCelebritiesResultTransformers { //: IdentifyResultTransformers {
 
     static func processCelebs(
         _ rekognitionCelebs: [RekognitionClientTypes.Celebrity]
-    ) -> [Celebrity] {
-        var celebs = [Celebrity]()
+    ) -> [Predictions.Celebrity] {
+        var celebs = [Predictions.Celebrity]()
         for rekognitionCeleb in rekognitionCelebs {
 
             guard let name = rekognitionCeleb.name,
@@ -34,20 +34,20 @@ enum IdentifyCelebritiesResultTransformers { //: IdentifyResultTransformers {
                 continue
             }
 
-            let pose = Pose(
+            let pose = Predictions.Pose(
                 pitch: Double(pitch),
                 roll: Double(roll),
                 yaw: Double(yaw)
             )
 
-            let metadata = CelebrityMetadata(name: name, identifier: identifier, urls: urls, pose: pose)
+            let metadata = Predictions.Celebrity.Metadata(name: name, identifier: identifier, urls: urls, pose: pose)
 
             guard let boundingBox = IdentifyResultTransformers.processBoundingBox(face.boundingBox) else {
                 continue
             }
 
             let landmarks = IdentifyResultTransformers.processLandmarks(face.landmarks)
-            let celeb = Celebrity(metadata: metadata, boundingBox: boundingBox, landmarks: landmarks)
+            let celeb = Predictions.Celebrity(metadata: metadata, boundingBox: boundingBox, landmarks: landmarks)
             celebs.append(celeb)
         }
 

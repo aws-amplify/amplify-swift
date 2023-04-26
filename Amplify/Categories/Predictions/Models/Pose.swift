@@ -5,19 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Describes the pose of a person identified in an image from identify() API
-public struct Pose {
-    public let pitch: Double
-    public let roll: Double
-    public let yaw: Double
+extension Predictions {
+    /// Describes the pose of a person identified in an image from identify() API
+    public struct Pose {
+        public let pitch: Double
+        public let roll: Double
+        public let yaw: Double
 
-    public init(
-        pitch: Double,
-        roll: Double,
-        yaw: Double
-    ) {
-        self.pitch = pitch
-        self.roll = roll
-        self.yaw = yaw
+        public init(
+            pitch: Double,
+            roll: Double,
+            yaw: Double
+        ) {
+            self.pitch = pitch
+            self.roll = roll
+            self.yaw = yaw
+        }
     }
 }

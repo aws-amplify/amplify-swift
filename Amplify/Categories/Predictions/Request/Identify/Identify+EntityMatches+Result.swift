@@ -11,9 +11,9 @@ extension Predictions.Identify.EntityMatches {
     /// need to be identified
     public struct Result {
         /// List of matched `EntityMatch`
-        public let entities: [EntityMatch]
+        public let entities: [Predictions.Entity.Match]
 
-        public init(entities: [EntityMatch]) {
+        public init(entities: [Predictions.Entity.Match]) {
             self.entities = entities
         }
     }

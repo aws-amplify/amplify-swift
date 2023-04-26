@@ -7,20 +7,22 @@
 
 import CoreGraphics
 
-public struct Table {
-    public var rows: Int
-    public var columns: Int
-    public var cells: [Cell]
+extension Predictions {
+    public struct Table {
+        public var rows: Int
+        public var columns: Int
+        public var cells: [Cell]
 
-    public init() {
-        self.rows = 0
-        self.columns = 0
-        self.cells = [Cell]()
+        public init() {
+            self.rows = 0
+            self.columns = 0
+            self.cells = [Cell]()
+        }
     }
 }
 
-public extension Table {
-    struct Cell {
+extension Predictions.Table {
+    public struct Cell {
         public let text: String
 
         /// The location of the recognized text on the image. It includes an axis-aligned,
@@ -29,7 +31,7 @@ public extension Table {
 
         /// The location of the recognized text on the image in a finer-grain polygon than
         /// the bounding box for more accurate spatial information of where the text is in the table
-        public let polygon: Polygon
+        public let polygon: Predictions.Polygon
         public let isSelected: Bool
         public let rowIndex: Int
         public let columnIndex: Int
@@ -39,7 +41,7 @@ public extension Table {
         public init(
             text: String,
             boundingBox: CGRect,
-            polygon: Polygon,
+            polygon: Predictions.Polygon,
             isSelected: Bool,
             rowIndex: Int,
             columnIndex: Int,
@@ -55,6 +57,5 @@ public extension Table {
             self.rowSpan = rowSpan
             self.columnSpan = columnSpan
         }
-
     }
 }

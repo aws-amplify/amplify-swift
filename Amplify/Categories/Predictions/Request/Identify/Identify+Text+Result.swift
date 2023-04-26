@@ -10,15 +10,15 @@ extension Predictions.Identify.Text {
     /// in identify() API
     public struct Result {
         public let fullText: String?
-        public let words: [IdentifiedWord]?
+        public let words: [Predictions.IdentifiedWord]?
         public let rawLineText: [String]?
-        public let identifiedLines: [IdentifiedLine]?
+        public let identifiedLines: [Predictions.IdentifiedLine]?
         
         public init(
             fullText: String?,
-            words: [IdentifiedWord]?,
+            words: [Predictions.IdentifiedWord]?,
             rawLineText: [String]?,
-            identifiedLines: [IdentifiedLine]?
+            identifiedLines: [Predictions.IdentifiedLine]?
         ) {
             self.fullText = fullText
             self.words = words

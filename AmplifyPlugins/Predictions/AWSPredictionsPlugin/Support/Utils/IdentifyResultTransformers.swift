@@ -60,7 +60,7 @@ enum IdentifyResultTransformers {
         return CGRect(x: left, y: top, width: width, height: height)
     }
 
-    static func processPolygon(_ rekognitionPolygonPoints: [RekognitionClientTypes.Point]?) -> Polygon? {
+    static func processPolygon(_ rekognitionPolygonPoints: [RekognitionClientTypes.Point]?) -> Predictions.Polygon? {
         guard let rekognitionPolygonPoints = rekognitionPolygonPoints else {
             return nil
         }
@@ -73,10 +73,10 @@ enum IdentifyResultTransformers {
             let point = CGPoint(x: Double(xPosition), y: Double(yPosition)) // TODO: What about Truncating???
             points.append(point)
         }
-        return Polygon(points: points)
+        return Predictions.Polygon(points: points)
     }
 
-    static func processPolygon(_ textractPolygonPoints: [TextractClientTypes.Point]?) -> Polygon? {
+    static func processPolygon(_ textractPolygonPoints: [TextractClientTypes.Point]?) -> Predictions.Polygon? {
         guard let textractPolygonPoints = textractPolygonPoints else {
             return nil
         }
@@ -89,12 +89,12 @@ enum IdentifyResultTransformers {
             points.append(point)
         }
 
-        return Polygon(points: points)
+        return Predictions.Polygon(points: points)
     }
 
     // swiftlint:disable cyclomatic_complexity
-    static func processLandmarks(_ rekognitionLandmarks: [RekognitionClientTypes.Landmark]?) -> [Landmark] {
-        var landmarks = [Landmark]()
+    static func processLandmarks(_ rekognitionLandmarks: [RekognitionClientTypes.Landmark]?) -> [Predictions.Landmark] {
+        var landmarks = [Predictions.Landmark]()
         guard let rekognitionLandmarks = rekognitionLandmarks else {
             return landmarks
         }
@@ -154,17 +154,17 @@ enum IdentifyResultTransformers {
                 continue
             }
         }
-        landmarks.append(Landmark(type: .allPoints, points: allPoints))
-        landmarks.append(Landmark(type: .leftEye, points: leftEyePoints))
-        landmarks.append(Landmark(type: .rightEye, points: rightEyePoints))
-        landmarks.append(Landmark(type: .leftEyebrow, points: leftEyeBrowPoints))
-        landmarks.append(Landmark(type: .rightEyebrow, points: rightEyeBrowPoints))
-        landmarks.append(Landmark(type: .nose, points: nosePoints))
-        landmarks.append(Landmark(type: .noseCrest, points: noseCrestPoints))
-        landmarks.append(Landmark(type: .outerLips, points: outerLipPoints))
-        landmarks.append(Landmark(type: .leftPupil, points: leftPupilPoints))
-        landmarks.append(Landmark(type: .rightPupil, points: rightPupilPoints))
-        landmarks.append(Landmark(type: .faceContour, points: faceContourPoints))
+        landmarks.append(Predictions.Landmark(kind: .allPoints, points: allPoints))
+        landmarks.append(Predictions.Landmark(kind: .leftEye, points: leftEyePoints))
+        landmarks.append(Predictions.Landmark(kind: .rightEye, points: rightEyePoints))
+        landmarks.append(Predictions.Landmark(kind: .leftEyebrow, points: leftEyeBrowPoints))
+        landmarks.append(Predictions.Landmark(kind: .rightEyebrow, points: rightEyeBrowPoints))
+        landmarks.append(Predictions.Landmark(kind: .nose, points: nosePoints))
+        landmarks.append(Predictions.Landmark(kind: .noseCrest, points: noseCrestPoints))
+        landmarks.append(Predictions.Landmark(kind: .outerLips, points: outerLipPoints))
+        landmarks.append(Predictions.Landmark(kind: .leftPupil, points: leftPupilPoints))
+        landmarks.append(Predictions.Landmark(kind: .rightPupil, points: rightPupilPoints))
+        landmarks.append(Predictions.Landmark(kind: .faceContour, points: faceContourPoints))
         return landmarks
     }
 }

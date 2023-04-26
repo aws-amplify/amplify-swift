@@ -12,6 +12,9 @@ import UIKit
 @testable import AWSRekognition
 import XCTest
 
+import Combine
+
+
 class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
     private func imageURL(for resource: String) throws -> URL {
@@ -80,6 +83,105 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let expectedWordsSample = Set(["ANAGRAM", "BETTER", "IDEAS", "THIS"])
         let didFindExpectedWords = expectedWordsSample.subtracting(foundWords).isEmpty
         XCTAssert(didFindExpectedWords)
+    }
+
+    func detectText(_ image: URL) async throws -> [Predictions.IdentifiedWord]? {
+        do {
+            let options = Predictions.Identify.Options(defaultNetworkPolicy: .offline)
+            let result = try await Amplify.Predictions.identify(.text, in: image)
+            print("Identified text: \(result)")
+            return result.words
+        }  catch let error as PredictionsError {
+            print("Error identifying text: \(error)")
+            throw error
+        } catch {
+            print("Unexpected error: \(error)")
+            throw error
+        }
+    }
+
+    func detectText(_ image: URL) -> AnyCancellable {
+        Amplify.Publisher.create {
+            try await Amplify.Predictions.identify(.text, in: image)
+        }
+        .sink(receiveCompletion: { completion in
+            if case let .failure(error) = completion {
+                print("Error identifying text: \(error)")
+            }
+        }, receiveValue: { value in
+            print("Identified text: \(value)")
+        })
+    }
+
+    func detectEntities(_ image: URL) async throws -> [Predictions.Entity] {
+        do {
+            let result = try await Amplify.Predictions.identify(.entities, in: image)
+            print("Identified entities: \(result.entities)")
+            return result.entities
+        } catch let error as PredictionsError {
+            print("Error identifying entities: \(error)")
+            throw error
+        } catch {
+            print("Unexpected error: \(error)")
+            throw error
+        }
+    }
+
+    func detectEntities(_ image: URL) -> AnyCancellable {
+        Amplify.Publisher.create {
+            try await Amplify.Predictions.identify(.entities, in: image)
+        }
+        .sink(receiveCompletion: { completion in
+            if case let .failure(error) = completion {
+                print("Error identifying entities: \(error)")
+            }
+        }, receiveValue: { value in
+            print("Identified entities: \(value.entities)")
+        })
+    }
+
+func detecCelebrities(_ image: URL) async throws -> [Predictions.Celebrity] {
+    do {
+        let result = try await Amplify.Predictions.identify(.celebrities, in: image)
+        let celebrities = result.celebrities
+        let celebritiesNames = celebrities.map(\.metadata.name)
+        print("Identified celebrities with names: \(celebritiesNames)")
+        return celebrities
+    } catch let error as PredictionsError {
+        print("Error identifying celebrities: \(error)")
+        throw error
+    } catch {
+        print("Unexpected error: \(error)")
+        throw error
+    }
+}
+
+func detecCelebrities(_ image: URL) -> AnyCancellable {
+    Amplify.Publisher.create {
+        try await Amplify.Predictions.identify(.celebrities, in: image)
+    }
+    .sink(receiveCompletion: { completion in
+        if case let .failure(error) = completion {
+            print("Error identifying celebrities: \(error)")
+        }
+    }, receiveValue: { value in
+        print("Identified celebrities with names: \(value.celebrities.map(\.metadata.name))")
+    })
+}
+
+    func detectDocumentText(_ image: URL) -> AnyCancellable {
+        Amplify.Publisher.create {
+            try await Amplify.Predictions.identify(
+                .textInDocument(textFormatType: .form), in: image
+            )
+        }
+        .sink(receiveCompletion: { completion in
+            if case let .failure(error) = completion {
+                print("Error identifying text in document: \(error)")
+            }
+        }, receiveValue: { value in
+            print("Identified text in document: \(value)")
+        })
     }
 
     /// Given:

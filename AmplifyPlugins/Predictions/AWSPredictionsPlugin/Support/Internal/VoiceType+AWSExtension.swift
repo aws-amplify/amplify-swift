@@ -8,7 +8,7 @@
 import Amplify
 import AWSPolly
 
-extension Predictions.Convert.TextToSpeech.Options.Voice {
+extension Predictions.Voice {
     public static let arabicFemaleZeina = Self(id: "Zeina")
     public static let chineseFemaleZhiyu = Self(id: "Zhiyu")
     public static let danishFemaleNaja = Self(id: "Naja")

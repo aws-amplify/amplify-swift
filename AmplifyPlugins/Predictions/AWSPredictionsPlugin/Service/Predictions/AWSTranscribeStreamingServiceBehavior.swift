@@ -11,7 +11,7 @@ import Amplify
 protocol AWSTranscribeStreamingServiceBehavior {
     func transcribe(
         speechToText: URL,
-        language: LanguageType?,
+        language: Predictions.Language?,
         region: String
     ) async throws -> AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error>
 }

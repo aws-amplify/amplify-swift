@@ -23,11 +23,11 @@ public struct IdentifyConfiguration {
 }
 
 public struct IdentifyLabelsConfiguration {
-    public let type: LabelType
+    public let type: Predictions.LabelType
 }
 
 public struct IdentifyTextConfiguration {
-    public let format: TextFormatType
+    public let format: Predictions.TextFormatType
 }
 
 public struct IdentifyEntitiesConfiguration {
@@ -120,11 +120,11 @@ extension IdentifyLabelsConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        type = try values.decode(LabelType.self, forKey: .type)
+        type = try values.decode(Predictions.LabelType.self, forKey: .type)
     }
 }
 
-extension LabelType: Decodable {
+extension Predictions.LabelType: Decodable {
     enum CodingError: Error {
         case unknownValue
     }
@@ -152,11 +152,11 @@ extension IdentifyTextConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        format = try values.decode(TextFormatType.self, forKey: .format)
+        format = try values.decode(Predictions.TextFormatType.self, forKey: .format)
     }
 }
 
-extension TextFormatType: Decodable {
+extension Predictions.TextFormatType: Decodable {
     enum CodingError: Error {
         case unknownValue
     }

@@ -5,24 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Sentiment Analysis result for Predictions category
-public struct Sentiment {
-    public let predominantSentiment: SentimentType
-    public let sentimentScores: [SentimentType: Double]?
+extension Predictions {
+    /// Sentiment Analysis result for Predictions category
+    public struct Sentiment {
+        public let predominantSentiment: Kind
+        public let sentimentScores: [Kind: Double]?
 
-    public init(
-        predominantSentiment: SentimentType,
-        sentimentScores: [SentimentType: Double]?
-    ) {
-        self.predominantSentiment = predominantSentiment
-        self.sentimentScores = sentimentScores
+        public init(
+            predominantSentiment: Kind,
+            sentimentScores: [Kind: Double]?
+        ) {
+            self.predominantSentiment = predominantSentiment
+            self.sentimentScores = sentimentScores
+        }
     }
-}
-
-public enum SentimentType: String {
-    case unknown
-    case positive
-    case negative
-    case neutral
-    case mixed
 }

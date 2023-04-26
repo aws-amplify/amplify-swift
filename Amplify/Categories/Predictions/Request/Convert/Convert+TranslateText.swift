@@ -12,14 +12,14 @@ extension Predictions.Convert {
 }
 
 extension Predictions.Convert.Request where
-Input == (String, LanguageType?, LanguageType?),
+Input == (String, Predictions.Language?, Predictions.Language?),
 Options == Predictions.Convert.TranslateText.Options,
 Output == Predictions.Convert.TranslateText.Result {
 
     public static func textToTranslate(
         _ text: String,
-        from: LanguageType? = nil,
-        to: LanguageType? = nil
+        from: Predictions.Language? = nil,
+        to: Predictions.Language? = nil
     ) -> Self {
         .init(
             input: (text, from, to),

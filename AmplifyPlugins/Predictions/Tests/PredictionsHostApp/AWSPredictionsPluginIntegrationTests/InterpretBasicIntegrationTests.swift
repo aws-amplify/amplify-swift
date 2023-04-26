@@ -24,7 +24,7 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
         Here is a text to be tested. This text contains emojis like 🙃😆 and like 🚀. Also it contains entities like
         places in Seattle and on November 19. Text is long enough to have happy emotions.
         """
-        let result = try await Amplify.Predictions.interpret(text: inputText)
+        let result = try await Amplify.Predictions.interpret(text: inputText, options: .init(defaultNetworkPolicy: .online))
         XCTAssertNotNil(result, "Result should contain value")
     }
 
@@ -60,7 +60,7 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
         ]
 
         for text in inputTexts {
-            let result = try await Amplify.Predictions.interpret(text: text)
+            let result = try await Amplify.Predictions.interpret(text: text, options: .init(defaultNetworkPolicy: .online))
             XCTAssertNotNil(result, "Result should contain value")
         }
     }
@@ -75,7 +75,7 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
     ///
     func testInterpretTextOffline() async throws {
         let options = Predictions.Interpret.Options(
-            defaultNetworkPolicy: .offline,
+            defaultNetworkPolicy: .online,
             pluginOptions: nil
         )
 
@@ -83,7 +83,23 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
             text: "Hello there how are you?",
             options: options
         )
-        
+
+//        guard let syntax = result.syntax else { return }
+//
+//        let tokenIDToPartOfSpeechMap = syntax.reduce(into: [Int: Predictions.PartOfSpeech](), { dict, value in
+//            dict[value.tokenId] = value.detectedPartOfSpeech.partOfSpeech
+//        })
+//
+//
+//        for detectedPartOfSpeech in syntax.map(\.detectedPartOfSpeech) {
+//            if detectedPartOfSpeech.score ?? 0 < 0.9 { continue }
+//            switch detectedPartOfSpeech.partOfSpeech {
+//            case .adjective: // ...
+//            case .interjection: // ...
+//            default: // ...
+//            }
+//        }
+
         XCTAssertNotNil(result, "Result should contain value")
     }
 }

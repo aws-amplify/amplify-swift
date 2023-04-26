@@ -14,8 +14,8 @@ extension IdentifyTextResultTransformers {
     static func processTables(
         tableBlocks: [TextractClientTypes.Block],
         blockMap: [String: TextractClientTypes.Block]
-    ) -> [Table] {
-        var tables = [Table]()
+    ) -> [Predictions.Table] {
+        var tables = [Predictions.Table]()
         for tableBlock in tableBlocks {
             if let table = processTable(tableBlock, blockMap: blockMap) {
                 tables.append(table)
@@ -27,13 +27,13 @@ extension IdentifyTextResultTransformers {
     static func processTable(
         _ tableBlock: TextractClientTypes.Block,
         blockMap: [String: TextractClientTypes.Block]
-    ) -> Table? {
+    ) -> Predictions.Table? {
 
         guard let relationships = tableBlock.relationships,
             case .table = tableBlock.blockType else {
                 return nil
         }
-        var table = Table()
+        var table = Predictions.Table()
         var rows = Set<Int>()
         var cols = Set<Int>()
 
@@ -71,7 +71,7 @@ extension IdentifyTextResultTransformers {
     static func constructTableCell(
         _ block: TextractClientTypes.Block,
         _ blockMap: [String: TextractClientTypes.Block]
-    ) -> Table.Cell? {
+    ) -> Predictions.Table.Cell? {
         guard block.blockType == .cell,
             let relationships = block.relationships,
             let rowIndex = block.rowIndex,
@@ -124,7 +124,7 @@ extension IdentifyTextResultTransformers {
                 return nil
         }
 
-        return Table.Cell(
+        return Predictions.Table.Cell(
             text: words.trimmingCharacters(in: .whitespacesAndNewlines),
             boundingBox: boundingBox,
             polygon: polygon,

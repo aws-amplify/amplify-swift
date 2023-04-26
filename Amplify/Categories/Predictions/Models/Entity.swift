@@ -7,42 +7,46 @@
 
 import CoreGraphics
 
-/// Result returned as part of identify() API call with
-/// `IdentifyAction.detectEntities` type parameter
-public struct Entity {
-    public let boundingBox: CGRect
-    public let landmarks: [Landmark]
-    public let ageRange: AgeRange?
-    public let attributes: [Attribute]?
-    public let gender: GenderAttribute?
-    public let metadata: EntityMetadata
-    public let emotions: [Emotion]?
+extension Predictions {
+    /// Result returned as part of identify() API call with
+    /// `IdentifyAction.detectEntities` type parameter
+    public struct Entity {
+        public let boundingBox: CGRect
+        public let landmarks: [Landmark]
+        public let ageRange: ClosedRange<Int>?
+        public let attributes: [Attribute]?
+        public let gender: GenderAttribute?
+        public let metadata: Metadata
+        public let emotions: [Emotion]?
 
-    public init(
-        boundingBox: CGRect,
-        landmarks: [Landmark],
-        ageRange: AgeRange?,
-        attributes: [Attribute]?,
-        gender: GenderAttribute?,
-        metadata: EntityMetadata,
-        emotions: [Emotion]?
-    ) {
-        self.boundingBox = boundingBox
-        self.landmarks = landmarks
-        self.ageRange = ageRange
-        self.attributes = attributes
-        self.gender = gender
-        self.metadata = metadata
-        self.emotions = emotions
+        public init(
+            boundingBox: CGRect,
+            landmarks: [Landmark],
+            ageRange: ClosedRange<Int>?,
+            attributes: [Attribute]?,
+            gender: GenderAttribute?,
+            metadata: Metadata,
+            emotions: [Emotion]?
+        ) {
+            self.boundingBox = boundingBox
+            self.landmarks = landmarks
+            self.ageRange = ageRange
+            self.attributes = attributes
+            self.gender = gender
+            self.metadata = metadata
+            self.emotions = emotions
+        }
     }
 }
 
-public struct EntityMetadata {
-    public let confidence: Double
-    public let pose: Pose
+extension Predictions.Entity {
+    public struct Metadata {
+        public let confidence: Double
+        public let pose: Predictions.Pose
 
-    public init(confidence: Double, pose: Pose) {
-        self.confidence = confidence
-        self.pose = pose
+        public init(confidence: Double, pose: Predictions.Pose) {
+            self.confidence = confidence
+            self.pose = pose
+        }
     }
 }

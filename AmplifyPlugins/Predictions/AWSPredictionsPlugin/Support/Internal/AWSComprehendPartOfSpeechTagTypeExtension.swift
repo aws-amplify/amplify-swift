@@ -10,7 +10,7 @@ import AWSComprehend
 
 extension ComprehendClientTypes.PartOfSpeechTagType {
     // swiftlint:disable cyclomatic_complexity
-    func getSpeechType() -> SpeechType {
+    func getSpeechType() -> Predictions.PartOfSpeech {
         switch self {
         case .sdkUnknown:
             return .unknown

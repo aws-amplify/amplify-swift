@@ -12,8 +12,8 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
     func translateText(
         text: String,
-        language: LanguageType?,
-        targetLanguage: LanguageType?
+        language: Predictions.Language?,
+        targetLanguage: Predictions.Language?
     ) async throws -> Predictions.Convert.TranslateText.Result {
         // prefer passed in language. If it's not there, try to grab it from the config,
         // If that doesn't exist, we can't progress any further and throw an error
@@ -27,7 +27,7 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
         // prefer passed in language. If it's not there, try to grab it from the config,
         // If that doesn't exist, we can't progress any further and throw an error
-        guard let finalTargetLanguage = targetLanguage ?? predictionsConfig.convert.translateText?.targetLanguage else {
+        guard let targetLanguage = targetLanguage ?? predictionsConfig.convert.translateText?.targetLanguage else {
             throw PredictionsError.configuration(
                 AWSTranslateErrorMessage.targetLanguageNotProvided.errorDescription,
                 AWSTranslateErrorMessage.targetLanguageNotProvided.errorDescription,
@@ -37,8 +37,8 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
 
         let request = TranslateTextInput(
-            sourceLanguageCode: sourceLanguage.rawValue,
-            targetLanguageCode: finalTargetLanguage.rawValue,
+            sourceLanguageCode: sourceLanguage.code,
+            targetLanguageCode: targetLanguage.code,
             text: text
         )
 
@@ -58,10 +58,9 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
             throw PredictionsError.network(noResult.errorDescription, noResult.recoverySuggestion)
         }
 
-        let targetLanguage = LanguageType(rawValue: textTranslateResult.targetLanguageCode ?? "")
         let translateTextResult = Predictions.Convert.TranslateText.Result(
             text: translatedText,
-            targetLanguage: targetLanguage ?? finalTargetLanguage
+            targetLanguage: targetLanguage
         )
 
         return translateTextResult

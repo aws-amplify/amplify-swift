@@ -11,7 +11,7 @@ import AWSComprehend
 extension ComprehendClientTypes.EntityType {
 
     // swiftlint:disable:next cyclomatic_complexity
-    func toAmplifyEntityType() -> EntityType {
+    func toAmplifyEntityType() -> Predictions.Entity.Kind {
         switch self {
         case .person:
             return .person

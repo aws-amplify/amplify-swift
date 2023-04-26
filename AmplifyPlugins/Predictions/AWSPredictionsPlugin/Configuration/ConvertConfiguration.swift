@@ -23,8 +23,8 @@ public struct ConvertConfiguration {
 }
 
 public struct TranslateTextConfiguration {
-    public let sourceLanguage: LanguageType
-    public let targetLanguage: LanguageType
+    public let sourceLanguage: Predictions.Language
+    public let targetLanguage: Predictions.Language
 }
 
 public struct SpeechGeneratorConfiguration {
@@ -32,7 +32,7 @@ public struct SpeechGeneratorConfiguration {
 }
 
 public struct TranscriptionConfiguration {
-    public let language: LanguageType
+    public let language: Predictions.Language
 }
 
 extension ConvertConfiguration: Decodable {
@@ -120,12 +120,12 @@ extension TranslateTextConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        self.sourceLanguage = try values.decode(LanguageType.self, forKey: .sourceLanguage)
-        self.targetLanguage = try values.decode(LanguageType.self, forKey: .targetLanguage)
+        let source = try values.decode(String.self, forKey: .sourceLanguage)
+        let target = try values.decode(String.self, forKey: .targetLanguage)
+        self.sourceLanguage = .init(code: source)
+        self.targetLanguage = .init(code: target)
     }
 }
-
-extension LanguageType: Decodable {}
 
 extension SpeechGeneratorConfiguration: Decodable {
     enum CodingKeys: String, CodingKey {
@@ -145,6 +145,7 @@ extension TranscriptionConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        self.language = try values.decode(LanguageType.self, forKey: .language)
+        let language = try values.decode(String.self, forKey: .language)
+        self.language = .init(code: language)
     }
 }

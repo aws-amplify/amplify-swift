@@ -5,24 +5,23 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 extension Predictions.Interpret {
     public struct Result {
-        public let keyPhrases: [KeyPhrase]?
-        public let sentiment: Sentiment?
-        public let entities: [EntityDetectionResult]?
-        public let language: LanguageDetectionResult?
-        public let syntax: [SyntaxToken]?
+        public let keyPhrases: [Predictions.KeyPhrase]?
+        public let sentiment: Predictions.Sentiment?
+        public let entities: [Predictions.Entity.DetectionResult]?
+        public let language: Predictions.Language.DetectionResult?
+        public let syntax: [Predictions.SyntaxToken]?
     }
 }
 
 extension Predictions.Interpret.Result {
     public struct Builder {
-        var keyPhrases: [KeyPhrase]?
-        var sentiment: Sentiment?
-        var entities: [EntityDetectionResult]?
-        var language: LanguageDetectionResult?
-        var syntax: [SyntaxToken]?
+        var keyPhrases: [Predictions.KeyPhrase]?
+        var sentiment: Predictions.Sentiment?
+        var entities: [Predictions.Entity.DetectionResult]?
+        var language: Predictions.Language.DetectionResult?
+        var syntax: [Predictions.SyntaxToken]?
 
         public init() {}
 
@@ -38,31 +37,31 @@ extension Predictions.Interpret.Result {
         }
 
         @discardableResult
-        mutating public func with(keyPhrases: [KeyPhrase]?) -> Builder {
+        mutating public func with(keyPhrases: [Predictions.KeyPhrase]?) -> Builder {
             self.keyPhrases = keyPhrases
             return self
         }
 
         @discardableResult
-        mutating public func with(sentiment: Sentiment?) -> Builder {
+        mutating public func with(sentiment: Predictions.Sentiment?) -> Builder {
             self.sentiment = sentiment
             return self
         }
 
         @discardableResult
-        mutating public func with(entities: [EntityDetectionResult]?) -> Builder {
+        mutating public func with(entities: [Predictions.Entity.DetectionResult]?) -> Builder {
             self.entities = entities
             return self
         }
 
         @discardableResult
-        mutating public func with(language: LanguageDetectionResult?) -> Builder {
+        mutating public func with(language: Predictions.Language.DetectionResult?) -> Builder {
             self.language = language
             return self
         }
 
         @discardableResult
-        mutating public func with(syntax: [SyntaxToken]?) -> Builder {
+        mutating public func with(syntax: [Predictions.SyntaxToken]?) -> Builder {
             self.syntax = syntax
             return self
         }

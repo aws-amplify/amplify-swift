@@ -7,7 +7,7 @@
 
 import Amplify
 
-extension TextFormatType {
+extension Predictions.TextFormatType {
     var textractServiceFormatType: [String] {
         switch self {
         case .form:

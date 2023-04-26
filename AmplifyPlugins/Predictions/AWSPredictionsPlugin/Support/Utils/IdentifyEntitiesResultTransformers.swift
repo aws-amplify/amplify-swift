@@ -12,8 +12,8 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
 
     static func processFaces(
         _ rekognitionFaces: [RekognitionClientTypes.FaceDetail]
-    ) -> [Entity] {
-        var entities = [Entity]()
+    ) -> [Predictions.Entity] {
+        var entities = [Predictions.Entity]()
         for rekognitionFace in rekognitionFaces {
 
             guard let boundingBox = IdentifyResultTransformers.processBoundingBox(rekognitionFace.boundingBox) else {
@@ -21,11 +21,14 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
             }
             let landmarks = IdentifyResultTransformers.processLandmarks(rekognitionFace.landmarks)
             let emotions = processEmotions(rekognitionFace.emotions)
-            let ageRange = AgeRange(
-                low: rekognitionFace.ageRange?.low ?? 0,
-                high: rekognitionFace.ageRange?.high ?? 0
-            )
-            let genderAttribute = GenderAttribute(
+            let ageRange = (rekognitionFace.ageRange?.low ?? 0)...(rekognitionFace.ageRange?.high ?? 0)
+
+
+//            AgeRange(
+//                low: rekognitionFace.ageRange?.low ?? 0,
+//                high: rekognitionFace.ageRange?.high ?? 0
+//            )
+            let genderAttribute = Predictions.GenderAttribute(
                 gender: mapGender(
                     genderType: rekognitionFace.gender?.value ?? .sdkUnknown("") // TODO: don't use .sdkUnknown here
                 ),
@@ -39,18 +42,18 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
                 continue
             }
 
-            let pose = Pose(
+            let pose = Predictions.Pose(
                 pitch: Double(pitch),
                 roll: Double(roll),
                 yaw: Double(yaw)
             )
 
-            let metadata = EntityMetadata(
+            let metadata = Predictions.Entity.Metadata(
                 confidence: Double(rekognitionFace.confidence ?? 0),
                 pose: pose
             )
 
-            let entity = Entity(
+            let entity = Predictions.Entity(
                 boundingBox: boundingBox,
                 landmarks: landmarks,
                 ageRange: ageRange,
@@ -67,8 +70,8 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
 
     static func processCollectionFaces(
         _ rekognitionFaces: [RekognitionClientTypes.FaceMatch]
-    ) -> [EntityMatch] {
-        var entities = [EntityMatch]()
+    ) -> [Predictions.Entity.Match] {
+        var entities = [Predictions.Entity.Match]()
         for rekognitionFace in rekognitionFaces {
 
             guard let boundingBox = IdentifyResultTransformers.processBoundingBox(rekognitionFace.face?.boundingBox) else {
@@ -79,11 +82,11 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
                 continue
             }
 
-            let metadata = EntityMatchMetadata(
+            let metadata = Predictions.Entity.Match.Metadata(
                 externalImageId: rekognitionFace.face?.externalImageId,
                 similarity: Double(similarity)
             )
-            let entity = EntityMatch(boundingBox: boundingBox, metadata: metadata)
+            let entity = Predictions.Entity.Match(boundingBox: boundingBox, metadata: metadata)
 
             entities.append(entity)
         }
@@ -93,14 +96,14 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
 
     static func processEmotions(
         _ rekognitionEmotions: [RekognitionClientTypes.Emotion]?
-    ) -> [Emotion] {
-        var emotions = [Emotion]()
+    ) -> [Predictions.Emotion] {
+        var emotions = [Predictions.Emotion]()
         guard let rekognitionEmotions = rekognitionEmotions
             else {
             return emotions
         }
         for rekognitionEmotion in rekognitionEmotions {
-            let emotion = Emotion(
+            let emotion = Predictions.Emotion(
                 emotion: mapEmotion(emotionType: rekognitionEmotion.type ?? .unknown),
                 confidence: rekognitionEmotion.confidence.map(Double.init) ?? 0
             )
@@ -109,48 +112,48 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
         return emotions
     }
 
-    static func processAttributes(face: RekognitionClientTypes.FaceDetail) -> [Attribute] {
-        var attributes = [Attribute]()
+    static func processAttributes(face: RekognitionClientTypes.FaceDetail) -> [Predictions.Attribute] {
+        var attributes = [Predictions.Attribute]()
 
         // TODO: the existing logic defaults to true... is the correct?
         // Going to switch to defaulting to false for now. Reavaluate later.
-        let beard = Attribute(
+        let beard = Predictions.Attribute(
             name: "Beard",
             value: face.beard?.value ?? false,
             confidence: face.beard?.confidence.map(Double.init) ?? 0
         )
 
-        let sunglasses = Attribute(
+        let sunglasses = Predictions.Attribute(
             name: "Sunglasses",
             value: face.sunglasses?.value ?? false,
             confidence: face.sunglasses?.confidence.map(Double.init) ?? 0
         )
 
-        let smile = Attribute(
+        let smile = Predictions.Attribute(
             name: "Smile",
             value: face.smile?.value ?? false,
             confidence: face.smile?.confidence.map(Double.init) ?? 0
         )
 
-        let eyeglasses = Attribute(
+        let eyeglasses = Predictions.Attribute(
             name: "EyeGlasses",
             value: face.eyeglasses?.value ?? false,
             confidence: face.eyeglasses?.confidence.map(Double.init) ?? 0
         )
 
-        let mustache = Attribute(
+        let mustache = Predictions.Attribute(
             name: "Mustache",
             value: face.mustache?.value ?? false,
             confidence: face.mustache?.confidence.map(Double.init) ?? 0
         )
 
-        let mouthOpen = Attribute(
+        let mouthOpen = Predictions.Attribute(
             name: "MouthOpen",
             value: face.mouthOpen?.value ?? false,
             confidence: face.mouthOpen?.confidence.map(Double.init) ?? 0
         )
 
-        let eyesOpen = Attribute(
+        let eyesOpen = Predictions.Attribute(
             name: "EyesOpen",
             value: face.eyesOpen?.value ?? false,
             confidence: face.eyesOpen?.confidence.map(Double.init) ?? 0
@@ -167,7 +170,7 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
         return attributes
     }
 
-    static func mapGender(genderType: RekognitionClientTypes.GenderType) -> GenderType {
+    static func mapGender(genderType: RekognitionClientTypes.GenderType) -> Predictions.Gender {
         switch genderType {
         case .female:
             return .female
@@ -178,7 +181,7 @@ enum IdentifyEntitiesResultTransformers { //: IdentifyResultTransformers {
         }
     }
 
-    private static func mapEmotion(emotionType: RekognitionClientTypes.EmotionName) -> EmotionType {
+    private static func mapEmotion(emotionType: RekognitionClientTypes.EmotionName) -> Predictions.Emotion.Kind {
         switch emotionType {
         case .angry:
             return .angry

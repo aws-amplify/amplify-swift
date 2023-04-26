@@ -14,7 +14,7 @@ protocol AWSTranslateServiceBehavior {
 
     func translateText(
         text: String,
-        language: LanguageType?,
-        targetLanguage: LanguageType?
+        language: Predictions.Language?,
+        targetLanguage: Predictions.Language?
     ) async throws -> Predictions.Convert.TranslateText.Result
 }

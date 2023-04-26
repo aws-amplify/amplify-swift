@@ -15,7 +15,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         // We have to find the dominant language first and then invoke features.
         let (dominantLanguage, score) = try await fetchPredominantLanguage(text)
         var interpretResultBuilder = try await analyzeText(text, for: dominantLanguage)
-        let languageDetected = LanguageDetectionResult(languageCode: dominantLanguage, score: score)
+        let languageDetected = Predictions.Language.DetectionResult(languageCode: dominantLanguage, score: score)
         interpretResultBuilder.with(language: languageDetected)
         return interpretResultBuilder.build()
 
@@ -23,7 +23,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
     private func fetchPredominantLanguage(
         _ text: String
-    ) async throws -> (LanguageType, Double?) {
+    ) async throws -> (Predictions.Language, Double?) {
         let detectLanguage = DetectDominantLanguageInput(text: text)
 
         do {
@@ -37,7 +37,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 throw unknownError
             }
             let locale = Locale(identifier: dominantLanguageCode)
-            let languageType = LanguageType(locale: locale)
+            let languageType = Predictions.Language(locale: locale)
             return (languageType, dominantLanguage.score.map(Double.init))
         } catch {
             // TODO: Map to Amplify error type
@@ -49,7 +49,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
     /// - Parameter languageCode: Dominant language code
-    private func analyzeText(_ text: String, for languageCode: LanguageType) async throws -> Predictions.Interpret.Result.Builder {
+    private func analyzeText(_ text: String, for languageCode: Predictions.Language) async throws -> Predictions.Interpret.Result.Builder {
         let comprehendLanguageCode = languageCode.toComprehendLanguage()
         let syntaxLanguageCode = languageCode.toSyntaxLanguage()
 
@@ -81,7 +81,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func fetchSyntax(
         _ text: String,
         languageCode: ComprehendClientTypes.SyntaxLanguageCode
-    ) async throws -> [SyntaxToken]? {
+    ) async throws -> [Predictions.SyntaxToken]? {
 
         let syntaxRequest = DetectSyntaxInput(languageCode: languageCode, text: text)
         let syntax = try await awsComprehend.detectSyntax(request: syntaxRequest)
@@ -91,7 +91,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         }
 
         // TODO: Rewrite as ([A]) -> [B]
-        var syntaxTokenResult = [SyntaxToken]() // ComprehendClientTypes.SyntaxToken]()
+        var syntaxTokenResult = [Predictions.SyntaxToken]() // ComprehendClientTypes.SyntaxToken]()
         for syntax in syntaxTokens {
             guard let comprehendPartOfSpeech = syntax.partOfSpeech,
                   let tag = comprehendPartOfSpeech.tag
@@ -107,13 +107,15 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             let speechType = ComprehendClientTypes.PartOfSpeechTagType(rawValue: tag.rawValue)
             ?? .sdkUnknown(tag.rawValue)
 
-            let partOfSpeech = PartOfSpeech(tag: speechType.getSpeechType(), score: score)
+            let partOfSpeech = Predictions.PartOfSpeech.DetectionResult(
+                partOfSpeech: speechType.getSpeechType(), score: score
+            )
 
-            let syntaxToken = SyntaxToken(
+            let syntaxToken = Predictions.SyntaxToken(
                 tokenId: syntax.tokenId ?? 0,
                 text: syntax.text ?? "",
                 range: range,
-                partOfSpeech: partOfSpeech
+                detectedPartOfSpeech: partOfSpeech
             )
 
             syntaxTokenResult.append(syntaxToken)
@@ -124,7 +126,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func fetchKeyPhrases(
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
-    ) async throws -> [KeyPhrase]? {
+    ) async throws -> [Predictions.KeyPhrase]? {
 
         let keyPhrasesRequest = DetectKeyPhrasesInput(languageCode: languageCode, text: text)
 
@@ -134,7 +136,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             return nil
         }
 
-        var keyPhrasesResult = [KeyPhrase]()
+        var keyPhrasesResult = [Predictions.KeyPhrase]()
         for keyPhrase in keyPhrases {
 
             let beginOffSet = keyPhrase.beginOffset ?? 0
@@ -143,7 +145,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
             let range = startIndex ..< endIndex
 
-            let amplifyKeyPhrase = KeyPhrase(
+            let amplifyKeyPhrase = Predictions.KeyPhrase(
                 text: keyPhrase.text ?? "",
                 range: range,
                 score: keyPhrase.score
@@ -157,7 +159,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func fetchSentimentResult(
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
-    ) async throws -> Sentiment? {
+    ) async throws -> Predictions.Sentiment? {
         let sentimentRequest = DetectSentimentInput(languageCode: languageCode, text: text)
         let sentimentResponse = try await awsComprehend.detectSentiment(request: sentimentRequest)
 
@@ -165,14 +167,14 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
               let sentimentScore = sentimentResponse.sentimentScore
         else { return nil }
 
-        let score: [SentimentType: Double] = [
+        let score: [Predictions.Sentiment.Kind: Double] = [
             .positive: sentimentScore.positive.map(Double.init) ?? 0,
             .negative: sentimentScore.negative.map(Double.init) ?? 0,
             .mixed: sentimentScore.mixed.map(Double.init) ?? 0,
             .neutral: sentimentScore.neutral.map(Double.init) ?? 0
         ]
 
-        return Sentiment(
+        return Predictions.Sentiment(
             predominantSentiment: sentiment,
             sentimentScores: score
         )
@@ -181,7 +183,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     private func detectEntities(
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
-    ) async throws -> [EntityDetectionResult]? {
+    ) async throws -> [Predictions.Entity.DetectionResult]? {
         let entitiesRequest = DetectEntitiesInput(languageCode: languageCode, text: text)
         let entitiesResponse = try await awsComprehend.detectEntities(request: entitiesRequest)
         guard let entities = entitiesResponse.entities
@@ -189,7 +191,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             return nil
         }
 
-        var entitiesResult = [EntityDetectionResult]()
+        var entitiesResult = [Predictions.Entity.DetectionResult]()
         for entity in entities {
             let beginOffSet = entity.beginOffset ?? 0
             let endOffset = entity.endOffset ?? 0
@@ -197,7 +199,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
 
             let range = startIndex ..< endIndex
-            let interpretEntity = EntityDetectionResult(
+            let interpretEntity = Predictions.Entity.DetectionResult(
                 type: entity.type?.toAmplifyEntityType() ?? .unknown,
                 targetText: entity.text ?? "",
                 score: entity.score,
