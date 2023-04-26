@@ -19,12 +19,34 @@ public enum PredictionsError {
         public let recoverySuggestion: RecoverySuggestion
         public let httpStatusCode: Int?
         public let underlyingError: Error?
+
+        public init(
+            description: ErrorDescription,
+            recoverySuggestion: RecoverySuggestion,
+            httpStatusCode: Int? = nil,
+            underlyingError: Error? = nil
+        ) {
+            self.description = description
+            self.recoverySuggestion = recoverySuggestion
+            self.httpStatusCode = httpStatusCode
+            self.underlyingError = underlyingError
+        }
     }
 
     public struct ClientError {
         public let description: ErrorDescription
         public let recoverySuggestion: RecoverySuggestion
         public let underlyingError: Error?
+
+        public init(
+            description: ErrorDescription,
+            recoverySuggestion: RecoverySuggestion,
+            underlyingError: Error? = nil
+        ) {
+            self.description = description
+            self.recoverySuggestion = recoverySuggestion
+            self.underlyingError = underlyingError
+        }
     }
 }
 
