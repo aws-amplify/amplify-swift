@@ -47,7 +47,6 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
         
         DispatchQueue.main.async {
-            print(aswebAuthenticationSession.canStart)
             aswebAuthenticationSession.start()
         }
 #endif
