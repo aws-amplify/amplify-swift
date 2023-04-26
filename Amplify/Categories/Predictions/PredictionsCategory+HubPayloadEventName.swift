@@ -8,5 +8,5 @@
 import Foundation
 
 public extension HubPayload.EventName {
-    struct Predictions { }
+    struct Predictions {}
 }
