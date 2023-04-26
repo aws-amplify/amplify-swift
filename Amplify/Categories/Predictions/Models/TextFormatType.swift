@@ -11,8 +11,9 @@ extension Predictions {
     public struct TextFormatType: Equatable {
         let id: UInt8
 
-        public static let form = Self(id: 0)
-        public static let table = Self(id: 1)
-        public static let plain = Self(id: 2)
+        public static let all = Self(id: 0)
+        public static let form = Self(id: 1)
+        public static let table = Self(id: 2)
+        public static let plain = Self(id: 3)
     }
 }
