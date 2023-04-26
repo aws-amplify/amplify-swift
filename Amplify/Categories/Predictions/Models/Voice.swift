@@ -6,9 +6,11 @@
 //
 
 extension Predictions {
-    public enum LabelType {
-        case all
-        case moderation
-        case labels
+    public struct Voice {
+        public let id: String
+
+        public init(id: String) {
+            self.id = id
+        }
     }
 }

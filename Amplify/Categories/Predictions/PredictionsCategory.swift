@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+public enum Predictions {}
+
 final public class PredictionsCategory: Category {
 
     public let categoryType = CategoryType.predictions

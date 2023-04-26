@@ -5,12 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Describes different text formats passed a type parameter
-/// to identify().
-
-public enum TextFormatType: String {
-    case form
-    case table
-    case plain
-    case all
+extension Predictions {
+    /// Describes different text formats passed a type parameter
+    /// to identify().
+    public enum TextFormatType: String {
+        case form
+        case table
+        case plain
+        case all
+    }
 }
