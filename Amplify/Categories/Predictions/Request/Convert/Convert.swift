@@ -22,6 +22,28 @@ extension Predictions.Convert.Request {
     public enum Kind {
         public typealias BidirectionalLift<T, U> = ((T) -> U, (U) -> T)
 
-        // TODO: Add request kind cases
+        case textToSpeech(
+            Lift<
+            String, Input,
+            Predictions.Convert.TextToSpeech.Options?, Options?,
+            Predictions.Convert.TextToSpeech.Result, Output
+            >
+        )
+
+        case speechToText(
+            Lift<
+            URL, Input,
+            Predictions.Convert.SpeechToText.Options?, Options?,
+            AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error>, Output
+            >
+        )
+
+        case textToTranslate(
+            Lift<
+            (String, Predictions.Language?, Predictions.Language?), Input,
+            Predictions.Convert.TranslateText.Options?, Options?,
+            Predictions.Convert.TranslateText.Result, Output
+            >
+        )
     }
 }

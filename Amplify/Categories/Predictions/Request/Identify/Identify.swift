@@ -42,6 +42,31 @@ extension Predictions.Identify.Request {
     public enum Kind {
         public typealias Lifting<T> = ((T) -> Output, (Output) -> T)
 
-        // TODO: Add request kind cases
+        case detectCelebrities(
+            Lift<Predictions.Identify.Celebrities.Result, Output>
+        )
+
+        case detectEntities(
+            Lift<Predictions.Identify.Entities.Result, Output>
+        )
+
+        case detectEntitiesCollection(
+            String,
+            Lift<Predictions.Identify.EntityMatches.Result, Output>
+        )
+
+        case detectLabels(
+            Predictions.LabelType,
+            Lift<Predictions.Identify.Labels.Result, Output>
+        )
+
+        case detectTextInDocument(
+            Predictions.TextFormatType,
+            Lift<Predictions.Identify.DocumentText.Result, Output>
+        )
+
+        case detectText(
+            Lift<Predictions.Identify.Text.Result, Output>
+        )
     }
 }
