@@ -31,7 +31,7 @@ class IAMAuthInterceptor: AuthInterceptor {
                 completion(message)
                 return
             }
-            guard let helper = HeaderIAMSigningHelper(
+            guard let helper = IAMHeaderSigningHelper(
                 endpoint: endpoint,
                 payload: message.payload?.data ?? "",
                 region: region) else {
@@ -57,7 +57,7 @@ class IAMAuthInterceptor: AuthInterceptor {
             let url = endpoint.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
             let payloadString = SubscriptionConstants.emptyPayload
 
-            guard let helper = HeaderIAMSigningHelper(
+            guard let helper = IAMHeaderSigningHelper(
                 endpoint: url,
                 payload: payloadString,
                 region: region) else {
@@ -139,7 +139,7 @@ class IAMAuthInterceptor: AuthInterceptor {
         _ endpoint: URL,
         with payload: String) -> IAMAuthenticationHeader? {
 
-            guard let helper = HeaderIAMSigningHelper(
+            guard let helper = IAMHeaderSigningHelper(
                 endpoint: endpoint,
                 payload: payload,
                 region: region) else {

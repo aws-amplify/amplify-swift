@@ -98,7 +98,7 @@ class IAMAuthInterceptorTests: XCTestCase {
         let request = NSMutableURLRequest(url: url)
         request.addValue("headerValue", forHTTPHeaderField: "extra-header")
         let signer = MockAWSSignatureV4Signer()
-        let signingHelper = HeaderIAMSigningHelper(
+        let signingHelper = IAMHeaderSigningHelper(
             endpoint: url,
             payload: "payload",
             region: .USWest2,
