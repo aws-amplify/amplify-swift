@@ -8,7 +8,6 @@
 import Foundation
 
 extension PredictionsCategory: PredictionsCategoryBehavior {
-
     public func identify<Output>(
         _ request: Predictions.Identify.Request<Output>,
         in image: URL,
