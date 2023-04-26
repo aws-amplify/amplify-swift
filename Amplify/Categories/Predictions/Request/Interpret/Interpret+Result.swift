@@ -7,10 +7,10 @@
 
 extension Predictions.Interpret {
     public struct Result {
-        public let keyPhrases: [KeyPhrase]?
-        public let sentiment: Sentiment?
-        public let entities: [EntityDetectionResult]?
-        public let language: LanguageDetectionResult?
-        public let syntax: [SyntaxToken]?
+        public let keyPhrases: [Predictions.KeyPhrase]?
+        public let sentiment: Predictions.Sentiment?
+        public let entities: [Predictions.Entity.DetectionResult]?
+        public let language: Predictions.Language.DetectionResult?
+        public let syntax: [Predictions.SyntaxToken]?
     }
 }
