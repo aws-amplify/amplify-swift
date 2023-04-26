@@ -9,81 +9,65 @@ import Amplify
 import SQLite
 
 extension SQLiteStorageEngineAdapter {
-
-    func save(untypedModel: Model,
-              eagerLoad: Bool = true,
-              completion: DataStoreCallback<Model>) {
-        guard let connection = connection else {
-            completion(.failure(.nilSQLiteConnection()))
-            return
+    func save(_ model: Model, eagerLoad: Bool) -> Swift.Result<Model, DataStoreError> {
+        let modelName: ModelName
+        if let jsonModel = model as? JSONValueHolder,
+           let modelNameFromJson = jsonModel.jsonValue(for: "__typename") as? String {
+            modelName = modelNameFromJson
+        } else {
+            modelName = model.modelName
         }
 
-        do {
-            let modelName: ModelName
-            if let jsonModel = untypedModel as? JSONValueHolder,
-               let modelNameFromJson = jsonModel.jsonValue(for: "__typename") as? String {
-                modelName = modelNameFromJson
-            } else {
-                modelName = untypedModel.modelName
-            }
-
-            guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
-                let error = DataStoreError.invalidModelName(modelName)
-                throw error
-            }
-
-            let shouldUpdate = try exists(modelSchema,
-                                          withIdentifier: untypedModel.identifier(schema: modelSchema))
-
-            if shouldUpdate {
-                let statement = UpdateStatement(model: untypedModel, modelSchema: modelSchema)
-                _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            } else {
-                let statement = InsertStatement(model: untypedModel, modelSchema: modelSchema)
-                _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            }
-            
-            query(modelSchema: modelSchema,
-                  predicate: untypedModel.identifier(schema: modelSchema).predicate,
-                  eagerLoad: eagerLoad) {
-                switch $0 {
-                case .success(let result):
-                    if let saved = result.first {
-                        completion(.success(saved))
-                    } else {
-                        completion(.failure(.nonUniqueResult(model: modelSchema.name,
-                                                             count: result.count)))
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-            
-        } catch {
-            completion(.failure(causedBy: error))
+        guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
+            let error = DataStoreError.invalidModelName(modelName)
+            return .failure(DataStoreError(error: error))
         }
+
+        return exists(
+            modelSchema,
+            withIdentifier: model.identifier(schema: modelSchema),
+            predicate: nil
+        ).map { (modelExist) -> (any SQLStatement) in
+           modelExist  ? UpdateStatement(model: model, modelSchema: modelSchema)
+                       : InsertStatement(model: model, modelSchema: modelSchema)
+       }
+       .flatMap(executeSQLStatement(statement:))
+       .flatMap { _ in
+           query(
+               modelSchema: modelSchema,
+               predicate: model.identifier(schema: modelSchema).predicate,
+               eagerLoad: eagerLoad
+           )
+       }
+       .flatMap { models in
+           if let model = models.first {
+               return .success(model)
+           } else {
+               return .failure(.nonUniqueResult(model: modelName, count: models.count))
+           }
+       }
     }
 
-    func query(modelSchema: ModelSchema,
-               predicate: QueryPredicate? = nil,
-               eagerLoad: Bool = true,
-               completion: DataStoreCallback<[Model]>) {
-        guard let connection = connection else {
-            completion(.failure(.nilSQLiteConnection()))
-            return
+    func query(
+        modelSchema: ModelSchema,
+        predicate: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Swift.Result<[Model], DataStoreError> {
+
+        let statement = SelectStatement(
+            from: modelSchema,
+            predicate: predicate,
+            eagerLoad: eagerLoad
+        )
+
+        return executeSQLStatement(statement: statement).tryMap {
+            try $0.convertToUntypedModel(
+                using: modelSchema,
+                statement: statement,
+                eagerLoad: eagerLoad
+            )
         }
-        do {
-            let statement = SelectStatement(from: modelSchema,
-                                            predicate: predicate,
-                                            eagerLoad: eagerLoad)
-            let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-            let result: [Model] = try rows.convertToUntypedModel(using: modelSchema,
-                                                                 statement: statement,
-                                                                 eagerLoad: eagerLoad)
-            completion(.success(result))
-        } catch {
-            completion(.failure(causedBy: error))
-        }
+
     }
 
 }

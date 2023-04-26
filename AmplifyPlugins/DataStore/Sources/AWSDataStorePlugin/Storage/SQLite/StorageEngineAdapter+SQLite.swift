@@ -13,6 +13,7 @@ import AWSPluginsCore
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
+
     var connection: Connection?
     var dbFilePath: URL?
     static let dbVersionKey = "com.amazonaws.DataStore.dbVersion"
@@ -126,254 +127,219 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    // MARK: - Save
-    func save<M: Model>(_ model: M,
-                        condition: QueryPredicate? = nil,
-                        eagerLoad: Bool = true,
-                        completion: @escaping DataStoreCallback<M>) {
-         save(model,
-              modelSchema: model.schema,
-              condition: condition,
-              eagerLoad: eagerLoad,
-              completion: completion)
-     }
+    // MARK: - Query
+    func query<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        sort: [QuerySortDescriptor]?,
+        paginationInput: QueryPaginationInput?,
+        eagerLoad: Bool
+    ) -> Swift.Result<[M], DataStoreError> {
 
-    func save<M: Model>(_ model: M,
-                        modelSchema: ModelSchema,
-                        condition: QueryPredicate? = nil,
-                        eagerLoad: Bool = true,
-                        completion: DataStoreCallback<M>) {
-        guard let connection = connection else {
-            completion(.failure(DataStoreError.nilSQLiteConnection()))
-            return
+        let statement = SelectStatement(
+            from: modelSchema,
+            predicate: condition,
+            sort: sort,
+            paginationInput: paginationInput,
+            eagerLoad: eagerLoad
+        )
+
+        return executeSQLStatement(statement: statement).flatMap { rows in
+            do {
+                return .success(try rows.convert(
+                    to: modelType,
+                    withSchema: modelSchema,
+                    using: statement,
+                    eagerLoad: eagerLoad
+                ))
+            } catch {
+                return .failure(causedBy: error)
+            }
         }
-        do {
-            let modelType = type(of: model)
-            let modelIdentifier = model.identifier(schema: modelSchema)
-            let modelExists = try exists(modelSchema, withIdentifier: modelIdentifier)
 
-            if !modelExists {
-                if let condition = condition, !condition.isAll {
-                    let dataStoreError = DataStoreError.invalidCondition(
-                        "Cannot apply a condition on model which does not exist.",
-                        "Save the model instance without a condition first.")
-                    completion(.failure(causedBy: dataStoreError))
-                    return
-                }
+    }
 
-                let statement = InsertStatement(model: model, modelSchema: modelSchema)
-                _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            }
-
-            if modelExists {
-                if let condition = condition, !condition.isAll {
-                    let modelExistsWithCondition = try exists(modelSchema,
-                                                              withIdentifier: modelIdentifier,
-                                                              predicate: condition)
-                    if !modelExistsWithCondition {
-                        let dataStoreError = DataStoreError.invalidCondition(
-                        "Save failed due to condition did not match existing model instance.",
-                        "The save will continue to fail until the model instance is updated.")
-                        completion(.failure(causedBy: dataStoreError))
-
-                        return
-                    }
-                }
-
-                let statement = UpdateStatement(model: model,
-                                                modelSchema: modelSchema,
-                                                condition: condition)
-                _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            }
-
-            // load the recent saved instance and pass it back to the callback
-            query(modelType, modelSchema: modelSchema,
-                  predicate: model.identifier(schema: modelSchema).predicate,
-                  eagerLoad: eagerLoad) {
-                switch $0 {
-                case .success(let result):
-                    if let saved = result.first {
-                        completion(.success(saved))
-                    } else {
-                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
-                                                             count: result.count)))
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
+    // MARK: - Save - create or update
+    func save<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Swift.Result<(M, MutationEvent.MutationType), DataStoreError> {
+        exists(modelSchema, withIdentifier: model.identifier(schema: modelSchema), predicate: condition)
+            .flatMap { isModelExist in
+                if isModelExist {
+                    return update(
+                        model,
+                        modelSchema: modelSchema,
+                        condition: condition,
+                        eagerLoad: eagerLoad
+                    ).map { ($0, .update) }
+                } else {
+                    return create(
+                        model,
+                        modelSchema: modelSchema,
+                        condition: condition,
+                        eagerLoad: eagerLoad
+                    ).map { ($0, .create)}
                 }
             }
-        } catch {
-            completion(.failure(causedBy: error))
+    }
+
+    // MARK: - Create
+    func create<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Swift.Result<M, DataStoreError> {
+        if let condition = condition, !condition.isAll {
+            let dataStoreError = DataStoreError.invalidCondition(
+                "Cannot apply a condition on model which does not exist.",
+                "Save the model instance without a condition first.")
+            return .failure(causedBy: dataStoreError)
+        }
+
+        let statement = InsertStatement(model: model, modelSchema: modelSchema)
+
+        return executeSQLStatement(statement: statement).flatMap { _ in
+            query(model, modelSchema: modelSchema, eagerLoad: eagerLoad)
+        }
+    }
+
+    // MARK: - Update
+    func update<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Swift.Result<M, DataStoreError> {
+        if let condition = condition, !condition.isAll {
+        let modelExistsWithCondition = exists(
+            modelSchema,
+            withIdentifier: model.identifier(schema: modelSchema),
+            predicate: condition
+        )
+
+        guard case .success(true) = modelExistsWithCondition else {
+            let dataStoreError = DataStoreError.invalidCondition(
+                "Save failed due to condition did not match existing model instance.",
+                "The save will continue to fail until the model instance is updated.")
+                return .failure(causedBy: dataStoreError)
+            }
+        }
+
+        let statement = UpdateStatement(
+            model: model,
+            modelSchema: modelSchema,
+            condition: condition
+        )
+
+        return executeSQLStatement(statement: statement).flatMap { _ in
+            query(model, modelSchema: modelSchema, eagerLoad: eagerLoad)
         }
     }
 
     // MARK: - Delete
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          filter: QueryPredicate,
-                          completion: (DataStoreResult<[M]>) -> Void) {
-        guard let connection = connection else {
-            completion(.failure(DataStoreError.nilSQLiteConnection()))
-            return
-        }
-        do {
-            let statement = DeleteStatement(modelSchema: modelSchema, predicate: filter)
-            _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            completion(.success([]))
-        } catch {
-            completion(.failure(causedBy: error))
-        }
+    func delete(
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?
+    ) -> Swift.Result<Void, DataStoreError> {
+        let statement = DeleteStatement(
+            modelSchema: modelSchema,
+            withIdentifier: identifier,
+            predicate: condition
+        )
+        return executeSQLStatement(statement: statement).dropSuccessValue()
     }
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withId id: Model.Identifier,
-                          condition: QueryPredicate? = nil,
-                          completion: (DataStoreResult<M?>) -> Void) {
-        delete(untypedModelType: modelType,
-               modelSchema: modelSchema,
-               withId: id,
-               condition: condition) { result in
-            switch result {
-            case .success:
-                completion(.success(nil))
-            case .failure(let error):
-                completion(.failure(error))
+    func delete(
+        modelSchema: ModelSchema,
+        condition: QueryPredicate
+    ) -> Swift.Result<Void, DataStoreError> {
+        let statement = DeleteStatement(
+            modelSchema: modelSchema,
+            predicate: condition
+        )
+        return executeSQLStatement(statement: statement).dropSuccessValue()
+    }
+
+    private func query<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        eagerLoad: Bool
+    ) -> Swift.Result<M, DataStoreError> {
+        query(
+            type(of: model),
+            modelSchema: modelSchema,
+            condition: model.identifier(schema: modelSchema).predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: eagerLoad
+        ).flatMap { models in
+            switch models.count {
+            case 0:
+                return .failure(DataStoreError.invalidCondition(
+                    "The model instance doesn't exist",
+                    "Please create the model instance at first"
+                ))
+            case 1:
+                return .success(models.first!)
+            default:
+                return .failure(.nonUniqueResult(model: model.modelName, count: models.count))
             }
         }
     }
-    
-    
-    func delete<M>(_ modelType: M.Type,
-                   modelSchema: ModelSchema,
-                   withIdentifier identifier: ModelIdentifierProtocol,
-                   condition: QueryPredicate?,
-                   completion: @escaping DataStoreCallback<M?>) where M: Model {
-        delete(untypedModelType: modelType,
-               modelSchema: modelSchema,
-               withIdentifier: identifier,
-               condition: condition) { result in
-            switch result {
-            case .success:
-                completion(.success(nil))
-            case .failure(let error):
-                completion(.failure(error))
+
+    internal func executeSQLStatement(
+        statement: any SQLStatement
+    ) -> Swift.Result<Statement, DataStoreError> {
+        do {
+            guard let connection = connection else {
+                return .failure(DataStoreError.nilSQLiteConnection())
             }
-        }
-    }
-    
-    func delete(untypedModelType modelType: Model.Type,
-                modelSchema: ModelSchema,
-                withId id: Model.Identifier,
-                condition: QueryPredicate? = nil,
-                completion: DataStoreCallback<Void>) {
-        delete(untypedModelType: modelType,
-               modelSchema: modelSchema,
-               withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
-               condition: condition,
-               completion: completion)
-    }
-    
-    func delete(untypedModelType modelType: Model.Type,
-                modelSchema: ModelSchema,
-                withIdentifier id: ModelIdentifierProtocol,
-                condition: QueryPredicate? = nil,
-                completion: DataStoreCallback<Void>) {
-        guard let connection = connection else {
-            completion(.failure(DataStoreError.nilSQLiteConnection()))
-            return
-        }
-        do {
-            let statement = DeleteStatement(modelSchema: modelSchema,
-                                            withIdentifier: id,
-                                            predicate: condition)
-            _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            completion(.emptyResult)
+            return .success(try connection.prepare(statement.stringValue).run(statement.variables))
         } catch {
-            completion(.failure(causedBy: error))
-        }
-    }
-
-    // MARK: - query
-    func query<M: Model>(_ modelType: M.Type,
-                         predicate: QueryPredicate? = nil,
-                         sort: [QuerySortDescriptor]? = nil,
-                         paginationInput: QueryPaginationInput? = nil,
-                         eagerLoad: Bool = true,
-                         completion: DataStoreCallback<[M]>) {
-        query(modelType,
-              modelSchema: modelType.schema,
-              predicate: predicate,
-              sort: sort,
-              paginationInput: paginationInput,
-              eagerLoad: eagerLoad,
-              completion: completion)
-    }
-
-    func query<M: Model>(_ modelType: M.Type,
-                         modelSchema: ModelSchema,
-                         predicate: QueryPredicate? = nil,
-                         sort: [QuerySortDescriptor]? = nil,
-                         paginationInput: QueryPaginationInput? = nil,
-                         eagerLoad: Bool = true,
-                         completion: DataStoreCallback<[M]>) {
-        guard let connection = connection else {
-            completion(.failure(DataStoreError.nilSQLiteConnection()))
-            return
-        }
-        do {
-            let statement = SelectStatement(from: modelSchema,
-                                            predicate: predicate,
-                                            sort: sort,
-                                            paginationInput: paginationInput,
-                                            eagerLoad: eagerLoad)
-            let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-            let result: [M] = try rows.convert(to: modelType,
-                                               withSchema: modelSchema,
-                                               using: statement,
-                                               eagerLoad: eagerLoad)
-            completion(.success(result))
-        } catch {
-            completion(.failure(causedBy: error))
+            return .failure(DataStoreError(error: error))
         }
     }
 
     // MARK: - Exists
-    func exists(_ modelSchema: ModelSchema,
-                withId id: String,
-                predicate: QueryPredicate? = nil) throws -> Bool {
-        try exists(modelSchema,
-                        withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
-                        predicate: predicate)
-    }
-
-    func exists(_ modelSchema: ModelSchema,
-                withIdentifier id: ModelIdentifierProtocol,
-                predicate: QueryPredicate? = nil) throws -> Bool {
-        guard let connection = connection else {
-            throw DataStoreError.nilSQLiteConnection()
-        }
-        let primaryKey = modelSchema.primaryKey.sqlName.quoted()
-        var sql = "select count(\(primaryKey)) from \"\(modelSchema.name)\" where \(primaryKey) = ?"
-        var variables: [Binding?] = [id.stringValue]
-        if let predicate = predicate {
-            let conditionStatement = ConditionStatement(modelSchema: modelSchema, predicate: predicate)
-            sql = """
-            \(sql)
-            \(conditionStatement.stringValue)
-            """
-
-            variables.append(contentsOf: conditionStatement.variables)
-        }
-
-        let result = try connection.scalar(sql, variables)
-        if let count = result as? Int64 {
-            if count > 1 {
-                throw DataStoreError.nonUniqueResult(model: modelSchema.name, count: Int(count))
+    func exists(
+        _ modelSchema: ModelSchema,
+        withIdentifier id: ModelIdentifierProtocol,
+        predicate: QueryPredicate?
+    ) -> Swift.Result<Bool, DataStoreError> {
+        do {
+            guard let connection = connection else {
+                return .failure(DataStoreError.nilSQLiteConnection())
             }
-            return count == 1
+
+            let primaryKey = modelSchema.primaryKey.sqlName.quoted()
+            var sql = "select count(\(primaryKey)) from \"\(modelSchema.name)\" where \(primaryKey) = ?"
+            var variables: [Binding?] = [id.stringValue]
+            if let predicate = predicate {
+                let conditionStatement = ConditionStatement(modelSchema: modelSchema, predicate: predicate)
+                sql = """
+                \(sql)
+                \(conditionStatement.stringValue)
+                """
+
+                variables.append(contentsOf: conditionStatement.variables)
+            }
+
+            let count = try connection.scalar(sql, variables) as! Int64
+            switch count {
+            case 0: return .success(false)
+            case 1: return .success(true)
+            default:
+                return .failure(DataStoreError.nonUniqueResult(model: modelSchema.name, count: Int(count)))
+            }
+        } catch {
+            return .failure(DataStoreError(error: error))
         }
-        return false
     }
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {

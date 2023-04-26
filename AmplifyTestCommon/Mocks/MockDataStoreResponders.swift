@@ -21,41 +21,33 @@ extension MockDataStoreCategoryPlugin {
     }
 }
 
-typealias SaveModelResponder<M: Model> = MockResponder<
-    (model: M, where: QueryPredicate?),
-    DataStoreResult<M>?
->
-typealias QueryByIdResponder<M: Model> = MockResponder<
-    (modelType: M.Type, id: String),
-    DataStoreResult<M?>?
->
+typealias SaveModelResponder<M: Model> =
+    (M, QueryPredicate?) -> DataStoreResult<M>?
 
-typealias QueryModelsResponder<M: Model> = MockResponder<
-    (modelType: M.Type, where: QueryPredicate?, sort: QuerySortInput?, paginate: QueryPaginationInput?),
-    DataStoreResult<[M]>?
->
+typealias QueryByIdResponder<M: Model> =
+    (M.Type, String) -> DataStoreResult<M?>?
 
-typealias DeleteByIdResponder<M: Model> = MockResponder<
-    (modelType: M.Type, id: String),
-    DataStoreResult<Void>?
->
+typealias QueryModelsResponder<M: Model> = (
+    M.Type,
+    QueryPredicate?,
+    QuerySortInput?,
+    QueryPaginationInput?
+) -> DataStoreResult<[M]>?
 
-typealias DeleteModelTypeResponder<M: Model> = MockResponder<
-    (modelType: M.Type, where: QueryPredicate),
-    DataStoreResult<Void>?
->
 
-typealias DeleteModelResponder<M: Model> = MockResponder<
-    (model: M, where: QueryPredicate?),
-    DataStoreResult<Void>?
->
+typealias DeleteByIdResponder<M: Model> =
+    (String) -> DataStoreResult<Void>?
 
-typealias ClearResponder = MockResponder<
-    Void,
-    DataStoreResult<Void>?
->
+typealias DeleteModelTypeResponder<M: Model> =
+    (QueryPredicate) -> DataStoreResult<Void>?
 
-typealias StopResponder = MockResponder<
-    Void,
-    DataStoreResult<Void>?
->
+
+typealias DeleteModelResponder<M: Model> =
+    (M, QueryPredicate?) -> DataStoreResult<Void>?
+
+typealias ClearResponder =
+    () -> DataStoreResult<Void>?
+
+
+typealias StopResponder =
+    () -> DataStoreResult<Void>?

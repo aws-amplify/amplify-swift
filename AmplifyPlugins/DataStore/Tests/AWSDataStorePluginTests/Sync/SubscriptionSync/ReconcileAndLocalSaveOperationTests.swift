@@ -140,7 +140,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }.store(in: &cancellables)
 
         let expectedError = DataStoreError.internalOperation("Query failed", "")
-        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+        let queryResponder: QueryModelTypePredicateResponder<MutationEvent> = { _, _ in
             return .failure(expectedError)
         }
         storageAdapter.responders[.queryModelTypePredicate] = queryResponder
@@ -262,7 +262,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "queried pending mutations success")
         expect.expectedFulfillmentCount = 2
 
-        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+        let queryResponder: QueryModelTypePredicateResponder<MutationEvent> = { _, _ in
             return .success([self.anyPostMutationEvent])
         }
         storageAdapter.responders[.queryModelTypePredicate] = queryResponder
@@ -285,7 +285,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     func testQueryPendingMutations_queryFailure() {
         let expect = expectation(description: "queried pending mutations failed")
         let expectedDropped = expectation(description: "mutationEventDropped received")
-        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+        let queryResponder: QueryModelTypePredicateResponder<MutationEvent> = { _, _ in
             return .failure(DataStoreError.internalOperation("Query failed", ""))
         }
         operation.publisher.sink { _ in } receiveValue: { event in
@@ -593,16 +593,16 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         let notifyExpect = expectation(description: "mutation event should be emitted")
         let hubExpect = expectation(description: "Hub is notified")
-        let saveResponder = SaveUntypedModelResponder { model, completion in
+        let saveResponder: SaveUntypedModelResponder = { model in
             stoargeExpect.fulfill()
-            completion(.success(model))
+            return .success(model)
         }
 
         storageAdapter.responders[.saveUntypedModel] = saveResponder
 
-        let saveMetadataResponder = SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
+        let saveMetadataResponder: SaveModelCompletionResponder<MutationSyncMetadata> = { model in
             storageMetadataExpect.fulfill()
-            completion(.success(model))
+            return .success(model)
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
 
@@ -651,15 +651,15 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         let notifyExpect = expectation(description: "mutation event should be emitted")
         let hubExpect = expectation(description: "Hub is notified")
-        let saveResponder = SaveUntypedModelResponder { _, completion in
+        let saveResponder: SaveUntypedModelResponder = { _ in
             stoargeExpect.fulfill()
-            completion(.success(self.anyPostMutationSync.model))
+            return .success(self.anyPostMutationSync.model)
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
 
-        let saveMetadataResponder = SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
+        let saveMetadataResponder: SaveModelCompletionResponder<MutationSyncMetadata> = { model in
             storageMetadataExpect.fulfill()
-            completion(.success(model))
+            return .success(model)
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
         _ = Amplify.Hub.listen(to: .dataStore) { payload in
@@ -706,16 +706,16 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         let notifyExpect = expectation(description: "mutation event should be emitted")
         let hubExpect = expectation(description: "Hub is notified")
-        let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
+        let deleteResponder: DeleteUntypedModelCompletionResponder = { id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
             stoargeExpect.fulfill()
             return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
 
-        let saveMetadataResponder = SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
+        let saveMetadataResponder: SaveModelCompletionResponder<MutationSyncMetadata> = { model in
             storageMetadataExpect.fulfill()
-            completion(.success(model))
+            return .success(model)
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
         _ = Amplify.Hub.listen(to: .dataStore) { payload in
@@ -777,22 +777,22 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let hubExpect = expectation(description: "Hub is notified")
         hubExpect.expectedFulfillmentCount = dispositions.count
 
-        let saveResponder = SaveUntypedModelResponder { _, completion in
+        let saveResponder: SaveUntypedModelResponder = { _ in
             stoargeExpect.fulfill()
-            completion(.success(self.anyPostMutationSync.model))
+            return .success(self.anyPostMutationSync.model)
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
 
-        let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
+        let deleteResponder: DeleteUntypedModelCompletionResponder = { id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
             stoargeExpect.fulfill()
             return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
 
-        let saveMetadataResponder = SaveModelCompletionResponder<MutationSyncMetadata> { model, completion in
+        let saveMetadataResponder: SaveModelCompletionResponder<MutationSyncMetadata> = { model in
             storageMetadataExpect.fulfill()
-            completion(.success(model))
+            return .success(model)
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
         _ = Amplify.Hub.listen(to: .dataStore) { payload in
@@ -851,8 +851,8 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         expectedDeleteSuccess.expectedFulfillmentCount = 3 // 3 delete depositions
         let expectedDropped = expectation(description: "mutationEventDropped received")
         expectedDropped.expectedFulfillmentCount = 6 // 3 creates and 3 updates
-        let saveResponder = SaveUntypedModelResponder { _, completion in
-            completion(.failure(DataStoreError.internalOperation("Failed to save", "")))
+        let saveResponder: SaveUntypedModelResponder = { _ in
+            return .failure(DataStoreError.internalOperation("Failed to save", ""))
         }
 
         storageAdapter.responders[.saveUntypedModel] = saveResponder
@@ -906,12 +906,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expectDropped = expectation(description: "should notify dropped")
         expectDropped.expectedFulfillmentCount = dispositions.count
         let dataStoreError = DataStoreError.internalOperation("Failed to save", "")
-        let saveResponder = SaveUntypedModelResponder { _, completion in
-            completion(.failure(dataStoreError))
+        let saveResponder: SaveUntypedModelResponder = { _ in
+            return .failure(dataStoreError)
         }
         storageAdapter.shouldIgnoreError = true
         storageAdapter.responders[.saveUntypedModel] = saveResponder
-        let deleteResponder = DeleteUntypedModelCompletionResponder { _, _ in
+        let deleteResponder: DeleteUntypedModelCompletionResponder = { _ in
             return .failure(dataStoreError)
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
@@ -967,8 +967,8 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         expectedCreateAndUpdateSuccess.expectedFulfillmentCount = 6 // 3 creates and 3 updates
         let expectedDropped = expectation(description: "mutationEventDropped received")
         expectedDropped.expectedFulfillmentCount = 3 // 3 deletes
-        let saveResponder = SaveUntypedModelResponder { _, completion in
-            completion(.success(self.anyPostMutationSync.model))
+        let saveResponder: SaveUntypedModelResponder = { _ in
+            return .success(self.anyPostMutationSync.model)
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
         storageAdapter.shouldReturnErrorOnDeleteMutation = true
@@ -1024,12 +1024,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "should fail")
         let expectedDropped = expectation(description: "mutationEventDropped received")
         expectedDropped.expectedFulfillmentCount = 9 // 1 for each of the 9 dispositions
-        let saveResponder = SaveUntypedModelResponder { _, completion in
-            completion(.success(self.anyPostMutationSync.model))
+        let saveResponder: SaveUntypedModelResponder = { _ in
+            return .success(self.anyPostMutationSync.model)
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
-        let saveMetadataResponder = SaveModelCompletionResponder<MutationSyncMetadata> { _, completion in
-            completion(.failure(.internalOperation("Failed to save metadata", "")))
+        let saveMetadataResponder: SaveModelCompletionResponder<MutationSyncMetadata> = { _ in
+            return .failure(.internalOperation("Failed to save metadata", ""))
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
         operation.publisher

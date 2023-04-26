@@ -191,24 +191,23 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
 
     func initialQuery() {
         startSnapshotStopWatch()
-        storageEngine.query(
+        let queryResult = storageEngine.query(
             modelType,
             modelSchema: modelSchema,
-            predicate: predicate,
+            condition: predicate,
             sort: sortInput,
             paginationInput: nil,
-            eagerLoad: true,
-            completion: { queryResult in
-                switch queryResult {
-                case .success(let queriedModels):
-                    currentItems.set(sortedModels: queriedModels)
-                    subscribeToModelSyncedEvent()
-                    sendSnapshot()
-                case .failure(let error):
-                    fail(error)
-                    return
-                }
-            })
+            eagerLoad: true
+        )
+
+        switch queryResult {
+        case .success(let queriedModels):
+            currentItems.set(sortedModels: queriedModels)
+            subscribeToModelSyncedEvent()
+            sendSnapshot()
+        case .failure(let error):
+            fail(error)
+        }
     }
 
     // MARK: Observe item changes

@@ -198,19 +198,25 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
     }
 
     func getMutationSync(forPostWithId id: String) async -> MutationSync<AnyModel>? {
-        let queryComplete = expectation(description: "Query completed")
+
         var postFromQuery: Post?
-        storageAdapter.query(Post.self, predicate: Post.keys.id == id) { result in
-            switch result {
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            case .success(let posts):
-                // swiftlint:disable:next force_try
-                postFromQuery = try! posts.unique()
-            }
-            queryComplete.fulfill()
+        let result = storageAdapter.query(
+            Post.self,
+            modelSchema: Post.schema,
+            condition: Post.keys.id == id,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .failure(let error):
+            XCTFail(String(describing: error))
+        case .success(let posts):
+            // swiftlint:disable:next force_try
+            postFromQuery = try! posts.unique()
         }
-        await waitForExpectations(timeout: networkTimeout)
+
         guard let post = postFromQuery else {
             return nil
         }

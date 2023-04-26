@@ -207,14 +207,13 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         let syncMetadata = ModelSyncMetadata(id: modelSchema.name, lastSync: lastSyncTime)
-        storageAdapter.save(syncMetadata, condition: nil, eagerLoad: true) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                self.finish(result: .failure(dataStoreError))
-            case .success:
-                self.finish(result: .successfulVoid)
-            }
-        }
+        let result = storageAdapter.save(
+            syncMetadata,
+            modelSchema: syncMetadata.schema,
+            condition: nil,
+            eagerLoad: true
+        ).dropSuccessValue()
+        self.finish(result: result)
     }
 
     private func isAuthSignedOutError(apiError: APIError) -> Bool {

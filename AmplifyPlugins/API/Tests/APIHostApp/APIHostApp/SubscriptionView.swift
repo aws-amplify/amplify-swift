@@ -55,6 +55,7 @@ class SubscriptionViewModel: ObservableObject {
         self.todos.append(todo)
     }
 }
+
 struct SubscriptionView: View {
     @StateObject var vm = SubscriptionViewModel()
     

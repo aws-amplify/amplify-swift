@@ -62,7 +62,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         case .loaded:
             XCTFail("should be loaded, with `nil` element")
         }
-        guard let queriedComment = try await queryAsync(LazyChildComment4V2.self,
+        guard let queriedComment = try await queryModel(LazyChildComment4V2.self,
                                                         byIdentifier: comment.id,
                                                         eagerLoad: true) else {
             XCTFail("Failed to query saved comment")
@@ -82,7 +82,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         let savedPost = try await saveAsync(post)
         XCTAssertEqual(savedPost.id, post.id)
         
-        guard let queriedPost = try await queryAsync(LazyParentPost4V2.self,
+        guard let queriedPost = try await queryModel(LazyParentPost4V2.self,
                                                      byIdentifier: post.id,
                                                      eagerLoad: true) else {
             XCTFail("Failed to query saved post")
@@ -104,7 +104,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         try await saveAsync(LazyChildComment4V2(content: "content"))
         try await saveAsync(LazyChildComment4V2(content: "content"))
         
-        let comments = try await queryAsync(LazyChildComment4V2.self,
+        let comments = try await queryModel(LazyChildComment4V2.self,
                                             eagerLoad: true)
         XCTAssertEqual(comments.count, 2)
     }
@@ -113,7 +113,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         try await saveAsync(LazyParentPost4V2(title: "title"))
         try await saveAsync(LazyParentPost4V2(title: "title"))
         
-        let comments = try await queryAsync(LazyParentPost4V2.self,
+        let comments = try await queryModel(LazyParentPost4V2.self,
                                             eagerLoad: true)
         XCTAssertEqual(comments.count, 2)
     }
@@ -233,7 +233,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         
         // The query with eagerLoad should load the post
-        guard let queriedCommentEagerLoadedPost = try await queryAsync(LazyChildComment4V2.self,
+        guard let queriedCommentEagerLoadedPost = try await queryModel(LazyChildComment4V2.self,
                                                                        byIdentifier: comment.id,
                                                                        eagerLoad: true) else {
             XCTFail("Failed to query saved comment")
@@ -251,7 +251,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
     
         // The query with eagerLoad false should create a not loaded post for lazy loading
-        guard let queriedCommentLazyLoadedPost = try await queryAsync(LazyChildComment4V2.self,
+        guard let queriedCommentLazyLoadedPost = try await queryModel(LazyChildComment4V2.self,
                                                                       byIdentifier: comment.id,
                                                                       eagerLoad: false) else {
             XCTFail("Failed to query saved comment")
@@ -275,7 +275,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         let comment = LazyChildComment4V2(content: "content", post: post)
         try await saveAsync(comment)
         
-        guard let queriedPost = try await queryAsync(LazyParentPost4V2.self,
+        guard let queriedPost = try await queryModel(LazyParentPost4V2.self,
                                                      byIdentifier: post.id,
                                                      eagerLoad: true) else {
             XCTFail("Failed to query saved post")
@@ -308,7 +308,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         try await saveAsync(comment2)
 
         // Query with eagerLoad true
-        var comments = try await queryAsync(LazyChildComment4V2.self,
+        var comments = try await queryModel(LazyChildComment4V2.self,
                                             eagerLoad: true)
 
         XCTAssertEqual(comments.count, 2)
@@ -336,7 +336,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         
         // Query with eagerLoad false
-        comments = try await queryAsync(LazyChildComment4V2.self,
+        comments = try await queryModel(LazyChildComment4V2.self,
                                             eagerLoad: false)
 
         XCTAssertEqual(comments.count, 2)
@@ -380,7 +380,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         let comment2 = LazyChildComment4V2(id: "id2", content: "content", post: post2)
         try await saveAsync(comment2)
         
-        var posts = try await queryAsync(LazyParentPost4V2.self)
+        let posts = try await queryModel(LazyParentPost4V2.self)
         XCTAssertEqual(posts.count, 2)
         guard let postId1 = posts.first(where: { $0.id == "postId1" }) else {
             XCTFail("Couldn't find post with `postId1`")

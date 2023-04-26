@@ -238,8 +238,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
     }
 
-    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
-        mutationEventIngester.submit(mutationEvent: mutationEvent, completion: completion)
+    func submit(_ mutationEvent: MutationEvent) -> Result<MutationEvent, DataStoreError> {
+        mutationEventIngester.submit(mutationEvent: mutationEvent)
     }
 
     // MARK: - Startup sequence

@@ -119,8 +119,7 @@ class AppSyncListProviderTests: XCTestCase {
     }
 
     func testNotLoadedStateLoadSuccess() async throws {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-        QueryRequestResponder<JSONValue> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
             let json: JSONValue = [
                 "items": [
                     [
@@ -135,7 +134,7 @@ class AppSyncListProviderTests: XCTestCase {
             ]
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(.success(json))
             return event
-        }
+        } as QueryRequestResponder<JSONValue>
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
@@ -168,11 +167,10 @@ class AppSyncListProviderTests: XCTestCase {
     }
     
     func testNotLoadedStateSynchronousLoadFailure() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-        QueryRequestResponder<JSONValue> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
             let event: GraphQLOperation<JSONValue>.OperationResult = .failure(APIError.unknown("", "", nil))
             return event
-        }
+        } as QueryRequestResponder<JSONValue>
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
@@ -203,8 +201,7 @@ class AppSyncListProviderTests: XCTestCase {
     }
     
     func testNotLoadedStateLoadWithCompletionSuccess() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-        QueryRequestResponder<JSONValue> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
             let json: JSONValue = [
                 "items": [
                     [
@@ -219,7 +216,7 @@ class AppSyncListProviderTests: XCTestCase {
             ]
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(.success(json))
             return event
-        }
+        } as QueryRequestResponder<JSONValue>
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
@@ -252,11 +249,10 @@ class AppSyncListProviderTests: XCTestCase {
     }
 
     func testNotLoadedStateLoadWithCompletionFailure_APIError() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-        QueryRequestResponder<JSONValue> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
             let event: GraphQLOperation<JSONValue>.OperationResult = .failure(APIError.unknown("", "", nil))
             return event
-        }
+        } as QueryRequestResponder<JSONValue>
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
@@ -287,12 +283,11 @@ class AppSyncListProviderTests: XCTestCase {
     }
 
     func testNotLoadedStateLoadWithCompletionFailure_GraphQLErrorResponse() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-        QueryRequestResponder<JSONValue> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(
                 .failure(GraphQLResponseError.error([GraphQLError]())))
             return event
-        }
+        } as QueryRequestResponder<JSONValue>
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                  appSyncAssociatedFields: ["post"],
                                                  apiName: "apiName")
@@ -325,8 +320,7 @@ class AppSyncListProviderTests: XCTestCase {
     }
     
     func testNotLoadedStateLoadWithCompletionFailure_AWSAppSyncListResponseFailure() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-        QueryRequestResponder<JSONValue> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
             let json: JSONValue = [
                 "items": [
                     [
@@ -341,7 +335,7 @@ class AppSyncListProviderTests: XCTestCase {
             ]
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(.success(json))
             return event
-        }
+        } as QueryRequestResponder<JSONValue>
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")

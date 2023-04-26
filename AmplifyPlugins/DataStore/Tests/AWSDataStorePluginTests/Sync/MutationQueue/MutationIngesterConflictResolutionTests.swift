@@ -49,21 +49,23 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             XCTAssertNotNil(error)
         }
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    XCTAssertEqual(mutationEvents.count, 1)
-                                    XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
-                                }
-                                mutationEventVerified.fulfill()
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            XCTAssertEqual(mutationEvents.count, 1)
+            XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
         }
 
-        await waitForExpectations(timeout: 1)
     }
 
     /// - Given: An existing MutationEvent of type .create
@@ -91,29 +93,31 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                guard let mutationEvent = mutationEvents.first else {
-                    XCTFail("mutationEvents empty or nil")
-                    return
-                }
-                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
-                    XCTFail("Could not decode mutation event json to Post instance")
-                    return
-                }
-                XCTAssertEqual(mutationEventPost.content, mutatedPost.content)
-                XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
             }
-            mutationEventVerified.fulfill()
+            guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                XCTFail("Could not decode mutation event json to Post instance")
+                return
+            }
+            XCTAssertEqual(mutationEventPost.content, mutatedPost.content)
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
         }
-        
-        wait(for: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An existing MutationEvent of type .create
@@ -138,20 +142,21 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         
         try await Amplify.DataStore.delete(post)
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    XCTAssertEqual(mutationEvents.count, 0)
-                                }
-                                mutationEventVerified.fulfill()
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            XCTAssertEqual(mutationEvents.count, 0)
         }
-
-        await waitForExpectations(timeout: 1.0)
     }
 
     // MARK: - Existing == .update
@@ -182,23 +187,26 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             XCTAssertNotNil(error)
         }
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    XCTAssertEqual(mutationEvents.count, 1)
-                                    XCTAssertEqual(mutationEvents.first?.mutationType,
-                                                   GraphQLMutationType.update.rawValue)
-                                    XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
-                                }
-                                mutationEventVerified.fulfill()
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            XCTAssertEqual(mutationEvents.count, 1)
+            XCTAssertEqual(mutationEvents.first?.mutationType,
+                           GraphQLMutationType.update.rawValue)
+            XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An existing MutationEvent of type .update
@@ -226,29 +234,31 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                guard let mutationEvent = mutationEvents.first else {
-                    XCTFail("mutationEvents empty or nil")
-                    return
-                }
-                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
-                    XCTFail("Could not decode mutation event json to Post instance")
-                    return
-                }
-                XCTAssertEqual(mutationEventPost.content, mutatedPost.content)
-                XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
             }
-            mutationEventVerified.fulfill()
+            guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                XCTFail("Could not decode mutation event json to Post instance")
+                return
+            }
+            XCTAssertEqual(mutationEventPost.content, mutatedPost.content)
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
         }
-        
-        wait(for: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An existing MutationEvent of type .update
@@ -273,24 +283,26 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         
         try await Amplify.DataStore.delete(post)
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    guard let mutationEvent = mutationEvents.first else {
-                                        XCTFail("mutationEvents empty or nil")
-                                        return
-                                    }
-                                    XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
-                                }
-                                mutationEventVerified.fulfill()
-        }
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
+            }
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
+        }
     }
 
     // MARK: - Existing == .delete
@@ -321,24 +333,26 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             XCTAssertNotNil(error)
         }
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    guard let mutationEvent = mutationEvents.first else {
-                                        XCTFail("mutationEvents empty or nil")
-                                        return
-                                    }
-                                    XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
-                                }
-                                mutationEventVerified.fulfill()
-        }
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
+            }
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
+        }
     }
 
     // test_<existing>_<candidate>
@@ -371,24 +385,26 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             XCTAssertNotNil(error)
         }
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    guard let mutationEvent = mutationEvents.first else {
-                                        XCTFail("mutationEvents empty or nil")
-                                        return
-                                    }
-                                    XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
-                                }
-                                mutationEventVerified.fulfill()
-        }
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
+            }
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
+        }
     }
 
     // MARK: - Empty queue tests
@@ -413,28 +429,32 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
 
         let savedPost = try await Amplify.DataStore.save(post)
         XCTAssertNotNil(savedPost)
-        
-        let mutationEventVerified = expectation(description: "Verified mutation event")
-        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                guard let mutationEvent = mutationEvents.first else {
-                    XCTFail("mutationEvents empty or nil")
-                    return
-                }
-                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
-                    XCTFail("Could not decode mutation event json to Post instance")
-                    return
-                }
-                XCTAssertEqual(mutationEventPost.id, savedPost.id)
-                XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
+
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: nil,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
             }
-            mutationEventVerified.fulfill()
+            guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                XCTFail("Could not decode mutation event json to Post instance")
+                return
+            }
+            XCTAssertEqual(mutationEventPost.id, savedPost.id)
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An empty mutation queue
@@ -459,27 +479,30 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let savedPost = try await Amplify.DataStore.save(post)
         XCTAssertNotNil(savedPost)
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
-        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                guard let mutationEvent = mutationEvents.first else {
-                    XCTFail("mutationEvents empty or nil")
-                    return
-                }
-                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
-                    XCTFail("Could not decode mutation event json to Post instance")
-                    return
-                }
-                XCTAssertEqual(mutationEventPost.id, savedPost.id)
-                XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
-            }
-            mutationEventVerified.fulfill()
-        }
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: nil,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
+            }
+            guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                XCTFail("Could not decode mutation event json to Post instance")
+                return
+            }
+            XCTAssertEqual(mutationEventPost.id, savedPost.id)
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
+        }
     }
 
     /// - Given: An empty mutation queue
@@ -503,23 +526,26 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
 
         try await Amplify.DataStore.delete(post)
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
-        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                guard let mutationEvent = mutationEvents.first else {
-                    XCTFail("mutationEvents empty or nil")
-                    return
-                }
-                XCTAssertEqual(mutationEvent.modelId, post.id)
-                XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
-            }
-            mutationEventVerified.fulfill()
-        }
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: nil,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            guard let mutationEvent = mutationEvents.first else {
+                XCTFail("mutationEvents empty or nil")
+                return
+            }
+            XCTAssertEqual(mutationEvent.modelId, post.id)
+            XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
+        }
     }
 
     // MARK: - In-process queue tests
@@ -546,20 +572,24 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let savedPost = try await Amplify.DataStore.save(post)
         XCTAssertNotNil(savedPost)
         
-        let mutationEventVerified = expectation(description: "Verified mutation event")
-        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                XCTAssertEqual(mutationEvents.count, 2)
-                XCTAssertEqual(mutationEvents[0].mutationType, GraphQLMutationType.create.rawValue)
-                XCTAssertEqual(mutationEvents[1].mutationType, GraphQLMutationType.create.rawValue)
-            }
-            mutationEventVerified.fulfill()
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: nil,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            XCTAssertEqual(mutationEvents.count, 2)
+            XCTAssertEqual(mutationEvents[0].mutationType, GraphQLMutationType.create.rawValue)
+            XCTAssertEqual(mutationEvents[1].mutationType, GraphQLMutationType.create.rawValue)
         }
 
-        await waitForExpectations(timeout: 1.0)
     }
 
     /// - Given: A mutation queue with an in-process .create event
@@ -588,32 +618,35 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let savedPost = try await Amplify.DataStore.save(mutatedPost)
         XCTAssertEqual(savedPost.content, mutatedPost.content)
 
-        let mutationEventVerified = expectation(description: "Verified mutation event")
-        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                XCTAssertEqual(mutationEvents.count, 2)
-                XCTAssertEqual(mutationEvents[0].mutationType, GraphQLMutationType.create.rawValue)
-                guard let mutationEventPost1 = try? mutationEvents[0].decodeModel(as: Post.self) else {
-                    XCTFail("Could not decode mutation event json to Post instance")
-                    return
-                }
-                XCTAssertEqual(mutationEventPost1.id, savedPost.id)
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: nil,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
 
-                XCTAssertEqual(mutationEvents[1].mutationType, GraphQLMutationType.update.rawValue)
-                guard let mutationEventPost2 = try? mutationEvents[1].decodeModel(as: Post.self) else {
-                    XCTFail("Could not decode mutation event json to Post instance")
-                    return
-                }
-                XCTAssertEqual(mutationEventPost2.id, mutatedPost.id)
-                XCTAssertEqual(mutationEventPost2.content, mutatedPost.content)
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            XCTAssertEqual(mutationEvents.count, 2)
+            XCTAssertEqual(mutationEvents[0].mutationType, GraphQLMutationType.create.rawValue)
+            guard let mutationEventPost1 = try? mutationEvents[0].decodeModel(as: Post.self) else {
+                XCTFail("Could not decode mutation event json to Post instance")
+                return
             }
-            mutationEventVerified.fulfill()
-        }
+            XCTAssertEqual(mutationEventPost1.id, savedPost.id)
 
-        await waitForExpectations(timeout: 1.0)
+            XCTAssertEqual(mutationEvents[1].mutationType, GraphQLMutationType.update.rawValue)
+            guard let mutationEventPost2 = try? mutationEvents[1].decodeModel(as: Post.self) else {
+                XCTFail("Could not decode mutation event json to Post instance")
+                return
+            }
+            XCTAssertEqual(mutationEventPost2.id, mutatedPost.id)
+            XCTAssertEqual(mutationEventPost2.content, mutatedPost.content)
+        }
     }
 
     /// - Given: A mutation queue with an in-process .create event
@@ -638,20 +671,23 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
 
         try await Amplify.DataStore.delete(post)
         
-        let mutationEventVerified = expectation(description: "Verified mutation event")
-        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTAssertNil(dataStoreError)
-            case .success(let mutationEvents):
-                XCTAssertEqual(mutationEvents.count, 2)
-                XCTAssertEqual(mutationEvents[0].mutationType, GraphQLMutationType.create.rawValue)
-                XCTAssertEqual(mutationEvents[1].mutationType, GraphQLMutationType.delete.rawValue)
-            }
-            mutationEventVerified.fulfill()
-        }
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: nil,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
 
-        await waitForExpectations(timeout: 1.0)
+        switch result {
+        case .failure(let dataStoreError):
+            XCTAssertNil(dataStoreError)
+        case .success(let mutationEvents):
+            XCTAssertEqual(mutationEvents.count, 2)
+            XCTAssertEqual(mutationEvents[0].mutationType, GraphQLMutationType.create.rawValue)
+            XCTAssertEqual(mutationEvents[1].mutationType, GraphQLMutationType.delete.rawValue)
+        }
     }
 
 }

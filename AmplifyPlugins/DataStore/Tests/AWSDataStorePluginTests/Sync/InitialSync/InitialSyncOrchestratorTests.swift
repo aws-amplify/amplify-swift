@@ -26,7 +26,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     func testInvokesCompletionCallback() async throws {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
+        let responder: QueryRequestListenerResponder<PaginatedList<AnyModel>> = { _, listener in
             let startedAt = Int(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
@@ -110,7 +110,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     func testFinishWithAPIError() async throws {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+        let responder: QueryRequestListenerResponder<PaginatedList<AnyModel>> = { request, listener in
             if request.document.contains("SyncPosts") {
                 let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult =
                     .failure(APIError.operationError("", "", nil))
@@ -219,7 +219,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         }
         TestModelsWithNoAssociations().registerModels(registry: ModelRegistry.self)
 
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
+        let responder: QueryRequestListenerResponder<PaginatedList<AnyModel>> =  { _, listener in
             let startedAt = Int(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
@@ -278,7 +278,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let postWasQueried = expectation(description: "Post was queried")
         let commentWasQueried = expectation(description: "Comment was queried")
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+        let responder: QueryRequestListenerResponder<PaginatedList<AnyModel>> = { request, listener in
             if request.document.hasPrefix("query SyncPosts") {
                 postWasQueried.fulfill()
             }
@@ -352,7 +352,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         var nextTokens = Array(repeating: "token", count: pageCount - 1)
 
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+        let responder: QueryRequestListenerResponder<PaginatedList<AnyModel>> = { request, listener in
             if request.document.hasPrefix("query SyncPosts") {
                 postWasQueried.fulfill()
             }

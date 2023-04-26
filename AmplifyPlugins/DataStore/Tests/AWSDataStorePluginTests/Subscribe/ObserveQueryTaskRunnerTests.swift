@@ -161,9 +161,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         let post = Post(title: "model1",
                         content: "content1",
                         createdAt: .now())
-        storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
+        storageEngine.responders[.query] =  {
             return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
-        })
+        } as QueryResponder<Post>
+
         let snapshots = taskRunner.sequence
         Task {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
@@ -247,10 +248,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///     remaining in the third query
     ///
     func testCollectOverMaxItemCountLimit() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshot")
-        let secondSnapshot = asyncExpectation(description: "second query snapshot")
-        let thirdSnapshot = asyncExpectation(description: "third query snapshot")
-        let validateSnapshotsComplete = asyncExpectation(description: "validate snapshots")
+        let firstSnapshot = expectation(description: "first query snapshot")
+        let secondSnapshot = expectation(description: "second query snapshot")
+        let thirdSnapshot = expectation(description: "third query snapshot")
+        let validateSnapshotsComplete = expectation(description: "validate snapshots")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -262,17 +263,17 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
-        Task {
+        Task.detached {
             var querySnapshots = [DataStoreQuerySnapshot<Post>]()
             do {
                 for try await querySnapshot in snapshots {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     } else if querySnapshots.count == 3 {
-                        await thirdSnapshot.fulfill()
+                        thirdSnapshot.fulfill()
                     }
                 }
                 
@@ -280,22 +281,22 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTAssertTrue(querySnapshots[0].items.count <= querySnapshots[1].items.count)
                 XCTAssertTrue(querySnapshots[1].items.count <= querySnapshots[2].items.count)
                 XCTAssertTrue(querySnapshots[2].items.count <= 1_100)
-                await validateSnapshotsComplete.fulfill()
+                validateSnapshotsComplete.fulfill()
             } catch {
                 XCTFail("Failed with error \(error)")
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
 
         for postId in 1 ... 1_100 {
-            let post = try createPost(id: "\(postId)")
-            dataStorePublisher.send(input: post)
+            let mutationEvent = try createPost(id: "\(postId)")
+            dataStorePublisher.send(input: mutationEvent)
         }
 
-        await waitForExpectations([secondSnapshot, thirdSnapshot], timeout: 10)
+        await fulfillment(of: [secondSnapshot, thirdSnapshot], timeout: 10)
         snapshots.cancel()
-        await waitForExpectations([validateSnapshotsComplete], timeout: 1.0)
+        await fulfillment(of: [validateSnapshotsComplete], timeout: 1.0)
     }
     
     /// Cancelling the subscription will no longer receive snapshots
@@ -494,9 +495,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         let post = Post(title: "model1",
                         content: "content1",
                         createdAt: .now())
-        storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
+        storageEngine.responders[.query] = {
             return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
-        })
+        } as QueryResponder<Post>
         let snapshots = taskRunner.sequence
         Task {
             do {

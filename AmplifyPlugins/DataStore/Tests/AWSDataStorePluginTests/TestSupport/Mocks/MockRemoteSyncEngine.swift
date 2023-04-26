@@ -13,16 +13,9 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-typealias OnSubmitCallBack = (MutationEvent, @escaping (Result<MutationEvent, DataStoreError>) -> Void) -> Void
+typealias OnSubmitCallBack = (MutationEvent) -> Result<MutationEvent, DataStoreError>
 
 class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
-    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
-        if let callback = callbackOnSubmit {
-            callback(mutationEvent, completion)
-        } else {
-            completion(.success(mutationEvent))
-        }
-    }
 
     let remoteSyncTopicPublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>
     var callbackOnSubmit: OnSubmitCallBack?
@@ -46,4 +39,13 @@ class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
     func setCallbackOnSubmit(callbackOnSubmit: @escaping OnSubmitCallBack) {
         self.callbackOnSubmit = callbackOnSubmit
     }
+
+    func submit(_ mutationEvent: MutationEvent) -> Result<MutationEvent, DataStoreError> {
+        if let callback = callbackOnSubmit {
+            return callback(mutationEvent)
+        } else {
+            return .success(mutationEvent)
+        }
+    }
+
 }

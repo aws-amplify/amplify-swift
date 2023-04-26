@@ -29,54 +29,27 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
         initStorageEngineAndStartSync()
 
-        // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
-        // mutation type
-        let modelExists: Bool
-        do {
-            guard let engine = storageEngine as? StorageEngine else {
-                throw DataStoreError.configuration("Unable to get storage adapter",
-                                                   "")
-            }
-            modelExists = try engine.storageAdapter.exists(modelSchema,
-                                                           withIdentifier: model.identifier(schema: modelSchema),
-                                                           predicate: nil)
-        } catch {
-            if let dataStoreError = error as? DataStoreError {
-                completion(.failure(dataStoreError))
-                return
-            }
-
-            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
-            completion(.failure(dataStoreError))
-            return
-        }
-
-        let mutationType = modelExists ? MutationEvent.MutationType.update : .create
-
-        let publishingCompletion: DataStoreCallback<M> = { result in
-            switch result {
-            case .success(let model):
-                // TODO: Differentiate between save & update
-                // TODO: Handle errors from mutation event creation
-                self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: mutationType)
-            case .failure:
-                break
-            }
+        Task {
+            let result = await storageEngine.save(
+                model,
+                modelSchema: modelSchema,
+                condition: condition,
+                eagerLoad: configuration.isEagerLoad
+            ).ifSuccess {
+                let (savedModel, mutationType) = $0
+                publishMutationEvent(from: savedModel, modelSchema: modelSchema, mutationType: mutationType)
+            }.map { $0.0 }
 
             completion(result)
         }
-        storageEngine.save(model,
-                           modelSchema: modelSchema,
-                           condition: condition,
-                           eagerLoad: configuration.isEagerLoad,
-                           completion: publishingCompletion)
+
     }
     
     public func save<M: Model>(_ model: M,
                                modelSchema: ModelSchema,
                                where condition: QueryPredicate? = nil) async throws -> M {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<M, Error>) in
-            save(model, modelSchema: model.schema, where: condition) { result in
+            save(model, modelSchema: modelSchema, where: condition) { result in
                 continuation.resume(with: result)
             }
         }
@@ -88,25 +61,19 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
                                 completion: DataStoreCallback<M?>) {
-        initStorageEngineAndStartSync()
-        let predicate: QueryPredicate = field("id") == id
-        query(modelType, where: predicate, paginate: .firstResult) {
-            switch $0 {
-            case .success(let models):
-                do {
-                    let first = try models.unique()
-                    completion(.success(first))
-                } catch {
-                    completion(.failure(causedBy: error))
-                }
-            case .failure(let error):
-                completion(.failure(causedBy: error))
-            }
-        }
+        queryByIdentifier(
+            modelType,
+            modelSchema: modelType.schema,
+            identifier: DefaultModelIdentifier<M>.makeDefault(id: id),
+            completion: completion
+        )
     }
+
     @available(*, deprecated, renamed: "query(byIdentifier:)")
-    public func query<M: Model>(_ modelType: M.Type,
-                                byId id: String) async throws -> M? {
+    public func query<M: Model>(
+        _ modelType: M.Type,
+        byId id: String
+    ) async throws -> M? {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<M?, Error>)  in
             query(modelType, byId: id) { result in
                 continuation.resume(with: result)
@@ -114,46 +81,53 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
     }
 
-    public func query<M: Model>(_ modelType: M.Type,
-                                byIdentifier identifier: String,
-                                completion: DataStoreCallback<M?>) where M: ModelIdentifiable,
-                                                                         M.IdentifierFormat == ModelIdentifierFormat.Default {
+    public func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: String,
+        completion: DataStoreCallback<M?>
+    ) where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
         queryByIdentifier(modelType,
                           modelSchema: modelType.schema,
                           identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier),
                           completion: completion)
     }
     
-    public func query<M: Model>(_ modelType: M.Type,
-                                byIdentifier identifier: String) async throws -> M?
-        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
-            try await queryByIdentifier(modelType,
-                                        modelSchema: modelType.schema,
-                                        identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier))
+    public func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: String
+    ) async throws -> M? where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+        try await queryByIdentifier(modelType,
+                                    modelSchema: modelType.schema,
+                                    identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier))
     }
 
-    public func query<M: Model>(_ modelType: M.Type,
-                                byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
-                                completion: DataStoreCallback<M?>) where M: ModelIdentifiable {
+    public func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
+        completion: DataStoreCallback<M?>
+    ) where M: ModelIdentifiable {
         queryByIdentifier(modelType,
                           modelSchema: modelType.schema,
                           identifier: identifier,
                           completion: completion)
     }
     
-    public func query<M: Model>(_ modelType: M.Type,
-                                byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>) async throws -> M?
+    public func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>
+    ) async throws -> M?
         where M: ModelIdentifiable {
             try await queryByIdentifier(modelType,
                                         modelSchema: modelType.schema,
                                         identifier: identifier)
     }
 
-    private func queryByIdentifier<M: Model>(_ modelType: M.Type,
-                                             modelSchema: ModelSchema,
-                                             identifier: ModelIdentifierProtocol,
-                                             completion: DataStoreCallback<M?>) {
-        initStorageEngineAndStartSync()
+    private func queryByIdentifier<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        identifier: ModelIdentifierProtocol,
+        completion: DataStoreCallback<M?>
+    ) {
         query(modelType,
               modelSchema: modelSchema,
               where: identifier.predicate,
@@ -213,13 +187,13 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                 paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
         initStorageEngineAndStartSync()
-        storageEngine.query(modelType,
+        let result = storageEngine.query(modelType,
                             modelSchema: modelSchema,
-                            predicate: predicate,
+                            condition: predicate,
                             sort: sortInput,
                             paginationInput: paginationInput,
-                            eagerLoad: configuration.isEagerLoad,
-                            completion: completion)
+                            eagerLoad: configuration.isEagerLoad)
+        completion(result)
     }
     
     public func query<M: Model>(_ modelType: M.Type,
@@ -236,93 +210,103 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     // MARK: - Delete
     @available(*, deprecated, renamed: "delete(withIdentifier:)")
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: String,
-                                 where predicate: QueryPredicate?) async throws {
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        withId id: String,
+        where predicate: QueryPredicate?
+    ) async throws {
         try await delete(modelType, modelSchema: modelType.schema, withId: id, where: predicate)
-
     }
     
     @available(*, deprecated, renamed: "delete(withIdentifier:)")
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 modelSchema: ModelSchema,
-                                 withId id: String,
-                                 where predicate: QueryPredicate? = nil) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            initStorageEngineAndStartSync()
-            storageEngine.delete(modelType, modelSchema: modelSchema, withId: id, condition: predicate) { result in
-                self.onDeleteCompletion(result: result, modelSchema: modelSchema) { result in
-                    continuation.resume(with: result)
-                }
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        withId id: String,
+        where predicate: QueryPredicate? = nil
+    ) async throws {
+        initStorageEngineAndStartSync()
+        let result = await storageEngine.delete(
+            modelType,
+            modelSchema: modelSchema,
+            withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
+            condition: predicate
+        ).ifSuccess({ model in
+            if let model = model {
+                publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: .delete)
             }
+        })
+
+        if case .failure(let error) = result {
+            throw error
+        }
+
+    }
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier identifier: String,
+        where predicate: QueryPredicate? = nil,
+        completion: @escaping DataStoreCallback<Void>
+    ) where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+        Task {
+            let result = await deleteByIdentifier(
+                modelType,
+                modelSchema: modelType.schema,
+                identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier),
+                where: predicate
+            )
+            completion(result)
         }
     }
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withIdentifier identifier: String,
-                                 where predicate: QueryPredicate? = nil,
-                                 completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
-                                                                                      M.IdentifierFormat == ModelIdentifierFormat.Default {
-       deleteByIdentifier(modelType,
-                          modelSchema: modelType.schema,
-                          identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier),
-                          where: predicate,
-                          completion: completion)
-    }
     
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withIdentifier identifier: String,
-                                 where predicate: QueryPredicate? = nil) async throws
-        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
-            try await deleteByIdentifier(modelType,
-                                         modelSchema: modelType.schema,
-                                         identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier),
-                                         where: predicate)
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier identifier: String,
+        where predicate: QueryPredicate? = nil
+    ) async throws where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+        let result = await deleteByIdentifier(
+            modelType,
+            modelSchema: modelType.schema,
+            identifier: DefaultModelIdentifier<M>.makeDefault(id: identifier),
+            where: predicate
+        )
+
+        if case .failure(let error) = result {
+            throw error
+        }
     }
 
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
-                                 where predicate: QueryPredicate? = nil,
-                                 completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
-        deleteByIdentifier(modelType,
-                           modelSchema: modelType.schema,
-                           identifier: identifier,
-                           where: predicate,
-                           completion: completion)
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
+        where predicate: QueryPredicate? = nil,
+        completion: @escaping DataStoreCallback<Void>
+    ) where M: ModelIdentifiable {
+        Task {
+            let result = await deleteByIdentifier(
+                modelType,
+                modelSchema: modelType.schema,
+                identifier: identifier,
+                where: predicate
+            )
+            completion(result)
+        }
     }
     
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
-                                 where predicate: QueryPredicate? = nil) async throws where M: ModelIdentifiable {
-        try await deleteByIdentifier(modelType,
-                                     modelSchema: modelType.schema,
-                                     identifier: identifier,
-                                     where: predicate)
-    }
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
+        where predicate: QueryPredicate? = nil
+    ) async throws where M: ModelIdentifiable {
+        let result = await deleteByIdentifier(
+            modelType,
+            modelSchema: modelType.schema,
+            identifier: identifier,
+            where: predicate
+        )
 
-    private func deleteByIdentifier<M: Model>(_ modelType: M.Type,
-                                              modelSchema: ModelSchema,
-                                              identifier: ModelIdentifierProtocol,
-                                              where predicate: QueryPredicate?,
-                                              completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
-          initStorageEngineAndStartSync()
-          storageEngine.delete(modelType,
-                               modelSchema: modelSchema,
-                               withIdentifier: identifier,
-                               condition: predicate) { result in
-              self.onDeleteCompletion(result: result,
-                                      modelSchema: modelSchema,
-                                      completion: completion)
-          }
-    }
-    
-    private func deleteByIdentifier<M: Model>(_ modelType: M.Type,
-                                              modelSchema: ModelSchema,
-                                              identifier: ModelIdentifierProtocol,
-                                              where predicate: QueryPredicate?) async throws where M: ModelIdentifiable {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>)  in
-            deleteByIdentifier(modelType, modelSchema: modelSchema, identifier: identifier, where: predicate) { result in
-                continuation.resume(with: result)
-            }
+        if case .failure(let error) = result {
+            throw error
         }
     }
 
@@ -337,22 +321,34 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         try await delete(model, modelSchema: model.schema, where: predicate)
     }
 
-    public func delete<M: Model>(_ model: M,
-                                 modelSchema: ModelSchema,
-                                 where predicate: QueryPredicate? = nil,
-                                 completion: @escaping DataStoreCallback<Void>) {
+    public func delete<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        where predicate: QueryPredicate? = nil,
+        completion: @escaping DataStoreCallback<Void>
+    ) {
         initStorageEngineAndStartSync()
-        storageEngine.delete(type(of: model),
-                             modelSchema: modelSchema,
-                             withIdentifier: model.identifier(schema: modelSchema),
-                             condition: predicate) { result in
-            self.onDeleteCompletion(result: result, modelSchema: modelSchema, completion: completion)
+        Task {
+            let result = await storageEngine.delete(
+                type(of: model),
+                modelSchema: modelSchema,
+                withIdentifier: model.identifier(schema: modelSchema),
+                condition: predicate
+            ).ifSuccess { model in
+                if let model = model {
+                    publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: .delete)
+                }
+            }.dropSuccessValue()
+            completion(result)
         }
+
     }
     
-    public func delete<M: Model>(_ model: M,
-                                 modelSchema: ModelSchema,
-                                 where predicate: QueryPredicate? = nil) async throws {
+    public func delete<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        where predicate: QueryPredicate? = nil
+    ) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             delete(model, modelSchema: modelSchema, where: predicate) { result in
                 continuation.resume(with: result)
@@ -360,37 +356,42 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
     }
 
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 where predicate: QueryPredicate,
-                                 completion: @escaping DataStoreCallback<Void>) {
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate,
+        completion: @escaping DataStoreCallback<Void>
+    ) {
         delete(modelType, modelSchema: modelType.schema, where: predicate, completion: completion)
     }
     
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 where predicate: QueryPredicate) async throws {
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate
+    ) async throws {
         try await delete(modelType, modelSchema: modelType.schema, where: predicate)
     }
 
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 modelSchema: ModelSchema,
-                                 where predicate: QueryPredicate,
-                                 completion: @escaping DataStoreCallback<Void>) {
+    public func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        where predicate: QueryPredicate,
+        completion: @escaping DataStoreCallback<Void>
+    ) {
         initStorageEngineAndStartSync()
-        let onCompletion: DataStoreCallback<[M]> = { result in
-            switch result {
-            case .success(let models):
+
+        Task {
+            let result = await storageEngine.delete(
+                modelType,
+                modelSchema: modelSchema,
+                condition: predicate
+            ).ifSuccess { models in
                 for model in models {
-                    self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: .delete)
+                    publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: .delete)
                 }
-                completion(.emptyResult)
-            case .failure(let error):
-                completion(.failure(error))
-            }
+            }.dropSuccessValue()
+
+            completion(result)
         }
-        storageEngine.delete(modelType,
-                             modelSchema: modelSchema,
-                             filter: predicate,
-                             completion: onCompletion)
     }
     
     public func delete<M: Model>(_ modelType: M.Type,
@@ -483,42 +484,73 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     // MARK: Private
 
-    private func onDeleteCompletion<M: Model>(result: DataStoreResult<M?>,
-                                              modelSchema: ModelSchema,
-                                              completion: @escaping DataStoreCallback<Void>) {
-        switch result {
-        case .success(let modelOptional):
-            if let model = modelOptional {
+    private func deleteByIdentifier<M: Model & ModelIdentifiable>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        identifier: ModelIdentifierProtocol,
+        where predicate: QueryPredicate?
+    ) async -> Result<Void, DataStoreError>  {
+        initStorageEngineAndStartSync()
+        return await storageEngine.delete(
+            modelType,
+            modelSchema: modelSchema,
+            withIdentifier: identifier,
+            condition: predicate
+        ).ifSuccess({ model in
+            if let model = model {
                 publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: .delete)
             }
-            completion(.emptyResult)
-        case .failure(let error):
-            completion(.failure(error))
+        }).dropSuccessValue()
+    }
+    
+    private func publishMutationEvent<M: Model>(
+        from model: M,
+        modelSchema: ModelSchema,
+        mutationType: MutationEvent.MutationType
+    ) {
+        guard let storageEngine = storageEngine else {
+            log.warn("Skipping mutation event publishing; StorageEngine is not initialzied yet!")
+            return
+        }
+
+        let metadata = MutationSyncMetadata.keys
+        let metadataId = MutationSyncMetadata.identifier(
+            modelName: modelSchema.name,
+            modelId: model.identifier(schema: modelSchema).stringValue
+        )
+
+        let result = storageEngine.query(
+            MutationSyncMetadata.self,
+            modelSchema: MutationSyncMetadata.schema,
+            condition: metadata.id == metadataId,
+            sort: nil,
+            paginationInput: .firstResult,
+            eagerLoad: true
+        ).flatMap {
+            publishMutationEvent(model: model, modelSchema: modelSchema, mutationType: mutationType, mutationMetadata: $0)
+        }
+
+        if case let .failure(error) = result {
+            log.error(error: error)
         }
     }
 
-    private func publishMutationEvent<M: Model>(from model: M,
-                                                modelSchema: ModelSchema,
-                                                mutationType: MutationEvent.MutationType) {
-        let metadata = MutationSyncMetadata.keys
-        let metadataId = MutationSyncMetadata.identifier(modelName: modelSchema.name,
-                                                         modelId: model.identifier(schema: modelSchema).stringValue)
-        storageEngine.query(MutationSyncMetadata.self,
-                            predicate: metadata.id == metadataId,
-                            sort: nil,
-                            paginationInput: .firstResult,
-                            eagerLoad: true) {
-            do {
-                let result = try $0.get()
-                let syncMetadata = try result.unique()
-                let mutationEvent = try MutationEvent(model: model,
-                                                      modelSchema: modelSchema,
-                                                      mutationType: mutationType,
-                                                      version: syncMetadata?.version)
-                self.dataStorePublisher?.send(input: mutationEvent)
-            } catch {
-                self.log.error(error: error)
-            }
+    private func publishMutationEvent(
+        model: Model,
+        modelSchema: ModelSchema,
+        mutationType: MutationEvent.MutationType,
+        mutationMetadata: [MutationSyncMetadata]
+    ) -> Result<Void, DataStoreError> {
+        do {
+            let syncMetadata = try mutationMetadata.unique()
+            let mutationEvent = try MutationEvent(model: model,
+                                                  modelSchema: modelSchema,
+                                                  mutationType: mutationType,
+                                                  version: syncMetadata?.version)
+            self.dataStorePublisher?.send(input: mutationEvent)
+            return .success(())
+        } catch {
+            return .failure(DataStoreError(error: error))
         }
     }
 
@@ -541,10 +573,15 @@ extension AWSDataStorePlugin {
                                  withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
                                  where predicate: QueryPredicate?,
                                  completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
-        deleteByIdentifier(modelType,
-                           modelSchema: modelSchema,
-                           identifier: identifier,
-                           where: predicate,
-                           completion: completion)
+        Task {
+            let result = await deleteByIdentifier(
+                modelType,
+                modelSchema: modelSchema,
+                identifier: identifier,
+                where: predicate
+            )
+
+            completion(result)
+        }
     }
 }

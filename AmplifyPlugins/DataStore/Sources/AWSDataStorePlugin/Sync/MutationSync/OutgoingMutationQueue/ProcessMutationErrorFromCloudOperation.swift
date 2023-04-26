@@ -326,12 +326,6 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         log.verbose(#function)
         let modelName = remoteModel.model.modelName
 
-        guard let modelType = ModelRegistry.modelType(from: modelName) else {
-            let error = DataStoreError.invalidModelName("Invalid Model \(modelName)")
-            finish(result: .failure(error))
-            return
-        }
-
         guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
             let error = DataStoreError.invalidModelName("Invalid Model \(modelName)")
             finish(result: .failure(error))
@@ -340,57 +334,58 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
         let identifier = remoteModel.model.identifier(schema: modelSchema)
         
-        storageAdapter.delete(untypedModelType: modelType,
-                              modelSchema: modelSchema,
-                              withIdentifier: identifier,
-                              condition: nil) { response in
-            switch response {
-            case .failure(let dataStoreError):
-                let error = DataStoreError.unknown("Delete failed \(dataStoreError)", "")
-                finish(result: .failure(error))
-                return
-            case .success:
-                self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: remoteModel)
-            }
+        let response = storageAdapter.delete(
+            modelSchema: modelSchema,
+            withIdentifier: identifier,
+            condition: nil
+        )
+
+        switch response {
+        case .failure(let dataStoreError):
+            let error = DataStoreError.unknown("Delete failed \(dataStoreError)", "")
+            finish(result: .failure(error))
+        case .success:
+            self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: remoteModel)
         }
     }
 
     private func saveCreateOrUpdateMutation(remoteModel: MutationSync<AnyModel>) {
         log.verbose(#function)
-        storageAdapter.save(untypedModel: remoteModel.model.instance, eagerLoad: true) { response in
-            switch response {
-            case .failure(let dataStoreError):
-                let error = DataStoreError.unknown("Save failed \(dataStoreError)", "")
-                self.finish(result: .failure(error))
-                return
-            case .success(let savedModel):
-                let anyModel: AnyModel
+        storageAdapter.save(remoteModel.model.instance, eagerLoad: true)
+            .mapError { DataStoreError.unknown("Save failed \($0)", "") }
+            .flatMap { savedModel in
                 do {
-                    anyModel = try savedModel.eraseToAnyModel()
+                    let anyModel = try savedModel.eraseToAnyModel()
+                    let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
+                    self.saveMetadata(storageAdapter: self.storageAdapter, inProcessModel: inProcessModel)
+                    return .success(())
                 } catch {
-                    let error = DataStoreError.unknown("eraseToAnyModel failed \(error)", "")
-                    self.finish(result: .failure(error))
-                    return
+                    return .failure(DataStoreError.unknown("eraseToAnyModel failed \(error)", ""))
                 }
-                let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
-                self.saveMetadata(storageAdapter: self.storageAdapter, inProcessModel: inProcessModel)
             }
-        }
+            .ifFailure { error in
+                finish(result: .failure(error))
+            }
+
     }
 
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
                               inProcessModel: MutationSync<AnyModel>) {
         log.verbose(#function)
-        storageAdapter.save(inProcessModel.syncMetadata, condition: nil, eagerLoad: true) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                let error = DataStoreError.unknown("Save metadata failed \(dataStoreError)", "")
-                self.finish(result: .failure(error))
-                return
-            case .success(let syncMetadata):
-                let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                self.notify(savedModel: appliedModel)
-            }
+        let result = storageAdapter.save(
+            inProcessModel.syncMetadata,
+            modelSchema: inProcessModel.model.schema,
+            condition: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .failure(let dataStoreError):
+            let error = DataStoreError.unknown("Save metadata failed \(dataStoreError)", "")
+            self.finish(result: .failure(error))
+        case let .success((syncMetadata, _)):
+            let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
+            self.notify(savedModel: appliedModel)
         }
     }
 

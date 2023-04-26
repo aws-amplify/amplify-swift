@@ -30,8 +30,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("save")
 
         if let responder = responders[.saveModelListener] as? SaveModelResponder<M> {
-            if let callback = responder.callback((model: model,
-                                                  where: condition)) {
+            if let callback = responder(model, condition) {
                 completion(callback)
             }
         }
@@ -49,7 +48,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryById")
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
+            if let callback = responder(modelType, id) {
                 completion(callback)
             }
         }
@@ -68,7 +67,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryByIdentifier")
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
+            if let callback = responder(modelType, id) {
                 completion(callback)
             }
         }
@@ -89,10 +88,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryByPredicate")
 
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let result = responder.callback((modelType: modelType,
-                                                  where: predicate,
-                                                  sort: sortInput,
-                                                  paginate: paginationInput)) {
+            if let result = responder(modelType, predicate, sortInput, paginationInput) {
                 completion(result)
             }
         }
@@ -105,10 +101,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryByPredicate")
         
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let result = responder.callback((modelType: modelType,
-                                                  where: predicate,
-                                                  sort: sortInput,
-                                                  paginate: paginationInput)) {
+            if let result = responder(modelType, predicate, sortInput, paginationInput) {
                 switch result {
                 case .success(let models):
                     return models
@@ -127,7 +120,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryWithIdentifier")
 
        if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
-           if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
+           if let callback = responder(modelType, id.stringValue) {
                completion(callback)
            }
        }
@@ -147,7 +140,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteById")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
+            if let callback = responder(id) {
                 completion(callback)
             }
         }
@@ -167,7 +160,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteByIdentifier")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
+            if let callback = responder(id) {
                 completion(callback)
             }
         }
@@ -187,7 +180,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteByIdentifier")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
+            if let callback = responder(id.stringValue) {
                 completion(callback)
             }
         }
@@ -205,7 +198,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteModelTypeByPredicate")
 
         if let responder = responders[.deleteModelTypeListener] as? DeleteModelTypeResponder<M> {
-            if let callback = responder.callback((modelType: modelType, where: predicate)) {
+            if let callback = responder(predicate) {
                 completion(callback)
             }
         }
@@ -222,8 +215,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteByPredicate")
 
         if let responder = responders[.deleteModelListener] as? DeleteModelResponder<M> {
-            if let callback = responder.callback((model: model,
-                                                  where: predicate)) {
+            if let callback = responder(model, predicate) {
                 completion(callback)
             }
         }
@@ -238,7 +230,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("clear")
 
         if let responder = responders[.clearListener] as? ClearResponder {
-            if let callback = responder.callback(()) {
+            if let callback = responder() {
                 completion(callback)
             }
         }
@@ -252,7 +244,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("start")
 
         if let responder = responders[.clearListener] as? ClearResponder {
-            if let callback = responder.callback(()) {
+            if let callback = responder() {
                 completion(callback)
             }
         }
@@ -266,7 +258,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("stop")
 
         if let responder = responders[.stopListener] as? StopResponder {
-            if let callback = responder.callback(()) {
+            if let callback = responder() {
                 completion(callback)
             }
         }

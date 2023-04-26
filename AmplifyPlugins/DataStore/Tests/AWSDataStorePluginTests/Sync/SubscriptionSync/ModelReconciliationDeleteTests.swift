@@ -36,13 +36,12 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                                                      deleted: true,
                                                      lastChangedAt: Date().unixSeconds,
                                                      version: 2)
-        let localMetadataSaved = expectation(description: "Local metadata saved")
-        storageAdapter.save(localSyncMetadata) { _ in localMetadataSaved.fulfill() }
-        await waitForExpectations(timeout: 1.0)
+
+        _ = storageAdapter.save(localSyncMetadata, modelSchema: localSyncMetadata.schema, condition: nil, eagerLoad: true)
 
         var valueListenerFromRequest: MutationSyncInProcessListener?
         let expectationListener = expectation(description: "listener")
-        let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> { request, valueListener, _ in
+        let responder: SubscribeRequestListenerResponder<MutationSync<AnyModel>> = { request, valueListener, _ in
             if request.document.contains("onUpdateMockSynced") {
                 valueListenerFromRequest = valueListener
                 expectationListener.fulfill()
@@ -57,7 +56,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testUpdateAfterDelete()
             try await startAmplifyAndWaitForSync()
         }
-        await waitForExpectations(timeout: 2.0)
+        await fulfillment(of: [expectationListener], timeout: 2)
 
         guard let valueListener = valueListenerFromRequest else {
                 XCTFail("Incoming responder didn't set up listener")
@@ -82,14 +81,14 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
-        storageAdapter.query(modelSchema: MockSynced.schema) { results in
-            switch results {
-            case .failure(let error):
-                XCTAssertNil(error)
-            case .success(let results):
-                XCTAssertEqual(results.count, 0)
-            }
+        let results = storageAdapter.query(modelSchema: MockSynced.schema, predicate: nil, eagerLoad: true)
+        switch results {
+        case .failure(let error):
+            XCTAssertNil(error)
+        case .success(let results):
+            XCTAssertEqual(results.count, 0)
         }
+
     }
 
     func mockRemoteSyncEngineFor_testUpdateAfterDelete() {
@@ -133,7 +132,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         var valueListenerFromRequest: MutationSyncInProcessListener?
 
-        let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> {request, valueListener, _ in
+        let responder: SubscribeRequestListenerResponder<MutationSync<AnyModel>> = {request, valueListener, _ in
             if request.document.contains("onUpdateMockSynced") {
                 valueListenerFromRequest = valueListener
                 expectationListener.fulfill()
@@ -149,7 +148,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try await startAmplifyAndWaitForSync()
         }
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectationListener], timeout: 1)
 
         guard let valueListener = valueListenerFromRequest else {
             XCTFail("Incoming responder didn't set up listener")
@@ -176,20 +175,19 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         valueListener(.data(.success(remoteMutationSync)))
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncReceivedNotification], timeout: 1)
 
         let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
                                                                                  modelName: MockSynced.modelName)
         XCTAssertEqual(finalLocalMetadata?.version, 2)
         XCTAssertEqual(finalLocalMetadata?.deleted, true)
 
-        storageAdapter.query(modelSchema: MockSynced.schema) { results in
-            switch results {
-            case .failure(let error):
-                XCTAssertNil(error)
-            case .success(let results):
-                XCTAssertEqual(results.count, 0)
-            }
+        let results = storageAdapter.query(modelSchema: MockSynced.schema, predicate: nil, eagerLoad: true)
+        switch results {
+        case .failure(let error):
+            XCTAssertNil(error)
+        case .success(let results):
+            XCTAssertEqual(results.count, 0)
         }
 
         Amplify.Hub.removeListener(syncReceivedToken)
@@ -209,18 +207,22 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                             let onUpdateListener: MutationSyncInProcessListener = { event in
                                 switch event {
                                 case .data(.success(let mutationEvent)):
-                                    self.storageAdapter.save(mutationEvent.syncMetadata) { result in
-                                        switch result {
-                                        case .success(let syncMetaData):
-                                            let payload = HubPayload(
-                                                eventName: HubPayload.EventName.DataStore.syncReceived,
-                                                data: syncMetaData
-                                            )
-                                            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
-                                        default:
-                                            break
-                                        }
+                                    let result = self.storageAdapter.save(
+                                        mutationEvent.syncMetadata,
+                                        modelSchema: mutationEvent.syncMetadata.schema,
+                                        condition: nil,
+                                        eagerLoad: true
+                                    )
 
+                                    switch result {
+                                    case .success(let syncMetaData):
+                                        let payload = HubPayload(
+                                            eventName: HubPayload.EventName.DataStore.syncReceived,
+                                            data: syncMetaData
+                                        )
+                                        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+                                    default:
+                                        break
                                     }
                                 default:
                                     break

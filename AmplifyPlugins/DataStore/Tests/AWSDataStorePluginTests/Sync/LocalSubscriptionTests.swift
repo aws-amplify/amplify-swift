@@ -133,9 +133,9 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I am notified of `create` mutations
     func testCreate() async throws {
         let receivedMutationEvent = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Post.self)
 
-        let subscription = Task {
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
+        let subscription = Task.detached {
             do {
                 for try await mutationEvent in mutationEvents {
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {

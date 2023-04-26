@@ -346,15 +346,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         await waitForExpectations(timeout: networkTimeout)
         
         let updateLocalSuccess = expectation(description: "Update local successful")
-        storageAdapter.save(updatedPost) { result in
-            switch result {
-            case .success(let post):
-                print("Saved post \(post)")
-                updateLocalSuccess.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to save post directly to local store \(error)")
-            }
+        let result = storageAdapter.save(updatedPost, modelSchema: updatedPost.schema, condition: nil, eagerLoad: true)
+        switch result {
+        case .success(let post):
+            print("Saved post \(post)")
+            updateLocalSuccess.fulfill()
+        case .failure(let error):
+            XCTFail("Failed to save post directly to local store \(error)")
         }
+
         await waitForExpectations(timeout: networkTimeout)
 
         let conditionalReceived = expectation(description: "Conditional save failed received")

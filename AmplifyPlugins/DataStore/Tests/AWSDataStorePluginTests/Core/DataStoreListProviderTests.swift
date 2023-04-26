@@ -57,11 +57,10 @@ class DataStoreListProviderTests: XCTestCase {
     }
 
     func testNotLoadedStateLoadSuccess() async throws {
-        mockDataStorePlugin.responders[.queryModelsListener] =
-            QueryModelsResponder<Comment4> { _, _, _, _ in
+        mockDataStorePlugin.responders[.queryModelsListener] = { _, _, _, _ in
                 return .success([Comment4(content: "content"),
                                  Comment4(content: "content")])
-            }
+            } as QueryModelsResponder<Comment4>
 
         let provider = DataStoreListProvider<Comment4>(metadata: .init(dataStoreAssociatedIdentifiers: ["postId"],
                                                                     dataStoreAssociatedFields: ["post"]))
@@ -91,10 +90,9 @@ class DataStoreListProviderTests: XCTestCase {
     }
 
     func testNotLoadedStateLoadFailure() async throws {
-        mockDataStorePlugin.responders[.queryModelsListener] =
-            QueryModelsResponder<Comment4> { _, _, _, _ in
-                return .failure(DataStoreError.internalOperation("", "", nil))
-            }
+        mockDataStorePlugin.responders[.queryModelsListener] = { _, _, _, _ in
+            return .failure(DataStoreError.internalOperation("", "", nil))
+        } as QueryModelsResponder<Comment4>
         
         let provider = DataStoreListProvider<Comment4>(metadata: .init(dataStoreAssociatedIdentifiers: ["postId"],
                                                                     dataStoreAssociatedFields: ["post"]))

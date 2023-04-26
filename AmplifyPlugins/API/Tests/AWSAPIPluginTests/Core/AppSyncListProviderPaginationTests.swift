@@ -47,14 +47,13 @@ extension AppSyncListProviderTests {
 
     func testLoadedStateGetNextPageSuccess() async throws {
         Amplify.Logging.logLevel = .verbose
-        mockAPIPlugin.responders[.queryRequestResponse] =
-            QueryRequestResponder<List<Comment4>> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
                 let nextPage = List(elements: [Comment4(content: "content"),
                                                Comment4(content: "content"),
                                                Comment4(content: "content")])
                 let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(.success(nextPage))
                 return event
-        }
+        } as QueryRequestResponder<List<Comment4>>
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
 
@@ -84,11 +83,10 @@ extension AppSyncListProviderTests {
     }
 
     func testLoadedStateGetNextPageFailure_APIError() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-            QueryRequestResponder<List<Comment4>> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
                 let event: GraphQLOperation<List<Comment4>>.OperationResult = .failure(APIError.unknown("", "", nil))
                 return event
-        }
+        } as QueryRequestResponder<List<Comment4>>
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
 
@@ -108,12 +106,11 @@ extension AppSyncListProviderTests {
     }
 
     func testLoadedStateGetNextPageFailure_GraphQLErrorResponse() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-            QueryRequestResponder<List<Comment4>> { _ in
+        mockAPIPlugin.responders[.queryRequestResponse] = { _ in
                 let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(
                     .failure(GraphQLResponseError.error([GraphQLError]())))
                 return event
-        }
+        } as QueryRequestResponder<List<Comment4>>
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
         guard case .loaded = provider.loadedState else {

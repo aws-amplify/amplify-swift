@@ -16,26 +16,20 @@ extension MockAPICategoryPlugin {
     }
 }
 
-typealias QueryRequestListenerResponder<R: Decodable> = MockResponder<
-    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
-    GraphQLOperation<R>?
->
+typealias QueryRequestListenerResponder<R: Decodable> =
+    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>?
 
-typealias QueryRequestResponder<R: Decodable> = MockResponder<
-    GraphQLRequest<R>,
-    GraphQLOperation<R>.OperationResult
->
 
-typealias MutateRequestListenerResponder<R: Decodable> = MockResponder<
-    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
-    GraphQLOperation<R>?
->
+typealias QueryRequestResponder<R: Decodable> =
+    (GraphQLRequest<R>) -> GraphQLOperation<R>.OperationResult
 
-typealias SubscribeRequestListenerResponder<R: Decodable> = MockResponder<
-    (
+
+typealias MutateRequestListenerResponder<R: Decodable> =
+    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>?
+
+typealias SubscribeRequestListenerResponder<R: Decodable> = (
     GraphQLRequest<R>,
     GraphQLSubscriptionOperation<R>.InProcessListener?,
     GraphQLSubscriptionOperation<R>.ResultListener?
-    ),
-    GraphQLSubscriptionOperation<R>?
->
+) -> GraphQLSubscriptionOperation<R>?
+

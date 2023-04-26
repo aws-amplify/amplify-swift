@@ -547,8 +547,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+        mockAPIPlugin.responders[.mutateRequestListener] = { request, eventListener in
                 guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
                     XCTFail("The document variables property doesn't contain a valid input")
                     return nil
@@ -558,7 +557,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 eventListenerOptional = eventListener
                 apiMutateCalled.fulfill()
                 return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
@@ -624,8 +623,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: .now())
         var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+        mockAPIPlugin.responders[.mutateRequestListener] = { request, eventListener in
                 guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
                     XCTFail("The document variables property doesn't contain a valid input")
                     return nil
@@ -635,7 +633,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 eventListenerOptional = eventListener
                 apiMutateCalled.fulfill()
                 return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
@@ -707,23 +705,22 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let modelSavedEvent = expectation(description: "model saved event")
         modelSavedEvent.expectedFulfillmentCount = 2
         let storageAdapter = MockSQLiteStorageEngineAdapter()
-        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
+        storageAdapter.responders[.saveUntypedModel] = { model in
             guard let savedPost = model as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
-                return
+                return .failure(DataStoreError(error: "Couldn't get Posts from local and remote data"))
             }
             XCTAssertEqual(savedPost.title, remotePost.title)
             modelSavedEvent.fulfill()
-            completion(.success(model))
-        }
+            return .success(model)
+        } as SaveUntypedModelResponder
 
-        storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in
+        storageAdapter.responders[.saveModelCompletion] = { metadata in
                 XCTAssertEqual(metadata.deleted, false)
                 XCTAssertEqual(metadata.version, 2)
                 modelSavedEvent.fulfill()
-                completion(.success(metadata))
-        }
+                return .success(metadata)
+        } as SaveModelCompletionResponder<MutationSyncMetadata>
 
         let expectHubEvent = expectation(description: "Hub is notified")
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
@@ -776,17 +773,16 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let metadataSavedEvent = expectation(description: "metadata saved event")
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.shouldReturnErrorOnDeleteMutation = false
-        storageAdapter.responders[.deleteUntypedModel] = DeleteUntypedModelCompletionResponder { _ in
+        storageAdapter.responders[.deleteUntypedModel] = { _ in
             modelDeletedEvent.fulfill()
             return .emptyResult
-        }
-        storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in
+        } as DeleteUntypedModelCompletionResponder
+        storageAdapter.responders[.saveModelCompletion] = { metadata in
             XCTAssertEqual(metadata.deleted, true)
             XCTAssertEqual(metadata.version, 2)
             metadataSavedEvent.fulfill()
-            completion(.success(metadata))
-        }
+            return .success(metadata)
+        } as SaveModelCompletionResponder<MutationSyncMetadata>
 
         let expectHubEvent = expectation(description: "Hub is notified")
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
@@ -840,22 +836,21 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         let modelSavedEvent = expectation(description: "model saved event")
         let metadataSavedEvent = expectation(description: "metadata saved event")
-        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
+        storageAdapter.responders[.saveUntypedModel] = { model in
             guard let savedPost = model as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
-                return
+                return .failure(DataStoreError(error: "Couldn't get Posts from local and remote data"))
             }
             XCTAssertEqual(savedPost.title, remotePost.title)
             modelSavedEvent.fulfill()
-            completion(.success(model))
-        }
-        storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in
+            return .success(model)
+        } as SaveUntypedModelResponder
+        storageAdapter.responders[.saveModelCompletion] = { metadata in
             XCTAssertEqual(metadata.deleted, false)
             XCTAssertEqual(metadata.version, 2)
             metadataSavedEvent.fulfill()
-            completion(.success(metadata))
-        }
+            return .success(metadata)
+        } as SaveModelCompletionResponder<MutationSyncMetadata>
 
         let expectHubEvent = expectation(description: "Hub is notified")
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
@@ -919,8 +914,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+        mockAPIPlugin.responders[.mutateRequestListener] = { request, eventListener in
                 guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
                     XCTFail("The document variables property doesn't contain a valid input")
                     return nil
@@ -930,7 +924,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 eventListenerOptional = eventListener
                 apiMutateCalled.fulfill()
                 return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
@@ -998,8 +992,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: .now())
         var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+        mockAPIPlugin.responders[.mutateRequestListener] = { request, eventListener in
                 guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
                     XCTFail("The document variables property doesn't contain a valid input")
                     return nil
@@ -1009,7 +1002,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 eventListenerOptional = eventListener
                 apiMutateCalled.fulfill()
                 return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
@@ -1076,8 +1069,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+        mockAPIPlugin.responders[.mutateRequestListener] = { request, eventListener in
                 guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
                     XCTFail("The document variables property doesn't contain a valid input")
                     return nil
@@ -1087,7 +1079,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 eventListenerOptional = eventListener
                 apiMutateCalled.fulfill()
                 return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")

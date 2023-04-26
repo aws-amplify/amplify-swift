@@ -116,21 +116,21 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         var deletedResult: DataStoreResult<[M]>?
         var associatedModels: [(ModelName, Model)] = []
         
-        queriedResult = await withCheckedContinuation { continuation in
-            self.storageAdapter.query(self.modelType,
-                                      modelSchema: self.modelSchema,
-                                      predicate: self.deleteInput.predicate,
-                                      sort: nil,
-                                      paginationInput: nil,
-                                      eagerLoad: true) { result in
-                continuation.resume(returning: result)
-            }
-        }
+        queriedResult = self.storageAdapter.query(
+            self.modelType,
+            modelSchema: self.modelSchema,
+            condition: self.deleteInput.predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
         guard case .success(let queriedModels) = queriedResult else {
             return collapseResults(queryResult: queriedResult,
                                    deleteResult: deletedResult,
                                    associatedModels: associatedModels)
         }
+
         guard !queriedModels.isEmpty else {
             guard case .withIdentifierAndCondition(let identifier, _) = self.deleteInput else {
                 // Query did not return any results, treat this as a successful no-op delete.
@@ -141,19 +141,18 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
             
             // Query using the computed predicate did not return any results, check if model actually exists.
-            do {
-                if try self.storageAdapter.exists(self.modelSchema, withIdentifier: identifier, predicate: nil) {
-                    queriedResult = .failure(
-                        DataStoreError.invalidCondition(
-                            "Delete failed due to condition did not match existing model instance.",
-                            "Subsequent deletes will continue to fail until the model instance is updated."))
-                } else {
-                    deletedResult = .success([M]())
+            self.storageAdapter.exists(self.modelSchema, withIdentifier: identifier, predicate: nil)
+                .ifSuccess { modelExist in
+                    if modelExist {
+                        queriedResult = .failure(
+                            DataStoreError.invalidCondition(
+                                "Delete failed due to condition did not match existing model instance.",
+                                "Subsequent deletes will continue to fail until the model instance is updated."))
+                    } else {
+                        deletedResult = .success([M]())
+                    }
                 }
-            } catch {
-                queriedResult = .failure(DataStoreError.invalidOperation(causedBy: error))
-            }
-            
+
             return collapseResults(queryResult: queriedResult,
                                    deleteResult: deletedResult,
                                    associatedModels: associatedModels)
@@ -164,13 +163,11 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         
         associatedModels = await self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
 
-        deletedResult = await withCheckedContinuation { continuation in
-            self.storageAdapter.delete(self.modelType,
-                                       modelSchema: self.modelSchema,
-                                       filter: self.deleteInput.predicate) { result in
-                continuation.resume(returning: result)
-            }
-        }
+        deletedResult = self.storageAdapter.delete(
+            modelSchema: self.modelSchema,
+            condition: self.deleteInput.predicate
+        ).map { _ in [] }
+
         return collapseResults(queryResult: queriedResult,
                                deleteResult: deletedResult,
                                associatedModels: associatedModels)
@@ -225,17 +222,19 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
             let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
             
-            do {
-                let models = try await withCheckedThrowingContinuation { continuation in
-                    storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates, eagerLoad: true) { result in
-                        continuation.resume(with: result)
-                    }
-                }
+            let models = storageAdapter.query(
+                modelSchema: modelSchema,
+                predicate: groupedQueryPredicates,
+                eagerLoad: true
+            )
+
+            switch models {
+            case let .failure(error):
+                log.error("Failed to query \(modelSchema) on mutation event generation: \(error)")
+            case let .success(models):
                 queriedModels.append(contentsOf: models.map { model in
                     (modelSchema.name, model)
                 })
-            } catch {
-                log.error("Failed to query \(modelSchema) on mutation event generation: \(error)")
             }
         }
         return queriedModels
@@ -498,10 +497,12 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
     }
 
-    private func submitToSyncEngine(mutationEvent: MutationEvent,
-                                    syncEngine: RemoteSyncEngineBehavior,
-                                    completion: @escaping DataStoreCallback<MutationEvent>) {
-        syncEngine.submit(mutationEvent, completion: completion)
+    private func submitToSyncEngine(
+        mutationEvent: MutationEvent,
+        syncEngine: RemoteSyncEngineBehavior,
+        completion: @escaping DataStoreCallback<MutationEvent>
+    ) {
+        completion(syncEngine.submit(mutationEvent))
     }
 
     private func logMessage(

@@ -58,7 +58,7 @@ class MockAPICategoryPlugin: MessageReporter,
         notify("mutate(request) document: \(request.document); variables: \(String(describing: request.variables))")
 
         if let responder = responders[.mutateRequestListener] as? MutateRequestListenerResponder<R> {
-            if let operation = responder.callback((request, listener)) {
+            if let operation = responder(request, listener) {
                 return operation
             }
         }
@@ -87,7 +87,7 @@ class MockAPICategoryPlugin: MessageReporter,
         notify("query(request:listener:) request: \(request)")
 
         if let responder = responders[.queryRequestListener] as? QueryRequestListenerResponder<R> {
-            if let operation = responder.callback((request, listener)) {
+            if let operation = responder(request, listener) {
                 return operation
             }
         }
@@ -109,7 +109,7 @@ class MockAPICategoryPlugin: MessageReporter,
 
         if let responder = responders[.queryRequestResponse] as? QueryRequestResponder<R> {
             
-            let result = responder.callback(request)
+            let result = responder(request)
             switch result {
             case .success(let response):
                 return response
@@ -132,7 +132,7 @@ class MockAPICategoryPlugin: MessageReporter,
             )
 
             if let responder = responders[.subscribeRequestListener] as? SubscribeRequestListenerResponder<R> {
-                if let operation = responder.callback((request, valueListener, completionListener)) {
+                if let operation = responder(request, valueListener, completionListener) {
                     return operation
                 }
             }

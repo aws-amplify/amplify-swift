@@ -26,18 +26,17 @@ extension MockSQLiteStorageEngineAdapter {
 
 /// Note: In the original method, `completion` is non-escaping, so rather than attempting to pass `completion`, this
 /// responder must return a value that the mock method will pass to the callback.
-typealias QueryModelTypePredicateResponder<M: Model> =
-    MockResponder<(M.Type, QueryPredicate?), DataStoreResult<[M]>>
+typealias QueryModelTypePredicateResponder<M: Model> = (M.Type, QueryPredicate?) -> DataStoreResult<[M]>
 
-typealias QueryMutationSyncMetadataResponder = ThrowingMockResponder<String, MutationSyncMetadata?>
+typealias QueryMutationSyncMetadataResponder = (String) throws -> MutationSyncMetadata?
 
-typealias QueryMutationSyncMetadatasResponder = ThrowingMockResponder<[String], [MutationSyncMetadata]>
+typealias QueryMutationSyncMetadatasResponder = ([String]) throws -> [MutationSyncMetadata]
 
-typealias SaveModelCompletionResponder<M: Model> = MockResponder<(M, DataStoreCallback<M>), Void>
+typealias SaveModelCompletionResponder<M: Model> = (M) -> DataStoreResult<M>
 
-typealias SaveUntypedModelResponder = MockResponder<(Model, DataStoreCallback<Model>), Void>
+typealias SaveUntypedModelResponder = (Model) -> DataStoreResult<Model>
 
-typealias DeleteUntypedModelCompletionResponder = MockResponder<(Model.Type, String), DataStoreResult<Void>>
+typealias DeleteUntypedModelCompletionResponder = (String) -> DataStoreResult<Void>
 
 extension MockStorageEngineBehavior {
     enum ResponderKeys {
@@ -48,7 +47,7 @@ extension MockStorageEngineBehavior {
     }
 }
 
-typealias StartSyncResponder = MockResponder<String, Void>
-typealias StopSyncResponder = MockResponder<String, Void>
-typealias ClearResponder = MockResponder<String, Void>
-typealias QueryResponder<M: Model> = MockResponder<Void, DataStoreResult<[M]>>
+typealias StartSyncResponder = (String) -> Void
+typealias StopSyncResponder = (String) -> Void
+typealias ClearResponder = (String) -> Void
+typealias QueryResponder<M: Model> = () -> DataStoreResult<[M]>

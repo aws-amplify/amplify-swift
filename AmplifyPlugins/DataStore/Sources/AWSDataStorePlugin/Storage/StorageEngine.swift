@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(OptionalExtension) import Amplify
 import Combine
 import Foundation
 import AWSPluginsCore
@@ -20,6 +20,7 @@ typealias StorageEngineBehaviorFactory =
 
 // swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
+
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
@@ -167,142 +168,117 @@ final class StorageEngine: StorageEngineBehavior {
         try storageAdapter.applyModelMigrations(modelSchemas: modelSchemas)
     }
 
-    public func save<M: Model>(_ model: M,
-                               modelSchema: ModelSchema,
-                               condition: QueryPredicate? = nil,
-                               eagerLoad: Bool = true,
-                               completion: @escaping DataStoreCallback<M>) {
+    func query<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Swift.Result<M?, DataStoreError> {
+        storageAdapter.query(
+            modelType,
+            modelSchema: modelSchema,
+            withIdentifier: identifier,
+            condition: condition,
+            eagerLoad: eagerLoad
+        )
+    }
 
-        // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
-        // mutation type
-        let modelExists: Bool
+    func query<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate? = nil,
+        sort: [QuerySortDescriptor]? = nil,
+        paginationInput: QueryPaginationInput? = nil,
+        eagerLoad: Bool = true
+    ) -> Swift.Result<[M], DataStoreError> {
+        storageAdapter.query(
+            modelType,
+            modelSchema: modelSchema,
+            condition: condition,
+            sort: sort,
+            paginationInput: paginationInput,
+            eagerLoad: eagerLoad
+        )
+    }
+
+    func save<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) async -> Swift.Result<(M, MutationEvent.MutationType), DataStoreError> {
+        storageAdapter.save(
+            model,
+            modelSchema: modelSchema,
+            condition: condition,
+            eagerLoad: eagerLoad
+        ).flatMap { result in
+            let (savedModel, mutationType) = result
+            return createMutationEvent(savedModel, modelSchema: modelSchema, mutationType: mutationType)
+                .flatMap { mutationEvent in
+                    submitToSyncEngine(mutationEvent: mutationEvent, syncEngine: syncEngine)
+                }
+                .map { _ in result }
+        }
+    }
+
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?
+    ) async -> Swift.Result<M?, DataStoreError> {
         do {
-            modelExists = try storageAdapter.exists(modelSchema,
-                                                    withIdentifier: model.identifier(schema: modelSchema),
-                                                    predicate: nil)
+            var result: Swift.Result<M?, DataStoreError> = .failure(.unknown(
+                "Default failure for cascade deletion",
+                "The delete operation failed to execute"
+            ))
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                let cascadeDeleteOperation = CascadeDeleteOperation(
+                    storageAdapter: storageAdapter,
+                    syncEngine: syncEngine,
+                    modelType: modelType,
+                    modelSchema: modelSchema,
+                    withIdentifier: identifier,
+                    condition: condition) {
+                        result = $0
+                        continuation.resume()
+                    }
+                operationQueue.addOperation(cascadeDeleteOperation)
+            }
+            return result
         } catch {
-            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
-            completion(.failure(dataStoreError))
-            return
+            return .failure(DataStoreError(error: error))
         }
-
-        let mutationType = modelExists ? MutationEvent.MutationType.update : .create
-
-        // If it is `create`, and there is a condition, and that condition is not `.all`, fail the request
-        if mutationType == .create, let condition = condition, !condition.isAll {
-            let dataStoreError = DataStoreError.invalidCondition(
-                "Cannot apply a condition on model which does not exist.",
-                "Save the model instance without a condition first.")
-            completion(.failure(causedBy: dataStoreError))
-        }
-
-        let wrappedCompletion: DataStoreCallback<M> = { result in
-            guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
-                completion(result)
-                return
-            }
-
-            guard case .success(let savedModel) = result else {
-                completion(result)
-                return
-            }
-
-            self.log.verbose("\(#function) syncing mutation for \(savedModel)")
-            self.syncMutation(of: savedModel,
-                              modelSchema: modelSchema,
-                              mutationType: mutationType,
-                              predicate: condition,
-                              syncEngine: syncEngine,
-                              completion: completion)
-        }
-
-        storageAdapter.save(model,
-                            modelSchema: modelSchema,
-                            condition: condition,
-                            eagerLoad: eagerLoad,
-                            completion: wrappedCompletion)
     }
 
-    func save<M: Model>(_ model: M,
-                        condition: QueryPredicate? = nil,
-                        eagerLoad: Bool = true,
-                        completion: @escaping DataStoreCallback<M>) {
-        save(model,
-             modelSchema: model.schema,
-             condition: condition,
-             eagerLoad: eagerLoad,
-             completion: completion)
-    }
-
-    @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withId id: Model.Identifier,
-                          condition: QueryPredicate? = nil,
-                          completion: @escaping (DataStoreResult<M?>) -> Void) {
-        let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                                            syncEngine: syncEngine,
-                                                            modelType: modelType, modelSchema: modelSchema,
-                                                            withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
-                                                            condition: condition) { completion($0) }
-        operationQueue.addOperation(cascadeDeleteOperation)
-    }
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withIdentifier identifier: ModelIdentifierProtocol,
-                          condition: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<M?>) {
-        let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                                            syncEngine: syncEngine,
-                                                            modelType: modelType, modelSchema: modelSchema,
-                                                            withIdentifier: identifier,
-                                                            condition: condition) { completion($0) }
-        operationQueue.addOperation(cascadeDeleteOperation)
-
-    }
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          filter: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>) {
-        let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
-                                                            syncEngine: syncEngine,
-                                                            modelType: modelType,
-                                                            modelSchema: modelSchema,
-                                                            filter: filter) { completion($0) }
-        operationQueue.addOperation(cascadeDeleteOperation)
-    }
-
-    func query<M: Model>(_ modelType: M.Type,
-                         modelSchema: ModelSchema,
-                         predicate: QueryPredicate?,
-                         sort: [QuerySortDescriptor]?,
-                         paginationInput: QueryPaginationInput?,
-                         eagerLoad: Bool = true,
-                         completion: (DataStoreResult<[M]>) -> Void) {
-        return storageAdapter.query(modelType,
-                                    modelSchema: modelSchema,
-                                    predicate: predicate,
-                                    sort: sort,
-                                    paginationInput: paginationInput,
-                                    eagerLoad: eagerLoad,
-                                    completion: completion)
-    }
-
-    func query<M: Model>(_ modelType: M.Type,
-                         predicate: QueryPredicate? = nil,
-                         sort: [QuerySortDescriptor]? = nil,
-                         paginationInput: QueryPaginationInput? = nil,
-                         eagerLoad: Bool = true,
-                         completion: DataStoreCallback<[M]>) {
-        query(modelType,
-              modelSchema: modelType.schema,
-              predicate: predicate,
-              sort: sort,
-              paginationInput: paginationInput,
-              eagerLoad: eagerLoad,
-              completion: completion)
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate
+    ) async -> Swift.Result<[M], DataStoreError> {
+        do {
+           var result: Swift.Result<[M], DataStoreError> = .failure(.unknown(
+               "Default failure for cascade deletion",
+               "The delete operation failed to execute"
+           ))
+           try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<Void, Error>) in
+               let cascadeDeleteOperation = CascadeDeleteOperation(
+                   storageAdapter: storageAdapter,
+                   syncEngine: syncEngine,
+                   modelType: modelType,
+                   modelSchema: modelSchema,
+                   filter: condition) {
+                       result = $0
+                       continuation.resume()
+                   }
+               operationQueue.addOperation(cascadeDeleteOperation)
+           })
+           return result
+       } catch {
+           return .failure(DataStoreError(error: error))
+       }
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
@@ -325,52 +301,39 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
-    @available(iOS 13.0, *)
-    private func syncMutation<M: Model>(of savedModel: M,
-                                        modelSchema: ModelSchema,
-                                        mutationType: MutationEvent.MutationType,
-                                        predicate: QueryPredicate? = nil,
-                                        syncEngine: RemoteSyncEngineBehavior,
-                                        completion: @escaping DataStoreCallback<M>) {
-        let mutationEvent: MutationEvent
+    private func createMutationEvent<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        mutationType: MutationEvent.MutationType,
+        predicate: QueryPredicate? = nil
+    ) -> Swift.Result<MutationEvent?, DataStoreError> {
         do {
-            var graphQLFilterJSON: String?
-            if let predicate = predicate {
-                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate,
-                                                                      modelSchema: modelSchema)
+            if modelSchema.isSyncable {
+                let graphQLFilterJSON = try predicate.map {
+                    try GraphQLFilterConverter.toJSON($0, modelSchema: modelSchema)
+                }
+                return .success(try MutationEvent(
+                    model: model,
+                    modelSchema: modelSchema,
+                    mutationType: mutationType,
+                    graphQLFilterJSON: graphQLFilterJSON
+                ))
+            } else {
+                return .success(nil)
             }
-
-            mutationEvent = try MutationEvent(model: savedModel,
-                                              modelSchema: modelSchema,
-                                              mutationType: mutationType,
-                                              graphQLFilterJSON: graphQLFilterJSON)
-
         } catch {
-            let dataStoreError = DataStoreError(error: error)
-            completion(.failure(dataStoreError))
-            return
+            return .failure(DataStoreError(error: error))
         }
-
-        let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
-            switch result {
-            case .failure(let dataStoreError):
-                completion(.failure(dataStoreError))
-            case .success(let mutationEvent):
-                self.log.verbose("\(#function) successfully submitted \(mutationEvent.modelName) to sync engine \(mutationEvent)")
-                completion(.success(savedModel))
-            }
-        }
-
-        submitToSyncEngine(mutationEvent: mutationEvent,
-                           syncEngine: syncEngine,
-                           completion: mutationEventCallback)
     }
 
-    private func submitToSyncEngine(mutationEvent: MutationEvent,
-                                    syncEngine: RemoteSyncEngineBehavior,
-                                    completion: @escaping DataStoreCallback<MutationEvent>) {
-        Task {
-            syncEngine.submit(mutationEvent, completion: completion)
+    private func submitToSyncEngine(
+        mutationEvent: MutationEvent?,
+        syncEngine: RemoteSyncEngineBehavior?
+    ) -> Swift.Result<Void, DataStoreError> {
+        if let mutationEvent = mutationEvent, let syncEngine = syncEngine {
+            return syncEngine.submit(mutationEvent).dropSuccessValue()
+        } else {
+            return .success(())
         }
     }
 

@@ -45,7 +45,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
 
         var numberOfTimesEntered = 0
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+        let responder = { _, eventListener in
             if numberOfTimesEntered == 0 {
                 listenerFromFirstRequestOptional = eventListener
                 expectFirstCallToAPIMutate.fulfill()
@@ -60,7 +60,8 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             // The main reason for having this responder is to get the eventListener.
             // the eventListener block will execute the the call to validateResponseFromCloud
             return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
+
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
@@ -118,7 +119,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
 
         var numberOfTimesEntered = 0
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+        let responder = { _, eventListener in
             if numberOfTimesEntered == 0 {
                 listenerFromFirstRequestOptional = eventListener
                 expectFirstCallToAPIMutate.fulfill()
@@ -133,7 +134,8 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             // The main reason for having this responder is to get the eventListener.
             // the eventListener block will execute the the call to validateResponseFromCloud
             return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
+
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
@@ -189,7 +191,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
 
         var numberOfTimesEntered = 0
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+        let responder = { _, eventListener in
             if numberOfTimesEntered == 0 {
                 listenerFromFirstRequestOptional = eventListener
                 expectFirstCallToAPIMutate.fulfill()
@@ -201,7 +203,8 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             // The main reason for having this responder is to get the eventListener.
             // the eventListener block will execute the the call to validateResponseFromCloud
             return nil
-        }
+        } as MutateRequestListenerResponder<MutationSync<AnyModel>>
+        
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { asyncEvent in

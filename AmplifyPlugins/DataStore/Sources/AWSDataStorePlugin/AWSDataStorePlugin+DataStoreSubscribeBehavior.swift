@@ -41,7 +41,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
         let request = ObserveQueryRequest(options: [])
         let taskRunner = ObserveQueryTaskRunner(request: request,
                                                 modelType: modelType,
-                                                modelSchema: modelType.schema,
+                                                modelSchema: modelSchema,
                                                 predicate: predicate,
                                                 sortInput: sortInput?.asSortDescriptors(),
                                                 storageEngine: storageEngine,

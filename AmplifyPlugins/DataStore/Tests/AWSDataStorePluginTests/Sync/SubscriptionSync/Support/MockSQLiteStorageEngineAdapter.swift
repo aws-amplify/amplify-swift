@@ -81,49 +81,66 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     // MARK: - StorageEngineAdapter
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withId id: String,
-                          condition: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<M?>) {
-        XCTFail("Not expected to execute")
+    func create<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Result<M, DataStoreError> {
+        .failure(DataStoreError(error: "Not expected to execute"))
     }
-    
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          filter: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>) {
-        XCTFail("Not expected to execute")
+
+    func update<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Result<M, DataStoreError> {
+        .failure(DataStoreError(error: "Not expected to execute"))
     }
-    func delete<M>(_ modelType: M.Type,
-                   modelSchema: ModelSchema,
-                   withIdentifier identifier: ModelIdentifierProtocol,
-                   condition: QueryPredicate?, completion: @escaping DataStoreCallback<M?>) where M: Model {
-        XCTFail("Not expected to execute")
+
+    func delete(
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?
+    ) -> Swift.Result<Void, DataStoreError> {
+        if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
+            return responder(identifier.stringValue)
+        }
+        return shouldReturnErrorOnDeleteMutation
+        ? .failure(causedBy: DataStoreError.invalidModelName("DelMutate"))
+        : .emptyResult
     }
-    
+
+    func delete(
+        modelSchema: ModelSchema,
+        condition: QueryPredicate
+    ) -> Result<Void, DataStoreError> {
+        return shouldReturnErrorOnDeleteMutation
+        ? .failure(causedBy: DataStoreError.invalidModelName("DelMutate"))
+        : .emptyResult
+    }
+
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withIdentifier identifier: ModelIdentifierProtocol,
-                condition: QueryPredicate?,
-                completion: (DataStoreResult<Void>) -> Void) {
+                condition: QueryPredicate?
+    ) -> DataStoreResult<Void> {
         if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
-            let result = responder.callback((modelType, identifier.stringValue))
-            completion(result)
-            return
+            return responder(identifier.stringValue)
         }
         
         return shouldReturnErrorOnDeleteMutation
-        ? completion(.failure(causedBy: DataStoreError.invalidModelName("DelMutate")))
-        : completion(.emptyResult)
+        ? .failure(causedBy: DataStoreError.invalidModelName("DelMutate"))
+        : .emptyResult
     }
 
-    func query(modelSchema: ModelSchema,
-               predicate: QueryPredicate?,
-               eagerLoad: Bool,
-               completion: DataStoreCallback<[Model]>) {
-        let result = resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))
-        completion(result)
+    func query(
+        modelSchema: ModelSchema,
+        predicate: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Result<[Model], DataStoreError> {
+        resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -149,47 +166,50 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return []
     }
 
-    func exists(_ modelSchema: ModelSchema, withIdentifier id: ModelIdentifierProtocol, predicate: QueryPredicate?) throws -> Bool {
-        XCTFail("Not expected to execute")
-        return true
+    func exists(
+        _ modelSchema: ModelSchema,
+        withIdentifier id: ModelIdentifierProtocol,
+        predicate: QueryPredicate?
+    ) -> Result<Bool, DataStoreError> {
+        .failure(DataStoreError(error: "Not expected to execute"))
     }
 
-    func save(untypedModel: Model, eagerLoad: Bool, completion: @escaping DataStoreCallback<Model>) {
+
+    func save(_ model: Model, eagerLoad: Bool) -> Result<Model, DataStoreError> {
         if let responder = responders[.saveUntypedModel] as? SaveUntypedModelResponder {
-            responder.callback((untypedModel, completion))
-            return
+            return responder(model)
         }
 
-        completion(resultForSave!)
+        return resultForSave!
     }
 
-    func save<M: Model>(_ model: M,
-                        condition: QueryPredicate?,
-                        eagerLoad: Bool,
-                        completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(
+        _ model: M,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> DataStoreResult<M> {
         if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
-            responder.callback((model, completion))
-            return
+            return responder(model)
         }
 
         return shouldReturnErrorOnSaveMetadata
-            ? completion(.failure(DataStoreError.invalidModelName("forceError")))
-            : completion(.success(model))
+            ? .failure(DataStoreError.invalidModelName("forceError"))
+            : .success(model)
     }
 
-    func save<M: Model>(_ model: M,
-                        modelSchema: ModelSchema,
-                        condition where: QueryPredicate?,
-                        eagerLoad: Bool,
-                        completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Result<(M, MutationEvent.MutationType), DataStoreError> {
         if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
-            responder.callback((model, completion))
-            return
+            return responder(model).map { ($0, .create) }
         }
 
         return shouldReturnErrorOnSaveMetadata
-            ? completion(.failure(DataStoreError.invalidModelName("forceError")))
-            : completion(.success(model))
+            ? .failure(DataStoreError.invalidModelName("forceError"))
+            : .success((model, .create))
     }
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
@@ -197,25 +217,25 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return nil
     }
 
-    func query<M: Model>(_ modelType: M.Type,
-                         predicate: QueryPredicate?,
-                         sort: [QuerySortDescriptor]?,
-                         paginationInput: QueryPaginationInput?,
-                         eagerLoad: Bool,
-                         completion: DataStoreCallback<[M]>) {
+    func query<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        sort: [QuerySortDescriptor]?,
+        paginationInput: QueryPaginationInput?,
+        eagerLoad: Bool
+    ) -> Swift.Result<[M], DataStoreError> {
         if let responder = responders[.queryModelTypePredicate]
             as? QueryModelTypePredicateResponder<M> {
-            let result = responder.callback((modelType, predicate))
-            completion(result)
-            return
+            return responder(modelType, condition)
         }
 
-        completion(.success([]))
+        return .success([])
     }
 
     func queryMutationSyncMetadata(for modelId: String, modelName: String) throws -> MutationSyncMetadata? {
         if let responder = responders[.queryMutationSyncMetadata] as? QueryMutationSyncMetadataResponder {
-            return try responder.callback(modelId)
+            return try responder(modelId)
         }
 
         if let err = errorToThrowOnMutationSyncMetadata {
@@ -227,7 +247,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func queryMutationSyncMetadata(for modelIds: [String], modelName: String) throws -> [MutationSyncMetadata] {
         if let responder = responders[.queryMutationSyncMetadatas] as? QueryMutationSyncMetadatasResponder {
-            return try responder.callback(modelIds)
+            return try responder(modelIds)
         }
 
         if let err = errorToThrowOnMutationSyncMetadata {
@@ -280,6 +300,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
+
     static let mockStorageEngineBehaviorFactory =
         MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
     var responders = [ResponderKeys: Any]()
@@ -307,14 +328,14 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func startSync(completion: @escaping DataStoreCallback<Void>) {
         completion(.successfulVoid)
         if let responder = responders[.startSync] as? StartSyncResponder {
-            return responder.callback("")
+            return responder("")
         }
     }
 
     func stopSync(completion: @escaping DataStoreCallback<Void>) {
         completion(.successfulVoid)
         if let responder = responders[.stopSync] as? StopSyncResponder {
-            return responder.callback("")
+            return responder("")
         }
     }
 
@@ -324,78 +345,66 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
     }
 
-    func save<M: Model>(_ model: M,
-                        condition: QueryPredicate?,
-                        eagerLoad: Bool,
-                        completion: @escaping DataStoreCallback<M>) {
-        XCTFail("Not expected to execute")
-    }
-
-    func save<M: Model>(_ model: M,
-                        modelSchema: ModelSchema,
-                        condition where: QueryPredicate?,
-                        eagerLoad: Bool,
-                        completion: @escaping DataStoreCallback<M>) {
-        XCTFail("Not expected to execute")
-    }
-    
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withId id: String,
-                          condition: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<M?>) {
-        XCTFail("Not expected to execute")
-    }
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          filter: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>) {
-        XCTFail("Not expected to execute")
-    }
-
-    func delete<M>(_ modelType: M.Type,
-                   modelSchema: ModelSchema,
-                   withIdentifier identifier: ModelIdentifierProtocol,
-                   condition: QueryPredicate?,
-                   completion: @escaping DataStoreCallback<M?>) where M: Model {
-        completion(.success(nil))
-    }
-
-    func query<M: Model>(_ modelType: M.Type,
-                         predicate: QueryPredicate?,
-                         sort: [QuerySortDescriptor]?,
-                         paginationInput: QueryPaginationInput?,
-                         eagerLoad: Bool,
-                         completion: DataStoreCallback<[M]>) {
+    func query<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Swift.Result<M?, DataStoreError> {
         if let responder = responders[.query] as? QueryResponder<M> {
-            let result = responder.callback(())
-            completion(result)
+            return responder().map { $0.first }
         } else {
-            completion(.success([]))
+            return .success(nil)
         }
     }
 
-    func query<M: Model>(_ modelType: M.Type,
-                         modelSchema: ModelSchema,
-                         predicate: QueryPredicate?,
-                         sort: [QuerySortDescriptor]?,
-                         paginationInput: QueryPaginationInput?,
-                         eagerLoad: Bool,
-                         completion: (DataStoreResult<[M]>) -> Void) {
-
+    func query<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        sort: [QuerySortDescriptor]?,
+        paginationInput: QueryPaginationInput?,
+        eagerLoad: Bool
+    ) -> Swift.Result<[M], DataStoreError> {
         if let responder = responders[.query] as? QueryResponder<M> {
-            let result = responder.callback(())
-            completion(result)
+            return responder()
         } else {
-            completion(.success([]))
+            return .success([])
         }
     }
+
+    func save<M: Model>(
+        _ model: M,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate?,
+        eagerLoad: Bool
+    ) async -> Swift.Result<(M, MutationEvent.MutationType), DataStoreError> {
+        .failure(DataStoreError(error: "Not expected to execute"))
+    }
+
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        withIdentifier identifier: ModelIdentifierProtocol,
+        condition: QueryPredicate?
+    ) async -> Swift.Result<M?, DataStoreError> {
+        .success(nil)
+    }
+
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        modelSchema: ModelSchema,
+        condition: QueryPredicate
+    ) async -> Swift.Result<[M], DataStoreError> {
+        .failure(DataStoreError(error: "Not expected to execute"))
+    }
+
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
         completion(.successfulVoid)
         if let responder = responders[.clear] as? ClearResponder {
-            return responder.callback("")
+            return responder("")
         }
     }
 }

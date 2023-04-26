@@ -50,27 +50,21 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
 
     func testSaveModelWithPredicateAll() {
         let team = Team(name: "Team")
-        let saveFinished = expectation(description: "Save finished")
-        var result: DataStoreResult<Team>?
-        storageEngine.save(team, condition: QueryPredicateConstant.all) { sResult in
-            result = sResult
-            saveFinished.fulfill()
+        let saved = expectation(description: "Team saved")
+        Task {
+            _ = await storageEngine.save(team, modelSchema: team.schema, condition: QueryPredicateConstant.all, eagerLoad: true)
+            saved.fulfill()
         }
-        wait(for: [saveFinished], timeout: defaultTimeout)
-
-        guard result != nil else {
-            XCTFail("Save operation timed out")
-            return
-        }
+        wait(for: [saved], timeout: 1)
 
         guard case .success =
-            querySingleModelSynchronous(modelType: Team.self, predicate: Team.keys.id == team.id) else {
+            querySingleModel(modelType: Team.self, predicate: Team.keys.id == team.id) else {
                 XCTFail("Failed to query Team")
                 return
         }
     }
 
-    func testBelongsToRelationshipWithoutOwner() {
+    func testBelongsToRelationshipWithoutOwner() async {
         let teamA = Team(name: "A-Team")
         let projectA = Project(name: "ProjectA", team: teamA)
 
@@ -80,32 +74,32 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
         let teamC = Team(name: "C-Team")
         let projectC = Project(name: "ProjectC", team: teamC)
 
-        guard case .success = saveModelSynchronous(model: teamA),
-            case .success = saveModelSynchronous(model: projectA),
-            case .success = saveModelSynchronous(model: teamB),
-            case .success = saveModelSynchronous(model: projectB),
-            case .success = saveModelSynchronous(model: teamC),
-            case .success = saveModelSynchronous(model: projectC) else {
+        guard case .success = await saveModel(model: teamA),
+            case .success = await saveModel(model: projectA),
+            case .success = await saveModel(model: teamB),
+            case .success = await saveModel(model: projectB),
+            case .success = await saveModel(model: teamC),
+            case .success = await saveModel(model: projectC) else {
                 XCTFail("Failed to save hierachy")
                 return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: Project.self, predicate: Project.keys.id == projectA.id) else {
+            querySingleModel(modelType: Project.self, predicate: Project.keys.id == projectA.id) else {
                 XCTFail("Failed to query ProjectA")
                 return
         }
         guard case .success =
-            querySingleModelSynchronous(modelType: Team.self, predicate: Project.keys.id == teamA.id) else {
+            querySingleModel(modelType: Team.self, predicate: Project.keys.id == teamA.id) else {
                 XCTFail("Failed to query TeamA")
                 return
         }
 
         let mutationEventOnProject = expectation(description: "Mutation Events submitted to sync engine")
-        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             mutationEventOnProject.fulfill()
-            completion(.success(submittedMutationEvent))
+            return .success(submittedMutationEvent)
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Project.self,
+        guard case .success = await deleteModelOrFailOtherwise(modelType: Project.self,
                                                                     withId: projectA.id) else {
             XCTFail("Failed to delete projectA")
             return

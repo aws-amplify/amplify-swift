@@ -328,19 +328,22 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         let fields = MutationEvent.keys
         let predicate = fields.inProcess == false || fields.inProcess == nil
 
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate,
-                             sort: nil,
-                             paginationInput: nil,
-                             eagerLoad: true) { result in
-            switch result {
-            case .success(let events):
-                self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
-            case .failure(let error):
-                log.error("Error querying mutation events: \(error)")
-            }
-            onComplete()
+        let result = storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: predicate,
+            sort: nil,
+            paginationInput: nil,
+            eagerLoad: true
+        )
+
+        switch result {
+        case .success(let events):
+            self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
+        case .failure(let error):
+            log.error("Error querying mutation events: \(error)")
         }
+        onComplete()
     }
 
     private func dispatchOutboxMutationProcessedEvent(mutationEvent: MutationEvent,

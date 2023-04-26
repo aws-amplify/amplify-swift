@@ -93,7 +93,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         let apiMutationReceived = expectation(description: "API call for mutate received")
         var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+        let responder: MutateRequestListenerResponder<MutationSync<AnyModel>> = { _, eventListener in
             listenerFromRequest = eventListener
             apiMutationReceived.fulfill()
             return nil
@@ -161,7 +161,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
         let mutateAPICallExpecation = expectation(description: "Call to api category for mutate")
         var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+        let responder: MutateRequestListenerResponder<MutationSync<AnyModel>> = { _, eventListener in
             listenerFromRequest = eventListener
             mutateAPICallExpecation.fulfill()
             return nil

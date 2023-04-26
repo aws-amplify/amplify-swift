@@ -60,12 +60,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
     func testWithId() async {
         let restaurant = Restaurant(restaurantName: "restaurant1")
-        guard case .success = await saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                                   predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -88,7 +88,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         await waitForExpectations(timeout: 1)
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                                   predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -96,17 +96,17 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 0)
     }
 
-    func testWithCompositeIdentifier() {
+    func testWithCompositeIdentifier() async {
         let modelId = "model-id"
         let modelDob = Temporal.DateTime.now()
         let model = ModelCompositePk(id: modelId, dob: modelDob, name: "name")
-        guard case .success = saveModelSynchronous(model: model) else {
+        guard case .success = await saveModel(model: model) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
             && ModelCompositePk.keys.dob == modelDob
-        guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
+        guard case .success(let queriedModel) = queryModel(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -132,8 +132,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
-        guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
+        await fulfillment(of: [completed], timeout: 1)
+        guard case .success(let queriedModel) = queryModel(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -141,16 +141,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedModel.count, 0)
     }
 
-    func testWithIdAndCondition() {
+    func testWithIdAndCondition() async {
         let restaurantName = UUID().uuidString
         let restaurant = Restaurant(restaurantName: restaurantName)
-        guard case .success = saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -174,8 +174,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        await fulfillment(of: [completed], timeout: 1)
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -183,16 +183,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 0)
     }
 
-    func testWithIdAndCondition_InvalidCondition() {
+    func testWithIdAndCondition_InvalidCondition() async {
         let restaurantName = UUID().uuidString
         let restaurant = Restaurant(restaurantName: restaurantName)
-        guard case .success = saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -219,8 +219,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        await fulfillment(of: [completed], timeout: 1)
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -229,16 +229,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants[0].restaurantName, restaurantName)
     }
 
-    func testWithFilter() {
+    func testWithFilter() async {
         let restaurantName = UUID().uuidString
         let restaurant = Restaurant(restaurantName: restaurantName)
-        guard case .success = saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -261,8 +261,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        await fulfillment(of: [completed], timeout: 1)
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -270,16 +270,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 0)
     }
 
-    func testWithFilter_NoneMatching() {
+    func testWithFilter_NoneMatching() async {
         let restaurantName = UUID().uuidString
         let restaurant = Restaurant(restaurantName: restaurantName)
-        guard case .success = saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -301,8 +301,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        await fulfillment(of: [completed], timeout: 1)
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -315,12 +315,12 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
     func testWithId_WithSync() async {
         let restaurant = Restaurant(restaurantName: "restaurant1")
-        guard case .success = await saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -334,14 +334,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 
@@ -362,7 +362,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         await waitForExpectations(timeout: 1)
-        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -375,13 +375,13 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let modelDob = Temporal.DateTime.now()
         let model = ModelCompositePk(id: modelId, dob: modelDob, name: "name")
 
-        guard case .success = await saveModelSynchronous(model: model) else {
+        guard case .success = await saveModel(model: model) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
             && ModelCompositePk.keys.dob == modelDob
-        guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
+        guard case .success(let queriedModels) = queryModel(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -395,14 +395,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == model.identifier {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 
@@ -423,7 +423,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
         await waitForExpectations(timeout: 1)
-        guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
+        guard case .success(let queriedModels) = queryModel(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -431,16 +431,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedModels.count, 0)
     }
 
-    func testWithIdAndCondition_WithSync() {
+    func testWithIdAndCondition_WithSync() async {
         let restaurantName = UUID().uuidString
         let restaurant = Restaurant(restaurantName: restaurantName)
-        guard case .success = saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -455,14 +455,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 
@@ -483,8 +483,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -492,16 +492,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 0)
     }
 
-    func testWithFilter_WithSync() {
+    func testWithFilter_WithSync() async {
         let restaurantName = UUID().uuidString
         let restaurant = Restaurant(restaurantName: restaurantName)
-        guard case .success = saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id &&
             Restaurant.keys.restaurantName == restaurantName
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -516,14 +516,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         expectedSuccess.expectedFulfillmentCount = 1
 
         
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 
@@ -543,8 +543,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        guard case .success(let queriedRestaurants) = queryModel(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -556,7 +556,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
     func testSingle() async {
         let restaurant = Restaurant(restaurantName: "restaurant1")
-        guard case .success = await saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModel(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
@@ -583,19 +583,19 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 
         operation.syncIfNeededAndFinish(result)
-        wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
     }
 
     func testDeleteWithAssociatedModels() async {
@@ -603,9 +603,9 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let lunchStandardMenu = Menu(name: "Standard", menuType: .lunch, restaurant: restaurant)
         let oysters = Dish(dishName: "Fried oysters", menu: lunchStandardMenu)
 
-        guard case .success = await saveModelSynchronous(model: restaurant),
-            case .success = await saveModelSynchronous(model: lunchStandardMenu),
-            case .success = await saveModelSynchronous(model: oysters) else {
+        guard case .success = await saveModel(model: restaurant),
+            case .success = await saveModel(model: lunchStandardMenu),
+            case .success = await saveModel(model: oysters) else {
                 XCTFail("Failed to save hierarchy")
                 return
         }
@@ -645,22 +645,22 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         var submittedEvents = [MutationEvent]()
         
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id ||
                 submittedMutationEvent.modelId == lunchStandardMenu.id ||
                 submittedMutationEvent.modelId == oysters.id {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 
         operation.syncIfNeededAndFinish(result)
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
         XCTAssertEqual(submittedEvents.count, 3)
         // The delete mutations should be synced in reverse order (children to parent)
         XCTAssertEqual(submittedEvents[0].modelName, Dish.modelName)
@@ -672,11 +672,11 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let post = PostWithCompositeKey(id: "post-id", title: "title")
         let comment = CommentWithCompositeKey(id: "comment-id", content: "comment-content", post: post)
 
-        if case .failure(let error) = await saveModelSynchronous(model: post) {
+        if case .failure(let error) = await saveModel(model: post) {
             XCTFail("Failed to save post with error \(error)")
         }
 
-        if case .failure(let error) = await saveModelSynchronous(model: comment) {
+        if case .failure(let error) = await saveModel(model: comment) {
             XCTFail("Failed to save comment with error \(error)")
         }
 
@@ -715,16 +715,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         var submittedEvents = [MutationEvent]()
         
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == post.identifier ||
                 submittedMutationEvent.modelId == comment.identifier {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 
@@ -741,9 +741,9 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let lunchStandardMenu = Menu(name: "Standard", menuType: .lunch, restaurant: restaurant)
         let oysters = Dish(dishName: "Fried oysters", menu: lunchStandardMenu)
 
-        guard case .success = await saveModelSynchronous(model: restaurant),
-            case .success = await saveModelSynchronous(model: lunchStandardMenu),
-            case .success = await saveModelSynchronous(model: oysters) else {
+        guard case .success = await saveModel(model: restaurant),
+            case .success = await saveModel(model: lunchStandardMenu),
+            case .success = await saveModel(model: oysters) else {
                 XCTFail("Failed to save hierarchy")
                 return
         }
@@ -783,16 +783,16 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
         var submittedEvents = [MutationEvent]()
         
-        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent  in
             submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == restaurant.id ||
                 submittedMutationEvent.modelId == oysters.id {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             } else {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             }
         }
 

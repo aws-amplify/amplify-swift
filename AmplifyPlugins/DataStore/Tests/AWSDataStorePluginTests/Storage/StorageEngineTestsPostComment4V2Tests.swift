@@ -55,7 +55,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let savedComment = try await saveAsync(comment)
         XCTAssertEqual(savedComment.id, comment.id)
         
-        guard let queriedComment = try await queryAsync(ChildComment4V2.self,
+        guard let queriedComment = try await queryModel(ChildComment4V2.self,
                                                         byIdentifier: comment.id,
                                                         eagerLoad: true) else {
             XCTFail("Failed to query saved comment")
@@ -69,7 +69,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let savedPost = try await saveAsync(post)
         XCTAssertEqual(savedPost.id, post.id)
         
-        guard let queriedPost = try await queryAsync(ParentPost4V2.self,
+        guard let queriedPost = try await queryModel(ParentPost4V2.self,
                                                      byIdentifier: post.id,
                                                      eagerLoad: true) else {
             XCTFail("Failed to query saved post")
@@ -82,7 +82,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         try await saveAsync(ChildComment4V2(content: "content"))
         try await saveAsync(ChildComment4V2(content: "content"))
         
-        let comments = try await queryAsync(ChildComment4V2.self, eagerLoad: true)
+        let comments = try await queryModel(ChildComment4V2.self, eagerLoad: true)
         XCTAssertEqual(comments.count, 2)
     }
     
@@ -90,7 +90,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         try await saveAsync(ParentPost4V2(title: "title"))
         try await saveAsync(ParentPost4V2(title: "title"))
         
-        let comments = try await queryAsync(ParentPost4V2.self, eagerLoad: true)
+        let comments = try await queryModel(ParentPost4V2.self, eagerLoad: true)
         XCTAssertEqual(comments.count, 2)
     }
     
@@ -149,7 +149,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let comment = ChildComment4V2(content: "content", post: post)
         _ = try await saveAsync(comment)
         
-        guard let queriedComment = try await queryAsync(ChildComment4V2.self,
+        guard let queriedComment = try await queryModel(ChildComment4V2.self,
                                                         byIdentifier: comment.id,
                                                         eagerLoad: true) else {
             XCTFail("Failed to query saved comment")
@@ -169,7 +169,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         let comment = ChildComment4V2(content: "content", post: post)
         _ = try await saveAsync(comment)
         
-        guard let queriedPost = try await queryAsync(ParentPost4V2.self,
+        guard let queriedPost = try await queryModel(ParentPost4V2.self,
                                                      byIdentifier: post.id,
                                                      eagerLoad: true) else {
             XCTFail("Failed to query saved post")
@@ -196,7 +196,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         _ = try await saveAsync(ChildComment4V2(id: "id1", content: "content", post: post1))
         let post2 = try await saveAsync(ParentPost4V2(id: "postId2", title: "title2"))
         _ = try await saveAsync(ChildComment4V2(id: "id2", content: "content", post: post2))
-        let comments = try await queryAsync(ChildComment4V2.self, eagerLoad: true)
+        let comments = try await queryModel(ChildComment4V2.self, eagerLoad: true)
         XCTAssertEqual(comments.count, 2)
         guard let comment1 = comments.first(where: { $0.id == "id1" }) else {
             XCTFail("Couldn't find comment with `id1`")
@@ -225,7 +225,7 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         _ = try await saveAsync(ChildComment4V2(id: "id1", content: "content", post: post1))
         let post2 = try await saveAsync(ParentPost4V2(id: "postId2", title: "title2"))
         _ = try await saveAsync(ChildComment4V2(id: "id2", content: "content", post: post2))
-        let posts = try await queryAsync(ParentPost4V2.self, eagerLoad: true)
+        let posts = try await queryModel(ParentPost4V2.self, eagerLoad: true)
         XCTAssertEqual(posts.count, 2)
         guard let postId1 = posts.first(where: { $0.id == "postId1" }) else {
             XCTFail("Couldn't find comment with `id1`")

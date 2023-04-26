@@ -84,19 +84,19 @@ class BaseDataStoreTests: XCTestCase {
         let saveComplete = expectation(description: "save completed")
 
         func save(model: M, index: Int) {
-            storageAdapter.save(model) {
-                switch $0 {
-                case .success:
-                    let nextIndex = index + 1
-                    if nextIndex < models.endIndex {
-                        save(model: models[nextIndex], index: nextIndex)
-                    } else {
-                        saveComplete.fulfill()
-                    }
-                case .failure(let error):
-                    XCTFail(error.errorDescription)
+            let result = storageAdapter.save(model, modelSchema: model.schema, condition: nil, eagerLoad: true)
+
+            switch result {
+            case .success:
+                let nextIndex = index + 1
+                if nextIndex < models.endIndex {
+                    save(model: models[nextIndex], index: nextIndex)
+                } else {
                     saveComplete.fulfill()
                 }
+            case .failure(let error):
+                XCTFail(error.errorDescription)
+                saveComplete.fulfill()
             }
         }
 

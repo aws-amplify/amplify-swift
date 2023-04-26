@@ -166,40 +166,31 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     func queryPendingMutations(withModels models: [Model]) -> Future<[MutationEvent], DataStoreError> {
         Future<[MutationEvent], DataStoreError> { promise in
-            var result: Result<[MutationEvent], DataStoreError> = .failure(Self.unfulfilledDataStoreError())
             guard !self.isCancelled else {
                 self.log.info("\(#function) - cancelled, aborting")
-                result = .success([])
-                promise(result)
+                promise(.success([]))
                 return
             }
             guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.nilStorageAdapter()
                 self.notifyDropped(count: models.count, error: error)
-                result = .failure(error)
-                promise(result)
+                promise(.failure(error))
                 return
             }
 
             guard !models.isEmpty else {
-                result = .success([])
-                promise(result)
+                promise(.success([]))
                 return
             }
 
-            MutationEvent.pendingMutationEvents(
+            let result = MutationEvent.pendingMutationEvents(
                 forModels: models,
                 storageAdapter: storageAdapter
-            ) { queryResult in
-                switch queryResult {
-                case .failure(let dataStoreError):
-                    self.notifyDropped(count: models.count, error: dataStoreError)
-                    result = .failure(dataStoreError)
-                case .success(let mutationEvents):
-                    result = .success(mutationEvents)
-                }
-                promise(result)
+            ).ifFailure { dataStoreError in
+                self.notifyDropped(count: models.count, error: dataStoreError)
             }
+
+            promise(result)
         }
     }
 
@@ -349,82 +340,86 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private func delete(storageAdapter: StorageEngineAdapter,
                         remoteModel: RemoteModel) -> Future<ApplyRemoteModelResult, DataStoreError> {
         Future<ApplyRemoteModelResult, DataStoreError> { promise in
-            guard let modelType = ModelRegistry.modelType(from: self.modelSchema.name) else {
-                let error = DataStoreError.invalidModelName(self.modelSchema.name)
-                promise(.failure(error))
-                return
+            let response = storageAdapter.delete(
+                  modelSchema: self.modelSchema,
+                  withIdentifier: remoteModel.model.identifier(schema: self.modelSchema),
+                  condition: nil
+            )
+
+            switch response {
+            case .failure(let dataStoreError):
+                self.notifyDropped(error: dataStoreError)
+                if storageAdapter.shouldIgnoreError(error: dataStoreError) {
+                    promise(.success(.dropped))
+                } else {
+                    promise(.failure(dataStoreError))
+                }
+            case .success:
+                promise(.success(.applied(remoteModel)))
             }
 
-            storageAdapter.delete(untypedModelType: modelType,
-                                  modelSchema: self.modelSchema,
-                                  withIdentifier: remoteModel.model.identifier(schema: self.modelSchema),
-                                  condition: nil) { response in
-                switch response {
-                case .failure(let dataStoreError):
-                    self.notifyDropped(error: dataStoreError)
-                    if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        promise(.success(.dropped))
-                    } else {
-                        promise(.failure(dataStoreError))
-                    }
-                case .success:
-                    promise(.success(.applied(remoteModel)))
-                }
-            }
         }
     }
 
-    private func save(storageAdapter: StorageEngineAdapter,
-                      remoteModel: RemoteModel) -> Future<ApplyRemoteModelResult, DataStoreError> {
+    private func save(
+        storageAdapter: StorageEngineAdapter,
+        remoteModel: RemoteModel
+    ) -> Future<ApplyRemoteModelResult, DataStoreError> {
         Future<ApplyRemoteModelResult, DataStoreError> { promise in
-            storageAdapter.save(untypedModel: remoteModel.model.instance, eagerLoad: self.isEagerLoad) { response in
-                switch response {
-                case .failure(let dataStoreError):
-                    self.notifyDropped(error: dataStoreError)
-                    if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        promise(.success(.dropped))
-                    } else {
-                        promise(.failure(dataStoreError))
-                    }
-                case .success(let savedModel):
-                    let anyModel: AnyModel
-                    do {
-                        anyModel = try savedModel.eraseToAnyModel()
-                    } catch {
-                        let dataStoreError = DataStoreError(error: error)
-                        self.notifyDropped(error: dataStoreError)
-                        promise(.failure(dataStoreError))
-                        return
-                    }
+            let savedModel = storageAdapter.save(
+                remoteModel.model.instance,
+                eagerLoad: self.isEagerLoad
+            )
+
+            let response = savedModel.flatMap { savedModel in
+                do {
+                    let anyModel = try savedModel.eraseToAnyModel()
                     let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
-                    promise(.success(.applied(inProcessModel)))
+                    return .success(ApplyRemoteModelResult.applied(inProcessModel))
+                } catch {
+                    return .failure(DataStoreError(error: error))
                 }
             }
+
+            promise(response.flatMapError { (error) -> Result<ApplyRemoteModelResult, DataStoreError> in
+                self.notifyDropped(error: error)
+                if storageAdapter.shouldIgnoreError(error: error) {
+                    return .success(.dropped)
+                } else {
+                    return .failure(error)
+                }
+            })
         }
     }
 
-    private func saveMetadata(storageAdapter: StorageEngineAdapter,
-                              applyResult: ApplyRemoteModelResult,
-                              mutationType: MutationEvent.MutationType) -> Future<Void, DataStoreError> {
+    private func saveMetadata(
+        storageAdapter: StorageEngineAdapter,
+        applyResult: ApplyRemoteModelResult,
+        mutationType: MutationEvent.MutationType
+    ) -> Future<Void, DataStoreError> {
         Future<Void, DataStoreError> { promise in
             guard case let .applied(inProcessModel) = applyResult else {
                 promise(.successfulVoid)
                 return
             }
 
-            storageAdapter.save(inProcessModel.syncMetadata,
-                                condition: nil,
-                                eagerLoad: self.isEagerLoad) { result in
-                switch result {
-                case .failure(let dataStoreError):
-                    self.notifyDropped(error: dataStoreError)
-                    promise(.failure(dataStoreError))
-                case .success(let syncMetadata):
-                    let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
-                    self.notify(savedModel: appliedModel, mutationType: mutationType)
-                    promise(.successfulVoid)
-                }
+            let result = storageAdapter.save(
+                inProcessModel.syncMetadata,
+                modelSchema: inProcessModel.syncMetadata.schema,
+                condition: nil,
+                eagerLoad: self.isEagerLoad
+            )
+
+            switch result {
+            case .failure(let dataStoreError):
+                self.notifyDropped(error: dataStoreError)
+                promise(.failure(dataStoreError))
+            case let .success((syncMetadata, _)):
+                let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
+                self.notify(savedModel: appliedModel, mutationType: mutationType)
+                promise(.successfulVoid)
             }
+
         }
     }
 

@@ -182,16 +182,17 @@ class SyncEngineTestBase: XCTestCase {
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
     private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>)->Void) {
+        let expectation = expectation(description: "Amplify Started")
         token = Amplify.Hub.listen(to: .dataStore) { [weak self] payload in
             if payload.eventName == "DataStore.syncStarted" {
                 if let token = self?.token {
+                    expectation.fulfill()
                     Amplify.Hub.removeListener(token)
                     completion(.success(()))
                 }
             }
         }
-        
-        
+
         Task {
             guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
                 XCTFail("Never registered listener for sync started")
@@ -202,16 +203,18 @@ class SyncEngineTestBase: XCTestCase {
                 try await startAmplify()
             } catch {
                 Amplify.Hub.removeListener(token)
+                expectation.fulfill()
                 completion(.failure(error))
             }
         }
-        
+
+        wait(for: [expectation], timeout: 5)
     }
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
     func startAmplifyAndWaitForSync() async throws {
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             startAmplifyAndWaitForSync { result in
                 continuation.resume(with: result)
             }
@@ -232,30 +235,18 @@ class SyncEngineTestBase: XCTestCase {
                                               createdAt: .now(),
                                               inProcess: inProcess)
 
-        let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
-        storageAdapter.save(mutationEvent) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTFail(String(describing: dataStoreError))
-            case .success:
-                mutationEventSaved.fulfill()
-            }
+        let result = storageAdapter.save(mutationEvent, modelSchema: mutationEvent.schema, condition: nil, eagerLoad: true)
+        if case .failure(let dataStoreError) = result {
+            XCTFail(String(describing: dataStoreError))
         }
-        wait(for: [mutationEventSaved], timeout: 1.0)
+
     }
 
     /// Saves a Post record directly to StorageAdapter. Used for pre-populating database before tests
     func savePost(_ post: Post) throws {
-        let postSaved = expectation(description: "Preloaded mutation event saved")
-        storageAdapter.save(post) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTFail(String(describing: dataStoreError))
-            case .success:
-                postSaved.fulfill()
-            }
+        if case .failure(let dataStoreError) = storageAdapter.save(post, eagerLoad: true) {
+            XCTFail(String(describing: dataStoreError))
         }
-        wait(for: [postSaved], timeout: 1.0)
     }
 
     // MARK: - Helpers

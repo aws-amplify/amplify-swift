@@ -39,8 +39,8 @@ class HubEventsIntegrationTestBase: XCTestCase {
     }
 
     override func tearDown() async throws {
-        storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Post")) { _ in }
-        storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Comment")) { _ in }
+        _ = storageAdapter.delete(modelSchema: ModelSyncMetadata.schema, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Post"), condition: nil)
+        _ = storageAdapter.delete(modelSchema: ModelSyncMetadata.schema, withIdentifier: ModelIdentifier<ModelSyncMetadata, ModelIdentifierFormat.Default>.makeDefault(id:"Comment"), condition: nil)
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
     }

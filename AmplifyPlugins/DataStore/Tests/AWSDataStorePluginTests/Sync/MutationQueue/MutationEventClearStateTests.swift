@@ -27,7 +27,7 @@ class MutationEventClearStateTests: XCTestCase {
         let saveExpectation = expectation(description: "save is Called")
         let completionExpectation = expectation(description: "completion handler is called")
 
-        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+        let queryResponder: QueryModelTypePredicateResponder<MutationEvent> = { _, _ in
                 queryExpectation.fulfill()
                 var mutationEvent = MutationEvent(modelId: "1111-22",
                                                   modelName: "Post",
@@ -38,11 +38,11 @@ class MutationEventClearStateTests: XCTestCase {
         }
         mockStorageAdapter.responders[.queryModelTypePredicate] = queryResponder
 
-        let saveResponder = SaveModelCompletionResponder<MutationEvent> { model, completion in
+        let saveResponder: SaveModelCompletionResponder<MutationEvent> = { model in
             XCTAssertEqual("1111-22", model.modelId)
             XCTAssertFalse(model.inProcess)
             saveExpectation.fulfill()
-            completion(.success(model))
+            return .success(model)
         }
         mockStorageAdapter.responders[.saveModelCompletion] = saveResponder
 

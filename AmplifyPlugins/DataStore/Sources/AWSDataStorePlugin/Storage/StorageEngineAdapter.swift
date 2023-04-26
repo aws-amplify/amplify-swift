@@ -13,30 +13,20 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     static var maxNumberOfPredicates: Int { get }
 
-    // MARK: - Async APIs
-    func save(untypedModel: Model, eagerLoad: Bool, completion: @escaping DataStoreCallback<Model>)
+    func query(
+        modelSchema: ModelSchema,
+        predicate: QueryPredicate?,
+        eagerLoad: Bool
+    ) -> Swift.Result<[Model], DataStoreError>
 
-    func delete(untypedModelType modelType: Model.Type,
-                modelSchema: ModelSchema,
-                withIdentifier identifier: ModelIdentifierProtocol,
-                condition: QueryPredicate?,
-                completion: DataStoreCallback<Void>)
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          filter: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>)
-
-    func query(modelSchema: ModelSchema,
-               predicate: QueryPredicate?,
-               eagerLoad: Bool,
-               completion: DataStoreCallback<[Model]>)
 
     // MARK: - Synchronous APIs
 
-    func exists(_ modelSchema: ModelSchema,
-                withIdentifier id: ModelIdentifierProtocol,
-                predicate: QueryPredicate?) throws -> Bool
+    func exists(
+        _ modelSchema: ModelSchema,
+        withIdentifier id: ModelIdentifierProtocol,
+        predicate: QueryPredicate?
+    ) -> Swift.Result<Bool, DataStoreError>
 
     func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>]
 
@@ -62,25 +52,4 @@ protocol StorageEngineMigrationAdapter {
     @discardableResult func emptyStore(for modelSchema: ModelSchema) throws -> String
 
     @discardableResult func renameStore(from: ModelSchema, toModelSchema: ModelSchema) throws -> String
-}
-
-extension StorageEngineAdapter {
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          filter predicate: QueryPredicate,
-                          completion: @escaping DataStoreCallback<[M]>) {
-        delete(modelType, modelSchema: modelType.schema, filter: predicate, completion: completion)
-    }
-
-
-    func delete(untypedModelType modelType: Model.Type,
-                withIdentifier identifier: ModelIdentifierProtocol,
-                condition: QueryPredicate? = nil,
-                completion: DataStoreCallback<Void>) {
-        delete(untypedModelType: modelType,
-               modelSchema: modelType.schema,
-               withIdentifier: identifier,
-               condition: condition,
-               completion: completion)
-    }
 }

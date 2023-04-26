@@ -23,9 +23,10 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     func testBuffersBeforeStart() async throws {
         let eventsNotSaved = expectation(description: "Events not saved")
         eventsNotSaved.isInverted = true
-        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { _, _ in
+        storageAdapter.responders[.saveUntypedModel] = { model in
             eventsNotSaved.fulfill()
-        }
+            return .success(model)
+        } as SaveUntypedModelResponder
 
         let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
@@ -63,7 +64,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let event1Saved = expectation(description: "Event 1 saved")
         let event2Saved = expectation(description: "Event 2 saved")
         let event3Saved = expectation(description: "Event 3 saved")
-        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
+        storageAdapter.responders[.saveUntypedModel] = { model in
             switch model.identifier(schema: MockSynced.schema).stringValue {
             case "id-1":
                 event1Saved.fulfill()
@@ -75,8 +76,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 break
             }
 
-            completion(.success(model))
-        }
+            return .success(model)
+        } as SaveUntypedModelResponder
 
         let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
@@ -132,7 +133,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     func testProcessesEventsWithSelectiveSync() async throws {
         let event1Saved = expectation(description: "Event 1 saved")
         let event3Saved = expectation(description: "Event 3 saved")
-        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
+        storageAdapter.responders[.saveUntypedModel] = { model in
             switch model.identifier(schema: MockSynced.schema).stringValue {
             case "id-1":
                 event1Saved.fulfill()
@@ -144,8 +145,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 break
             }
 
-            completion(.success(model))
-        }
+            return .success(model)
+        } as SaveUntypedModelResponder
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
             MockSynced.keys.id == "id-1" || MockSynced.keys.id == "id-3"
         })
@@ -208,14 +209,13 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let event3State = AtomicValue(initialValue: EventState.notStarted)
 
         // Return a successful MockSynced save
-        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
-            completion(.success(model))
-        }
+        storageAdapter.responders[.saveUntypedModel] = { model in
+            return .success(model)
+        } as SaveUntypedModelResponder
 
         // Return a successful MutationSyncMetadata save, and also assert the event states
         let allEventsProcessed = expectation(description: "All events processed")
-        storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { mutationSyncMetadata, completion in
+        storageAdapter.responders[.saveModelCompletion] = { mutationSyncMetadata in
                 switch mutationSyncMetadata.modelId {
                 case "id-1":
                     XCTAssertEqual(event1State.get(), .notStarted)
@@ -238,8 +238,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 default:
                     break
                 }
-                completion(.success(mutationSyncMetadata))
-        }
+                return .success(mutationSyncMetadata)
+        } as SaveModelCompletionResponder<MutationSyncMetadata>
 
         let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
@@ -294,14 +294,13 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     ///    - The new event immediately processes
     func testProcessesNewEvents() async throws {
         // Return a successful MockSynced save
-        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
-            completion(.success(model))
-        }
+        storageAdapter.responders[.saveUntypedModel] =  { model in
+            return .success(model)
+        } as SaveUntypedModelResponder
 
         let event1ShouldBeProcessed = expectation(description: "Event 1 should be processed")
         let event2ShouldBeProcessed = expectation(description: "Event 2 should be processed")
-        storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { mutationSyncMetadata, completion in
+        storageAdapter.responders[.saveModelCompletion] = { mutationSyncMetadata in
                 switch mutationSyncMetadata.modelId {
                 case "id-1":
                     event1ShouldBeProcessed.fulfill()
@@ -310,8 +309,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 default:
                     break
                 }
-                completion(.success(mutationSyncMetadata))
-        }
+                return .success(mutationSyncMetadata)
+        } as SaveModelCompletionResponder<MutationSyncMetadata>
 
         let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
@@ -358,8 +357,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let event2ShouldNotBeProcessed = expectation(description: "Event 2 should not be processed")
         event2ShouldNotBeProcessed.isInverted = true
         let event3ShouldBeProcessed = expectation(description: "Event 3 should be processed")
-        storageAdapter.responders[.saveModelCompletion] =
-            SaveModelCompletionResponder<MutationSyncMetadata> { mutationSyncMetadata, completion in
+        storageAdapter.responders[.saveModelCompletion] = { mutationSyncMetadata in
                 switch mutationSyncMetadata.modelId {
                 case "id-1":
                     event1ShouldNotBeProcessed.fulfill()
@@ -370,8 +368,8 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 default:
                     break
                 }
-                completion(.success(mutationSyncMetadata))
-        }
+                return .success(mutationSyncMetadata)
+        } as SaveModelCompletionResponder<MutationSyncMetadata>
 
         let eventsSentViaPublisher3 = expectation(description: "id-3 sent via publisher")
         queueSink = queue.publisher.sink(receiveCompletion: { _ in

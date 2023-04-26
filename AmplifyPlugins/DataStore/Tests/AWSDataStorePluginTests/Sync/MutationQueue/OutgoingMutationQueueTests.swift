@@ -131,18 +131,15 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                 mutationType: .create,
                 createdAt: .now())
 
-            storageAdapter.save(event) { result in
-                switch result {
-                case .failure(let dataStoreError):
-                    XCTFail(String(describing: dataStoreError))
-                case .success:
-                    mutationEventSaved.fulfill()
-                }
+            if case .failure(let dataStoreError) = storageAdapter.save(event, modelSchema: event.schema, condition: nil, eagerLoad: true) {
+                XCTFail(String(describing: dataStoreError))
+            } else {
+                mutationEventSaved.fulfill()
             }
 
         }
 
-        wait(for: [mutationEventSaved], timeout: 1.0)
+        await fulfillment(of: [mutationEventSaved], timeout: 1.0)
 
         var outboxStatusReceivedCurrentCount = 0
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")

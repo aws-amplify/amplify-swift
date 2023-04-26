@@ -17,88 +17,74 @@ import XCTest
 class MutationEventQueryTests: BaseDataStoreTests {
 
     func testQueryPendingMutation_EmptyResult() {
-        let querySuccess = expectation(description: "query mutation events success")
         let mutationEvents = [generateRandomMutationEvent(), generateRandomMutationEvent()]
 
-        MutationEvent.pendingMutationEvents(forMutationEvents: mutationEvents, storageAdapter: storageAdapter) { result in
-            switch result {
-            case .success(let mutationEvents):
-                XCTAssertTrue(mutationEvents.isEmpty)
-                querySuccess.fulfill()
-            case .failure(let error): XCTFail("\(error)")
-            }
+        let result = MutationEvent.pendingMutationEvents(forMutationEvents: mutationEvents, storageAdapter: storageAdapter)
+        switch result {
+        case .success(let mutationEvents):
+            XCTAssertTrue(mutationEvents.isEmpty)
+        case .failure(let error):
+            XCTFail("\(error)")
         }
-
-        wait(for: [querySuccess], timeout: 1)
     }
 
     func testQueryPendingMutationEvent() {
         let mutationEvent = generateRandomMutationEvent()
 
-        let querySuccess = expectation(description: "query for pending mutation events")
-
-        storageAdapter.save(mutationEvent) { result in
-            switch result {
-            case .success:
-                MutationEvent.pendingMutationEvents(
-                    forMutationEvent: mutationEvent,
-                    storageAdapter: self.storageAdapter
-                ) { result in
-                    switch result {
-                    case .success(let mutationEvents):
-                        XCTAssertEqual(mutationEvents.count, 1)
-                        XCTAssertEqual(mutationEvents.first?.id, mutationEvent.id)
-                        querySuccess.fulfill()
-                    case .failure(let error): XCTFail("\(error)")
-                    }
-                }
-            case .failure(let error): XCTFail("\(error)")
-            }
+        let result = storageAdapter.save(
+            mutationEvent,
+            modelSchema: mutationEvent.schema,
+            condition: nil,
+            eagerLoad: true
+        ).flatMap { model in
+            MutationEvent.pendingMutationEvents(
+                forMutationEvent: mutationEvent,
+                storageAdapter: self.storageAdapter
+            )
+        }.ifSuccess { mutationEvents in
+            XCTAssertEqual(mutationEvents.count, 1)
+            XCTAssertEqual(mutationEvents.first?.id, mutationEvent.id)
+        }.ifFailure { error in
+            XCTFail("\(error)")
         }
-        wait(for: [querySuccess], timeout: 1)
     }
 
     func testQueryPendingMutationEventsForModelIds() {
         let mutationEvent1 = generateRandomMutationEvent()
         let mutationEvent2 = generateRandomMutationEvent()
 
-        let saveMutationEvent1 = expectation(description: "save mutationEvent1 success")
-        storageAdapter.save(mutationEvent1) { result in
-            guard case .success = result else {
-                XCTFail("Failed to save metadata")
-                return
-            }
-            saveMutationEvent1.fulfill()
-        }
-        wait(for: [saveMutationEvent1], timeout: 1)
+        let result1 = storageAdapter.save(
+            mutationEvent1,
+            modelSchema: mutationEvent1.schema,
+            condition: nil,
+            eagerLoad: true
+        )
 
-        let saveMutationEvent2 = expectation(description: "save mutationEvent1 success")
-        storageAdapter.save(mutationEvent2) { result in
-            guard case .success = result else {
-                XCTFail("Failed to save metadata")
-                return
-            }
-            saveMutationEvent2.fulfill()
+        if case .failure(let error) = result1 {
+            XCTFail("Failed to save metadata, \(error)")
         }
-        wait(for: [saveMutationEvent2], timeout: 1)
 
-        let querySuccess = expectation(description: "query for metadata success")
+        let result2 = storageAdapter.save(
+            mutationEvent2,
+            modelSchema: mutationEvent2.schema,
+            condition: nil,
+            eagerLoad: true
+        )
+        if case .failure(let error) = result2 {
+            XCTFail("Failed to save metadata, \(error)")
+        }
+
         var mutationEvents = [mutationEvent1]
         mutationEvents.append(contentsOf: (1 ... 999).map { _ in generateRandomMutationEvent() })
         mutationEvents.append(mutationEvent2)
         MutationEvent.pendingMutationEvents(
             forMutationEvents: mutationEvents,
             storageAdapter: storageAdapter
-        ) { result in
-            switch result {
-            case .success(let mutationEvents):
-                XCTAssertEqual(mutationEvents.count, 2)
-                querySuccess.fulfill()
-            case .failure(let error): XCTFail("\(error)")
-            }
-        }
-
-        wait(for: [querySuccess], timeout: 1)
+        ).ifSuccess({ mutationEvents in
+            XCTAssertEqual(mutationEvents.count, 2)
+        }).ifFailure({ error in
+            XCTFail("\(error)")
+        })
     }
 
     private func generateRandomMutationEvent() -> MutationEvent {

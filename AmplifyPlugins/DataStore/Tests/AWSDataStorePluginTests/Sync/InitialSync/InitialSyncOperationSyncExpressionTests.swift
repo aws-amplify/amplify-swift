@@ -35,7 +35,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
     }
 
     func initialSyncOperation(withSyncExpression syncExpression: DataStoreSyncExpression,
-                              responder: APIPluginQueryResponder) -> InitialSyncOperation {
+                              responder: @escaping APIPluginQueryResponder) -> InitialSyncOperation {
         apiPlugin.responders[.queryRequestListener] = responder
         let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, syncExpressions: [syncExpression])
         return InitialSyncOperation(
@@ -48,7 +48,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
     }
 
     func testBaseQueryWithBasicSyncExpression() throws {
-        let responder = APIPluginQueryResponder { request, listener in
+        let responder = { request, listener in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($filter: ModelMockSyncedFilterInput, $limit: Int) {
               syncMockSynceds(filter: $filter, limit: $limit) {
@@ -88,7 +88,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             listener?(event)
             self.apiWasQueried.fulfill()
             return nil
-        }
+        } as APIPluginQueryResponder
 
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
             MockSynced.keys.id == "id-123"
@@ -120,7 +120,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
     }
 
     func testBaseQueryWithFilterSyncExpression() throws {
-        let responder = APIPluginQueryResponder { request, listener in
+        let responder = { request, listener in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($filter: ModelMockSyncedFilterInput, $limit: Int) {
               syncMockSynceds(filter: $filter, limit: $limit) {
@@ -160,7 +160,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             listener?(event)
             self.apiWasQueried.fulfill()
             return nil
-        }
+        } as APIPluginQueryResponder
 
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
             MockSynced.keys.id == "id-123" || MockSynced.keys.id == "id-456"
@@ -192,7 +192,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
     }
 
     func testBaseQueryWithSyncExpressionConstantAll() throws {
-        let responder = APIPluginQueryResponder { request, listener in
+        let responder = { request, listener in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($limit: Int) {
               syncMockSynceds(limit: $limit) {
@@ -215,7 +215,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             listener?(event)
             self.apiWasQueried.fulfill()
             return nil
-        }
+        } as APIPluginQueryResponder
 
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
             QueryPredicateConstant.all

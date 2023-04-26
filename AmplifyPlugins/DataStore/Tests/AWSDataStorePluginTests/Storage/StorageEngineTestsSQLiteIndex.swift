@@ -316,34 +316,24 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
 
     func saveModelSynchronous<M: Model>(model: M, storageEngine: StorageEngine) -> DataStoreResult<M> {
         let saveFinished = expectation(description: "Save finished")
-        var result: DataStoreResult<M>?
-
-        storageEngine.save(model) { sResult in
-            result = sResult
+        Task {
+            _ = await storageEngine.save(model, modelSchema: model.schema, condition: nil, eagerLoad: true).map { $0.0 }
             saveFinished.fulfill()
         }
         wait(for: [saveFinished], timeout: defaultTimeout)
-        guard let saveResult = result else {
-            return .failure(causedBy: "Save operation timed out")
-        }
-        return saveResult
+
+        return storageEngine.query(
+            type(of: model),
+            modelSchema: model.schema,
+            condition: model.identifier(schema: model.schema).predicate
+        ).map { $0.first! }
     }
 
-    func queryModelSynchronous<M: Model>(modelType: M.Type,
-                                         predicate: QueryPredicate,
-                                         storageEngine: StorageEngine) -> DataStoreResult<[M]> {
-        let queryFinished = expectation(description: "Query Finished")
-        var result: DataStoreResult<[M]>?
-
-        storageEngine.query(modelType, predicate: predicate) { qResult in
-            result = qResult
-            queryFinished.fulfill()
-        }
-
-        wait(for: [queryFinished], timeout: defaultTimeout)
-        guard let queryResult = result else {
-            return .failure(causedBy: "Query operation timed out")
-        }
-        return queryResult
+    func queryModelSynchronous<M: Model>(
+        modelType: M.Type,
+        predicate: QueryPredicate,
+        storageEngine: StorageEngine
+    ) -> DataStoreResult<[M]> {
+        storageEngine.query(modelType, modelSchema: modelType.schema, condition: predicate)
     }
 }

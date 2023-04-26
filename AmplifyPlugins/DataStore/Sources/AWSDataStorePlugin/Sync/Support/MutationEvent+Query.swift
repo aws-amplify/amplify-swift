@@ -11,88 +11,78 @@ import Dispatch
 extension MutationEvent {
     static func pendingMutationEvents(
         forModel model: Model,
-        storageAdapter: StorageEngineAdapter,
-        completion: @escaping DataStoreCallback<[MutationEvent]>
-    ) {
+        storageAdapter: StorageEngineAdapter
+    ) -> Swift.Result<[MutationEvent], DataStoreError> {
         pendingMutationEvents(
             forModels: [model],
-            storageAdapter: storageAdapter,
-            completion: completion
+            storageAdapter: storageAdapter
         )
     }
 
     static func pendingMutationEvents(
         forMutationEvent mutationEvent: MutationEvent,
-        storageAdapter: StorageEngineAdapter,
-        completion: @escaping DataStoreCallback<[MutationEvent]>
-    ) {
+        storageAdapter: StorageEngineAdapter
+    ) -> Swift.Result<[MutationEvent], DataStoreError> {
         pendingMutationEvents(
             forMutationEvents: [mutationEvent],
-            storageAdapter: storageAdapter,
-            completion: completion
+            storageAdapter: storageAdapter
         )
     }
 
     static func pendingMutationEvents(
         forMutationEvents mutationEvents: [MutationEvent],
-        storageAdapter: StorageEngineAdapter,
-        completion: @escaping DataStoreCallback<[MutationEvent]>
-    ) {
+        storageAdapter: StorageEngineAdapter
+    ) -> Swift.Result<[MutationEvent], DataStoreError> {
         pendingMutationEvents(
             for: mutationEvents.map { ($0.modelId, $0.modelName) },
-            storageAdapter: storageAdapter,
-            completion: completion
+            storageAdapter: storageAdapter
         )
     }
 
     static func pendingMutationEvents(
         forModels models: [Model],
-        storageAdapter: StorageEngineAdapter,
-        completion: @escaping DataStoreCallback<[MutationEvent]>
-    ) {
+        storageAdapter: StorageEngineAdapter
+    ) -> Swift.Result<[MutationEvent], DataStoreError> {
         pendingMutationEvents(
             for: models.map { ($0.identifier, $0.modelName) },
-            storageAdapter: storageAdapter,
-            completion: completion
+            storageAdapter: storageAdapter
         )
     }
-    
-    private static func pendingMutationEvents(for modelIds: [(String, String)],
-                                      storageAdapter: StorageEngineAdapter,
-                                      completion: @escaping DataStoreCallback<[MutationEvent]>) {
-        Task {
-            let fields = MutationEvent.keys
-            let predicate = (fields.inProcess == false || fields.inProcess == nil)
-            let chunkedArrays = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
-            var queriedMutationEvents: [MutationEvent] = []
-            for chunkedArray in chunkedArrays {
-                var queryPredicates: [QueryPredicateGroup] = []
-                for (id, name) in chunkedArray {
-                    let operation = fields.modelId == id && fields.modelName == name
-                    queryPredicates.append(operation)
-                }
-                let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
-                let final = QueryPredicateGroup(type: .and, predicates: [groupedQueryPredicates, predicate])
-                let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
-                
-                do {
-                    let mutationEvents = try await withCheckedThrowingContinuation { continuation in
-                        storageAdapter.query(MutationEvent.self,
-                                             predicate: final,
-                                             sort: [sort],
-                                             paginationInput: nil,
-                                             eagerLoad: true) { result in
-                            continuation.resume(with: result)
-                        }
-                    }
-                    
-                    queriedMutationEvents.append(contentsOf: mutationEvents)
-                } catch {
-                    completion(.failure(causedBy: error))
-                    return
+
+    private static func pendingMutationEvents(
+        for modelIds: [(String, String)],
+        storageAdapter: StorageEngineAdapter
+    ) -> Swift.Result<[MutationEvent], DataStoreError> {
+        let chunkedArrays = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
+        return chunkedArrays.reduce(.success([])) { partialResult, chunedArray in
+            partialResult.flatMap { queriedMutationEvents in
+                getMutationEvents(of: chunedArray, storageAdapter: storageAdapter).map { mutationEvents in
+                    queriedMutationEvents + mutationEvents
                 }
             }
-            completion(.success(queriedMutationEvents))
         }
+    }
+
+    private static func getMutationEvents(
+        of identifiers: [(String, String)],
+        storageAdapter: StorageEngineAdapter
+    ) -> Result<[MutationEvent], DataStoreError> {
+        let fields = MutationEvent.keys
+        let predicate = (fields.inProcess == false || fields.inProcess == nil)
+        let queryPredicates = identifiers.reduce([]) { partialResult, identifier in
+            partialResult + [fields.modelId == identifier.0 && fields.modelName == identifier.1]
+        }
+        let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
+        let final = QueryPredicateGroup(type: .and, predicates: [groupedQueryPredicates, predicate])
+        let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
+
+        return storageAdapter.query(
+            MutationEvent.self,
+            modelSchema: MutationEvent.schema,
+            condition: final,
+            sort: [sort],
+            paginationInput: nil,
+            eagerLoad: true
+        )
     }
 }

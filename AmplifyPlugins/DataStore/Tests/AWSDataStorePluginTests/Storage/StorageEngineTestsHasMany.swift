@@ -50,7 +50,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         }
     }
 
-    func testDeleteParentEmitsMutationEventsForParentAndChild() {
+    func testDeleteParentEmitsMutationEventsForParentAndChild() async {
         let dreamRestaurant = Restaurant(restaurantName: "Dream Cafe")
         let lunchSpecialMenu = Menu(name: "Specials", menuType: .lunch, restaurant: dreamRestaurant)
         let lunchStandardMenu = Menu(name: "Standard", menuType: .lunch, restaurant: dreamRestaurant)
@@ -66,35 +66,35 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         let mkDonaldsMenu = Menu(name: "All day", menuType: .lunch, restaurant: mkDonaldsRestaurant)
         let szechuanSauce = Dish(dishName: "10-piece MkNugget and a bunch of the Szechuan Sauce", menu: mkDonaldsMenu)
 
-        guard case .success = saveModelSynchronous(model: dreamRestaurant),
-            case .success = saveModelSynchronous(model: lunchSpecialMenu),
-            case .success = saveModelSynchronous(model: lunchStandardMenu),
-            case .success = saveModelSynchronous(model: oysters),
-            case .success = saveModelSynchronous(model: katsuCurry),
-            case .success = saveModelSynchronous(model: uniPasta),
-            case .success = saveModelSynchronous(model: smoneysRestaurant),
-            case .success = saveModelSynchronous(model: smoneysMenu),
-            case .success = saveModelSynchronous(model: eggsAndSausage),
-            case .success = saveModelSynchronous(model: mkDonaldsRestaurant),
-            case .success = saveModelSynchronous(model: mkDonaldsMenu),
-            case .success = saveModelSynchronous(model: szechuanSauce) else {
+        guard case .success = await saveModel(model: dreamRestaurant),
+            case .success = await saveModel(model: lunchSpecialMenu),
+            case .success = await saveModel(model: lunchStandardMenu),
+            case .success = await saveModel(model: oysters),
+            case .success = await saveModel(model: katsuCurry),
+            case .success = await saveModel(model: uniPasta),
+            case .success = await saveModel(model: smoneysRestaurant),
+            case .success = await saveModel(model: smoneysMenu),
+            case .success = await saveModel(model: eggsAndSausage),
+            case .success = await saveModel(model: mkDonaldsRestaurant),
+            case .success = await saveModel(model: mkDonaldsMenu),
+            case .success = await saveModel(model: szechuanSauce) else {
                 XCTFail("Failed to save hierarchy")
                 return
         }
 
         guard case .success =
-            querySingleModelSynchronous(modelType: Restaurant.self,
+            querySingleModel(modelType: Restaurant.self,
                                         predicate: Restaurant.keys.id == dreamRestaurant.id) else {
                 XCTFail("Failed to query Restaurant")
                 return
         }
         guard case .success =
-            queryModelSynchronous(modelType: Menu.self, predicate: Menu.keys.restaurant == dreamRestaurant.id) else {
+            queryModel(modelType: Menu.self, predicate: Menu.keys.restaurant == dreamRestaurant.id) else {
                 XCTFail("Failed to query Menu")
                 return
         }
         guard case .success(let dishes) =
-            queryModelSynchronous(modelType: Dish.self, predicate: Dish.keys.menu == lunchStandardMenu.id) else {
+            queryModel(modelType: Dish.self, predicate: Dish.keys.menu == lunchStandardMenu.id) else {
                 XCTFail("Failed to query Dishes")
                 return
         }
@@ -102,16 +102,16 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
 
         let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
         receivedMutationEvent.expectedFulfillmentCount = 6
-        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
-            completion(.success(submittedMutationEvent))
+            return .success(submittedMutationEvent)
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
+        guard case .success = await deleteModelOrFailOtherwise(modelType: Restaurant.self,
                                                                     withId: dreamRestaurant.id) else {
             XCTFail("Failed to delete restaurant")
             return
         }
-        wait(for: [receivedMutationEvent], timeout: defaultTimeout)
+        await fulfillment(of: [receivedMutationEvent], timeout: defaultTimeout)
     }
 
     /*
@@ -137,13 +137,13 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
      *  make two queries: One query with 950 expressions, and one query with 1 expression.
      *
      */
-    func testStressDeleteTopLeveleagerLoadHasManyRelationship() {
+    func testStressDeleteTopLeveleagerLoadHasManyRelationship() async {
         let iterations = 500
         let numberOfMenus = iterations * 2
         let numberOfDishes = iterations * 4
 
         let restaurant1 = Restaurant(restaurantName: "Cafe1")
-        guard case .success = saveModelSynchronous(model: restaurant1) else {
+        guard case .success = await saveModel(model: restaurant1) else {
             XCTFail("Failed to save restaurant")
             return
         }
@@ -156,12 +156,12 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             let katsuCurry = Dish(dishName: "Katsu Curry\(iteration)", menu: menu2)
             let katsuDon = Dish(dishName: "Katsu don\(iteration)", menu: menu2)
 
-            guard case .success = saveModelSynchronous(model: menu1),
-                case .success = saveModelSynchronous(model: menu2),
-                case .success = saveModelSynchronous(model: oysters),
-                case .success = saveModelSynchronous(model: tataki),
-                case .success = saveModelSynchronous(model: katsuCurry),
-                case .success = saveModelSynchronous(model: katsuDon) else {
+            guard case .success = await saveModel(model: menu1),
+                case .success = await saveModel(model: menu2),
+                case .success = await saveModel(model: oysters),
+                case .success = await saveModel(model: tataki),
+                case .success = await saveModel(model: katsuCurry),
+                case .success = await saveModel(model: katsuDon) else {
 
                     XCTFail("Failed to save hierarchy")
                     return
@@ -169,21 +169,21 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         }
         // Query individually without lazy loading and verify counts.
         guard case .success(let savedRestaurant) =
-            querySingleModelSynchronous(modelType: Restaurant.self,
+            querySingleModel(modelType: Restaurant.self,
                                         predicate: Restaurant.keys.id == restaurant1.id) else {
                                             XCTFail("Failed to query Restaurant")
                                             return
         }
         XCTAssertEqual(savedRestaurant.id, restaurant1.id)
         guard case .success(let menus) =
-            queryModelSynchronous(modelType: Menu.self,
+            queryModel(modelType: Menu.self,
                                   predicate: QueryPredicateConstant.all) else {
                                     XCTFail("Failed to query menus")
                                     return
         }
         XCTAssertEqual(menus.count, numberOfMenus)
         guard case .success(let dishes) =
-            queryModelSynchronous(modelType: Dish.self,
+            queryModel(modelType: Dish.self,
                                   predicate: QueryPredicateConstant.all) else {
                                     XCTFail("Failed to query dishes")
                                     return
@@ -194,11 +194,11 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         // Delete Top level of restaurant
         let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
         receivedMutationEvent.expectedFulfillmentCount = numberOfMenus + numberOfDishes + 1
-        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
-            completion(.success(submittedMutationEvent))
+            return .success(submittedMutationEvent)
         }
-        guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
+        guard case .success = await deleteModelOrFailOtherwise(modelType: Restaurant.self,
                                                                     withId: restaurant1.id,
                                                                     timeout: 100) else {
                                                                         XCTFail("Failed to delete restaurant")
@@ -209,14 +209,14 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         // print("Time elapsed time to delete: \(timeElapsed) s.")
     }
 
-    func testErrorOnSingleSubmissionToSyncEngine() {
+    func testErrorOnSingleSubmissionToSyncEngine() async {
          let restaurant1 = Restaurant(restaurantName: "restaurant1")
          let lunchStandardMenu = Menu(name: "Standard", menuType: .lunch, restaurant: restaurant1)
          let oysters = Dish(dishName: "Fried oysters", menu: lunchStandardMenu)
 
-         guard case .success = saveModelSynchronous(model: restaurant1),
-             case .success = saveModelSynchronous(model: lunchStandardMenu),
-             case .success = saveModelSynchronous(model: oysters) else {
+         guard case .success = await saveModel(model: restaurant1),
+             case .success = await saveModel(model: lunchStandardMenu),
+             case .success = await saveModel(model: oysters) else {
                  XCTFail("Failed to save hierarchy")
                  return
          }
@@ -228,24 +228,24 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent in
             receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == lunchStandardMenu.id ||
                 submittedMutationEvent.modelId == oysters.id {
                 expectedFailures.fulfill()
-                completion(.failure(.internalOperation("mockError", "", nil)))
+                return .failure(.internalOperation("mockError", "", nil))
             } else {
                 expectedSuccess.fulfill()
-                completion(.success(submittedMutationEvent))
+                return .success(submittedMutationEvent)
             }
         }
 
-        guard case .failure(let error) = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
+        guard case .failure(let error) = await deleteModelOrFailOtherwise(modelType: Restaurant.self,
                                                                                withId: restaurant1.id) else {
             XCTFail("Deleting should have failed due to our mock")
             return
         }
-        wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
         XCTAssertEqual(error.errorDescription, "mockError")
     }
 }
