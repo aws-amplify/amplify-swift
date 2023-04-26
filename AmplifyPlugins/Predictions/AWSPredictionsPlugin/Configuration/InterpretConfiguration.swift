@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-//import AWSCore
+import Foundation
 
 public struct InterpretConfiguration {
     public var region: String

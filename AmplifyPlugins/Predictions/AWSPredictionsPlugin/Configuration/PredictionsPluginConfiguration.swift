@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-//import AWSCore
-
 public struct PredictionsPluginConfiguration {
     public let defaultRegion: String
     public var identify: IdentifyConfiguration
