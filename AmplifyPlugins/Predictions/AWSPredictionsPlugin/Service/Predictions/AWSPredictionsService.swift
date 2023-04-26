@@ -63,7 +63,10 @@ class AWSPredictionsService {
         )
         let awsTextractClient = TextractClient(config: textractClientConfiguration)
 
-        let awsTranscribeStreamingAdapter = AWSTranscribeStreamingAdapter()
+        let awsTranscribeStreamingAdapter = AWSTranscribeStreamingAdapter(
+            credentialsProvider: credentialsProvider,
+            region: configuration.convert.region
+        )
 
         self.init(
             identifier: identifier,
@@ -85,7 +88,6 @@ class AWSPredictionsService {
         awsComprehend: ComprehendClientProtocol,
         awsTextract: TextractClientProtocol,
         awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
-        predictionsConfig: PredictionsPluginConfiguration,
         configuration: PredictionsPluginConfiguration
     ) {
 

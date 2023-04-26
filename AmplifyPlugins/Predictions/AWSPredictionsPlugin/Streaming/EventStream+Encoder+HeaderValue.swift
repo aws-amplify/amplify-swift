@@ -69,3 +69,9 @@ extension EventStream {
         }
     }
 }
+
+extension EventStream.HeaderValue: ExpressibleByStringLiteral {
+    init(stringLiteral value: StringLiteralType) {
+        self = .string(value)
+    }
+}

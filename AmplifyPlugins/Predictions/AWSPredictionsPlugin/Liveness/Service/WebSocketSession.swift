@@ -31,6 +31,10 @@ final class WebSocketSession {
         urlSessionWebSocketDelegate.onClose = onClose
     }
 
+    func onSocketOpened(_ onOpen: @escaping () -> Void) {
+        urlSessionWebSocketDelegate.onOpen = onOpen
+    }
+
     func receive(shouldContinue: Bool) {
         guard shouldContinue else { return }
         task?.receive(completionHandler: { [weak self] result in
