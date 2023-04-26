@@ -10,14 +10,10 @@ import Amplify
 
 extension AWSPredictionsPlugin {
 
-    public func convert(
-        textToTranslate: String,
-        language: LanguageType?,
-        targetLanguage: LanguageType?,
-        options: PredictionsTranslateTextRequest.Options?,
-        listener: PredictionsTranslateTextOperation.ResultListener? = nil
-    )
-    -> PredictionsTranslateTextOperation {
+    public func convert<Input, Options, Output>(
+        _ request: Predictions.Convert.Request<Input, Options, Output>,
+        options: Options?
+    ) async throws -> Output {
         fatalError()
     }
 
@@ -38,12 +34,11 @@ extension AWSPredictionsPlugin {
         fatalError()
     }
 
-    public func identify(
-        type: IdentifyAction,
-        image: URL,
-        options: PredictionsIdentifyRequest.Options?,
-        listener: PredictionsIdentifyOperation.ResultListener? = nil
-    ) -> PredictionsIdentifyOperation {
+    public func identify<Output>(
+        _ request: Predictions.Identify.Request<Output>,
+        in image: URL,
+        options: Predictions.Identify.Options?
+    ) async throws -> Output {
         fatalError()
     }
 
@@ -54,9 +49,8 @@ extension AWSPredictionsPlugin {
     /// - Parameter resultListener: Listener to which events are send
     public func interpret(
         text: String,
-        options: PredictionsInterpretRequest.Options?,
-        listener: PredictionsInterpretOperation.ResultListener?
-    ) -> PredictionsInterpretOperation {
+        options: Predictions.Interpret.Options?
+    ) async throws -> Predictions.Interpret.Result {
         fatalError()
     }
 }
