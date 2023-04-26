@@ -9,6 +9,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 import AWSTranscribeStreaming
+import AWSClientRuntime
 
 class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
 
@@ -37,18 +38,18 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         // looking into options for fetching from the credentials provider directly.
         // potentially will be removed at a later time.
         let authSession = try await Amplify.Auth.fetchAuthSession()
-        guard let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider,
-           let awsCredentials = try awsCredentialsProvider.getAWSCredentials().get()
+        guard let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider
         else {
             throw PredictionsError.client(
                 .init(
-                    "Error retrieving credentials",
-                    "Ensure that the Auth plugin is properly configured",
-                    nil
+                    description: "Error retrieving credentials",
+                    recoverySuggestion: "Ensure that the Auth plugin is properly configured",
+                    underlyingError: nil
                 )
             )
         }
 
+        let awsCredentials = try awsCredentialsProvider.getAWSCredentials().get()
         let sessionToken = (awsCredentials as? AWSTemporaryCredentials)?.sessionToken
         let signerCredentials = SigV4Signer.Credential(
             accessKey: awsCredentials.accessKeyId,
