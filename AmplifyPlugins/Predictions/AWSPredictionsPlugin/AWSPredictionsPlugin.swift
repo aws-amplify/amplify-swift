@@ -30,7 +30,7 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
         predictionsService.getEscapeHatch(client: key)
     }
 
-    public init() {}
+    init() {}
 }
 
 extension AWSPredictionsPlugin: AmplifyVersionable { }
