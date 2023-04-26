@@ -5,14 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import CoreGraphics
-
 extension Predictions {
-    public struct Polygon {
-        public let points: [CGPoint]
+    public struct Voice {
+        public let id: String
 
-        public init(points: [CGPoint]) {
-            self.points = points
+        public init(id: String) {
+            self.id = id
         }
     }
 }
