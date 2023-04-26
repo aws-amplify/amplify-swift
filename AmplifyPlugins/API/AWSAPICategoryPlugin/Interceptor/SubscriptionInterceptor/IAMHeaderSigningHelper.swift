@@ -9,7 +9,9 @@ import Foundation
 import AWSCore
 import AppSyncRealTimeClient
 
-struct HeaderIAMSigningHelper {
+/// Helper class to created signed header information for the request
+///
+struct IAMHeaderSigningHelper {
 
     let host: String
     let date: String
