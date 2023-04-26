@@ -10,12 +10,10 @@ import Amplify
 
 extension CoreMLPredictionsPlugin {
 
-    public func reset(onComplete: @escaping BasicClosure) {
-
+    public func reset() async {
         queue = nil
         coreMLNaturalLanguage = nil
         coreMLSpeech = nil
         coreMLVision = nil
-        onComplete()
     }
 }
