@@ -23,24 +23,24 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         continueAfterFailure = false
 
         do {
-//            guard let path = Bundle.init(for: type(of: self)).path(
-//                forResource: amplifyConfigurationFile,
-//                ofType: "json"
-//            ) else {
-//                fatalError("❌ Could not retrieve configuration file: \(amplifyConfigurationFile)")
-//            }
-//
-//            let url = URL(fileURLWithPath: path)
-//            let data = try Data(contentsOf: url)
-//            let jsonDecoder = JSONDecoder()
-//            let configuration = try jsonDecoder.decode(
-//                AmplifyConfiguration.self,
-//                from: data
-//            )
+            guard let path = Bundle.init(for: type(of: self)).path(
+                forResource: amplifyConfigurationFile,
+                ofType: "json"
+            ) else {
+                fatalError("❌ Could not retrieve configuration file: \(amplifyConfigurationFile)")
+            }
+
+            let url = URL(fileURLWithPath: path)
+            let data = try Data(contentsOf: url)
+            let jsonDecoder = JSONDecoder()
+            let configuration = try jsonDecoder.decode(
+                AmplifyConfiguration.self,
+                from: data
+            )
 
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPredictionsPlugin())
-            try Amplify.configure() //configuration)
+            try Amplify.configure(configuration)
         } catch {
             XCTFail(String(describing: error))
             return
