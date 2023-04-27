@@ -9,7 +9,6 @@ import Amplify
 import AWSTranslate
 
 extension AWSPredictionsService: AWSTranslateServiceBehavior {
-
     func translateText(
         text: String,
         language: Predictions.Language?,
@@ -18,23 +17,14 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
         // prefer passed in language. If it's not there, try to grab it from the config,
         // If that doesn't exist, we can't progress any further and throw an error
         guard let sourceLanguage = language ?? predictionsConfig.convert.translateText?.sourceLanguage else {
-            throw PredictionsError.configuration(
-                AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
-                AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
-                nil
-            )
+            throw PredictionsError.client(.missingSourceLanguage)
         }
 
         // prefer passed in language. If it's not there, try to grab it from the config,
         // If that doesn't exist, we can't progress any further and throw an error
         guard let targetLanguage = targetLanguage ?? predictionsConfig.convert.translateText?.targetLanguage else {
-            throw PredictionsError.configuration(
-                AWSTranslateErrorMessage.targetLanguageNotProvided.errorDescription,
-                AWSTranslateErrorMessage.targetLanguageNotProvided.errorDescription,
-                nil
-            )
+            throw PredictionsError.client(.missingTargetLanguage)
         }
-
 
         let request = TranslateTextInput(
             sourceLanguageCode: sourceLanguage.code,
@@ -44,18 +34,15 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
         let textTranslateResult: TranslateTextOutputResponse
         do {
-            textTranslateResult = try await awsTranslate.translateText(request: request)
+            textTranslateResult = try await awsTranslate.translateText(input: request)
+        } catch let error as TranslateTextOutputError {
+            throw ServiceErrorMapping.translateText.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
 
         guard let translatedText = textTranslateResult.translatedText else {
-            let noResult = AWSTranslateErrorMessage.noTranslateTextResult
-            throw PredictionsError.network(noResult.errorDescription, noResult.recoverySuggestion)
+            throw PredictionsError.service(.translationFailed)
         }
 
         let translateTextResult = Predictions.Convert.TranslateText.Result(

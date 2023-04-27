@@ -84,9 +84,9 @@ class AWSPredictionsService {
         identifier: String,
         awsTranslate: TranslateClientProtocol,
         awsRekognition: RekognitionClientProtocol,
-        awsPolly: PollyClientProtocol,
-        awsComprehend: ComprehendClientProtocol,
         awsTextract: TextractClientProtocol,
+        awsComprehend: ComprehendClientProtocol,
+        awsPolly: PollyClientProtocol,
         awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
         configuration: PredictionsPluginConfiguration
     ) {
