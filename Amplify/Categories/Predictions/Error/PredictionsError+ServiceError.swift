@@ -8,7 +8,12 @@
 import Foundation
 
 extension PredictionsError {
-    public struct ServiceError {
+    public struct ServiceError: Equatable {
+        public static func == (lhs: PredictionsError.ServiceError, rhs: PredictionsError.ServiceError) -> Bool {
+            lhs.description == rhs.description
+            && lhs.recoverySuggestion == rhs.recoverySuggestion
+        }
+
         public let description: ErrorDescription
         public let recoverySuggestion: RecoverySuggestion
         public let httpStatusCode: Int?
