@@ -29,10 +29,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSuccessfulSignIn() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -79,10 +75,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .done response
     ///
     func testSuccessfulSignInWithAuthFlow() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -131,10 +123,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .validation error
     ///
     func testSignInWithEmptyUsername() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider()
 
@@ -210,10 +198,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithInvalidResult() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse()
         })
@@ -239,10 +223,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get signed in
     ///
     func testSecondSignInAfterSignInWithInvalidResult() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse()
@@ -291,10 +271,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .confirmSignInWithSMSMFACode
     ///
     func testSignInWithNextStepSMS() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -380,10 +356,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSMSMFAWithAdditionalInfo() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -427,10 +399,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithNextStepNewPassword() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -469,10 +437,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a the info in next step
     ///
     func testNewPasswordWithAdditionalInfo() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -517,10 +481,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithNextStepCustomChallenge() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -559,10 +519,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .unknown error
     ///
     func testSignInWithNextStepUnknown() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -644,10 +600,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithCustomAuthIncorrectCode() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -699,10 +651,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithInternalErrorException() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.internalErrorException(.init())
         })
@@ -730,10 +678,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .lambda error
     ///
     func testSignInWithInvalidLambdaResponseException() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidLambdaResponseException(.init())
@@ -764,10 +708,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithInvalidParameterException() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidParameterException(.init())
         })
@@ -797,10 +737,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithInvalidUserPoolConfigurationException() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidUserPoolConfigurationException(.init())
         })
@@ -828,10 +764,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .notAuthorized error
     ///
     func testSignInWithNotAuthorizedException() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.notAuthorizedException(.init())
@@ -861,10 +793,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithPasswordResetRequiredException() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.passwordResetRequiredException(.init())
         })
@@ -893,10 +821,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .resetPassword as next step
     ///
     func testSignInWithPasswordResetRequiredException2() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             let serviceError = SdkError<InitiateAuthOutputError>
@@ -930,10 +854,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithResourceNotFoundException() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.resourceNotFoundException(.init())
         })
@@ -962,10 +882,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .requestLimitExceeded error
     ///
     func testSignInWithTooManyRequestsException() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.tooManyRequestsException(.init())
@@ -996,10 +912,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithUnexpectedLambdaException() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.unexpectedLambdaException(.init())
         })
@@ -1028,10 +940,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .lambda error
     ///
     func testSignInWithUserLambdaValidationException() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userLambdaValidationException(.init())
@@ -1090,10 +998,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithUserNotConfirmedException2() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             let serviceError = SdkError<InitiateAuthOutputError>
                 .service(.userNotConfirmedException(UserNotConfirmedException()),
@@ -1126,10 +1030,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithUserNotFoundException() async {
 
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userNotFoundException(.init())
         })
@@ -1160,10 +1060,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .aliasExists error
     ///
     func testSignInWithAliasExistsException() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -1199,10 +1095,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .invalidPassword error
     ///
     func testSignInWithInvalidPasswordException() async {
-
-        self.mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -1298,9 +1190,11 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Given: Given an auth plugin with mocked service.
     ///
     /// - When:
-    ///    - I invoke signIn with valid values
+    ///    - I invoke signIn with valid values, and
+    ///      AuthN is success whereas AuthZ fails
+    ///      In This case, GetId throws an exception
     /// - Then:
-    ///    - I should get a .done response
+    ///    - I should get a service exception and should not be signed in
     ///
     func testSuccessfulSignInWithFailingIdentity() async {
 
@@ -1337,7 +1231,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
-            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            _ = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Sign In with failing authorization should throw an error")
 
         } catch AuthError.service(_, _, let error) {
