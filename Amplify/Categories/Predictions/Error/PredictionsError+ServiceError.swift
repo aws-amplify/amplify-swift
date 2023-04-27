@@ -69,8 +69,8 @@ extension PredictionsError.ServiceError {
     public static let unsupportedLanguagePair = Self(
         description: "Your target language and source language are an unsupported language pair.",
         recoverySuggestion: """
-        Please check to this table to see supported language pairs
-        https://docs.aws.amazon.com/translate/latest/dg/what-is.html.
+        Please ensure the service supports translating from the specified source
+        language to the specified target language.
         """
     )
 
