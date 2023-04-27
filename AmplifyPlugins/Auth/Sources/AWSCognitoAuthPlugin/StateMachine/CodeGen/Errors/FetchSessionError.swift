@@ -79,10 +79,14 @@ extension FetchSessionError: AuthErrorConvertible {
             return .unknown(
                 "Refreshing credentials from federationToIdentityPool is not supported \(AmplifyErrorMessages.reportBugToAWS())")
         case .service(let error):
-            return .service(
-                "Service error occurred",
-                AmplifyErrorMessages.reportBugToAWS(),
-                error)
+            if let convertibleError = error as? AuthErrorConvertible {
+                return convertibleError.authError
+            } else {
+                return .service(
+                    "Service error occurred",
+                    AmplifyErrorMessages.reportBugToAWS(),
+                    error)
+            }
         }
     }
 

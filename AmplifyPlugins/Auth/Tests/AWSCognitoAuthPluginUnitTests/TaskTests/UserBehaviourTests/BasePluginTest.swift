@@ -14,7 +14,20 @@ class BasePluginTest: XCTestCase {
 
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!
+    var mockIdentity: CognitoIdentityBehavior!
     var plugin: AWSCognitoAuthPlugin!
+
+    let getId: MockIdentity.MockGetIdResponse = { _ in
+        return .init(identityId: "mockIdentityId")
+    }
+
+    let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+        let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
+                                                                 expiration: Date(),
+                                                                 secretKey: "secret",
+                                                                 sessionToken: "session")
+        return .init(credentials: credentials, identityId: "responseIdentityID")
+    }
 
     var initialState: AuthState {
         AuthState.configured(
@@ -28,29 +41,13 @@ class BasePluginTest: XCTestCase {
     override func setUp() {
         plugin = AWSCognitoAuthPlugin()
 
-        let getId: MockIdentity.MockGetIdResponse = { _ in
-            return .init(identityId: "mockIdentityId")
-        }
-
-        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
-                                                                     expiration: Date(),
-                                                                     secretKey: "secret",
-                                                                     sessionToken: "session")
-            return .init(credentials: credentials, identityId: "responseIdentityID")
-        }
-
-        let mockIdentity = MockIdentity(
-            mockGetIdResponse: getId,
-            mockGetCredentialsResponse: getCredentials)
-
         let environment = Defaults.makeDefaultAuthEnvironment(
-            identityPoolFactory: { mockIdentity },
+            identityPoolFactory: { self.mockIdentity },
             userPoolFactory: { self.mockIdentityProvider })
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
-            identityPoolFactory: { mockIdentity },
+            identityPoolFactory: { self.mockIdentity },
             userPoolFactory: { self.mockIdentityProvider })
 
         plugin?.configure(
