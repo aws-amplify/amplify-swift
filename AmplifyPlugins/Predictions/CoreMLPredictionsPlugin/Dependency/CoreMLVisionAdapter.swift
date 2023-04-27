@@ -57,7 +57,9 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             identifiedLines.append(line)
             rawLineText.append(identifiedText)
         }
-        return Predictions.Identify.Text.Result(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
+        return Predictions.Identify.Text.Result(
+            fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines
+        )
     }
 
     func detectEntities(_ imageURL: URL) -> Predictions.Identify.Entities.Result? {
