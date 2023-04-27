@@ -13,8 +13,7 @@ import AWSTranscribeStreaming
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
     func transcribe(
         speechToText: URL,
-        language: Predictions.Language?,
-        region: String
+        language: Predictions.Language?
     ) async throws -> AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error> {
         let audioData = try Data(contentsOf: speechToText)
         // if a language is passed in, we'll use that
@@ -38,8 +37,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             Task {
                 do {
                     for try await transcription in try await awsTranscribeStreaming.startStreamTranscription(
-                        input: input,
-                        region: region
+                        input: input
                     ) {
                         continuation.yield(
                             Predictions.Convert.SpeechToText.Result(
@@ -53,9 +51,11 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                 } catch let error as URLError {
                     continuation.finish(
                         throwing: PredictionsError.service(
-                            "URLError encountered while trying to establish connection",
-                            "Ensure your configuration is properly set up.",
-                            error
+                            .init(
+                                description: "URLError encountered while trying to establish connection",
+                                recoverySuggestion: "Ensure your configuration is properly set up.",
+                                underlyingError: error
+                            )
                         )
                     )
                 } catch {

@@ -20,51 +20,37 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         switch type {
         case .labels:
-            let labelsResult: DetectLabelsOutputResponse
             do {
-                labelsResult = try await detectRekognitionLabels(image: imageData)
+                let labelsResult = try await detectLabels(image: imageData)
+                let newLabels = IdentifyLabelsResultTransformers.processLabels(labelsResult.labels ?? [])
+                return Predictions.Identify.Labels.Result(labels: newLabels, unsafeContent: nil)
+            } catch let error as DetectLabelsOutputError {
+                throw ServiceErrorMapping.detectLabels.map(error)
             } catch {
-                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-                throw PredictionsError.network(
-                    predictionsErrorString.errorDescription,
-                    predictionsErrorString.recoverySuggestion
-                )
+                throw PredictionsError.unexpectedServiceErrorType(error)
             }
-            
-            guard let labels = labelsResult.labels else {
-                throw PredictionsError.network(
-                    AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                    AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-                )
-            }
-
-            let newLabels = IdentifyLabelsResultTransformers.processLabels(labels)
-            return Predictions.Identify.Labels.Result(labels: newLabels, unsafeContent: nil)
         case .moderation:
-            let moderationLabelsResult: DetectModerationLabelsOutputResponse
             do {
-                moderationLabelsResult = try await detectModerationLabels(image: imageData)
-            } catch {
-                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-                throw PredictionsError.network(
-                    predictionsErrorString.errorDescription,
-                    predictionsErrorString.recoverySuggestion
-                )
+                let moderationLabels = try await detectModerationLabels(image: imageData).moderationLabels ?? []
+                let unsafeContent = !moderationLabels.isEmpty
+                let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationLabels)
+                return Predictions.Identify.Labels.Result(labels: labels, unsafeContent: unsafeContent)
+            } catch let error as DetectModerationLabelsOutputError {
+                throw ServiceErrorMapping.detectModerationLabels.map(error)
+            }
+            catch {
+                throw PredictionsError.unexpectedServiceErrorType(error)
             }
 
-            guard let moderationRekognitionlabels = moderationLabelsResult.moderationLabels else {
-                throw PredictionsError.network(
-                    AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                    AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-                )
-            }
-
-            let unsafeContent: Bool = !moderationRekognitionlabels.isEmpty
-
-            let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationRekognitionlabels)
-            return Predictions.Identify.Labels.Result(labels: labels, unsafeContent: unsafeContent)
         case .all:
             return try await detectAllLabels(image: imageData)
+        default:
+            throw PredictionsError.client(
+                .init(
+                    description: "Unsupported LabelType: \(type)",
+                    recoverySuggestion: "This shouldn't happen. Please report a bug to Amplify Swift"
+                )
+            )
         }
     }
 
@@ -72,162 +58,118 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         image: URL
     ) async throws -> Predictions.Identify.Celebrities.Result {
         let imageData = try dataFromImage(url: image)
-
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
-        let request = RecognizeCelebritiesInput(image: rekognitionImage)
-        let celebritiesResult: RecognizeCelebritiesOutputResponse
+        let input = RecognizeCelebritiesInput(image: rekognitionImage)
 
         do {
-            celebritiesResult = try await awsRekognition.detectCelebrities(request: request)
+            let celebrities = try await awsRekognition
+                .recognizeCelebrities(input: input).celebrityFaces ?? []
+
+            let newCelebs = IdentifyCelebritiesResultTransformers.processCelebs(celebrities)
+            return Predictions.Identify.Celebrities.Result(celebrities: newCelebs)
+        } catch let error as RecognizeCelebritiesOutputError {
+            throw ServiceErrorMapping.detectCelebrities.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
-
-        guard let celebrities = celebritiesResult.celebrityFaces else {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-            )
-        }
-
-
-        let newCelebs = IdentifyCelebritiesResultTransformers.processCelebs(celebrities)
-        return Predictions.Identify.Celebrities.Result(celebrities: newCelebs)
     }
 
     func detectEntitiesCollection(
         image: URL,
         collectionID: String
     ) async throws -> Predictions.Identify.EntityMatches.Result {
-        guard !collectionID.isEmpty else {
-            throw NSError(domain: "", code: -1)
-        }
-
         let imageData = try dataFromImage(url: image)
-
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
         let maxFaces = predictionsConfig.identify.identifyEntities?.maxEntities
             .map(Int.init) ?? 50
 
-        let request = SearchFacesByImageInput(
+        let input = SearchFacesByImageInput(
             collectionId: collectionID,
             image: rekognitionImage,
             maxFaces: maxFaces
         )
 
-        let facesFromCollectionResult: SearchFacesByImageOutputResponse
-
         do {
-            facesFromCollectionResult = try await awsRekognition.detectFacesFromCollection(request: request)
+            let faces = try await awsRekognition
+                .searchFacesByImage(input: input).faceMatches ?? []
+            let faceMatches = IdentifyEntitiesResultTransformers.processCollectionFaces(faces)
+            return Predictions.Identify.EntityMatches.Result(entities: faceMatches)
+        } catch let error as SearchFacesByImageOutputError {
+            throw ServiceErrorMapping.searchFacesByImage.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
-
-        guard let faces = facesFromCollectionResult.faceMatches else {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-            )
-        }
-
-        let faceMatches = IdentifyEntitiesResultTransformers.processCollectionFaces(faces)
-        return Predictions.Identify.EntityMatches.Result(entities: faceMatches)
     }
 
     func detectEntities(
         image: URL
     ) async throws -> Predictions.Identify.Entities.Result {
         let imageData = try dataFromImage(url: image)
-
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
-        let request = DetectFacesInput(image: rekognitionImage)
+        let input = DetectFacesInput(image: rekognitionImage)
 
-        let facesResult: DetectFacesOutputResponse
         do {
-            facesResult = try await awsRekognition.detectFaces(request: request)
+            let faces = try await awsRekognition.detectFaces(input: input).faceDetails ?? []
+            let newFaces = IdentifyEntitiesResultTransformers.processFaces(faces)
+            return Predictions.Identify.Entities.Result(entities: newFaces)
+        } catch let error as DetectFacesOutputError {
+            throw ServiceErrorMapping.detectFaces.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unknownServiceError(error)
         }
-
-        guard let faces = facesResult.faceDetails else {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-            )
-        }
-
-        let newFaces = IdentifyEntitiesResultTransformers.processFaces(faces)
-        return Predictions.Identify.Entities.Result(entities: newFaces)
     }
 
 
     func detectPlainText(image: URL) async throws -> Predictions.Identify.Text.Result {
         let imageData = try dataFromImage(url: image)
-
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
         let request = DetectTextInput(image: rekognitionImage)
-
         let textResult: DetectTextOutputResponse
+
         do {
-            textResult = try await awsRekognition.detectText(request: request)
+            textResult = try await awsRekognition.detectText(input: request)
+        } catch let error as DetectTextOutputError {
+            throw ServiceErrorMapping.detectText.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
 
-        guard let rekognitionTextDetections = textResult.textDetections else {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-            )
-        }
-
-        let identifyTextResult = IdentifyTextResultTransformers.processText(rekognitionTextDetections)
+        let rekognitionTextDetections = textResult.textDetections ?? []
+        let identifyTextResult = IdentifyTextResultTransformers.processText(
+            rekognitionTextDetections
+        )
 
         // if limit of words is under 50 return rekognition response
         // otherwise call textract because their limit is higher
         if let words = identifyTextResult.words, words.count < rekognitionWordLimit {
             return identifyTextResult
         } else {
-
             let documentTextResult: DetectDocumentTextOutputResponse
             do {
                 documentTextResult = try await detectDocumentText(image: imageData)
+            } catch let error as DetectDocumentTextOutputError {
+                throw ServiceErrorMapping.detectDocumentText.map(error)
             } catch {
-                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-                throw PredictionsError.network(
-                    predictionsErrorString.errorDescription,
-                    predictionsErrorString.recoverySuggestion
-                )
+                throw PredictionsError.unexpectedServiceErrorType(error)
             }
 
-            guard let textractTextDetections = documentTextResult.blocks else {
-                throw PredictionsError.network(
-                    AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                    AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-                )
-            }
+            let textractTextDetections = documentTextResult.blocks ?? []
 
             if rekognitionTextDetections.count > textractTextDetections.count {
                 return identifyTextResult
             } else {
-                let textractResult = IdentifyTextResultTransformers.processText(textractTextDetections)
-                return textractResult
+                let textractResult = IdentifyTextResultTransformers.processText(
+                    textractTextDetections
+                )
+
+                let identifyTextResult = Predictions.Identify.Text.Result(
+                    fullText: textractResult.fullText,
+                    words: textractResult.words,
+                    rawLineText: textractResult.rawLineText,
+                    identifiedLines: textractResult.identifiedLines
+                )
+
+                return identifyTextResult
             }
         }
     }
@@ -242,9 +184,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         )
     }
 
-
-
-
     private func detectTextRekognition(
         image: URL
     ) async throws -> Predictions.Identify.Text.Result {
@@ -252,10 +191,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         do {
             imageData = try Data(contentsOf: image)
         } catch {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.imageNotFound.errorDescription,
-                AWSRekognitionErrorMessage.imageNotFound.recoverySuggestion
-            )
+            throw PredictionsError.client(.imageNotFound)
         }
 
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
@@ -263,54 +199,47 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         let textResult: DetectTextOutputResponse
         do {
-            textResult = try await awsRekognition.detectText(request: request)
+            textResult = try await awsRekognition.detectText(input: request)
+        } catch let error as DetectTextOutputError {
+            throw ServiceErrorMapping.detectText.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
 
-        guard let rekognitionTextDetections = textResult.textDetections else {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-            )
-        }
+        let rekognitionTextDetections = textResult.textDetections ?? []
 
-        let identifyTextResult = IdentifyTextResultTransformers.processText(rekognitionTextDetections)
+        let identifyTextResult = IdentifyTextResultTransformers.processText(
+            rekognitionTextDetections
+        )
 
         // if limit of words is under 50 return rekognition response
         // otherwise call textract because their limit is higher
         if let words = identifyTextResult.words, words.count < rekognitionWordLimit {
             return identifyTextResult
         } else {
-
             let documentTextResult: DetectDocumentTextOutputResponse
             do {
                 documentTextResult = try await detectDocumentText(image: imageData)
+            } catch let error as DetectDocumentTextOutputError {
+                throw ServiceErrorMapping.detectDocumentText.map(error)
             } catch {
-                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-                throw PredictionsError.network(
-                    predictionsErrorString.errorDescription,
-                    predictionsErrorString.recoverySuggestion
-                )
+                throw PredictionsError.unexpectedServiceErrorType(error)
             }
 
-            guard let textractTextDetections = documentTextResult.blocks else {
-                throw PredictionsError.network(
-                    AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                    AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-                )
-            }
+            let textractTextDetections = documentTextResult.blocks ?? []
 
             if rekognitionTextDetections.count > textractTextDetections.count {
                 return identifyTextResult
             } else {
                 let textractResult = IdentifyTextResultTransformers.processText(textractTextDetections)
-                fatalError() // TODO: Combine types
-//                return textractResult
+                let identifyTextResult = Predictions.Identify.Text.Result(
+                    fullText: textractResult.fullText,
+                    words: textractResult.words,
+                    rawLineText: textractResult.rawLineText,
+                    identifiedLines: textractResult.identifiedLines
+                )
+
+                return identifyTextResult
             }
         }
     }
@@ -322,76 +251,44 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let request = DetectModerationLabelsInput(
             image: image
         )
-        // TODO: What are we doing with this onEvent handler???
-        return try await awsRekognition.detectModerationLabels(request: request)
+        return try await awsRekognition.detectModerationLabels(input: request)
     }
 
-    private func detectRekognitionLabels(
+    private func detectLabels(
         image: Data
     ) async throws -> DetectLabelsOutputResponse {
         let image = RekognitionClientTypes.Image(bytes: image)
         let request = DetectLabelsInput(
             image: image
         )
-        // TODO: What are we doing with this onEvent handler???
-        return try await awsRekognition.detectLabels(request: request)
+        return try await awsRekognition.detectLabels(input: request)
     }
 
     private func detectAllLabels(image: Data) async throws -> Predictions.Identify.Labels.Result {
-        let labelsResult: DetectLabelsOutputResponse
         do {
-            labelsResult = try await detectRekognitionLabels(image: image) //, onEvent: { _ in })
+            async let labelsTask = try detectLabels(image: image)
+            async let moderationLabelsTask = try detectModerationLabels(image: image)
+            let (labelsOutput, moderationLabelsOutput) = try await (labelsTask, moderationLabelsTask)
 
+            let labels = labelsOutput.labels ?? []
+            let allLabels = IdentifyLabelsResultTransformers.processLabels(labels)
+            let moderationLabels = moderationLabelsOutput.moderationLabels ?? []
+            let unsafeContent = !moderationLabels.isEmpty
+            return Predictions.Identify.Labels.Result(labels: allLabels, unsafeContent: unsafeContent)
+        } catch let error as DetectLabelsOutputError {
+            throw ServiceErrorMapping.detectLabels.map(error)
+        } catch let error as DetectModerationLabelsOutputError {
+            throw ServiceErrorMapping.detectModerationLabels.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
-
-        guard let labels = labelsResult.labels else {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-            )
-        }
-
-        let allLabels = IdentifyLabelsResultTransformers.processLabels(labels)
-
-        let moderationLabelsResult: DetectModerationLabelsOutputResponse
-        do {
-             moderationLabelsResult = try await detectModerationLabels(image: image)
-        } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
-        }
-
-        guard let moderationRekognitionLabels = moderationLabelsResult.moderationLabels else {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.noResultFound.errorDescription,
-                AWSRekognitionErrorMessage.noResultFound.recoverySuggestion
-            )
-        }
-
-        let unsafeContent = !moderationRekognitionLabels.isEmpty
-
-        return Predictions.Identify.Labels.Result(labels: allLabels, unsafeContent: unsafeContent)
     }
 
     private func dataFromImage(url: URL) throws -> Data {
-        let imageData: Data
         do {
-            imageData = try Data(contentsOf: url)
+            return try Data(contentsOf: url)
         } catch {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.imageNotFound.errorDescription,
-                AWSRekognitionErrorMessage.imageNotFound.recoverySuggestion
-            )
+            throw PredictionsError.client(.imageNotFound)
         }
-        return imageData
     }
 }

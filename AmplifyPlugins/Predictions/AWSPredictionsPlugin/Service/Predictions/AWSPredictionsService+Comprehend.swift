@@ -10,7 +10,6 @@ import AWSComprehend
 import Amplify
 
 extension AWSPredictionsService: AWSComprehendServiceBehavior {
-
     func comprehend(text: String) async throws -> Predictions.Interpret.Result {
         // We have to find the dominant language first and then invoke features.
         let (dominantLanguage, score) = try await fetchPredominantLanguage(text)
@@ -31,28 +30,24 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         _ text: String
     ) async throws -> (Predictions.Language, Double?) {
         let detectLanguageInput = DetectDominantLanguageInput(text: text)
-
         do {
             let response = try await awsComprehend.detectDominantLanguage(input: detectLanguageInput)
-            guard let dominantLanguage = response.languages?.getDominantLanguage(),
-                  let dominantLanguageCode = dominantLanguage.languageCode
-            else {
-                let errorDescription = AWSComprehendErrorMessage.dominantLanguageNotDetermined.errorDescription
-                let recoverySuggestion = AWSComprehendErrorMessage.dominantLanguageNotDetermined.recoverySuggestion
-                let unknownError = PredictionsError.unknown(errorDescription, recoverySuggestion)
-                throw unknownError
-            }
-            let locale = Locale(identifier: dominantLanguageCode)
-            let languageType = Predictions.Language(locale: locale)
-            return (languageType, dominantLanguage.score.map(Double.init))
+            let dominantLanguage = response.languages?.getDominantLanguage()
+            let predictionsLanguage = dominantLanguage?.languageCode
+                .map(Locale.init(identifier:))
+                .map(Predictions.Language.init(locale:))
+            ?? .undetermined
+            return (predictionsLanguage, dominantLanguage?.score.map(Double.init))
+        } catch let error as DetectDominantLanguageOutputError {
+            throw ServiceErrorMapping.detectDominantLanguage.map(error)
         } catch {
-            throw error
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
     }
 
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
-    /// - Parameter languageCode: Dominant language code
+    /// - Parameter languageCode: Dominant language
     private func analyzeText(_ text: String, for languageCode: Predictions.Language) async throws -> Predictions.Interpret.Result {
         let comprehendLanguageCode = languageCode.toComprehendLanguage()
         let syntaxLanguageCode = languageCode.toSyntaxLanguage()
@@ -133,7 +128,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
     ) async throws -> [Predictions.KeyPhrase]? {
-
         let keyPhrasesInput = DetectKeyPhrasesInput(languageCode: languageCode, text: text)
 
         let keyPhrasesResponse = try await awsComprehend.detectKeyPhrases(input: keyPhrasesInput)
@@ -166,8 +160,8 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
     ) async throws -> Predictions.Sentiment? {
-        let sentimentRequest = DetectSentimentInput(languageCode: languageCode, text: text)
-        let sentimentResponse = try await awsComprehend.detectSentiment(request: sentimentRequest)
+        let sentimentInput = DetectSentimentInput(languageCode: languageCode, text: text)
+        let sentimentResponse = try await awsComprehend.detectSentiment(input: sentimentInput)
 
         guard let sentiment = sentimentResponse.sentiment?.toAmplifySentimentType(),
               let sentimentScore = sentimentResponse.sentimentScore
@@ -190,8 +184,8 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         _ text: String,
         languageCode: ComprehendClientTypes.LanguageCode
     ) async throws -> [Predictions.Entity.DetectionResult]? {
-        let entitiesRequest = DetectEntitiesInput(languageCode: languageCode, text: text)
-        let entitiesResponse = try await awsComprehend.detectEntities(request: entitiesRequest)
+        let entitiesInput = DetectEntitiesInput(languageCode: languageCode, text: text)
+        let entitiesResponse = try await awsComprehend.detectEntities(input: entitiesInput)
         guard let entities = entitiesResponse.entities
         else {
             return nil

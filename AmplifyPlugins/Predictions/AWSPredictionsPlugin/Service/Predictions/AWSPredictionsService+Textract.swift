@@ -15,7 +15,7 @@ extension AWSPredictionsService: AWSTextractServiceBehavior {
     ) async throws -> DetectDocumentTextOutputResponse {
         let document = TextractClientTypes.Document(bytes: image)
         let request = DetectDocumentTextInput(document: document)
-       return try await awsTextract.detectDocumentText(request: request)
+       return try await awsTextract.detectDocumentText(input: request)
     }
 
     func analyzeDocument(
@@ -26,15 +26,13 @@ extension AWSPredictionsService: AWSTextractServiceBehavior {
         do {
             imageData = try Data(contentsOf: image)
         } catch {
-            throw PredictionsError.network(
-                AWSRekognitionErrorMessage.imageNotFound.errorDescription,
-                AWSRekognitionErrorMessage.imageNotFound.recoverySuggestion
-            )
+            throw PredictionsError.client(.imageNotFound)
         }
 
         let document = TextractClientTypes.Document(bytes: imageData)
-        let featureTypes = features.compactMap(TextractClientTypes.FeatureType.init(rawValue:))
-
+        let featureTypes = features.compactMap(
+            TextractClientTypes.FeatureType.init(rawValue:)
+        )
         let request = AnalyzeDocumentInput(
             document: document,
             featureTypes: featureTypes
@@ -42,23 +40,14 @@ extension AWSPredictionsService: AWSTextractServiceBehavior {
 
         let documentResult: AnalyzeDocumentOutputResponse
         do {
-            documentResult = try await awsTextract.analyzeDocument(request: request)
+            documentResult = try await awsTextract.analyzeDocument(input: request)
+        } catch let error as AnalyzeDocumentOutputError {
+            throw ServiceErrorMapping.analyzeDocument.map(error)
         } catch {
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-            throw PredictionsError.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion
-            )
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
 
-        guard let blocks = documentResult.blocks else {
-            throw PredictionsError.network(
-                "No result was found.",
-                "Please make sure the image integrity is maintained before sending"
-            )
-        }
-
-        let textResult = IdentifyTextResultTransformers.processText(blocks)
+        let textResult = IdentifyTextResultTransformers.processText(documentResult.blocks ?? [])
         return textResult
     }
 }
