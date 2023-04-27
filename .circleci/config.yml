@@ -263,6 +263,7 @@ deploy_requires: &deploy_requires
     - ios_unit_test_internal_pinpoint
     - ios_unit_test_push_notifications
     - ios_unit_test_storage
+    - ios_unit_test_predictions
     - macos_unit_test_amplify
     - macos_unit_test_awspluginscore
     - macos_unit_test_analytics
@@ -273,6 +274,7 @@ deploy_requires: &deploy_requires
     - macos_unit_test_internal_pinpoint
     - macos_unit_test_push_notifications
     - macos_unit_test_storage
+    - macos_unit_test_predictions
     - fortify_scan
 
 workflows:
@@ -361,6 +363,13 @@ workflows:
           requires:
             - build_amplify_ios_spm
       - unit_test:
+          name: ios_unit_test_predictions
+          scheme: AWSPredictionsPlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
           name: macos_unit_test_amplify
           scheme: Amplify
           sdk: macosx
@@ -426,6 +435,13 @@ workflows:
       - unit_test:
           name: macos_unit_test_storage
           scheme: AWSS3StoragePlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_predictions
+          scheme: AWSPredictionsPlugin
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
