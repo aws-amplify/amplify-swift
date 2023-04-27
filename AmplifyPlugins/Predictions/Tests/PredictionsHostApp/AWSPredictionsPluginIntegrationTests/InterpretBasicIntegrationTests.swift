@@ -84,22 +84,6 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
             options: options
         )
 
-//        guard let syntax = result.syntax else { return }
-//
-//        let tokenIDToPartOfSpeechMap = syntax.reduce(into: [Int: Predictions.PartOfSpeech](), { dict, value in
-//            dict[value.tokenId] = value.detectedPartOfSpeech.partOfSpeech
-//        })
-//
-//
-//        for detectedPartOfSpeech in syntax.map(\.detectedPartOfSpeech) {
-//            if detectedPartOfSpeech.score ?? 0 < 0.9 { continue }
-//            switch detectedPartOfSpeech.partOfSpeech {
-//            case .adjective: // ...
-//            case .interjection: // ...
-//            default: // ...
-//            }
-//        }
-
         XCTAssertNotNil(result, "Result should contain value")
     }
 }

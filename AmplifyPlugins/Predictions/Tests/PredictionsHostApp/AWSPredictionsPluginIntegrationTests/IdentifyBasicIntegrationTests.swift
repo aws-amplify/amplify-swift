@@ -7,13 +7,11 @@
 
 import Foundation
 import UIKit
+import XCTest
+import Combine
 @testable import Amplify
 @testable import AWSPredictionsPlugin
 @testable import AWSRekognition
-import XCTest
-
-import Combine
-
 
 class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
@@ -140,34 +138,34 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         })
     }
 
-func detecCelebrities(_ image: URL) async throws -> [Predictions.Celebrity] {
-    do {
-        let result = try await Amplify.Predictions.identify(.celebrities, in: image)
-        let celebrities = result.celebrities
-        let celebritiesNames = celebrities.map(\.metadata.name)
-        print("Identified celebrities with names: \(celebritiesNames)")
-        return celebrities
-    } catch let error as PredictionsError {
-        print("Error identifying celebrities: \(error)")
-        throw error
-    } catch {
-        print("Unexpected error: \(error)")
-        throw error
-    }
-}
-
-func detecCelebrities(_ image: URL) -> AnyCancellable {
-    Amplify.Publisher.create {
-        try await Amplify.Predictions.identify(.celebrities, in: image)
-    }
-    .sink(receiveCompletion: { completion in
-        if case let .failure(error) = completion {
+    func detecCelebrities(_ image: URL) async throws -> [Predictions.Celebrity] {
+        do {
+            let result = try await Amplify.Predictions.identify(.celebrities, in: image)
+            let celebrities = result.celebrities
+            let celebritiesNames = celebrities.map(\.metadata.name)
+            print("Identified celebrities with names: \(celebritiesNames)")
+            return celebrities
+        } catch let error as PredictionsError {
             print("Error identifying celebrities: \(error)")
+            throw error
+        } catch {
+            print("Unexpected error: \(error)")
+            throw error
         }
-    }, receiveValue: { value in
-        print("Identified celebrities with names: \(value.celebrities.map(\.metadata.name))")
-    })
-}
+    }
+
+    func detecCelebrities(_ image: URL) -> AnyCancellable {
+        Amplify.Publisher.create {
+            try await Amplify.Predictions.identify(.celebrities, in: image)
+        }
+        .sink(receiveCompletion: { completion in
+            if case let .failure(error) = completion {
+                print("Error identifying celebrities: \(error)")
+            }
+        }, receiveValue: { value in
+            print("Identified celebrities with names: \(value.celebrities.map(\.metadata.name))")
+        })
+    }
 
     func detectDocumentText(_ image: URL) -> AnyCancellable {
         Amplify.Publisher.create {
