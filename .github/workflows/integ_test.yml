@@ -94,7 +94,7 @@ jobs:
           project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
           scheme: PushNotificationHostApp
 
-    predictions-integration-test:
+  predictions-integration-test:
     continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-12
