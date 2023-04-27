@@ -22,10 +22,10 @@ extension AWSPredictionsPlugin {
         let options = options ?? .init()
         let multiService = InterpretTextMultiService(
             coreMLService: coreMLService,
-            predictionsService: predictionsService
+            predictionsService: predictionsService,
+            textToInterpret: text
         )
 
-        multiService.setTextToInterpret(text: text)
         switch options.defaultNetworkPolicy {
         case .online:
             let onlineResult = try await multiService.fetchOnlineResult()

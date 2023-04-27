@@ -31,8 +31,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
     }
 
     func startStreamTranscription(
-        input: StartStreamInput,
-        region: String
+        input: StartStreamInput
     ) async throws -> AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error> {
 
         // looking into options for fetching from the credentials provider directly.
@@ -76,11 +75,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         ]
 
         guard let url = components.url else {
-            throw PredictionsError.configuration(
-                "Invalid region",
-                "Ensure that you have a valid region in your amplifyconfiguration.json",
-                nil
-            )
+            throw PredictionsError.client(.invalidRegion)
         }
 
         let signedURL = signer.sign(

@@ -11,7 +11,6 @@ import AWSTranscribeStreaming
 
 protocol AWSTranscribeStreamingBehavior {
     func startStreamTranscription(
-        input: AWSTranscribeStreamingAdapter.StartStreamInput,
-        region: String
+        input: AWSTranscribeStreamingAdapter.StartStreamInput
     ) async throws -> AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error>
 }
