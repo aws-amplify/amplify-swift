@@ -157,7 +157,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         let config = PredictionsCategoryConfiguration(plugins: ["MockPredictionsCategoryPlugin": true])
         let amplifyConfig = AmplifyConfiguration(predictions: config)
         try Amplify.configure(amplifyConfig)
-        _ = try await Amplify.Predictions.convert(.textToTranslate("Sample", from: nil, to: nil))
+        _ = try await Amplify.Predictions.convert(.translateText("Sample", from: nil, to: nil))
     }
 
     /// Test if I can pick a specific plugin

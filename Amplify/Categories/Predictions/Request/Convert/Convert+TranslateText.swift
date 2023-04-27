@@ -16,7 +16,7 @@ Input == (String, Predictions.Language?, Predictions.Language?),
 Options == Predictions.Convert.TranslateText.Options,
 Output == Predictions.Convert.TranslateText.Result {
 
-    public static func textToTranslate(
+    public static func translateText(
         _ text: String,
         from: Predictions.Language? = nil,
         to: Predictions.Language? = nil

@@ -33,9 +33,6 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
     func startStreamTranscription(
         input: StartStreamInput
     ) async throws -> AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error> {
-
-        // looking into options for fetching from the credentials provider directly.
-        // potentially will be removed at a later time.
         let authSession = try await Amplify.Auth.fetchAuthSession()
         guard let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider
         else {
@@ -86,7 +83,6 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         let webSocket = WebSocketSession()
 
         webSocket.onSocketOpened {
-            print("STARTING SENDING FRAMES")
             let headers: [String: EventStream.HeaderValue] = [
                 ":content-type": "audio/wav",
                 ":message-type": "event",
@@ -102,13 +98,10 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
                 let dataChunk = input.audioStream[currentStart..<currentEnd]
                 let encodedChunk = EventStream.Encoder().encode(payload: dataChunk, headers: headers)
 
-                webSocket.send(message: .data(encodedChunk), onError: { error in
-                    print("Error in", #function, "at", #line, error as Any)
-                })
+                webSocket.send(message: .data(encodedChunk), onError: { _ in })
                 currentStart = currentEnd
                 currentEnd = min(currentStart + chunkSize, audioDataSize)
             }
-
 
             let endFrame = EventStream.Encoder().encode(
                 payload: Data("".utf8),
@@ -117,9 +110,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
                     ":event-type": "AudioEvent"
                 ]
             )
-            webSocket.send(message: .data(endFrame), onError: { error in
-                print("Error in", #function, "at", #line, error as Any)
-            })
+            webSocket.send(message: .data(endFrame), onError: { _ in })
         }
 
 
@@ -148,8 +139,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
                     case .success(.string):
                         return true
                     case .failure(let error):
-                        _ = error
-                        continuation.finish()
+                        continuation.finish(throwing: error)
                         return false
                     @unknown default:
                         return true

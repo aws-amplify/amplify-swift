@@ -36,7 +36,7 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
     func testConvertTranslateText() async throws {
         let result = try await Amplify.Predictions.convert(
-            .textToTranslate("Hello, world!", from: .english, to: .german)
+            .translateText("Hello, world!", from: .english, to: .german)
         )
 
         XCTAssertEqual(result.text, "Hallo, Welt!")
@@ -46,7 +46,7 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testTranslateCombine() -> AnyCancellable {
         Amplify.Publisher.create {
             try await Amplify.Predictions.convert(
-                .textToTranslate(
+                .translateText(
                     "Hello, world!",
                     from: .english,
                     to: .spanish
