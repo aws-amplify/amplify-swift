@@ -17,8 +17,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin(configuration: .prefixResolver(MockGuestOverridePrefixResolver())))
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
-            try Amplify.configure(amplifyConfig)
+            try Amplify.configure()
         } catch {
             XCTFail("Failed to initialize and configure Amplify \(error)")
         }

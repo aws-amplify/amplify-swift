@@ -13,7 +13,6 @@ import AWSCognitoAuthPlugin
 
 class AWSS3StoragePluginTestBase: XCTestCase {
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
-    static let amplifyConfiguration = "testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration"
 
     static let smallDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * ProcessInfo.processInfo.activeProcessorCount)
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * ProcessInfo.processInfo.activeProcessorCount * 4)
@@ -33,8 +32,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             await Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
-            try Amplify.configure(amplifyConfig)
+            try Amplify.configure()
             if (try? await Amplify.Auth.getCurrentUser()) != nil {
                 await signOut()
             }

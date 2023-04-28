@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		0311113528EBED6500D58441 /* Tests.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 0311113428EBED6500D58441 /* Tests.xcconfig */; };
 		031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 031BC3F228EC9B2C0047B2E8 /* AppIcon.xcassets */; };
+		56B54B1B29FC02800000DF7D /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 5E0E3B98C2BA2686B15174B0 /* awsconfiguration.json */; };
+		56B54B1C29FC02810000DF7D /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 5E0E3B98C2BA2686B15174B0 /* awsconfiguration.json */; };
+		56B54B1D29FC02830000DF7D /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
+		56B54B1E29FC02840000DF7D /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
 		681DFEB228E748270000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAF28E748270000C36A /* AsyncTesting.swift */; };
 		681DFEB328E748270000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB028E748270000C36A /* AsyncExpectation.swift */; };
 		681DFEB428E748270000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB128E748270000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -39,6 +43,8 @@
 		B4A5B59B2919730700D873D2 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59A2919730700D873D2 /* Amplify */; };
 		B4A5B59D2919730700D873D2 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59C2919730700D873D2 /* AWSCognitoAuthPlugin */; };
 		B4A5B59F2919730700D873D2 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59E2919730700D873D2 /* AWSS3StoragePlugin */; };
+		C6BB1C876991393278D8F001 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 5E0E3B98C2BA2686B15174B0 /* awsconfiguration.json */; };
+		D7ABA4D6CA68756B5BF413F3 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +68,7 @@
 		0311113428EBED6500D58441 /* Tests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Tests.xcconfig; sourceTree = "<group>"; };
 		0311113828EBEEA700D58441 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		031BC3F228EC9B2C0047B2E8 /* AppIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AppIcon.xcassets; sourceTree = "<group>"; };
+		5E0E3B98C2BA2686B15174B0 /* awsconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		681DFEAF28E748270000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFEB028E748270000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFEB128E748270000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
@@ -89,6 +96,7 @@
 		97914BBA29557A52002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B4A5B5982919725100D873D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B4A5B5992919727700D873D2 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
+		D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +157,7 @@
 				97914B962955797E002000EA /* StorageStressTests */,
 				684FB06B28BEAF1500C8A6EB /* Products */,
 				684FB0A028BEB02E00C8A6EB /* Frameworks */,
+				830883E72D40B8E1A9AFB5F0 /* AmplifyConfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -227,6 +236,15 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		830883E72D40B8E1A9AFB5F0 /* AmplifyConfig */ = {
+			isa = PBXGroup;
+			children = (
+				5E0E3B98C2BA2686B15174B0 /* awsconfiguration.json */,
+				D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */,
+			);
+			name = AmplifyConfig;
+			sourceTree = "<group>";
+		};
 		97914B962955797E002000EA /* StorageStressTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -268,10 +286,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 684FB0AF28BEB07200C8A6EB /* Build configuration list for PBXNativeTarget "AWSS3StoragePluginIntegrationTests" */;
 			buildPhases = (
+				684FB0C428BEB81900C8A6EB /* Copy Configuration */,
 				684FB0A528BEB07200C8A6EB /* Sources */,
 				684FB0A628BEB07200C8A6EB /* Frameworks */,
 				684FB0A728BEB07200C8A6EB /* Resources */,
-				684FB0C428BEB81900C8A6EB /* Copy Configuration */,
 			);
 			buildRules = (
 			);
@@ -279,8 +297,6 @@
 				684FB0AE28BEB07200C8A6EB /* PBXTargetDependency */,
 			);
 			name = AWSS3StoragePluginIntegrationTests;
-			packageProductDependencies = (
-			);
 			productName = AWSS3StoragePluginIntegrationTests;
 			productReference = 684FB0A928BEB07200C8A6EB /* AWSS3StoragePluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -289,10 +305,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97914BB62955798D002000EA /* Build configuration list for PBXNativeTarget "StorageStressTests" */;
 			buildPhases = (
+				97914BB52955798D002000EA /* Copy Configuration */,
 				97914BA12955798D002000EA /* Sources */,
 				97914BB32955798D002000EA /* Frameworks */,
 				97914BB42955798D002000EA /* Resources */,
-				97914BB52955798D002000EA /* Copy Configuration */,
 			);
 			buildRules = (
 			);
@@ -300,8 +316,6 @@
 				97914B9F2955798D002000EA /* PBXTargetDependency */,
 			);
 			name = StorageStressTests;
-			packageProductDependencies = (
-			);
 			productName = AWSS3StoragePluginIntegrationTests;
 			productReference = 97914BB92955798D002000EA /* StorageStressTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -352,6 +366,8 @@
 			files = (
 				031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */,
 				0311113528EBED6500D58441 /* Tests.xcconfig in Resources */,
+				C6BB1C876991393278D8F001 /* awsconfiguration.json in Resources */,
+				D7ABA4D6CA68756B5BF413F3 /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +375,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56B54B1B29FC02800000DF7D /* awsconfiguration.json in Resources */,
+				56B54B1D29FC02830000DF7D /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,6 +384,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56B54B1C29FC02810000DF7D /* awsconfiguration.json in Resources */,
+				56B54B1E29FC02840000DF7D /* amplifyconfiguration.json in Resources */,
 				97914BBB29557A52002000EA /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -375,7 +395,6 @@
 /* Begin PBXShellScriptBuildPhase section */
 		684FB0C428BEB81900C8A6EB /* Copy Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -395,7 +414,6 @@
 		};
 		97914BB52955798D002000EA /* Copy Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
