@@ -67,10 +67,6 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
             .textToSpeech("Hello, world!"),
             options: .init(voice: .brazPortugueseMaleRicardo)
         )
-
-        let player = try? AVAudioPlayer(data: result.audioData)
-        player?.play()
-        try await Task.sleep(for: .seconds(2))
         XCTAssertFalse(result.audioData.isEmpty)
     }
 }

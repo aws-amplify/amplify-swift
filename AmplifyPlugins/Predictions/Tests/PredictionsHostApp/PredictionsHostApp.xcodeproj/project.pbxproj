@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		03B3827B1594333F4C40DCFC /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 77D412CE71D4C36343815DC9 /* amplifyconfiguration.json */; };
 		902830062914027000897087 /* PredictionsHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830052914027000897087 /* PredictionsHostAppApp.swift */; };
 		902830082914027000897087 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830072914027000897087 /* ContentView.swift */; };
 		9028300A2914027100897087 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 902830092914027100897087 /* Assets.xcassets */; };
@@ -37,7 +36,6 @@
 		90542370291425630000D108 /* testImageCeleb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542363291425630000D108 /* testImageCeleb.jpg */; };
 		90542371291425630000D108 /* testImageTextForms.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542364291425630000D108 /* testImageTextForms.jpg */; };
 		90542372291425630000D108 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 90542365291425630000D108 /* audio.wav */; };
-		E8D242F17DD6A22FFCE0925E /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 4F0F614E3149038976030D84 /* awsconfiguration.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,8 +56,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4F0F614E3149038976030D84 /* awsconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
-		77D412CE71D4C36343815DC9 /* amplifyconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		902830022914027000897087 /* PredictionsHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PredictionsHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		902830052914027000897087 /* PredictionsHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsHostAppApp.swift; sourceTree = "<group>"; };
 		902830072914027000897087 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -121,15 +117,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7D09EFAF27FE586FBA9A9B2D /* AmplifyConfig */ = {
-			isa = PBXGroup;
-			children = (
-				4F0F614E3149038976030D84 /* awsconfiguration.json */,
-				77D412CE71D4C36343815DC9 /* amplifyconfiguration.json */,
-			);
-			name = AmplifyConfig;
-			sourceTree = "<group>";
-		};
 		90282FF92914027000897087 = {
 			isa = PBXGroup;
 			children = (
@@ -139,7 +126,6 @@
 				90283041291402E600897087 /* AWSPredictionsPluginIntegrationTests */,
 				902830032914027000897087 /* Products */,
 				9028304A2914042800897087 /* Frameworks */,
-				7D09EFAF27FE586FBA9A9B2D /* AmplifyConfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -286,6 +272,7 @@
 				903555F429141355004B83C2 /* Sources */,
 				903555F529141355004B83C2 /* Frameworks */,
 				903555F629141355004B83C2 /* Resources */,
+				90F5B34529FB404E0036138A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -355,8 +342,6 @@
 			files = (
 				9028300D2914027100897087 /* Preview Assets.xcassets in Resources */,
 				9028300A2914027100897087 /* Assets.xcassets in Resources */,
-				E8D242F17DD6A22FFCE0925E /* awsconfiguration.json in Resources */,
-				03B3827B1594333F4C40DCFC /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +371,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		90F5B34529FB404E0036138A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		90282FFE2914027000897087 /* Sources */ = {
