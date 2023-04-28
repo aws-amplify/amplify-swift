@@ -329,6 +329,7 @@ let predictionsTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "CoreMLPredictionsPlugin"),
             .product(name: "AWSComprehend", package: "aws-sdk-swift"),
             .product(name: "AWSPolly", package: "aws-sdk-swift"),
             .product(name: "AWSRekognition", package: "aws-sdk-swift"),
@@ -342,7 +343,27 @@ let predictionsTargets: [Target] = [
     .testTarget(
         name: "AWSPredictionsPluginUnitTests",
         dependencies: ["AWSPredictionsPlugin"],
-        path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests"
+        path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests",
+        resources: [.copy("TestResources/TestImages") ]
+    ),
+    .target(
+        name: "CoreMLPredictionsPlugin",
+        dependencies: [
+            .target(name: "Amplify")
+        ],
+        path: "AmplifyPlugins/Predictions/CoreMLPredictionsPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "CoreMLPredictionsPluginUnitTests",
+        dependencies: [
+            "CoreMLPredictionsPlugin",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Predictions/Tests/CoreMLPredictionsPluginUnitTests",
+        resources: [.copy("TestResources/TestImages")]
     )
 ]
 
@@ -400,6 +421,10 @@ let package = Package(
         .library(
             name: "AWSPredictionsPlugin",
             targets: ["AWSPredictionsPlugin"]
+        ),
+        .library(
+            name: "CoreMLPredictionsPlugin",
+            targets: ["CoreMLPredictionsPlugin"]
         )
     ],
     dependencies: dependencies,

@@ -15,17 +15,17 @@ protocol CoreMLNaturalLanguageBehavior: AnyObject {
     /// Will return nil if CoreML is not be able to infer the language
     ///
     /// - Parameter text: Input text
-    func detectDominantLanguage(for text: String) -> LanguageType?
+    func detectDominantLanguage(for text: String) -> Predictions.Language?
 
     /// Detect syntax tokens
     ///
     /// - Parameter text: Input text
-    func getSyntaxTokens(for text: String) -> [SyntaxToken]
+    func getSyntaxTokens(for text: String) -> [Predictions.SyntaxToken]
 
     /// Get entities for the text
     ///
     /// - Parameter text: Input text
-    func getEntities(for text: String) -> [EntityDetectionResult]
+    func getEntities(for text: String) -> [Predictions.Entity.DetectionResult]
 
     /// Get the sentiment score of the given paragraph.
     ///

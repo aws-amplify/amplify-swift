@@ -10,7 +10,13 @@ import Amplify
 
 extension AWSPredictionsPlugin {
     public func reset() async {
-        // TODO: Reset services
-        queue = nil
+        if predictionsService != nil {
+            predictionsService.reset()
+            predictionsService = nil
+        }
+
+        if authService != nil {
+            authService = nil
+        }
     }
 }
