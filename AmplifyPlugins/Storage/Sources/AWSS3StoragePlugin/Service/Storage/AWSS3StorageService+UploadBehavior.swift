@@ -57,6 +57,7 @@ extension AWSS3StorageService {
         var request = URLRequest(url: preSignedURL)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpMethod = "PUT"
+        request.networkServiceType = .responsiveData
 
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
 

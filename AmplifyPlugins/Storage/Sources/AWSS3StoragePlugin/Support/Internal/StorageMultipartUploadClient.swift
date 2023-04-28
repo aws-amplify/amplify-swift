@@ -100,6 +100,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             var request = URLRequest(url: preSignedURL)
             request.cachePolicy = .reloadIgnoringLocalCacheData
             request.httpMethod = "PUT"
+            request.networkServiceType = .responsiveData
 
             /*
             let userAgent = AWSServiceConfiguration.baseUserAgent().appending(" MultiPart")
