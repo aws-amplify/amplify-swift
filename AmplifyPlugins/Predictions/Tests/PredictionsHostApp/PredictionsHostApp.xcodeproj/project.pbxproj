@@ -1,0 +1,802 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		902830062914027000897087 /* PredictionsHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830052914027000897087 /* PredictionsHostAppApp.swift */; };
+		902830082914027000897087 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830072914027000897087 /* ContentView.swift */; };
+		9028300A2914027100897087 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 902830092914027100897087 /* Assets.xcassets */; };
+		9028300D2914027100897087 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9028300C2914027100897087 /* Preview Assets.xcassets */; };
+		9028304C2914042800897087 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 9028304B2914042800897087 /* Amplify */; };
+		9028304E2914042800897087 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 9028304D2914042800897087 /* AWSCognitoAuthPlugin */; };
+		902830502914042800897087 /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 9028304F2914042800897087 /* AWSPredictionsPlugin */; };
+		902830522914042800897087 /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 902830512914042800897087 /* CoreMLPredictionsPlugin */; };
+		904D63AD291439890057D06F /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 904D63AC291439890057D06F /* Amplify */; };
+		904D63AF291439890057D06F /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 904D63AE291439890057D06F /* AWSCognitoAuthPlugin */; };
+		904D63B1291439890057D06F /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 904D63B0291439890057D06F /* AWSPredictionsPlugin */; };
+		904D63B3291439890057D06F /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 904D63B2291439890057D06F /* CoreMLPredictionsPlugin */; };
+		905423522914254B0000D108 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9054234E2914254B0000D108 /* audio.wav */; };
+		905423532914254B0000D108 /* people.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9054234F2914254B0000D108 /* people.jpg */; };
+		905423542914254B0000D108 /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905423502914254B0000D108 /* CoreMLPredictionsPluginIntegrationTest.swift */; };
+		905423552914254B0000D108 /* CoreMLPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905423512914254B0000D108 /* CoreMLPredictionsPluginTestBase.swift */; };
+		90542366291425630000D108 /* IdentifyBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90542357291425630000D108 /* IdentifyBasicIntegrationTests.swift */; };
+		90542367291425630000D108 /* ConvertBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90542358291425630000D108 /* ConvertBasicIntegrationTests.swift */; };
+		90542368291425630000D108 /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90542359291425630000D108 /* AWSPredictionsPluginTestBase.swift */; };
+		90542369291425630000D108 /* InterpretBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9054235A291425630000D108 /* InterpretBasicIntegrationTests.swift */; };
+		9054236A291425630000D108 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9054235B291425630000D108 /* README.md */; };
+		9054236B291425630000D108 /* testImageText.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9054235E291425630000D108 /* testImageText.jpg */; };
+		9054236C291425630000D108 /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9054235F291425630000D108 /* testImageLabels.jpg */; };
+		9054236D291425630000D108 /* testImageTextWithTables.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542360291425630000D108 /* testImageTextWithTables.jpg */; };
+		9054236E291425630000D108 /* testImageTextAll.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542361291425630000D108 /* testImageTextAll.jpg */; };
+		9054236F291425630000D108 /* testImageEntities.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542362291425630000D108 /* testImageEntities.jpg */; };
+		90542370291425630000D108 /* testImageCeleb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542363291425630000D108 /* testImageCeleb.jpg */; };
+		90542371291425630000D108 /* testImageTextForms.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542364291425630000D108 /* testImageTextForms.jpg */; };
+		90542372291425630000D108 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 90542365291425630000D108 /* audio.wav */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		90283037291402D500897087 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90282FFA2914027000897087 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 902830012914027000897087;
+			remoteInfo = PredictionsHostApp;
+		};
+		903555FC29141356004B83C2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90282FFA2914027000897087 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 902830012914027000897087;
+			remoteInfo = PredictionsHostApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		902830022914027000897087 /* PredictionsHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PredictionsHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		902830052914027000897087 /* PredictionsHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsHostAppApp.swift; sourceTree = "<group>"; };
+		902830072914027000897087 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		902830092914027100897087 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9028300C2914027100897087 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		90283033291402D500897087 /* CoreMLPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreMLPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		903555F829141355004B83C2 /* AWSPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9054234B291421A40000D108 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
+		9054234E2914254B0000D108 /* audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = audio.wav; sourceTree = "<group>"; };
+		9054234F2914254B0000D108 /* people.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = people.jpg; sourceTree = "<group>"; };
+		905423502914254B0000D108 /* CoreMLPredictionsPluginIntegrationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginIntegrationTest.swift; sourceTree = "<group>"; };
+		905423512914254B0000D108 /* CoreMLPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
+		90542357291425630000D108 /* IdentifyBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyBasicIntegrationTests.swift; sourceTree = "<group>"; };
+		90542358291425630000D108 /* ConvertBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvertBasicIntegrationTests.swift; sourceTree = "<group>"; };
+		90542359291425630000D108 /* AWSPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
+		9054235A291425630000D108 /* InterpretBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretBasicIntegrationTests.swift; sourceTree = "<group>"; };
+		9054235B291425630000D108 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9054235E291425630000D108 /* testImageText.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageText.jpg; sourceTree = "<group>"; };
+		9054235F291425630000D108 /* testImageLabels.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageLabels.jpg; sourceTree = "<group>"; };
+		90542360291425630000D108 /* testImageTextWithTables.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageTextWithTables.jpg; sourceTree = "<group>"; };
+		90542361291425630000D108 /* testImageTextAll.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageTextAll.jpg; sourceTree = "<group>"; };
+		90542362291425630000D108 /* testImageEntities.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageEntities.jpg; sourceTree = "<group>"; };
+		90542363291425630000D108 /* testImageCeleb.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageCeleb.jpg; sourceTree = "<group>"; };
+		90542364291425630000D108 /* testImageTextForms.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageTextForms.jpg; sourceTree = "<group>"; };
+		90542365291425630000D108 /* audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = audio.wav; sourceTree = "<group>"; };
+		907CABCC292E715A00046799 /* PredictionsHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PredictionsHostApp.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		90282FFF2914027000897087 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				902830522914042800897087 /* CoreMLPredictionsPlugin in Frameworks */,
+				9028304C2914042800897087 /* Amplify in Frameworks */,
+				902830502914042800897087 /* AWSPredictionsPlugin in Frameworks */,
+				9028304E2914042800897087 /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90283030291402D500897087 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903555F529141355004B83C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				904D63B3291439890057D06F /* CoreMLPredictionsPlugin in Frameworks */,
+				904D63AD291439890057D06F /* Amplify in Frameworks */,
+				904D63B1291439890057D06F /* AWSPredictionsPlugin in Frameworks */,
+				904D63AF291439890057D06F /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		90282FF92914027000897087 = {
+			isa = PBXGroup;
+			children = (
+				9054234B291421A40000D108 /* amplify-swift */,
+				902830042914027000897087 /* PredictionsHostApp */,
+				90283034291402D500897087 /* CoreMLPredictionsPluginIntegrationTests */,
+				90283041291402E600897087 /* AWSPredictionsPluginIntegrationTests */,
+				902830032914027000897087 /* Products */,
+				9028304A2914042800897087 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		902830032914027000897087 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				902830022914027000897087 /* PredictionsHostApp.app */,
+				90283033291402D500897087 /* CoreMLPredictionsPluginIntegrationTests.xctest */,
+				903555F829141355004B83C2 /* AWSPredictionsPluginIntegrationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		902830042914027000897087 /* PredictionsHostApp */ = {
+			isa = PBXGroup;
+			children = (
+				907CABCC292E715A00046799 /* PredictionsHostApp.entitlements */,
+				902830052914027000897087 /* PredictionsHostAppApp.swift */,
+				902830072914027000897087 /* ContentView.swift */,
+				902830092914027100897087 /* Assets.xcassets */,
+				9028300B2914027100897087 /* Preview Content */,
+			);
+			path = PredictionsHostApp;
+			sourceTree = "<group>";
+		};
+		9028300B2914027100897087 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				9028300C2914027100897087 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		90283034291402D500897087 /* CoreMLPredictionsPluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				905423502914254B0000D108 /* CoreMLPredictionsPluginIntegrationTest.swift */,
+				905423512914254B0000D108 /* CoreMLPredictionsPluginTestBase.swift */,
+				9054234D2914254B0000D108 /* Resources */,
+			);
+			path = CoreMLPredictionsPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
+		90283041291402E600897087 /* AWSPredictionsPluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				90542359291425630000D108 /* AWSPredictionsPluginTestBase.swift */,
+				90542358291425630000D108 /* ConvertBasicIntegrationTests.swift */,
+				90542357291425630000D108 /* IdentifyBasicIntegrationTests.swift */,
+				9054235A291425630000D108 /* InterpretBasicIntegrationTests.swift */,
+				9054235B291425630000D108 /* README.md */,
+				9054235C291425630000D108 /* Resources */,
+			);
+			path = AWSPredictionsPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
+		9028304A2914042800897087 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9054234D2914254B0000D108 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9054234E2914254B0000D108 /* audio.wav */,
+				9054234F2914254B0000D108 /* people.jpg */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		9054235C291425630000D108 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9054235D291425630000D108 /* TestImages */,
+				90542365291425630000D108 /* audio.wav */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		9054235D291425630000D108 /* TestImages */ = {
+			isa = PBXGroup;
+			children = (
+				9054235E291425630000D108 /* testImageText.jpg */,
+				9054235F291425630000D108 /* testImageLabels.jpg */,
+				90542360291425630000D108 /* testImageTextWithTables.jpg */,
+				90542361291425630000D108 /* testImageTextAll.jpg */,
+				90542362291425630000D108 /* testImageEntities.jpg */,
+				90542363291425630000D108 /* testImageCeleb.jpg */,
+				90542364291425630000D108 /* testImageTextForms.jpg */,
+			);
+			path = TestImages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		902830012914027000897087 /* PredictionsHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 902830262914027200897087 /* Build configuration list for PBXNativeTarget "PredictionsHostApp" */;
+			buildPhases = (
+				90282FFE2914027000897087 /* Sources */,
+				90282FFF2914027000897087 /* Frameworks */,
+				902830002914027000897087 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PredictionsHostApp;
+			packageProductDependencies = (
+				9028304B2914042800897087 /* Amplify */,
+				9028304D2914042800897087 /* AWSCognitoAuthPlugin */,
+				9028304F2914042800897087 /* AWSPredictionsPlugin */,
+				902830512914042800897087 /* CoreMLPredictionsPlugin */,
+			);
+			productName = PredictionsHostApp;
+			productReference = 902830022914027000897087 /* PredictionsHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		90283032291402D500897087 /* CoreMLPredictionsPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90283039291402D600897087 /* Build configuration list for PBXNativeTarget "CoreMLPredictionsPluginIntegrationTests" */;
+			buildPhases = (
+				9028302F291402D500897087 /* Sources */,
+				90283030291402D500897087 /* Frameworks */,
+				90283031291402D500897087 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				90283038291402D500897087 /* PBXTargetDependency */,
+			);
+			name = CoreMLPredictionsPluginIntegrationTests;
+			productName = CoreMLPredictionsPluginIntegrationTests;
+			productReference = 90283033291402D500897087 /* CoreMLPredictionsPluginIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		903555F729141355004B83C2 /* AWSPredictionsPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 903555FE29141356004B83C2 /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTests" */;
+			buildPhases = (
+				903555F429141355004B83C2 /* Sources */,
+				903555F529141355004B83C2 /* Frameworks */,
+				903555F629141355004B83C2 /* Resources */,
+				90F5B34529FB404E0036138A /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				903555FD29141356004B83C2 /* PBXTargetDependency */,
+			);
+			name = AWSPredictionsPluginIntegrationTests;
+			packageProductDependencies = (
+				904D63AC291439890057D06F /* Amplify */,
+				904D63AE291439890057D06F /* AWSCognitoAuthPlugin */,
+				904D63B0291439890057D06F /* AWSPredictionsPlugin */,
+				904D63B2291439890057D06F /* CoreMLPredictionsPlugin */,
+			);
+			productName = AWSPredictionsPluginIntegrationTests;
+			productReference = 903555F829141355004B83C2 /* AWSPredictionsPluginIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		90282FFA2914027000897087 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1410;
+				LastUpgradeCheck = 1410;
+				TargetAttributes = {
+					902830012914027000897087 = {
+						CreatedOnToolsVersion = 14.1;
+					};
+					90283032291402D500897087 = {
+						CreatedOnToolsVersion = 14.1;
+						LastSwiftMigration = 1410;
+						TestTargetID = 902830012914027000897087;
+					};
+					903555F729141355004B83C2 = {
+						CreatedOnToolsVersion = 14.1;
+						LastSwiftMigration = 1410;
+						TestTargetID = 902830012914027000897087;
+					};
+				};
+			};
+			buildConfigurationList = 90282FFD2914027000897087 /* Build configuration list for PBXProject "PredictionsHostApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 90282FF92914027000897087;
+			productRefGroup = 902830032914027000897087 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				902830012914027000897087 /* PredictionsHostApp */,
+				90283032291402D500897087 /* CoreMLPredictionsPluginIntegrationTests */,
+				903555F729141355004B83C2 /* AWSPredictionsPluginIntegrationTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		902830002914027000897087 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9028300D2914027100897087 /* Preview Assets.xcassets in Resources */,
+				9028300A2914027100897087 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		90283031291402D500897087 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				905423532914254B0000D108 /* people.jpg in Resources */,
+				905423522914254B0000D108 /* audio.wav in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903555F629141355004B83C2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9054236B291425630000D108 /* testImageText.jpg in Resources */,
+				90542370291425630000D108 /* testImageCeleb.jpg in Resources */,
+				9054236D291425630000D108 /* testImageTextWithTables.jpg in Resources */,
+				9054236A291425630000D108 /* README.md in Resources */,
+				90542372291425630000D108 /* audio.wav in Resources */,
+				90542371291425630000D108 /* testImageTextForms.jpg in Resources */,
+				9054236C291425630000D108 /* testImageLabels.jpg in Resources */,
+				9054236F291425630000D108 /* testImageEntities.jpg in Resources */,
+				9054236E291425630000D108 /* testImageTextAll.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		90F5B34529FB404E0036138A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		90282FFE2914027000897087 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				902830082914027000897087 /* ContentView.swift in Sources */,
+				902830062914027000897087 /* PredictionsHostAppApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9028302F291402D500897087 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				905423552914254B0000D108 /* CoreMLPredictionsPluginTestBase.swift in Sources */,
+				905423542914254B0000D108 /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903555F429141355004B83C2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90542366291425630000D108 /* IdentifyBasicIntegrationTests.swift in Sources */,
+				90542369291425630000D108 /* InterpretBasicIntegrationTests.swift in Sources */,
+				90542368291425630000D108 /* AWSPredictionsPluginTestBase.swift in Sources */,
+				90542367291425630000D108 /* ConvertBasicIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		90283038291402D500897087 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 902830012914027000897087 /* PredictionsHostApp */;
+			targetProxy = 90283037291402D500897087 /* PBXContainerItemProxy */;
+		};
+		903555FD29141356004B83C2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 902830012914027000897087 /* PredictionsHostApp */;
+			targetProxy = 903555FC29141356004B83C2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		902830242914027200897087 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		902830252914027200897087 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		902830272914027200897087 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PredictionsHostApp/PredictionsHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PredictionsHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.PredictionsHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		902830282914027200897087 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PredictionsHostApp/PredictionsHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PredictionsHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.PredictionsHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9028303A291402D600897087 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.CoreMLPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
+			};
+			name = Debug;
+		};
+		9028303B291402D600897087 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.CoreMLPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
+			};
+			name = Release;
+		};
+		903555FF29141356004B83C2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_PKGINFO_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
+			};
+			name = Debug;
+		};
+		9035560029141356004B83C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_PKGINFO_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		90282FFD2914027000897087 /* Build configuration list for PBXProject "PredictionsHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				902830242914027200897087 /* Debug */,
+				902830252914027200897087 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		902830262914027200897087 /* Build configuration list for PBXNativeTarget "PredictionsHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				902830272914027200897087 /* Debug */,
+				902830282914027200897087 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		90283039291402D600897087 /* Build configuration list for PBXNativeTarget "CoreMLPredictionsPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9028303A291402D600897087 /* Debug */,
+				9028303B291402D600897087 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		903555FE29141356004B83C2 /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				903555FF29141356004B83C2 /* Debug */,
+				9035560029141356004B83C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9028304B2914042800897087 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		9028304D2914042800897087 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		9028304F2914042800897087 /* AWSPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPredictionsPlugin;
+		};
+		902830512914042800897087 /* CoreMLPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreMLPredictionsPlugin;
+		};
+		904D63AC291439890057D06F /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		904D63AE291439890057D06F /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		904D63B0291439890057D06F /* AWSPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPredictionsPlugin;
+		};
+		904D63B2291439890057D06F /* CoreMLPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreMLPredictionsPlugin;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 90282FFA2914027000897087 /* Project object */;
+}
