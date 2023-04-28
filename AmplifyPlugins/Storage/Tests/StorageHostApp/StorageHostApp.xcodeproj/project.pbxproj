@@ -41,7 +41,6 @@
 		B4A5B59B2919730700D873D2 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59A2919730700D873D2 /* Amplify */; };
 		B4A5B59D2919730700D873D2 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59C2919730700D873D2 /* AWSCognitoAuthPlugin */; };
 		B4A5B59F2919730700D873D2 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59E2919730700D873D2 /* AWSS3StoragePlugin */; };
-		D7ABA4D6CA68756B5BF413F3 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -256,6 +255,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 684FB07828BEAF1600C8A6EB /* Build configuration list for PBXNativeTarget "StorageHostApp" */;
 			buildPhases = (
+				56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration */,
 				684FB06628BEAF1500C8A6EB /* Sources */,
 				684FB06728BEAF1500C8A6EB /* Frameworks */,
 				684FB06828BEAF1500C8A6EB /* Resources */,
@@ -281,7 +281,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 684FB0AF28BEB07200C8A6EB /* Build configuration list for PBXNativeTarget "AWSS3StoragePluginIntegrationTests" */;
 			buildPhases = (
-				684FB0C428BEB81900C8A6EB /* Copy Configuration */,
 				684FB0A528BEB07200C8A6EB /* Sources */,
 				684FB0A628BEB07200C8A6EB /* Frameworks */,
 				684FB0A728BEB07200C8A6EB /* Resources */,
@@ -300,7 +299,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97914BB62955798D002000EA /* Build configuration list for PBXNativeTarget "StorageStressTests" */;
 			buildPhases = (
-				97914BB52955798D002000EA /* Copy Configuration */,
 				97914BA12955798D002000EA /* Sources */,
 				97914BB32955798D002000EA /* Frameworks */,
 				97914BB42955798D002000EA /* Resources */,
@@ -361,7 +359,6 @@
 			files = (
 				031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */,
 				0311113528EBED6500D58441 /* Tests.xcconfig in Resources */,
-				D7ABA4D6CA68756B5BF413F3 /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,7 +382,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		684FB0C428BEB81900C8A6EB /* Copy Configuration */ = {
+		56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -394,26 +391,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy Configuration";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "${PROJECT_DIR}/copy_configuration.sh\n";
-			showEnvVarsInLog = 0;
-		};
-		97914BB52955798D002000EA /* Copy Configuration */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Configuration";
+			name = "Copy amplifyconfiguration";
 			outputFileListPaths = (
 			);
 			outputPaths = (

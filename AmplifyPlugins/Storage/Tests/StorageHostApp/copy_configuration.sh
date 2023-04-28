@@ -17,6 +17,6 @@ if [ ! -d "$SOURCE_DIR" ]; then
 fi
 
 mkdir -p "$DESTINATION_DIR"
-cp -r "$SOURCE_DIR"/*.json $DESTINATION_DIR
+cp "$SOURCE_DIR/AWSS3StoragePluginTests-amplifyconfiguration.json" "$DESTINATION_DIR/amplifyconfiguration.json"
 
 exit 0
