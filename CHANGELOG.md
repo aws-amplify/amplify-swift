@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.0 (2023-04-28)
+
+### Features
+
+- **predictions**: add predictions v2 (#2902)
+
 ## 2.8.1 (2023-04-17)
 
 ### Bug Fixes
