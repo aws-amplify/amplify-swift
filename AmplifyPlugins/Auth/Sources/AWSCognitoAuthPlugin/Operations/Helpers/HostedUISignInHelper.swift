@@ -94,19 +94,13 @@ struct HostedUISignInHelper: DefaultLogger {
                 }
 
             case .error(let error):
-                await waitForSignInCancel()
                 throw error.authError
 
             case .signingIn(let signInState):
-                do {
-                    guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
-                        continue
-                    }
-                    return result
-                } catch {
-                    await waitForSignInCancel()
-                    throw error
+                guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
+                    continue
                 }
+                return result
             default:
                 continue
             }
