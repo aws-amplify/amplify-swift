@@ -9,8 +9,7 @@
 /* Begin PBXBuildFile section */
 		0311113528EBED6500D58441 /* Tests.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 0311113428EBED6500D58441 /* Tests.xcconfig */; };
 		031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 031BC3F228EC9B2C0047B2E8 /* AppIcon.xcassets */; };
-		56B54B1D29FC02830000DF7D /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
-		56B54B1E29FC02840000DF7D /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
+		56043E9329FC4D33003E3424 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
 		681DFEB228E748270000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAF28E748270000C36A /* AsyncTesting.swift */; };
 		681DFEB328E748270000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB028E748270000C36A /* AsyncExpectation.swift */; };
 		681DFEB428E748270000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB128E748270000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -358,6 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */,
+				56043E9329FC4D33003E3424 /* amplifyconfiguration.json in Resources */,
 				0311113528EBED6500D58441 /* Tests.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -366,7 +366,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56B54B1D29FC02830000DF7D /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,7 +373,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56B54B1E29FC02840000DF7D /* amplifyconfiguration.json in Resources */,
 				97914BBB29557A52002000EA /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
