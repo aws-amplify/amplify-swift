@@ -1,5 +1,13 @@
 # Changelog
 ## Unreleased
+## 1.30.0 (2023-05-01)
+
+### Features
+
+- **api**: Update URL interceptor to be async (#2876)
+- **api**: Add async protocol method for request interceptors IAM signing (#2871)
+- **api**: Add async protocol implementation for token request interceptors (#2870)
+
 ## 1.29.3 (2023-04-21)
 
 ### Bug Fixes
