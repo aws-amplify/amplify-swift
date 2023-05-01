@@ -43,7 +43,7 @@ extension CoreMLPredictionsPlugin {
                 .detectLabels(.moderation, _):
             throw predictionsError
         case let .detectText(lift):
-            guard  let result = coreMLVisionAdapter.detectText(image) else {
+            guard  let result = try coreMLVisionAdapter.detectText(image) else {
                 let errorDescription = CoreMLPluginErrorString.detectTextNoResult.errorDescription
                 let recovery = CoreMLPluginErrorString.detectTextNoResult.recoverySuggestion
                 let predictionsError = PredictionsError.service(
@@ -53,7 +53,7 @@ extension CoreMLPredictionsPlugin {
             }
             return lift.outputSpecificToGeneric(result)
         case let .detectLabels(_, lift):
-            guard let result = coreMLVisionAdapter.detectLabels(image) else {
+            guard let result = try coreMLVisionAdapter.detectLabels(image) else {
                 let errorDescription = CoreMLPluginErrorString.detectLabelsNoResult.errorDescription
                 let recovery = CoreMLPluginErrorString.detectLabelsNoResult.recoverySuggestion
                 let predictionsError = PredictionsError.service(
@@ -90,14 +90,18 @@ extension CoreMLPredictionsPlugin {
             )
             let stream = AsyncThrowingStream<Predictions.Convert.SpeechToText.Result, Error> { continuation in
                 Task {
-                    let result = try await coreMLSpeech.getTranscription(
-                        request.speechToText
-                    )
-                    continuation.yield(
-                        .init(transcription: result.bestTranscription.formattedString)
-                    )
-                    if result.isFinal {
-                        continuation.finish()
+                    do {
+                        let result = try await coreMLSpeech.getTranscription(
+                            request.speechToText
+                        )
+                        continuation.yield(
+                            .init(transcription: result.bestTranscription.formattedString)
+                        )
+                        if result.isFinal {
+                            continuation.finish()
+                        }
+                    } catch {
+                        continuation.yield(with: .failure(error))
                     }
                 }
             }
