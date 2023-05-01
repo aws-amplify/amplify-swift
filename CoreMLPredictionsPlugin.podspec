@@ -1,5 +1,5 @@
 # Version definitions
-$AMPLIFY_VERSION = '1.29.3'
+$AMPLIFY_VERSION = '1.30.0'
 $AMPLIFY_RELEASE_TAG = "#{$AMPLIFY_VERSION}"
 
 Pod::Spec.new do |s|
