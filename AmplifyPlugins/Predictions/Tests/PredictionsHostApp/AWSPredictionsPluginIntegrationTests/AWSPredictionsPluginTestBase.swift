@@ -15,7 +15,6 @@ class AWSPredictionsPluginTestBase: XCTestCase {
 
     // 20 seconds to wait before network timeouts
     let networkTimeout = TimeInterval(20)
-    let amplifyConfigurationFile = "testconfiguration/AWSPredictionsPluginIntegrationTests-amplifyconfiguration"
 
     override func setUp() {
         super.setUp()
@@ -23,24 +22,9 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         continueAfterFailure = false
 
         do {
-            guard let path = Bundle.init(for: type(of: self)).path(
-                forResource: amplifyConfigurationFile,
-                ofType: "json"
-            ) else {
-                fatalError("❌ Could not retrieve configuration file: \(amplifyConfigurationFile)")
-            }
-
-            let url = URL(fileURLWithPath: path)
-            let data = try Data(contentsOf: url)
-            let jsonDecoder = JSONDecoder()
-            let configuration = try jsonDecoder.decode(
-                AmplifyConfiguration.self,
-                from: data
-            )
-
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPredictionsPlugin())
-            try Amplify.configure(configuration)
+            try Amplify.configure()
         } catch {
             XCTFail(String(describing: error))
             return
