@@ -81,7 +81,7 @@ struct UserPoolSignInHelper: DefaultLogger {
 
             let client = try environment.cognitoUserPoolFactory()
             let response = try await client.respondToAuthChallenge(input: request)
-            let event = try self.parseResponse(response, for: username, signInMethod: signInMethod)
+            let event = self.parseResponse(response, for: username, signInMethod: signInMethod)
             return event
         }
 
@@ -90,7 +90,7 @@ struct UserPoolSignInHelper: DefaultLogger {
     static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
-        signInMethod: SignInMethod) throws -> StateMachineEvent {
+        signInMethod: SignInMethod) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
