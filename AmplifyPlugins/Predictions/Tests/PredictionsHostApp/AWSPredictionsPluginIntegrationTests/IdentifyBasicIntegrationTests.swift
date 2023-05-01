@@ -33,8 +33,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let electronicsLabel = try XCTUnwrap(
             result.labels.first(where: { $0.name == "Electronics" })?.metadata
         )
-        let isConfidentImageContainsElectronics = electronicsLabel.confidence >= 99
         XCTAssertNotNil(result)
+        XCTAssertGreaterThanOrEqual(electronicsLabel.confidence, 99)
     }
 
     func testIdentifyModerationLabels() async throws {
