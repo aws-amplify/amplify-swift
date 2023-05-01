@@ -19,10 +19,25 @@ import Foundation
 /// plugin.
 public protocol URLRequestInterceptor {
 
-    // swiftlint:disable:next todo
-    // TODO: turn async https://github.com/aws-amplify/amplify-ios/issues/73
     /// Inspect and optionally modify the request, returning either the original
     /// unmodified request or a modified copy.
     /// - Parameter request: The URLRequest
     func intercept(_ request: URLRequest) throws -> URLRequest
+
+    /// Inspect and optionally modify the request, returning either the original
+    /// unmodified request or a modified copy in the completion handler.
+    /// - Parameter request: The URLRequest
+    func intercept(_ request: URLRequest, completion: @escaping (Result<URLRequest, Error>) -> Void)
+}
+
+public extension URLRequestInterceptor {
+
+    func intercept(_ request: URLRequest, completion: (Result<URLRequest, Error>) -> Void) {
+        do {
+            let interceptedRequest = try intercept(request)
+            completion(.success(interceptedRequest))
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }

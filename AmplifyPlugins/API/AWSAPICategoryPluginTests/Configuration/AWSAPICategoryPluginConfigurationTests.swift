@@ -126,6 +126,10 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
         func getToken() -> Result<String, AuthError> {
             .success("token")
         }
+
+        func getToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+            completion(.success("token"))
+        }
     }
 
 }
