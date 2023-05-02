@@ -24,26 +24,6 @@ We deeply appreciate your feedback on this Developer Preview as we work towards 
 - [Geo](https://docs.amplify.aws/lib/geo/getting-started/q/platform/ios) - for adding location-based capabilities to your app.
 - [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
 
-All services and features not listed above are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
-
-```swift
-guard let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
-    print("Unable to to cast to AWSS3StoragePlugin")
-    return
-}
-
-let awsS3 = plugin.getEscapeHatch()
-let input: HeadBucketInput = HeadBucketInput()
-let task = awsS3.headBucket(input: input) { result in
-    switch result {
-    case .success(let response):
-        print(response)
-    case .failure(let error):
-        print(error)
-    }
-}
-```
-
 ## Platform Support
 
 Amplify supports iOS 13+ and macOS 10.15+. Support for watchOS and tvOS is coming in future releases.
@@ -90,14 +70,17 @@ Amplify requires Xcode 13.4 or higher to build.
 
     ```swift
     import Amplify
+    import AWSCongitoAuthPlugin
     import AWSAPIPlugin
     import AWSDataStorePlugin
 
-    // ... later
+    // ...
 
     func initializeAmplify() {
         do {
+            try Amplify.add(AWSCognitoAuthPlugin())
             try Amplify.add(AWSAPIPlugin())
+            try Amplify.add(AWSDataStorePlugin())
             // and so on ...
             try Amplify.configure()
         } catch {
@@ -111,12 +94,42 @@ Amplify requires Xcode 13.4 or higher to build.
     ```swift
     import Amplify
 
-    // ... later
+    // ...
 
-    func doUpload() {
-        Amplify.Storage.uploadFile(...)
+    func signIn() async throws {
+        let signInResult = try await Amplify.Auth.signIn(...)
+        // ...
     }
     ```
+
+## Escape Hatch
+
+All services and features not listed in the [**Features/API sectios**](#featuresapis) are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
+
+```swift
+import Amplify
+import AWSS3StoragePlugin
+import AWSS3
+
+// ...
+
+guard let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
+    print("Unable to to cast to AWSS3StoragePlugin")
+    return
+}
+
+let awsS3 = plugin.getEscapeHatch()
+
+let accelerateConfigInput = PutBucketAccelerateConfigurationInput()
+do {
+    let accelerateConfigOutput = try await awsS3.putBucketAccelerateConfiguration(
+        input: accelerateConfigInput
+    )
+    print("putBucketAccelerateConfiguration output: \(accelerateConfigOutput)")
+} catch {
+    print("putBucketAccelerateConfiguration error: \(error)")
+}
+```
 
 ## Reporting Bugs/Feature Requests
 
