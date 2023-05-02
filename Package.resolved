@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
       "state" : {
-        "revision" : "666227de3b4cf4adcce7c70b8b89f98c7df02754",
-        "version" : "0.16.0"
+        "revision" : "80b4a1646399b8e4e0ce80711653476a85bd5e37",
+        "version" : "0.17.0"
       }
     }
   ],

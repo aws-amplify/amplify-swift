@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.9.1 (2023-05-02)
+
+### Bug Fixes
+
+- **Auth**: Fixing throwing of AuthError when Authorization fails during signIn (#2905)
+- **storage**: foreground upload speed (#2925)
+
 ## 2.9.0 (2023-04-28)
 
 ### Features
