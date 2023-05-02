@@ -31,6 +31,7 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 
+// ...
 
 guard let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
     print("Unable to to cast to AWSS3StoragePlugin")
