@@ -27,20 +27,26 @@ We deeply appreciate your feedback on this Developer Preview as we work towards 
 All services and features not listed above are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
 
 ```swift
+import Amplify
+import AWSS3StoragePlugin
+import AWSS3
+
+
 guard let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
     print("Unable to to cast to AWSS3StoragePlugin")
     return
 }
 
 let awsS3 = plugin.getEscapeHatch()
-let input: HeadBucketInput = HeadBucketInput()
-let task = awsS3.headBucket(input: input) { result in
-    switch result {
-    case .success(let response):
-        print(response)
-    case .failure(let error):
-        print(error)
-    }
+
+let accelerateConfigInput = PutBucketAccelerateConfigurationInput()
+do {
+    let accelerateConfigOutput = try await awsS3.putBucketAccelerateConfiguration(
+        input: accelerateConfigInput
+    )
+    print("putBucketAccelerateConfiguration output: \(accelerateConfigOutput)")
+} catch {
+    print("putBucketAccelerateConfiguration error: \(error)")
 }
 ```
 
@@ -90,14 +96,17 @@ Amplify requires Xcode 13.4 or higher to build.
 
     ```swift
     import Amplify
+    import AWSCongitoAuthPlugin
     import AWSAPIPlugin
     import AWSDataStorePlugin
 
-    // ... later
+    // ...
 
     func initializeAmplify() {
         do {
+            try Amplify.add(AWSCognitoAuthPlugin())
             try Amplify.add(AWSAPIPlugin())
+            try Amplify.add(AWSDataStorePlugin())
             // and so on ...
             try Amplify.configure()
         } catch {
@@ -111,10 +120,11 @@ Amplify requires Xcode 13.4 or higher to build.
     ```swift
     import Amplify
 
-    // ... later
+    // ...
 
-    func doUpload() {
-        Amplify.Storage.uploadFile(...)
+    func signIn() async throws {
+        let signInResult = try await Amplify.Auth.signIn(...)
+        // ...
     }
     ```
 
