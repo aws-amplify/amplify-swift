@@ -787,7 +787,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
             if shouldThrowError {
-                throw GetCredentialsForIdentityOutputError.internalErrorException(.init())
+                throw GetCredentialsForIdentityOutputError.invalidParameterException(.init())
             } else {
                 return .init(credentials: credentials, identityId: mockIdentityId)
             }

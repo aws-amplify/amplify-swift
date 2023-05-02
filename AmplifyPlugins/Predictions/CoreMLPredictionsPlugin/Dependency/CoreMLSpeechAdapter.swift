@@ -12,12 +12,24 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
     func getTranscription(_ audioData: URL) async throws -> SFSpeechRecognitionResult {
         let request = SFSpeechURLRecognitionRequest(url: audioData)
         request.requiresOnDeviceRecognition = true
-        let recognizer = SFSpeechRecognizer()
+        guard let recognizer = SFSpeechRecognizer() else {
+            throw PredictionsError.client(
+                .init(
+                    description: "CoreML Service is not configured",
+                    recoverySuggestion: "Ensure that dictation is enabled on your device."
+                )
+            )
+        }
 
         let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<SFSpeechRecognitionResult, Error>) in
-            recognizer?.recognitionTask(
+            recognizer.recognitionTask(
                 with: request,
-                resultHandler: { result, _ in
+                resultHandler: { (result, error) in
+                    if let error = error {
+                        continuation.resume(with: .failure(error))
+                        return
+                    }
+
                     guard let result = result else {
                         continuation.resume(with: .failure(
                             PredictionsError.client(

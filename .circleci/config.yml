@@ -107,18 +107,18 @@ commands:
       - run:
           name: Checkout code shallow and change to working directory
           command: |
-            git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" $CIRCLE_WORKING_DIRECTORY
+            git clone --depth 10 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" $CIRCLE_WORKING_DIRECTORY
             cd $CIRCLE_WORKING_DIRECTORY
 
             if [ -n "$CIRCLE_TAG" ]; then
               echo 'Fetch tag'
-              git fetch --depth 1 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
+              git fetch --depth 10 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
             elif [[ $(echo $CIRCLE_PULL_REQUEST | grep -E "${CIRCLE_BRANCH}$") ]]; then
               echo 'Fetch pull request'
-              git fetch --depth 1 --force origin "$CIRCLE_BRANCH/head:remotes/origin/$CIRCLE_BRANCH"
+              git fetch --depth 10 --force origin "$CIRCLE_BRANCH/head:remotes/origin/$CIRCLE_BRANCH"
             else
               echo 'Fetch branch'
-              git fetch --depth 1 --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
+              git fetch --depth 10 --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
             fi
             echo "Checking out the CI HEAD"
             git reset --hard "$CIRCLE_SHA1"

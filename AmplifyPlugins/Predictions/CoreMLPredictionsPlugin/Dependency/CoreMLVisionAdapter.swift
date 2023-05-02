@@ -10,11 +10,14 @@ import Vision
 
 class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
-    public func detectLabels(_ imageURL: URL) -> Predictions.Identify.Labels.Result? {
+    func detectLabels(_ imageURL: URL) throws -> Predictions.Identify.Labels.Result? {
         var labelsResult = [Predictions.Label]()
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNClassifyImageRequest()
-        try? handler.perform([request])
+#if targetEnvironment(simulator)
+        request.usesCPUOnly = true
+#endif
+        try handler.perform([request])
         guard let observations = request.results else { return nil }
 
         let categories = observations.filter { $0.hasMinimumRecall(0.01, forPrecision: 0.9) }
@@ -26,11 +29,14 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         return Predictions.Identify.Labels.Result(labels: labelsResult)
     }
 
-    public func detectText(_ imageURL: URL) -> Predictions.Identify.Text.Result? {
+    public func detectText(_ imageURL: URL) throws -> Predictions.Identify.Text.Result? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNRecognizeTextRequest()
+#if targetEnvironment(simulator)
+        request.usesCPUOnly = true
+#endif
         request.recognitionLevel = .accurate
-        try? handler.perform([request])
+        try handler.perform([request])
         guard let observations = request.results else { return nil }
 
         var identifiedLines = [Predictions.IdentifiedLine]()
@@ -62,10 +68,13 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         )
     }
 
-    func detectEntities(_ imageURL: URL) -> Predictions.Identify.Entities.Result? {
+    func detectEntities(_ imageURL: URL) throws -> Predictions.Identify.Entities.Result? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let faceLandmarksRequest = VNDetectFaceLandmarksRequest()
-        try? handler.perform([faceLandmarksRequest])
+#if targetEnvironment(simulator)
+        faceLandmarksRequest.usesCPUOnly = true
+#endif
+        try handler.perform([faceLandmarksRequest])
         guard let observations = faceLandmarksRequest.results else { return nil }
 
         var entities: [Predictions.Entity] = []

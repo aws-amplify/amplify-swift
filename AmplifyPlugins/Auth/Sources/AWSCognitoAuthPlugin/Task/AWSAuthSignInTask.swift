@@ -45,7 +45,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
         let authflowType = authFlowType(userPoolConfiguration: userPoolConfiguration)
         do {
             log.verbose("Signing with \(authflowType)")
-           let result = try await doSignIn(authflowType: authflowType)
+            let result = try await doSignIn(authflowType: authflowType)
             log.verbose("Received result")
             return result
         } catch {
@@ -95,8 +95,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
                     return AuthSignInResult(nextStep: .done)
                 } else if case .error(let error) = authZState {
                     log.verbose("Authorization reached an error state \(error)")
-                    let error = AuthError.unknown("Sign in reached an error state", error)
-                    throw error
+                    throw error.authError
                 }
             case .error(let error):
                 throw error.authError
