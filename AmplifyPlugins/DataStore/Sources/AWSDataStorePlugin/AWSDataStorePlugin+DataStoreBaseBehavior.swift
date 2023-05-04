@@ -405,7 +405,9 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func start(completion: @escaping DataStoreCallback<Void>) {
         initStorageEngineAndStartSync { result in
-            completion(result)
+            self.queue.async {
+                completion(result)
+            }
         }
     }
     
@@ -431,7 +433,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             }
 
             storageEngine.stopSync { result in
-                self.storageEngine = nil
                 self.queue.async {
                     completion(result)
                 }
@@ -500,6 +501,16 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     private func publishMutationEvent<M: Model>(from model: M,
                                                 modelSchema: ModelSchema,
                                                 mutationType: MutationEvent.MutationType) {
+        guard let storageEngine = storageEngine else {
+            log.info(
+                """
+                StorageEngine is nil;
+                Skip publishing the mutaitonEvent for \(mutationType) - \(modelSchema.name)
+                """
+            )
+            return
+        }
+
         let metadata = MutationSyncMetadata.keys
         let metadataId = MutationSyncMetadata.identifier(modelName: modelSchema.name,
                                                          modelId: model.identifier(schema: modelSchema).stringValue)

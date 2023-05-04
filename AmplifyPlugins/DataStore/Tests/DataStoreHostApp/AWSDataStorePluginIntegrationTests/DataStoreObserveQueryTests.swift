@@ -294,7 +294,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let receivedPost = asyncExpectation(description: "received Post")
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
                                          postSyncedExpctation: receivedPost)
-        await waitForExpectations([snapshotWithIsSynced, receivedPost], timeout: 100)
+        await waitForExpectations([snapshotWithIsSynced, receivedPost], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
         XCTAssertTrue(snapshots.last!.isSynced)

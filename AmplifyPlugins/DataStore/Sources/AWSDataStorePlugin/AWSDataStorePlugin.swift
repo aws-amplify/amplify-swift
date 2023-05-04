@@ -16,12 +16,6 @@ enum DataStoreState {
     case clear
 }
 
-enum InitStorageEngineResult {
-    case successfullyInitialized
-    case alreadyInitialized
-    case failure(DataStoreError)
-}
-
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
@@ -130,25 +124,23 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// Initializes the underlying storage engine
     /// - Returns: success if the engine is successfully initialized or
     ///            a failure with a DataStoreError
-    func initStorageEngine() -> InitStorageEngineResult {
-        storageEngineInitQueue.sync {
-            if storageEngine != nil {
-                return .alreadyInitialized
-            }
+    func initStorageEngine() -> Result<StorageEngineBehavior, DataStoreError> {
+        if storageEngine != nil {
+            return .success(storageEngine)
+        }
 
-            do {
-                if self.dataStorePublisher == nil {
-                    self.dataStorePublisher = DataStorePublisher()
-                }
-                try resolveStorageEngine(dataStoreConfiguration: configuration.pluginConfiguration)
-                try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
-                try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-
-                return .successfullyInitialized
-            } catch {
-                log.error(error: error)
-                return .failure(.invalidOperation(causedBy: error))
+        do {
+            if self.dataStorePublisher == nil {
+                self.dataStorePublisher = DataStorePublisher()
             }
+            try resolveStorageEngine(dataStoreConfiguration: configuration.pluginConfiguration)
+            try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
+            try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
+
+            return .success(storageEngine)
+        } catch {
+            log.error(error: error)
+            return .failure(.invalidOperation(causedBy: error))
         }
     }
 
@@ -156,17 +148,20 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Parameter completion: completion handler called with a success if the sync process started
     ///                         or with a DataStoreError in case of failure
     func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
-
-        switch initStorageEngine() {
-        case .alreadyInitialized:
-            completion(.successfulVoid)
-        case .successfullyInitialized:
-            storageEngine.startSync { result in
-                self.dataStoreStateSubject.send(.start(storageEngine: self.storageEngine))
-                completion(result)
-            }
-        case .failure(let error):
-            completion(.failure(causedBy: error))
+        storageEngineInitQueue.sync {
+            completion(
+                initStorageEngine().flatMap { $0.startSync() }.flatMap { result in
+                    switch result {
+                    case .alreadyInitialized:
+                        return .successfulVoid
+                    case .successfullyInitialized:
+                        self.dataStoreStateSubject.send(.start(storageEngine: self.storageEngine))
+                        return .successfulVoid
+                    case .failure(let error):
+                        return .failure(error)
+                    }
+                }
+            )
         }
     }
 
@@ -207,16 +202,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         case .failure(let dataStoreError):
             log.error("StorageEngine completed with error: \(dataStoreError)")
         case .finished:
-            break
-        }
-        stop { result in
-            switch result {
-            case .success:
-                self.log.info("Stopping DataStore successful.")
-                return
-            case .failure(let error):
-                self.log.error("Failed to stop StorageEngine with error: \(error)")
-            }
+            log.debug("StorageEngine completed without error")
         }
     }
 

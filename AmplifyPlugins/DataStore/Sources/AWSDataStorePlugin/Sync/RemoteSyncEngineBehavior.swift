@@ -45,6 +45,8 @@ protocol RemoteSyncEngineBehavior: AnyObject {
 
     func stop(completion: @escaping DataStoreCallback<Void>)
 
+    func isSyncing() -> Bool
+
     /// Submits a new mutation for synchronization to the remote API. The response will be handled by the appropriate
     /// reconciliation queue
     func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void)
