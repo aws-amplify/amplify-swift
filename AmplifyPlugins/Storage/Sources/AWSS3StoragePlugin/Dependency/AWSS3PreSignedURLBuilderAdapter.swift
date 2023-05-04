@@ -36,7 +36,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
                          signingOperation: AWSS3SigningOperation,
                          expires: Int64? = nil) async throws -> URL {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
-        let expiration = Int64(expiresDate.timeIntervalSinceNow)
+        let expiration = expiresDate.timeIntervalSinceNow
         let preSignedUrl: URL?
         switch signingOperation {
         case .getObject:

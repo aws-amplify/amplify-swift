@@ -10,7 +10,7 @@ import ClientRuntime
 import AWSClientRuntime
 
 extension UploadPartInput {
-     func customPresignURL(config: S3ClientConfigurationProtocol, expiration: Swift.Int64) async throws -> ClientRuntime.URL? {
+     func customPresignURL(config: S3ClientConfigurationProtocol, expiration: TimeInterval) async throws -> ClientRuntime.URL? {
          let serviceName = "S3"
          let input = self
          let encoder = ClientRuntime.XMLEncoder()
@@ -37,12 +37,14 @@ extension UploadPartInput {
          operation.buildStep.intercept(position: .before, middleware: EndpointResolverMiddleware<UploadPartOutputResponse, UploadPartOutputError>(endpointResolver: config.endpointResolver, endpointParams: config.endpointParams(withBucket: input.bucket)))
          operation.serializeStep.intercept(position: .after, middleware: UploadPartInputBodyMiddleware())
          operation.serializeStep.intercept(position: .after, middleware: QueryItemMiddleware())
-         operation.finalizeStep.intercept(position: .after, middleware: AWSClientRuntime.RetryerMiddleware<UploadPartOutputResponse, UploadPartOutputError>(retryer: config.retryer))
+         operation.finalizeStep.intercept(position: .after, middleware: RetryerMiddleware<UploadPartOutputResponse, UploadPartOutputError>(retryer: config.retryer))
          let sigv4Config = AWSClientRuntime.SigV4Config(
             signatureType: .requestQueryParams,
             useDoubleURIEncode: false,
             expiration: expiration,
-            unsignedBody: true)
+            unsignedBody: true,
+            signingAlgorithm: .sigv4
+         )
          operation.finalizeStep.intercept(position: .before, middleware: AWSClientRuntime.SigV4Middleware<UploadPartOutputResponse, UploadPartOutputError>(config: sigv4Config))
          operation.deserializeStep.intercept(position: .before, middleware: ClientRuntime.LoggerMiddleware<UploadPartOutputResponse, UploadPartOutputError>(clientLogMode: config.clientLogMode))
          operation.deserializeStep.intercept(position: .after, middleware: ClientRuntime.DeserializeMiddleware<UploadPartOutputResponse, UploadPartOutputError>())

@@ -8,8 +8,9 @@
 import Amplify
 import AWSClientRuntime
 import AwsCommonRuntimeKit
+import Foundation
 
-public class AmplifyAWSCredentialsProvider: CredentialsProvider {
+public class AmplifyAWSCredentialsProvider: AWSClientRuntime.CredentialsProvider {
 
     public func getCredentials() async throws -> AWSClientRuntime.AWSCredentials {
         let authSession = try await Amplify.Auth.fetchAuthSession()
@@ -27,20 +28,16 @@ extension AWSCredentials {
 
     func toAWSSDKCredentials() -> AWSClientRuntime.AWSCredentials {
         if let tempCredentials = self as? AWSTemporaryCredentials {
-
-            let expirationTimeSinceNow = tempCredentials.expiration.timeIntervalSinceNow
-            let expirationTimeout = UInt64(max(0, expirationTimeSinceNow))
-
             return AWSClientRuntime.AWSCredentials(
                 accessKey: tempCredentials.accessKeyId,
                 secret: tempCredentials.secretAccessKey,
-                expirationTimeout: expirationTimeout,
+                expirationTimeout: tempCredentials.expiration,
                 sessionToken: tempCredentials.sessionToken)
         } else {
             return AWSClientRuntime.AWSCredentials(
                 accessKey: accessKeyId,
                 secret: secretAccessKey,
-                expirationTimeout: 0)
+                expirationTimeout: Date())
         }
 
     }

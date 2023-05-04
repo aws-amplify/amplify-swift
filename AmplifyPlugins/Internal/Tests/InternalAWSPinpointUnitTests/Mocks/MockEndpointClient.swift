@@ -13,6 +13,12 @@ import Foundation
 actor MockEndpointClient: EndpointClientBehaviour {
     let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
+    class MockCredentialsProvider: CredentialsProvider {
+        func getCredentials() async throws -> AWSCredentials {
+            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: Date().addingTimeInterval(1000))
+        }
+    }
+
     var updateEndpointProfileCount = 0
     func updateEndpointProfile() async throws {
         updateEndpointProfileCount += 1
@@ -34,6 +40,13 @@ actor MockEndpointClient: EndpointClientBehaviour {
         updateEndpointProfileWithCount += 1
     }
 
+    func addAttributes(_ attributes: [String], forKey key: String) {}
+
+    func removeAttributes(forKey key: String) {}
+
+    func addMetric(_ metric: Double, forKey key: String) {}
+
+    func removeMetric(forKey key: String) {}
 
     nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint {
         return PinpointClientTypes.PublicEndpoint()
