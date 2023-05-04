@@ -115,4 +115,15 @@ extension MockComprehendBehavior {
     func tagResource(input: AWSComprehend.TagResourceInput) async throws -> AWSComprehend.TagResourceOutputResponse { fatalError() }
     func untagResource(input: AWSComprehend.UntagResourceInput) async throws -> AWSComprehend.UntagResourceOutputResponse { fatalError() }
     func updateEndpoint(input: AWSComprehend.UpdateEndpointInput) async throws -> AWSComprehend.UpdateEndpointOutputResponse { fatalError() }
+    func createDataset(input: AWSComprehend.CreateDatasetInput) async throws -> AWSComprehend.CreateDatasetOutputResponse { fatalError() }
+    func createFlywheel(input: AWSComprehend.CreateFlywheelInput) async throws -> AWSComprehend.CreateFlywheelOutputResponse { fatalError() }
+    func deleteFlywheel(input: AWSComprehend.DeleteFlywheelInput) async throws -> AWSComprehend.DeleteFlywheelOutputResponse { fatalError() }
+    func describeDataset(input: AWSComprehend.DescribeDatasetInput) async throws -> AWSComprehend.DescribeDatasetOutputResponse { fatalError() }
+    func describeFlywheel(input: AWSComprehend.DescribeFlywheelInput) async throws -> AWSComprehend.DescribeFlywheelOutputResponse { fatalError() }
+    func describeFlywheelIteration(input: AWSComprehend.DescribeFlywheelIterationInput) async throws -> AWSComprehend.DescribeFlywheelIterationOutputResponse { fatalError() }
+    func listDatasets(input: AWSComprehend.ListDatasetsInput) async throws -> AWSComprehend.ListDatasetsOutputResponse { fatalError() }
+    func listFlywheelIterationHistory(input: AWSComprehend.ListFlywheelIterationHistoryInput) async throws -> AWSComprehend.ListFlywheelIterationHistoryOutputResponse { fatalError() }
+    func listFlywheels(input: AWSComprehend.ListFlywheelsInput) async throws -> AWSComprehend.ListFlywheelsOutputResponse { fatalError() }
+    func startFlywheelIteration(input: AWSComprehend.StartFlywheelIterationInput) async throws -> AWSComprehend.StartFlywheelIterationOutputResponse { fatalError() }
+    func updateFlywheel(input: AWSComprehend.UpdateFlywheelInput) async throws -> AWSComprehend.UpdateFlywheelOutputResponse { fatalError() }
 }
