@@ -84,9 +84,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockDeleteUserOutputResponse: { _ in
-                let crtError = ClientRuntime.ClientError.retryError(
-                    CRTError.crtError(
-                        AWSError(errorCode: 1059)))
+                let crtError = ClientRuntime.ClientError.retryError(CommonRunTimeError.crtError(CRTError(code: 1059)))
                 throw SdkError<DeleteUserOutputError>.client(crtError)
             }
         )
@@ -121,9 +119,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockDeleteUserOutputResponse: { _ in
-                let crtError = ClientRuntime.ClientError.retryError(
-                    CRTError.crtError(
-                        AWSError(errorCode: 1059)))
+                let crtError = ClientRuntime.ClientError.retryError(CommonRunTimeError.crtError(CRTError(code: 1059)))
                 throw SdkError<DeleteUserOutputError>.client(crtError)
             }
         )

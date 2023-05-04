@@ -13,7 +13,7 @@ class MockCredentialsProvider: CredentialsProvider {
         return AWSCredentials(
             accessKey: "accessKey",
             secret: "secret",
-            expirationTimeout: 1000
+            expirationTimeout: Date().addingTimeInterval(1000)
         )
     }
 }
