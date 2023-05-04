@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.10.0 (2023-05-04)
+
+### Features
+
+- upgrade to aws-sdk-swift version 0.13.0 (#2783)
+
 ## 2.9.1 (2023-05-02)
 
 ### Bug Fixes
