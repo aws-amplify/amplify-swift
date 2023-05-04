@@ -102,13 +102,15 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        XCTAssertThrowsError(try Amplify.Predictions.getPlugin(for: "MockPredictionsCategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
-                                guard case PredictionsError.configuration = error else {
-                                    XCTFail("Expected PluginError.noSuchPlugin")
-                                    return
-                                }
-        }
+        XCTAssertThrowsError(
+            try Amplify.Predictions.getPlugin(for: "MockPredictionsCategoryPlugin"),
+            "Getting a plugin after reset() should throw"
+        ) { error in
+                guard case PredictionsError.client = error else {
+                    XCTFail("Expected PluginError.noSuchPlugin")
+                    return
+                }
+            }
     }
 
     /// Test if we can register multiple plugins
@@ -141,121 +143,6 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Predictions.getPlugin(for: "MockSecondPredictionsCategoryPlugin"))
     }
 
-    /// Test if the default plugin works
-    ///
-    /// - Given: Amplify configured with Prediction plugin
-    /// - When:
-    ///    - I invoke a API from prediction with default invocation
-    /// - Then:
-    ///    - API should complete without error
-    ///
-    func testCanUseDefaultPluginIfOnlyOnePlugin() throws {
-        let plugin = MockPredictionsCategoryPlugin()
-        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
-        plugin.listeners.append { message in
-            if message == "textToTranslate" {
-                methodInvokedOnDefaultPlugin.fulfill()
-            }
-        }
-        try Amplify.add(plugin: plugin)
-
-        let config = PredictionsCategoryConfiguration(plugins: ["MockPredictionsCategoryPlugin": true])
-        let amplifyConfig = AmplifyConfiguration(predictions: config)
-
-        try Amplify.configure(amplifyConfig)
-
-        _ = Amplify.Predictions.convert(textToTranslate: "Sample",
-                                        language: nil,
-                                        targetLanguage: nil,
-                                        options: nil,
-                                        listener: nil)
-        waitForExpectations(timeout: 1.0)
-    }
-
-    /// Test if I can pick a specific plugin
-    ///
-    /// - Given: Amplify configured with multiple Prediction plugins
-    /// - When:
-    ///    - I coose one plugin and call one of the Prediction API
-    /// - Then:
-    ///    - API should complete without error for one plugin
-    ///
-    func testCanUseSpecifiedPlugin() throws {
-        let plugin1 = MockPredictionsCategoryPlugin()
-        let methodShouldNotBeInvokedOnDefaultPlugin =
-            expectation(description: "test method should not be invoked on default plugin")
-        methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
-        plugin1.listeners.append { message in
-            if message == "textToTranslate" {
-                methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
-            }
-        }
-        try Amplify.add(plugin: plugin1)
-
-        let plugin2 = MockSecondPredictionsCategoryPlugin()
-        let methodShouldBeInvokedOnSecondPlugin =
-            expectation(description: "test method should be invoked on second plugin")
-        plugin2.listeners.append { message in
-            if message == "textToTranslate" {
-                methodShouldBeInvokedOnSecondPlugin.fulfill()
-            }
-        }
-        try Amplify.add(plugin: plugin2)
-
-        let config = PredictionsCategoryConfiguration(
-            plugins: [
-                "MockPredictionsCategoryPlugin": true,
-                "MockSecondPredictionsCategoryPlugin": true
-            ]
-        )
-
-        let amplifyConfig = AmplifyConfiguration(predictions: config)
-
-        try Amplify.configure(amplifyConfig)
-        _ = try Amplify.Predictions.getPlugin(for: "MockSecondPredictionsCategoryPlugin")
-            .convert(textToTranslate: "Sample",
-                     language: nil,
-                     targetLanguage: nil,
-                     options: nil,
-                     listener: nil)
-        waitForExpectations(timeout: 1.0)
-    }
-
-    /// Test if we get error when trying default plugin when multiple plugin added.
-    ///
-    /// - Given: Amplify configured with multiple prediction plugin
-    /// - When:
-    ///    - I try to invoke an API with default plugin
-    /// - Then:
-    ///    - Should throw an exception
-    ///
-    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
-        let plugin1 = MockPredictionsCategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        let plugin2 = MockSecondPredictionsCategoryPlugin()
-        try Amplify.add(plugin: plugin2)
-
-        let config = PredictionsCategoryConfiguration(
-            plugins: [
-                "MockPredictionsCategoryPlugin": true,
-                "MockSecondPredictionsCategoryPlugin": true
-            ]
-        )
-
-        let amplifyConfig = AmplifyConfiguration(predictions: config)
-
-        try Amplify.configure(amplifyConfig)
-
-        try XCTAssertThrowFatalError {
-            _ = Amplify.Predictions.convert(textToTranslate: "Sample",
-                                            language: nil,
-                                            targetLanguage: nil,
-                                            options: nil,
-                                            listener: nil)
-        }
-    }
-
     /// Test if configuration Prediction plugin directly works
     ///
     /// - Given: Amplify with Prediction plugin configured
@@ -267,9 +154,9 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
     func testCanConfigurePluginDirectly() throws {
         let plugin = MockPredictionsCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
-            expectation(description: "Configure should be invoked by Amplify.configure()")
+        expectation(description: "Configure should be invoked by Amplify.configure()")
         let configureShouldBeInvokedDirectly =
-            expectation(description: "Configure should be invoked by getPlugin().configure()")
+        expectation(description: "Configure should be invoked by getPlugin().configure()")
 
         var invocationCount = 0
         plugin.listeners.append { message in
@@ -295,28 +182,6 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    /// Test if unconfigured plugin throws an error
-    ///
-    /// - Given: An unconfigured Amplify framework with Prediction plugin added
-    /// - When:
-    ///    - Invoke an API in prediction
-    /// - Then:
-    ///    - I should get an exception
-    ///
-    func testPreconditionFailureInvokingBeforeConfig() throws {
-        let plugin = MockPredictionsCategoryPlugin()
-        try Amplify.add(plugin: plugin)
-
-        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        try XCTAssertThrowFatalError {
-            _ = Amplify.Predictions.convert(textToTranslate: "Sample",
-                                            language: nil,
-                                            targetLanguage: nil,
-                                            options: nil,
-                                            listener: nil)
-        }
-    }
-
     // MARK: - Test internal config behavior guarantees
 
     /// Test if configuring twice throws an exception
@@ -337,10 +202,10 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         try Amplify.Predictions.configure(using: config)
         XCTAssertThrowsError(try Amplify.Predictions.configure(using: config),
                              "configure() an already configured plugin should throw") { error in
-                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
-                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
-                                    return
-                                }
+            guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                return
+            }
         }
     }
 
@@ -398,35 +263,5 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         waitForExpectations(timeout: 0.1)
-    }
-
-    /// Test if adding a plugin after configuration throws an error
-    ///
-    /// - Given: Amplify is configured
-    /// - When:
-    ///    - Add  is called for Predictions category
-    /// - Then:
-    ///    - Should throw an exception
-    ///
-    func testAddAfterConfigureThrowsError() throws {
-        let plugin = MockPredictionsCategoryPlugin()
-        try Amplify.add(plugin: plugin)
-
-        let config = PredictionsCategoryConfiguration(
-            plugins: ["MockPredictionsCategoryPlugin": true]
-        )
-
-        let amplifyConfig = AmplifyConfiguration(predictions: config)
-
-        try Amplify.configure(amplifyConfig)
-
-        XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw") { error in
-                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
-                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
-                                    return
-                                }
-        }
-
     }
 }

@@ -7,166 +7,172 @@
 
 import Foundation
 import Amplify
+@_spi(PredictionsIdentifyRequestKind) import Amplify
 
-class IdentifyMultiService: MultiServiceBehavior {
+class IdentifyMultiService<Output> {
 
-    typealias Event = PredictionsEvent<IdentifyResult, PredictionsError>
-    typealias IdentifyEventHandler = (Event) -> Void
-
+    let request: Predictions.Identify.Request<Output>
+    let url: URL
     weak var coreMLService: CoreMLPredictionBehavior?
     weak var predictionsService: AWSPredictionsService?
-    var request: PredictionsIdentifyRequest!
 
-    init(coreMLService: CoreMLPredictionBehavior?,
-         predictionsService: AWSPredictionsService?) {
+    init(
+        request: Predictions.Identify.Request<Output>,
+        url: URL,
+        coreMLService: CoreMLPredictionBehavior?,
+        predictionsService: AWSPredictionsService?
+    ) {
+        self.request = request
+        self.url = url
         self.coreMLService = coreMLService
         self.predictionsService = predictionsService
     }
 
-    func setRequest(_ request: PredictionsIdentifyRequest) {
-        self.request = request
-    }
-
-    func fetchOnlineResult(callback: @escaping IdentifyEventHandler) {
+    func onlineResult() async throws -> Output {
         guard let onlineService = predictionsService else {
-            let message = IdentifyMultiServiceErrorMessage.onlineIdentifyServiceNotAvailable.errorDescription
-            let recoveryMessage = IdentifyMultiServiceErrorMessage.onlineIdentifyServiceNotAvailable.recoverySuggestion
-            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
-            callback(.failed(predictionError))
-            return
+            throw PredictionsError.client(.onlineIdentityServiceUnavailable)
         }
 
-        switch request.identifyType {
-        case .detectCelebrity:
-            onlineService.detectCelebrities(image: request.image, onEvent: callback)
-        case .detectText(let formatType):
-            onlineService.detectText(image: request.image, format: formatType, onEvent: callback)
-        case .detectLabels(let labelType):
-            onlineService.detectLabels(image: request.image, type: labelType, onEvent: callback)
-        case .detectEntities:
-            onlineService.detectEntities(image: request.image, onEvent: callback)
+        switch request.kind {
+        case let .detectText(lift):
+            let result = try await onlineService.detectPlainText(image: url)
+            return lift.outputSpecificToGeneric(result)
+
+        case let .detectTextInDocument(formatType, lift):
+            let result = try await onlineService.analyzeDocument(
+                image: url,
+                features: formatType.textractServiceFormatType
+            )
+            return lift.outputSpecificToGeneric(result)
+
+        case let .detectEntitiesCollection(collectionID, lift):
+            let result = try await onlineService.detectEntitiesCollection(
+                image: url,
+                collectionID: collectionID
+            )
+            return lift.outputSpecificToGeneric(result)
+
+        case .detectEntities(let lift):
+            let result = try await onlineService.detectEntities(image: url)
+            return lift.outputSpecificToGeneric(result)
+
+        case let .detectCelebrities(lift):
+            let result = try await onlineService.detectCelebrities(image: url)
+            return lift.outputSpecificToGeneric(result)
+
+        case let .detectLabels(labelType, lift):
+            let result = try await onlineService.detectLabels(image: url, type: labelType)
+            return lift.outputSpecificToGeneric(result)
         }
     }
 
-    func fetchOfflineResult(callback: @escaping IdentifyEventHandler) {
+
+
+    func offlineResult() async throws -> Output {
         guard let offlineService = coreMLService else {
-            let message = IdentifyMultiServiceErrorMessage.offlineIdentifyServiceNotAvailable.errorDescription
-            let recoveryMessage = IdentifyMultiServiceErrorMessage.offlineIdentifyServiceNotAvailable.recoverySuggestion
-            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
-            callback(.failed(predictionError))
-            return
+            throw PredictionsError.client(.offlineIdentityServiceUnavailable)
         }
-        offlineService.identify(request.image, type: request.identifyType, onEvent: callback)
+
+        let result = try await offlineService.identify(request, in: url)
+        return result
     }
 
-    // MARK: -
-    func mergeResults(offlineResult: IdentifyResult?,
-                      onlineResult: IdentifyResult?,
-                      callback: @escaping  IdentifyEventHandler) {
+    func mergeResults(
+        offline: Output,
+        online: Output
+    ) -> Output {
+        switch request.kind {
+        case let .detectLabels(_, lift):
+            let result = mergeLabelResult(
+                offline: lift.outputGenericToSpecific(offline),
+                online: lift.outputGenericToSpecific(online)
+            )
 
-        if offlineResult == nil && onlineResult == nil {
-            let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
-            let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
-            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
-            callback(.failed(predictionError))
-            return
-        }
+            return lift.outputSpecificToGeneric(result)
 
-        guard let finalOfflineResult = offlineResult else {
-            // We are sure that the value will be non-nil at this point.
-            callback(.completed(onlineResult!))
-            return
-        }
+        case let .detectText(lift):
+            let result = mergeTextResult(
+                offline: lift.outputGenericToSpecific(offline),
+                online: lift.outputGenericToSpecific(online)
+            )
+            return lift.outputSpecificToGeneric(result)
 
-        guard let finalOnlineResult = onlineResult else {
-            callback(.completed(finalOfflineResult))
-            return
+        default:
+            return online
         }
-
-        if let onlineLabelResult = finalOnlineResult as? IdentifyLabelsResult,
-            let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult {
-            let mergedResult = mergeLabelResult(onlineLabelResult: onlineLabelResult,
-                                                offlineLabelResult: offlineLabelResult)
-            callback(.completed(mergedResult))
-            return
-        }
-        if let onlineTextResult = finalOnlineResult as? IdentifyTextResult,
-            let offlineTextResult = finalOfflineResult as? IdentifyTextResult {
-            let mergedResult = mergeTextResult(onlineTextResult: onlineTextResult,
-                                               offlineTextResult: offlineTextResult)
-            callback(.completed(mergedResult))
-            return
-        }
-
-        // At this point we decided not to merge the result and return the non-nil online
-        // result back.
-        callback(.completed(finalOnlineResult))
     }
 
-    func mergeLabelResult(onlineLabelResult: IdentifyLabelsResult,
-                          offlineLabelResult: IdentifyLabelsResult) -> IdentifyLabelsResult {
-        var combinedLabels = Set<Label>()
+    private func mergeTextResult(
+        offline: Predictions.Identify.Text.Result,
+        online: Predictions.Identify.Text.Result
+    ) -> Predictions.Identify.Text.Result {
+        // If the online `IdentifyTextResult` doesn't have
+        // any `identifiedLines`, replace the `identifiedLines`
+        // property with the offline `IdentifyTextResult`s value.
+        guard let onlineLines = online.identifiedLines else {
+            return Predictions.Identify.Text.Result(
+                fullText: online.fullText,
+                words: online.words,
+                rawLineText: online.rawLineText,
+                identifiedLines: offline.identifiedLines
+            )
+        }
 
-        let onlineLabelSet = Set<Label>(onlineLabelResult.labels)
-        let offlineLabelSet = Set<Label>(offlineLabelResult.labels)
+        guard let offlineLines = offline.identifiedLines else {
+            return online
+        }
 
-        // first find the labels that are the same
-        let intersectingLabels = onlineLabelSet.intersection(offlineLabelSet)
-        // loop through to find higher confidences and retain those labels and add to final result
-        for label in intersectingLabels {
+        var combinedLines = Set<Predictions.IdentifiedLine>()
+        let onlineLineSet = Set(onlineLines)
+        let offlineLineSet = Set(offlineLines)
+
+        combinedLines = onlineLineSet.intersection(offlineLineSet)
+        combinedLines.formUnion(offlineLineSet)
+        combinedLines.formUnion(onlineLineSet)
+
+        // offline only returns identified lines,
+        // so merging them with the other properties from
+        // online is the merged result
+        return Predictions.Identify.Text.Result(
+            fullText: online.fullText,
+            words: online.words,
+            rawLineText: online.rawLineText,
+            identifiedLines: Array(combinedLines)
+        )
+    }
+
+    private func mergeLabelResult(
+        offline: Predictions.Identify.Labels.Result,
+        online: Predictions.Identify.Labels.Result
+    ) -> Predictions.Identify.Labels.Result {
+        let onlineLabelSet = Set(online.labels)
+        let offlineLabelSet = Set(offline.labels)
+        let intersection = onlineLabelSet.intersection(offlineLabelSet)
+
+        var combinedLabels = Set<Predictions.Label>()
+        for label in intersection {
             let onlineIndex = onlineLabelSet.firstIndex(of: label)!
             let offlineIndex = offlineLabelSet.firstIndex(of: label)!
             let onlineLabel = onlineLabelSet[onlineIndex]
             let offlineLabel = offlineLabelSet[offlineIndex]
-            let labelWithHigherConfidence = onlineLabel.higherConfidence(compareTo: offlineLabel)
+            let labelWithHigherConfidence = onlineLabel
+                .higherConfidence(compareTo: offlineLabel)
             combinedLabels.insert(labelWithHigherConfidence)
         }
 
-        // get the differences
-        // leaving here for performance comparison
-        // let differingLabels = Array(onlineLabelSet.symmetricDifference(offlineLabelSet))
-        // combinedLabels.append(contentsOf: differingLabels)
-        combinedLabels = combinedLabels.union(onlineLabelSet)
-        combinedLabels = combinedLabels.union(offlineLabelSet)
+        combinedLabels.formUnion(onlineLabelSet)
+        combinedLabels.formUnion(offlineLabelSet)
 
-        return IdentifyLabelsResult(labels: Array(combinedLabels),
-                                    unsafeContent: onlineLabelResult.unsafeContent ?? nil)
-
-    }
-
-    func mergeTextResult(onlineTextResult: IdentifyTextResult,
-                         offlineTextResult: IdentifyTextResult) -> IdentifyTextResult {
-
-        guard let onlineLines = onlineTextResult.identifiedLines else {
-            return IdentifyTextResult(fullText: onlineTextResult.fullText,
-                                      words: onlineTextResult.words,
-                                      rawLineText: onlineTextResult.rawLineText,
-                                      identifiedLines: offlineTextResult.identifiedLines)
-        }
-
-        guard let offlineLines = offlineTextResult.identifiedLines else {
-            return onlineTextResult
-        }
-        var combinedLines = Set<IdentifiedLine>()
-        let onlineLineSet = Set<IdentifiedLine>(onlineLines)
-        let offlineLineSet = Set<IdentifiedLine>(offlineLines)
-
-        combinedLines = onlineLineSet.intersection(offlineLineSet)
-        combinedLines = combinedLines.union(offlineLineSet)
-        combinedLines = combinedLines.union(onlineLineSet)
-
-        // offline result doesn't return anything except identified lines so
-        // merging them plus the other stuff from online is a merged result
-        return IdentifyTextResult(fullText: onlineTextResult.fullText,
-                                  words: onlineTextResult.words,
-                                  rawLineText: onlineTextResult.rawLineText,
-                                  identifiedLines: Array(combinedLines))
+        return Predictions.Identify.Labels.Result(
+            labels: Array(combinedLabels),
+            unsafeContent: online.unsafeContent
+        )
     }
 }
 
-extension Label: Hashable {
 
-    public static func == (lhs: Label, rhs: Label) -> Bool {
+extension Predictions.Label: Hashable {
+    public static func == (lhs: Predictions.Label, rhs: Predictions.Label) -> Bool {
         return lhs.name.lowercased() == rhs.name.lowercased()
     }
 
@@ -174,7 +180,7 @@ extension Label: Hashable {
         hasher.combine(name.lowercased())
     }
 
-    func higherConfidence(compareTo: Label) -> Label {
+    func higherConfidence(compareTo: Predictions.Label) -> Predictions.Label {
         guard let firstMetadata = metadata,
             let secondMetadata = compareTo.metadata else {
                 return self
@@ -183,22 +189,19 @@ extension Label: Hashable {
     }
 }
 
-extension LabelMetadata: Equatable, Comparable {
-
-    public static func == (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
-        let value = lhs.confidence == rhs.confidence
-        return value
+extension Predictions.Label.Metadata: Equatable, Comparable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.confidence == rhs.confidence
     }
 
-    public static func < (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
-        let value = lhs.confidence < rhs.confidence
-        return value
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.confidence < rhs.confidence
     }
 }
 
-extension IdentifiedLine: Hashable {
+extension Predictions.IdentifiedLine: Hashable {
 
-    public static func == (lhs: IdentifiedLine, rhs: IdentifiedLine) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.text == rhs.text
             && lhs.boundingBox.intersects(rhs.boundingBox)
     }

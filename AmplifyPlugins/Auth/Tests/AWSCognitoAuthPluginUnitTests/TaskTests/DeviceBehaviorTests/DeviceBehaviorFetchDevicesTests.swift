@@ -12,6 +12,7 @@ import AWSCognitoIdentityProvider
 import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
 
 class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
@@ -123,7 +124,10 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.internalErrorException(InternalErrorException(message: "internal error"))
+                throw SdkError.service(
+                    ListDevicesOutputError.internalErrorException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

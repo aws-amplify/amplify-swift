@@ -18,12 +18,16 @@ class ChildTaskTests: XCTestCase {
         }
     }
 
+    /// Given: A ChildTask instance associated to a fast operation
+    /// When: Multiple `Task` instances are created to wait for its results
+    /// Then: All `Task` instances receive the exact-same `value`
     func testFastOperationWithMultipleAwaits() async throws {
         let input = [1, 2, 3]
         let request = FastOperationRequest(numbers: input)
         let queue = OperationQueue()
         let operation = FastOperation(request: request)
         let childTask: ChildTask<Void, FastOperation.Success, FastOperation.Failure> = ChildTask(parent: operation)
+        let progressSequence = await childTask.inProcess
         let token = operation.subscribe { result in
             Task {
                 await childTask.finish(result)
@@ -54,11 +58,17 @@ class ChildTaskTests: XCTestCase {
         XCTAssertEqual(output1, expectedOutput)
         XCTAssertEqual(output2, expectedOutput)
         XCTAssertEqual(output3, expectedOutput)
+
+        // Ensure the channel's AsyncSequence does not block after completion
+        for await _ in progressSequence {
+            XCTFail("Unexpected channel iteration since task has completed.")
+        }
     }
 
     func testChildTaskResultCancelled() async throws {
         let worker = Worker()
         let childTask: ChildTask<Void, String, Never> = ChildTask(parent: worker)
+        let progressSequence = await childTask.inProcess
         let cancelExp = expectation(description: "cancel")
         cancelExp.isInverted = true
 
@@ -77,11 +87,17 @@ class ChildTaskTests: XCTestCase {
 
         await waitForExpectations(timeout: 0.01)
         task.cancel()
+
+        // Ensure the channel's AsyncSequence does not block after completion
+        for await _ in progressSequence {
+            XCTFail("Unexpected channel iteration since task was cancelled.")
+        }
     }
 
     func testChildTaskResultAlreadyCancelled() async throws {
         let worker = Worker()
         let childTask: ChildTask<Void, String, Never> = ChildTask(parent: worker)
+        let progressSequence = await childTask.inProcess
         let cancelExp = expectation(description: "cancel")
         cancelExp.isInverted = true
 
@@ -100,6 +116,11 @@ class ChildTaskTests: XCTestCase {
         }
 
         await waitForExpectations(timeout: 0.01)
+
+        // Ensure the channel's AsyncSequence does not block after completion
+        for await _ in progressSequence {
+            XCTFail("Unexpected channel iteration since task was cancelled.")
+        }
     }
 
 }

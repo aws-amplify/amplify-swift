@@ -26,8 +26,15 @@ struct HostedUISignInHelper: DefaultLogger {
 
     func initiateSignIn() async throws -> AuthSignInResult {
         try await isValidState()
-        log.verbose("Start signIn flow")
-        return try await doSignIn()
+        do {
+            log.verbose("Start signIn flow")
+            let result = try await doSignIn()
+            log.verbose("Received result")
+            return result
+        } catch {
+            await waitForSignInCancel()
+            throw error
+        }
     }
 
     func isValidState() async throws {
@@ -80,23 +87,20 @@ struct HostedUISignInHelper: DefaultLogger {
             switch authNState {
             case .signedIn:
                 if case .sessionEstablished = authZState {
-                   return AuthSignInResult(nextStep: .done)
+                    return AuthSignInResult(nextStep: .done)
+                } else if case .error(let error) = authZState {
+                    log.verbose("Authorization reached an error state \(error)")
+                    throw error.authError
                 }
 
             case .error(let error):
-                await waitForSignInCancel()
                 throw error.authError
 
             case .signingIn(let signInState):
-                do {
-                    guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
-                        continue
-                    }
-                    return result
-                } catch {
-                    await waitForSignInCancel()
-                    throw error
+                guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
+                    continue
                 }
+                return result
             default:
                 continue
             }
@@ -143,6 +147,10 @@ struct HostedUISignInHelper: DefaultLogger {
             switch authenticationState {
             case .signedOut:
                 return
+            case .signingOut(let signingOutState):
+                if case .error = signingOutState {
+                    return
+                }
             default: continue
             }
         }

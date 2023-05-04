@@ -479,6 +479,37 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try await Amplify.DataStore.start()
     }
 
+    /// Create model instances for different models but same primary key value
+    ///
+    /// Given - DataStore with clean state
+    /// When
+    ///     - create post and comment with the same random id
+    /// Then
+    ///     - all instances should be created successfully with the same id
+    func testCreateModelInstances_withSamePrimaryKeyForDifferentModels_allSucceed() async throws {
+        await setUp(withModels: TestModelRegistration())
+        try await startAmplifyAndWaitForSync()
+
+        let uuid = UUID().uuidString
+        let newPost = Post(
+            id: uuid,
+            title: UUID().uuidString,
+            content: UUID().uuidString,
+            createdAt: .now()
+        )
+
+        let createdPost = try await Amplify.DataStore.save(newPost)
+        let newComment = Comment(
+            id: uuid,
+            content: UUID().uuidString,
+            createdAt: .now(),
+            post: newPost
+        )
+        let createdComment = try await Amplify.DataStore.save(newComment)
+
+        XCTAssertEqual(createdPost.id, createdComment.id)
+    }
+
     ///
     /// - Given: DataStore with clean state
     /// - When:

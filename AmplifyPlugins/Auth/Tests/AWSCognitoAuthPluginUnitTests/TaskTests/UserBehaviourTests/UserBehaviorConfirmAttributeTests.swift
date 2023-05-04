@@ -9,6 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class UserBehaviorConfirmAttributeTests: BasePluginTest {
 
@@ -97,7 +98,10 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     func testcConfirmUpdateUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
-            throw VerifyUserAttributeOutputError.internalErrorException(.init())
+            throw SdkError.service(
+                VerifyUserAttributeOutputError.internalErrorException(
+                    .init()),
+                .init(body: .empty, statusCode: .accepted))
         })
         do {
             try await plugin.confirm(userAttribute: .email, confirmationCode: "code")

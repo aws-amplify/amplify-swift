@@ -345,13 +345,13 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         let postsContaining1InTitle = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.contains("1")
+            where: Post.keys.title.contains("_1_")
         )
         XCTAssertEqual(postsContaining1InTitle.count, 1)
 
         let postsNotContaining1InTitle = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.notContains("1")
+            where: Post.keys.title.notContains("_1_")
         )
         XCTAssertEqual(
             posts.count - postsContaining1InTitle.count,
@@ -360,7 +360,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         XCTAssertTrue(
             postsNotContaining1InTitle.filter(
-                { $0.title.contains("1") }
+                { $0.title.contains("_1_") }
             ).isEmpty
         )
     }
@@ -423,7 +423,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         let randomTitleNumber = String(Int.random(in: 0..<numberOfPosts))
 
         let postWithDuplicateTitleAndDifferentStatus = Post(
-            title: "title_\(randomTitleNumber)",
+            title: "title_\(randomTitleNumber)_",
             content: "content",
             createdAt: .now(),
             status: .published
@@ -433,7 +433,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         let postsContainingRandomTitleNumber = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.contains(randomTitleNumber)
+            where: Post.keys.title.contains("_\(randomTitleNumber)_")
         )
 
         XCTAssertEqual(postsContainingRandomTitleNumber.count, 2)
@@ -455,7 +455,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         let postsContainingRandomTitleNumberAndNotContainingDraftStatus = try await Amplify.DataStore.query(
             Post.self,
-            where: Post.keys.title.contains(randomTitleNumber)
+            where: Post.keys.title.contains("_\(randomTitleNumber)_")
             && Post.keys.status.notContains(PostStatus.published.rawValue)
         )
 
@@ -466,7 +466,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         XCTAssertEqual(
             postsContainingRandomTitleNumberAndNotContainingDraftStatus[0].title,
-            "title_\(randomTitleNumber)"
+            "title_\(randomTitleNumber)_"
         )
 
         XCTAssertNotEqual(
@@ -486,12 +486,12 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         try await Amplify.DataStore.delete(
             Post.self,
-            where: Post.keys.title.notContains("1")
+            where: Post.keys.title.notContains("_1_")
         )
 
         let postsIncluding1InTitle = try await Amplify.DataStore.query(Post.self)
         XCTAssertEqual(postsIncluding1InTitle.count, 1)
-        XCTAssertEqual(postsIncluding1InTitle[0].title, "title_1")
+        XCTAssertEqual(postsIncluding1InTitle[0].title, "title_1_")
     }
 
 
@@ -505,9 +505,9 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             .init(title: title, content: content, createdAt: .now())
         }
 
-        let post1 = post(title: "title_1", content: "a")
-        let post2 = post(title: "title_1", content: "b")
-        let post3 = post(title: "title_3", content: "c")
+        let post1 = post(title: "title_1_", content: "a")
+        let post2 = post(title: "title_1_", content: "b")
+        let post3 = post(title: "title_3_", content: "c")
 
         _ = try await Amplify.DataStore.save(post1)
         _ = try await Amplify.DataStore.save(post2)
@@ -518,7 +518,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
 
         try await Amplify.DataStore.delete(
             Post.self,
-            where: Post.keys.title.notContains("1")
+            where: Post.keys.title.notContains("_1_")
             || Post.keys.content.notContains("a")
         )
 
@@ -645,7 +645,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     func setUpLocalStore(numberOfPosts: Int) async throws -> [Post] {
         let posts = (0..<numberOfPosts).map {
             Post(
-                title: "title_\($0)",
+                title: "title_\($0)_",
                 content: "content",
                 createdAt: .now(),
                 rating: Double(Int.random(in: 0 ... 5)),

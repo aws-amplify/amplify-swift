@@ -10,51 +10,61 @@ import AWSRekognition
 import Amplify
 import AWSTextract
 
-class IdentifyTextResultTransformers: IdentifyResultTransformers {
+enum IdentifyTextResultTransformers {
 
-    static func processText(_ rekognitionTextBlocks: [AWSRekognitionTextDetection]) -> IdentifyTextResult {
-        var words = [IdentifiedWord]()
+    static func processText(_ rekognitionTextBlocks: [RekognitionClientTypes.TextDetection]) -> Predictions.Identify.Text.Result {
+        var words = [Predictions.IdentifiedWord]()
         var lines = [String]()
-        var identifiedLines = [IdentifiedLine]()
+        var identifiedLines = [Predictions.IdentifiedLine]()
         var fullText = ""
         for rekognitionTextBlock in rekognitionTextBlocks {
             guard let detectedText = rekognitionTextBlock.detectedText else {
                 continue
             }
-            guard let boundingBox = processBoundingBox(rekognitionTextBlock.geometry?.boundingBox) else { continue }
-            guard let polygon = processPolygon(rekognitionTextBlock.geometry?.polygon) else {
-                continue
-            }
-            let word = IdentifiedWord(text: detectedText,
-                            boundingBox: boundingBox,
-                            polygon: polygon)
-            let line = IdentifiedLine(text: detectedText,
-                                      boundingBox: boundingBox,
-                                      polygon: polygon)
-            switch rekognitionTextBlock.types {
+            guard let boundingBox = IdentifyResultTransformers.processBoundingBox(rekognitionTextBlock.geometry?.boundingBox)
+            else { continue }
+
+            guard let polygon = IdentifyResultTransformers.processPolygon(rekognitionTextBlock.geometry?.polygon)
+            else { continue }
+            
+            let word = Predictions.IdentifiedWord(
+                text: detectedText,
+                boundingBox: boundingBox,
+                polygon: polygon
+            )
+
+            let line = Predictions.IdentifiedLine(
+                text: detectedText,
+                boundingBox: boundingBox,
+                polygon: polygon
+            )
+
+            switch rekognitionTextBlock.type {
             case .line:
                 lines.append(detectedText)
                 identifiedLines.append(line)
             case .word:
                 fullText += detectedText + " "
                 words.append(word)
-            case .unknown:
+            case .sdkUnknown:
                 break
-            @unknown default:
+            default:
                 break
             }
         }
 
-        return IdentifyTextResult(fullText: fullText,
-                                  words: words,
-                                  rawLineText: lines,
-                                  identifiedLines: identifiedLines)
+        return Predictions.Identify.Text.Result(
+            fullText: fullText,
+            words: words,
+            rawLineText: lines,
+            identifiedLines: identifiedLines
+        )
     }
 
-    static func processText(_ textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
-        var blockMap = [String: AWSTextractBlock]()
+    static func processText(_ textractTextBlocks: [TextractClientTypes.Block]) -> Predictions.Identify.DocumentText.Result {
+        var blockMap = [String: TextractClientTypes.Block]()
         for block in textractTextBlocks {
-            guard let identifier = block.identifier else {
+            guard let identifier = block.id else {
                 continue
             }
             blockMap[identifier] = block
@@ -62,17 +72,18 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return processTextBlocks(blockMap)
     }
 
-    static func processTextBlocks(_ blockMap: [String: AWSTextractBlock]) -> IdentifyDocumentTextResult {
+    static func processTextBlocks(_ blockMap: [String: TextractClientTypes.Block]) -> Predictions.Identify.DocumentText.Result {
         var fullText = ""
-        var words = [IdentifiedWord]()
+        var words = [Predictions.IdentifiedWord]()
         var lines = [String]()
-        var linesDetailed = [IdentifiedLine]()
-        var selections = [Selection]()
-        var tables = [Table]()
-        var keyValues = [BoundedKeyValue]()
-        var tableBlocks = [AWSTextractBlock]()
-        var keyValueBlocks = [AWSTextractBlock]()
+        var linesDetailed = [Predictions.IdentifiedLine]()
+        var selections = [Predictions.Selection]()
+        var tables = [Predictions.Table]()
+        var keyValues = [Predictions.BoundedKeyValue]()
+        var tableBlocks = [TextractClientTypes.Block]()
+        var keyValueBlocks = [TextractClientTypes.Block]()
 
+        // TODO: rework to map / reduce
         for block in blockMap.values {
             switch block.blockType {
             case .line:
@@ -100,48 +111,53 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         tables = processTables(tableBlocks: tableBlocks, blockMap: blockMap)
         keyValues = processKeyValues(keyValueBlocks: keyValueBlocks, blockMap: blockMap)
 
-        return IdentifyDocumentTextResult(
+        return Predictions.Identify.DocumentText.Result(
             fullText: fullText,
             words: words,
             rawLineText: lines,
             identifiedLines: linesDetailed,
             selections: selections,
             tables: tables,
-            keyValues: keyValues)
+            keyValues: keyValues
+        )
     }
 
-    static func processLineBlock(block: AWSTextractBlock) -> IdentifiedLine? {
+    static func processLineBlock(block: TextractClientTypes.Block) -> Predictions.IdentifiedLine? {
         guard let text = block.text,
-            let boundingBox = processBoundingBox(block.geometry?.boundingBox),
-            let polygon = processPolygon(block.geometry?.polygon) else {
+              let boundingBox = IdentifyResultTransformers.processBoundingBox(block.geometry?.boundingBox),
+              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon) else {
                 return nil
         }
 
-        return IdentifiedLine(text: text,
-                              boundingBox: boundingBox,
-                              polygon: polygon,
-                              page: Int(truncating: block.page ?? 0))
+        return Predictions.IdentifiedLine(
+            text: text,
+            boundingBox: boundingBox,
+            polygon: polygon,
+            page: block.page ?? 0
+        )
     }
 
-    static func processWordBlock(block: AWSTextractBlock) -> IdentifiedWord? {
+    static func processWordBlock(block: TextractClientTypes.Block) -> Predictions.IdentifiedWord? {
         guard let text = block.text,
-            let boundingBox = processBoundingBox(block.geometry?.boundingBox),
-            let polygon = processPolygon(block.geometry?.polygon) else {
+              let boundingBox = IdentifyResultTransformers.processBoundingBox(block.geometry?.boundingBox),
+              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon) else {
                 return nil
         }
 
-         return IdentifiedWord(text: text,
-                               boundingBox: boundingBox,
-                               polygon: polygon,
-                               page: Int(truncating: block.page ?? 0))
+        return Predictions.IdentifiedWord(
+            text: text,
+            boundingBox: boundingBox,
+            polygon: polygon,
+            page: block.page ?? 0
+         )
     }
 
-    static func processSelectionElementBlock(block: AWSTextractBlock) -> Selection? {
-        guard let boundingBox = processBoundingBox(block.geometry?.boundingBox),
-            let polygon = processPolygon(block.geometry?.polygon) else {
+    static func processSelectionElementBlock(block: TextractClientTypes.Block) -> Predictions.Selection? {
+        guard let boundingBox = IdentifyResultTransformers.processBoundingBox(block.geometry?.boundingBox),
+              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon) else {
                 return nil
         }
         let selectionStatus = block.selectionStatus == .selected
-        return Selection(boundingBox: boundingBox, polygon: polygon, isSelected: selectionStatus)
+        return Predictions.Selection(boundingBox: boundingBox, polygon: polygon, isSelected: selectionStatus)
     }
 }

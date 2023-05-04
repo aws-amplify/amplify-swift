@@ -175,9 +175,7 @@ class FileSystem {
     }
 
     func moveFile(from sourceFileURL: URL, to destinationURL: URL) throws {
-        guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
-            throw Failure.fatalError(errorDescription: "File already exists at destination: \(destinationURL.path)")
-        }
+        removeFileIfExists(fileURL: destinationURL)
         try FileManager.default.moveItem(atPath: sourceFileURL.path, toPath: destinationURL.path)
     }
 

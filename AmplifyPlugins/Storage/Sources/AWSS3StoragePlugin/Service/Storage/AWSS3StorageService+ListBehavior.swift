@@ -30,9 +30,9 @@ extension AWSS3StorageService {
             finalPrefix = prefix
         }
         let input = ListObjectsV2Input(bucket: bucket,
-                                       continuationToken: nil,
+                                       continuationToken: options.nextToken,
                                        delimiter: nil,
-                                       maxKeys: 1_000,
+                                       maxKeys: Int(options.pageSize),
                                        prefix: finalPrefix,
                                        startAfter: nil)
         do {
@@ -41,7 +41,7 @@ extension AWSS3StorageService {
             let items = try contents.map {
                 try StorageListResult.Item(s3Object: $0, prefix: prefix)
             }
-            return StorageListResult(items: items)
+            return StorageListResult(items: items, nextToken: response.nextContinuationToken)
         } catch let error as SdkError<ListObjectsV2OutputError> {
             throw error.storageError
         } catch {

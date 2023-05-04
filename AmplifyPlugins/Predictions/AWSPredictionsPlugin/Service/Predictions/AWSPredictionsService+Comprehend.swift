@@ -10,244 +10,210 @@ import AWSComprehend
 import Amplify
 
 extension AWSPredictionsService: AWSComprehendServiceBehavior {
-
-    func comprehend(text: String,
-                    onEvent: @escaping AWSPredictionsService.ComprehendServiceEventHandler) {
-
+    func comprehend(text: String) async throws -> Predictions.Interpret.Result {
         // We have to find the dominant language first and then invoke features.
-        fetchPredominantLanguage(text) { event in
+        let (dominantLanguage, score) = try await fetchPredominantLanguage(text)
+        var interpretResult = try await analyzeText(text, for: dominantLanguage)
+        let languageDetected = Predictions.Language.DetectionResult(languageCode: dominantLanguage, score: score)
+        interpretResult = .init(
+            keyPhrases: interpretResult.keyPhrases,
+            sentiment: interpretResult.sentiment,
+            entities: interpretResult.entities,
+            language: languageDetected,
+            syntax: interpretResult.syntax
+        )
 
-            switch event {
-            case .completed(let dominantLanguageType, let score):
-                self.analyzeText(text, for: dominantLanguageType) { analyzeResultBuilder in
-                    var builder = analyzeResultBuilder
-                    let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
-                    builder.with(language: languageDetected)
-                    onEvent(.completed(builder.build()))
-                }
-            case .failed(let error):
-                onEvent(.failed(error))
-            }
-        }
+        return interpretResult
     }
 
-    private func fetchPredominantLanguage(_ text: String,
-                                          completionHandler: @escaping (FetchDominantLanguageEvent) -> Void) {
-        let detectLanguage: AWSComprehendDetectDominantLanguageRequest = AWSComprehendDetectDominantLanguageRequest()
-        detectLanguage.text = text
-
-        awsComprehend.detectLanguage(request: detectLanguage).continueWith { (task) -> Any? in
-            if let languageError = task.error {
-                let error = languageError as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-                completionHandler(.failed(.network(predictionsErrorString.errorDescription,
-                                                   predictionsErrorString.recoverySuggestion)))
-                return nil
-            }
-
-            guard let result = task.result else {
-                let errorDescription = AWSComprehendErrorMessage.noLanguageFound.errorDescription
-                let recoverySuggestion = AWSComprehendErrorMessage.noLanguageFound.recoverySuggestion
-                let unknownError = PredictionsError.unknown(errorDescription, recoverySuggestion)
-                completionHandler(.failed(unknownError))
-                return nil
-            }
-
-            guard let  dominantLanguage = result.languages?.getDominantLanguage(),
-                let dominantLanguageCode = dominantLanguage.languageCode else {
-                    let errorDescription = AWSComprehendErrorMessage.dominantLanguageNotDetermined.errorDescription
-                    let recoverySuggestion = AWSComprehendErrorMessage.dominantLanguageNotDetermined.recoverySuggestion
-                    let unknownError = PredictionsError.unknown(errorDescription, recoverySuggestion)
-                    completionHandler(.failed(unknownError))
-                    return nil
-            }
-            let locale = Locale(identifier: dominantLanguageCode)
-            let languageType = LanguageType(locale: locale)
-            completionHandler(.completed(languageType, dominantLanguage.score?.doubleValue))
-            return nil
+    private func fetchPredominantLanguage(
+        _ text: String
+    ) async throws -> (Predictions.Language, Double?) {
+        let detectLanguageInput = DetectDominantLanguageInput(text: text)
+        do {
+            let response = try await awsComprehend.detectDominantLanguage(input: detectLanguageInput)
+            let dominantLanguage = response.languages?.getDominantLanguage()
+            let predictionsLanguage = dominantLanguage?.languageCode
+                .map(Locale.init(identifier:))
+                .map(Predictions.Language.init(locale:))
+            ?? .undetermined
+            return (predictionsLanguage, dominantLanguage?.score.map(Double.init))
+        } catch let error as DetectDominantLanguageOutputError {
+            throw ServiceErrorMapping.detectDominantLanguage.map(error)
+        } catch {
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
     }
 
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
-    /// - Parameter languageCode: Dominant language code
-    private func analyzeText(_ text: String, for languageCode: LanguageType,
-                             completionHandler: @escaping (InterpretResult.Builder) -> Void) {
-        DispatchQueue.global().async {
-            var sentimentResult: Sentiment?
-            var entitiesResult: [EntityDetectionResult]?
-            var keyPhrasesResult: [KeyPhrase]?
-            var syntaxTokenResult: [SyntaxToken]?
+    /// - Parameter languageCode: Dominant language
+    private func analyzeText(_ text: String, for languageCode: Predictions.Language) async throws -> Predictions.Interpret.Result {
+        let comprehendLanguageCode = languageCode.toComprehendLanguage()
+        let syntaxLanguageCode = languageCode.toSyntaxLanguage()
 
-            // Use dispatch group to group the parallel comprehend calls.
-            let dispatchGroup = DispatchGroup()
+        async let sentimentResult = try fetchSentimentResult(text, languageCode: comprehendLanguageCode)
+        async let entitiesResult = try detectEntities(text, languageCode: comprehendLanguageCode)
+        async let keyPhrasesResult = try fetchKeyPhrases(text, languageCode: comprehendLanguageCode)
+        async let syntaxResult = try fetchSyntax(text, languageCode: syntaxLanguageCode)
 
-            let comprehendLanguageCode = languageCode.toComprehendLanguage()
-            let syntaxLanguageCode = languageCode.toSyntaxLanguage()
-            dispatchGroup.enter()
-            self.fetchSentimentResult(text, languageCode: comprehendLanguageCode) { sentiment in
-                sentimentResult = sentiment
-                dispatchGroup.leave()
-            }
+        let (
+            sentiment,
+            entities,
+            keyPhrases,
+            syntax
+        ) = try await (
+            sentimentResult,
+            entitiesResult,
+            keyPhrasesResult,
+            syntaxResult
+        )
 
-            dispatchGroup.enter()
-            self.detectEntities(text, languageCode: comprehendLanguageCode) { detectedEntities in
-                entitiesResult = detectedEntities
-                dispatchGroup.leave()
-            }
+        let result = Predictions.Interpret.Result(
+            keyPhrases: keyPhrases,
+            sentiment: sentiment,
+            entities: entities,
+            language: nil,
+            syntax: syntax
+        )
 
-            dispatchGroup.enter()
-            self.fetchKeyPhrases(text, languageCode: comprehendLanguageCode) { keyPhrases in
-                keyPhrasesResult = keyPhrases
-                dispatchGroup.leave()
-            }
-
-            dispatchGroup.enter()
-            self.fetchSyntax(text, languageCode: syntaxLanguageCode) { syntaxTokens in
-                syntaxTokenResult = syntaxTokens
-                dispatchGroup.leave()
-            }
-            dispatchGroup.wait()
-            var interpretResultBuilder = InterpretResult.Builder()
-            interpretResultBuilder.with(entities: entitiesResult)
-            interpretResultBuilder.with(syntax: syntaxTokenResult)
-            interpretResultBuilder.with(sentiment: sentimentResult)
-            interpretResultBuilder.with(keyPhrases: keyPhrasesResult)
-            completionHandler(interpretResultBuilder)
-        }
+        return result
     }
 
-    private func fetchSyntax(_ text: String,
-                             languageCode: AWSComprehendSyntaxLanguageCode,
-                             completionHandler: @escaping ([SyntaxToken]?) -> Void) {
+    private func fetchSyntax(
+        _ text: String,
+        languageCode: ComprehendClientTypes.SyntaxLanguageCode
+    ) async throws -> [Predictions.SyntaxToken]? {
 
-        let syntaxRequest: AWSComprehendDetectSyntaxRequest = AWSComprehendDetectSyntaxRequest()
-        syntaxRequest.languageCode  = languageCode
-        syntaxRequest.text = text
-
-        awsComprehend.detectSyntax(request: syntaxRequest).continueWith { (task) -> Any? in
-            guard let syntaxTokens = task.result?.syntaxTokens else {
-                completionHandler(nil)
-                return nil
-            }
-            var syntaxTokenResult = [SyntaxToken]()
-            for syntax in syntaxTokens {
-                guard let comprehendPartOfSpeech = syntax.partOfSpeech else {
-                    continue
-                }
-                let beginOffSet = syntax.beginOffset?.intValue ?? 0
-                let endOffset = syntax.endOffset?.intValue ?? 0
-                let startIndex = text.unicodeScalars.index(text.startIndex, offsetBy: beginOffSet)
-                let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
-                let range = startIndex ..< endIndex
-
-                let score = comprehendPartOfSpeech.score?.floatValue
-                let speechType = comprehendPartOfSpeech.tag.getSpeechType()
-                let partOfSpeech = PartOfSpeech(tag: speechType, score: score)
-                let syntaxToken = SyntaxToken(tokenId: syntax.tokenId?.intValue ?? 0,
-                                              text: syntax.text ?? "",
-                                              range: range,
-                                              partOfSpeech: partOfSpeech)
-                syntaxTokenResult.append(syntaxToken)
-
-            }
-            completionHandler(syntaxTokenResult)
+        let syntaxInput = DetectSyntaxInput(languageCode: languageCode, text: text)
+        let syntax = try await awsComprehend.detectSyntax(input: syntaxInput)
+        guard let syntaxTokens = syntax.syntaxTokens
+        else {
             return nil
         }
+
+        var syntaxTokenResult = [Predictions.SyntaxToken]()
+        for syntax in syntaxTokens {
+            guard let comprehendPartOfSpeech = syntax.partOfSpeech,
+                  let tag = comprehendPartOfSpeech.tag
+            else { continue }
+
+            let beginOffSet = syntax.beginOffset ?? 0
+            let endOffset = syntax.endOffset ?? 0
+            let startIndex = text.unicodeScalars.index(text.startIndex, offsetBy: beginOffSet)
+            let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
+            let range = startIndex ..< endIndex
+
+            let score = comprehendPartOfSpeech.score
+            let speechType = ComprehendClientTypes.PartOfSpeechTagType(rawValue: tag.rawValue)
+            ?? .sdkUnknown(tag.rawValue)
+
+            let partOfSpeech = Predictions.PartOfSpeech.DetectionResult(
+                partOfSpeech: speechType.getSpeechType(), score: score
+            )
+
+            let syntaxToken = Predictions.SyntaxToken(
+                tokenId: syntax.tokenId ?? 0,
+                text: syntax.text ?? "",
+                range: range,
+                detectedPartOfSpeech: partOfSpeech
+            )
+
+            syntaxTokenResult.append(syntaxToken)
+        }
+        return syntaxTokenResult
     }
 
-    private func fetchKeyPhrases(_ text: String,
-                                 languageCode: AWSComprehendLanguageCode,
-                                 completionHandler: @escaping ([KeyPhrase]?) -> Void) {
+    private func fetchKeyPhrases(
+        _ text: String,
+        languageCode: ComprehendClientTypes.LanguageCode
+    ) async throws -> [Predictions.KeyPhrase]? {
+        let keyPhrasesInput = DetectKeyPhrasesInput(languageCode: languageCode, text: text)
 
-        let keyPhrasesRequest: AWSComprehendDetectKeyPhrasesRequest = AWSComprehendDetectKeyPhrasesRequest()
-        keyPhrasesRequest.languageCode = languageCode
-        keyPhrasesRequest.text = text
-
-        awsComprehend.detectKeyPhrases(request: keyPhrasesRequest).continueWith { (task) -> Any? in
-            guard let keyPhrases = task.result?.keyPhrases else {
-                completionHandler(nil)
-                return nil
-            }
-            var keyPhrasesResult = [KeyPhrase]()
-            for keyPhrase in keyPhrases {
-
-                let beginOffSet = keyPhrase.beginOffset?.intValue ?? 0
-                let endOffset = keyPhrase.endOffset?.intValue ?? 0
-                let startIndex = text.unicodeScalars.index(text.startIndex, offsetBy: beginOffSet)
-                let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
-                let range = startIndex ..< endIndex
-                let amplifyKeyPhrase = KeyPhrase(text: keyPhrase.text ?? "",
-                                                 range: range,
-                                                 score: keyPhrase.score?.floatValue)
-                keyPhrasesResult.append(amplifyKeyPhrase)
-            }
-            completionHandler(keyPhrasesResult)
+        let keyPhrasesResponse = try await awsComprehend.detectKeyPhrases(input: keyPhrasesInput)
+        guard let keyPhrases = keyPhrasesResponse.keyPhrases
+        else {
             return nil
         }
+
+        var keyPhrasesResult = [Predictions.KeyPhrase]()
+        for keyPhrase in keyPhrases {
+
+            let beginOffSet = keyPhrase.beginOffset ?? 0
+            let endOffset = keyPhrase.endOffset ?? 0
+            let startIndex = text.unicodeScalars.index(text.startIndex, offsetBy: beginOffSet)
+            let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
+            let range = startIndex ..< endIndex
+
+            let amplifyKeyPhrase = Predictions.KeyPhrase(
+                text: keyPhrase.text ?? "",
+                range: range,
+                score: keyPhrase.score
+            )
+
+            keyPhrasesResult.append(amplifyKeyPhrase)
+        }
+        return keyPhrasesResult
     }
 
-    private func fetchSentimentResult(_ text: String,
-                                      languageCode: AWSComprehendLanguageCode,
-                                      completionHandler: @escaping (Sentiment?) -> Void) {
+    private func fetchSentimentResult(
+        _ text: String,
+        languageCode: ComprehendClientTypes.LanguageCode
+    ) async throws -> Predictions.Sentiment? {
+        let sentimentInput = DetectSentimentInput(languageCode: languageCode, text: text)
+        let sentimentResponse = try await awsComprehend.detectSentiment(input: sentimentInput)
 
-        let sentimentRequest: AWSComprehendDetectSentimentRequest = AWSComprehendDetectSentimentRequest()
-        sentimentRequest.languageCode = languageCode
-        sentimentRequest.text = text
-        awsComprehend.detectSentiment(request: sentimentRequest).continueWith { (task) -> Any? in
-            guard let result = task.result else {
-                completionHandler(nil)
-                return nil
-            }
-            let predominantSentiment = result.sentiment.toAmplifySentimentType()
-            var score = [SentimentType: Double]()
-            if let sentimentScore = result.sentimentScore {
-                score = [SentimentType.positive: sentimentScore.positive?.doubleValue ?? 0.0,
-                         .negative: sentimentScore.negative?.doubleValue ?? 0.0,
-                         .mixed: sentimentScore.mixed?.doubleValue ?? 0.0,
-                         .neutral: sentimentScore.neutral?.doubleValue ?? 0.0]
-            }
-            completionHandler(Sentiment(predominantSentiment: predominantSentiment,
-                                        sentimentScores: score))
-            return nil
-        }
+        guard let sentiment = sentimentResponse.sentiment?.toAmplifySentimentType(),
+              let sentimentScore = sentimentResponse.sentimentScore
+        else { return nil }
+
+        let score: [Predictions.Sentiment.Kind: Double] = [
+            .positive: sentimentScore.positive.map(Double.init) ?? 0,
+            .negative: sentimentScore.negative.map(Double.init) ?? 0,
+            .mixed: sentimentScore.mixed.map(Double.init) ?? 0,
+            .neutral: sentimentScore.neutral.map(Double.init) ?? 0
+        ]
+
+        return Predictions.Sentiment(
+            predominantSentiment: sentiment,
+            sentimentScores: score
+        )
     }
 
-    private func detectEntities(_ text: String,
-                                languageCode: AWSComprehendLanguageCode,
-                                completionHandler: @escaping ([EntityDetectionResult]?) -> Void) {
-
-        let entitiesRequest: AWSComprehendDetectEntitiesRequest = AWSComprehendDetectEntitiesRequest()
-        entitiesRequest.languageCode = languageCode
-        entitiesRequest.text = text
-
-        awsComprehend.detectEntities(request: entitiesRequest).continueWith { (task) -> Any? in
-            guard let entities = task.result?.entities else {
-                completionHandler(nil)
-                return nil
-            }
-            var entitiesResult = [EntityDetectionResult]()
-            for entity in entities {
-                let beginOffSet = entity.beginOffset?.intValue ?? 0
-                let endOffset = entity.endOffset?.intValue ?? 0
-                let startIndex = text.unicodeScalars.index(text.startIndex, offsetBy: beginOffSet)
-                let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
-                let range = startIndex ..< endIndex
-                let interpretEntity = EntityDetectionResult(type: entity.types.toAmplifyEntityType(),
-                                                            targetText: entity.text ?? "",
-                                                            score: entity.score?.floatValue,
-                                                            range: range)
-                entitiesResult.append(interpretEntity)
-            }
-            completionHandler(entitiesResult)
+    private func detectEntities(
+        _ text: String,
+        languageCode: ComprehendClientTypes.LanguageCode
+    ) async throws -> [Predictions.Entity.DetectionResult]? {
+        let entitiesInput = DetectEntitiesInput(languageCode: languageCode, text: text)
+        let entitiesResponse = try await awsComprehend.detectEntities(input: entitiesInput)
+        guard let entities = entitiesResponse.entities
+        else {
             return nil
         }
+
+        var entitiesResult = [Predictions.Entity.DetectionResult]()
+        for entity in entities {
+            let beginOffSet = entity.beginOffset ?? 0
+            let endOffset = entity.endOffset ?? 0
+            let startIndex = text.unicodeScalars.index(text.startIndex, offsetBy: beginOffSet)
+            let endIndex = text.unicodeScalars.index(text.startIndex, offsetBy: endOffset)
+
+            let range = startIndex ..< endIndex
+            let interpretEntity = Predictions.Entity.DetectionResult(
+                type: entity.type?.toAmplifyEntityType() ?? .unknown,
+                targetText: entity.text ?? "",
+                score: entity.score,
+                range: range
+            )
+            entitiesResult.append(interpretEntity)
+        }
+        return entitiesResult
     }
 }
 
-extension Array where Element: AWSComprehendDominantLanguage {
+extension Array where Element == ComprehendClientTypes.DominantLanguage {
 
-    func getDominantLanguage() -> AWSComprehendDominantLanguage? {
+    func getDominantLanguage() -> ComprehendClientTypes.DominantLanguage? {
         // SwiftFormat removes `self` below, but that leads to ambiguity between the instance method on Array and the
         // global `max` method. Adding `self` removes the ambiguity.
         // swiftformat:disable:next redundantSelf
@@ -258,7 +224,7 @@ extension Array where Element: AWSComprehendDominantLanguage {
             guard let item2Score = item2.score else {
                 return true
             }
-            return item1Score.doubleValue < item2Score.doubleValue
+            return item1Score < item2Score
         }
     }
 }

@@ -55,46 +55,74 @@ jobs:
           project_path: ./AmplifyPlugins/Analytics/Tests/AnalyticsHostApp
           scheme: AWSPinpointAnalyticsPluginIntegrationTests
 
-  #  Disabling these tests because they do not currently work in CI. We will create a ticket to track
-  #  getting resolving this. In the meantime, they can be run locally.
-  #  
-  # push-notification-integration-test:
-  #   needs: prepare-for-test
-  #   runs-on: macos-12
-  #   environment: IntegrationTest
-  #   steps:
-  #     - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-  #       with:
-  #         persist-credentials: false
 
-  #     - name: Make directory
-  #       run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+  push-notification-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-12
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
 
-  #     - name: Copy integration test resouces
-  #       uses: ./.github/composite_actions/download_test_configuration
-  #       with:
-  #         resource_subfolder: push-notification
-  #         aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-  #         aws_region: ${{ secrets.AWS_REGION }}
-  #         aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
 
-  #     - name: Set up node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16.x
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: push-notification
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
-  #     - name: Run Local Server
-  #       run: |
-  #         cd ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp/LocalServer
-  #         npm install
-  #         npm start &
-  #       shell: bash
+      - name: Set up node
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
+        with:
+          node-version: 16.x
 
-  #     - name: Run Integration test
-  #       uses: ./.github/composite_actions/run_xcodebuild_test
-  #       with:
-  #         project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
-  #         scheme: PushNotificationHostApp
+      - name: Run Local Server
+        run: |
+          cd ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp/LocalServer
+          npm install
+          npm start &
+        shell: bash
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
+          scheme: PushNotificationHostApp
+
+  predictions-integration-test:
+    continue-on-error: true
+    needs: prepare-for-test
+    runs-on: macos-12
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: predictions
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: List the copied configurations
+        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Predictions/Tests/PredictionsHostApp
+          scheme: AWSPredictionsPluginIntegrationTests
 
   auth-integration-test:
     needs: prepare-for-test

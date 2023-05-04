@@ -11,9 +11,11 @@ import AWSTextract
 
 extension IdentifyTextResultTransformers {
 
-    static func processTables(tableBlocks: [AWSTextractBlock],
-                              blockMap: [String: AWSTextractBlock]) -> [Table] {
-        var tables = [Table]()
+    static func processTables(
+        tableBlocks: [TextractClientTypes.Block],
+        blockMap: [String: TextractClientTypes.Block]
+    ) -> [Predictions.Table] {
+        var tables = [Predictions.Table]()
         for tableBlock in tableBlocks {
             if let table = processTable(tableBlock, blockMap: blockMap) {
                 tables.append(table)
@@ -22,14 +24,16 @@ extension IdentifyTextResultTransformers {
         return tables
     }
 
-    static func processTable(_ tableBlock: AWSTextractBlock,
-                             blockMap: [String: AWSTextractBlock]) -> Table? {
+    static func processTable(
+        _ tableBlock: TextractClientTypes.Block,
+        blockMap: [String: TextractClientTypes.Block]
+    ) -> Predictions.Table? {
 
         guard let relationships = tableBlock.relationships,
             case .table = tableBlock.blockType else {
                 return nil
         }
-        var table = Table()
+        var table = Predictions.Table()
         var rows = Set<Int>()
         var cols = Set<Int>()
 
@@ -47,8 +51,8 @@ extension IdentifyTextResultTransformers {
                 }
 
                 // textract starts indexing at 1, so subtract it by 1.
-                let row = Int(truncating: rowIndex) - 1
-                let col = Int(truncating: colIndex) - 1
+                let row = rowIndex - 1
+                let col = colIndex - 1
 
                 if !rows.contains(row),
                     !cols.contains(row),
@@ -64,7 +68,10 @@ extension IdentifyTextResultTransformers {
         return table
     }
 
-    static func constructTableCell(_ block: AWSTextractBlock, _ blockMap: [String: AWSTextractBlock]) -> Table.Cell? {
+    static func constructTableCell(
+        _ block: TextractClientTypes.Block,
+        _ blockMap: [String: TextractClientTypes.Block]
+    ) -> Predictions.Table.Cell? {
         guard block.blockType == .cell,
             let relationships = block.relationships,
             let rowIndex = block.rowIndex,
@@ -112,18 +119,20 @@ extension IdentifyTextResultTransformers {
             }
         }
 
-        guard let boundingBox = processBoundingBox(textractBoundingBox),
-            let polygon = processPolygon(texttractPolygon) else {
+        guard let boundingBox = IdentifyResultTransformers.processBoundingBox(textractBoundingBox),
+              let polygon = IdentifyResultTransformers.processPolygon(texttractPolygon) else {
                 return nil
         }
 
-        return Table.Cell(text: words.trimmingCharacters(in: .whitespacesAndNewlines),
-                          boundingBox: boundingBox,
-                          polygon: polygon,
-                          isSelected: isSelected,
-                          rowIndex: Int(truncating: rowIndex),
-                          columnIndex: Int(truncating: columnIndex),
-                          rowSpan: Int(truncating: rowSpan),
-                          columnSpan: Int(truncating: columnSpan))
+        return Predictions.Table.Cell(
+            text: words.trimmingCharacters(in: .whitespacesAndNewlines),
+            boundingBox: boundingBox,
+            polygon: polygon,
+            isSelected: isSelected,
+            rowIndex: rowIndex,
+            columnIndex: columnIndex,
+            rowSpan: rowSpan,
+            columnSpan: columnSpan
+        )
     }
 }

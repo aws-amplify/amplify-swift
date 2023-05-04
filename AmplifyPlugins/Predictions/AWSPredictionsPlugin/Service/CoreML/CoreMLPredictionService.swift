@@ -10,7 +10,6 @@ import Amplify
 import CoreMLPredictionsPlugin
 
 class CoreMLPredictionService: CoreMLPredictionBehavior {
-
     let coreMLPlugin: CoreMLPredictionsPlugin
 
     init(configuration: Any?) throws {
@@ -18,42 +17,19 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
         try coreMLPlugin.configure(using: configuration)
     }
 
-    func comprehend(text: String, onEvent: @escaping InterpretTextEventHandler) {
-        _ = coreMLPlugin.interpret(text: text,
-                                    options: PredictionsInterpretRequest.Options()) { event in
-                                        switch event {
-                                        case .success(let result):
-                                            onEvent(.completed(result))
-                                        case .failure(let error):
-                                            onEvent(.failed(error))
-                                        }
-        }
+    func comprehend(
+        text: String
+    ) async throws -> Predictions.Interpret.Result {
+        return try await coreMLPlugin.interpret(
+            text: text,
+            options: Predictions.Interpret.Options()
+        )
     }
 
-    func identify(_ imageURL: URL,
-                  type: IdentifyAction,
-                  onEvent: @escaping IdentifyEventHandler) {
-        _ = coreMLPlugin.identify(type: type,
-                                  image: imageURL,
-                                  options: PredictionsIdentifyRequest.Options()) { event in
-                                    switch event {
-                                    case .success(let result):
-                                        onEvent(.completed(result))
-                                    case .failure(let error):
-                                        onEvent(.failed(error))
-                                    }
-        }
-    }
-
-    func transcribe(_ speechToText: URL, onEvent: @escaping TranscribeEventHandler) {
-        _ = coreMLPlugin.convert(speechToText: speechToText,
-                                 options: PredictionsSpeechToTextRequest.Options()) { event in
-            switch event {
-            case .success(let result):
-                onEvent(.completed(result))
-            case .failure(let error):
-                onEvent(.failed(error))
-            }
-        }
+    func identify<Output>(
+        _ type: Predictions.Identify.Request<Output>,
+        in imageURL: URL
+    ) async throws -> Output {
+        try await coreMLPlugin.identify(type, in: imageURL, options: .init())
     }
 }

@@ -7,15 +7,15 @@
 
 import Amplify
 import AWSTextract
+import Foundation
 
 protocol AWSTextractServiceBehavior {
+    func analyzeDocument(
+        image: URL,
+        features: [String]
+    ) async throws -> Predictions.Identify.DocumentText.Result
 
-    typealias TextractServiceEventHandler = (TextractServiceEvent) -> Void
-    typealias TextractServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
-
-    func analyzeDocument(image: URL, features: [String], onEvent: @escaping TextractServiceEventHandler)
-
-    func detectDocumentText(image: Data,
-                            onEvent: @escaping TextractServiceEventHandler) -> DetectDocumentTextCompletedHandler
-
+    func detectDocumentText(
+        image: Data
+    ) async throws -> DetectDocumentTextOutputResponse
 }

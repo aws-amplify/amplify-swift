@@ -8,9 +8,9 @@
 import Amplify
 import AWSComprehend
 
-extension AWSComprehendSentimentType {
+extension ComprehendClientTypes.SentimentType {
 
-    func toAmplifySentimentType() -> SentimentType {
+    func toAmplifySentimentType() -> Predictions.Sentiment.Kind {
         switch self {
         case .positive:
             return .positive
@@ -20,9 +20,7 @@ extension AWSComprehendSentimentType {
             return .negative
         case .mixed:
             return .mixed
-        case .unknown:
-            return .unknown
-        @unknown default:
+        case .sdkUnknown:
             return .unknown
         }
     }

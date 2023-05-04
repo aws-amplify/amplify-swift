@@ -46,6 +46,39 @@ extension Bytes {
 
 class FileSystemTests: XCTestCase {
 
+    func testMoveFile_Succeeds_WhenMoveFileExecuted() throws {
+        let fs = FileSystem()
+        let directoryURL = fs.createTemporaryDirectoryURL()
+        try fs.createDirectory(at: directoryURL)
+        let bytes = Bytes.megabytes(3)
+        let data = bytes.generateRandomData()
+        let sourceFileUrl = try fs.createTemporaryFile(data: data, baseURL: directoryURL)
+        XCTAssertTrue(fs.fileExists(atURL: sourceFileUrl))
+        let destinationUrl = fs.documentsURL.appendingPathComponent("destination.tmp")
+        try fs.moveFile(from: sourceFileUrl, to: destinationUrl)
+        XCTAssertTrue(fs.fileExists(atURL: destinationUrl))
+        fs.removeDirectoryIfExists(directoryURL: sourceFileUrl)
+        fs.removeDirectoryIfExists(directoryURL: destinationUrl)
+    }
+    
+    func testMoveFile_Succeeds_WhenFileAlreadyExists() throws {
+        let fs = FileSystem()
+        let directoryURL = fs.createTemporaryDirectoryURL()
+        try fs.createDirectory(at: directoryURL)
+        let bytes = Bytes.megabytes(3)
+        let data = bytes.generateRandomData()
+        var sourceFileUrl = try fs.createTemporaryFile(data: data, baseURL: directoryURL)
+        XCTAssertTrue(fs.fileExists(atURL: sourceFileUrl))
+        let destinationUrl = fs.documentsURL.appendingPathComponent("destination.tmp")
+        try fs.moveFile(from: sourceFileUrl, to: destinationUrl)
+        XCTAssertTrue(fs.fileExists(atURL: destinationUrl))
+        sourceFileUrl = try fs.createTemporaryFile(data: data, baseURL: directoryURL)
+        try fs.moveFile(from: sourceFileUrl, to: destinationUrl)
+        XCTAssertTrue(fs.fileExists(atURL: destinationUrl))
+        fs.removeDirectoryIfExists(directoryURL: sourceFileUrl)
+        fs.removeDirectoryIfExists(directoryURL: destinationUrl)
+    }
+    
     func testFileExists() throws {
         let fs = FileSystem()
         let directoryURL = fs.createTemporaryDirectoryURL()

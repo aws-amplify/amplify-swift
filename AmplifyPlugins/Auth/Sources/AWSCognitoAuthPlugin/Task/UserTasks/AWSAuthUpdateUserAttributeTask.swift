@@ -34,10 +34,9 @@ class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             return try await updateUserAttribute(with: accessToken)
-        } catch let error as UpdateUserAttributesOutputError {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
-            dispatch(result: .failure(error))
             throw error
         } catch let error {
             let error = AuthError.unknown("Unable to execute auth task", error)

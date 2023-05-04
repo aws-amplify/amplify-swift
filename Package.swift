@@ -280,7 +280,8 @@ let internalPinpointTargets: [Target] = [
         name: "InternalAWSPinpointUnitTests",
         dependencies: [
             "InternalAWSPinpoint",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "AmplifyAsyncTesting"
         ],
         path: "AmplifyPlugins/Internal/Tests/InternalAWSPinpointUnitTests"
     )
@@ -322,8 +323,60 @@ let pushNotificationsTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets +
-                        geoTargets + analyticsTargets + pushNotificationsTargets + internalPinpointTargets
+let predictionsTargets: [Target] = [
+    .target(
+        name: "AWSPredictionsPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .target(name: "CoreMLPredictionsPlugin"),
+            .product(name: "AWSComprehend", package: "aws-sdk-swift"),
+            .product(name: "AWSPolly", package: "aws-sdk-swift"),
+            .product(name: "AWSRekognition", package: "aws-sdk-swift"),
+            .product(name: "AWSTextract", package: "aws-sdk-swift"),
+            .product(name: "AWSTranscribeStreaming", package: "aws-sdk-swift"),
+            .product(name: "AWSTranslate", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyPlugins/Predictions/AWSPredictionsPlugin",
+        exclude: []
+    ),
+    .testTarget(
+        name: "AWSPredictionsPluginUnitTests",
+        dependencies: ["AWSPredictionsPlugin"],
+        path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests",
+        resources: [.copy("TestResources/TestImages") ]
+    ),
+    .target(
+        name: "CoreMLPredictionsPlugin",
+        dependencies: [
+            .target(name: "Amplify")
+        ],
+        path: "AmplifyPlugins/Predictions/CoreMLPredictionsPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "CoreMLPredictionsPluginUnitTests",
+        dependencies: [
+            "CoreMLPredictionsPlugin",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Predictions/Tests/CoreMLPredictionsPluginUnitTests",
+        resources: [.copy("TestResources/TestImages")]
+    )
+]
+
+let targets: [Target] = amplifyTargets
+    + apiTargets
+    + authTargets
+    + dataStoreTargets
+    + storageTargets
+    + geoTargets
+    + analyticsTargets
+    + pushNotificationsTargets
+    + internalPinpointTargets
+    + predictionsTargets
 
 let package = Package(
     name: "Amplify",
@@ -364,6 +417,14 @@ let package = Package(
         .library(
             name: "AWSPinpointPushNotificationsPlugin",
             targets: ["AWSPinpointPushNotificationsPlugin"]
+        ),
+        .library(
+            name: "AWSPredictionsPlugin",
+            targets: ["AWSPredictionsPlugin"]
+        ),
+        .library(
+            name: "CoreMLPredictionsPlugin",
+            targets: ["CoreMLPredictionsPlugin"]
         )
     ],
     dependencies: dependencies,

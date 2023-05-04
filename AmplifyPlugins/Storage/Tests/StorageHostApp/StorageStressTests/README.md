@@ -6,8 +6,10 @@ This set up is used to run the tests in StorageStressTests.
 
 ### Set-up
 
+0. If you have already setup an Amplify app using `amplify init` for testing
+   this category. You may run `amplify pull` and follow the prompts and skip the
+   rest of these steps.
 1. `amplify init`
-
 2. `amplify add storage`
 
 ```perl
@@ -91,10 +93,3 @@ Successfully added auth resource
 ```
 
 3. `amplify push`
-
-
-4. Copy `amplifyconfiguration.json` as `AWSAmplifyStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
-
-```
-cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSAmplifyStressTests-amplifyconfiguration.json
-```

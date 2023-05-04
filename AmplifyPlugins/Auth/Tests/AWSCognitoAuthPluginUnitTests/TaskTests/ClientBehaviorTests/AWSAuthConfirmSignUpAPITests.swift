@@ -171,7 +171,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
-                throw ConfirmSignUpOutputError.internalErrorException(.init())
+                throw SdkError.service(
+                    ConfirmSignUpOutputError.internalErrorException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
 

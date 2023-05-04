@@ -12,6 +12,10 @@ public protocol AuthAWSCredentialsProvider {
     func getAWSCredentials() -> Result<AWSCredentials, AuthError>
 }
 
+public protocol AWSCredentialsProvider {
+    func fetchAWSCredentials() async throws -> AWSCredentials
+}
+
 public protocol AWSTemporaryCredentials: AWSCredentials {
 
     var sessionToken: String { get }

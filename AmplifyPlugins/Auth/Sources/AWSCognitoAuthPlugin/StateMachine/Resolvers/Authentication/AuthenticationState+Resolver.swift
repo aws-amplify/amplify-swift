@@ -202,6 +202,16 @@ extension AuthenticationState {
                 )
                 return resolution
 
+            case .cancelSignIn:
+                let action = InitiateSignOut(
+                    signedInData: currentSignedInData,
+                    signOutEventData: .init(globalSignOut: false))
+                let signOutState = SignOutState.notStarted
+                let resolution = StateResolution(
+                    newState: AuthenticationState.signingOut(signOutState),
+                    actions: [action]
+                )
+                return resolution
             default:
                 return .from(.signedIn(currentSignedInData))
             }

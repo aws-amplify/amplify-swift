@@ -1,5 +1,61 @@
 # Changelog
 
+## 2.9.1 (2023-05-02)
+
+### Bug Fixes
+
+- **Auth**: Fixing throwing of AuthError when Authorization fails during signIn (#2905)
+- **storage**: foreground upload speed (#2925)
+
+## 2.9.0 (2023-04-28)
+
+### Features
+
+- **predictions**: add predictions v2 (#2902)
+
+## 2.8.1 (2023-04-17)
+
+### Bug Fixes
+
+- **Auth**: Fixing handling of service SdkError in Auth tasks (#2859)
+- **predictions**: make predictions plugin init internal (#2855)
+
+## 2.8.0 (2023-04-05)
+
+### Features
+
+- **liveness**: add session + websocket client (#134)
+- **liveness**: add spi models (#132)
+- **predictions**: add support for sigv4 signing (#130)
+- **predictions**: EventStream Encoding and Decoding Support (#129)
+
+### Bug Fixes
+
+- **liveness**: misc minor changes (#135)
+- **storage**: Ensure progress from Amplify.Storage.uploadFile completes
+
+## 2.7.1 (2023-03-28)
+
+## 2.7.0 (2023-03-28)
+
+### Features
+
+- **storage**: Add pagination support.
+
+### Bug Fixes
+
+- **datastore**: detect duplicate mutation event by both modelName and modelId (#2834)
+- **Auth**: Adding ASF DeviceId as an input for Cognito APIs (#2833)
+- **PushNotifications**: Checking if there is a Provisioning Profile with the APS Entitlement in order to determine the ChannelType (#2824)
+
+## 2.6.1 (2023-03-21)
+
+### Bug Fixes
+
+- **datastore**: swap `like` for `instr` in sql queries (#2818)
+- **storage**: update storage to support downloading if a file already exist locally (#2825)
+- **Auth**: Sign out when user does not exist during delete user task (#2812)
+
 ## 2.6.0 (2023-03-13)
 
 ### Features

@@ -36,9 +36,7 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger {
             let details = try await resendSignUpCode()
             log.verbose("Received result")
             return details
-        } catch let error as ResendConfirmationCodeOutputError {
-            throw error.authError
-        } catch let error as SdkError<ResendConfirmationCodeOutputError> {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error
