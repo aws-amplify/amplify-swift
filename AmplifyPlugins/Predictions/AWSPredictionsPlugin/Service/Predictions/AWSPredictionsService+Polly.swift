@@ -35,7 +35,7 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
             }
 
             let textToSpeechResult = Predictions.Convert.TextToSpeech.Result(
-                audioData: speech.toBytes().toData()
+                audioData: speech.toBytes().getData()
             )
             return textToSpeechResult
         } catch let error as SynthesizeSpeechOutputError {
