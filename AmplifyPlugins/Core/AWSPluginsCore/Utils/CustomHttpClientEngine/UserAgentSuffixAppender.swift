@@ -34,8 +34,4 @@ extension UserAgentSuffixAppender: HttpClientEngine {
         request.headers = headers
         return try await target.execute(request: request)
     }
-
-    public func close() async {
-        await target?.close()
-    }
 }

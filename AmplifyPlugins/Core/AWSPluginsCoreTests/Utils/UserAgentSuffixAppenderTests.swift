@@ -69,14 +69,6 @@ class UserAgentSuffixAppenderTests: XCTestCase {
         }
     }
 
-    /// Given: A UserAgentSuffixAppender with a configured httpClientEngine
-    /// When: close is invoked
-    /// Then: The httpClientEngine's close API should be called
-    func testClose_shouldInvokeClose() async {
-        await appender.close()
-        XCTAssertEqual(httpClientEngine.closeCount, 1)
-    }
-
     private func createRequest() -> SdkHttpRequest {
         return SdkHttpRequest(
             method: .get,
@@ -93,10 +85,5 @@ private class MockHttpClientEngine: HttpClientEngine {
         executeCount += 1
         executeRequest = request
         return .init(body: .empty, statusCode: .accepted)
-    }
-
-    var closeCount = 0
-    func close() async {
-        closeCount += 1
     }
 }
