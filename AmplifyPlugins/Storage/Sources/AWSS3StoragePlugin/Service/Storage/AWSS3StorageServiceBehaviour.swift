@@ -45,6 +45,8 @@ protocol AWSS3StorageServiceBehaviour {
                          signingOperation: AWSS3SigningOperation,
                          expires: Int) async throws -> URL
 
+    func validateObjectExistence(serviceKey: String) async throws
+
     func upload(serviceKey: String,
                 uploadSource: UploadSource,
                 contentType: String?,

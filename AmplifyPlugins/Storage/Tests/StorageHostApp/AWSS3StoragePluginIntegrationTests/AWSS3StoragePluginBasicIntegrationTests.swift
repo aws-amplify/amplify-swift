@@ -193,6 +193,38 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await remove(key: key)
     }
 
+    /// - Given: A key for a non-existent S3 object
+    /// - When: A pre-signed URL is requested for that key with `validateObjectExistence = true`
+    /// - Then: A StorageError.keyNotFound error is thrown
+    func testGetURLForUnknownKeyWithValidation() async throws {
+        let unknownKey = UUID().uuidString
+        do {
+            let url = try await Amplify.Storage.getURL(
+                key: unknownKey,
+                options: .init(
+                    pluginOptions: AWSStorageGetURLOptions(validateObjectExistence: true)
+                )
+            )
+            XCTFail("Expecting failure but got url: \(url)")
+        } catch StorageError.keyNotFound(let key, _, _, _) {
+            XCTAssertTrue(key.contains(unknownKey))
+        }
+    }
+
+    /// - Given: A key for a non-existent S3 object
+    /// - When: A pre-signed URL is requested for that key with `validateObjectExistence = false`
+    /// - Then: A pre-signed URL is returned
+    func testGetURLForUnknownKeyWithoutValidation() async throws {
+        let unknownKey = UUID().uuidString
+        let url = try await Amplify.Storage.getURL(
+            key: unknownKey,
+            options: .init(
+                pluginOptions: AWSStorageGetURLOptions(validateObjectExistence: false)
+            )
+        )
+        XCTAssertNotNil(url)
+    }
+
     /// Given: An object in storage
     /// When: Call the list API
     /// Then: The operation completes successfully with the key retrieved
@@ -391,7 +423,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 //            XCTFail("Failed to get AWSS3StoragePlugin")
 //        }
 //    }
-    
+
     // MARK: Helper functions
 
     func removeIfExists(_ fileURL: URL) {
