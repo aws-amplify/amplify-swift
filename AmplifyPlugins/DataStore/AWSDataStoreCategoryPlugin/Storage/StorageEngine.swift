@@ -133,9 +133,18 @@ final class StorageEngine: StorageEngineBehavior {
     func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
         switch receiveCompletion {
         case .failure(let dataStoreError):
-            storageEnginePublisher.send(completion: .failure(dataStoreError))
+            log.error("RemoteSyncEngine completed with error \(dataStoreError)")
         case .finished:
-            storageEnginePublisher.send(completion: .finished)
+            log.debug("RemoteSyncEngine completed successfully")
+        }
+
+        stopSync { result in
+            switch result {
+            case .success:
+                self.log.info("Stopping SyncEngine successful.")
+            case .failure(let error):
+                self.log.error("Failed to stop SyncEngine with error: \(error)")
+            }
         }
     }
 
@@ -323,6 +332,7 @@ final class StorageEngine: StorageEngineBehavior {
     func clear(completion: @escaping DataStoreCallback<Void>) {
         if let syncEngine = syncEngine {
             syncEngine.stop(completion: { _ in
+                self.syncEngine = nil
                 self.storageAdapter.clear(completion: completion)
             })
         } else {
