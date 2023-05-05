@@ -39,6 +39,8 @@ public final class FaceLivenessSession: LivenessService {
         }
     }
 
+    public var onServiceException: (FaceLivenessSessionError) -> Void = { _ in }
+
     public func register(
         onComplete: @escaping (ServerDisconnection) -> Void
     ) {
@@ -120,33 +122,41 @@ public final class FaceLivenessSession: LivenessService {
     private func receive(result: Result<URLSessionWebSocketTask.Message, Error>) -> Bool {
         switch result {
         case .success(.data(let data)):
-
             do {
                 let message = try self.eventStreamDecoder.decode(data: data)
-                guard let eventType = message.headers.first(where: { $0.name == ":event-type" })
-                else { return fallbackDecoding(message) }
 
-                switch eventType.value {
-                case "ServerSessionInformationEvent":
-                    // :event-type ServerSessionInformationEvent
-                    let payload = try JSONDecoder().decode(
-                        ServerSessionInformationEvent.self, from: message.payload
-                    )
-                    let sessionConfiguration = sessionConfiguration(from: payload)
-                    serverEventListeners[.challenge]?(sessionConfiguration)
-                case "DisconnectionEvent":
-                    // :event-type DisconnectionEvent
-                    onComplete(.disconnectionEvent)
+                if let eventType = message.headers.first(where: { $0.name == ":event-type" }) {
+                    let serverEvent = LivenessEventKind.Server(rawValue: eventType.value)
+                    switch serverEvent {
+                    case .challenge:
+                        // :event-type ServerSessionInformationEvent
+                        let payload = try JSONDecoder().decode(
+                            ServerSessionInformationEvent.self, from: message.payload
+                        )
+                        let sessionConfiguration = sessionConfiguration(from: payload)
+                        serverEventListeners[.challenge]?(sessionConfiguration)
+                        return true
+                    case .disconnect:
+                        // :event-type DisconnectionEvent
+                        onComplete(.disconnectionEvent)
+                        return false
+                    default:
+                        return true
+                    }
+                } else if let exceptionType = message.headers.first(where: { $0.name == ":exception-type" }) {
+                    let exceptionEvent = LivenessEventKind.Exception(rawValue: exceptionType.value)
+                    onServiceException(.init(event: exceptionEvent))
                     return false
-                default:
-                    return true
+                } else {
+                    return fallbackDecoding(message)
                 }
-            } catch {}
-            return true
+            } catch {
+                return false
+            }
         case .success:
             return true
         case .failure:
-            return true
+            return false
         }
     }
 }

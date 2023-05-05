@@ -15,6 +15,8 @@ public protocol LivenessService {
         eventDate: () -> Date
     )
 
+    var onServiceException: (FaceLivenessSessionError) -> Void { get set }
+
     func register(onComplete: @escaping (ServerDisconnection) -> Void)
 
     func initializeLivenessStream(withSessionID sessionID: String, userAgent: String) throws
