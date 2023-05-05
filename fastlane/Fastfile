@@ -32,15 +32,24 @@ platform :ios do
     # Increment all specs and plists
     increment_versions(version: next_version)
 
+    # Build and update changelog
     changelog = build_changelog(version: next_version, commits: commits)
+    write_changelog(changelog: changelog, path: 'CHANGELOG.md')
+ 
+    # Run SPM update
+    sh('bundle', 'exec', 'swift', 'package', 'update')
 
+    # Expected changes to be committed
+    #  - CHANGELOG.m
+    #  - Updated AmplifyAWSServiceConfiguration.swift
+    #  - Pacakge.resolved (If any package was udpated)
+    #
     # Commit and push
     release_commit(version: next_version)
 
     # Create tag and push to origin
     add_tag(version: next_version)
 
-    post_release(version: next_version, changelog: changelog)
   end
 
   desc "Increment versions"
@@ -61,6 +70,7 @@ platform :ios do
 
     # push to origin
     sh('git', 'push', 'origin', 'release')
+    sh('git', 'push', 'origin', 'release:main')
   end
 
   desc "Tag in git and push to GitHub"
@@ -72,24 +82,4 @@ platform :ios do
     push_git_tags(tag: next_tag)
   end
 
-  desc "Post-release"
-  private_lane :post_release do |options|
-    version = options[:version].to_s
-    changelog = options[:changelog]
-    tag = "#{version}"
-  
-    sh('bundle', 'exec', 'swift', 'package', 'update')
-
-    write_changelog(changelog: changelog, path: 'CHANGELOG.md')
-
-    commit_message = "chore: finalize release #{version} [skip ci]"
-    sh('git', 'commit', '-am', commit_message)
-
-    add_git_tag(tag: tag, force: true)
-    push_git_tags(tag: tag, force: true)
-
-    # push to origin
-    sh('git', 'push', 'origin', 'release')
-    sh('git', 'push', 'origin', 'release:main')
-  end
 end
