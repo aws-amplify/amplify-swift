@@ -80,6 +80,13 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
     }
 
+    var validateObjectExistenceHandler: (String) async throws -> Void = { _ in }
+
+    public func validateObjectExistence(serviceKey: String) async throws {
+        interactions.append("\(#function) \(serviceKey)")
+        try await validateObjectExistenceHandler(serviceKey)
+    }
+
     public func upload(serviceKey: String,
                        uploadSource: UploadSource,
                        contentType: String?,
