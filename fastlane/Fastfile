@@ -40,9 +40,9 @@ platform :ios do
     sh('bundle', 'exec', 'swift', 'package', 'update')
 
     # Expected changes to be committed
-    #  - CHANGELOG.m
+    #  - CHANGELOG.md
     #  - Updated AmplifyAWSServiceConfiguration.swift
-    #  - Pacakge.resolved (If any package was udpated)
+    #  - Pacakge.resolved (If any package was updated)
     #
     # Commit and push
     release_commit(version: next_version)
