@@ -303,6 +303,15 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     }
 
+    var mockSyncEnginePublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>!
+    var mockSyncEngineSubscription: AnyCancellable! {
+        willSet {
+            if let subscription = mockSyncEngineSubscription {
+                subscription.cancel()
+            }
+        }
+    }
+
     var mockPublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> {
         mockPublisher.eraseToAnyPublisher()
@@ -314,6 +323,10 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                 responder.callback("")
             }
             startedSync = true
+            mockSyncEnginePublisher = PassthroughSubject()
+            mockSyncEngineSubscription = mockSyncEnginePublisher.sink(receiveCompletion: { completion in
+                self.stopSync(completion: { _ in })
+            }, receiveValue: { _ in })
             return .success(.successfullyInitialized)
         } else {
             return .success(.alreadyInitialized)

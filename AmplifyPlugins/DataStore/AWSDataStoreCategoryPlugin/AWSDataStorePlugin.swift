@@ -198,16 +198,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         case .failure(let dataStoreError):
             log.error("StorageEngine completed with error: \(dataStoreError)")
         case .finished:
-            break
-        }
-        stop { result in
-            switch result {
-            case .success:
-                self.log.info("Stopping DataStore successful.")
-                return
-            case .failure(let error):
-                self.log.error("Failed to stop StorageEngine with error: \(error)")
-            }
+            log.debug("StorageEngine completed successfully")
         }
     }
 
