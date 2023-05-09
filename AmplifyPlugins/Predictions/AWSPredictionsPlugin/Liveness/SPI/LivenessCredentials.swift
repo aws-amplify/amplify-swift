@@ -10,28 +10,26 @@ import Amplify
 import AWSPluginsCore
 
 func credential(from credentialsProvider: AWSCredentialsProvider?) async throws -> SigV4Signer.Credential {
-    let credential: SigV4Signer.Credential
+    let credentials: AWSCredentials
 
     if let credentialsProvider = credentialsProvider {
         let providedCredentials = try await credentialsProvider.fetchAWSCredentials()
-        credential = .init(
-            accessKey: providedCredentials.accessKeyId,
-            secretKey: providedCredentials.secretAccessKey,
-            sessionToken: (providedCredentials as? AWSTemporaryCredentials)?.sessionToken
-        )
+        credentials = providedCredentials
     } else {
         let authSession = try await Amplify.Auth.fetchAuthSession()
         if let authAWSCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
             let awsCredentials = try authAWSCredentialsProvider.getAWSCredentials().get()
-            credential = .init(
-                accessKey: awsCredentials.accessKeyId,
-                secretKey: awsCredentials.secretAccessKey,
-                sessionToken: (awsCredentials as? AWSTemporaryCredentials)?.sessionToken
-            )
+            credentials = awsCredentials
         } else {
             throw FaceLivenessSessionError.accessDenied
         }
     }
 
-    return credential
+    let signerCredential = SigV4Signer.Credential(
+        accessKey: credentials.accessKeyId,
+        secretKey: credentials.secretAccessKey,
+        sessionToken: (credentials as? AWSTemporaryCredentials)?.sessionToken
+    )
+
+    return signerCredential
 }

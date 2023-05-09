@@ -16,9 +16,15 @@ public struct LivenessEvent<T> {
 
 @_spi(PredictionsFaceLiveness)
 public enum LivenessEventKind {
-    public struct Server: Hashable {
-        public static let challenge = Server()
-        public static let disconnect = Server()
+    public struct Server: RawRepresentable, Hashable {
+        public var rawValue: String
+
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+
+        public static let challenge = Self(rawValue: "ServerSessionInformationEvent")
+        public static let disconnect = Self(rawValue: "DisconnectionEvent")
     }
     case server(Server)
 
@@ -31,6 +37,22 @@ public enum LivenessEventKind {
         public static let final = Client(id: 3)
     }
     case client(Client)
+
+    public struct Exception: RawRepresentable, Equatable {
+        public var rawValue: String
+
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+
+        public static let accessDenied = Self(rawValue: "AccessDeniedException")
+        public static let validation = Self(rawValue: "ValidationException")
+        public static let internalServer = Self(rawValue: "InternalServerException")
+        public static let throttling = Self(rawValue: "ThrottlingException")
+        public static let serviceQuotaExceeded = Self(rawValue: "ServiceQuotaExceededException")
+        public static let serviceUnavailable = Self(rawValue: "ServiceUnavailableException")
+        public static let sessionNotFound = Self(rawValue: "SessionNotFoundException")
+    }
 }
 
 extension LivenessEventKind: CustomDebugStringConvertible {

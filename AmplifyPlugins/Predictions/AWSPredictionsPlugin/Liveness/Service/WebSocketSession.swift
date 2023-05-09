@@ -36,7 +36,11 @@ final class WebSocketSession {
     }
 
     func receive(shouldContinue: Bool) {
-        guard shouldContinue else { return }
+        guard shouldContinue else {
+            session.finishTasksAndInvalidate()
+            return
+        }
+
         task?.receive(completionHandler: { [weak self] result in
             if let shouldContinue = self?.receiveMessage?(result) {
                 self?.receive(shouldContinue: shouldContinue)
