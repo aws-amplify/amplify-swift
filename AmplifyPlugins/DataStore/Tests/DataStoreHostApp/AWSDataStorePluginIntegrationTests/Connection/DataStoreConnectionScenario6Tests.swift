@@ -205,7 +205,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         let post2 = try await savePost(title: "title", blog: blog2)
         _ = try await saveComment(id: commentId2, post: post2, content: "content")
 
-        await waitForExpectations(timeout: 10)
+        await fulfillment(of: [remoteEventReceived], timeout: 30)
 
         let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
         var processedSoFar = 0
@@ -239,7 +239,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         
         try await Amplify.DataStore.delete(Blog6.self, where: QueryPredicateConstant.all)
         
-        await waitForExpectations(timeout: 10)
+        await fulfillment(of: [outboxMutationProcessed], timeout: 30)
     }
 
     func saveBlog(id: String = UUID().uuidString, name: String) async throws -> Blog6 {

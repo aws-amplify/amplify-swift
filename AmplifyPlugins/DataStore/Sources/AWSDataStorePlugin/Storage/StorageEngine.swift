@@ -26,8 +26,9 @@ final class StorageEngine: StorageEngineBehavior {
     let validAPIPluginKey: String
     let validAuthPluginKey: String
     var signInListener: UnsubscribeToken?
+    let isSyncEnabled: Bool
 
-    private let dataStoreConfiguration: DataStoreConfiguration
+    let dataStoreConfiguration: DataStoreConfiguration
     private let operationQueue: OperationQueue
 
     var iSyncEngineSink: Any?
@@ -75,12 +76,15 @@ final class StorageEngine: StorageEngineBehavior {
          dataStoreConfiguration: DataStoreConfiguration,
          syncEngine: RemoteSyncEngineBehavior?,
          validAPIPluginKey: String,
-         validAuthPluginKey: String) {
+         validAuthPluginKey: String,
+         isSyncEnabled: Bool = false
+    ) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.syncEngine = syncEngine
         self.validAPIPluginKey = validAPIPluginKey
         self.validAuthPluginKey = validAuthPluginKey
+        self.isSyncEnabled = isSyncEnabled
 
         let operationQueue = OperationQueue()
         operationQueue.name = "com.amazonaws.StorageEngine"
@@ -101,24 +105,32 @@ final class StorageEngine: StorageEngineBehavior {
 
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
-        let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter,
-                                                                   dataStoreConfiguration: dataStoreConfiguration) : nil
-        self.init(storageAdapter: storageAdapter,
-                      dataStoreConfiguration: dataStoreConfiguration,
-                      syncEngine: syncEngine,
-                      validAPIPluginKey: validAPIPluginKey,
-                      validAuthPluginKey: validAuthPluginKey)
+        self.init(
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: dataStoreConfiguration,
+            syncEngine: nil,
+            validAPIPluginKey: validAPIPluginKey,
+            validAuthPluginKey: validAuthPluginKey,
+            isSyncEnabled: isSyncEnabled
+        )
         self.storageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
-        syncEngineSink = syncEngine?.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
-                                                        receiveValue: onReceive(receiveValue:))
     }
 
-    private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+    func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
         switch receiveCompletion {
         case .failure(let dataStoreError):
-            storageEnginePublisher.send(completion: .failure(dataStoreError))
+            log.debug("RemoteSyncEngine publisher completed with error \(dataStoreError)")
         case .finished:
-            storageEnginePublisher.send(completion: .finished)
+            log.debug("RemoteSyncEngine publisher completed successfully")
+        }
+
+        stopSync { result in
+            switch result {
+                case .success:
+                    self.log.info("Stopping DataStore successful.")
+                case .failure(let error):
+                    self.log.error("Failed to stop StorageEngine with error: \(error)")
+            }
         }
     }
 
@@ -308,6 +320,7 @@ final class StorageEngine: StorageEngineBehavior {
     func clear(completion: @escaping DataStoreCallback<Void>) {
         if let syncEngine = syncEngine {
             syncEngine.stop(completion: { _ in
+                self.syncEngine = nil
                 self.storageAdapter.clear(completion: completion)
             })
         } else {
@@ -318,6 +331,7 @@ final class StorageEngine: StorageEngineBehavior {
     func stopSync(completion: @escaping DataStoreCallback<Void>) {
         if let syncEngine = syncEngine {
             syncEngine.stop { _ in
+                self.syncEngine = nil
                 completion(.successfulVoid)
             }
         } else {
