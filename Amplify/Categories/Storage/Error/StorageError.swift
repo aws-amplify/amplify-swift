@@ -5,15 +5,56 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Errors thrown by implementations of the
+/// [StorageCategoryPlugin](x-source-tag://StorageCategoryPlugin) protocol.
+///
+/// - Tag: StorageError
 public enum StorageError {
+
+    /// Surfaced when a storage operation is attempted for either a file or a key to which the current user
+    /// does not have access.
+    ///
+    /// - Tag: StorageError.accessDenied
     case accessDenied(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// Surfaced when a storage operation is unable to resolve the current user.
+    ///
+    /// - Tag: StorageError.authError
     case authError(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// Surfaced when a storage plugin encounters an error during its configuration.
+    ///
+    /// - Tag: StorageError.configuration
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// Surfaced when a storage operation encounters an HTTP status code it considers an error.
+    ///
+    /// - Tag: StorageError.httpStatusError
     case httpStatusError(Int, RecoverySuggestion, Error? = nil)
+
+    /// Surfaced when a storage operation encounters an HTTP status code it considers an error.
+    ///
+    /// - Tag: StorageError.keyNotFound
     case keyNotFound(Key, ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// Surfaced when a storage operation is unable to find a local file, usually when attempting to upload.
+    ///
+    /// - Tag: StorageError.localFileNotFound
     case localFileNotFound(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// Surfaced when a storage operation encounters an unexpected server-side error.
+    ///
+    /// - Tag: StorageError.service
     case service(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// Surfaced when a storage operation encounters an general unexpected error.
+    ///
+    /// - Tag: StorageError.unknown
     case unknown(ErrorDescription, Error? = nil)
+
+    /// Surfaced when a storage operation encounters invalid input.
+    ///
+    /// - Tag: StorageError.validation
     case validation(Field, ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
