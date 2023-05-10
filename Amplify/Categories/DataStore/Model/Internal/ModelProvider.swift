@@ -17,11 +17,12 @@ import Foundation
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
-public protocol LazyReferenceValue {
-    var state: LazyReferenceValueState { get }
+public protocol _LazyReferenceValue {
+    var state: _LazyReferenceValueState { get }
 }
 
-public enum LazyReferenceValueState {
+// swiftlint:disable type_name
+public enum _LazyReferenceValueState {
     case notLoaded(identifiers: [LazyReferenceIdentifier]?)
     case loaded(model: Model?)
 }

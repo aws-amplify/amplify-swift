@@ -39,7 +39,7 @@ struct LazyReferenceModelIdentifier: ModelIdentifierProtocol {
 ///
 /// The default implementation `DefaultModelProvider` only handles in-memory data, therefore `get()` and
 /// `require()` will simply return the current `reference`.
-public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
+public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
 
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {
@@ -50,7 +50,7 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
     var loadedState: LoadedState
 
     @_spi(LazyReference)
-    public var state: LazyReferenceValueState {
+    public var state: _LazyReferenceValueState {
         switch loadedState {
         case .notLoaded(let identifiers):
             return .notLoaded(identifiers: identifiers)
