@@ -12,7 +12,7 @@ import Amplify
 import AWSPluginsCore
 
 /// - Tag: AWSS3StorageService
-class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
+class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     // resettable values
     private var authService: AWSAuthServiceBehavior?
@@ -152,9 +152,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         self.urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler? = nil,
-                             onDownload: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler? = nil,
-                             onMultipartUpload: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler? = nil) {
+    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
+                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
+                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil) {
         storageTransferDatabase.attachEventHandlers(onUpload: onUpload, onDownload: onDownload, onMultipartUpload: onMultipartUpload)
     }
 

@@ -67,7 +67,7 @@ extension AWSS3StoragePlugin {
     ///   - authService: The authentication service object.
     ///   - defaultAccessLevel: The access level to be used for all API calls by default.
     ///   - queue: The queue which operations are stored and dispatched for asychronous processing.
-    func configure(storageService: AWSS3StorageServiceBehaviour,
+    func configure(storageService: AWSS3StorageServiceBehavior,
                    authService: AWSAuthServiceBehavior,
                    defaultAccessLevel: StorageAccessLevel,
                    queue: OperationQueue = OperationQueue()) {

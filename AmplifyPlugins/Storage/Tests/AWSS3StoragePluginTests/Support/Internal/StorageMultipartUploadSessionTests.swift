@@ -19,7 +19,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
     func testSessionCreation() throws {
         let bucket = "my-bucket"
         let key = "key.txt"
-        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
             switch event {
             case .initiated:
                 print("Initiated")
@@ -47,7 +47,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
 
         let bucket = "my-bucket"
         let key = "key.txt"
-        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
             switch event {
             case .initiated:
                 print("Initiated")
@@ -86,7 +86,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         var closureSession: StorageMultipartUploadSession?
         let bucket = "my-bucket"
         let key = "key.txt"
-        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
             switch event {
             case .initiated:
                 print("Initiated")
@@ -135,7 +135,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         var pauseCount = 0
         let bucket = "my-bucket"
         let key = "key.txt"
-        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
             switch event {
             case .initiated:
                 print("Initiated")
@@ -188,7 +188,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         var failCount = 0
         let bucket = "my-bucket"
         let key = "key.txt"
-        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
             switch event {
             case .initiated:
                 print("Initiated")
@@ -238,7 +238,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         var failCount = 0
         let bucket = "my-bucket"
         let key = "key.txt"
-        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+        let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { event in
             switch event {
             case .initiated:
                 print("Initiated")
