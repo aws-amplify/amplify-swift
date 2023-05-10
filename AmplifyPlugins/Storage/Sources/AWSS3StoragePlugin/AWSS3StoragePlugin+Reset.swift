@@ -15,6 +15,8 @@ extension AWSS3StoragePlugin {
     ///
     /// Calls the reset methods on the storage service and authentication service to clean up resources. Setting the
     /// storage service, authentication service, and queue to nil to allow deallocation.
+    ///
+    /// - Tag: AWSS3StoragePlugin.reset
     public func reset() {
         if storageService != nil {
             storageService.reset()
