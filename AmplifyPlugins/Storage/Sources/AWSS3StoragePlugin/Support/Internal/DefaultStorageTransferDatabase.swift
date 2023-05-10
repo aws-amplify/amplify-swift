@@ -35,9 +35,9 @@ class DefaultStorageTransferDatabase {
         tasks.values.count
     }
 
-    private var uploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler?
-    private var downloadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler?
-    private var multipartUploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler?
+    private var uploadEventHandler: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?
+    private var downloadEventHandler: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?
+    private var multipartUploadEventHandler: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler?
 
     static let `default`: StorageTransferDatabase = {
         DefaultStorageTransferDatabase()
@@ -227,15 +227,15 @@ class DefaultStorageTransferDatabase {
         try load(fileURL: fileURL, type: StoragePersistableTransferTask.self)
     }
 
-    private func handleUploadEvent(event: AWSS3StorageServiceBehaviour.StorageServiceUploadEvent) {
+    private func handleUploadEvent(event: AWSS3StorageServiceBehavior.StorageServiceUploadEvent) {
         uploadEventHandler?(event)
     }
 
-    private func handleDownloadEvent(event: AWSS3StorageServiceBehaviour.StorageServiceDownloadEvent) {
+    private func handleDownloadEvent(event: AWSS3StorageServiceBehavior.StorageServiceDownloadEvent) {
         downloadEventHandler?(event)
     }
 
-    private func handleMultipartUploadEvent(event: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEvent) {
+    private func handleMultipartUploadEvent(event: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEvent) {
         multipartUploadEventHandler?(event)
     }
 
@@ -341,9 +341,9 @@ extension DefaultStorageTransferDatabase: StorageTransferDatabase {
         return transferType
     }
 
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler?,
-                             onDownload: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler?,
-                             onMultipartUpload: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler?) {
+    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?,
+                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?,
+                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler?) {
         queue.async { [weak self] in
             guard let self = self else { fatalError("self cannot be weak") }
             self.uploadEventHandler = onUpload

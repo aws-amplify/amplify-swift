@@ -13,7 +13,7 @@ import AWSPluginsCore
 final public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     /// An instance of the S3 storage service.
-    var storageService: AWSS3StorageServiceBehaviour!
+    var storageService: AWSS3StorageServiceBehavior!
 
     /// An instance of the authentication service.
     var authService: AWSAuthServiceBehavior!

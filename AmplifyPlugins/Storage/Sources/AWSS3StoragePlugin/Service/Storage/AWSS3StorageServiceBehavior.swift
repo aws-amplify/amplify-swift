@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSS3
 
-protocol AWSS3StorageServiceBehaviour {
+protocol AWSS3StorageServiceBehavior {
     typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
     typealias StorageServiceDownloadEvent =
         StorageEvent<StorageTaskReference, Progress, Data?, StorageError>

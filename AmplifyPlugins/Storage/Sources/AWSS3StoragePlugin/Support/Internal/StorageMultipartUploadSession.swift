@@ -40,7 +40,7 @@ class StorageMultipartUploadSession {
     private let id = UUID()
     private var multipartUpload: StorageMultipartUpload
     private let client: StorageMultipartUploadClient
-    private let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler
+    private let onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler
 
     private let transferTask: StorageTransferTask
 
@@ -57,7 +57,7 @@ class StorageMultipartUploadSession {
          key: String,
          contentType: String? = nil,
          requestHeaders: RequestHeaders? = nil,
-         onEvent: @escaping AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler,
+         onEvent: @escaping AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler,
          behavior: StorageMultipartUploadBehavior = .progressive,
          fileSystem: FileSystem = .default,
          logger: Logger = storageLogger) {

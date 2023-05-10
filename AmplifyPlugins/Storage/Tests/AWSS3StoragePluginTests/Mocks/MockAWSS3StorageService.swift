@@ -11,7 +11,7 @@ import Amplify
 import AWSS3
 @testable import AWSS3StoragePlugin
 
-public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
+public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
 
     // MARK: method call counts
     var interactions: [String] = []
