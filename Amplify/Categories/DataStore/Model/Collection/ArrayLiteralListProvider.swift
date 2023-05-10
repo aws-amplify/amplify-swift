@@ -31,4 +31,8 @@ public struct ArrayLiteralListProvider<Element: Model>: ModelListProvider {
                                                        "Don't call this method",
                                                        nil)))
     }
+
+    public func encode(to encoder: Encoder) throws {
+        try elements.encode(to: encoder)
+    }
 }
