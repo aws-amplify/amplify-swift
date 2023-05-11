@@ -117,20 +117,15 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
     /// e.g. from DataStore's SQLite or AppSync.
     ///
     /// - Returns: the model `reference`, if it exists.
-    public func get(completion: (Result<ModelType?, Error>) -> Void) {
+    @available(iOS 13.0.0, *)
+    public func get() async throws -> ModelType? {
         switch loadedState {
         case .notLoaded:
-            modelProvider.load { result in
-                switch result {
-                case .success(let element):
-                    loadedState = .loaded(element)
-                    completion(.success(element))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+            let element = try await modelProvider.load()
+            loadedState = .loaded(element)
+            return element
         case .loaded(let element):
-            completion(.success(element))
+            return element
         }
     }
 
@@ -140,36 +135,26 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
     /// must throw an error to communicate to developers why required data could not be fetched.
     ///
     /// - Throws: an error of type `DataError` when the data marked as required cannot be retrieved.
-    public func require(completion: (Result<ModelType, Error>) -> Void) {
+    @available(iOS 13.0.0, *)
+    public func require() async throws -> ModelType {
         switch loadedState {
         case .notLoaded:
-            modelProvider.load { result in
-                switch result {
-                case .success(let element):
-                    guard let element = element else {
-                        let error = CoreError.clientValidation(
-                            """
-                            Data is required but underlying data source successfully loaded no data.
-                            """, "")
-                        completion(.failure(error))
-                        return
-                    }
-                    loadedState = .loaded(element)
-                    completion(.success(element))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+            guard let element = try await modelProvider.load() else {
+                throw CoreError.clientValidation(
+                    """
+                    Data is required but underlying data source successfully loaded no data.
+                    """, "")
             }
+            loadedState = .loaded(element)
+            return element
         case .loaded(let element):
             guard let element = element else {
-                let error = CoreError.clientValidation(
+                throw CoreError.clientValidation(
                     """
                     Data is required but containing LazyReference is loaded with no data.
                     """, "")
-                completion(.failure(error))
-                return
             }
-            completion(.success(element))
+            return element
         }
     }
 }

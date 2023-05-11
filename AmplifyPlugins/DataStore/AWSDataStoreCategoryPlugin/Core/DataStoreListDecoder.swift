@@ -53,7 +53,7 @@ public struct DataStoreListDecoder: ModelListDecoder {
         case .object(let associationData):
             if case let .string(associatedId) = associationData["associatedId"],
                case let .string(associatedField) = associationData["associatedField"] {
-                return DataStoreListProvider<ModelType>(associatedIdentifiers: [associatedId],
+                return DataStoreListProvider<ModelType>(associatedId: associatedId,
                                                         associatedField: associatedField)
             }
 
