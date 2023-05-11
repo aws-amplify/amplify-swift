@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.30.1 (2023-05-11)
+
+### Bug Fixes
+
+- **datastore-v1**: stop storageEngine do not publish completion event (#2939)
+
 ## 1.30.0 (2023-05-01)
 
 ### Features
