@@ -20,13 +20,12 @@ public struct DefaultModelProvider<Element: Model>: ModelProvider {
         self.loadedState = .notLoaded(identifiers: identifiers)
     }
 
-    @available(iOS 13.0.0, *)
-    public func load() async throws -> Element? {
+    public func load(completion: (Result<Element?, Error>) -> Void) {
         switch loadedState {
         case .notLoaded:
-            return nil
+            completion(.success(nil))
         case .loaded(let model):
-            return model
+            completion(.success(model))
         }
     }
 

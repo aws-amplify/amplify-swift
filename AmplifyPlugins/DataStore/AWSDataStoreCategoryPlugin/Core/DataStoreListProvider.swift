@@ -18,30 +18,30 @@ import Combine
 /// of the associated `id` and `field` and fetches the associated data on demand.
 public class DataStoreListProvider<Element: Model>: ModelListProvider {
 
-    /// The current state of lazily loaded list
-    enum LoadedState {
-        /// If the list represents an association between two models, the `associatedId` will
-        /// hold the information necessary to query the associated elements (e.g. comments of a post)
-        ///
-        /// The associatedField represents the field to which the owner of the `List` is linked to.
-        /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
-        /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: Model.Identifier, associatedField: String)
+    var loadedState: ModelListProviderState<Element>
 
-        case loaded([Element])
-    }
-
-    var loadedState: LoadedState
-
-    init(associatedId: Model.Identifier,
+    init(associatedIdentifiers: [String],
          associatedField: String) {
-        self.loadedState = .notLoaded(associatedId: associatedId,
-                                      associatedField: associatedField)
+        self.loadedState = .notLoaded(
+            associatedIdentifiers: associatedIdentifiers,
+            associatedField: associatedField)
     }
 
     init(_ elements: [Element]) {
         self.loadedState = .loaded(elements)
     }
+
+    public func getState() -> ModelListProviderState<Element> {
+        switch loadedState {
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            return .notLoaded(
+                associatedIdentifiers: associatedIdentifiers,
+                associatedField: associatedField)
+        case .loaded(let elements):
+            return .loaded(elements)
+        }
+    }
+
 
     public func load() -> Result<[Element], CoreError> {
         let semaphore = DispatchSemaphore(value: 0)
@@ -70,7 +70,15 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         switch loadedState {
         case .loaded(let elements):
             completion(.success(elements))
-        case .notLoaded(let associatedId, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            guard let associatedId = associatedIdentifiers.first else {
+                let error = CoreError.listOperation(
+                    "Unexpected identifiers.",
+                    "See underlying DataStoreError for more details.", nil)
+                completion(.failure(error))
+                return
+            }
+            log.verbose("Loading List of \(Element.schema.name) by \(associatedField) == \(associatedId) ")
             let predicate: QueryPredicate = field(associatedField) == associatedId
             Amplify.DataStore.query(Element.self, where: predicate) {
                 switch $0 {
@@ -79,9 +87,10 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                     completion(.success(elements))
                 case .failure(let error):
                     Amplify.DataStore.log.error(error: error)
-                    completion(.failure(CoreError.listOperation("Failed to Query DataStore.",
-                                                                "See underlying DataStoreError for more details.",
-                                                                error)))
+                    completion(.failure(CoreError.listOperation(
+                        "Failed to Query DataStore.",
+                        "See underlying DataStoreError for more details.",
+                        error)))
                 }
             }
         }
@@ -96,4 +105,10 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                                                        "Only call `getNextPage()` when `hasNextPage()` is true.",
                                                        nil)))
     }
+
+    public func encode(to encoder: Encoder) throws {
+        fatalError("To be implemented")
+    }
 }
+
+extension DataStoreListProvider: DefaultLogger { }
