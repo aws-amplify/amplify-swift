@@ -74,6 +74,7 @@ public struct AnyModelProvider<Element: Model>: ModelProvider {
         self.encodeClosure = provider.encode
     }
 
+    @available(iOS 13.0.0, *)
     public func load() async throws -> Element? {
         try await loadAsync?()
     }
