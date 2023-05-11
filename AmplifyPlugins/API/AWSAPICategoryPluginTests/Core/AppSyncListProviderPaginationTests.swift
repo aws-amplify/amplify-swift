@@ -159,7 +159,7 @@ extension AppSyncListProviderTests {
         wait(for: [getNextPageComplete], timeout: 1)
     }
 
-    func testNotLoadedStateGetNextPageFailure() {
+    func testNotLoadedStateGetNextPageFailure() throws {
         let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
                                                  appSyncAssociatedField: "post",
                                                  apiName: "apiName")

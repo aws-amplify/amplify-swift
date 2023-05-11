@@ -98,11 +98,11 @@ class AppSyncListProviderTests: XCTestCase {
                                                  appSyncAssociatedField: "post",
                                                  apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
-        guard case .notLoaded(let associatedId, let associatedField) = provider.loadedState else {
+        guard case .notLoaded(let associatedIds, let associatedField) = provider.loadedState else {
             XCTFail("Should be in not loaded state")
             return
         }
-        XCTAssertEqual(associatedId, "postId")
+        XCTAssertEqual(associatedIds, ["postId"])
         XCTAssertEqual(associatedField, "post")
     }
 

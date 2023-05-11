@@ -21,19 +21,19 @@ PODS:
     - CwlPreconditionTesting (~> 2.0)
   - AppSyncRealTimeClient (3.1.0):
     - Starscream (~> 4.0.4)
-  - AWSAuthCore (2.31.0):
-    - AWSCore (= 2.31.0)
-  - AWSCognitoIdentityProvider (2.31.0):
-    - AWSCognitoIdentityProviderASF (= 2.31.0)
-    - AWSCore (= 2.31.0)
-  - AWSCognitoIdentityProviderASF (2.31.0):
-    - AWSCore (= 2.31.0)
-  - AWSCore (2.31.0)
-  - AWSMobileClient (2.31.0):
-    - AWSAuthCore (= 2.31.0)
-    - AWSCognitoIdentityProvider (= 2.31.0)
-    - AWSCognitoIdentityProviderASF (= 2.31.0)
-    - AWSCore (= 2.31.0)
+  - AWSAuthCore (2.31.1):
+    - AWSCore (= 2.31.1)
+  - AWSCognitoIdentityProvider (2.31.1):
+    - AWSCognitoIdentityProviderASF (= 2.31.1)
+    - AWSCore (= 2.31.1)
+  - AWSCognitoIdentityProviderASF (2.31.1):
+    - AWSCore (= 2.31.1)
+  - AWSCore (2.31.1)
+  - AWSMobileClient (2.31.1):
+    - AWSAuthCore (= 2.31.1)
+    - AWSCognitoIdentityProvider (= 2.31.1)
+    - AWSCognitoIdentityProviderASF (= 2.31.1)
+    - AWSCore (= 2.31.1)
   - AWSPluginsCore (1.30.0):
     - Amplify (= 1.30.0)
     - AWSCore (~> 2.31.0)
@@ -100,11 +100,11 @@ SPEC CHECKSUMS:
   AmplifyPlugins: 93ac2c18c87b4f1dc408eb9492d1aa3bfdd23012
   AmplifyTestCommon: 02ad3e6e87abecac479ae7142ecb96b9bf0aaac2
   AppSyncRealTimeClient: 49901c6f21e541bec09281854c5695a6c1309bf7
-  AWSAuthCore: 889db67d5c6a5325c4314ad7f689ccc3841da530
-  AWSCognitoIdentityProvider: 41f2f1c2bd0ca188ec6869003bbd1fa4a6bfb0c7
-  AWSCognitoIdentityProviderASF: e48fb68d9aa42f9bc5f095c6db0e1d519b006ce1
-  AWSCore: 7db143a63c31d330c58b390d3e1bb0b795ee213d
-  AWSMobileClient: 4c1db471a0473a1f0c3559ffd25100479c402780
+  AWSAuthCore: efed26af355360a00b84fc9251ce3e3beeecac92
+  AWSCognitoIdentityProvider: 63dda7bea693a2b0e76229c40a82a8a4199e4487
+  AWSCognitoIdentityProviderASF: a7323a914ab660c625b71a05d338230dcfee3d2e
+  AWSCore: 3fa19af1810d4430cfb735cc5323b68d8674fb5b
+  AWSMobileClient: 5605350f3e9c0ee6d1f2b2a1a0b8aa2954aef6cb
   AWSPluginsCore: 9f6380f0e88e97c7350b8993cad23c480f18e4c4
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
   CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
@@ -117,4 +117,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f542a7a3bf7a7e882e6ea4799c9722d5b6495208
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
