@@ -37,6 +37,12 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     /// The storage plugin configuration
     let storageConfiguration: AWSS3StoragePluginConfiguration
 
+    /// See [HttpClientEngineProxy](x-source-tag://HttpClientEngineProxy)
+    internal var httpClientEngineProxy: HttpClientEngineProxy?
+
+    /// See [URLRequestDelegate](x-source-tag://URLRequestDelegate)
+    internal weak var urlRequestDelegate: URLRequestDelegate?
+
     /// Instantiates an instance of the AWSS3StoragePlugin.
     ///
     /// - Tag: AWSS3StoragePlugin.init
