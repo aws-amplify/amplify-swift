@@ -42,7 +42,9 @@ extension AWSS3StoragePlugin {
 
             let storageService = try AWSS3StorageService(authService: authService,
                                                          region: region,
-                                                         bucket: bucket)
+                                                         bucket: bucket,
+                                                         httpClientEngineProxy: self.httpClientEngineProxy)
+            storageService.urlRequestDelegate = self.urlRequestDelegate
 
             configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
         } catch let storageError as StorageError {

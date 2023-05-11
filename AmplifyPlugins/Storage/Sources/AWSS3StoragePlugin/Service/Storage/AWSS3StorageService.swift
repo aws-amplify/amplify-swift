@@ -21,6 +21,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     var awsS3: AWSS3Behavior!
     var region: String!
     var bucket: String!
+    weak var urlRequestDelegate: URLRequestDelegate?
 
     /// - Tag: AWSS3StorageService.s3Client
     @available(*, deprecated, renamed: "client")
@@ -29,6 +30,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     /// - Tag: AWSS3StorageService.client
     var client: S3ClientProtocol
 
+    let userAgent: String
     let storageConfiguration: StorageConfiguration
     let sessionConfiguration: URLSessionConfiguration
     var delegateQueue: OperationQueue?
@@ -48,6 +50,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     convenience init(authService: AWSAuthServiceBehavior,
                      region: String,
                      bucket: String,
+                     httpClientEngineProxy: HttpClientEngineProxy? = nil,
                      storageConfiguration: StorageConfiguration = .default,
                      storageTransferDatabase: StorageTransferDatabase = .default,
                      sessionConfiguration: URLSessionConfiguration? = nil,
@@ -58,6 +61,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             credentialsProvider: credentialsProvider,
             region: region,
             signingRegion: region)
+        if var proxy = httpClientEngineProxy {
+            proxy.target = clientConfig.httpClientEngine
+            clientConfig.httpClientEngine = proxy
+        }
 
         let s3Client = S3Client(config: clientConfig)
         let awsS3 = AWSS3Adapter(s3Client, config: clientConfig)
@@ -116,6 +123,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
+        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
