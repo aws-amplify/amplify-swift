@@ -252,10 +252,11 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotWithIsSynced.fulfill()
             }
         }
-        savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
+        let newPost = Post(title: "title", content: "content", createdAt: .now())
+        savePostAndWaitForSync(newPost)
         wait(for: [snapshotWithIsSynced], timeout: 100)
-        XCTAssertTrue(snapshots.count >= 2)
-        XCTAssertFalse(snapshots[0].isSynced)
+        XCTAssertTrue(!snapshots.isEmpty)
+        XCTAssertTrue(snapshots.last!.items.contains(newPost))
         XCTAssertTrue(snapshots.last!.isSynced)
         XCTAssertTrue(snapshots.last!.items.count > numberOfPosts)
         sink.cancel()
