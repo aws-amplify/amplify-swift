@@ -45,6 +45,10 @@ class ListTests: XCTestCase {
     }
 
     class MockListProvider<Element: Model>: ModelListProvider {
+        func encode(to encoder: Encoder) throws {
+            try elements.encode(to: encoder)
+        }
+
         let elements: [Element]
         var error: CoreError?
         var nextPage: List<Element>?

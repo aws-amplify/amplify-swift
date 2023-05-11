@@ -117,6 +117,7 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
     /// e.g. from DataStore's SQLite or AppSync.
     ///
     /// - Returns: the model `reference`, if it exists.
+    @available(iOS 13.0.0, *)
     public func get() async throws -> ModelType? {
         switch loadedState {
         case .notLoaded:
@@ -134,17 +135,24 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
     /// must throw an error to communicate to developers why required data could not be fetched.
     ///
     /// - Throws: an error of type `DataError` when the data marked as required cannot be retrieved.
+    @available(iOS 13.0.0, *)
     public func require() async throws -> ModelType {
         switch loadedState {
         case .notLoaded:
             guard let element = try await modelProvider.load() else {
-                throw CoreError.clientValidation("Data is required but underlying data source successfully loaded no data. ", "")
+                throw CoreError.clientValidation(
+                    """
+                    Data is required but underlying data source successfully loaded no data.
+                    """, "")
             }
             loadedState = .loaded(element)
             return element
         case .loaded(let element):
             guard let element = element else {
-                throw CoreError.clientValidation("Data is required but containing LazyReference is loaded with no data.", "")
+                throw CoreError.clientValidation(
+                    """
+                    Data is required but containing LazyReference is loaded with no data.
+                    """, "")
             }
             return element
         }

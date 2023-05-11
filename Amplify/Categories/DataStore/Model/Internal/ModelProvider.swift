@@ -45,6 +45,7 @@ public enum ModelProviderState<Element: Model> {
 public protocol ModelProvider {
     associatedtype Element: Model
 
+    @available(iOS 13.0.0, *)
     func load() async throws -> Element?
 
     func getState() -> ModelProviderState<Element>
@@ -58,18 +59,23 @@ public protocol ModelProvider {
 /// change.
 public struct AnyModelProvider<Element: Model>: ModelProvider {
 
-    private let loadAsync: () async throws -> Element?
+    private let loadAsync: (() async throws -> Element?)?
     private let getStateClosure: () -> ModelProviderState<Element>
     private let encodeClosure: (Encoder) throws -> Void
 
     public init<Provider: ModelProvider>(provider: Provider) where Provider.Element == Self.Element {
-        self.loadAsync = provider.load
+        if #available(iOS 13.0.0, *) {
+            self.loadAsync = provider.load
+        } else {
+            // Fallback on earlier versions
+            self.loadAsync = nil
+        }
         self.getStateClosure = provider.getState
         self.encodeClosure = provider.encode
     }
 
     public func load() async throws -> Element? {
-        try await loadAsync()
+        try await loadAsync?()
     }
 
     public func getState() -> ModelProviderState<Element> {
