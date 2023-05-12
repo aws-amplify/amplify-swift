@@ -40,6 +40,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// - Tag: SdkUserAgentComponent
     private enum URLUserAgentComponent: String, CaseIterable {
         case lib = "lib/amplify-swift"
+        case os = "os/iOS"
     }
 
     override func setUp() async throws {
