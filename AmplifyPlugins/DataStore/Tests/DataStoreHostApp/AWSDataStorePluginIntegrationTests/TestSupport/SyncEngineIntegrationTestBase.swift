@@ -112,7 +112,7 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
 
         try await Amplify.DataStore.start()
-        await waitForExpectations(timeout: 10.0)
+        await fulfillment(of: [eventReceived], timeout: 10)
 
         try await deleteMutationEvents()
     }

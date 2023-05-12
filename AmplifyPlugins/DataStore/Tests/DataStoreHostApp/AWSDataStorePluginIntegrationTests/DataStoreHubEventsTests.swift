@@ -82,7 +82,13 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
         await startAmplify(withModels: TestModelRegistration())
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [
+            networkStatusReceived,
+            subscriptionsEstablishedReceived,
+            syncQueriesStartedReceived,
+            outboxStatusReceived
+        ], timeout: networkTimeout)
+
         hubListener.cancel()
     }
 
@@ -134,7 +140,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         await startAmplify(withModels: TestModelRegistration())
         _ = try await Amplify.DataStore.save(post)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [outboxMutationEnqueuedReceived, outboxMutationProcessedReceived], timeout: networkTimeout)
         hubListener.cancel()
     }
 
@@ -179,7 +185,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
         await startAmplify(withModels: TestModelRegistration())
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [modelSyncedReceived, syncQueriesReadyReceived], timeout: networkTimeout)
         hubListener.cancel()
     }
 }
