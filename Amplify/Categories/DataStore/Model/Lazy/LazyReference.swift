@@ -96,13 +96,14 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
         }
         let json = try JSONValue(from: decoder)
         switch json {
-        case .object(let _json):
+        case .object(let object):
             if let element = try? ModelType(from: decoder) {
                 self.init(element)
                 return
             }
             else {
-                self.init(identifiers: ModelType.schema.getModelIdentifiers(from: _json))
+                let identifiers = try ModelType.schema.lazyReferenceIdentifiers(from: object)
+                self.init(identifiers: identifiers)
                 return
             }
         default:

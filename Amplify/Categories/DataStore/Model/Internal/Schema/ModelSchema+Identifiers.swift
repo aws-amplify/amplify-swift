@@ -1,19 +1,31 @@
 //
-//  ModelSchema+Identifiers.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Sapir Muallem on 23/04/2023.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
 
 extension ModelSchema {
-    func getModelIdentifiers(from modelObject: [String: JSONValue]) -> [LazyReferenceIdentifier] {
+    func lazyReferenceIdentifiers(from modelObject: [String: JSONValue]) throws -> [LazyReferenceIdentifier] {
+        enum ExtractionError: Error {
+            case unsupportedLazyReferenceIdentifier(name: String, value: JSONValue?)
+        }
+        
         var identifiers = [LazyReferenceIdentifier]()
 
         for identifierField in primaryKey.fields {
-            if case .string(let identifierValue) = modelObject[identifierField.name] {
+            let object = modelObject[identifierField.name]
+            
+            switch object {
+            case .string(let identifierValue):
                 identifiers.append(.init(name: identifierField.name, value: identifierValue))
+            default:
+                throw ExtractionError.unsupportedLazyReferenceIdentifier(
+                    name: identifierField.name,
+                    value: object
+                )
             }
         }
         
