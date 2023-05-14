@@ -6,9 +6,9 @@
 //
 
 import XCTest
-
 @testable import Amplify
 @testable import AWSDataStorePlugin
+import AmplifyTestCommon
 
 class QueryPaginationInputTests: XCTestCase {
 
@@ -76,4 +76,34 @@ class QueryPaginationInputTests: XCTestCase {
         XCTAssertEqual(paginationInput.sqlStatement, "limit 1 offset 0")
     }
 
+	/// - Given:  `page` and `limit` local variables inferred to be of type `Int`
+	/// - When: Calling `.page(_:limit:)`
+	/// - Then: The example should compile by using the `Int` based overload
+	func test_queryPaginationInput_inferredInt() {
+		let page = 0
+		let limit = 42
+		let paginationInput = QueryPaginationInput.page(page, limit: limit)
+		XCTAssertEqual(paginationInput.sqlStatement, "limit 42 offset 0")
+	}
+
+	/// - Given:  `page` and `limit` local variables explicitly typed as `UInt`
+	/// - When: Calling `.page(_:limit:)`
+	/// - Then: The example should compile by using the `UInt` based overload
+	func test_queryPaginationInput_explicitUInt() {
+		let page: UInt = 0
+		let limit: UInt = 42
+		let paginationInput = QueryPaginationInput.page(page, limit: limit)
+		XCTAssertEqual(paginationInput.sqlStatement, "limit 42 offset 0")
+	}
+
+	/// - Given:  A local `page` variable with a negative value of type `Int`
+	/// - When: Calling `.page(_:limit:)`
+	/// - Then: An assertion failure should be thrown.
+	func test_queryPaginationInput_negativeIntOverload_assertionFailure() throws {
+		let page = -1
+		let limit = 42
+		try XCTAssertThrowFatalError {
+			_ = QueryPaginationInput.page(page, limit: limit)
+		}
+	}
 }

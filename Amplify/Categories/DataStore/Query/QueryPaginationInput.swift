@@ -35,6 +35,23 @@ extension QueryPaginationInput {
         return QueryPaginationInput(page: page, limit: limit)
     }
 
+	/// Creates a `QueryPaginationInput` in an expressive way, enabling a short
+	/// and developer friendly access to an instance of `QueryPaginationInput`.
+	///
+	/// - Parameters:
+	///   - page: the page number (starting at 0)
+	///   - limit: the page size (defaults to `QueryPaginationInput.defaultLimit`)
+	/// - Precondition: `page` and `limit` must be greater than or equal to `0`
+	/// - Returns: a new instance of `QueryPaginationInput`
+	public static func page(
+		_ page: Int,
+		limit: Int = Int(QueryPaginationInput.defaultLimit)
+	) -> QueryPaginationInput {
+		assert(page >= 0, "Page number must be >= 0")
+		assert(limit >= 0, "Page limit must be >= 0")
+		return QueryPaginationInput(page: UInt(page), limit: UInt(limit))
+	}
+
     /// Utility that created a `QueryPaginationInput` with `page` 0 and `limit` 1
     public static var firstResult: QueryPaginationInput {
         .page(0, limit: 1)
