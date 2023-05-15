@@ -165,7 +165,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
             // in vNext, the `validationData` property will be removed
             // and we'll use only the `metadata` property.
             pluginOptions?.validationData ?? [:],
-            uniquingKeysWith: { current, _ in current }
+            uniquingKeysWith: { _, new in new }
         )
 
         return clientMetadata

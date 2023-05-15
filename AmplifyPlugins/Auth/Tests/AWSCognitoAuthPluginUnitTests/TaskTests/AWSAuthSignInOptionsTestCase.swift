@@ -102,7 +102,11 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
     /// - Given: A sign in task
     /// - When: `metadata` and deprecated `validationData` is included in the `AWSAuthSignInOptions`
     ///  with the same key.
-    /// - Then: The value from `metadata` should be included in the event's `clientMetadata`
+    /// - Then: The value from `metadata` should be included in the event's `validationData`
+    ///
+    /// - Note:`validationData` overriding `metadata` seems a bit counterintuintive because
+    /// `validationData` is now deprecated. However this is necessary to ensure we don't break the implicit
+    /// contract consumers may be (knowlingly or unknowlingly) depending on.
     @available(*, deprecated)
     func test_clientMetadata_sameKey() async throws {
         let signInOptions = AWSAuthSignInOptions(
@@ -128,7 +132,7 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
             .first(where: { _ in true })?
             .clientMetadata
 
-        XCTAssertEqual(clientMetadata, ["someKey": "metadataValue"])
+        XCTAssertEqual(clientMetadata, ["someKey": "validationValue"])
     }
 
     /// - Given: A sign in task
