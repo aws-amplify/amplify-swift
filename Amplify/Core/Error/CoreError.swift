@@ -6,16 +6,23 @@
 //
 
 /// Errors associated with operations provided by Amplify
+///
+/// - Tag: CoreError
 public enum CoreError {
 
     /// A related operation performed on `List` resulted in an error.
+    ///
+    /// - Tag: CoreError.listOperation
     case listOperation(ErrorDescription, RecoverySuggestion, Error? = nil)
     
     /// A client side validation error occured.
+    ///
+    /// - Tag: CoreError.clientValidation
     case clientValidation(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension CoreError: AmplifyError {
+    /// - Tag: CoreError.errorDescription
     public var errorDescription: ErrorDescription {
         switch self {
         case .listOperation(let errorDescription, _, _),
@@ -24,6 +31,7 @@ extension CoreError: AmplifyError {
         }
     }
 
+    /// - Tag: CoreError.recoverySuggestion
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .listOperation(_, let recoverySuggestion, _),
@@ -32,6 +40,7 @@ extension CoreError: AmplifyError {
         }
     }
 
+    /// - Tag: CoreError.underlyingError
     public var underlyingError: Error? {
         switch self {
         case .listOperation(_, _, let underlyingError),
@@ -40,6 +49,7 @@ extension CoreError: AmplifyError {
         }
     }
 
+    /// - Tag: CoreError.init
     public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "(Ignored)",
