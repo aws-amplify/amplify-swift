@@ -257,8 +257,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {

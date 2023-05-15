@@ -49,8 +49,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -96,9 +95,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .userSRP)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: ["somekey": "somevalue"],
+            authFlowType: .userSRP
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -324,9 +324,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .customWithSRP)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: ["somekey": "somevalue"],
+            authFlowType: .customWithSRP
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
@@ -571,9 +572,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .userPassword)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: ["somekey": "somevalue"],
+            authFlowType: .userPassword
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signIn(
@@ -614,9 +616,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .customWithoutSRP)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: ["somekey": "somevalue"],
+            authFlowType: .customWithoutSRP
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signIn(
@@ -1144,8 +1147,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -1226,8 +1228,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
