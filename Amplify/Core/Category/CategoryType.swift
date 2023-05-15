@@ -7,46 +7,72 @@
 
 /// The Amplify category with which the conforming type is associated. Categories, Plugins, ClientBehaviors, etc must
 /// all share the same CategoryType
+///
+/// - Tag: CategoryTypeable
 public protocol CategoryTypeable {
+    /// - Tag: CategoryTypeable.categoryType
     var categoryType: CategoryType { get }
 }
 
 /// Amplify supports these Category types
+///
+/// - Tag: CategoryType
 public enum CategoryType: String {
     /// Record app metrics and analytics data
+    ///
+    /// - Tag: CategoryType.analytics
     case analytics
 
     /// Retrieve data from a remote service
+    ///
+    /// - Tag: CategoryType.api
     case api
 
     /// Authentication
+    ///
+    /// - Tag: CategoryType.auth
     case auth
 
     /// Persist data
+    ///
+    /// - Tag: CategoryType.dataStore
     case dataStore
 
     /// Interact with geospatial services
+    ///
+    /// - Tag: CategoryType.geo
     case geo
 
     /// Listen for or dispatch Amplify events
+    ///
+    /// - Tag: CategoryType.hub
     case hub
 
     /// Log Amplify and app messages
+    ///
+    /// - Tag: CategoryType.logging
     case logging
 
     /// Prediction
+    ///
+    /// - Tag: CategoryType.predictions
     case predictions
     
     /// Push Notifications
+    ///
+    /// - Tag: CategoryType.pushNotifications
     case pushNotifications
 
     /// Upload and download files from the cloud
+    ///
+    /// - Tag: CategoryType.storage
     case storage
 }
 
 extension CategoryType: CaseIterable {}
 
 public extension CategoryType {
+    /// - Tag: CategoryType.displayName
     var displayName: String {
         switch self {
         case .analytics:
@@ -72,6 +98,7 @@ public extension CategoryType {
         }
     }
 
+    /// - Tag: CategoryType.category
     var category: Category {
         switch self {
         case .analytics:
