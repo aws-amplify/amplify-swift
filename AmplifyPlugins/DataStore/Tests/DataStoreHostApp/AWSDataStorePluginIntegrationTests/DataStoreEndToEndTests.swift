@@ -147,7 +147,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
@@ -177,7 +177,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(updatedPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
         
         let deleteReceived = expectation(description: "Delete notification received")
         hubListener = Amplify.Hub.listen(
@@ -207,7 +207,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         try await Amplify.DataStore.delete(updatedPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
