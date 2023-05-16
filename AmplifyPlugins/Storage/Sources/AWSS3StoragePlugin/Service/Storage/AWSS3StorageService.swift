@@ -123,7 +123,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
-        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
+        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData(includeOS: true).description
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
