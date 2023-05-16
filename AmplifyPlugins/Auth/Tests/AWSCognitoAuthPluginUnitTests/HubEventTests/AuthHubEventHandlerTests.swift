@@ -29,8 +29,7 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         configurePluginForSignInEvent()
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         let hubEventExpectation = expectation(description: "Should receive the hub event")

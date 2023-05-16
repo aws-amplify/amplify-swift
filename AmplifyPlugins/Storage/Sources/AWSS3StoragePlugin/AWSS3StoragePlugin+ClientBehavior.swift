@@ -16,6 +16,8 @@ extension AWSS3StoragePlugin {
     /// Retrieve the escape hatch to perform low level operations on S3.
     ///
     /// - Returns: S3 client
+    ///
+    /// - Tag: AWSS3StoragePlugin.getEscapeHatch
     public func getEscapeHatch() -> S3Client {
         return storageService.getEscapeHatch()
     }

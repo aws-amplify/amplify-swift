@@ -16,6 +16,8 @@ import Foundation
 /// - Completed: `Void` - Receipt of a `.completed` event indicates the download is complete and the file has been
 ///   successfully stored to the local URL supplied in the original `StorageDownloadFileRequest`
 /// - Error: `StorageError` - Emitted if the download encounters an error.
+///
+/// - Tag: StorageDownloadFileOperation
 public protocol StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     StorageDownloadFileRequest,
     Progress,
@@ -28,6 +30,7 @@ public extension HubPayload.EventName.Storage {
     static let downloadFile = "Storage.downloadFile"
 }
 
+/// - Tag: StorageDownloadFileTask
 public typealias StorageDownloadFileTask = AmplifyInProcessReportingOperationTaskAdapter<StorageDownloadFileRequest,
                                                                                          Progress,
                                                                                          Void,

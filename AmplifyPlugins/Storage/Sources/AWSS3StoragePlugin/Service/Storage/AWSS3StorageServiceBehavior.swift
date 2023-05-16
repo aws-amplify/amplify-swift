@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSS3
 
-protocol AWSS3StorageServiceBehaviour {
+protocol AWSS3StorageServiceBehavior {
     typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
     typealias StorageServiceDownloadEvent =
         StorageEvent<StorageTaskReference, Progress, Data?, StorageError>
@@ -44,6 +44,8 @@ protocol AWSS3StorageServiceBehaviour {
     func getPreSignedURL(serviceKey: String,
                          signingOperation: AWSS3SigningOperation,
                          expires: Int) async throws -> URL
+
+    func validateObjectExistence(serviceKey: String) async throws
 
     func upload(serviceKey: String,
                 uploadSource: UploadSource,

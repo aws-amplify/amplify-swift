@@ -156,8 +156,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         // query the deleted post immediately
         let queryResult = try await queryPost(byId: newPost.id)
         XCTAssertNil(queryResult)
-
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: newPost.id)

@@ -9,7 +9,9 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSS3StoragePlugin
+
 import AWSCognitoAuthPlugin
+import AWSPluginsCore
 
 class AWSS3StoragePluginTestBase: XCTestCase {
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
@@ -26,12 +28,20 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     static var isFirstUserSignedUp = false
     static var isSecondUserSignedUp = false
 
+    var requestRecorder: AWSS3StoragePluginRequestRecorder!
+
     override func setUp() async throws {
         Self.logger.debug("setUp")
+        self.requestRecorder = AWSS3StoragePluginRequestRecorder()
         do {
             await Amplify.reset()
+
+            let storagePlugin = AWSS3StoragePlugin()
+            storagePlugin.httpClientEngineProxy = requestRecorder
+            storagePlugin.urlRequestDelegate = requestRecorder
+
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            try Amplify.add(plugin: AWSS3StoragePlugin())
+            try Amplify.add(plugin: storagePlugin)
             try Amplify.configure()
             if (try? await Amplify.Auth.getCurrentUser()) != nil {
                 await signOut()
@@ -46,6 +56,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         Self.logger.debug("tearDown")
         invalidateCurrentSession()
         await Amplify.reset()
+        self.requestRecorder = nil
         // `sleep` has been added here to get more consistent test runs.
         // The plugin will always create a URLSession with the same key, so we need to invalidate it first.
         // However, it needs some time to properly clean up before creating and using a new session.

@@ -158,10 +158,16 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
 
         // Since InitiateAuth API explicitly doesn't accept validationData,
         // we can pass this data to the Lambda function by using the ClientMetadata parameter
-        var clientMetadata = pluginOptions?.metadata ?? [:]
-        for (key, value) in pluginOptions?.validationData ?? [:] {
-            clientMetadata[key] = value
-        }
+
+        let clientMetadata = (pluginOptions?.metadata ?? [:]).merging(
+            // we're adding `validationData` to the `clientMetadata` here
+            // to prevent breaking behavioral changes.
+            // in vNext, the `validationData` property will be removed
+            // and we'll use only the `metadata` property.
+            pluginOptions?.validationData ?? [:],
+            uniquingKeysWith: { _, new in new }
+        )
+
         return clientMetadata
     }
 }

@@ -280,9 +280,11 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
+
     static let mockStorageEngineBehaviorFactory =
         MockStorageEngineBehavior.init(isSyncEnabled:dataStoreConfiguration:validAPIPluginKey:validAuthPluginKey:modelRegistryVersion:userDefault:)
     var responders = [ResponderKeys: Any]()
+    var syncing = false
 
     init() {
     }
@@ -299,23 +301,42 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     }
 
+    var mockSyncEnginePublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>!
+    var mockSyncEngineSubscription: AnyCancellable! {
+        willSet {
+            if let subscription = mockSyncEngineSubscription {
+                subscription.cancel()
+            }
+        }
+    }
+
     var mockPublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> {
         mockPublisher.eraseToAnyPublisher()
     }
 
-    func startSync(completion: @escaping DataStoreCallback<Void>) {
-        completion(.successfulVoid)
-        if let responder = responders[.startSync] as? StartSyncResponder {
-            return responder.callback("")
+    func startSync() -> Swift.Result<SyncEngineInitResult, DataStoreError> {
+        if !syncing {
+            if let responder = responders[.startSync] as? StartSyncResponder {
+                responder.callback("")
+            }
+            syncing = true
+            mockSyncEnginePublisher = PassthroughSubject()
+            mockSyncEngineSubscription = mockSyncEnginePublisher.sink(receiveCompletion: { completion in
+                self.stopSync(completion: { _ in })
+            }, receiveValue: { _ in })
+            return .success(.successfullyInitialized)
+        } else {
+            return .success(.alreadyInitialized)
         }
     }
 
     func stopSync(completion: @escaping DataStoreCallback<Void>) {
-        completion(.successfulVoid)
         if let responder = responders[.stopSync] as? StopSyncResponder {
-            return responder.callback("")
+            responder.callback("")
         }
+        syncing = false
+        completion(.successfulVoid)
     }
 
     func setUp(modelSchemas: [ModelSchema]) throws {
@@ -393,6 +414,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
+        syncing = false
         completion(.successfulVoid)
         if let responder = responders[.clear] as? ClearResponder {
             return responder.callback("")

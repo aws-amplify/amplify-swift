@@ -297,8 +297,8 @@ class StorageTransferDatabaseTests: XCTestCase {
         UUID().uuidString + ".key"
     }
 
-    private var mockDownloadEvent: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler = { _ in  }
-    private var mockUploadEvent: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler = { _ in }
-    private var mockMultiPartUploadEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { _ in }
+    private var mockDownloadEvent: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler = { _ in  }
+    private var mockUploadEvent: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler = { _ in }
+    private var mockMultiPartUploadEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { _ in }
 
 }

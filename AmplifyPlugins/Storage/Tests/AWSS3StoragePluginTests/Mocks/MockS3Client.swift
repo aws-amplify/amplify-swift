@@ -25,6 +25,8 @@ final class MockS3Client {
     ///
     /// - Tag: MockS3Client.listObjectsV2Handler
     var listObjectsV2Handler: (ListObjectsV2Input) async throws -> ListObjectsV2OutputResponse = { _ in throw ClientError.missingResult }
+
+    var headObjectHandler: (HeadObjectInput) async throws -> HeadObjectOutputResponse = { _ in return HeadObjectOutputResponse() }
 }
 
 extension MockS3Client: S3ClientProtocol {
@@ -243,8 +245,9 @@ extension MockS3Client: S3ClientProtocol {
         throw ClientError.missingImplementation
     }
 
-    func headObject(input: AWSS3.HeadObjectInput) async throws -> AWSS3.HeadObjectOutputResponse {
-        throw ClientError.missingImplementation
+    func headObject(input: HeadObjectInput) async throws -> HeadObjectOutputResponse {
+        interactions.append(#function)
+        return try await headObjectHandler(input)
     }
 
     func listBucketAnalyticsConfigurations(input: AWSS3.ListBucketAnalyticsConfigurationsInput) async throws -> AWSS3.ListBucketAnalyticsConfigurationsOutputResponse {

@@ -17,11 +17,25 @@ import IOKit
 import AppKit
 #endif
 
+/// Convenience type that may be used to access device info across different platforms.
+///
+/// Usage Example:
+///
+/// ```
+/// print(DeviceInfo.current.architecture) /* prints "x86_64", "arm64", or "unknown" */
+/// ```
+///
+/// - Tag: DeviceInfo
 public struct DeviceInfo {
+
     private init() {}
 
+    /// - Tag: DeviceInfo.current
     public static var current: DeviceInfo = DeviceInfo()
 
+    /// Returns the name of the host or device
+    ///
+    /// - Tag: DeviceInfo.name
     public var name: String {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().name
@@ -32,10 +46,16 @@ public struct DeviceInfo {
     #endif
     }
 
+    /// Returns the name of the host
+    ///
+    /// - Tag: DeviceInfo.hostName
     public var hostName: String {
         ProcessInfo.processInfo.hostName
     }
 
+    /// Returns "x86_64", "arm64", or "unknown" depending on the architecture of the device.
+    ///
+    /// - Tag: DeviceInfo.architecture
     public var architecture: String {
     #if arch(x86_64)
         "x86_64"
@@ -46,6 +66,9 @@ public struct DeviceInfo {
     #endif
     }
 
+    /// Returns the name of the model of the device
+    ///
+    /// - Tag: DeviceInfo.model
     public var model: String {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().model
@@ -58,6 +81,10 @@ public struct DeviceInfo {
     #endif
     }
 
+    /// Returns a tuple with the name of the operating system, e.g. "watchOS", "iOS", or "macOS" and its
+    /// semantic version number
+    ///
+    /// - Tag: DeviceInfo.operatingSystem
     public var operatingSystem: (name: String, version: String) {
     #if canImport(WatchKit)
         let device = WKInterfaceDevice.current()
@@ -71,6 +98,9 @@ public struct DeviceInfo {
     #endif
     }
 
+    /// If available, returns the unique identifier for the device
+    ///
+    /// - Tag: DeviceInfo.identifierForVendor
     public var identifierForVendor: UUID? {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().identifierForVendor
@@ -81,6 +111,9 @@ public struct DeviceInfo {
     #endif
     }
 
+    /// Returns the bounding rect of the main screen of the device
+    ///
+    /// - Tag: DeviceInfo.screenBounds
     public var screenBounds: CGRect {
     #if canImport(WatchKit)
         .zero

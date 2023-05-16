@@ -19,6 +19,8 @@ extension AWSS3StoragePlugin {
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
+    ///
+    /// - Tag: AWSS3StoragePlugin.configure
     public func configure(using configuration: Any?) throws {
         guard let config = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
@@ -40,7 +42,9 @@ extension AWSS3StoragePlugin {
 
             let storageService = try AWSS3StorageService(authService: authService,
                                                          region: region,
-                                                         bucket: bucket)
+                                                         bucket: bucket,
+                                                         httpClientEngineProxy: self.httpClientEngineProxy)
+            storageService.urlRequestDelegate = self.urlRequestDelegate
 
             configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
         } catch let storageError as StorageError {
@@ -67,7 +71,7 @@ extension AWSS3StoragePlugin {
     ///   - authService: The authentication service object.
     ///   - defaultAccessLevel: The access level to be used for all API calls by default.
     ///   - queue: The queue which operations are stored and dispatched for asychronous processing.
-    func configure(storageService: AWSS3StorageServiceBehaviour,
+    func configure(storageService: AWSS3StorageServiceBehavior,
                    authService: AWSAuthServiceBehavior,
                    defaultAccessLevel: StorageAccessLevel,
                    queue: OperationQueue = OperationQueue()) {

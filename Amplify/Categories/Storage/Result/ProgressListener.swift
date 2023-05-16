@@ -8,4 +8,6 @@
 import Foundation
 
 /// Convenience typealias for a callback invoked with an asynchronous operation's `Progress`
+///
+/// - Tag: ProgressListener
 public typealias ProgressListener = (Progress) -> Void

@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-crt-swift.git",
       "state" : {
-        "revision" : "afe23a2a2f6cf78e6d8803d7c9e0c8e6f50b6915",
-        "version" : "0.4.0"
+        "revision" : "6feec6c3787877807aa9a00fad09591b96752376",
+        "version" : "0.6.1"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-sdk-swift.git",
       "state" : {
-        "revision" : "30649be4b9d0788f987ae851c48d48ac6d00f2c2",
-        "version" : "0.6.1"
+        "revision" : "24bae88a2391fe75da8a940a544d1ef6441f5321",
+        "version" : "0.13.0"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/smithy-swift.git",
       "state" : {
-        "revision" : "3e9e420f69c28dee260c03b19c3e93b392128d42",
-        "version" : "0.6.1"
+        "revision" : "7b28da158d92cd06a3549140d43b8fbcf64a94a6",
+        "version" : "0.15.0"
       }
     },
     {

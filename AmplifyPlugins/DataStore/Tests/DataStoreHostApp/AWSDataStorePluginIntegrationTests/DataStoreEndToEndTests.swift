@@ -147,7 +147,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
@@ -177,7 +177,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(updatedPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
         
         let deleteReceived = expectation(description: "Delete notification received")
         hubListener = Amplify.Hub.listen(
@@ -207,7 +207,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         try await Amplify.DataStore.delete(updatedPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
@@ -570,7 +570,70 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(expectedResult, Set(posts.map(\.title)))
     }
 
+    func testStop_whenSavingInProgress() async throws {
+        let startTime = Temporal.DateTime.now()
+        let syncExpression = DataStoreSyncExpression(modelSchema: Post.schema) {
+            Post.keys.createdAt >= startTime
+        }
+        await setUp(
+            withModels: TestModelRegistration(),
+            dataStoreConfiguration: .custom(syncExpressions: [syncExpression])
+        )
+        try await startAmplifyAndWaitForSync()
+
+        let postCount = 1_000
+        let posts = (0 ..< postCount).map { _ in
+            Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
+        }
+
+        let saveFinished = expectation(description: "Posts are saved")
+        saveFinished.expectedFulfillmentCount = postCount
+        let stopped = expectation(description: "DataStore plugin stopped")
+
+        let queryLocalFinished = expectation(description: "Query local finished")
+        queryLocalFinished.expectedFulfillmentCount = postCount
+
+        for post in posts {
+            Task {
+                try await sleepMill(UInt64.random(in: 50 ..< 150))
+                do {
+                    let savedPost = try await Amplify.DataStore.save(post)
+                    XCTAssertEqual(post, savedPost)
+                } catch {
+                    log.info("Failed to save post \(post)")
+                }
+                saveFinished.fulfill()
+            }
+        }
+
+        Task {
+            try await sleepMill(100)
+            try await Amplify.DataStore.stop()
+            stopped.fulfill()
+        }
+
+        await fulfillment(of: [saveFinished, stopped], timeout: 30)
+
+        var localSuccess = 0
+        for post in posts {
+            do {
+                let queriedPost = try await Amplify.DataStore.query(Post.self, byId: post.id)
+                XCTAssertEqual(post, queriedPost)
+                localSuccess += 1
+            } catch {
+                log.info("Failed to query post \(post)")
+            }
+            queryLocalFinished.fulfill()
+        }
+        await fulfillment(of: [queryLocalFinished], timeout: 30)
+        XCTAssertEqual(localSuccess, postCount)
+    }
+
     // MARK: - Helpers
+
+    private func sleepMill(_ milliseconds: UInt64) async throws {
+        try await Task.sleep(nanoseconds: milliseconds * NSEC_PER_MSEC)
+    }
 
     func validateSavePost() async throws {
         let date = Temporal.DateTime.now()
