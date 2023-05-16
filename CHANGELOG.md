@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.11.0 (2023-05-16)
+
+### Features
+
+- **auth**: deprecate AWSAuthSignInOptions.validationData (#2955)
+- **storage**: Added support for AWSStorageGetURLOptions.validateObjectExistence
+
+### Bug Fixes
+
+- **datastore**: stop datastore plugin only stops syncEngine (#2942)
+- liveness service error reporting (#2937)
+
 ## 2.10.0 (2023-05-04)
 
 ### Features
