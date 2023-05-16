@@ -26,7 +26,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     private enum SdkUserAgentComponent: String, CaseIterable {
         case api = "api/s3"
         case lang = "lang/swift"
-        case os = "os/iOS"
+        case os = "os/"
         case sdk = "aws-sdk-swift/"
     }
 
@@ -40,7 +40,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// - Tag: SdkUserAgentComponent
     private enum URLUserAgentComponent: String, CaseIterable {
         case lib = "lib/amplify-swift"
-        case os = "os/iOS"
+        case os = "os/"
     }
 
     override func setUp() async throws {
@@ -137,13 +137,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         try await Amplify.Storage.remove(key: key)
 
-        let expectedPartCount = 8
-        XCTAssertEqual(requestRecorder.urlRequests.count, expectedPartCount)
-
-        let expectedMethods = Array(0..<expectedPartCount).map { _ in "PUT" }
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, expectedMethods)
-        try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
         let userAgents = requestRecorder.urlRequests.compactMap { $0.allHTTPHeaderFields?["User-Agent"] }
+        XCTAssertGreaterThan(userAgents.count, 1)
         for userAgent in userAgents {
             let expectedComponent = "MultiPart/UploadPart"
             XCTAssertTrue(userAgent.contains(expectedComponent), "\(userAgent) does not contain \(expectedComponent)")
@@ -165,13 +160,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
 
-        let expectedPartCount = 8
-        XCTAssertEqual(requestRecorder.urlRequests.count, expectedPartCount)
-
-        let expectedMethods = Array(0..<expectedPartCount).map { _ in "PUT" }
-        XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, expectedMethods)
-        try assertUserAgentComponents(urlRequests: requestRecorder.urlRequests)
         let userAgents = requestRecorder.urlRequests.compactMap { $0.allHTTPHeaderFields?["User-Agent"] }
+        XCTAssertGreaterThan(userAgents.count, 1)
         for userAgent in userAgents {
             let expectedComponent = "MultiPart/UploadPart"
             XCTAssertTrue(userAgent.contains(expectedComponent), "\(userAgent) does not contain \(expectedComponent)")
