@@ -31,7 +31,7 @@ jobs:
 
   functional-test:
     needs: prepare-for-test
-    uses: ./.github/workflows/integ_test_api_functional
+    uses: ./.github/workflows/integ_test_api_functional.yml
             
   api-graphql-user-pool-test:
     if: ${{ false }}
