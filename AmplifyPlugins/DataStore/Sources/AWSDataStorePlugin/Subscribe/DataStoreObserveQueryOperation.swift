@@ -226,6 +226,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 .filter { _ in !self.dispatchedModelSyncedEvent.get() }
                 .filter(self.filterByModelName(mutationEvent:))
                 .filter(self.filterByPredicateMatch(mutationEvent:))
+                .handleEvents(receiveOutput: self.onItemChangeDuringSync(mutationEvent:) )
                 .collect(.byTimeOrCount(self.serialQueue, self.itemsChangedPeriodicPublishTimeInSeconds, self.itemsChangedMaxSize))
                 .sink(receiveCompletion: self.onReceiveCompletion(completed:),
                       receiveValue: self.onItemsChangeDuringSync(mutationEvents:))
@@ -238,7 +239,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                       receiveValue: self.onItemChangeAfterSync(mutationEvent:))
         }
     }
-    
+
     func subscribeToModelSyncedEvent() {
         modelSyncedEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
             if event.eventName == HubPayload.EventName.DataStore.modelSynced,
@@ -271,6 +272,16 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
         }
     }
 
+    func onItemChangeDuringSync(mutationEvent: MutationEvent) {
+        serialQueue.async { [weak self] in
+            guard let self = self, self.observeQueryStarted else {
+                return
+            }
+
+            self.apply(itemsChanged: [mutationEvent])
+        }
+    }
+
     func onItemsChangeDuringSync(mutationEvents: [MutationEvent]) {
         serialQueue.async {
             guard self.observeQueryStarted, !mutationEvents.isEmpty else {
@@ -278,7 +289,6 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             }
 
             self.startSnapshotStopWatch()
-            self.apply(itemsChanged: mutationEvents)
             self.sendSnapshot()
         }
     }

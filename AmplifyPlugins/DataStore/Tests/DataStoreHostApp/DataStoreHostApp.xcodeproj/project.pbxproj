@@ -28,9 +28,9 @@
 		21182143289BFBC4001B5945 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182142289BFBC4001B5945 /* AWSAPIPlugin */; };
 		21182145289BFBC4001B5945 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182144289BFBC4001B5945 /* AWSCognitoAuthPlugin */; };
 		21182147289BFBC4001B5945 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182146289BFBC4001B5945 /* AWSDataStorePlugin */; };
+		211F5094296DD4C30040EB62 /* AWSDataStorePrimaryKeyPostCommentCompositeKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211F5093296DD4C30040EB62 /* AWSDataStorePrimaryKeyPostCommentCompositeKeyTest.swift */; };
 		2138482A2947ACCF00BBA647 /* AWSDataStoreLazyLoadBlogPostComment8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213848292947ACCF00BBA647 /* AWSDataStoreLazyLoadBlogPostComment8V2Tests.swift */; };
 		2138482C2947F89C00BBA647 /* AWSDataStoreLazyLoadingBlogPostCmment8V2SnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2138482B2947F89C00BBA647 /* AWSDataStoreLazyLoadingBlogPostCmment8V2SnapshotTests.swift */; };
-		211F5094296DD4C30040EB62 /* AWSDataStorePrimaryKeyPostCommentCompositeKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211F5093296DD4C30040EB62 /* AWSDataStorePrimaryKeyPostCommentCompositeKeyTest.swift */; };
 		213DBB9C28A5743600B30280 /* ModelImplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6228A5743200B30280 /* ModelImplicitDefaultPk+Schema.swift */; };
 		213DBB9D28A5743600B30280 /* ModelImplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6328A5743200B30280 /* ModelImplicitDefaultPk.swift */; };
 		213DBB9E28A5743600B30280 /* ModelExplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6428A5743200B30280 /* ModelExplicitDefaultPk+Schema.swift */; };
@@ -759,7 +759,6 @@
 		21182131289BFB4B001B5945 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21182133289BFB4F001B5945 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21182136289BFB4F001B5945 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		2118213E289BFB63001B5945 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 		211F5093296DD4C30040EB62 /* AWSDataStorePrimaryKeyPostCommentCompositeKeyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePrimaryKeyPostCommentCompositeKeyTest.swift; sourceTree = "<group>"; };
 		213848292947ACCF00BBA647 /* AWSDataStoreLazyLoadBlogPostComment8V2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadBlogPostComment8V2Tests.swift; sourceTree = "<group>"; };
 		2138482B2947F89C00BBA647 /* AWSDataStoreLazyLoadingBlogPostCmment8V2SnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadingBlogPostCmment8V2SnapshotTests.swift; sourceTree = "<group>"; };
@@ -1317,6 +1316,7 @@
 		21DFAE9D295F4E8600B4A883 /* PhoneCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneCall.swift; sourceTree = "<group>"; };
 		21DFAE9E295F4E8600B4A883 /* Transcript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transcript.swift; sourceTree = "<group>"; };
 		21DFAEA5295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPhoneCallTests.swift; sourceTree = "<group>"; };
+		60CB6B3E2A1454F90051BAD2 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 		681DFE8028E746C10000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE8128E746C10000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
@@ -1554,7 +1554,7 @@
 		2118213D289BFB63001B5945 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				2118213E289BFB63001B5945 /* amplify-ios-staging */,
+				60CB6B3E2A1454F90051BAD2 /* amplify-swift */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
