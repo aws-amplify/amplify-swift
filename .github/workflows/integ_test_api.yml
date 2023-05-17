@@ -14,11 +14,13 @@ concurrency:
 
 jobs:
   functional-test:
-    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_api_functional.yml
     secrets: inherit
 
   graphql-user-pool-test:
-    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_api_graphql_user_pool.yml
+    secrets: inherit
+
+  graphql-auth-directive-test:
+    uses: ./.github/workflows/integ_test_api_graphql_auth_directive.yml
     secrets: inherit
