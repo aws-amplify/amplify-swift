@@ -32,3 +32,4 @@ jobs:
   functional-test:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_api_functional.yml
+    secrets: inherit
