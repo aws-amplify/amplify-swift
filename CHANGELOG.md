@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.1 (2023-05-17)
+
+### Bug Fixes
+
+- **Auth**: Use correct queries when getting and setting keychain items (#2965)
+
 ## 2.11.0 (2023-05-16)
 
 ### Features
