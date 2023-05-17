@@ -1,8 +1,7 @@
-name: DataStore CPK Tests
+name: Integration Tests | DataStore - CPK
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  workflow_call:
 
 permissions:
     id-token: write

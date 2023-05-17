@@ -1,4 +1,4 @@
-name: Integration Tests | DataStore - TransformerV2
+name: Integration Tests | Storage
 on:
   workflow_dispatch:
   workflow_call:
@@ -6,10 +6,6 @@ on:
 permissions:
     id-token: write
     contents: read
-
-concurrency:
-  group: ${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
 
 jobs:
   prepare-for-test:
@@ -26,10 +22,9 @@ jobs:
           resource_subfolder: NA
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
-  datastore-integration-v2-test:
-    timeout-minutes: 30
+  storage-integration-test:
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
@@ -44,13 +39,13 @@ jobs:
       - name: Copy integration test resouces
         uses: ./.github/composite_actions/download_test_configuration
         with:
-          resource_subfolder: datastore
+          resource_subfolder: storage
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginV2Tests
+          project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
+          scheme: AWSS3StoragePluginIntegrationTests

@@ -1,4 +1,4 @@
-name: API Integration Test - GraphQL IAM
+name: Integration Tests | API - GraphQL IAM
 on:
   workflow_dispatch:
   workflow_call:

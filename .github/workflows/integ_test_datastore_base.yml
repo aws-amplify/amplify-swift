@@ -1,4 +1,4 @@
-name: Integration Tests | DataStore - TransformerV2
+name: Integration Tests | DataStore - Base
 on:
   workflow_dispatch:
   workflow_call:
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   prepare-for-test:
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -28,10 +28,10 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-  datastore-integration-v2-test:
+  datastore-integration-test-base:
     timeout-minutes: 30
     needs: prepare-for-test
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -53,4 +53,6 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginV2Tests
+          scheme: AWSDataStorePluginIntegrationTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          xcode_path: '/Applications/Xcode_14.3.app'

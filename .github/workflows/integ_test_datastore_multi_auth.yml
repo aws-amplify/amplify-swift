@@ -1,8 +1,7 @@
-name: DataStore Multi Auth Tests
+name: Integration Tests | DataStore - Multi Auth
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  workflow_call:
 
 permissions:
     id-token: write
@@ -55,5 +54,3 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginMultiAuthTests
-
- 

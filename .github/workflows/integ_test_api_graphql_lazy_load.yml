@@ -1,4 +1,4 @@
-name: API Integration Test - GraphQL Lazy Load
+name: Integration Tests | API - GraphQL Lazy Load
 on:
   workflow_dispatch:
   workflow_call:

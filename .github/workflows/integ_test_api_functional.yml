@@ -1,4 +1,4 @@
-name: API Integration Test - Functional
+name: Integration Tests | API - Functional
 on:
   workflow_dispatch:
   workflow_call:

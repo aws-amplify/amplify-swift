@@ -1,8 +1,7 @@
-name: DataStore Integration Tests
+name: Integration Tests | DataStore - All
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  workflow_call:
 
 permissions:
     id-token: write
@@ -13,49 +12,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare-for-test:
-    runs-on: macos-13
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+  datastore-base-test:
+    uses: ./.github/workflows/integ_test_datastore_base.yml
+    secrets: inherit
 
-      - name: Verify copy resources
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: NA
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+  datastore-auth-iam-test:
+    uses: ./.github/workflows/integ_test_datastore_auth_iam.yml
+    secrets: inherit
 
-  datastore-integration-test:
-    timeout-minutes: 30
-    needs: prepare-for-test
-    runs-on: macos-13
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+  datastore-cpk-test:
+    uses: ./.github/workflows/integ_test_datastore_cpk.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+  datastore-lazy-load-test:
+    uses: ./.github/workflows/integ_test_datastore_lazy_load.yml
+    secrets: inherit
 
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: datastore
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+  datastore-multi-auth-test:
+    uses: ./.github/workflows/integ_test_datastore_multi_auth.yml
+    secrets: inherit
 
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginIntegrationTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
-          xcode_path: '/Applications/Xcode_14.3.app'
+  datastore-transformer-v2-test:
+    uses: ./.github/workflows/integ_test_datastore_v2.yml
+    secrets: inherit
 
-
+  datastore-auth-cognito-test:
+    uses: ./.github/workflows/integ_test_datastore_auth_cognito.yml
+    secrets: inherit

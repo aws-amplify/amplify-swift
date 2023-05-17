@@ -1,4 +1,4 @@
-name: API Integration Test - GraphQL Auth Directive
+name: Integration Tests | API - GraphQL Auth Directive
 on:
   workflow_dispatch:
   workflow_call:

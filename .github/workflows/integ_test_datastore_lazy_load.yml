@@ -1,8 +1,7 @@
-name: DataStore Lazy Load Tests
+name: Integration Tests | DataStore - Lazy Load
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  workflow_call:
 
 permissions:
     id-token: write

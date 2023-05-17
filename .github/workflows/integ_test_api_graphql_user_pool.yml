@@ -1,4 +1,4 @@
-name: API Integration Test - GraphQL User Pool
+name: Integration Tests | API - GraphQL User Pool
 on:
   workflow_dispatch:
   workflow_call:
