@@ -29,7 +29,7 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-  call-api-functional-test:
+  functional-test:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_api_functional
             
