@@ -1,4 +1,4 @@
-name: API Integration Test - GraphQL Auth Directive
+name: API Integration Test - REST IAM
 on:
   workflow_dispatch:
   workflow_call:
@@ -24,8 +24,7 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-  api-graphql-auth-directive-test:
-    if: ${{ false }}
+  api-rest-iam-test:
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
@@ -49,4 +48,4 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginGraphQLAuthDirectiveTests
+          scheme: AWSAPIPluginRESTIAMTests

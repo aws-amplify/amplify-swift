@@ -1,4 +1,4 @@
-name: API Integration Test - GraphQL Auth Directive
+name: API Integration Test - REST User Pool
 on:
   workflow_dispatch:
   workflow_call:
@@ -24,7 +24,7 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-  api-graphql-auth-directive-test:
+  api-rest-user-pool-test:
     if: ${{ false }}
     needs: prepare-for-test
     runs-on: macos-12
@@ -49,4 +49,4 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginGraphQLAuthDirectiveTests
+          scheme: AWSAPIPluginRESTUserPoolTests

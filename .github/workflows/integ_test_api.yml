@@ -24,3 +24,23 @@ jobs:
   graphql-auth-directive-test:
     uses: ./.github/workflows/integ_test_api_graphql_auth_directive.yml
     secrets: inherit
+
+  graphql-iam-test:
+    uses: ./.github/workflows/integ_test_api_graphql_iam.yml
+    secrets: inherit
+
+  graphql-lambda-auth-test:
+    uses: ./.github/workflows/integ_test_api_graphql_lambda_auth.yml
+    secrets: inherit
+
+  graphql-lazy-load-test:
+    uses: ./.github/workflows/integ_test_api_graphql_lazy_load.yml
+    secrets: inherit
+
+  rest-user-pool-test:
+    uses: ./.github/workflows/integ_test_api_rest_user_pool.yml
+    secrets: inherit
+
+  rest-iam-test:
+    uses: ./.github/workflows/integ_test_api_rest_iam.yml
+    secrets: inherit
