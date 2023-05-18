@@ -342,8 +342,11 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         await waitForExpectations([snapshotWithIsSynced, receivedPost], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
-        XCTAssertTrue(snapshots.last!.isSynced)
-        XCTAssertTrue(snapshots.last!.items.contains(newPost))
+        XCTAssertEqual(1, snapshots.filter({ $0.isSynced }).count)
+
+        let theSyncedSnapshot = snapshots.first(where: { $0.isSynced })
+        XCTAssertNotNil(theSyncedSnapshot)
+        XCTAssertTrue(theSyncedSnapshot!.items.contains(newPost))
     }
 
     /// ObserveQuery is set up with a query predicate.

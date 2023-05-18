@@ -283,10 +283,12 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     }
 
     func onItemsChangeDuringSync(mutationEvents: [MutationEvent]) {
-        serialQueue.async {
-            guard self.observeQueryStarted, !mutationEvents.isEmpty else {
-                return
-            }
+        serialQueue.async { [weak self] in
+            guard let self = self,
+                  self.observeQueryStarted,
+                  !mutationEvents.isEmpty,
+                  !self.dispatchedModelSyncedEvent.get()
+            else { return }
 
             self.startSnapshotStopWatch()
             self.sendSnapshot()
