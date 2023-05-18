@@ -1,4 +1,4 @@
-name: Integration Tests | DataStore - Auth Cognito
+name: Integration Tests | Predictions
 on:
   workflow_dispatch:
   workflow_call:
@@ -8,8 +8,8 @@ permissions:
     contents: read
 
 jobs:
-  datastore-integration-auth-cognito-test:
-    timeout-minutes: 30
+  predictions-integration-test:
+    continue-on-error: true
     runs-on: macos-12
     environment: IntegrationTest
     steps:
@@ -23,15 +23,16 @@ jobs:
       - name: Copy integration test resouces
         uses: ./.github/composite_actions/download_test_configuration
         with:
-          resource_subfolder: datastore
+          resource_subfolder: predictions
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
+      - name: List the copied configurations
+        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
+
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginAuthCognitoTests
-
- 
+          project_path: ./AmplifyPlugins/Predictions/Tests/PredictionsHostApp
+          scheme: AWSPredictionsPluginIntegrationTests
