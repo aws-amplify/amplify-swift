@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  datastore-integration-v2-test:
+  datastore-integration-cpk-test:
     timeout-minutes: 30
     runs-on: macos-12
     environment: IntegrationTest
