@@ -19,7 +19,7 @@ struct KeychainStoreAttributes {
 
 extension KeychainStoreAttributes {
 
-    func defaultGetQuery() -> [String: Any] {
+    func query() -> [String: Any] {
         var query: [String: Any] = [
             KeychainStore.Constants.Class: itemClass,
             KeychainStore.Constants.AttributeService: service
@@ -27,11 +27,6 @@ extension KeychainStoreAttributes {
         if let accessGroup = accessGroup {
             query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
         }
-        return query
-    }
-
-    func defaultSetQuery() -> [String: Any] {
-        var query: [String: Any] = defaultGetQuery()
         query[KeychainStore.Constants.AttributeAccessible] = KeychainStore.Constants.AttributeAccessibleAfterFirstUnlockThisDeviceOnly
         query[KeychainStore.Constants.UseDataProtectionKeyChain] = kCFBooleanTrue
         return query
@@ -42,7 +37,7 @@ extension KeychainStoreAttributes {
         var attributes: [String: Any]
 
         if key != nil {
-            attributes = defaultGetQuery()
+            attributes = query()
             attributes[KeychainStore.Constants.AttributeAccount] = key
         } else {
             attributes = [String: Any]()

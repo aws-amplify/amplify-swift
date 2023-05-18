@@ -99,7 +99,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A data value
     public func _getData(_ key: String) throws -> Data {
-        var query = attributes.defaultGetQuery()
+        var query = attributes.query()
 
         query[Constants.MatchLimit] = Constants.MatchLimitOne
         query[Constants.ReturnData] = kCFBooleanTrue
@@ -142,7 +142,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     ///   - value: A data value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
     public func _set(_ value: Data, key: String) throws {
-        var query = attributes.defaultSetQuery()
+        var query = attributes.query()
         query[Constants.AttributeAccount] = key
 
         let fetchStatus = SecItemCopyMatching(query as CFDictionary, nil)
@@ -173,7 +173,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key to delete the key-value pair
     public func _remove(_ key: String) throws {
-        var query = attributes.defaultGetQuery()
+        var query = attributes.query()
         query[Constants.AttributeAccount] = key
 
         let status = SecItemDelete(query as CFDictionary)
@@ -186,7 +186,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     public func _removeAll() throws {
-        var query = attributes.defaultGetQuery()
+        var query = attributes.query()
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
         query[Constants.MatchLimit] = Constants.MatchLimitAll
 #endif

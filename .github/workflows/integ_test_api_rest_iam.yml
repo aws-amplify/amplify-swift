@@ -1,4 +1,4 @@
-name: Integration Tests | DataStore - Auth Cognito
+name: Integration Tests | API - REST IAM
 on:
   workflow_dispatch:
   workflow_call:
@@ -8,8 +8,7 @@ permissions:
     contents: read
 
 jobs:
-  datastore-integration-auth-cognito-test:
-    timeout-minutes: 30
+  api-rest-iam-test:
     runs-on: macos-12
     environment: IntegrationTest
     steps:
@@ -23,7 +22,7 @@ jobs:
       - name: Copy integration test resouces
         uses: ./.github/composite_actions/download_test_configuration
         with:
-          resource_subfolder: datastore
+          resource_subfolder: api
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
@@ -31,7 +30,5 @@ jobs:
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginAuthCognitoTests
-
- 
+          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
+          scheme: AWSAPIPluginRESTIAMTests

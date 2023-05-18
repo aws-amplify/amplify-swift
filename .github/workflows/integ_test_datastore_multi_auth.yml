@@ -1,37 +1,15 @@
-name: DataStore Multi Auth Tests
+name: Integration Tests | DataStore - Multi Auth
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  workflow_call:
 
 permissions:
     id-token: write
-    contents: read 
-
-concurrency:
-  group: ${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+    contents: read
 
 jobs:
-  prepare-for-test:
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
-      - name: Verify copy resources
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: NA
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-  datastore-integration-v2-test:
+  datastore-integration-multi-auth-test:
     timeout-minutes: 30
-    needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
     steps:
@@ -55,5 +33,3 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginMultiAuthTests
-
- 
