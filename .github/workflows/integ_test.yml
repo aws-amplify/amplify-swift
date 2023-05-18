@@ -58,3 +58,8 @@ jobs:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_storage.yml
     secrets: inherit
+
+  api-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_api.yml
+    secrets: inherit

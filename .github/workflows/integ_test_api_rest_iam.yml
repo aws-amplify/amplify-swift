@@ -8,24 +8,7 @@ permissions:
     contents: read
 
 jobs:
-  prepare-for-test:
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
-      - name: Verify copy resources
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: NA
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
   api-rest-iam-test:
-    needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
     steps:
