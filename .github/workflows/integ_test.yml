@@ -37,25 +37,21 @@ jobs:
   push-notifications-test:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_push_notifications.yml
-    needs: prepare-for-test
     secrets: inherit
 
   predictions-test:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_predictions.yml
-    needs: prepare-for-test
     secrets: inherit
 
   auth-test:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_auth.yml
-    needs: prepare-for-test
     secrets: inherit
 
   geo-test:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_geo.yml
-    needs: prepare-for-test
     secrets: inherit
 
   storage-test:
