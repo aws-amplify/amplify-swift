@@ -247,6 +247,10 @@ extension AuthorizationState {
                 if case .sessionEstablished(let credentials) = event.isAuthorizationEvent {
                     return .init(newState: .sessionEstablished(credentials))
                 }
+                
+                if case .throwError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(error))
+                }
                 return .from(oldState)
 
             case .error(let error):
