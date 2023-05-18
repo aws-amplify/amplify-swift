@@ -5,11 +5,7 @@ on:
 
 permissions:
     id-token: write
-    contents: read 
-
-concurrency:
-  group: ${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+    contents: read
 
 jobs:
   datastore-integration-multi-auth-test:

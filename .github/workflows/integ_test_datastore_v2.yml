@@ -7,10 +7,6 @@ permissions:
     id-token: write
     contents: read
 
-concurrency:
-  group: ${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
-
 jobs:
   datastore-integration-v2-test:
     timeout-minutes: 30
