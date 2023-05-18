@@ -1,7 +1,8 @@
 name: Integration Tests | API - All
 on:
   workflow_dispatch:
-  workflow_call:
+  push:
+    branches: [main]
 
 permissions:
     id-token: write
