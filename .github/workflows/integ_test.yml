@@ -61,5 +61,4 @@ jobs:
   storage-test:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_storage.yml
-    needs: prepare-for-test
     secrets: inherit
