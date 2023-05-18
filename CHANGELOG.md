@@ -1,6 +1,12 @@
 # Changelog
 
-## 2.11.1 (2023-05-17)
+## 2.11.2 (2023-05-18)
+
+### Bug Fixes
+
+- **Auth**:  Revert - fix(Auth): Use correct queries when getting and setting keychain items (#2975)
+
+## DEPRECATED - 2.11.1 (2023-05-17)
 
 ### Bug Fixes
 
