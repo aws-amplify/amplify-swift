@@ -1,7 +1,8 @@
 name: Integration Tests | DataStore - All
 on:
   workflow_dispatch:
-  workflow_call:
+  push:
+    branches: [main]
 
 permissions:
     id-token: write
@@ -12,30 +13,53 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  prepare-for-test:
+    runs-on: macos-12
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Verify copy resources
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: NA
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
   datastore-base-test:
+    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_base.yml
     secrets: inherit
 
   datastore-auth-iam-test:
+    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_auth_iam.yml
     secrets: inherit
 
   datastore-cpk-test:
+    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_cpk.yml
     secrets: inherit
 
   datastore-lazy-load-test:
+    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_lazy_load.yml
     secrets: inherit
 
   datastore-multi-auth-test:
+    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_multi_auth.yml
     secrets: inherit
 
   datastore-transformer-v2-test:
+    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_v2.yml
     secrets: inherit
 
   datastore-auth-cognito-test:
+    needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_auth_cognito.yml
     secrets: inherit
