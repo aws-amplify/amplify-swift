@@ -10,7 +10,6 @@ permissions:
 jobs:
   predictions-integration-test:
     continue-on-error: true
-    needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
     steps:
