@@ -39,7 +39,10 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
         Amplify.Logging.logLevel = logLevel
 
         do {
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSAPIPlugin(
+                modelRegistration: models,
+                sessionFactory: AmplifyURLSessionFactory()
+            ))
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: .custom(syncMaxRecords: 100)))
         } catch {

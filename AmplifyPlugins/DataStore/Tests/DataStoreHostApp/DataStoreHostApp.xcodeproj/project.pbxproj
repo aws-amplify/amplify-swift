@@ -546,6 +546,8 @@
 		21DFAEA3295F4E8600B4A883 /* PhoneCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9D295F4E8600B4A883 /* PhoneCall.swift */; };
 		21DFAEA4295F4E8600B4A883 /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9E295F4E8600B4A883 /* Transcript.swift */; };
 		21DFAEA6295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEA5295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift */; };
+		60040D982A18362400D123D6 /* AmplifyURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60040D962A18362400D123D6 /* AmplifyURLSession.swift */; };
+		60040D992A18362400D123D6 /* AmplifyURLSessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60040D972A18362400D123D6 /* AmplifyURLSessionFactory.swift */; };
 		681DFE8328E746C10000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
 		681DFE8428E746C10000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
 		681DFE8528E746C10000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -1316,6 +1318,8 @@
 		21DFAE9D295F4E8600B4A883 /* PhoneCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneCall.swift; sourceTree = "<group>"; };
 		21DFAE9E295F4E8600B4A883 /* Transcript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transcript.swift; sourceTree = "<group>"; };
 		21DFAEA5295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPhoneCallTests.swift; sourceTree = "<group>"; };
+		60040D962A18362400D123D6 /* AmplifyURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyURLSession.swift; sourceTree = "<group>"; };
+		60040D972A18362400D123D6 /* AmplifyURLSessionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyURLSessionFactory.swift; sourceTree = "<group>"; };
 		60CB6B3E2A1454F90051BAD2 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 		681DFE8028E746C10000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE8128E746C10000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
@@ -1537,6 +1541,8 @@
 				213DBB6128A4172000B30280 /* Info.plist */,
 				2118212F289BFB4B001B5945 /* DataStoreHostAppApp.swift */,
 				21182131289BFB4B001B5945 /* ContentView.swift */,
+				60040D962A18362400D123D6 /* AmplifyURLSession.swift */,
+				60040D972A18362400D123D6 /* AmplifyURLSessionFactory.swift */,
 				21182133289BFB4F001B5945 /* Assets.xcassets */,
 				21182135289BFB4F001B5945 /* Preview Content */,
 			);
@@ -3454,6 +3460,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60040D992A18362400D123D6 /* AmplifyURLSessionFactory.swift in Sources */,
+				60040D982A18362400D123D6 /* AmplifyURLSession.swift in Sources */,
 				21182132289BFB4B001B5945 /* ContentView.swift in Sources */,
 				213DBC6328A5841400B30280 /* HubListenerTestUtilities.swift in Sources */,
 				219B518628E3A7150080EDCC /* DataStoreHubEvent.swift in Sources */,

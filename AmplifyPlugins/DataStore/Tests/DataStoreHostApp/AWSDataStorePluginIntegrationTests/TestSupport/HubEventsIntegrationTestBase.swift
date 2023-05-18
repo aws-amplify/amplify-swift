@@ -9,7 +9,7 @@ import XCTest
 
 import AWSAPIPlugin
 import AWSPluginsCore
-
+@testable import DataStoreHostApp
 @testable import Amplify
 @testable import AWSDataStorePlugin
 
@@ -45,17 +45,23 @@ class HubEventsIntegrationTestBase: XCTestCase {
         try await Task.sleep(seconds: 1)
     }
 
+    func configureAmplify(withModels models: AmplifyModelRegistration) throws {
+        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
+
+        try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+        try Amplify.add(plugin: AWSAPIPlugin(
+            modelRegistration: models,
+            sessionFactory: AmplifyURLSessionFactory()
+        ))
+        try Amplify.configure(amplifyConfig)
+    }
+
     func startAmplify(withModels models: AmplifyModelRegistration) async {
         do {
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
-
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
-            try Amplify.configure(amplifyConfig)
+            try configureAmplify(withModels: models)
             try await Amplify.DataStore.start()
         } catch {
             XCTFail(String(describing: error))
-            return
         }
     }
 }
