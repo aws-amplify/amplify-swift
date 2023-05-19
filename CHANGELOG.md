@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.3 (2023-05-19)
+
+### Bug Fixes
+
+- **datastore**: extract mutation events handling out of periodic snapshot generate logic (#2971)
+
 ## 2.11.2 (2023-05-18)
 
 ### Bug Fixes
