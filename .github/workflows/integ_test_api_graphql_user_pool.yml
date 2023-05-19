@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   api-graphql-user-pool-test:
-    if: ${{ false }}
     runs-on: macos-12
     environment: IntegrationTest
     steps:

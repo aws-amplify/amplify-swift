@@ -150,7 +150,6 @@ final class ModelSyncedEventEmitter {
             }
 
             modelSyncedEventTopic.send(.mutationEventApplied(event))
-
             if shouldSendModelSyncedEvent {
                 sendModelSyncedEvent()
             }
