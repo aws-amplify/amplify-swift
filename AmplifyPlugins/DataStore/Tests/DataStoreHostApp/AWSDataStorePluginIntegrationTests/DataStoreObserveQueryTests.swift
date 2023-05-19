@@ -301,6 +301,54 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         XCTAssertTrue(snapshots.last!.items.count > numberOfPosts)
     }
 
+
+    /// ObserveQuery with DataStore sync. Ensure datastore is cleared.
+    /// When ObserveQuery is called, it will start DataStore and perform a full sync on max records.
+    ///
+    /// - Given: DataStore is cleared.
+    /// - When:
+    ///    - ObserveQuery is called to do perform full sync
+    /// - Then:
+    ///    - The first snapshot should have the old data and `isSynced` false
+    ///    - The final snapshot should have all the latest models with `isSynced` true
+    ///
+    func testObserveQuery_withClearedDataStore_fullySyncedWithMaxRecords() async throws {
+        await setUp(withModels: TestModelRegistration())
+        try await startAmplifyAndWaitForReady()
+        try await clearDataStore()
+
+        let snapshotWithIsSynced = asyncExpectation(description: "query snapshot with isSynced true")
+        var snapshots = [DataStoreQuerySnapshot<Post>]()
+
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self)).sink { completed in
+            switch completed {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        } receiveValue: { querySnapshot in
+            snapshots.append(querySnapshot)
+            if querySnapshot.isSynced {
+                Task { await snapshotWithIsSynced.fulfill() }
+            }
+        }.store(in: &cancellables)
+
+        let newPost = Post(title: "title", content: "content", createdAt: .now())
+        let receivedPost = asyncExpectation(description: "received Post")
+        try await savePostAndWaitForSync(newPost,
+                                         postSyncedExpctation: receivedPost)
+
+        await waitForExpectations([snapshotWithIsSynced, receivedPost], timeout: 30)
+        XCTAssertTrue(snapshots.count >= 2)
+        XCTAssertFalse(snapshots[0].isSynced)
+        XCTAssertEqual(1, snapshots.filter({ $0.isSynced }).count)
+
+        let theSyncedSnapshot = snapshots.first(where: { $0.isSynced })
+        XCTAssertNotNil(theSyncedSnapshot)
+        XCTAssertTrue(theSyncedSnapshot!.items.contains(newPost))
+    }
+
     /// ObserveQuery is set up with a query predicate.
     /// Sync is completed and actions are applied after sync to observe expected snapshots.
     ///
