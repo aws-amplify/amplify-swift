@@ -12,9 +12,7 @@ struct KeychainStoreAttributes {
     var itemClass: String = KeychainStore.Constants.ClassGenericPassword
     var service: String
     var accessGroup: String?
-
-    var label: String?
-    var comment: String?
+    
 }
 
 extension KeychainStoreAttributes {
