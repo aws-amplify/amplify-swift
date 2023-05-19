@@ -235,4 +235,36 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         }
         await waitForExpectations(timeout: networkTimeout)
     }
+
+    /// Test if successful session is retrieved before and after a user sign in
+    ///
+    /// - Given: A signed out Amplify Auth Category
+    /// - When:
+    ///    - I call fetchAuthSession
+    /// - Then:
+    ///    - I get a signed out session
+    /// - After that When:
+    ///    - I sign in to the Auth Category
+    /// - Then:
+    ///    - I should receive a valid session in signed in state
+    /// - After that When:
+    ///    - I call fetchAuthSession
+    /// - Then:
+    ///    - I should receive a valid session in signed in state
+    func testSuccessfulSessionFetchAndSignIn() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        var session = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertFalse(session.isSignedIn, "Session state should be signed out")
+
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        session = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
+    }
 }
