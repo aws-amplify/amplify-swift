@@ -99,7 +99,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A data value
     public func _getData(_ key: String) throws -> Data {
-        var query = attributes.query()
+        var query = attributes.defaultGetQuery()
 
         query[Constants.MatchLimit] = Constants.MatchLimitOne
         query[Constants.ReturnData] = kCFBooleanTrue
@@ -142,24 +142,26 @@ public struct KeychainStore: KeychainStoreBehavior {
     ///   - value: A data value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
     public func _set(_ value: Data, key: String) throws {
-        var query = attributes.query()
-        query[Constants.AttributeAccount] = key
+        var getQuery = attributes.defaultGetQuery()
+        getQuery[Constants.AttributeAccount] = key
 
-        let fetchStatus = SecItemCopyMatching(query as CFDictionary, nil)
+        let fetchStatus = SecItemCopyMatching(getQuery as CFDictionary, nil)
         switch fetchStatus {
         case errSecSuccess:
 
             var attributesToUpdate = [String: Any]()
             attributesToUpdate[Constants.ValueData] = value
 
-            let updateStatus = SecItemUpdate(query as CFDictionary, attributesToUpdate as CFDictionary)
+            let updateStatus = SecItemUpdate(getQuery as CFDictionary, attributesToUpdate as CFDictionary)
             if updateStatus != errSecSuccess {
                 throw KeychainStoreError.securityError(updateStatus)
             }
         case errSecItemNotFound:
-            let attributes = attributes.fetchAll(for: key, and: value)
+            var attributesToSet = attributes.defaultSetQuery()
+            attributesToSet[Constants.AttributeAccount] = key
+            attributesToSet[Constants.ValueData] = value
 
-            let addStatus = SecItemAdd(attributes as CFDictionary, nil)
+            let addStatus = SecItemAdd(attributesToSet as CFDictionary, nil)
             if addStatus != errSecSuccess {
                 throw KeychainStoreError.securityError(addStatus)
             }
@@ -173,7 +175,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key to delete the key-value pair
     public func _remove(_ key: String) throws {
-        var query = attributes.query()
+        var query = attributes.defaultGetQuery()
         query[Constants.AttributeAccount] = key
 
         let status = SecItemDelete(query as CFDictionary)
@@ -186,7 +188,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     public func _removeAll() throws {
-        var query = attributes.query()
+        var query = attributes.defaultGetQuery()
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
         query[Constants.MatchLimit] = Constants.MatchLimitAll
 #endif
