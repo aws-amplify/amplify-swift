@@ -32,10 +32,15 @@ extension SRPSignInState {
             switch oldState {
             case .notStarted:
                 return resolveNotStarted(byApplying: srpSignInEvent)
-            case .initiatingSRPA:
-                return resolveInitiatingSRPA(byApplying: srpSignInEvent, from: oldState)
+            case .initiatingSRPA(let signInEventData):
+                return resolveInitiatingSRPA(
+                    byApplying: srpSignInEvent,
+                    from: oldState,
+                    with: signInEventData)
             case .respondingPasswordVerifier(let srpStateData):
-                return resolveRespondingVerifyPassword(srpStateData: srpStateData, byApplying: srpSignInEvent)
+                return resolveRespondingVerifyPassword(
+                    srpStateData: srpStateData,
+                    byApplying: srpSignInEvent)
             case .signedIn, .error:
                 return .from(oldState)
             case .cancelling:
@@ -80,12 +85,15 @@ extension SRPSignInState {
 
         private func resolveInitiatingSRPA(
             byApplying signInEvent: SignInEvent,
-            from oldState: SRPSignInState)
+            from oldState: SRPSignInState,
+            with signInEventData: SignInEventData)
         -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .respondPasswordVerifier(let srpStateData, let authResponse):
-                let action = VerifyPasswordSRP(stateData: srpStateData,
-                                               authResponse: authResponse)
+                let action = VerifyPasswordSRP(
+                    stateData: srpStateData,
+                    authResponse: authResponse,
+                    clientMetadata: signInEventData.clientMetadata)
                 return StateResolution(
                     newState: SRPSignInState.respondingPasswordVerifier(srpStateData),
                     actions: [action]
@@ -102,9 +110,11 @@ extension SRPSignInState {
             byApplying signInEvent: SignInEvent)
         -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
-            case .retryRespondPasswordVerifier(let srpStateData, let authResponse):
-                let action = VerifyPasswordSRP(stateData: srpStateData,
-                                               authResponse: authResponse)
+            case .retryRespondPasswordVerifier(let srpStateData, let authResponse, let clientMetadata):
+                let action = VerifyPasswordSRP(
+                    stateData: srpStateData,
+                    authResponse: authResponse,
+                    clientMetadata: clientMetadata)
                 return StateResolution(
                     newState: SRPSignInState.respondingPasswordVerifier(srpStateData),
                     actions: [action]

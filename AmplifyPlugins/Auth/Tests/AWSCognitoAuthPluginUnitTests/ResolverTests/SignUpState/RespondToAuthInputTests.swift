@@ -88,6 +88,7 @@ class RespondToAuthInputTests: XCTestCase {
             session: "session",
             secretBlock: "secret",
             signature: "signature",
+            clientMetadata: ["test": "test"],
             deviceMetadata: .metadata(.init(deviceKey: "", deviceGroupKey: "")),
             asfDeviceId: "asfDeviceId",
             environment: environment)
