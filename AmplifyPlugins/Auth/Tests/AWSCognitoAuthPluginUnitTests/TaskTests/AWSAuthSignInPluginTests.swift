@@ -28,15 +28,17 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .done response
     ///
     func testSuccessfulSignIn() async {
-
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            InitiateAuthOutputResponse(
+        let clientMetadata = ["somekey": "somevalue"]
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
+            return InitiateAuthOutputResponse(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
                 session: "someSession")
-        }, mockRespondToAuthChallengeResponse: { _ in
-            RespondToAuthChallengeOutputResponse(
+        }, mockRespondToAuthChallengeResponse: { input in
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
+            return RespondToAuthChallengeOutputResponse(
                 authenticationResult: .init(
                     accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
@@ -49,7 +51,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: clientMetadata)
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -319,7 +321,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
-            XCTAssertEqual([clientMetadata], input.clientMetadata)
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
             return RespondToAuthChallengeOutputResponse(
                 authenticationResult: .none,
                 challengeName: .customChallenge,
