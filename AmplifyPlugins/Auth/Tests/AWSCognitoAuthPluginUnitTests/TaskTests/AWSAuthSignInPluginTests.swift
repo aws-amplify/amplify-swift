@@ -310,14 +310,17 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testCustomAuthWithAdditionalInfo() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            InitiateAuthOutputResponse(
+        let clientMetadata = ["somekey": "somevalue"]
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
+            return InitiateAuthOutputResponse(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
                 session: "someSession")
-        }, mockRespondToAuthChallengeResponse: { _ in
-            RespondToAuthChallengeOutputResponse(
+        }, mockRespondToAuthChallengeResponse: { input in
+            XCTAssertEqual([clientMetadata], input.clientMetadata)
+            return RespondToAuthChallengeOutputResponse(
                 authenticationResult: .none,
                 challengeName: .customChallenge,
                 challengeParameters: ["paramKey": "value"],
@@ -325,7 +328,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let pluginOptions = AWSAuthSignInOptions(
-            metadata: ["somekey": "somevalue"],
+            metadata: clientMetadata,
             authFlowType: .customWithSRP
         )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
