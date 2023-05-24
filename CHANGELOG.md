@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.4 (2023-05-24)
+
+### Bug Fixes
+
+- **Auth**: Fixing keychain migration issue (#2978)
+
 ## 2.11.3 (2023-05-19)
 
 ### Bug Fixes
