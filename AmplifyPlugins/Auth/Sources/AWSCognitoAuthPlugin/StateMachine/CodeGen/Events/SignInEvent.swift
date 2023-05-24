@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 
 typealias Username = String
 typealias Password = String
+typealias ClientMetadata = [String: String]
 
 struct SignInEvent: StateMachineEvent {
 
@@ -27,9 +28,9 @@ struct SignInEvent: StateMachineEvent {
 
         case initiateMigrateAuth(SignInEventData, DeviceMetadata)
 
-        case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
+        case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse, ClientMetadata)
 
-        case retryRespondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
+        case retryRespondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse, ClientMetadata)
 
         case initiateDeviceSRP(Username, SignInResponseBehavior)
 

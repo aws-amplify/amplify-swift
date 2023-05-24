@@ -134,7 +134,7 @@ extension SignInEvent {
 
     static let respondPasswordVerifierEvent = SignInEvent(
         id: "respondPasswordVerifierEvent",
-        eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData)
+        eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData, [:])
     )
 
     static func finalizeSRPSignInEvent(signedInData: SignedInData) -> SignInEvent {

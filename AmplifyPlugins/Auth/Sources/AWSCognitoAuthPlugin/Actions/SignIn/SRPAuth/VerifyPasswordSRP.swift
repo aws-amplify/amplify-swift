@@ -14,11 +14,14 @@ struct VerifyPasswordSRP: Action {
 
     let stateData: SRPStateData
     let authResponse: InitiateAuthOutputResponse
+    let clientMetadata: ClientMetadata
 
     init(stateData: SRPStateData,
-         authResponse: InitiateAuthOutputResponse) {
+         authResponse: InitiateAuthOutputResponse,
+         clientMetadata: ClientMetadata) {
         self.stateData = stateData
         self.authResponse = authResponse
+        self.clientMetadata = clientMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -60,6 +63,7 @@ struct VerifyPasswordSRP: Action {
                 session: authResponse.session,
                 secretBlock: secretBlockString,
                 signature: signature,
+                clientMetadata: clientMetadata,
                 deviceMetadata: deviceMetadata,
                 asfDeviceId: asfDeviceId,
                 environment: userPoolEnv)
@@ -83,7 +87,7 @@ struct VerifyPasswordSRP: Action {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
             // Remove the saved device details and retry password verify
             await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
-            let event = SignInEvent(eventType: .retryRespondPasswordVerifier(stateData, authResponse))
+            let event = SignInEvent(eventType: .retryRespondPasswordVerifier(stateData, authResponse, clientMetadata))
             logVerbose("\(#fileID) Sending event \(event)",
                        environment: environment)
             await dispatcher.send(event)

@@ -15,6 +15,7 @@ extension RespondToAuthChallengeInput {
                                  session: String?,
                                  secretBlock: String,
                                  signature: String,
+                                 clientMetadata: ClientMetadata,
                                  deviceMetadata: DeviceMetadata,
                                  asfDeviceId: String?,
                                  environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {
@@ -29,7 +30,7 @@ extension RespondToAuthChallengeInput {
             challengeType: .passwordVerifier,
             challengeResponses: challengeResponses,
             session: session,
-            clientMetadata: [:],
+            clientMetadata: clientMetadata,
             asfDeviceId: asfDeviceId,
             deviceMetadata: deviceMetadata,
             environment: environment)
@@ -119,7 +120,7 @@ extension RespondToAuthChallengeInput {
         challengeType: CognitoIdentityProviderClientTypes.ChallengeNameType,
         challengeResponses: [String: String],
         session: String?,
-        clientMetadata: [String: String],
+        clientMetadata: ClientMetadata,
         asfDeviceId: String?,
         deviceMetadata: DeviceMetadata,
         environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {

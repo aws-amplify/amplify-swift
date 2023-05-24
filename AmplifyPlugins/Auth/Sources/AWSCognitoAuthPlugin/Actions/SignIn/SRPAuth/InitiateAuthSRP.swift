@@ -104,7 +104,7 @@ struct InitiateAuthSRP: Action {
                 parameters: parameters)
             return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
         }
-        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
+        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))
     }
 }
 
