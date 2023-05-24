@@ -13,6 +13,7 @@ import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 
+@testable import DataStoreHostApp
 @testable import Amplify
 
 struct TestUser {
@@ -155,9 +156,11 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration,
-               testType: DataStoreAuthTestType,
-               apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin() }) async {
+    func setup(
+        withModels models: AmplifyModelRegistration,
+        testType: DataStoreAuthTestType,
+        apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()) }
+    ) async {
         do {
             setupCredentials(forAuthStrategy: testType)
 

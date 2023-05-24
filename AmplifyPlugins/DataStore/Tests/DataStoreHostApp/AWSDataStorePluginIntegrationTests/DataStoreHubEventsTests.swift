@@ -25,7 +25,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
     /// - Given:
     ///    - registered two models from `TestModelRegistration`
-    ///    - no pending MutationEvents in MutationEvent database
+    ///    - no pending MutationEvents in MutationEvent database by clearing the local datastore
     /// - When:
     ///    - DataStore's remote sync engine is initialized
     /// - Then:
@@ -38,6 +38,10 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - syncQueriesReady received, payload should be nil
     func testDataStoreConfiguredDispatchesHubEvents() async throws {
         Amplify.Logging.logLevel = .verbose
+        try configureAmplify(withModels: TestModelRegistration())
+        try await Amplify.DataStore.clear()
+        await Amplify.reset()
+
         let networkStatusReceived = expectation(description: "networkStatus received")
         var networkStatusActive = false
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")

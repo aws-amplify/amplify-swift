@@ -10,6 +10,7 @@ import XCTest
 import Combine
 import AWSDataStorePlugin
 import AWSAPIPlugin
+@testable import DataStoreHostApp
 
 @testable import Amplify
 
@@ -35,7 +36,7 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
             loadAmplifyConfig()
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
 
-            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
 
             Amplify.Logging.logLevel = .verbose
 
