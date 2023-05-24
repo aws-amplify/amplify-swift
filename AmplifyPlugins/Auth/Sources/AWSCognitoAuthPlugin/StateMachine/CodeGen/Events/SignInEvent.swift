@@ -28,7 +28,7 @@ struct SignInEvent: StateMachineEvent {
 
         case initiateMigrateAuth(SignInEventData, DeviceMetadata)
 
-        case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
+        case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse, ClientMetadata)
 
         case retryRespondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse, ClientMetadata)
 
