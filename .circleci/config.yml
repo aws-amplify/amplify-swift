@@ -469,6 +469,7 @@ workflows:
             - fortify_scan
       - deploy:
           name: deploy unstable
+          context: amplify-swift-aws-oidc
           <<: *deploy_requires
           filters:
             branches:
