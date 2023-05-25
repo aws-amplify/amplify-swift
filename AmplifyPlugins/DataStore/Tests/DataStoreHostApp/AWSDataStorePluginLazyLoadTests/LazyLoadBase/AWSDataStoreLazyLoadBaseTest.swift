@@ -12,6 +12,7 @@ import Combine
 import AWSPluginsCore
 import AWSAPIPlugin
 
+@testable import DataStoreHostApp
 @testable import Amplify
 
 class AWSDataStoreLazyLoadBaseTest: XCTestCase {
@@ -68,7 +69,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: .custom(syncMaxRecords: 100)))
-            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
             try Amplify.configure(amplifyConfig)
             
             try await deleteMutationEvents()
@@ -105,7 +106,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models, sessionFactory: AmplifyURLSessionFactory()))
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")

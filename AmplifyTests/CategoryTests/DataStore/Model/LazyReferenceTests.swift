@@ -84,4 +84,39 @@ final class LazyReferenceTests: XCTestCase {
         let json = try comment.toJSON()
         XCTAssertEqual(json, "{\"post\":[{\"name\":\"id\",\"value\":\"postId\"}],\"id\":\"commentId\",\"content\":\"content\",\"updatedAt\":null,\"createdAt\":null}")
     }
+    
+    func testDecodePrimaryKeysOnly() async throws {
+        let postIdentifierName = "id"
+        let postIdentifierValue = UUID().uuidString
+        
+        let commentWithLazyPostJSON = """
+                {
+                    "post": {
+                        "\(postIdentifierName)": "\(postIdentifierValue)"
+                    },
+                    "id": "commentId",
+                    "content": "c",
+                    "updatedAt": null,
+                    "createdAt": null
+                }
+        """
+        
+        let model = try ModelRegistry.decode(
+            modelName: LazyChildComment4V2.modelName,
+            from: commentWithLazyPostJSON
+        )
+        
+        let decodedComment = try XCTUnwrap(model as? LazyChildComment4V2)
+        
+        switch decodedComment._post.loadedState {
+        case .notLoaded(let unloadedIdentifiers):
+            let identifiers = try XCTUnwrap(unloadedIdentifiers)
+            let descriptions = identifiers.map { "\($0.name): \($0.value)" }
+            
+            XCTAssertEqual(descriptions, ["\(postIdentifierName): \(postIdentifierValue)"])
+            
+        case .loaded:
+            XCTFail("Should be not loaded")
+        }
+    }
 }

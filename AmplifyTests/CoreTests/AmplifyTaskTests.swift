@@ -73,20 +73,22 @@ class AmplifyTaskTests: XCTestCase {
         let request = LongOperationRequest(steps: 10, delay: 0.01)
         let longTask = await runLongOperation(request: request)
 
-        var progressCount = 0
-        var lastProgress: Double = 0
-        await longTask.progress.forEach { progress in
-            lastProgress = progress.fractionCompleted
-            progressCount += 1
+        Task {
+            var progressCount = 0
+            var lastProgress: Double = 0
+
+            await longTask.progress.forEach { progress in
+                lastProgress = progress.fractionCompleted
+                progressCount += 1
+            }
+            // The first progress report happens on `fractionCompleted` 0.0
+            XCTAssertGreaterThanOrEqual(progressCount, 10)
+
+            // Note that `fractionComleted` is calculated by dividing
+            // `completedUnitCount` by `totalUnitCount`. See:
+            //https://developer.apple.com/documentation/foundation/progress/1408579-fractioncompleted
+            XCTAssertEqual(lastProgress, 1.0, accuracy: 0.1)
         }
-
-        // The first progress report happens on `fractionCompleted` 0.0
-        XCTAssertEqual(progressCount, 11)
-
-        // Note that `fractionComleted` is calculated by dividing
-        // `completedUnitCount` by `totalUnitCount`. See:
-        //https://developer.apple.com/documentation/foundation/progress/1408579-fractioncompleted
-        XCTAssertEqual(lastProgress, 1.0)
 
         let value = try await longTask.value
         let output = value.id

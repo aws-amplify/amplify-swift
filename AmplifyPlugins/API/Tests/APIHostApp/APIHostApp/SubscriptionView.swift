@@ -55,6 +55,7 @@ class SubscriptionViewModel: ObservableObject {
         self.todos.append(todo)
     }
 }
+@available(iOS 14.0, *)
 struct SubscriptionView: View {
     @StateObject var vm = SubscriptionViewModel()
     
@@ -73,6 +74,7 @@ struct SubscriptionView: View {
     
 }
 
+@available(iOS 14.0, *)
 struct SubscriptionView_Previews: PreviewProvider {
     static var previews: some View {
         SubscriptionView()

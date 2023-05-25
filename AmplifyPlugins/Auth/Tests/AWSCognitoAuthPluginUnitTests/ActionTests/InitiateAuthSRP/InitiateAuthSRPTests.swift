@@ -95,7 +95,7 @@ class InitiateAuthSRPTests: XCTestCase {
                 return
             }
 
-            if case let .respondPasswordVerifier(_, authResponse) = event.eventType {
+            if case let .respondPasswordVerifier(_, authResponse, _) = event.eventType {
                 XCTAssertNotNil(authResponse)
                 successEventSent.fulfill()
             }

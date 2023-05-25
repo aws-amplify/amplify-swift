@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 import XCTest
+@testable import DataStoreHostApp
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
@@ -37,7 +38,10 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase {
         Amplify.Logging.logLevel = .verbose
 
         do {
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: TestFlutterModelRegistration()))
+            try Amplify.add(plugin: AWSAPIPlugin(
+                modelRegistration: TestFlutterModelRegistration(),
+                sessionFactory: AmplifyURLSessionFactory()
+            ))
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestFlutterModelRegistration()))
         } catch {
             XCTFail(String(describing: error))
