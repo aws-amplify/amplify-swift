@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.11.5 (2023-05-25)
+
+### Bug Fixes
+
+- **Auth**: Pass client metadata to password verifier during SRP sign in (#2986)
+- **datastore**: fix failed test cases for PR#2979 (#2988)
+- **datastore**: wrap URLSession with validation state for test cases (#2979)
+- **datastore**: fix sync with lazy references (#2907)
+
 ## 2.11.4 (2023-05-24)
 
 ### Bug Fixes
