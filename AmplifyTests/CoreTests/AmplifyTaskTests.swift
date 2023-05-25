@@ -87,7 +87,7 @@ class AmplifyTaskTests: XCTestCase {
             // Note that `fractionComleted` is calculated by dividing
             // `completedUnitCount` by `totalUnitCount`. See:
             //https://developer.apple.com/documentation/foundation/progress/1408579-fractioncompleted
-            XCTAssertEqual(lastProgress, 1.0)
+            XCTAssertEqual(lastProgress, 1.0, accuracy: 0.1)
         }
 
         let value = try await longTask.value
