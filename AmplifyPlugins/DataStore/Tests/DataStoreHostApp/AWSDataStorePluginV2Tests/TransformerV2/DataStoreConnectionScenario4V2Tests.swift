@@ -156,7 +156,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let queriedPost = try await Amplify.DataStore.query(Post4V2.self, byId: post.id)
         XCTAssertEqual(queriedPost, post)
@@ -188,7 +188,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let updatedTitle = "updatedTitle"
         let updateReceived = expectation(description: "received updated post from sync event")
@@ -215,7 +215,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         
         post.title = updatedTitle
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostWithSync() async throws {
@@ -245,7 +245,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted post from sync event")
         hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -269,7 +269,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.delete(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostCascadeToComments() async throws {
@@ -308,7 +308,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         }
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(comment)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 2 // 1 post and 1 comment
@@ -338,7 +338,7 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.delete(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 }
 

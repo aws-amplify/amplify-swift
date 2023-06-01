@@ -28,14 +28,22 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
         let storageAdapter = storageEngine.storageAdapter as! SQLiteStorageEngineAdapter
         return storageAdapter
     }
+
+    override func setUp() {
+        continueAfterFailure = true
+    }
+
+    override func tearDown() async throws {
+        try await Amplify.DataStore.clear()
+        await Amplify.reset()
+        try await Task.sleep(seconds: 1)
+    }
+
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
     func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
 
-        continueAfterFailure = false
-
-        await Amplify.reset()
         Amplify.Logging.logLevel = logLevel
 
         do {
@@ -98,6 +106,6 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
         let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
         try Amplify.configure(amplifyConfig)
         try await Amplify.DataStore.start()
-        await waitForExpectations(timeout: 100.0)
+        await fulfillment(of: [eventReceived], timeout: 100)
     }
 }
