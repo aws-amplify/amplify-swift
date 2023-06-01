@@ -96,7 +96,8 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
+
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
             XCTFail("Could not get attendee")
@@ -165,7 +166,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
         
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
@@ -194,7 +195,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         registration.attendee = attendee2
         let updatedRegistration = try await Amplify.DataStore.save(registration)
         XCTAssertEqual(updatedRegistration.attendee.id, attendee2.id)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
         
         var queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
@@ -261,7 +262,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
         
         let deleteRegistrationRecieved = expectation(description: "Delete registration received")
         hubListener = Amplify.Hub.listen(
@@ -285,7 +286,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         let _ = try await Amplify.DataStore.delete(registration)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteRegistrationRecieved], timeout: TestCommonConstants.networkTimeout)
         
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {
@@ -352,7 +353,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
         
         let deleteReceived = expectation(description: "Delete received")
         deleteReceived.expectedFulfillmentCount = 2 // attendee and registration
@@ -390,7 +391,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         }
         
         _ = try await Amplify.DataStore.delete(attendee)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
         
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         XCTAssertNil(queriedAttendeeOptional)
@@ -452,7 +453,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
         
         let deleteReceived = expectation(description: "Delete received")
         deleteReceived.expectedFulfillmentCount = 2 // meeting and registration
@@ -481,7 +482,7 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         }
         
         _ = try await Amplify.DataStore.delete(meeting)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
         
         let queriedAttendeeOptional = try await Amplify.DataStore.query(Attendee8V2.self, byId: attendee.id)
         guard let queriedAttendee = queriedAttendeeOptional else {

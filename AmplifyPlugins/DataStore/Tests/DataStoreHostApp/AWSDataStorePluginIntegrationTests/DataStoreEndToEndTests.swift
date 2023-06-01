@@ -101,7 +101,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         let savedPost = try await Amplify.DataStore.save(newPost)
         XCTAssertEqual(savedPost.content, newPost.content)
-        await waitForExpectations(timeout: 10.0)
+        await fulfillment(of: [
+            outboxMutationEnqueued,
+            outboxIsNotEmptyReceived,
+            outboxIsEmptyReceived,
+            outboxMutationProcessed,
+            syncReceived,
+            localEventReceived,
+            remoteEventReceived
+        ], timeout: 10)
     }
 
     func testCreateMutateDelete() async throws {
@@ -256,7 +264,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
         
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
@@ -286,7 +294,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(updatedPost, where: post.title == title)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
@@ -343,7 +351,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
         
         let updateLocalSuccess = expectation(description: "Update local successful")
         storageAdapter.save(updatedPost) { result in
@@ -355,7 +363,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed to save post directly to local store \(error)")
             }
         }
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateLocalSuccess], timeout: networkTimeout)
 
         let conditionalReceived = expectation(description: "Conditional save failed received")
         hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
@@ -386,7 +394,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         
         _ = try await Amplify.DataStore.save(updatedPost, where: post.content == updatedPost.content)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [conditionalReceived], timeout: networkTimeout)
     }
 
     /// Ensure DataStore.stop followed by DataStore.start is successful
@@ -442,7 +450,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         // We expect the query to complete, but not to return a value. Thus, we'll ignore the error
         _ = try await Amplify.DataStore.query(Post.self, byId: "123")
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [dataStoreStarted], timeout: networkTimeout)
         sink.cancel()
     }
 

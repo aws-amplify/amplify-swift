@@ -221,7 +221,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         XCTAssertEqual(queriedBlog.id, blog.id)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testSaveBlogPost() async throws {
@@ -289,7 +289,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         }
         try await posts.fetch()
         XCTAssertEqual(posts.count, 2)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testSaveBlogPostComment() async throws {
@@ -369,7 +369,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         XCTAssertTrue(comments.contains(where: { (commentFetched) -> Bool in
             commentFetched.id == comment.id
         }))
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testCascadeDeleteBlogDeletesPostAndComments() async throws {
@@ -415,7 +415,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 3 // 3 models due to cascade delete behavior
@@ -450,7 +450,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         }
         
         _ = try await Amplify.DataStore.delete(blog)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
 
     }
 

@@ -215,8 +215,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         XCTAssertEqual(queriedBlog.id, blog.id)
-        
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testSaveBlogPost() async throws {
@@ -283,7 +282,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
         }
         try await posts.fetch()
         XCTAssertEqual(posts.count, 2)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testSaveBlogPostComment() async throws {
@@ -361,7 +360,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
         XCTAssertTrue(comments.contains(where: { (commentFetched) -> Bool in
             commentFetched.id == comment.id
         }))
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testUpdatePostWithSync() async throws {
@@ -394,7 +393,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let updateReceived = expectation(description: "received updated post from sync event")
         let updatedTitle = "updatedTitle"
@@ -420,7 +419,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostWithSync() async throws {
@@ -452,7 +451,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
         
         let deleteReceived = expectation(description: "received deleted post from sync event")
         hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -475,7 +474,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.delete(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteBlogCascadeToPostAndComments() async throws {
@@ -522,7 +521,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 3 // 1 blog, 1 post, 1 comment
@@ -557,7 +556,7 @@ class DataStoreConnectionScenario7V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.delete(blog)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func saveBlog(id: String = UUID().uuidString, name: String) async -> Blog7V2? {
