@@ -232,7 +232,11 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
         if networkReachabilityPublisher == nil {
             if let reachability = api as? APICategoryReachabilityBehavior {
                 do {
+                #if os(watchOS)
+                    networkReachabilityPublisher = try reachability.reachabilityPublisher()
+                #else
                     networkReachabilityPublisher = try reachability.reachabilityPublisher(for: request.apiName)
+                #endif
                 } catch {
                     log.error("\(#function): Unable to listen on reachability: \(error)")
                 }
