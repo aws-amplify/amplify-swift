@@ -39,7 +39,7 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     override func tearDown() async throws {
         try await super.tearDown()
-        try await stopDataStore()
+        try await clearDataStore()
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
     }
@@ -114,12 +114,9 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             return
         }
 
-        try await deleteMutationEvents()
+        try await Amplify.DataStore.start()
 
         await fulfillment(of: [eventReceived], timeout: 10)
     }
-    
-    func deleteMutationEvents() async throws {
-        try await Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all)
-    }
+
 }
