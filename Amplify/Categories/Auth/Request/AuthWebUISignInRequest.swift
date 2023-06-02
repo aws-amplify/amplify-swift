@@ -18,12 +18,7 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthWebUISignInRequest.Options`
     public var options: Options
 
-#if os(watchOS)
-    public init(authProvider: AuthProvider? = nil, options: Options) {
-        self.authProvider = authProvider
-        self.options = options
-    }
-#else
+#if os(iOS) || os(macOS)
     /// Presentation anchor on which the webUI is displayed
     public let presentationAnchor: AuthUIPresentationAnchor?
     
@@ -31,6 +26,11 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
                 authProvider: AuthProvider? = nil,
                 options: Options) {
         self.presentationAnchor = presentationAnchor
+        self.authProvider = authProvider
+        self.options = options
+    }
+#else
+    public init(authProvider: AuthProvider? = nil, options: Options) {
         self.authProvider = authProvider
         self.options = options
     }
