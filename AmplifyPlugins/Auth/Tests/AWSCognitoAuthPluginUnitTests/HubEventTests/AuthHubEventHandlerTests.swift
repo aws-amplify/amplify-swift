@@ -164,7 +164,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         await waitForExpectations(timeout: networkTimeout)
     }
 
-#if !os(tvOS)
+#if os(iOS) || os(macOS)
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
     /// - Given: A listener to hub events
@@ -484,15 +484,11 @@ class AuthHubEventHandlerTests: XCTestCase {
             analyticsHandler: MockAnalyticsHandler())
     }
     
-#if !os(tvOS)
+#if os(iOS) || os(macOS)
     private func signInWithWebUI() async throws {
-#if os(watchOS)
-        _ = try await plugin.signInWithWebUI(for: .amazon,  options: nil)
-#else
         _ = try await plugin.signInWithWebUI(for: .amazon,
                                              presentationAnchor: AuthUIPresentationAnchor(),
                                              options: nil)
-#endif
     }
 #endif
 

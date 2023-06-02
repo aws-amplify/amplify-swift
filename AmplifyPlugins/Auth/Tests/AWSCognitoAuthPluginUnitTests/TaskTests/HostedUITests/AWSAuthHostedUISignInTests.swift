@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if !os(tvOS)
+#if os(iOS) || os(macOS)
 
 import Foundation
 
@@ -279,15 +279,11 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             XCTFail("Received failure with error \(error)")
         }
     }
-    
+
     private func signInWithWebUI() async throws -> AuthSignInResult {
-#if os(watchOS)
-        try await plugin.signInWithWebUI(for: .amazon,  options: nil)
-#else
         try await plugin.signInWithWebUI(for: .amazon,
                                          presentationAnchor: AuthUIPresentationAnchor(),
                                          options: nil)
-#endif
     }
 }
 
