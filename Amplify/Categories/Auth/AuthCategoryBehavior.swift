@@ -8,7 +8,7 @@
 import Foundation
 import AuthenticationServices
 
-#if !os(watchOS)
+#if os(iOS) || os(macOS)
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #endif
 
@@ -60,29 +60,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 password: String?,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
-#if os(watchOS)
-    /// SignIn using pre configured web UI.
-    ///
-    /// Calling this method will always launch the Auth plugin's default web user interface
-    ///
-    /// - Parameters:
-    ///   - presentationAnchor: Anchor on which the UI is presented.
-    ///   - options: Parameters specific to plugin behavior.
-    func signInWithWebUI(options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
-
-    /// SignIn using an auth provider on a web UI
-    ///
-    /// Calling this method will invoke the AuthProvider's default web user interface. Depending on the plugin
-    /// implementation and the authentication state with the provider, this method might complete without showing
-    /// any UI.
-    ///
-    /// - Parameters:
-    ///   - authProvider: Auth provider used to signIn.
-    ///   - presentationAnchor: Anchor on which the UI is presented.
-    ///   - options: Parameters specific to plugin behavior.
-    func signInWithWebUI(for authProvider: AuthProvider,
-                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
-#elseif !os(tvOS)
+#if os(iOS) || os(macOS)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface

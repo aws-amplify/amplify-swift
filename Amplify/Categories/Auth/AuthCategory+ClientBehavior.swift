@@ -29,18 +29,7 @@ extension AuthCategory: AuthCategoryBehavior {
         return try await plugin.signIn(username: username, password: password, options: options)
     }
 
-#if os(watchOS)
-    public func signInWithWebUI(
-        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
-            return try await plugin.signInWithWebUI(options: options)
-        }
-
-    public func signInWithWebUI(
-        for authProvider: AuthProvider,
-        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
-        return try await plugin.signInWithWebUI(for: authProvider, options: options)
-    }
-#elseif !os(tvOS)
+#if os(iOS) || os(macOS)
     public func signInWithWebUI(
         presentationAnchor: AuthUIPresentationAnchor? = nil,
         options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
