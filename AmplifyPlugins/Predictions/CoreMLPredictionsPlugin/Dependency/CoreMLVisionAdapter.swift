@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Vision)
 import Amplify
 import Vision
 
@@ -130,3 +131,4 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             .compactMap { $0 }
     }
 }
+#endif
