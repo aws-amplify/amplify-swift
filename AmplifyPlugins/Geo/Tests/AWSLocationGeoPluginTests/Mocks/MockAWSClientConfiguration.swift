@@ -35,7 +35,7 @@ class MockAWSClientConfiguration: LocationClientConfigurationProtocol {
 
     var endpoint: String?
 
-    var credentialsProvider: CredentialsProvider
+    var credentialsProvider: CredentialsProviding
 
     var region: String?
 

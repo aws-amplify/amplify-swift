@@ -8,7 +8,7 @@
 import AWSClientRuntime
 import Foundation
 
-class MockCredentialsProvider: CredentialsProvider {
+class MockCredentialsProvider: CredentialsProviding {
     func getCredentials() async throws -> AWSCredentials {
         return AWSCredentials(
             accessKey: "accessKey",

@@ -10,11 +10,11 @@ import AWSPluginsCore
 import AWSPinpoint
 
 extension PinpointClient {
-    convenience init(region: String, credentialsProvider: CredentialsProvider) throws {
+    convenience init(region: String, credentialsProvider: CredentialsProviding) throws {
         let configuration = try PinpointClientConfiguration(
+            region: region,
             credentialsProvider: credentialsProvider,
-            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-            region: region
+            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
         )
         PinpointRequestsRegistry.shared.setCustomHttpEngine(on: configuration)
         self.init(config: configuration)

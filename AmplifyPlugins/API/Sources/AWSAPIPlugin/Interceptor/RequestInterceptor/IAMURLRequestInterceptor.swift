@@ -47,7 +47,7 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         let requestBuilder = SdkHttpRequestBuilder()
             .withHost(host)
             .withPath(url.path)
-            .withQueryItems(queryItems)
+            .withQueryItems(queryItems.map { MyURLQueryItem(name: $0.name, value: $0.value)})
             .withMethod(httpMethod)
             .withPort(443)
             .withProtocol(.https)

@@ -30,36 +30,36 @@ class AWSPredictionsService {
 
     convenience init(
         configuration: PredictionsPluginConfiguration,
-        credentialsProvider: CredentialsProvider,
+        credentialsProvider: CredentialsProviding,
         identifier: String
     ) throws {
         let translateClientConfiguration = try TranslateClient.TranslateClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
         let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
         let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
         let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.identify.region
+            region: configuration.identify.region,
+            credentialsProvider: credentialsProvider
         )
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
         let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.identify.region
+            region: configuration.identify.region,
+            credentialsProvider: credentialsProvider
         )
         let awsTextractClient = TextractClient(config: textractClientConfiguration)
 
