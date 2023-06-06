@@ -11,7 +11,7 @@ import Amplify
 /// Decorate the GraphQLDocument with the value of `ModelIdentifier` for a "delete" mutation or "get" query.
 public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
     /// Array of model fields and their stringified value
-    private var identifierFields: [(name: String, value: String, type: String)] = [(name: String, value: String, type: String)]()
+    private var identifierFields = [(name: String, value: GraphQLDocumentValueRepresentable, type: String)]()
 
     public init(model: Model, schema: ModelSchema) {
         
@@ -33,7 +33,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
     public init(identifierFields: [(name: String, value: Persistable)]) {
         var firstField = true
         identifierFields.forEach { name, value in
-            self.identifierFields.append((name: name, value: "\(value)", type: firstField == true ? "ID!" : "String!"))
+            self.identifierFields.append((name: name, value: Self.convert(persistable: value), type: firstField == true ? "ID!" : "String!"))
             firstField = false
         }
     }
@@ -76,17 +76,35 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         if case .mutation = document.operationType {
             var inputMap = [String: String]()
             for (name, value, _) in identifierFields {
-                inputMap[name] = value
+                inputMap[name] = value.graphQLDocumentValue
             }
             inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
                                                    value: .object(inputMap))
 
         } else if case .query = document.operationType {
             for (name, value, type) in identifierFields {
-                inputs[name] = GraphQLDocumentInput(type: type, value: .scalar(value))
+                inputs[name] = GraphQLDocumentInput(
+                    type: type,
+                    value: identifierFields.count > 1 ? .inline(value) : .scalar(value)
+                )
             }
         }
 
         return document.copy(inputs: inputs)
+    }
+}
+
+fileprivate extension ModelIdDecorator {
+    private static func convert(persistable: Persistable) -> GraphQLDocumentValueRepresentable {
+        switch persistable {
+        case let data as Double:
+            return data
+        case let data as Int:
+            return data
+        case let data as Bool:
+            return data
+        default:
+            return "\(persistable)"
+        }
     }
 }

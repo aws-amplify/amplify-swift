@@ -203,7 +203,19 @@ type Comment8 @model {
   postTitle: String # customized foreign key for parent sort key
 }
 
-# CLI.9. Many To Many
+# CLI.9. CPK sortKey in ID type
+
+type Post9 @model {
+  postId: ID! @primaryKey
+  title: String
+  comments: [Comment9]! @hasMany(indexName: "byPost9", fields: ["postId"])
+}
+
+type Comment9 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["postId"])
+  postId: ID! @index(name: "byPost9")
+  content: String
+}
 
 #type Post9 @model {
 #    customPostId: ID! @primaryKey(sortKeyFields: ["title"])
@@ -239,3 +251,16 @@ type Comment4V2 @model @auth(rules: [{allow: public}]) {
   content: String!
   post: Post4V2 @belongsTo(fields: ["postID"])
 }
+
+# CLI.11
+type Post11 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: Int!
+}
+
+# CLI.12
+type Post12 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: Float!
+}
+

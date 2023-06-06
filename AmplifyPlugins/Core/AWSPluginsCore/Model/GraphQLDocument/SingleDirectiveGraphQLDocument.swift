@@ -74,6 +74,8 @@ extension SingleDirectiveGraphQLDocument {
                 variables.updateValue(values, forKey: input.key)
             case .scalar(let value):
                 variables.updateValue(value, forKey: input.key)
+            case .inline:
+                break
             }
 
         }
@@ -95,13 +97,22 @@ extension SingleDirectiveGraphQLDocument {
             }
             """
         }
+
         let sortedInputs = inputs.sorted { $0.0 < $1.0 }
-        let inputTypes = sortedInputs.map { "$\($0.key): \($0.value.type)" }.joined(separator: ", ")
-        let inputParameters = sortedInputs.map { "\($0.key): $\($0.key)" }.joined(separator: ", ")
+        let variableInputs = sortedInputs.filter { !$0.value.value.isInline() }
+        let inlineInputs = sortedInputs.filter { $0.value.value.isInline() }
+        let variableInputTypes = variableInputs.map { "$\($0.key): \($0.value.type)" }.joined(separator: ", ")
+
+        var inputParameters = variableInputs.map { ($0.key, "$\($0.key)") }
+        for input in inlineInputs {
+            if case .inline(let doucument)  = input.value.value {
+                inputParameters.append((input.key, doucument.graphQLInlineValue))
+            }
+        }
 
         return """
-        \(operationType.rawValue) \(name.pascalCased())(\(inputTypes)) {
-          \(name)(\(inputParameters)) {
+        \(operationType.rawValue) \(name.pascalCased())\(variableInputTypes.isEmpty ? "" : "(\(variableInputTypes))") {
+          \(name)(\(inputParameters.map({ "\($0.0): \($0.1)"}).joined(separator: ", "))) {
         \(selectionSetString)
           }
         }
