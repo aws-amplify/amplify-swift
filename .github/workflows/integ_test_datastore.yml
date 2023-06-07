@@ -57,7 +57,6 @@ jobs:
     secrets: inherit
 
   datastore-transformer-v2-test:
-    if: ${{ false }}
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_v2.yml
     secrets: inherit

@@ -242,7 +242,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
 
     func testQueryAllPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         let queriedPosts = try await Amplify.DataStore.query(Post8.self)
         XCTAssertTrue(!queriedPosts.isEmpty)
     }
@@ -255,13 +255,13 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             commentToSave = Comment8(content: "content", post: post)
         }
 
-        let waitForSync = asyncExpectation(description: "synced")
+        let waitForSync = expectation(description: "synced")
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
             case .syncReceived(let mutationEvent):
                 if mutationEvent.modelId == commentToSave.id {
-                    Task { await waitForSync.fulfill() }
+                    waitForSync.fulfill()
                     if let token = self.token {
                         Amplify.Hub.removeListener(token)
                     }
@@ -271,7 +271,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedComment = try await Amplify.DataStore.save(commentToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
         return savedComment
     }
 
@@ -283,13 +283,13 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             postToSave = Post8(name: "name", randomId: "randomId", blog: blog)
         }
 
-        let waitForSync = asyncExpectation(description: "synced")
+        let waitForSync = expectation(description: "synced")
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
             case .syncReceived(let mutationEvent):
                 if mutationEvent.modelId == postToSave.id {
-                    Task { await waitForSync.fulfill() }
+                    waitForSync.fulfill()
                     if let token = self.token {
                         Amplify.Hub.removeListener(token)
                     }
@@ -299,7 +299,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedPost = try await Amplify.DataStore.save(postToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
         return savedPost
     }
 
@@ -318,13 +318,13 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             blogToSave = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
         }
 
-        let waitForSync = asyncExpectation(description: "synced")
+        let waitForSync = expectation(description: "synced")
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
             case .syncReceived(let mutationEvent):
                 if mutationEvent.modelId == blogToSave.id {
-                    Task { await waitForSync.fulfill() }
+                    waitForSync.fulfill()
                     if let token = self.token {
                         Amplify.Hub.removeListener(token)
                     }
@@ -335,7 +335,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedBlog = try await Amplify.DataStore.save(blogToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [waitForSync], timeout: TestCommonConstants.networkTimeout)
         return savedBlog
     }
 
