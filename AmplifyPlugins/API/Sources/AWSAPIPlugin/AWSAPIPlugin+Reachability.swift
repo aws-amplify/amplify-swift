@@ -24,23 +24,21 @@ extension AWSAPIPlugin {
             )
             throw error
         }
-        
-        fatalError("not implemented")
 
-//        return reachabilityMapLock.execute {
-//            if let networkReachability = reachabilityMap[hostName] {
-//                return networkReachability.publisher
-//            }
-//            do {
-//                let networkReachability = try NetworkReachabilityNotifier(host: hostName,
-//                                                                          allowsCellularAccess: true,
-//                                                                          reachabilityFactory: AmplifyReachability.self)
-//                reachabilityMap[hostName] = networkReachability
-//                return networkReachability.publisher
-//            } catch {
-//                Amplify.API.log.error("Unable to initialize NetworkReachabilityNotifier: \(error)")
-//                return nil
-//            }
-//        }
+        return reachabilityMapLock.execute {
+            if let networkReachability = reachabilityMap[hostName] {
+                return networkReachability.publisher
+            }
+            do {
+                let networkReachability = try NetworkReachabilityNotifier(host: hostName,
+                                                                          allowsCellularAccess: true,
+                                                                          reachabilityFactory: AmplifyReachability.self)
+                reachabilityMap[hostName] = networkReachability
+                return networkReachability.publisher
+            } catch {
+                Amplify.API.log.error("Unable to initialize NetworkReachabilityNotifier: \(error)")
+                return nil
+            }
+        }
     }
 }
