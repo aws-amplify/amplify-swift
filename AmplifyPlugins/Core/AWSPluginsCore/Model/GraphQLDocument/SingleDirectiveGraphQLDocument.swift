@@ -105,8 +105,8 @@ extension SingleDirectiveGraphQLDocument {
 
         var inputParameters = variableInputs.map { ($0.key, "$\($0.key)") }
         for input in inlineInputs {
-            if case .inline(let doucument)  = input.value.value {
-                inputParameters.append((input.key, doucument.graphQLInlineValue))
+            if case .inline(let document)  = input.value.value {
+                inputParameters.append((input.key, document.graphQLInlineValue))
             }
         }
 
