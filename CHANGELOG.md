@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.11.6 (2023-06-07)
+
+### Bug Fixes
+
+- predictions plugin public init (#3011)
+
 ## 2.11.5 (2023-05-25)
 
 ### Bug Fixes
