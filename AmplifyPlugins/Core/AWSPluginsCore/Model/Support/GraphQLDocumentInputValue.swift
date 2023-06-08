@@ -76,13 +76,3 @@ extension Double: GraphQLDocumentValueRepresentable {
         return "\(self)"
     }
 }
-
-extension Float: GraphQLDocumentValueRepresentable {
-    public var graphQLDocumentValue: String {
-        return "\(self)"
-    }
-
-    public var graphQLInlineValue: String {
-        return "\(self)"
-    }
-}
