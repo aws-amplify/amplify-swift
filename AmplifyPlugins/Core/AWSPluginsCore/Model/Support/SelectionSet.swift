@@ -18,40 +18,59 @@ public enum SelectionSetFieldType {
 }
 
 public class SelectionSetField {
+
+    static var typename: SelectionSetField {
+        .init(name: "__typename", fieldType: .value)
+    }
+
     var name: String?
     var fieldType: SelectionSetFieldType
+
     public init(name: String? = nil, fieldType: SelectionSetFieldType) {
         self.name = name
         self.fieldType = fieldType
     }
+
 }
 
 extension SelectionSet {
 
     /// Construct a `SelectionSet` with model fields
-    convenience init(fields: [ModelField]) {
+    convenience init(fields: [ModelField], primaryKeysOnly: Bool = false) {
         self.init(value: SelectionSetField(fieldType: .model))
-        withModelFields(fields)
+        withModelFields(fields, primaryKeysOnly: primaryKeysOnly)
     }
 
-    func withModelFields(_ fields: [ModelField]) {
+    func withModelFields(_ fields: [ModelField], recursive: Bool = true, primaryKeysOnly: Bool) {
         fields.forEach { field in
             if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
                 child.withEmbeddableFields(embeddedTypeSchema.sortedFields)
                 self.addChild(settingParentOf: child)
-            } else if field.isAssociationOwner,
-                let associatedModelName = field.associatedModelName,
-                let schema = ModelRegistry.modelSchema(from: associatedModelName) {
-                let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
-                child.withModelFields(schema.graphQLFields)
-                self.addChild(settingParentOf: child)
+            } else if field._isBelongsToOrHasOne,
+                      let associatedModelName = field.associatedModelName,
+                      let schema = ModelRegistry.modelSchema(from: associatedModelName) {
+                if recursive {
+                    var recursive = recursive
+                    if field._isBelongsToOrHasOne {
+                        recursive = false
+                    }
+
+                    let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
+                    if primaryKeysOnly {
+                        child.withModelFields(schema.primaryKey.fields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
+                    } else {
+                        child.withModelFields(schema.graphQLFields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
+                    }
+
+                    self.addChild(settingParentOf: child)
+                }
             } else {
                 self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
             }
         }
 
-        addChild(settingParentOf: .init(value: .init(name: "__typename", fieldType: .value)))
+        addChild(settingParentOf: .init(value: .typename))
     }
 
     func withEmbeddableFields(_ fields: [ModelField]) {
@@ -64,7 +83,7 @@ extension SelectionSet {
                 self.addChild(settingParentOf: .init(value: .init(name: field.name, fieldType: .value)))
             }
         }
-        addChild(settingParentOf: .init(value: .init(name: "__typename", fieldType: .value)))
+        addChild(settingParentOf: .init(value: .typename))
     }
 
     /// Generate the string value of the `SelectionSet` used in the GraphQL query document
@@ -85,7 +104,8 @@ extension SelectionSet {
     /// ```
     func stringValue(indentSize: Int = 0) -> String {
         var result = [String]()
-        let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
+        let indentValue = "  "
+        let indent = indentSize == 0 ? "" : String(repeating: indentValue, count: indentSize)
 
         switch value.fieldType {
         case .model, .pagination, .embedded:
@@ -107,6 +127,6 @@ extension SelectionSet {
             result.append(indent + name)
         }
 
-        return result.joined(separator: "\n    ")
+        return result.joined(separator: "\n")
     }
 }
