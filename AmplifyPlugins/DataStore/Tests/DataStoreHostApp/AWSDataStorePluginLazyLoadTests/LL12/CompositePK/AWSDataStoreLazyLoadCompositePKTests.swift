@@ -41,6 +41,6 @@ extension AWSDataStoreLazyLoadCompositePKTests {
     
     func initParent() -> CompositePKParent {
         CompositePKParent(customId: UUID().uuidString,
-                          content: "content")
+                          content: UUID().uuidString)
     }
 }

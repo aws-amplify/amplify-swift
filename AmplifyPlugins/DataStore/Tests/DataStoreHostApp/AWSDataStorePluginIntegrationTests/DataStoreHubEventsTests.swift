@@ -41,6 +41,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         try configureAmplify(withModels: TestModelRegistration())
         try await Amplify.DataStore.clear()
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
 
         let networkStatusReceived = expectation(description: "networkStatus received")
         var networkStatusActive = false

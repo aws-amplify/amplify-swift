@@ -17,7 +17,7 @@ extension AWSDataStoreLazyLoadCompositePKTests {
     // MARK: - CompositePKParent / ImplicitChild
     
     func initImplicitChild(with parent: CompositePKParent) -> ImplicitChild {
-        ImplicitChild(childId: UUID().uuidString, content: "content", parent: parent)
+        ImplicitChild(childId: UUID().uuidString, content: UUID().uuidString, parent: parent)
     }
     
     func testSaveImplicitChild() async throws {
