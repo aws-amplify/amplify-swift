@@ -34,7 +34,10 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
     func setup(withModels models: AmplifyModelRegistration) {
         do {
             loadAmplifyConfig()
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: .custom(syncMaxRecords: 100)
+            ))
 
             try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
 
