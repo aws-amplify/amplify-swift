@@ -8,7 +8,7 @@ $AMPLIFY_RELEASE_TAG = "#{$AMPLIFY_VERSION}"
 
 # AWS SDK version
 # http://guides.cocoapods.org/using/the-podfile.html#specifying-pod-versions
-$AWS_SDK_VERSION = '2.32.0'
+$AWS_SDK_VERSION = '2.33.0'
 $OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 
 # Include common tooling
