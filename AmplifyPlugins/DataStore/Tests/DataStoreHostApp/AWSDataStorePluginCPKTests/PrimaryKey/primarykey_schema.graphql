@@ -264,3 +264,20 @@ type Post12 @model {
   sk: Float!
 }
 
+# CLI.13
+type Post13 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: AWSDateTime!
+}
+
+# CLI.14
+type Post14 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: AWSDate!
+}
+
+# CLI.15
+type Post15 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: AWSTime!
+}
