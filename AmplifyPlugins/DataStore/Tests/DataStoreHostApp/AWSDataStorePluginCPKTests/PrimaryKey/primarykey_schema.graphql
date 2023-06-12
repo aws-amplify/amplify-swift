@@ -281,3 +281,33 @@ type Post15 @model {
   postId: ID! @primaryKey(sortKeyFields: ["sk"])
   sk: AWSTime!
 }
+
+# CLI.16
+type Post16 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSURL!
+}
+
+# CLI.17
+type Post17 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSEmail!
+}
+
+# CLI.18
+type Post18 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSPhone!
+}
+
+# CLI.19
+type Post19 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSIPAddress!
+}
+
+# CLI.20
+type Post20 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSTimestamp!
+}
