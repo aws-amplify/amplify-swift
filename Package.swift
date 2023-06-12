@@ -13,7 +13,7 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.0.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.13.2"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
-    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.0.0")
+    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", branch: "feat/tvOS-and-watchOS")
 ]
 
 let amplifyTargets: [Target] = [
