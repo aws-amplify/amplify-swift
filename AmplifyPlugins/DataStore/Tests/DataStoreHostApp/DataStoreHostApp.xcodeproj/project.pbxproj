@@ -559,6 +559,15 @@
 		60C9C32F2A2FBC1F00ADDB85 /* Post9.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C9C32B2A2FBC1F00ADDB85 /* Post9.swift */; };
 		60C9C3302A2FBC1F00ADDB85 /* Comment9+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C9C32C2A2FBC1F00ADDB85 /* Comment9+Schema.swift */; };
 		60C9C3312A2FBC1F00ADDB85 /* Comment9.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C9C32D2A2FBC1F00ADDB85 /* Comment9.swift */; };
+		60E4653F2A33C8440065F99B /* AWSDataStoreDateTimeSortKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E4653E2A33C8440065F99B /* AWSDataStoreDateTimeSortKeyTest.swift */; };
+		60E4654F2A33CE830065F99B /* AWSDataStoreDateSortKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E4654E2A33CE830065F99B /* AWSDataStoreDateSortKeyTest.swift */; };
+		60E465512A33CF170065F99B /* AWSDataStoreTimeSortKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E465502A33CF170065F99B /* AWSDataStoreTimeSortKeyTest.swift */; };
+		60E465542A33D3E70065F99B /* Post13+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E465522A33D3E70065F99B /* Post13+Schema.swift */; };
+		60E465552A33D3E70065F99B /* Post13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E465532A33D3E70065F99B /* Post13.swift */; };
+		60E465582A33D3FC0065F99B /* Post14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E465562A33D3FC0065F99B /* Post14.swift */; };
+		60E465592A33D3FC0065F99B /* Post14+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E465572A33D3FC0065F99B /* Post14+Schema.swift */; };
+		60E4655C2A33D4020065F99B /* Post15+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E4655A2A33D4020065F99B /* Post15+Schema.swift */; };
+		60E4655D2A33D4020065F99B /* Post15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E4655B2A33D4020065F99B /* Post15.swift */; };
 		681DFE8328E746C10000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
 		681DFE8428E746C10000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
 		681DFE8528E746C10000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -1343,6 +1352,15 @@
 		60C9C32C2A2FBC1F00ADDB85 /* Comment9+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment9+Schema.swift"; sourceTree = "<group>"; };
 		60C9C32D2A2FBC1F00ADDB85 /* Comment9.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment9.swift; sourceTree = "<group>"; };
 		60CB6B3E2A1454F90051BAD2 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
+		60E4653E2A33C8440065F99B /* AWSDataStoreDateTimeSortKeyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreDateTimeSortKeyTest.swift; sourceTree = "<group>"; };
+		60E4654E2A33CE830065F99B /* AWSDataStoreDateSortKeyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreDateSortKeyTest.swift; sourceTree = "<group>"; };
+		60E465502A33CF170065F99B /* AWSDataStoreTimeSortKeyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreTimeSortKeyTest.swift; sourceTree = "<group>"; };
+		60E465522A33D3E70065F99B /* Post13+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post13+Schema.swift"; sourceTree = "<group>"; };
+		60E465532A33D3E70065F99B /* Post13.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post13.swift; sourceTree = "<group>"; };
+		60E465562A33D3FC0065F99B /* Post14.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post14.swift; sourceTree = "<group>"; };
+		60E465572A33D3FC0065F99B /* Post14+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post14+Schema.swift"; sourceTree = "<group>"; };
+		60E4655A2A33D4020065F99B /* Post15+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post15+Schema.swift"; sourceTree = "<group>"; };
+		60E4655B2A33D4020065F99B /* Post15.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post15.swift; sourceTree = "<group>"; };
 		681DFE8028E746C10000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE8128E746C10000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
@@ -1995,6 +2013,9 @@
 				21BC10C8296DDB2B000E189E /* 10 */,
 				601E37442A3109C900E08FCA /* 11 */,
 				601E37452A3109D000E08FCA /* 12 */,
+				60E4653D2A33C80B0065F99B /* 13 */,
+				60E465442A33CD110065F99B /* 14 */,
+				60E465452A33CD150065F99B /* 15 */,
 				21977D84289C1633005B49D6 /* primarykey_schema.graphql */,
 				21BBFA12289BFE3400B32A39 /* README.md */,
 				21BBFA13289BFE3400B32A39 /* AWSDataStorePrimaryKeyTests.swift */,
@@ -2766,6 +2787,36 @@
 				60C9C3202A2E948F00ADDB85 /* AWSDataStoreCompositeSortKeyIdentifierTest.swift */,
 			);
 			path = 9;
+			sourceTree = "<group>";
+		};
+		60E4653D2A33C80B0065F99B /* 13 */ = {
+			isa = PBXGroup;
+			children = (
+				60E465532A33D3E70065F99B /* Post13.swift */,
+				60E465522A33D3E70065F99B /* Post13+Schema.swift */,
+				60E4653E2A33C8440065F99B /* AWSDataStoreDateTimeSortKeyTest.swift */,
+			);
+			path = 13;
+			sourceTree = "<group>";
+		};
+		60E465442A33CD110065F99B /* 14 */ = {
+			isa = PBXGroup;
+			children = (
+				60E465562A33D3FC0065F99B /* Post14.swift */,
+				60E465572A33D3FC0065F99B /* Post14+Schema.swift */,
+				60E4654E2A33CE830065F99B /* AWSDataStoreDateSortKeyTest.swift */,
+			);
+			path = 14;
+			sourceTree = "<group>";
+		};
+		60E465452A33CD150065F99B /* 15 */ = {
+			isa = PBXGroup;
+			children = (
+				60E4655B2A33D4020065F99B /* Post15.swift */,
+				60E4655A2A33D4020065F99B /* Post15+Schema.swift */,
+				60E465502A33CF170065F99B /* AWSDataStoreTimeSortKeyTest.swift */,
+			);
+			path = 15;
 			sourceTree = "<group>";
 		};
 		681DFE7F28E746C10000C36A /* AsyncTesting */ = {
@@ -4125,7 +4176,9 @@
 				60C9C32E2A2FBC1F00ADDB85 /* Post9+Schema.swift in Sources */,
 				211F5094296DD4C30040EB62 /* AWSDataStorePrimaryKeyPostCommentCompositeKeyTest.swift in Sources */,
 				213DBBD128A5743600B30280 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				60E4655C2A33D4020065F99B /* Post15+Schema.swift in Sources */,
 				213DBBAA28A5743600B30280 /* ModelCompositePk+Schema.swift in Sources */,
+				60E465552A33D3E70065F99B /* Post13.swift in Sources */,
 				60C9C3312A2FBC1F00ADDB85 /* Comment9.swift in Sources */,
 				213DBBA128A5743600B30280 /* Project2+Schema.swift in Sources */,
 				213DBBAC28A5743600B30280 /* ModelCustomPkDefined+Schema.swift in Sources */,
@@ -4153,13 +4206,16 @@
 				213DBB9F28A5743600B30280 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */,
 				601E37512A310A5700E08FCA /* AWSDataStoreFloatSortKeyTest.swift in Sources */,
+				60E465512A33CF170065F99B /* AWSDataStoreTimeSortKeyTest.swift in Sources */,
 				213DBB9C28A5743600B30280 /* ModelImplicitDefaultPk+Schema.swift in Sources */,
 				213DBBC428A5743600B30280 /* Comment8.swift in Sources */,
 				213DBBA628A5743600B30280 /* Project6.swift in Sources */,
+				60E465592A33D3FC0065F99B /* Post14+Schema.swift in Sources */,
 				213DBBC328A5743600B30280 /* PostWithCompositeKey.swift in Sources */,
 				213DBBAF28A5743600B30280 /* PostWithCompositeKey+Schema.swift in Sources */,
 				213DBBC128A5743600B30280 /* ModelCompositePkWithAssociation.swift in Sources */,
 				213DBBC728A5743600B30280 /* Post8+Schema.swift in Sources */,
+				60E4655D2A33D4020065F99B /* Post15.swift in Sources */,
 				213DBBCB28A5743600B30280 /* Post7.swift in Sources */,
 				21BC10CE296DDB4B000E189E /* Comment4V2.swift in Sources */,
 				21BC10CF296DDB4B000E189E /* Post4V2.swift in Sources */,
@@ -4176,7 +4232,9 @@
 				213DBBCA28A5743600B30280 /* ModelCompositePk.swift in Sources */,
 				213DBBB628A5743600B30280 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */,
 				213DBBA228A5743600B30280 /* Post4+Schema.swift in Sources */,
+				60E465542A33D3E70065F99B /* Post13+Schema.swift in Sources */,
 				213DBBC028A5743600B30280 /* Comment7+Schema.swift in Sources */,
+				60E4653F2A33C8440065F99B /* AWSDataStoreDateTimeSortKeyTest.swift in Sources */,
 				21BC10D0296DDB4B000E189E /* Post4V2+Schema.swift in Sources */,
 				213DBBB528A5743600B30280 /* Comment4.swift in Sources */,
 				213DBBCE28A5743600B30280 /* ModelExplicitCustomPk.swift in Sources */,
@@ -4188,10 +4246,12 @@
 				213DBBC528A5743600B30280 /* TagWithCompositeKey.swift in Sources */,
 				601E374D2A310A0500E08FCA /* Post12.swift in Sources */,
 				213DBBA928A5743600B30280 /* PostWithCompositeKeyAndIndex.swift in Sources */,
+				60E465582A33D3FC0065F99B /* Post14.swift in Sources */,
 				21BC10CD296DDB4B000E189E /* Comment4V2+Schema.swift in Sources */,
 				213DBBBF28A5743600B30280 /* Post4.swift in Sources */,
 				21BBFC23289C03E900B32A39 /* AWSDataStorePrimaryKeyTests.swift in Sources */,
 				601E37482A3109FE00E08FCA /* Post11.swift in Sources */,
+				60E4654F2A33CE830065F99B /* AWSDataStoreDateSortKeyTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -103,6 +103,12 @@ fileprivate extension ModelIdDecorator {
             return data
         case let data as Bool:
             return data
+        case let data as Temporal.DateTime:
+            return data.iso8601String
+        case let data as Temporal.Date:
+            return data.iso8601String
+        case let data as Temporal.Time:
+            return data.iso8601String
         default:
             return "\(persistable)"
         }
