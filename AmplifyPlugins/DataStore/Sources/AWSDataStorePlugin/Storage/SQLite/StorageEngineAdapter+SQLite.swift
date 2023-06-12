@@ -537,7 +537,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 /// - Returns: the path to the user document directory.
 private func getDocumentPath() -> URL? {
     let directory: FileManager.SearchPathDirectory
-#if os(watchOS)
+#if os(watchOS) || os(tvOS)
     directory = .applicationSupportDirectory
 #else
     directory = .documentDirectory
