@@ -6,70 +6,34 @@
 //
 
 /** Model Schema
-type Post14 @model {
-  postId: ID! @primaryKey(sortKeyFields: ["sk"])
-  sk: AWSDate!
+type Post17 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSEmail!
 }
 */
+
 
 import Foundation
 import Combine
 import XCTest
-import AWSAPIPlugin
-import AWSDataStorePlugin
-
 @testable import Amplify
-@testable import DataStoreHostApp
 
 fileprivate struct TestModels: AmplifyModelRegistration {
     func registerModels(registry: ModelRegistry.Type) {
-        ModelRegistry.register(modelType: Post14.self)
+        ModelRegistry.register(modelType: Post17.self)
     }
 
-    var version: String = "test"
+    public let version: String = "test"
 }
 
-class AWSDataStoreDateSortKeyTest: XCTestCase {
-    let configFile = "testconfiguration/AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration"
 
-    override func setUp() async throws {
-        continueAfterFailure = true
-        let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFile)
-        try Amplify.add(plugin: AWSAPIPlugin(
-            sessionFactory: AmplifyURLSessionFactory())
-        )
-        try Amplify.add(plugin: AWSDataStorePlugin(
-            modelRegistration: TestModels(),
-            configuration: .custom(syncMaxRecords: 100)
-        ))
-        Amplify.Logging.logLevel = .verbose
-        try Amplify.configure(config)
-    }
-
-    override func tearDown() async throws {
-        try await Amplify.DataStore.clear()
-        await Amplify.reset()
-        try await Task.sleep(seconds: 1)
-    }
-
-    func waitDataStoreReady() async throws {
-        let ready = expectation(description: "DataStore is ready")
-        var requests: Set<AnyCancellable> = []
-        Amplify.Hub.publisher(for: .dataStore)
-            .filter { $0.eventName == HubPayload.EventName.DataStore.ready }
-            .sink { _ in
-                ready.fulfill()
-            }
-            .store(in: &requests)
-
-        try await Amplify.DataStore.start()
-        await fulfillment(of: [ready], timeout: 60)
-    }
-
-    func testCreateModel_withSortKeyInAWSDateType_success() async throws {
+class AWSDataStoreAWSEmailSortKeyTest: AWSDataStoreSortKeyBaseTest {
+    func testCreateModel_withSortKeyInAWSEmailType_success() async throws {
+        try await setUp(models: TestModels())
         try await waitDataStoreReady()
         var requests: Set<AnyCancellable> = []
-        let post = Post14(postId: UUID().uuidString, sk: Temporal.Date.now())
+
+        let post = Post17(postId: UUID().uuidString, sk: "test@example.com")
         let postCreated = expectation(description: "Post is created")
         postCreated.assertForOverFulfill = false
         Amplify.Hub.publisher(for: .dataStore)
@@ -84,10 +48,12 @@ class AWSDataStoreDateSortKeyTest: XCTestCase {
         await fulfillment(of: [postCreated], timeout: 5)
     }
 
-    func testQueryCreatedModel_withSortKeyInAWSDateType_success() async throws {
+    func testQueryCreatedModel_withSortKeyInAWSEmailType_success() async throws {
+        try await setUp(models: TestModels())
         try await waitDataStoreReady()
         var requests: Set<AnyCancellable> = []
-        let post = Post14(postId: UUID().uuidString, sk: Temporal.Date.now())
+
+        let post = Post17(postId: UUID().uuidString, sk: "test@example.com")
         let postCreated = expectation(description: "Post is created")
         postCreated.assertForOverFulfill = false
         Amplify.Hub.publisher(for: .dataStore)
@@ -103,7 +69,7 @@ class AWSDataStoreDateSortKeyTest: XCTestCase {
 
         let queryResult = try await Amplify.API.query(
             request: .get(
-                Post14.self,
+                Post17.self,
                 byIdentifier: .identifier(postId: post.postId, sk: post.sk)
             )
         )
@@ -115,7 +81,4 @@ class AWSDataStoreDateSortKeyTest: XCTestCase {
             XCTFail("Failed to query comment \(error)")
         }
     }
-
 }
-
-

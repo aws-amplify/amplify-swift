@@ -5,6 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/** Model Schema
+type Post15 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: AWSTime!
+}
+*/
 
 import Foundation
 import Combine
