@@ -5,6 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/** Model Schema
+type Post19 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSIPAddress!
+}
+*/
+
 
 import Foundation
 import Combine

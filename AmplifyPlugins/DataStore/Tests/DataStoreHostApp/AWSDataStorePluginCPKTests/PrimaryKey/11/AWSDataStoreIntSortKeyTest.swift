@@ -5,6 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/** Model Schema
+type Post11 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: Int!
+}
+*/
 
 import Foundation
 import Combine

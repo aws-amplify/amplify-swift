@@ -5,6 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/** Model Schema
+type Post17 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSEmail!
+}
+*/
+
 
 import Foundation
 import Combine

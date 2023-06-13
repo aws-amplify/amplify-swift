@@ -5,6 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/** Model Schema
+type Post18 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSPhone!
+}
+*/
+
 
 import Foundation
 import Combine
