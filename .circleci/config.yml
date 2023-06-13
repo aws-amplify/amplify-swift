@@ -102,7 +102,14 @@ orbs:
 
 defaults: &defaults
   macos:
-    xcode: '14.3.1'
+    xcode: '14.0.0'
+  environment:
+    BUNDLE_JOBS: 4
+    BUNDLE_RETRY: 3
+
+defaults_tvOS_watchOS: &defaults
+  macos:
+    xcode: '14.3.0'
   resource_class: macos.x86.medium.gen2
   environment:
     BUNDLE_JOBS: 4
@@ -160,6 +167,9 @@ jobs:
           command: xcodebuild build -scheme Amplify-Package -sdk macosx -destination "<< pipeline.parameters.macos-destination >>" | tee "artifacts/build-Ampify-for-macos-SPM.log" | xcpretty
   build_amplify_tvos_spm:
     <<: *defaults
+    macos:
+      xcode: '14.3.0'
+    resource_class: macos.x86.medium.gen2
     steps:
       - shallow_checkout
       - make_artifacts_directory
@@ -168,6 +178,9 @@ jobs:
           command: xcodebuild build -scheme Amplify-Package -sdk appletvsimulator -destination "<< pipeline.parameters.tvos-destination >>" | tee "artifacts/build-Ampify-for-tvos-SPM.log" | xcpretty
   build_amplify_watchos_spm:
     <<: *defaults
+    macos:
+      xcode: '14.3.0'
+    resource_class: macos.x86.medium.gen2
     steps:
       - shallow_checkout
       - make_artifacts_directory
