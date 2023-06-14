@@ -36,6 +36,8 @@ struct LogEntryItem: Identifiable, Hashable {
             return "[warn]"
         case .info:
             return "[info]"
+        case .none:
+            return "[none]"
         }
     }
 
@@ -52,6 +54,8 @@ struct LogEntryItem: Identifiable, Hashable {
             return Color.yellow
         case .info:
             return Color.blue
+        case .none:
+            return Color.black
         }
     }
 }

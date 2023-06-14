@@ -27,6 +27,22 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
     public func logger(forCategory category: String) -> Logger {
         return plugin.logger(forCategory: category)
     }
+    
+    public func enable() {
+        plugin.enable()
+    }
+    
+    public func disable() {
+        plugin.disable()
+    }
+    
+    public func logger(forNamespace namespace: String) -> Logger {
+        plugin.logger(forNamespace: namespace)
+    }
+    
+    public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+        plugin.logger(forCategory: category, forNamespace: namespace)
+    }
 
     public func reset() async {
         persistentLogWrapper = nil

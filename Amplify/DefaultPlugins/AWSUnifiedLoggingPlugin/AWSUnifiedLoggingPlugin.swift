@@ -97,6 +97,28 @@ extension AWSUnifiedLoggingPlugin {
         wrapper.logLevel = logLevel
         return wrapper
     }
+    
+    public func enable() {
+        for (_, logger) in registeredLogs {
+            logger.enable = true
+        }
+    }
+    
+    public func disable() {
+        for (_, logger) in registeredLogs {
+            logger.enable = false
+        }
+    }
+    
+    public func logger(forNamespace namespace: String) -> Logger {
+        let wrapper = logWrapper(for: namespace)
+        return wrapper
+    }
+    
+    public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+        let wrapper = logWrapper(for: category + namespace)
+        return wrapper
+    }
 }
 
 extension AWSUnifiedLoggingPlugin: AmplifyVersionable { }

@@ -15,6 +15,15 @@ public protocol LoggingCategoryClientBehavior {
 
     /// Returns a category-specific logger. Defaults to using `Amplify.Logging.logLevel`.
     func logger(forCategory category: String) -> Logger
+    
+    /// enable plugin
+    func enable()
+    /// disable plugin
+    func disable()
+    /// adding namespace to match Android implementation
+    func logger(forNamespace namespace: String) -> Logger
+    /// new api to support category and namespace
+    func logger(forCategory category: String, forNamespace namespace: String) -> Logger
 }
 
 public protocol Logger {

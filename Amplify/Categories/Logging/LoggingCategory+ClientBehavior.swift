@@ -21,4 +21,20 @@ extension LoggingCategory: LoggingCategoryClientBehavior {
     public func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
         plugin.logger(forCategory: category, logLevel: logLevel)
     }
+    
+    public func enable() {
+        plugin.enable()
+    }
+    
+    public func disable() {
+        plugin.disable()
+    }
+    
+    public func logger(forNamespace namespace: String) -> Logger {
+        plugin.logger(forNamespace: namespace)
+    }
+    
+    public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+        plugin.logger(forCategory: category, forNamespace: namespace)
+    }
 }

@@ -164,6 +164,22 @@ class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger {
     var `default`: Logger {
         self
     }
+    
+    func enable() {
+        
+    }
+    
+    func disable() {
+        
+    }
+    
+    func logger(forNamespace namespace: String) -> Logger {
+        self
+    }
+    
+    func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+        self
+    }
 
     func logger(forCategory category: String) -> Logger {
         self
