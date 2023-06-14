@@ -2,8 +2,12 @@
 TEST_HOST[sdk=macosx*]           = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/Contents/MacOS/StorageHostApp
 TEST_HOST[sdk=iphoneos*]         = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
 TEST_HOST[sdk=iphonesimulator*]  = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
+TEST_HOST[sdk=appletvos*]         = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
+TEST_HOST[sdk=appletvsimulator*]  = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
 
 BUNDLE_LOADER[sdk=macosx*]           = $(TEST_HOST)
 BUNDLE_LOADER[sdk=iphoneos*]         = $(TEST_HOST)
 BUNDLE_LOADER[sdk=iphonesimulator*]  = $(TEST_HOST)
+BUNDLE_LOADER[sdk=appletvos*]  = $(TEST_HOST)
+BUNDLE_LOADER[sdk=appletvsimulator*]  = $(TEST_HOST)
 
