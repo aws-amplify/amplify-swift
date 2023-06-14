@@ -36,7 +36,7 @@ jobs:
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
           xcode_path: '/Applications/Xcode_14.3.app'
 
-    datastore-integration-cpk-test-tvOS:
+  datastore-integration-cpk-test-tvOS:
     timeout-minutes: 30
     runs-on: macos-13
     environment: IntegrationTest

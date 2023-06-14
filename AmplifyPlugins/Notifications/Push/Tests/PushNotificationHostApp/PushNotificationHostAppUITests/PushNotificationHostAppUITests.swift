@@ -26,7 +26,9 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+    #if os(iOS)
         XCUIDevice.shared.orientation = .portrait
+    #endif
         app.launch()
     }
 
@@ -90,6 +92,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         }
     }
 
+#if !os(tvOS)
     @MainActor
     func testAppInBackground_withPinpointRemoteNotification_recordNotificationOpened() async throws {
         initAmplify()
@@ -114,7 +117,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             deviceId: deviceIdentifier!
         ))
 
-        let notification = XCUIApplication.springboard.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+        let notification = XCUIApplication.homeScreen.otherElements.descendants(matching: .any)["NotificationShortLookView"]
         if notification.waitForExistence(timeout: timeout) {
             notification.tap()
         } else {
@@ -152,7 +155,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             deviceId: deviceIdentifier!
         ))
 
-        let notification = XCUIApplication.springboard.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+        let notification = XCUIApplication.homeScreen.otherElements.descendants(matching: .any)["NotificationShortLookView"]
         if notification.waitForExistence(timeout: timeout) {
             notification.tap()
         } else {
@@ -222,6 +225,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             XCTFail("Should not record notification without pinpoint info")
         }
     }
+#endif
 
     private func initAmplify() {
         let initAmplifyButton = app.buttons["Init Amplify"]
@@ -233,7 +237,11 @@ final class PushNotificationHostAppUITests: XCTestCase {
     }
 
     private func grantNotificationPermissionIfNeeded() {
-        let alert = XCUIApplication.springboard.alerts.firstMatch
+    #if os(iOS)
+        let alert = XCUIApplication.homeScreen.alerts.firstMatch
+    #elseif os(tvOS)
+        let alert = XCUIApplication.homeScreen.windows["PBDialogWindow"].firstMatch
+    #endif
         if alert.waitForExistence(timeout: timeout) {
             XCTAssertTrue(anyElementContains(text: "Would Like to Send You Notifications", scope: alert).exists)
             alert.buttons["Allow"].tap()
@@ -254,7 +262,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
     private func pressHomeButton() {
         XCUIDevice.shared.press(XCUIDevice.Button.home)
-        let springboard = XCUIApplication.springboard
+        let springboard = XCUIApplication.homeScreen
         springboard.activate()
 
         if !springboard.wait(for: .runningForeground, timeout: timeout) {
@@ -279,8 +287,45 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
 }
 
+#if os(tvOS)
+extension XCUIElement {
+    func tap() {
+        XCUIRemote.shared.select(self)
+    }
+}
+
+extension XCUIRemote {
+    func select(_ element: XCUIElement) {
+        let app = XCUIApplication()
+        var isEndReached = false
+        while !element.hasFocus {
+            let previousElement = app.focusedElement
+            press(isEndReached ? .up : .down)
+            if previousElement == app.focusedElement {
+                if isEndReached {
+                    XCTFail("Element \(element) was not found.")
+                    return
+                }
+                isEndReached = true
+            }
+        }
+        
+        print("Element \(element) was found and has been focused, pressing SELECT")
+        press(.select)
+    }
+}
+#endif
+
 extension XCUIApplication {
-    static var springboard: XCUIApplication {
+    static var homeScreen: XCUIApplication {
+    #if os(iOS)
         XCUIApplication(bundleIdentifier: "com.apple.springboard")
+    #elseif os(tvOS)
+        XCUIApplication(bundleIdentifier: "com.apple.PineBoard")
+    #endif
+    }
+    
+    var focusedElement: XCUIElement {
+        descendants(matching: .any).element(matching: NSPredicate(format: "hasFocus == true"))
     }
 }

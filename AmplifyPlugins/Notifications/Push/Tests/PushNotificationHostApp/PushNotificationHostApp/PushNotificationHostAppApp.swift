@@ -68,6 +68,7 @@ extension AppDelegate: UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+#if os(iOS)
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
@@ -80,5 +81,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             print(#function, "Failed to recordNotificationOpened event", error)
         }
     }
-
+#endif
 }
