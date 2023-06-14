@@ -536,13 +536,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 ///
 /// - Returns: the path to the user document directory.
 private func getDocumentPath() -> URL? {
-    let directory: FileManager.SearchPathDirectory
-#if os(watchOS) || os(tvOS)
-    directory = .applicationSupportDirectory
-#else
-    directory = .documentDirectory
-#endif
-    return FileManager.default.urls(for: directory, in: .userDomainMask).first
+    return try? FileManager.default.url(
+        for: .documentDirectory,
+        in: .userDomainMask,
+        appropriateFor: nil,
+        create: true
+    )
 }
 
 extension DataStoreError {
