@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "68DBE9352A3B69CE002B73E3"
-               BuildableName = "AnalyticsHostAppWatchApp.app"
-               BlueprintName = "AnalyticsHostAppWatchApp"
+               BuildableName = "AnalyticsWatchApp.app"
+               BlueprintName = "AnalyticsWatchApp"
                ReferencedContainer = "container:AnalyticsHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -55,8 +55,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68DBE9352A3B69CE002B73E3"
-            BuildableName = "AnalyticsHostAppWatchApp.app"
-            BlueprintName = "AnalyticsHostAppWatchApp"
+            BuildableName = "AnalyticsWatchApp.app"
+            BlueprintName = "AnalyticsWatchApp"
             ReferencedContainer = "container:AnalyticsHostApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -72,8 +72,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68DBE9352A3B69CE002B73E3"
-            BuildableName = "AnalyticsHostAppWatchApp.app"
-            BlueprintName = "AnalyticsHostAppWatchApp"
+            BuildableName = "AnalyticsWatchApp.app"
+            BlueprintName = "AnalyticsWatchApp"
             ReferencedContainer = "container:AnalyticsHostApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

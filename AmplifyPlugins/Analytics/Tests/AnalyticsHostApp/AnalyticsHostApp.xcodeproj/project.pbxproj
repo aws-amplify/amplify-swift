@@ -70,7 +70,7 @@
 		6857647628AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		6857648828AE9951000CE2E9 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
-		68DBE9362A3B69CE002B73E3 /* AnalyticsHostAppWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnalyticsHostAppWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		68DBE9362A3B69CE002B73E3 /* AnalyticsWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnalyticsWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68DBE9622A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9737697029519DEC0074B63A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		9737697129519DEC0074B63A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
@@ -146,7 +146,7 @@
 				6857645C28AE94D9000CE2E9 /* AnalyticsHostApp.app */,
 				6857647628AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */,
 				97914D2F29564227002000EA /* AnalyticsStressTests.xctest */,
-				68DBE9362A3B69CE002B73E3 /* AnalyticsHostAppWatchApp.app */,
+				68DBE9362A3B69CE002B73E3 /* AnalyticsWatchApp.app */,
 				68DBE9622A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch.xctest */,
 			);
 			name = Products;
@@ -250,9 +250,9 @@
 			productReference = 6857647628AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		68DBE9352A3B69CE002B73E3 /* AnalyticsHostAppWatchApp */ = {
+		68DBE9352A3B69CE002B73E3 /* AnalyticsWatchApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 68DBE9442A3B69D0002B73E3 /* Build configuration list for PBXNativeTarget "AnalyticsHostAppWatchApp" */;
+			buildConfigurationList = 68DBE9442A3B69D0002B73E3 /* Build configuration list for PBXNativeTarget "AnalyticsWatchApp" */;
 			buildPhases = (
 				68DBE9322A3B69CE002B73E3 /* Sources */,
 				68DBE9332A3B69CE002B73E3 /* Frameworks */,
@@ -262,14 +262,14 @@
 			);
 			dependencies = (
 			);
-			name = AnalyticsHostAppWatchApp;
+			name = AnalyticsWatchApp;
 			packageProductDependencies = (
 				68DBE94D2A3B6A82002B73E3 /* Amplify */,
 				68DBE94F2A3B6A82002B73E3 /* AWSCognitoAuthPlugin */,
 				68DBE9512A3B6A82002B73E3 /* AWSPinpointAnalyticsPlugin */,
 			);
 			productName = "AnalyticsHostAppWatch Watch App";
-			productReference = 68DBE9362A3B69CE002B73E3 /* AnalyticsHostAppWatchApp.app */;
+			productReference = 68DBE9362A3B69CE002B73E3 /* AnalyticsWatchApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 		68DBE9532A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch */ = {
@@ -356,7 +356,7 @@
 				6857645B28AE94D9000CE2E9 /* AnalyticsHostApp */,
 				6857647528AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests */,
 				97914D2029564227002000EA /* AnalyticsStressTests */,
-				68DBE9352A3B69CE002B73E3 /* AnalyticsHostAppWatchApp */,
+				68DBE9352A3B69CE002B73E3 /* AnalyticsWatchApp */,
 				68DBE9532A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch */,
 			);
 		};
@@ -418,7 +418,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\necho \"File location: ${TEMP_FILE}\"\necho \"File destination: ${DEST_PATH}\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		68DBE95E2A3B6EAE002B73E3 /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -436,7 +436,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\necho \"File location: ${TEMP_FILE}\"\necho \"File destination: ${DEST_PATH}\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		97914D2B29564227002000EA /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -523,7 +523,7 @@
 		};
 		68DBE9642A3B6EB6002B73E3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 68DBE9352A3B69CE002B73E3 /* AnalyticsHostAppWatchApp */;
+			target = 68DBE9352A3B69CE002B73E3 /* AnalyticsWatchApp */;
 			targetProxy = 68DBE9632A3B6EB6002B73E3 /* PBXContainerItemProxy */;
 		};
 		97914D2129564227002000EA /* PBXTargetDependency */ = {
@@ -829,7 +829,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostAppWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AnalyticsHostAppWatchApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AnalyticsWatchApp";
 			};
 			name = Debug;
 		};
@@ -850,7 +850,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostAppWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AnalyticsHostAppWatchApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AnalyticsWatchApp";
 			};
 			name = Release;
 		};
@@ -926,7 +926,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		68DBE9442A3B69D0002B73E3 /* Build configuration list for PBXNativeTarget "AnalyticsHostAppWatchApp" */ = {
+		68DBE9442A3B69D0002B73E3 /* Build configuration list for PBXNativeTarget "AnalyticsWatchApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				68DBE9452A3B69D0002B73E3 /* Debug */,
