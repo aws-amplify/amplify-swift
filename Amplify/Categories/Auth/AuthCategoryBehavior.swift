@@ -136,6 +136,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// Verifying TOTP Setup
     ///
     /// - Parameters:
+    ///   - code: verification code from the Authenticator app
     ///   - options: Parameters specific to plugin behavior
     func verifyTOTPSetup(
         code: String,
