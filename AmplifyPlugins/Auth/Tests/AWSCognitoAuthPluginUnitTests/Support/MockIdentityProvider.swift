@@ -213,4 +213,12 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func confirmDevice(input: ConfirmDeviceInput) async throws -> ConfirmDeviceOutputResponse {
         return try await mockConfirmDeviceResponse!(input)
     }
+
+    func associateSoftwareToken(input: AWSCognitoIdentityProvider.AssociateSoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.AssociateSoftwareTokenOutputResponse {
+        fatalError("HS: Implement me")
+    }
+
+    func verifySoftwareToken(input: AWSCognitoIdentityProvider.VerifySoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.VerifySoftwareTokenOutputResponse {
+        fatalError("HS: Implement me")
+    }
 }
