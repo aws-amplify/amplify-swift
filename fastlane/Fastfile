@@ -1,3 +1,4 @@
+require 'json'
 require_relative './amplify_pods.rb'
 
 opt_out_usage
@@ -6,15 +7,15 @@ default_platform(:ios)
 PLIST_KEY = "CFBundleShortVersionString"
 
 platform :ios do
-  before_all do 
-    # Perform a fetch before inferring the next version 
+  before_all do
+    # Perform a fetch before inferring the next version
     # to reduce race conditions with simultaneous pipelines attempting to create the same tag
     sh('git', 'fetch', '--tags', '-f')
     sh('git', 'fetch')
     sh('git', 'status')
   end
   desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
-  lane :unstable do 
+  lane :unstable do
     next_version = calculate_next_canary_version
     if next_version >= '2.0.0'
       UI.message("Received version: #{next_version}, exiting lane because version is larger than 2.0.0")
@@ -32,7 +33,7 @@ platform :ios do
     release_pods()
   end
 
-  desc "Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods"  
+  desc "Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods"
   lane :release do
     next_version, commits = calculate_next_release_version(version_limit:'v2.0.0')
     if next_version >= '2.0.0'
@@ -46,7 +47,7 @@ platform :ios do
 
     changelog = build_changelog(version: next_version, commits: commits)
 
-    # Commit and push 
+    # Commit and push
     release_commit(version: next_version)
 
     # Create tag and push to origin
@@ -80,7 +81,7 @@ platform :ios do
       set_key_value(file: "build-support/dependencies.rb", key: "AMPLIFY_VERSION", value: version)
     end
   end
-  
+
   desc "Commit and push"
   private_lane :release_commit do |options|
     next_version = options[:version]
@@ -94,7 +95,7 @@ platform :ios do
     # push to origin
     sh('git', 'push', 'origin', 'release-v1')
   end
-  
+
   desc "Tag in git and push to GitHub"
   private_lane :add_tag do |options|
     next_version = options[:version]
@@ -106,6 +107,15 @@ platform :ios do
 
   desc "Release pods"
   private_lane :release_pods do
+    # Define `COCOAPODS_TRUNK_TOKEN` env var for trunk authentication
+    # https://github.com/CocoaPods/cocoapods-trunk/commit/9e6ec1c1faf96fa837dc2ed70b5f54006b181ed6
+    secret = sh(
+        command: 'aws secretsmanager get-secret-value --secret-id ${COCOAPODS_SECRET_ARN}',
+        log: false
+    )
+
+    ENV['COCOAPODS_TRUNK_TOKEN'] = JSON.parse(secret)["SecretString"]
+
     AmplifyPods.pods.each do |pod|
       if pod[:no_push]
         UI.message "Skipping pushing pod #{pod[:spec]}"
@@ -136,7 +146,7 @@ platform :ios do
     changelog = options[:changelog]
     tag = "#{version}"
     plugin_root = File.expand_path("#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins")
-  
+
     sh('bundle', 'exec', 'swift', 'package', 'update')
 
     sh('bundle', 'exec', 'pod', 'repo', 'update')

@@ -4,6 +4,7 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@3.1.4
+
   # Using inline orb for now
   getting-started-smoke-test:
     orbs:
@@ -11,6 +12,7 @@ orbs:
       node: circleci/node@5.0.2
       ruby: circleci/ruby@1.6.0
       aws-cli: circleci/aws-cli@3.1.1
+
     commands:
       send-metric-on-fail:
         description: Send failure datapoint to cloudwatch
@@ -321,6 +323,10 @@ jobs:
       - *restore_repo
       - restore_gems
       - check_bundle
+      - aws-cli/setup:
+          role-arn: $AWS_OIDC_ROLE_ARN
+          role-session-name: "${CIRCLE_WORKFLOW_JOB_ID}.release"
+          session-duration: '900'
       - run:
           name: Release pods
           command: bundle exec fastlane << parameters.lane >>
@@ -463,6 +469,7 @@ workflows:
             - fortify_scan
       - deploy:
           name: deploy unstable
+          context: amplify-swift-aws-oidc
           <<: *deploy_requires
           filters:
             branches:
@@ -471,6 +478,7 @@ workflows:
       - deploy:
           name: deploy stable
           lane: release
+          context: amplify-swift-aws-oidc
           <<: *deploy_requires
           filters:
             branches:
