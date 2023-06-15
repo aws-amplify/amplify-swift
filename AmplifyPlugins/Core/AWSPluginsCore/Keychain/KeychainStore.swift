@@ -71,9 +71,10 @@ public struct KeychainStore: KeychainStoreBehavior {
         self.init(service: service, accessGroup: nil)
     }
 
-    public init(service: String, accessGroup: String? = nil) {
+    public init(service: String, accessGroup: String? = nil, account: String? = nil) {
         var attributes = KeychainStoreAttributes(service: service)
         attributes.accessGroup = accessGroup
+        attributes.account = account
         self.init(attributes: attributes)
     }
 
