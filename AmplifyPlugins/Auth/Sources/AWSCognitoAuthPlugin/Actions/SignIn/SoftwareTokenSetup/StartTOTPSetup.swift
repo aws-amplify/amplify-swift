@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct StartSoftwareTokenSetup: Action {
+struct StartTOTPSetup: Action {
 
-    var identifier: String = "StartSoftwareTokenSetup"
+    var identifier: String = "StartTOTPSetup"
 
     let authResponse: SignInResponseBehavior
 
@@ -23,7 +23,7 @@ struct StartSoftwareTokenSetup: Action {
     }
 }
 
-extension StartSoftwareTokenSetup: CustomDebugDictionaryConvertible {
+extension StartTOTPSetup: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier
@@ -31,7 +31,7 @@ extension StartSoftwareTokenSetup: CustomDebugDictionaryConvertible {
     }
 }
 
-extension StartSoftwareTokenSetup: CustomDebugStringConvertible {
+extension StartTOTPSetup: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

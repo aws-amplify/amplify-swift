@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SignInSetupSoftwareTokenState: State {
+enum SignInTOTPSetupState: State {
 
     case notStarted
 
@@ -24,23 +24,23 @@ enum SignInSetupSoftwareTokenState: State {
     case error(SignInError)
 }
 
-extension SignInSetupSoftwareTokenState {
+extension SignInTOTPSetupState {
 
     var type: String {
         switch self {
-        case .notStarted: return "SignInSetupSoftwareTokenState.notStarted"
-        case .associateSoftwareToken: return "SignInSetupSoftwareTokenState.associateSoftwareToken"
-        case .waitingForAnswer: return "SignInSetupSoftwareTokenState.waitingForAnswer"
-        case .verifying: return "SignInSetupSoftwareTokenState.verifying"
-        case .respondingToAuthChallenge: return "SignInSetupSoftwareTokenState.respondingToAuthChallenge"
-        case .success: return "SignInSetupSoftwareTokenState.success"
-        case .error: return "SignInSetupSoftwareTokenState.error"
+        case .notStarted: return "SignInTOTPSetupState.notStarted"
+        case .associateSoftwareToken: return "SignInTOTPSetupState.associateSoftwareToken"
+        case .waitingForAnswer: return "SignInTOTPSetupState.waitingForAnswer"
+        case .verifying: return "SignInTOTPSetupState.verifying"
+        case .respondingToAuthChallenge: return "SignInTOTPSetupState.respondingToAuthChallenge"
+        case .success: return "SignInTOTPSetupState.success"
+        case .error: return "SignInTOTPSetupState.error"
         }
     }
 }
 
-extension SignInSetupSoftwareTokenState: Equatable {
-    static func == (lhs: SignInSetupSoftwareTokenState, rhs: SignInSetupSoftwareTokenState) -> Bool {
+extension SignInTOTPSetupState: Equatable {
+    static func == (lhs: SignInTOTPSetupState, rhs: SignInTOTPSetupState) -> Bool {
         switch (lhs, rhs) {
         case (.notStarted, .notStarted),
             (.associateSoftwareToken, .associateSoftwareToken),

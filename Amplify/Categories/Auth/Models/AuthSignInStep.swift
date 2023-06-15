@@ -6,7 +6,7 @@
 //
 
 /// A unique generated shared secret code that is used in the TOTP algorithm to generate a one-time code.
-public typealias SharedSecretCode = String
+public typealias AllowedMFATypes = Set<MFAType>
 
 /// Auth SignIn flow steps
 ///
@@ -26,13 +26,18 @@ public enum AuthSignInStep {
     ///
     case confirmSignInWithNewPassword(AdditionalInfo?)
 
-    /// Auth step is Software Token multi factor authentication.
+    /// Auth step is TOTP multi factor authentication.
     ///
-    case confirmSignInWithSoftwareToken(AdditionalInfo?)
+    /// Confirmation code for the MFA will be retrieved from the associated Authenticator app
+    case confirmSignInWithTOTPCode
 
-    /// Auth step is for setting up Software Token multi factor authentication.
+    /// Auth step is for setting up TOTP multi factor authentication.
     ///
-    case setupTOTPMFAWithSecretCode(SharedSecretCode, AdditionalInfo?)
+    case continueSignInWithTOTPSetup(TOTPSetupDetails)
+
+    /// Auth step is selecting multi factor authentication type to continue sign in process.
+    ///
+    case continueSignInWithMFASelection(AllowedMFATypes)
 
     /// Auth step required the user to change their password.
     ///

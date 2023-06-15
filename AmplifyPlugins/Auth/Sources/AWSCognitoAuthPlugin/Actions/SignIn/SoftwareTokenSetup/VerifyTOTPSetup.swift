@@ -9,9 +9,9 @@ import Amplify
 import Foundation
 import AWSCognitoIdentityProvider
 
-struct VerifySoftwareTokenSetup: Action {
+struct VerifyTOTPSetup: Action {
 
-    var identifier: String = "VerifySoftwareTokenSetup"
+    var identifier: String = "VerifyTOTPSetup"
 
     let associateSoftwareTokenData: AssociateSoftwareTokenData
     let verifySoftwareTokenUserCode: String
@@ -52,7 +52,7 @@ struct VerifySoftwareTokenSetup: Action {
 
 }
 
-extension VerifySoftwareTokenSetup: CustomDebugDictionaryConvertible {
+extension VerifyTOTPSetup: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier
@@ -60,7 +60,7 @@ extension VerifySoftwareTokenSetup: CustomDebugDictionaryConvertible {
     }
 }
 
-extension VerifySoftwareTokenSetup: CustomDebugStringConvertible {
+extension VerifyTOTPSetup: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

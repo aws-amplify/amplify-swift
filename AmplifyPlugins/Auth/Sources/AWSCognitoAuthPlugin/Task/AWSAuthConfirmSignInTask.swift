@@ -61,7 +61,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             default:
                 throw invalidStateError
             }
-        } else if case .resolvingSoftwareTokenSetup(let resolvingSetupTokenState, _) = signInState {
+        } else if case .resolvingTOTPSetup(let resolvingSetupTokenState, _) = signInState {
             switch resolvingSetupTokenState {
             case .waitingForAnswer, .error:
                 log.verbose("Sending confirm signIn event: \(resolvingSetupTokenState)")

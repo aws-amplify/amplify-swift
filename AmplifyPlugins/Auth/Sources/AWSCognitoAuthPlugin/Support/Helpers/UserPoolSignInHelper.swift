@@ -43,13 +43,14 @@ struct UserPoolSignInHelper: DefaultLogger {
         } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
                   case .waitingForAnswer(let challenge, _) = challengeState {
             return try validateResult(for: challengeType, with: challenge)
-        } else if case .resolvingSoftwareTokenSetup(let softwareTokenSetupState, _) = signInState,
+
+        } else if case .resolvingTOTPSetup(let softwareTokenSetupState, _) = signInState,
                   case .error(let signInError) = softwareTokenSetupState {
             return try validateError(signInError: signInError)
 
-        } else if case .resolvingSoftwareTokenSetup(let softwareTokenSetupState, _) = signInState,
+        } else if case .resolvingTOTPSetup(let softwareTokenSetupState, _) = signInState,
                   case .waitingForAnswer(let challenge) = softwareTokenSetupState {
-            return .init(nextStep: .setupTOTPMFAWithSecretCode(challenge.secretCode, [:]))
+            return .init(nextStep: .continueSignInWithTOTPSetup(.init(secretCode: challenge.secretCode)))
         }
         return nil
     }
@@ -62,13 +63,17 @@ struct UserPoolSignInHelper: DefaultLogger {
             let delivery = challenge.codeDeliveryDetails
             return .init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters))
         case .softwareTokenMfa:
-            return .init(nextStep: .confirmSignInWithSoftwareToken(challenge.parameters))
+            return .init(nextStep: .confirmSignInWithTOTPCode)
         case .customChallenge:
             return .init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters))
         case .newPasswordRequired:
             return .init(nextStep: .confirmSignInWithNewPassword(challenge.parameters))
-        case .unknown:
-            throw AuthError.unknown("Challenge not supported", nil)
+        case .selectMFAType:
+            return .init(nextStep: .continueSignInWithMFASelection(.init())) // TODO: HS: pass allowed MFA Types
+        case .setUpMFA:
+            fatalError("setUpMFA is handled in SignInState.resolvingTOTPSetup state")
+        case .unknown(let cognitoChallengeType):
+            throw AuthError.unknown("Challenge not supported\(cognitoChallengeType)", nil)
         }
     }
 
@@ -132,16 +137,17 @@ struct UserPoolSignInHelper: DefaultLogger {
                     parameters: parameters)
 
                 switch challengeName {
-                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa:
+                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
                 case .mfaSetup:
                     return SignInEvent(
-                        eventType: .initiateSoftwareTokenSetup(
-                            username, response))
+                            eventType: .initiateSoftwareTokenSetup(
+                            username,
+                            response))
                 default:
-                    let message = "UnSupported challenge response \(challengeName)"
+                    let message = "Unsupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)
                     return SignInEvent(eventType: .throwAuthError(error))
                 }

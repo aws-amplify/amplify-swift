@@ -7,17 +7,17 @@
 
 import Foundation
 
-extension SignInSetupSoftwareTokenState {
+extension SignInTOTPSetupState {
     struct Resolver: StateMachineResolver {
-        typealias StateType = SignInSetupSoftwareTokenState
-        let defaultState = SignInSetupSoftwareTokenState.notStarted
+        typealias StateType = SignInTOTPSetupState
+        let defaultState = SignInTOTPSetupState.notStarted
 
         let signInEventData: SignInEventData
 
         func resolve(
-            oldState: SignInSetupSoftwareTokenState,
+            oldState: SignInTOTPSetupState,
             byApplying event: StateMachineEvent
-        ) -> StateResolution<SignInSetupSoftwareTokenState> {
+        ) -> StateResolution<SignInTOTPSetupState> {
 
             guard let setupSoftwareTokenEvent = event as? SetupSoftwareTokenEvent else {
                 return .from(oldState)
@@ -45,13 +45,13 @@ extension SignInSetupSoftwareTokenState {
         }
 
         private func resolveNotStarted(
-            byApplying signInEvent: SetupSoftwareTokenEvent) -> StateResolution<SignInSetupSoftwareTokenState> {
+            byApplying signInEvent: SetupSoftwareTokenEvent) -> StateResolution<SignInTOTPSetupState> {
                 switch signInEvent.eventType {
                 case .associateSoftwareToken(let authResponse):
                     let action = AssociateSoftwareToken(
                         authResponse: authResponse)
                     return StateResolution(
-                        newState: SignInSetupSoftwareTokenState.associateSoftwareToken,
+                        newState: SignInTOTPSetupState.associateSoftwareToken,
                         actions: [action]
                     )
                 default:
@@ -60,11 +60,11 @@ extension SignInSetupSoftwareTokenState {
             }
 
         private func resolveAssociateSoftwareToken(
-            byApplying signInEvent: SetupSoftwareTokenEvent) -> StateResolution<SignInSetupSoftwareTokenState> {
+            byApplying signInEvent: SetupSoftwareTokenEvent) -> StateResolution<SignInTOTPSetupState> {
                 switch signInEvent.eventType {
                 case .waitForAnswer(let softwareTokenSetupResponse):
                     return StateResolution(
-                        newState: SignInSetupSoftwareTokenState.waitingForAnswer(softwareTokenSetupResponse),
+                        newState: SignInTOTPSetupState.waitingForAnswer(softwareTokenSetupResponse),
                         actions: []
                     )
                 default:
@@ -74,14 +74,14 @@ extension SignInSetupSoftwareTokenState {
 
         private func resolveWaitForAnswer(
             byApplying signInEvent: SetupSoftwareTokenEvent,
-            with associateSoftwareTokenData: AssociateSoftwareTokenData) -> StateResolution<SignInSetupSoftwareTokenState> {
+            with associateSoftwareTokenData: AssociateSoftwareTokenData) -> StateResolution<SignInTOTPSetupState> {
                 switch signInEvent.eventType {
                 case .verifyChallengeAnswer(let confirmSoftwareTokenSetupCode):
-                    let action = VerifySoftwareTokenSetup(
+                    let action = VerifyTOTPSetup(
                         associateSoftwareTokenData: associateSoftwareTokenData,
                         verifySoftwareTokenUserCode: confirmSoftwareTokenSetupCode.answer)
                     return StateResolution(
-                        newState: SignInSetupSoftwareTokenState.verifying(associateSoftwareTokenData, confirmSoftwareTokenSetupCode),
+                        newState: SignInTOTPSetupState.verifying(associateSoftwareTokenData, confirmSoftwareTokenSetupCode),
                         actions: [action]
                     )
                 default:
@@ -91,14 +91,14 @@ extension SignInSetupSoftwareTokenState {
 
         private func resolveVerifyingState(
             byApplying signInEvent: SetupSoftwareTokenEvent,
-            with session: String) -> StateResolution<SignInSetupSoftwareTokenState> {
+            with session: String) -> StateResolution<SignInTOTPSetupState> {
                 switch signInEvent.eventType {
                 case .respondToAuthChallenge(let session):
-                    let action = CompleteSoftwareTokenSetup(
+                    let action = CompleteTOTPSetup(
                         userSession: session,
                         signInEventData: signInEventData)
                     return StateResolution(
-                        newState: SignInSetupSoftwareTokenState.respondingToAuthChallenge,
+                        newState: SignInTOTPSetupState.respondingToAuthChallenge,
                         actions: [action]
                     )
                 default:
@@ -107,10 +107,10 @@ extension SignInSetupSoftwareTokenState {
             }
 
         private func errorState(_ error: SignInError)
-        -> StateResolution<SignInSetupSoftwareTokenState> {
+        -> StateResolution<SignInTOTPSetupState> {
             let action = ThrowSignInError(error: error)
             return StateResolution(
-                newState: SignInSetupSoftwareTokenState.error(error),
+                newState: SignInTOTPSetupState.error(error),
                 actions: [action]
             )
         }

@@ -18,7 +18,11 @@ enum AuthChallengeType {
 
     case softwareTokenMfa
 
-    case unknown
+    case selectMFAType
+
+    case setUpMFA
+
+    case unknown(CognitoIdentityProviderClientTypes.ChallengeNameType)
 
 }
 
@@ -33,10 +37,16 @@ extension CognitoIdentityProviderClientTypes.ChallengeNameType {
             return .smsMfa
         case .softwareTokenMfa:
             return .softwareTokenMfa
+        case .selectMfaType:
+            return .selectMFAType
+        case .mfaSetup:
+            return .setUpMFA
         default:
-            return .unknown
+            return .unknown(self)
         }
     }
 }
 
 extension AuthChallengeType: Codable { }
+
+extension AuthChallengeType: Equatable { }
