@@ -167,32 +167,37 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         }
     }
 
-    public func associateSoftwareToken() async throws -> AuthAssociateSoftwareTokenResult {
+    public func setUpTOTP(
+        options: TOTPSetupRequest.Options?
+    ) async throws -> TOTPSetupDetails {
 
-        let options = AuthAssociateSoftwareTokenRequest.Options()
-        let request = AuthAssociateSoftwareTokenRequest(options: options)
-        let task = AWSAuthAssociateSoftwareTokenTask(
+        let options = TOTPSetupRequest.Options()
+        let request = TOTPSetupRequest(options: options)
+        let task = SetUpTOTPTask(
             request,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await taskQueue.sync {
             return try await task.value
-        } as! AuthAssociateSoftwareTokenResult
+        } as! TOTPSetupDetails
     }
 
 
-    public func verifySoftwareToken(with verificationCode: String) async throws -> AuthAssociateSoftwareTokenResult {
+    public func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options?
+    ) async throws {
 
-        let options = AuthVerifySoftwareTokenRequest.Options()
-        let request = AuthVerifySoftwareTokenRequest(
-            verificationCode: verificationCode,
+        let options = VerifyTOTPSetupRequest.Options()
+        let request = VerifyTOTPSetupRequest(
+            code: code,
             options: options)
-        let task = AWSAuthVerifySoftwareTokenTask(
+        let task = VerifyTOTPSetupTask(
             request,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
-        return try await taskQueue.sync {
+        _ = try await taskQueue.sync {
             return try await task.value
-        } as! AuthAssociateSoftwareTokenResult
+        }
     }
 }

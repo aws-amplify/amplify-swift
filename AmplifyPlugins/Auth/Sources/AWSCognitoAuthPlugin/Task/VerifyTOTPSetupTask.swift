@@ -11,20 +11,20 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthAssociateSoftwareTokenTask: AuthAssociateSoftwareTokenTask, DefaultLogger {
+class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
 
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
-    private let request: AuthAssociateSoftwareTokenRequest
+    private let request: VerifyTOTPSetupRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
 
     var eventName: HubPayloadEventName {
-        HubPayload.EventName.Auth.associateSoftwareTokenAPI
+        HubPayload.EventName.Auth.verifyTOTPSetupAPI
     }
 
-    init(_ request: AuthAssociateSoftwareTokenRequest,
+    init(_ request: VerifyTOTPSetupRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory) {
         self.request = request
@@ -37,7 +37,8 @@ class AWSAuthAssociateSoftwareTokenTask: AuthAssociateSoftwareTokenTask, Default
         do {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
-            return try await associateSoftwareToken(with: accessToken)
+            return try await verifySoftwareToken(
+                with: accessToken, userCode: request.code)
         } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
@@ -47,18 +48,27 @@ class AWSAuthAssociateSoftwareTokenTask: AuthAssociateSoftwareTokenTask, Default
         }
     }
 
-    func associateSoftwareToken(with accessToken: String) async throws -> AuthAssociateSoftwareTokenResult {
+    func verifySoftwareToken(with accessToken: String, userCode: String) async throws -> AuthAssociateSoftwareTokenResult {
         let userPoolService = try userPoolFactory()
-        let input = AssociateSoftwareTokenInput(accessToken: accessToken)
-        let result = try await userPoolService.associateSoftwareToken(input: input)
+        let input = VerifySoftwareTokenInput(
+            accessToken: accessToken,
+            friendlyDeviceName: "",
+            session: nil,
+            userCode: userCode)
+        let result = try await userPoolService.verifySoftwareToken(input: input)
 
-        guard let secretCode = result.secretCode else {
-            throw AuthError.service("Secret code cannot be retrieved", "")
+        guard let output = result.status else {
+            throw AuthError.service("Result cannot be retrieved", "")
         }
 
-        return .init(nextStep: .verifySoftwareToken(
-            secretCode,
-            result.session)
-        )
+        switch output {
+        case .error:
+            throw AuthError.service("Unknown error", "")
+        case .success:
+            return .init(nextStep: .done)
+        case .sdkUnknown(let error):
+            throw AuthError.service("Unknown error", error)
+        }
+
     }
 }

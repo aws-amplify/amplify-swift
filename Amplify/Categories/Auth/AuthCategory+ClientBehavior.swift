@@ -75,11 +75,17 @@ extension AuthCategory: AuthCategoryBehavior {
         try await plugin.confirmResetPassword(for: username, with: newPassword, confirmationCode: confirmationCode, options: options)
     }
 
-    public func associateSoftwareToken() async throws -> AuthAssociateSoftwareTokenResult {
-        try await plugin.associateSoftwareToken()
+    public func setUpTOTP(
+        options: TOTPSetupRequest.Options? = nil
+    ) async throws -> TOTPSetupDetails {
+        try await plugin.setUpTOTP(options: options)
     }
 
-    public func verifySoftwareToken(with verificationCode: String) async throws -> AuthAssociateSoftwareTokenResult {
-        try await plugin.verifySoftwareToken(with: verificationCode)
+    public func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options? = nil
+    ) async throws {
+        try await plugin.verifyTOTPSetup(code: code, options: options)
     }
+
 }

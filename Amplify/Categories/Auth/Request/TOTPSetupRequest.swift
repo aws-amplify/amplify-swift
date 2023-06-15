@@ -7,23 +7,18 @@
 
 import Foundation
 
-/// Request to confirm the signup flow
-public struct AuthVerifySoftwareTokenRequest: AmplifyOperationRequest {
+/// Request to set up TOTP
+public struct TOTPSetupRequest: AmplifyOperationRequest {
 
-    public var verificationCode: String
-
-    /// Extra request options defined in `AuthVerifySoftwareTokenRequest.Options`
+    /// Extra request options defined in `AuthAssociateSoftwareTokenRequest.Options`
     public var options: Options
 
-    public init(
-        verificationCode: String,
-        options: Options) {
-            self.verificationCode = verificationCode
-            self.options = options
+    public init(options: Options) {
+        self.options = options
     }
 }
 
-public extension AuthVerifySoftwareTokenRequest {
+public extension TOTPSetupRequest {
 
     struct Options {
 

@@ -8,10 +8,10 @@
 import Foundation
 import Amplify
 
-protocol AuthVerifySoftwareTokenTask: AmplifyAuthTask where Request == AuthVerifySoftwareTokenRequest, Success == AuthAssociateSoftwareTokenResult, Failure == AuthError {}
+protocol AuthSetUpTOTPTask: AmplifyAuthTask where Request == TOTPSetupRequest, Success == AuthAssociateSoftwareTokenResult, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let verifySoftwareTokenAPI = "Auth.verifySoftwareTokenAPI"
+    static let setUpTOTPAPI = "Auth.setUpTOTPAPI"
 }
