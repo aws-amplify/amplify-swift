@@ -214,6 +214,12 @@ extension AuthPluginErrorConstants {
         "Make sure that a valid challenge response is passed for confirmSignIn"
     )
 
+    static let confirmSignInMFASelectionResponseError: AuthPluginValidationErrorString = (
+        "challengeResponse",
+        "challengeResponse for MFA selection can only have SMS_MFA or SOFTWARE_TOKEN_MFA.",
+        "Make sure that a valid challenge response is passed for confirmSignIn. Try using `MFAType.totp.challengeResponse` or `MFAType.sms.challengeResponse` as the challenge response"
+    )
+
     static let confirmResetPasswordUsernameError: AuthPluginValidationErrorString = (
         "username",
         "username is required to confirmResetPassword",

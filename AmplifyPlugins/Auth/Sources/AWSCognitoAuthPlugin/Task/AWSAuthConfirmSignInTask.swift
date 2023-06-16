@@ -53,7 +53,13 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             throw invalidStateError
         }
 
-        if case .resolvingChallenge(let challengeState, _, _) = signInState {
+        if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState {
+
+            // Validate if request valid MFA selection
+            if case .selectMFAType = challengeType {
+                try validateRequestForMFASelection()
+            }
+
             switch challengeState {
             case .waitingForAnswer, .error:
                 log.verbose("Sending confirm signIn event: \(challengeState)")
@@ -101,6 +107,17 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
                }
         }
         throw invalidStateError
+    }
+
+    func validateRequestForMFASelection() throws {
+        let challengeResponse = request.challengeResponse
+
+        guard let _ = MFAType(rawValue: challengeResponse) else {
+            throw AuthError.validation(
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.field,
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.errorDescription,
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion)
+        }
     }
 
     func sendConfirmSignInEvent() async {

@@ -47,7 +47,7 @@ extension RespondToAuthChallenge {
         }
 
         for mfaTypeValue in mfaCanChooseString.split(separator: ",") {
-            if let mfaType = MFAType(mfaValue: String(mfaTypeValue)) {
+            if let mfaType = MFAType(rawValue: String(mfaTypeValue)) {
                 allowedMFATypes.insert(mfaType)
             }
         }

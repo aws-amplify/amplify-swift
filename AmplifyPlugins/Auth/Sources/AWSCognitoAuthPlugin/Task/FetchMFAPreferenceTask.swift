@@ -66,7 +66,7 @@ class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger {
 
         for mfaValue in result.userMFASettingList ?? [] {
 
-            guard let mfaType = MFAType(mfaValue: mfaValue) else {
+            guard let mfaType = MFAType(rawValue: mfaValue) else {
                 continue
             }
 
@@ -79,7 +79,7 @@ class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger {
         }
 
         if let preference = result.preferredMfaSetting {
-            preferred = MFAType(mfaValue: preference)
+            preferred = MFAType(rawValue: preference)
         }
 
         return .init(enabled: enabledList, preferred: preferred)
