@@ -65,7 +65,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             switch resolvingSetupTokenState {
             case .waitingForAnswer, .error:
                 log.verbose("Sending confirm signIn event: \(resolvingSetupTokenState)")
-                await sendConfirmSoftwareTokenSetupEvent()
+                await sendConfirmTOTPSetupEvent()
             default:
                 throw invalidStateError
             }
@@ -121,12 +121,12 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         await authStateMachine.send(event)
     }
 
-    func sendConfirmSoftwareTokenSetupEvent() async {
+    func sendConfirmTOTPSetupEvent() async {
         let confirmSignInData = ConfirmSignInEventData(
             answer: self.request.challengeResponse,
             attributes: [:],
             metadata: nil)
-        let event = SetupSoftwareTokenEvent(
+        let event = SetUpTOTPEvent(
             eventType: .verifyChallengeAnswer(confirmSignInData))
         await authStateMachine.send(event)
     }

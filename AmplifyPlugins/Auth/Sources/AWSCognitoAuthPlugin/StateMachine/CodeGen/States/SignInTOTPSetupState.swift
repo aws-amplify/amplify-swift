@@ -11,7 +11,7 @@ enum SignInTOTPSetupState: State {
 
     case notStarted
 
-    case associateSoftwareToken
+    case setUpTOTP
 
     case waitingForAnswer(SignInTOTPSetupData)
 
@@ -29,7 +29,7 @@ extension SignInTOTPSetupState {
     var type: String {
         switch self {
         case .notStarted: return "SignInTOTPSetupState.notStarted"
-        case .associateSoftwareToken: return "SignInTOTPSetupState.associateSoftwareToken"
+        case .setUpTOTP: return "SignInTOTPSetupState.setUpTOTP"
         case .waitingForAnswer: return "SignInTOTPSetupState.waitingForAnswer"
         case .verifying: return "SignInTOTPSetupState.verifying"
         case .respondingToAuthChallenge: return "SignInTOTPSetupState.respondingToAuthChallenge"
@@ -43,7 +43,7 @@ extension SignInTOTPSetupState: Equatable {
     static func == (lhs: SignInTOTPSetupState, rhs: SignInTOTPSetupState) -> Bool {
         switch (lhs, rhs) {
         case (.notStarted, .notStarted),
-            (.associateSoftwareToken, .associateSoftwareToken),
+            (.setUpTOTP, .setUpTOTP),
             (.waitingForAnswer, .waitingForAnswer),
             (.verifying, .verifying),
             (.respondingToAuthChallenge, .respondingToAuthChallenge),

@@ -9,11 +9,11 @@ public typealias UserSession = String
 
 import Foundation
 
-struct SetupSoftwareTokenEvent: StateMachineEvent {
+struct SetUpTOTPEvent: StateMachineEvent {
 
     enum EventType {
 
-        case associateSoftwareToken(SignInResponseBehavior)
+        case setUpTOTP(SignInResponseBehavior)
 
         case waitForAnswer(SignInTOTPSetupData)
 
@@ -33,12 +33,12 @@ struct SetupSoftwareTokenEvent: StateMachineEvent {
 
     var type: String {
         switch eventType {
-        case .associateSoftwareToken: return "SetupSoftwareTokenEvent.associateSoftwareToken"
-        case .verified: return "SetupSoftwareTokenEvent.verified"
-        case .verifyChallengeAnswer: return "SetupSoftwareTokenEvent.verifyChallengeAnswer"
-        case .waitForAnswer: return "SetupSoftwareTokenEvent.waitForAnswer"
-        case .respondToAuthChallenge: return "SetupSoftwareTokenEvent.respondToAuthChallenge"
-        case .throwError: return "SetupSoftwareTokenEvent.throwError"
+        case .setUpTOTP: return "SetUpTOTPEvent.setUpTOTP"
+        case .verified: return "SetUpTOTPEvent.verified"
+        case .verifyChallengeAnswer: return "SetUpTOTPEvent.verifyChallengeAnswer"
+        case .waitForAnswer: return "SetUpTOTPEvent.waitForAnswer"
+        case .respondToAuthChallenge: return "SetUpTOTPEvent.respondToAuthChallenge"
+        case .throwError: return "SetUpTOTPEvent.throwError"
         }
     }
 
@@ -51,10 +51,10 @@ struct SetupSoftwareTokenEvent: StateMachineEvent {
     }
 }
 
-extension SetupSoftwareTokenEvent.EventType: Equatable {
-    static func == (lhs: SetupSoftwareTokenEvent.EventType, rhs: SetupSoftwareTokenEvent.EventType) -> Bool {
+extension SetUpTOTPEvent.EventType: Equatable {
+    static func == (lhs: SetUpTOTPEvent.EventType, rhs: SetUpTOTPEvent.EventType) -> Bool {
         switch (lhs, rhs) {
-        case (.associateSoftwareToken, .associateSoftwareToken),
+        case (.setUpTOTP, .setUpTOTP),
             (.verified, .verified),
             (.verifyChallengeAnswer, .verifyChallengeAnswer),
             (.waitForAnswer, .waitForAnswer),

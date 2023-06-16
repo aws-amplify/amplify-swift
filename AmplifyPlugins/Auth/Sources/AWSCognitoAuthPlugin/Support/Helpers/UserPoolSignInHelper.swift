@@ -44,12 +44,12 @@ struct UserPoolSignInHelper: DefaultLogger {
                   case .waitingForAnswer(let challenge, _) = challengeState {
             return try validateResult(for: challengeType, with: challenge)
 
-        } else if case .resolvingTOTPSetup(let softwareTokenSetupState, _) = signInState,
-                  case .error(let signInError) = softwareTokenSetupState {
+        } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
+                  case .error(let signInError) = totpSetupState {
             return try validateError(signInError: signInError)
 
-        } else if case .resolvingTOTPSetup(let softwareTokenSetupState, _) = signInState,
-                  case .waitingForAnswer(let totpSetupData) = softwareTokenSetupState {
+        } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
+                  case .waitingForAnswer(let totpSetupData) = totpSetupState {
             return .init(nextStep: .continueSignInWithTOTPSetup(.init(secretCode: totpSetupData.secretCode, username: totpSetupData.username)))
         }
         return nil
@@ -62,7 +62,7 @@ struct UserPoolSignInHelper: DefaultLogger {
         case .smsMfa:
             let delivery = challenge.codeDeliveryDetails
             return .init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters))
-        case .softwareTokenMfa:
+        case .totpMFA:
             return .init(nextStep: .confirmSignInWithTOTPCode)
         case .customChallenge:
             return .init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters))
@@ -143,7 +143,7 @@ struct UserPoolSignInHelper: DefaultLogger {
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
                 case .mfaSetup:
                     return SignInEvent(
-                            eventType: .initiateSoftwareTokenSetup(
+                            eventType: .initiateTOTPSetup(
                             username,
                             response))
                 default:

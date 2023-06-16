@@ -15,9 +15,9 @@ struct InitializeTOTPSetup: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Start execution", environment: environment)
-        let event = SetupSoftwareTokenEvent(
+        let event = SetUpTOTPEvent(
             id: UUID().uuidString,
-            eventType: .associateSoftwareToken(authResponse))
+            eventType: .setUpTOTP(authResponse))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }

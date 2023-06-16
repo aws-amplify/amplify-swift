@@ -31,7 +31,7 @@ struct SetUpTOTP: Action {
                 throw SignInError.unknown(message: "Unable to retrieve associate software token response")
             }
 
-            let responseEvent = SetupSoftwareTokenEvent(eventType:
+            let responseEvent = SetUpTOTPEvent(eventType:
                     .waitForAnswer(.init(
                         secretCode: secretCode,
                         session: session,

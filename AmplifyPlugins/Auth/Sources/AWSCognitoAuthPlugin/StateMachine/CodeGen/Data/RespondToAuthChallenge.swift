@@ -50,8 +50,9 @@ extension RespondToAuthChallenge {
         case .smsMfa: return "SMS_MFA_CODE"
         case .softwareTokenMfa: return "SOFTWARE_TOKEN_MFA_CODE"
         case .newPasswordRequired: return "NEW_PASSWORD"
+        case .selectMfaType: return "SELECT_MFA_TYPE"
         default:
-            let message = "UnSupported challenge response \(challenge)"
+            let message = "Unsupported challenge response \(challenge)"
             let error = SignInError.unknown(message: message)
             throw error
         }

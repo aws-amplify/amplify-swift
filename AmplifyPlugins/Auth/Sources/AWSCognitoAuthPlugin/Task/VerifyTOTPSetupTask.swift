@@ -33,11 +33,11 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
-    func execute() async throws -> AuthAssociateSoftwareTokenResult {
+    func execute() async throws {
         do {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
-            return try await verifySoftwareToken(
+            try await verifyTOTPSetup(
                 with: accessToken, userCode: request.code)
         } catch let error as AuthErrorConvertible {
             throw error.authError
@@ -48,11 +48,11 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
         }
     }
 
-    func verifySoftwareToken(with accessToken: String, userCode: String) async throws -> AuthAssociateSoftwareTokenResult {
+    func verifyTOTPSetup(with accessToken: String, userCode: String) async throws  {
         let userPoolService = try userPoolFactory()
         let input = VerifySoftwareTokenInput(
             accessToken: accessToken,
-            friendlyDeviceName: "",
+            friendlyDeviceName: "", // TODO: HS: Add device friendly name
             session: nil,
             userCode: userCode)
         let result = try await userPoolService.verifySoftwareToken(input: input)
@@ -65,7 +65,7 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
         case .error:
             throw AuthError.service("Unknown error", "")
         case .success:
-            return .init(nextStep: .done)
+            return
         case .sdkUnknown(let error):
             throw AuthError.service("Unknown error", error)
         }

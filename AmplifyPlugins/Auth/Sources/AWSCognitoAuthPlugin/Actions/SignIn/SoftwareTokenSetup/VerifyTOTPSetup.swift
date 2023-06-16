@@ -13,8 +13,8 @@ struct VerifyTOTPSetup: Action {
 
     var identifier: String = "VerifyTOTPSetup"
 
-    let associateSoftwareTokenData: SignInTOTPSetupData
-    let verifySoftwareTokenUserCode: String
+    let signInTOTPSetupData: SignInTOTPSetupData
+    let totpCode: String
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -23,15 +23,15 @@ struct VerifyTOTPSetup: Action {
             let userpoolEnv = try environment.userPoolEnvironment()
             let client = try userpoolEnv.cognitoUserPoolFactory()
             let input = VerifySoftwareTokenInput(
-                session: associateSoftwareTokenData.session,
-                userCode: verifySoftwareTokenUserCode)
+                session: signInTOTPSetupData.session,
+                userCode: totpCode)
             let result = try await client.verifySoftwareToken(input: input)
 
             guard let session = result.session else {
                 throw SignInError.unknown(message: "Unable to retrieve the session value from VerifySoftwareToken response")
             }
 
-            let responseEvent = SetupSoftwareTokenEvent(eventType:
+            let responseEvent = SetUpTOTPEvent(eventType:
                     .respondToAuthChallenge(session))
             logVerbose("\(#fileID) Sending event \(responseEvent)",
                        environment: environment)

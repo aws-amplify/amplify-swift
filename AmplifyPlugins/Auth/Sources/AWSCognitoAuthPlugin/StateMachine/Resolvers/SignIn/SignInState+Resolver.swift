@@ -99,7 +99,7 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateSoftwareTokenSetup(_, let challengeResponse) = signInEvent.eventType {
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
                     let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
@@ -260,7 +260,7 @@ extension SignInState {
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
 
 
-            case .resolvingTOTPSetup(let setupSoftwareTokenState, let signInEventData):
+            case .resolvingTOTPSetup(let setUpTOTPState, let signInEventData):
 
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
@@ -292,12 +292,12 @@ extension SignInState {
 
                 let resolution = SignInTOTPSetupState.Resolver(
                     signInEventData: signInEventData).resolve(
-                        oldState: setupSoftwareTokenState,
+                        oldState: setUpTOTPState,
                         byApplying: event)
-                let settingUpSoftwareTokenState = SignInState.resolvingTOTPSetup(
+                let settingUpTOTPState = SignInState.resolvingTOTPSetup(
                     resolution.newState,
                     signInEventData)
-                return .init(newState: settingUpSoftwareTokenState, actions: resolution.actions)
+                return .init(newState: settingUpTOTPState, actions: resolution.actions)
 
 
             case .resolvingDeviceSrpa(let deviceSrpState):

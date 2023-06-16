@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-protocol AuthSetUpTOTPTask: AmplifyAuthTask where Request == TOTPSetupRequest, Success == AuthAssociateSoftwareTokenResult, Failure == AuthError {}
+protocol AuthSetUpTOTPTask: AmplifyAuthTask where Request == TOTPSetupRequest, Success == TOTPSetupDetails, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 

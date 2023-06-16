@@ -12,7 +12,7 @@ public struct VerifyTOTPSetupRequest: AmplifyOperationRequest {
 
     public var code: String
 
-    /// Extra request options defined in `AuthVerifySoftwareTokenRequest.Options`
+    /// Extra request options defined in `VerifyTOTPSetupRequest.Options`
     public var options: Options
 
     public init(

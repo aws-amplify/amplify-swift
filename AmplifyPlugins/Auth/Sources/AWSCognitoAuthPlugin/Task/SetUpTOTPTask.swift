@@ -33,11 +33,11 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
-    func execute() async throws -> AuthAssociateSoftwareTokenResult {
+    func execute() async throws -> TOTPSetupDetails {
         do {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
-            return try await associateSoftwareToken(with: accessToken)
+            return try await setUpTOTP(with: accessToken)
         } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
@@ -47,7 +47,7 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         }
     }
 
-    func associateSoftwareToken(with accessToken: String) async throws -> AuthAssociateSoftwareTokenResult {
+    func setUpTOTP(with accessToken: String) async throws -> TOTPSetupDetails {
         let userPoolService = try userPoolFactory()
         let input = AssociateSoftwareTokenInput(accessToken: accessToken)
         let result = try await userPoolService.associateSoftwareToken(input: input)
@@ -56,9 +56,10 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
             throw AuthError.service("Secret code cannot be retrieved", "")
         }
 
-        return .init(nextStep: .verifySoftwareToken(
-            secretCode,
-            result.session)
-        )
+        // get the current username, if the user ever wants to build setUp URI
+        let authUser = try await Amplify.Auth.getCurrentUser()
+        return .init(secretCode: secretCode,
+                     username: authUser.username)
+
     }
 }
