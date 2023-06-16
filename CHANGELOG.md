@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.30.2 (2023-06-16)
+
 ## 1.30.1 (2023-05-11)
 
 ### Bug Fixes
