@@ -54,6 +54,9 @@
 		68828E4628C2736C006E7C0A /* AWSS3StoragePluginProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08C28BEAF8E00C8A6EB /* AWSS3StoragePluginProgressTests.swift */; };
 		68828E4728C27745006E7C0A /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08828BEAF8E00C8A6EB /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
 		68828E4828C2AAA6006E7C0A /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08B28BEAF8E00C8A6EB /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
+		68A3120F2A3D10B700D60A17 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68A3120E2A3D10B700D60A17 /* Amplify */; };
+		68A312112A3D10B700D60A17 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68A312102A3D10B700D60A17 /* AWSCognitoAuthPlugin */; };
+		68A312132A3D10B800D60A17 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68A312122A3D10B800D60A17 /* AWSS3StoragePlugin */; };
 		97914BA32955798D002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAF28E748270000C36A /* AsyncTesting.swift */; };
 		97914BA52955798D002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB028E748270000C36A /* AsyncExpectation.swift */; };
 		97914BB02955798D002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB128E748270000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -150,6 +153,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68A3120F2A3D10B700D60A17 /* Amplify in Frameworks */,
+				68A312112A3D10B700D60A17 /* AWSCognitoAuthPlugin in Frameworks */,
+				68A312132A3D10B800D60A17 /* AWSS3StoragePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +359,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6875F9412A3CCD48001C9AAF /* Build configuration list for PBXNativeTarget "StorageWatchApp" */;
 			buildPhases = (
+				68A3120D2A3D107800D60A17 /* Copy amplifyconfiguration */,
 				6875F92A2A3CCD47001C9AAF /* Sources */,
 				6875F92B2A3CCD47001C9AAF /* Frameworks */,
 				6875F92C2A3CCD47001C9AAF /* Resources */,
@@ -360,8 +367,16 @@
 			buildRules = (
 			);
 			dependencies = (
+				68A312152A3D137500D60A17 /* PBXTargetDependency */,
+				68A312172A3D137500D60A17 /* PBXTargetDependency */,
+				68A312192A3D137500D60A17 /* PBXTargetDependency */,
 			);
 			name = StorageWatchApp;
+			packageProductDependencies = (
+				68A3120E2A3D10B700D60A17 /* Amplify */,
+				68A312102A3D10B700D60A17 /* AWSCognitoAuthPlugin */,
+				68A312122A3D10B800D60A17 /* AWSS3StoragePlugin */,
+			);
 			productName = "StorageWatchApp Watch App";
 			productReference = 6875F92E2A3CCD47001C9AAF /* StorageWatchApp.app */;
 			productType = "com.apple.product-type.application";
@@ -426,9 +441,6 @@
 					};
 					6875F92D2A3CCD47001C9AAF = {
 						CreatedOnToolsVersion = 14.3;
-					};
-					6875F9452A3CCD81001C9AAF = {
-						TestTargetID = 6875F92D2A3CCD47001C9AAF;
 					};
 				};
 			};
@@ -498,6 +510,25 @@
 
 /* Begin PBXShellScriptBuildPhase section */
 		56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy amplifyconfiguration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PROJECT_DIR}/copy_configuration.sh\n";
+			showEnvVarsInLog = 0;
+		};
+		68A3120D2A3D107800D60A17 /* Copy amplifyconfiguration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -626,6 +657,18 @@
 			isa = PBXTargetDependency;
 			target = 6875F92D2A3CCD47001C9AAF /* StorageWatchApp */;
 			targetProxy = 6875F9612A3CCD9E001C9AAF /* PBXContainerItemProxy */;
+		};
+		68A312152A3D137500D60A17 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 68A312142A3D137500D60A17 /* AWSCognitoAuthPlugin */;
+		};
+		68A312172A3D137500D60A17 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 68A312162A3D137500D60A17 /* AWSS3StoragePlugin */;
+		};
+		68A312192A3D137500D60A17 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 68A312182A3D137500D60A17 /* Amplify */;
 		};
 		97914B9F2955798D002000EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -905,41 +948,39 @@
 		};
 		6875F95E2A3CCD81001C9AAF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = $TEST_HOST;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSS3StoragePluginIntegrationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSS3StoragePluginIntegrationTestsWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = 4;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageWatchApp";
 			};
 			name = Debug;
 		};
 		6875F95F2A3CCD81001C9AAF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = $TEST_HOST;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSS3StoragePluginIntegrationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSS3StoragePluginIntegrationTestsWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = 4;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageWatchApp";
 			};
 			name = Release;
 		};
@@ -1058,6 +1099,30 @@
 		6875F9672A3CCE04001C9AAF /* AWSS3StoragePlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSS3StoragePlugin;
+		};
+		68A3120E2A3D10B700D60A17 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		68A312102A3D10B700D60A17 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		68A312122A3D10B800D60A17 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSS3StoragePlugin;
+		};
+		68A312142A3D137500D60A17 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		68A312162A3D137500D60A17 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSS3StoragePlugin;
+		};
+		68A312182A3D137500D60A17 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
 		};
 		B4A5B59A2919730700D873D2 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;

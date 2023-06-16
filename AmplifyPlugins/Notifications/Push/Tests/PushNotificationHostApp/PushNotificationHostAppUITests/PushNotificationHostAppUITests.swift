@@ -64,7 +64,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             XCTFail("Failed to find 'Identify User' button")
         }
 
-        let firstAlert = app.alerts.firstMatch
+        let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
             !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout)
         {
@@ -84,7 +84,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             XCTFail("Failed to find 'Register Device' button")
         }
 
-        let firstAlert = app.alerts.firstMatch
+        let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
             !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout)
         {
@@ -117,7 +117,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             deviceId: deviceIdentifier!
         ))
 
-        let notification = XCUIApplication.homeScreen.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+        let notification = notificationElement()
         if notification.waitForExistence(timeout: timeout) {
             notification.tap()
         } else {
@@ -155,7 +155,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             deviceId: deviceIdentifier!
         ))
 
-        let notification = XCUIApplication.homeScreen.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+        let notification = notificationElement()
         if notification.waitForExistence(timeout: timeout) {
             notification.tap()
         } else {
@@ -237,15 +237,32 @@ final class PushNotificationHostAppUITests: XCTestCase {
     }
 
     private func grantNotificationPermissionIfNeeded() {
-    #if os(iOS)
-        let alert = XCUIApplication.homeScreen.alerts.firstMatch
-    #elseif os(tvOS)
+    #if os(tvOS)
         let alert = XCUIApplication.homeScreen.windows["PBDialogWindow"].firstMatch
+    #else
+        let alert = XCUIApplication.homeScreen.alerts.firstMatch
     #endif
         if alert.waitForExistence(timeout: timeout) {
             XCTAssertTrue(anyElementContains(text: "Would Like to Send You Notifications", scope: alert).exists)
             alert.buttons["Allow"].tap()
         }
+    }
+    
+    private func firstAlertElement() -> XCUIElement {
+    #if os(watchOS)
+        // `SwiftUI.View.alert(isPresented:)` views re matched as tables in watchOS 🤷‍♂️
+        return app.tables.firstMatch
+    #else
+        return app.alerts.firstMatch
+    #endif
+    }
+    
+    private func notificationElement() -> XCUIElement {
+    #if os(watchOS)
+        return XCUIApplication.homeScreen.otherElements["PushNotificationsWatchApp"]
+    #else
+        return XCUIApplication.homeScreen.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+    #endif
     }
 
     private func triggerNotification(notification: PinpointNotification) async throws {
@@ -263,16 +280,19 @@ final class PushNotificationHostAppUITests: XCTestCase {
     private func pressHomeButton() {
         XCUIDevice.shared.press(XCUIDevice.Button.home)
         let springboard = XCUIApplication.homeScreen
+    #if !os(watchOS)
         springboard.activate()
+    #endif
 
         if !springboard.wait(for: .runningForeground, timeout: timeout) {
             XCTFail("Failed to get back to home screen")
         }
-        
+    #if !os(watchOS)
         if !app.wait(for: .runningBackground, timeout: timeout) {
             XCTFail("Failed to put app to the background")
             return
         }
+    #endif
     }
 
     private func anyElementContains(text: String, scope: XCUIElement) -> XCUIElement {
@@ -322,6 +342,8 @@ extension XCUIApplication {
         XCUIApplication(bundleIdentifier: "com.apple.springboard")
     #elseif os(tvOS)
         XCUIApplication(bundleIdentifier: "com.apple.PineBoard")
+    #else
+        XCUIApplication(bundleIdentifier: "com.apple.Carousel")
     #endif
     }
     
