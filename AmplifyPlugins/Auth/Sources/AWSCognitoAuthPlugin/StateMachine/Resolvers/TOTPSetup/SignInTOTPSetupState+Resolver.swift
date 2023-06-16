@@ -40,7 +40,7 @@ extension SignInTOTPSetupState {
                 return resolveVerifyingState(
                     byApplying: setupTOTPEvent, with: tokenData.session)
             default:
-                fatalError("HS: TODO")
+                return .from(.notStarted)
             }
         }
 
@@ -77,12 +77,15 @@ extension SignInTOTPSetupState {
             byApplying signInEvent: SetUpTOTPEvent,
             with signInTOTPSetupData: SignInTOTPSetupData) -> StateResolution<SignInTOTPSetupState> {
                 switch signInEvent.eventType {
-                case .verifyChallengeAnswer(let confirmTOTPSetupCode):
+                case .verifyChallengeAnswer(let confirmSignInEventData):
                     let action = VerifyTOTPSetup(
-                        signInTOTPSetupData: signInTOTPSetupData,
-                        totpCode: confirmTOTPSetupCode.answer)
+                        session: signInTOTPSetupData.session,
+                        totpCode: confirmSignInEventData.answer,
+                        friendlyDeviceName: confirmSignInEventData.friendlyDeviceName)
                     return StateResolution(
-                        newState: SignInTOTPSetupState.verifying(signInTOTPSetupData, confirmTOTPSetupCode),
+                        newState: SignInTOTPSetupState.verifying(
+                            signInTOTPSetupData,
+                            confirmSignInEventData),
                         actions: [action]
                     )
                 default:
@@ -107,14 +110,14 @@ extension SignInTOTPSetupState {
                 }
             }
 
-        private func errorState(_ error: SignInError)
-        -> StateResolution<SignInTOTPSetupState> {
-            let action = ThrowSignInError(error: error)
-            return StateResolution(
-                newState: SignInTOTPSetupState.error(error),
-                actions: [action]
-            )
-        }
+        private func errorState(
+            _ error: SignInError) -> StateResolution<SignInTOTPSetupState> {
+                let action = ThrowSignInError(error: error)
+                return StateResolution(
+                    newState: SignInTOTPSetupState.error(error),
+                    actions: [action]
+                )
+            }
 
     }
 }

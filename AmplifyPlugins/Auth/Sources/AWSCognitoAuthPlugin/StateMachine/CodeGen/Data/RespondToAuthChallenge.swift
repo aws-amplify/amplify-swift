@@ -39,6 +39,22 @@ extension RespondToAuthChallenge {
                                        attributeKey: nil)
     }
 
+    var getAllowedMFATypes: Set<MFAType> {
+        var allowedMFATypes = Set<MFAType>()
+        guard let parameters = parameters,
+              let mfaCanChooseString = parameters["MFAS_CAN_CHOOSE"] else {
+            return allowedMFATypes
+        }
+
+        for mfaTypeValue in mfaCanChooseString.split(separator: ",") {
+            if let mfaType = MFAType(mfaValue: String(mfaTypeValue)) {
+                allowedMFATypes.insert(mfaType)
+            }
+        }
+
+        return allowedMFATypes
+    }
+
     var debugDictionary: [String: Any] {
         return ["challenge": challenge,
                 "username": username.masked()]

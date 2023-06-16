@@ -23,7 +23,7 @@ public struct TOTPSetupDetails {
     public func getSetupURI(
         appName: String,
         accountName: String? = nil) -> URL? {
-            fatalError("HS: Implement me!!")
+            URL(string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(secretCode)&issuer=\(appName)")
     }
 
 }

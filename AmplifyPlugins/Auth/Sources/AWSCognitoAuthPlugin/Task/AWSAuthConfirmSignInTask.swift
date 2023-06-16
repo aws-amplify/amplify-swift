@@ -104,6 +104,18 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
     }
 
     func sendConfirmSignInEvent() async {
+        let event = SignInChallengeEvent(
+            eventType: .verifyChallengeAnswer(createConfirmSignInEventData()))
+        await authStateMachine.send(event)
+    }
+
+    func sendConfirmTOTPSetupEvent() async {
+        let event = SetUpTOTPEvent(
+            eventType: .verifyChallengeAnswer(createConfirmSignInEventData()))
+        await authStateMachine.send(event)
+    }
+
+    private func createConfirmSignInEventData() -> ConfirmSignInEventData {
         let pluginOptions = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)
 
         // Convert the attributes to [String: String]
@@ -112,23 +124,11 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             into: [String: String]()) {
                 $0[attributePrefix + $1.key.rawValue] = $1.value
             } ?? [:]
-        let confirmSignInData = ConfirmSignInEventData(
+        return ConfirmSignInEventData(
             answer: self.request.challengeResponse,
             attributes: attributes,
-            metadata: pluginOptions?.metadata)
-        let event = SignInChallengeEvent(
-            eventType: .verifyChallengeAnswer(confirmSignInData))
-        await authStateMachine.send(event)
-    }
-
-    func sendConfirmTOTPSetupEvent() async {
-        let confirmSignInData = ConfirmSignInEventData(
-            answer: self.request.challengeResponse,
-            attributes: [:],
-            metadata: nil)
-        let event = SetUpTOTPEvent(
-            eventType: .verifyChallengeAnswer(confirmSignInData))
-        await authStateMachine.send(event)
+            metadata: pluginOptions?.metadata,
+            friendlyDeviceName: pluginOptions?.friendlyDeviceName)
     }
 
 }

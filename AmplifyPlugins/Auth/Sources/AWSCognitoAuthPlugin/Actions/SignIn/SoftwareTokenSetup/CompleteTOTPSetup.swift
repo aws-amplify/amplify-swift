@@ -86,6 +86,7 @@ struct CompleteTOTPSetup: Action {
             logVerbose("\(#fileID) Sending event \(responseEvent)",
                        environment: environment)
             await dispatcher.send(responseEvent)
+            // TODO: HS:
 //        } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
 //            logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
 //            // Remove the saved device details and retry verify challenge
