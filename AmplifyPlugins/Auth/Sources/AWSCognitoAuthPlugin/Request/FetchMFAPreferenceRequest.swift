@@ -14,7 +14,7 @@ public struct FetchMFAPreferenceRequest: AmplifyOperationRequest {
     /// Extra request options defined in `FetchMFAPreferenceRequest.Options`
     public var options: Options
 
-    public init(options: Options) {
+    internal init(options: Options) {
         self.options = options
     }
 }

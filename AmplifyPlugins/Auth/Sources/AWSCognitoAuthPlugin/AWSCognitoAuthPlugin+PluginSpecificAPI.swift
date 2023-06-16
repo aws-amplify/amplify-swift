@@ -39,7 +39,11 @@ public extension AWSCognitoAuthPlugin {
     ) async throws -> UserMFAPreference {
         let options = options ?? FetchMFAPreferenceRequest.Options()
         let request = FetchMFAPreferenceRequest(options: options)
-        fatalError("HS: Implement me")
+        let task = FetchMFAPreferenceTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await task.value
     }
 
     func updateMFAPreference(
@@ -48,8 +52,15 @@ public extension AWSCognitoAuthPlugin {
         options: UpdateMFAPreferenceRequest.Options? = nil
     ) async throws {
         let options = options ?? UpdateMFAPreferenceRequest.Options()
-        let request = UpdateMFAPreferenceRequest(options: options)
-        fatalError("HS: Implement me")
+        let request = UpdateMFAPreferenceRequest(
+            options: options,
+            smsPreference: sms,
+            totpPreference: totp)
+        let task = UpdateMFAPreferenceTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await task.value
     }
     
 }

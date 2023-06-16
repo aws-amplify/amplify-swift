@@ -32,7 +32,7 @@ extension MFAPreference {
         case .enabled:
             return .init(enabled: true)
         case .preferred:
-            return .init(preferredMfa: true)
+            return .init(enabled: true, preferredMfa: true)
         case .notPreferred:
             return .init(enabled: true, preferredMfa: false)
         case .disabled:
@@ -45,7 +45,7 @@ extension MFAPreference {
         case .enabled:
             return .init(enabled: true)
         case .preferred:
-            return .init(preferredMfa: true)
+            return .init(enabled: true, preferredMfa: true)
         case .notPreferred:
             return .init(enabled: true, preferredMfa: false)
         case .disabled:

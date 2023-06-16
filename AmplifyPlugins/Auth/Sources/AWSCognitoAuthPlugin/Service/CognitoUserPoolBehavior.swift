@@ -82,8 +82,11 @@ protocol CognitoUserPoolBehavior {
     func associateSoftwareToken(input: AssociateSoftwareTokenInput) async throws -> AssociateSoftwareTokenOutputResponse
 
     /// Register a user's entered time-based one-time password (TOTP) code and mark the user's software token MFA status as "verified" if successful.
-    ///  Throws VerifySoftwareTokenOutputError
+    /// Throws VerifySoftwareTokenOutputError
     func verifySoftwareToken(input: VerifySoftwareTokenInput) async throws -> VerifySoftwareTokenOutputResponse
 
+    /// Set the user's multi-factor authentication (MFA) method preference, including which MFA factors are activated and if any are preferred.
+    /// Throws SetUserMFAPreferenceOutputError
+    func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutputResponse
 
 }

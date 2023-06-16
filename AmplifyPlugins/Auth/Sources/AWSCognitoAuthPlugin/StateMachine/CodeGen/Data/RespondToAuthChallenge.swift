@@ -46,11 +46,10 @@ extension RespondToAuthChallenge {
 
     func getChallengeKey() throws -> String {
         switch challenge {
-        case .customChallenge: return "ANSWER"
+        case .customChallenge, .selectMfaType: return "ANSWER"
         case .smsMfa: return "SMS_MFA_CODE"
         case .softwareTokenMfa: return "SOFTWARE_TOKEN_MFA_CODE"
         case .newPasswordRequired: return "NEW_PASSWORD"
-        case .selectMfaType: return "SELECT_MFA_TYPE"
         default:
             let message = "Unsupported challenge response \(challenge)"
             let error = SignInError.unknown(message: message)

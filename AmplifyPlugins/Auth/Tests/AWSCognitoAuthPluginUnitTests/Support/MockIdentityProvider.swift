@@ -221,4 +221,8 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func verifySoftwareToken(input: AWSCognitoIdentityProvider.VerifySoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.VerifySoftwareTokenOutputResponse {
         fatalError("HS: Implement me")
     }
+
+    func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutputResponse {
+        fatalError("HS: Implement me")
+    }
 }
