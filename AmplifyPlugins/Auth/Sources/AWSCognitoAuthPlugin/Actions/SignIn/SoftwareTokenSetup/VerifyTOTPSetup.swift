@@ -13,7 +13,7 @@ struct VerifyTOTPSetup: Action {
 
     var identifier: String = "VerifyTOTPSetup"
 
-    let associateSoftwareTokenData: AssociateSoftwareTokenData
+    let associateSoftwareTokenData: SignInTOTPSetupData
     let verifySoftwareTokenUserCode: String
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {

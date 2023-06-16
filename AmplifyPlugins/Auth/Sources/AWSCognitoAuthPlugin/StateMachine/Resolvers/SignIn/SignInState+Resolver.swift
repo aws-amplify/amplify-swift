@@ -100,7 +100,7 @@ extension SignInState {
 
                 if let signInEvent = event as? SignInEvent,
                    case .initiateSoftwareTokenSetup(_, let challengeResponse) = signInEvent.eventType {
-                    let action = StartTOTPSetup(
+                    let action = InitializeTOTPSetup(
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
                                  actions: [action])

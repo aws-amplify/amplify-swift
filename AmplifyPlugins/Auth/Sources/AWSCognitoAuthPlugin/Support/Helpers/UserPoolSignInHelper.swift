@@ -49,8 +49,8 @@ struct UserPoolSignInHelper: DefaultLogger {
             return try validateError(signInError: signInError)
 
         } else if case .resolvingTOTPSetup(let softwareTokenSetupState, _) = signInState,
-                  case .waitingForAnswer(let challenge) = softwareTokenSetupState {
-            return .init(nextStep: .continueSignInWithTOTPSetup(.init(secretCode: challenge.secretCode)))
+                  case .waitingForAnswer(let totpSetupData) = softwareTokenSetupState {
+            return .init(nextStep: .continueSignInWithTOTPSetup(.init(secretCode: totpSetupData.secretCode, username: totpSetupData.username)))
         }
         return nil
     }

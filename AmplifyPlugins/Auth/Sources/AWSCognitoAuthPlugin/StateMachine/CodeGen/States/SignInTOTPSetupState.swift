@@ -13,9 +13,9 @@ enum SignInTOTPSetupState: State {
 
     case associateSoftwareToken
 
-    case waitingForAnswer(AssociateSoftwareTokenData)
+    case waitingForAnswer(SignInTOTPSetupData)
 
-    case verifying(AssociateSoftwareTokenData, ConfirmSignInEventData)
+    case verifying(SignInTOTPSetupData, ConfirmSignInEventData)
 
     case respondingToAuthChallenge
 

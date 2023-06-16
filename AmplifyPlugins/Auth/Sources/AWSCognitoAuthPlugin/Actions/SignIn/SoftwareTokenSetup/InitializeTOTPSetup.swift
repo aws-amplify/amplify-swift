@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct StartTOTPSetup: Action {
+struct InitializeTOTPSetup: Action {
 
-    var identifier: String = "StartTOTPSetup"
+    var identifier: String = "InitializeTOTPSetup"
 
     let authResponse: SignInResponseBehavior
 
@@ -23,7 +23,7 @@ struct StartTOTPSetup: Action {
     }
 }
 
-extension StartTOTPSetup: CustomDebugDictionaryConvertible {
+extension InitializeTOTPSetup: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier
@@ -31,7 +31,7 @@ extension StartTOTPSetup: CustomDebugDictionaryConvertible {
     }
 }
 
-extension StartTOTPSetup: CustomDebugStringConvertible {
+extension InitializeTOTPSetup: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

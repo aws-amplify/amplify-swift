@@ -9,11 +9,12 @@ import Amplify
 import Foundation
 import AWSCognitoIdentityProvider
 
-struct AssociateSoftwareToken: Action {
+struct SetUpTOTP: Action {
 
-    var identifier: String = "AssociateSoftwareToken"
+    var identifier: String = "SetUpTOTP"
 
     let authResponse: SignInResponseBehavior
+    let signInEventData: SignInEventData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -25,12 +26,16 @@ struct AssociateSoftwareToken: Action {
             let result = try await client.associateSoftwareToken(input: input)
 
             guard let session = result.session,
-                  let secretCode = result.secretCode else {
+                  let secretCode = result.secretCode,
+                  let username = signInEventData.username else {
                 throw SignInError.unknown(message: "Unable to retrieve associate software token response")
             }
 
             let responseEvent = SetupSoftwareTokenEvent(eventType:
-                    .waitForAnswer(.init(secretCode: secretCode, session: session)))
+                    .waitForAnswer(.init(
+                        secretCode: secretCode,
+                        session: session,
+                        username: username)))
             logVerbose("\(#fileID) Sending event \(responseEvent)",
                        environment: environment)
             await dispatcher.send(responseEvent)
@@ -50,7 +55,7 @@ struct AssociateSoftwareToken: Action {
 
 }
 
-extension AssociateSoftwareToken: CustomDebugDictionaryConvertible {
+extension SetUpTOTP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier
@@ -58,7 +63,7 @@ extension AssociateSoftwareToken: CustomDebugDictionaryConvertible {
     }
 }
 
-extension AssociateSoftwareToken: CustomDebugStringConvertible {
+extension SetUpTOTP: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

@@ -15,7 +15,7 @@ struct SetupSoftwareTokenEvent: StateMachineEvent {
 
         case associateSoftwareToken(SignInResponseBehavior)
 
-        case waitForAnswer(AssociateSoftwareTokenData)
+        case waitForAnswer(SignInTOTPSetupData)
 
         case verifyChallengeAnswer(ConfirmSignInEventData)
 

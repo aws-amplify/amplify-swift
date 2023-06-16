@@ -8,22 +8,24 @@
 import Foundation
 import Amplify
 
-struct AssociateSoftwareTokenData {
+struct SignInTOTPSetupData {
 
     let secretCode: String
     let session: String
+    let username: String
 
 }
 
-extension AssociateSoftwareTokenData: CustomDebugDictionaryConvertible {
+extension SignInTOTPSetupData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "secretCode": secretCode.masked(),
-            "session": session.masked()
+            "session": session.masked(),
+            "username": username.masked()
         ]
     }
 }
 
-extension AssociateSoftwareTokenData: Codable { }
+extension SignInTOTPSetupData: Codable { }
 
-extension AssociateSoftwareTokenData: Equatable { }
+extension SignInTOTPSetupData: Equatable { }
