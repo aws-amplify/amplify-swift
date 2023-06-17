@@ -262,6 +262,11 @@ extension SignInState {
 
             case .resolvingTOTPSetup(let setUpTOTPState, let signInEventData):
 
+                if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
+                    return .init(newState: .signedIn(signedInData),
+                                 actions: [SignInComplete(signedInData: signedInData)])
+                }
+
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
                     let action = InitializeResolveChallenge(challenge: challenge,

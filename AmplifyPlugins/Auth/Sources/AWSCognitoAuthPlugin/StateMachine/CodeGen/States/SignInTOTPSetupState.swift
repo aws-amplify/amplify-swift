@@ -21,7 +21,7 @@ enum SignInTOTPSetupState: State {
 
     case success
 
-    case error(SignInError)
+    case error(SignInTOTPSetupData?, SignInError)
 }
 
 extension SignInTOTPSetupState {

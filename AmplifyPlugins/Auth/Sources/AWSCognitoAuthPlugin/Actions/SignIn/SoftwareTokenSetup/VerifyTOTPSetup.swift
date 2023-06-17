@@ -39,13 +39,13 @@ struct VerifyTOTPSetup: Action {
                        environment: environment)
             await dispatcher.send(responseEvent)
         } catch let error as SignInError {
-            let errorEvent = SignInEvent(eventType: .throwAuthError(error))
+            let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
-            let errorEvent = SignInEvent(eventType: .throwAuthError(error))
+            let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
             await dispatcher.send(errorEvent)

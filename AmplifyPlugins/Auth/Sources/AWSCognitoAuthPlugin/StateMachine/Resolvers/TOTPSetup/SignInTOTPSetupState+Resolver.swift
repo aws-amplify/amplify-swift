@@ -23,22 +23,21 @@ extension SignInTOTPSetupState {
                 return .from(oldState)
             }
 
-            if case .throwError(let authError) = setupTOTPEvent.eventType {
-                return errorState(authError)
-            }
-
             switch oldState {
             case .notStarted:
                 return resolveNotStarted(byApplying: setupTOTPEvent)
             case .setUpTOTP:
                 return resolveSetUpTOTPState(byApplying: setupTOTPEvent)
-            case .waitingForAnswer(let signInTOTPSetupDetails):
+            case .waitingForAnswer(let signInTOTPSetupData):
                 return resolveWaitForAnswer(
                     byApplying: setupTOTPEvent,
-                    with: signInTOTPSetupDetails)
-            case .verifying(let tokenData, _):
+                    with: signInTOTPSetupData)
+            case .verifying(let signInTOTPSetupData, _):
                 return resolveVerifyingState(
-                    byApplying: setupTOTPEvent, with: tokenData.session)
+                    byApplying: setupTOTPEvent, with: signInTOTPSetupData)
+            case .error(let signInTOTPSetupData, _):
+                return resolveErrorState(byApplying: setupTOTPEvent,
+                                         with: signInTOTPSetupData)
             default:
                 return .from(.notStarted)
             }
@@ -55,6 +54,8 @@ extension SignInTOTPSetupState {
                         newState: SignInTOTPSetupState.setUpTOTP,
                         actions: [action]
                     )
+                case .throwError(let error):
+                    return .init(newState: .error(nil, error))
                 default:
                     return .from(.notStarted)
                 }
@@ -88,6 +89,8 @@ extension SignInTOTPSetupState {
                             confirmSignInEventData),
                         actions: [action]
                     )
+                case .throwError(let error):
+                    return .init(newState: .error(signInTOTPSetupData, error))
                 default:
                     return .from(.notStarted)
                 }
@@ -95,7 +98,7 @@ extension SignInTOTPSetupState {
 
         private func resolveVerifyingState(
             byApplying signInEvent: SetUpTOTPEvent,
-            with session: String) -> StateResolution<SignInTOTPSetupState> {
+            with signInTOTPSetupData: SignInTOTPSetupData) -> StateResolution<SignInTOTPSetupState> {
                 switch signInEvent.eventType {
                 case .respondToAuthChallenge(let session):
                     let action = CompleteTOTPSetup(
@@ -105,18 +108,35 @@ extension SignInTOTPSetupState {
                         newState: SignInTOTPSetupState.respondingToAuthChallenge,
                         actions: [action]
                     )
+                case .throwError(let error):
+                    return .init(newState: .error(signInTOTPSetupData, error))
                 default:
                     return .from(.notStarted)
                 }
             }
 
-        private func errorState(
-            _ error: SignInError) -> StateResolution<SignInTOTPSetupState> {
-                let action = ThrowSignInError(error: error)
-                return StateResolution(
-                    newState: SignInTOTPSetupState.error(error),
-                    actions: [action]
-                )
+        private func resolveErrorState(
+            byApplying signInEvent: SetUpTOTPEvent,
+            with signInTOTPSetupData: SignInTOTPSetupData?) -> StateResolution<SignInTOTPSetupState> {
+
+                switch signInEvent.eventType {
+                case .verifyChallengeAnswer(let confirmSignInEventData):
+                    guard let signInTOTPSetupData = signInTOTPSetupData else {
+                        return .from(.notStarted)
+                    }
+                    let action = VerifyTOTPSetup(
+                        session: signInTOTPSetupData.session,
+                        totpCode: confirmSignInEventData.answer,
+                        friendlyDeviceName: confirmSignInEventData.friendlyDeviceName)
+                    return StateResolution(
+                        newState: SignInTOTPSetupState.verifying(
+                            signInTOTPSetupData,
+                            confirmSignInEventData),
+                        actions: [action]
+                    )
+                default:
+                    return .from(.notStarted)
+                }
             }
 
     }

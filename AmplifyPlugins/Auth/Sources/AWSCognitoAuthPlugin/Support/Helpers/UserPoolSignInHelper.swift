@@ -45,7 +45,7 @@ struct UserPoolSignInHelper: DefaultLogger {
             return try validateResult(for: challengeType, with: challenge)
 
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
-                  case .error(let signInError) = totpSetupState {
+                  case .error(_, let signInError) = totpSetupState {
             return try validateError(signInError: signInError)
 
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
