@@ -68,6 +68,15 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     typealias MockConfirmDeviceResponse = (ConfirmDeviceInput) async throws
     -> ConfirmDeviceOutputResponse
 
+    typealias MockSetUserMFAPreferenceResponse = (SetUserMFAPreferenceInput) async throws
+    -> SetUserMFAPreferenceOutputResponse
+
+    typealias MockAssociateSoftwareTokenResponse = (AssociateSoftwareTokenInput) async throws
+    -> AssociateSoftwareTokenOutputResponse
+
+    typealias MockVerifySoftwareTokenResponse = (VerifySoftwareTokenInput) async throws
+    -> VerifySoftwareTokenOutputResponse
+
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
     let mockInitiateAuthResponse: MockInitiateAuthResponse?
@@ -87,6 +96,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockRememberDeviceResponse: MockRememberDeviceResponse?
     let mockForgetDeviceResponse: MockForgetDeviceResponse?
     let mockConfirmDeviceResponse: MockConfirmDeviceResponse?
+    let mockSetUserMFAPreferenceResponse: MockSetUserMFAPreferenceResponse?
+    let mockAssociateSoftwareTokenResponse: MockAssociateSoftwareTokenResponse?
+    let mockVerifySoftwareTokenResponse: MockVerifySoftwareTokenResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -107,7 +119,10 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockListDevicesOutputResponse: MockListDevicesOutputResponse? = nil,
         mockRememberDeviceResponse: MockRememberDeviceResponse? = nil,
         mockForgetDeviceResponse: MockForgetDeviceResponse? = nil,
-        mockConfirmDeviceResponse: MockConfirmDeviceResponse? = nil
+        mockConfirmDeviceResponse: MockConfirmDeviceResponse? = nil,
+        mockSetUserMFAPreferenceResponse: MockSetUserMFAPreferenceResponse? = nil,
+        mockAssociateSoftwareTokenResponse: MockAssociateSoftwareTokenResponse? = nil,
+        mockVerifySoftwareTokenResponse: MockVerifySoftwareTokenResponse? = nil
     ) {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
@@ -128,6 +143,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockRememberDeviceResponse = mockRememberDeviceResponse
         self.mockForgetDeviceResponse = mockForgetDeviceResponse
         self.mockConfirmDeviceResponse = mockConfirmDeviceResponse
+        self.mockSetUserMFAPreferenceResponse = mockSetUserMFAPreferenceResponse
+        self.mockAssociateSoftwareTokenResponse = mockAssociateSoftwareTokenResponse
+        self.mockVerifySoftwareTokenResponse = mockVerifySoftwareTokenResponse
     }
 
     /// Throws InitiateAuthOutputError
@@ -215,14 +233,14 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     }
 
     func associateSoftwareToken(input: AWSCognitoIdentityProvider.AssociateSoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.AssociateSoftwareTokenOutputResponse {
-        fatalError("HS: Implement me")
+        return try await mockAssociateSoftwareTokenResponse!(input)
     }
 
     func verifySoftwareToken(input: AWSCognitoIdentityProvider.VerifySoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.VerifySoftwareTokenOutputResponse {
-        fatalError("HS: Implement me")
+        return try await mockVerifySoftwareTokenResponse!(input)
     }
 
     func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutputResponse {
-        fatalError("HS: Implement me")
+        return try await mockSetUserMFAPreferenceResponse!(input)
     }
 }

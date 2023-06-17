@@ -39,20 +39,36 @@ extension RespondToAuthChallenge {
                                        attributeKey: nil)
     }
 
-    var getAllowedMFATypes: Set<MFAType> {
+    var getAllowedMFATypesForConfirmSignIn: Set<MFAType> {
         var allowedMFATypes = Set<MFAType>()
-        guard let parameters = parameters,
-              let mfaCanChooseString = parameters["MFAS_CAN_CHOOSE"] else {
+        guard let mfaCanChooseData = parameters?["MFAS_CAN_CHOOSE"]?.data(using: .utf8),
+              let mfasCanChooseArray = try? JSONDecoder().decode([String].self, from: mfaCanChooseData) else {
             return allowedMFATypes
         }
 
-        for mfaTypeValue in mfaCanChooseString.split(separator: ",") {
+        for mfaTypeValue in mfasCanChooseArray {
             if let mfaType = MFAType(rawValue: String(mfaTypeValue)) {
                 allowedMFATypes.insert(mfaType)
             }
         }
 
         return allowedMFATypes
+    }
+
+    var getAllowedMFATypesForSetup: Set<MFAType> {
+        var mfaCanSetup = Set<MFAType>()
+        guard let mfaCanSetupData = parameters?["MFAS_CAN_SETUP"]?.data(using: .utf8),
+              let mfaCanSetupArray = try? JSONDecoder().decode([String].self, from: mfaCanSetupData) else {
+            return mfaCanSetup
+        }
+
+        for mfaTypeValue in mfaCanSetupArray {
+            if let mfaType = MFAType(rawValue: String(mfaTypeValue)) {
+                mfaCanSetup.insert(mfaType)
+            }
+        }
+
+        return mfaCanSetup
     }
 
     var debugDictionary: [String: Any] {

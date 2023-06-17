@@ -69,7 +69,7 @@ struct UserPoolSignInHelper: DefaultLogger {
         case .newPasswordRequired:
             return .init(nextStep: .confirmSignInWithNewPassword(challenge.parameters))
         case .selectMFAType:
-            return .init(nextStep: .continueSignInWithMFASelection(challenge.getAllowedMFATypes))
+            return .init(nextStep: .continueSignInWithMFASelection(challenge.getAllowedMFATypesForConfirmSignIn))
         case .setUpMFA:
             fatalError("setUpMFA is handled in SignInState.resolvingTOTPSetup state")
         case .unknown(let cognitoChallengeType):
@@ -142,10 +142,14 @@ struct UserPoolSignInHelper: DefaultLogger {
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
                 case .mfaSetup:
-                    return SignInEvent(
-                            eventType: .initiateTOTPSetup(
-                            username,
-                            response))
+                    let allowedMFATypesForSetup = respondToAuthChallenge.getAllowedMFATypesForSetup
+                    if allowedMFATypesForSetup.contains(.totp) {
+                        return SignInEvent(eventType: .initiateTOTPSetup(username, response))
+                    } else {
+                        let message = "Cannot initiate MFA setup from available Types: \(allowedMFATypesForSetup)"
+                        let error = SignInError.invalidServiceResponse(message: message)
+                        return SignInEvent(eventType: .throwAuthError(error))
+                    }
                 default:
                     let message = "Unsupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)

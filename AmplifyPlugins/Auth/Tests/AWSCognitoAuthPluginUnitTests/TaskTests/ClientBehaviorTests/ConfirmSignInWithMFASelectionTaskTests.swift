@@ -45,7 +45,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
                 XCTAssertEqual(request.challengeName, .selectMfaType)
                 XCTAssertEqual(request.challengeResponses?["ANSWER"], "SMS_MFA")
 
-                return .testData(with: .smsMfa)
+                return .testData(challenge: .smsMfa)
             })
 
         do {
@@ -77,7 +77,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
                 XCTAssertEqual(request.challengeName, .selectMfaType)
                 XCTAssertEqual(request.challengeResponses?["ANSWER"], "SOFTWARE_TOKEN_MFA")
 
-                return .testData(with: .softwareTokenMfa)
+                return .testData(challenge: .softwareTokenMfa)
             })
 
         do {
@@ -160,7 +160,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                return .testData(with: .softwareTokenMfa)
+                return .testData(challenge: .softwareTokenMfa)
             })
 
         do {
