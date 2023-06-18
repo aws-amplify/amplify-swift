@@ -10,10 +10,10 @@ import Foundation
 public struct TOTPSetupDetails {
 
     /// Secret code returned by the service to help setting up TOTP
-    let secretCode: String
+    public let secretCode: String
 
     /// username that will be used to construct the URI
-    let username: String
+    public let username: String
 
     public init(secretCode: String, username: String) {
         self.secretCode = secretCode
