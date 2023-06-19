@@ -123,6 +123,29 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
     }
 
+    // Given: multi-auth strategy and a model schema without auth provider
+    // When: auth types are requested with multiple operation
+    // Then: default values based on the auth strategy should be returned
+    func testMultiAuthShouldReturnDefaultAuthTypesForMultipleOperation() {
+        let authMode = AWSMultiAuthModeStrategy()
+        var authTypesIterator = authMode.authTypesFor(schema: ModelNoProvider.schema, operations: [.read, .create])
+        XCTAssertEqual(authTypesIterator.count, 2)
+        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+    }
+
+    // Given: multi-auth strategy and a model schema with auth provider
+    // When: auth types are requested with multiple operation
+    // Then: auth rule for public access should be returned
+    func testMultiAuthReturnDefaultAuthTypesForMultipleOperationWithProvider() {
+        let authMode = AWSMultiAuthModeStrategy()
+        let delegate = UnauthenticatedUserDelegate()
+        authMode.authDelegate = delegate
+        var authTypesIterator = authMode.authTypesFor(schema: ModelNoProvider.schema, operations: [.read, .create])
+        XCTAssertEqual(authTypesIterator.count, 1)
+        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+    }
+
 }
 
 // MARK: - Test models
