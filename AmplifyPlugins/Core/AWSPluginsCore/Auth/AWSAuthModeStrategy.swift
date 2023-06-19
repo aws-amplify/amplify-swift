@@ -216,21 +216,21 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     ) -> AWSAuthorizationTypeIterator {
 
         var applicableAuthRules = Set<AuthRule>()
-        
+
         for operation in operations {
             let rules = schema.authRules.filter(modelOperation: operation)
             applicableAuthRules = applicableAuthRules.union(Set(rules))
         }
 
-        applicableAuthRules = Set(applicableAuthRules.sorted(by: AWSMultiAuthModeStrategy.comparator))
+        var sortedRules = applicableAuthRules.sorted(by: AWSMultiAuthModeStrategy.comparator)
 
         // if there isn't a user signed in, returns only public or custom rules
         if let authDelegate = authDelegate, !authDelegate.isUserLoggedIn() {
-            applicableAuthRules = applicableAuthRules.filter { rule in
+            sortedRules = sortedRules.filter { rule in
                 return rule.allow == .public || rule.allow == .custom
             }
         }
-        let applicableAuthTypes = applicableAuthRules.map {
+        let applicableAuthTypes = sortedRules.map {
             AWSMultiAuthModeStrategy.authTypeFor(authRule: $0)
         }
         return AWSAuthorizationTypeIterator(withValues: applicableAuthTypes)

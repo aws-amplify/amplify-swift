@@ -70,5 +70,5 @@ public struct AuthRule {
 }
 
 extension AuthRule: Hashable {
-    
+
 }
