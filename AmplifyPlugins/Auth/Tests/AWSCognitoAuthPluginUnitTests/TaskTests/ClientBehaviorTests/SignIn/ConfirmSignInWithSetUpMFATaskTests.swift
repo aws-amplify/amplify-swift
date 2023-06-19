@@ -406,7 +406,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
                 return
             }

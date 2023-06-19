@@ -36,7 +36,7 @@ extension AssociateSoftwareTokenOutputError: AuthErrorConvertible {
             return AuthError.service(
                 exception.message ?? "Software token TOTP multi-factor authentication (MFA) is not enabled for the user pool.",
                 AuthPluginErrorConstants.softwareTokenNotFoundError,
-                AWSCognitoAuthError.softwareTokenMFANotEnabled)
+                AWSCognitoAuthError.mfaMethodNotFound)
         case .unknown(let unknownAWSHttpServiceError):
             let statusCode = unknownAWSHttpServiceError._statusCode?.rawValue ?? -1
             let message = unknownAWSHttpServiceError._message ?? ""

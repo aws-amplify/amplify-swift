@@ -48,7 +48,7 @@ extension VerifySoftwareTokenOutputError: AuthErrorConvertible {
             return AuthError.service(
                 exception.message ?? "Software token TOTP multi-factor authentication (MFA) is not enabled for the user pool.",
                 AuthPluginErrorConstants.softwareTokenNotFoundError,
-                AWSCognitoAuthError.softwareTokenMFANotEnabled)
+                AWSCognitoAuthError.mfaMethodNotFound)
         case .tooManyRequestsException(let exception):
             return AuthError.service(exception.message ?? "Too many requests error",
                                      AuthPluginErrorConstants.tooManyRequestError,

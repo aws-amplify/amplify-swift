@@ -69,6 +69,8 @@ extension SignInTOTPSetupState {
                         newState: SignInTOTPSetupState.waitingForAnswer(totpSetupResponse),
                         actions: []
                     )
+                case .throwError(let error):
+                    return .init(newState: .error(nil, error))
                 default:
                     return .from(.notStarted)
                 }

@@ -40,8 +40,10 @@ extension SignInState {
             additionalMetadataDictionary = ["DeviceSRPState": deviceSRPState.debugDictionary]
         case .signedIn(let data):
             additionalMetadataDictionary = ["SignedInData": data.debugDictionary]
-        case .resolvingTOTPSetup:
-            additionalMetadataDictionary = [:]
+        case .resolvingTOTPSetup(let signInTOTPSetupState, let signInEventData):
+            additionalMetadataDictionary = [
+                "SignInTOTPSetupState": signInTOTPSetupState.debugDictionary,
+                "SignInEventData" : signInEventData.debugDictionary]
         case .error:
             additionalMetadataDictionary = [:]
         }
