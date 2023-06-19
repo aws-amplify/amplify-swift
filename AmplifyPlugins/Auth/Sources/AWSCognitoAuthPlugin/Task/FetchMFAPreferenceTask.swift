@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-protocol AuthFetchMFAPreferenceTask: AmplifyAuthTask where Request == FetchMFAPreferenceRequest,
+protocol AuthFetchMFAPreferenceTask: AmplifyAuthTask where Request == Void,
                                                            Success == UserMFAPreference,
                                                            Failure == AuthError {}
 
@@ -24,7 +24,6 @@ class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger {
 
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
-    private let request: FetchMFAPreferenceRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
@@ -33,10 +32,8 @@ class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger {
         HubPayload.EventName.Auth.fetchMFAPreferenceAPI
     }
 
-    init(_ request: FetchMFAPreferenceRequest,
-         authStateMachine: AuthStateMachine,
+    init(authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory) {
-        self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
