@@ -758,7 +758,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         do {
-            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            _ = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not continue as MFA type is not available for setup")
         } catch {
             guard case AuthError.service = error else {
