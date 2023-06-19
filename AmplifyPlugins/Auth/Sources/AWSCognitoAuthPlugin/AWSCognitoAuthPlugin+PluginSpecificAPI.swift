@@ -34,8 +34,13 @@ public extension AWSCognitoAuthPlugin {
         try await task.value
     }
 
-    func fetchMFAPreference() async throws -> UserMFAPreference {
+    func fetchMFAPreference(
+        options: FetchMFAPreferenceRequest.Options? = nil
+    ) async throws -> UserMFAPreference {
+        let options = options ?? FetchMFAPreferenceRequest.Options()
+        let request = FetchMFAPreferenceRequest(options: options)
         let task = FetchMFAPreferenceTask(
+            request,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await task.value

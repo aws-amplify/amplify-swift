@@ -42,7 +42,9 @@ protocol AWSCognitoAuthPluginBehavior: AuthCategoryPlugin {
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior.
-    func fetchMFAPreference() async throws -> UserMFAPreference
+    func fetchMFAPreference(
+        options: FetchMFAPreferenceRequest.Options?
+    ) async throws -> UserMFAPreference
 
     /// Fetch User MFA preferences
     ///
