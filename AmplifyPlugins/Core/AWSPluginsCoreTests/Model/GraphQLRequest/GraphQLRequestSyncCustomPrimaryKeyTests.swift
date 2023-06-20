@@ -29,8 +29,8 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         let document = documentBuilder.build()
         let documentStringValue = """
-        query GetCustomerOrder($id: ID!, $orderId: String!) {
-          getCustomerOrder(id: $id, orderId: $orderId) {
+        query GetCustomerOrder {
+          getCustomerOrder(id: "\(order.id)", orderId: "\(order.orderId)") {
             orderId
             id
             email
@@ -56,8 +56,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(variables["id"] as? String, order.id)
-        XCTAssertEqual(variables["orderId"] as? String, order.orderId)
+        XCTAssertTrue(variables.isEmpty)
     }
 
     func testCreateMutationGraphQLRequest() throws {

@@ -39,7 +39,7 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     override func tearDown() async throws {
         try await super.tearDown()
-        try await stopDataStore()
+        try await clearDataStore()
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
     }
