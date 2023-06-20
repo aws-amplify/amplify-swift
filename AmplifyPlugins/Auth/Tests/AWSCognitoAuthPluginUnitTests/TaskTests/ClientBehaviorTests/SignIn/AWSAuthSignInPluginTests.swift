@@ -731,7 +731,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertNotNil(totpSetupDetails)
-            XCTAssertEqual(totpSetupDetails.secretCode, "123456")
+            XCTAssertEqual(totpSetupDetails.sharedSecret, "123456")
             XCTAssertEqual(totpSetupDetails.username, "username")
         } catch {
             XCTFail("Should not produce error")

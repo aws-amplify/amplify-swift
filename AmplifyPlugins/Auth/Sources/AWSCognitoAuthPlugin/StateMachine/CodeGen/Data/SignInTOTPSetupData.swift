@@ -19,7 +19,7 @@ struct SignInTOTPSetupData {
 extension SignInTOTPSetupData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "secretCode": secretCode.masked(),
+            "sharedSecret": secretCode.masked(),
             "session": session.masked(),
             "username": username.masked()
         ]

@@ -39,7 +39,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            return .init(secretCode: "secretCode", session: "newSession")
+            return .init(secretCode: "sharedSecret", session: "newSession")
         })
         let options = AuthSignInRequest.Options()
 
@@ -52,7 +52,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 XCTFail("Result should be .continueSignInWithTOTPSetup for next step")
                 return
             }
-            XCTAssertEqual(totpDetails.secretCode, "secretCode")
+            XCTAssertEqual(totpDetails.sharedSecret, "sharedSecret")
             XCTAssertEqual(totpDetails.username, "username")
             XCTAssertFalse(result.isSignedIn, "Signin result should be complete")
         } catch {
@@ -112,7 +112,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: [:])
         }, mockAssociateSoftwareTokenResponse: { input in
-            return .init(secretCode: "secretCode", session: "newSession")
+            return .init(secretCode: "sharedSecret", session: "newSession")
         })
         let options = AuthSignInRequest.Options()
 
@@ -211,7 +211,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                     challenge: .mfaSetup,
                     challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
             }, mockAssociateSoftwareTokenResponse: { input in
-                return .init(secretCode: "secretCode", session: "newSession")
+                return .init(secretCode: "sharedSecret", session: "newSession")
             })
 
             do {
@@ -220,7 +220,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                     XCTFail("Result should be .continueSignInWithTOTPSetup for next step")
                     return
                 }
-                XCTAssertEqual(totpDetails.secretCode, "secretCode")
+                XCTAssertEqual(totpDetails.sharedSecret, "sharedSecret")
                 XCTAssertEqual(totpDetails.username, "username")
                 XCTAssertFalse(result2.isSignedIn, "Signin result should be complete")
             } catch {

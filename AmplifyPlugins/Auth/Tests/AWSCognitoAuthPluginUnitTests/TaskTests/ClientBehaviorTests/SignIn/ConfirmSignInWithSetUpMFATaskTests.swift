@@ -21,7 +21,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             AuthenticationState.signingIn(
                 .resolvingTOTPSetup(
                     .waitingForAnswer(.init(
-                        secretCode: "secretCode",
+                        secretCode: "sharedSecret",
                         session: "session",
                         username: "username")),
                     .testData)),

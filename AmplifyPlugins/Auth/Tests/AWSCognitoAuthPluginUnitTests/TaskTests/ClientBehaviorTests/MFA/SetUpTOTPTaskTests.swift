@@ -28,12 +28,12 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                return .init(secretCode: "secretCode")
+                return .init(secretCode: "sharedSecret")
             })
 
         do {
             let setUpTOTPResult = try await plugin.setUpTOTP(options: nil)
-            XCTAssertEqual(setUpTOTPResult.secretCode, "secretCode")
+            XCTAssertEqual(setUpTOTPResult.sharedSecret, "sharedSecret")
         } catch {
             XCTFail("Received failure with error \(error)")
         }
