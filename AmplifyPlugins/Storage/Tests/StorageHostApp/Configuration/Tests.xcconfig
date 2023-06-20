@@ -4,13 +4,9 @@ TEST_HOST[sdk=iphoneos*]         = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/Stor
 TEST_HOST[sdk=iphonesimulator*]  = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
 TEST_HOST[sdk=appletvos*]         = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
 TEST_HOST[sdk=appletvsimulator*]  = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
-TEST_HOST[sdk=watchos*]         = $(BUILT_PRODUCTS_DIR)/StorageWatchApp.app/StorageWatchApp
-TEST_HOST[sdk=watchsimulator*]  = $(BUILT_PRODUCTS_DIR)/StorageWatchApp.app/StorageWatchApp
 
 BUNDLE_LOADER[sdk=macosx*]           = $(TEST_HOST)
 BUNDLE_LOADER[sdk=iphoneos*]         = $(TEST_HOST)
 BUNDLE_LOADER[sdk=iphonesimulator*]  = $(TEST_HOST)
 BUNDLE_LOADER[sdk=appletvos*]  = $(TEST_HOST)
 BUNDLE_LOADER[sdk=appletvsimulator*]  = $(TEST_HOST)
-BUNDLE_LOADER[sdk=watchos*]  = $(TEST_HOST)
-BUNDLE_LOADER[sdk=watchsimulator*]  = $(TEST_HOST)

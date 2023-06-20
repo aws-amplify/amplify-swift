@@ -17,7 +17,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6875F9452A3CCD81001C9AAF"
+               BlueprintIdentifier = "681D7D512A4263E500F7C310"
                BuildableName = "AWSS3StoragePluginIntegrationTestsWatch.xctest"
                BlueprintName = "AWSS3StoragePluginIntegrationTestsWatch"
                ReferencedContainer = "container:StorageHostApp.xcodeproj">
