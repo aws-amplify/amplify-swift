@@ -26,6 +26,8 @@
 		485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */; };
 		485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */; };
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
+		48916F382A412B2800E3E1B1 /* TOTPSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F372A412B2800E3E1B1 /* TOTPSetupTests.swift */; };
+		48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */; };
 		48E3AB3128E52590004EE395 /* GetCurrentUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E3AB3028E52590004EE395 /* GetCurrentUserTests.swift */; };
 		681DFEAB28E747B80000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA828E747B80000C36A /* AsyncTesting.swift */; };
 		681DFEAC28E747B80000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA928E747B80000C36A /* AsyncExpectation.swift */; };
@@ -89,6 +91,8 @@
 		485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignedOutAuthSessionTests.swift; sourceTree = "<group>"; };
 		485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignOutTests.swift; sourceTree = "<group>"; };
 		485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSRPSignInTests.swift; sourceTree = "<group>"; };
+		48916F372A412B2800E3E1B1 /* TOTPSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPSetupTests.swift; sourceTree = "<group>"; };
+		48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPHelper.swift; sourceTree = "<group>"; };
 		48E3AB3028E52590004EE395 /* GetCurrentUserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCurrentUserTests.swift; sourceTree = "<group>"; };
 		681DFEA828E747B80000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFEA928E747B80000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
@@ -219,6 +223,7 @@
 		485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				48916F362A412AF800E3E1B1 /* TOTPSetupTests */,
 				97B370C32878DA3500F1C088 /* DeviceTests */,
 				4821B2F0286B5F74000EC1D7 /* AuthDeleteUserTests */,
 				485105A82840510B002D6FC8 /* AuthUserAttributesTests */,
@@ -242,6 +247,7 @@
 				485CB5B727B61F0F006CCEC7 /* AuthSessionHelper.swift */,
 				485CB5B827B61F0F006CCEC7 /* AuthSignInHelper.swift */,
 				484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */,
+				48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -280,6 +286,14 @@
 				B4B9F45628F47B7B004F346F /* amplify-ios */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		48916F362A412AF800E3E1B1 /* TOTPSetupTests */ = {
+			isa = PBXGroup;
+			children = (
+				48916F372A412B2800E3E1B1 /* TOTPSetupTests.swift */,
+			);
+			path = TOTPSetupTests;
 			sourceTree = "<group>";
 		};
 		681DFEA728E747B80000C36A /* AsyncTesting */ = {
@@ -527,6 +541,7 @@
 				97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */,
 				681DFEAC28E747B80000C36A /* AsyncExpectation.swift in Sources */,
 				48E3AB3128E52590004EE395 /* GetCurrentUserTests.swift in Sources */,
+				48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */,
 				485CB5B127B61EAC006CCEC7 /* AWSAuthBaseTest.swift in Sources */,
 				485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */,
 				485CB5BA27B61F10006CCEC7 /* AuthSignInHelper.swift in Sources */,
@@ -534,6 +549,7 @@
 				4821B2F428737130000EC1D7 /* AuthCustomSignInTests.swift in Sources */,
 				484EDEB227F4FFBE000284B4 /* AuthEventIntegrationTests.swift in Sources */,
 				484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */,
+				48916F382A412B2800E3E1B1 /* TOTPSetupTests.swift in Sources */,
 				484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */,
 				9737C74E287E208400DA0D2B /* AuthRememberDeviceTests.swift in Sources */,
 				681DFEAD28E747B80000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
