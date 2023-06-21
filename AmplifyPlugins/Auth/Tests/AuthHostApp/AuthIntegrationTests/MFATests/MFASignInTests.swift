@@ -282,7 +282,7 @@ class MFASignInTests: AWSAuthBaseTest {
             }
             XCTAssertEqual(allowedMFATypes, [.sms, .totp])
 
-            var confirmSignInResult = try await Amplify.Auth.confirmSignIn(
+            let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: MFAType.sms.challengeResponse)
 
             guard case .confirmSignInWithSMSMFACode(let codeDeliveryDetails, _) = confirmSignInResult.nextStep else {
