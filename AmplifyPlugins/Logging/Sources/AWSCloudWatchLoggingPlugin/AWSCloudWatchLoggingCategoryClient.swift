@@ -27,20 +27,29 @@ final class AWSCloudWatchLoggingCategoryClient {
     private let credentialsProvider: CredentialsProvider
     private let authentication: AuthCategoryUserBehavior
     private var loggersByKey: [LoggerKey: AWSCloudWatchLoggingSessionController] = [:]
+    private let localStoreMaxSizeInMB: Int
+    private var automaticFlushLogMonitor: AWSCLoudWatchLoggingMonitor?
+    private let logFilter: AWSCloudWatchLoggingFilterBehavior
     
     /// - Tag: CloudWatchLoggingCategoryClient.init
     init(
         enable: Bool,
         credentialsProvider: CredentialsProvider,
         authentication: AuthCategoryUserBehavior,
+        loggingConstraints: LoggingConstraints,
         logGroupName: String,
-        region: String
+        region: String,
+        localStoreMaxSizeInMB: Int,
+        flushIntervalInSeconds: Int
     ) {
         self._enable = enable
         self.credentialsProvider = credentialsProvider
         self.authentication = authentication
         self.logGroupName = logGroupName
         self.region = region
+        self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
+        self.logFilter = AWSCloudWatchLoggingFilter(loggingConstraints: loggingConstraints)
+        self.automaticFlushLogMonitor = AWSCLoudWatchLoggingMonitor(flushIntervalInSeconds: TimeInterval(flushIntervalInSeconds), eventDelegate: self)
         
     }
     
@@ -83,19 +92,23 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
         return self.logger(forCategory: "Amplify")
     }
     
-    func logger(forCategory category: String, logLevel: Amplify.LogLevel) -> Logger {
+    func logger(forCategory category: String, namespace: String?, logLevel: Amplify.LogLevel) -> Logger {
         return lock.execute {
             let key = LoggerKey(category: category, logLevel: logLevel)
             if let existing = loggersByKey[key] {
                 return existing
             }
             
+            
             let controller = AWSCloudWatchLoggingSessionController(credentialsProvider: credentialsProvider,
                                                             authentication: authentication,
-                                                            tag: category,
+                                                            logFilter: self.logFilter,
+                                                            category: category,
+                                                            namespace: namespace,
                                                             logLevel: logLevel,
                                                             logGroupName: self.logGroupName,
-                                                            region: self.region)
+                                                            region: self.region,
+                                                            localStoreMaxSizeInMB: self.localStoreMaxSizeInMB)
             if _enable {
                 controller.enable()
             }
@@ -104,8 +117,12 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
         }
     }
     
+    func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
+        return self.logger(forCategory: category, namespace: nil, logLevel: logLevel)
+    }
+    
     func logger(forCategory category: String) -> Logger {
-        return self.logger(forCategory: category, logLevel: Amplify.Logging.logLevel)
+        return self.logger(forCategory: category, namespace: nil, logLevel: Amplify.Logging.logLevel)
     }
     
     func logger(forNamespace namespace: String) -> Logger {
@@ -113,6 +130,23 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
     
     func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
-        self.logger(forCategory: category + namespace)
+        self.logger(forCategory: category, namespace: namespace, logLevel: Amplify.Logging.logLevel)
+    }
+    
+    func getInternalClient() -> CloudWatchLogsClientProtocol {
+        loggersByKey.first!.value.client!
+    }
+    
+    func flushLogs() async throws {
+        guard _enable else { return }
+        try await loggersByKey.first?.value.flushLogs()
+    }
+}
+
+extension AWSCloudWatchLoggingCategoryClient: AWSCloudWatchLoggingMonitorDelegate {
+    func handleAutomaticFlushIntervalEvent() {
+        Task {
+            try await flushLogs()
+        }
     }
 }

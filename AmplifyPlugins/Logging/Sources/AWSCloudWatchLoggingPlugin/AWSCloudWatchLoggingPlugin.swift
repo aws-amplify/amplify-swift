@@ -20,10 +20,9 @@ import Foundation
 public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {    
     /// An instance of the authentication service.
     var loggingClient: AWSCloudWatchLoggingCategoryClient!
-    var queue: DispatchQueue = .main
     
-    var loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration?
-    var remoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider?
+    private var loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration?
+    private var remoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider?
     
     public var key: PluginKey {
         return PluginConstants.awsCloudWatchLoggingPluginKey
@@ -43,14 +42,19 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
         self.remoteLoggingConstraintsProvider = remoteLoggingConstraintsProvider
         if let configuration = self.loggingPluginConfiguration {
             let authService = AWSAuthService()
-            
             self.loggingClient = AWSCloudWatchLoggingCategoryClient(
-                enable: configuration.enablePlugin,
+                enable: configuration.enable,
                 credentialsProvider: authService.getCredentialsProvider(),
                 authentication: Amplify.Auth,
+                loggingConstraints: configuration.loggingConstraints,
                 logGroupName: configuration.logGroupName,
-                region: configuration.region
+                region: configuration.region,
+                localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
+                flushIntervalInSeconds: configuration.flushIntervalInSeconds
             )
+            if let remoteConfig = configuration.defaultRemoteConfiguration, self.remoteLoggingConstraintsProvider == nil {
+                self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(endpoint: remoteConfig.endpoint, region: configuration.region, refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
+            }
         }
     }
 
@@ -83,21 +87,14 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     
     /// send logs on-demand to AWS CloudWatch
     public func flushLogs() async throws {
-        
+        try await loggingClient.flushLogs()
     }
     
     /// Retrieve the escape hatch to perform low level operations on AWSCloudWatch
     ///
     /// - Returns: AWS CloudWatch Client
-    public func getEscapeHatch() -> CloudWatchLogsClientProtocol? {
-        let authService = AWSAuthService()
-        guard let region = self.loggingPluginConfiguration?.region, let configuration = try? CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
-            credentialsProvider: authService.getCredentialsProvider(),
-            region: region
-        ) else {
-            return nil
-        }
-        return CloudWatchLogsClient(config: configuration)
+    public func getEscapeHatch() -> CloudWatchLogsClientProtocol {
+        return loggingClient.getInternalClient()
     }
     
     /// Resets the state of the plugin.
@@ -121,18 +118,22 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             self.loggingPluginConfiguration = configuration
             let authService = AWSAuthService()
             self.loggingClient = AWSCloudWatchLoggingCategoryClient(
-                enable: configuration.enablePlugin,
+                enable: configuration.enable,
                 credentialsProvider: authService.getCredentialsProvider(),
                 authentication: Amplify.Auth,
+                loggingConstraints: configuration.loggingConstraints,
                 logGroupName: configuration.logGroupName,
-                region: configuration.region
+                region: configuration.region,
+                localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
+                flushIntervalInSeconds: configuration.flushIntervalInSeconds
             )
+            
+            if let remoteConfig = configuration.defaultRemoteConfiguration, self.remoteLoggingConstraintsProvider == nil {
+                self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(endpoint: remoteConfig.endpoint, region: configuration.region, refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
+            }
         }
         
-        // Please note that the call to takeUserIdentifierFromCurrentUser needs
-        // to happen **after** all plugins have had their chance to be
-        // configured, so this is invoked in a future run loop pass.
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             self?.loggingClient.takeUserIdentifierFromCurrentUser()
         }
     }

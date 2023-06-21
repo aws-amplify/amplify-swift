@@ -16,28 +16,44 @@ import Foundation
 /// - Tag: CloudWatchLogSession
 final class AWSCloudWatchLoggingSession {
 
-    let tag: String
+    let category: String
+    let namespace: String?
     let userIdentifier: String?
     let logger: RotatingLogger
 
-    init(tag: String, logLevel: LogLevel, userIdentifier: String? = nil) throws {
-        self.tag = tag
+    init(category: String, namespace: String?, logLevel: LogLevel, userIdentifier: String? = nil, localStoreMaxSizeInMB: Int) throws {
+        self.category = category
+        self.namespace = namespace
         self.userIdentifier = userIdentifier
-        self.logger = try Self.createLogger(tag: tag,
+        self.logger = try Self.createLogger(category: category,
+                                            namespace: namespace,
                                             logLevel: logLevel,
-                                            userIdentifier: userIdentifier)
+                                            userIdentifier: userIdentifier,
+                                            localStoreMaxSizeInMB: localStoreMaxSizeInMB)
     }
 
-    private static func createLogger(tag: String, logLevel: LogLevel, userIdentifier: String?, fileManager: FileManager = .default) throws -> RotatingLogger {
-        let directory = try directory(for: tag, userIdentifier: userIdentifier)
+    private static func createLogger(
+        category: String,
+        namespace: String?,
+        logLevel: LogLevel,
+        userIdentifier: String?,
+        localStoreMaxSizeInMB: Int,
+        fileManager: FileManager = .default
+    ) throws -> RotatingLogger {
+        let directory = try directory(for: category, userIdentifier: userIdentifier)
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         try (directory as NSURL).setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
-        return try RotatingLogger(directory: directory, tag: tag, logLevel: logLevel)
+        let cacheMaxSizeInBytes = localStoreMaxSizeInMB * 1048576
+        return try RotatingLogger(directory: directory,
+                                  category: category,
+                                  namespace: namespace,
+                                  logLevel: logLevel,
+                                  fileSizeLimitInBytes: cacheMaxSizeInBytes)
     }
 
-    private static func directory(for tag: String, userIdentifier: String?, fileManager: FileManager = .default) throws -> URL {
+    private static func directory(for category: String, userIdentifier: String?, fileManager: FileManager = .default) throws -> URL {
         let normalizedUserIdentifier = try normalized(userIdentifier: userIdentifier)
-        let normalizedTag = tag.trimmingCharacters(in: .alphanumerics.inverted).lowercased()
+        let normalizedTag = category.trimmingCharacters(in: .alphanumerics.inverted).lowercased()
         let documents = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
         let directory = documents.appendingPathComponent("amplify")
                                  .appendingPathComponent("logging")

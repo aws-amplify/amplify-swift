@@ -21,8 +21,12 @@ struct LogEntry: Codable, Hashable {
     /// The logical tag of the log entry or event. This will likely be a
     /// Category name.
     ///
-    /// - Tag: LogEntry.tag
-    let tag: String
+    /// - Tag: LogEntry.category
+    let category: String
+    
+    ///
+    /// - Tag: LogEntry.namespace
+    let namespace: String?
 
     /// An integer representation of the [LogLevel](x-source-tag://LogLevel)
     /// associated with the receiver. This attribute's uses an Int to accomodate coding.
@@ -63,11 +67,11 @@ struct LogEntry: Codable, Hashable {
         Int((created.timeIntervalSince1970 * 1000.0).rounded())
     }
     
-    /// - Tag: LogEntry.init
-    init(tag: String, level: LogLevel, message: String, created: Date = Date()) {
+    init(category: String, namespace: String?, level: LogLevel, message: String, created: Date = Date()) {
         self.created = created
         self.level = level.rawValue
-        self.tag = tag
+        self.category = category
+        self.namespace = namespace
         self.message = message
     }
     

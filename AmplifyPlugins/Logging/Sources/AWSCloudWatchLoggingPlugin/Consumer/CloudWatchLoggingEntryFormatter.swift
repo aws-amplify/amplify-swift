@@ -30,6 +30,10 @@ struct CloudWatchLoggingEntryFormatter {
     ///
     /// - Tag: CloudWatchLogEntryFormatter.format
     func format(entry: LogEntry) -> String {
-        return "\(entry.logLevelName)/\(entry.tag): \(entry.message)"
+        if let namespace = entry.namespace {
+            return "\(entry.logLevelName)/\(entry.category): \(namespace): \(entry.message)"
+        } else {
+            return "\(entry.logLevelName)/\(entry.category): \(entry.message)"
+        }        
     }
 }

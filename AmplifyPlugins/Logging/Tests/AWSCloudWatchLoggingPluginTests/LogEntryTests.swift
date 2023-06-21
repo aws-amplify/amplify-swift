@@ -23,7 +23,7 @@ final class LogEntryTests: XCTestCase {
     func testAttributes() {
         for level in levels {
             let message = UUID().uuidString
-            let sut = LogEntry(tag: "LogEntryTests", level: level, message: message)
+            let sut = LogEntry(category: "LogEntryTests", namespace: nil, level: level, message: message)
             XCTAssertNotNil(sut.created)
             XCTAssertEqual(sut.message, message)
             XCTAssertEqual(sut.logLevel, level)
@@ -35,7 +35,7 @@ final class LogEntryTests: XCTestCase {
         let decoder = JSONDecoder()
         for level in levels {
             let message = UUID().uuidString
-            let sut = LogEntry(tag: "LogEntryTests", level: level, message: message)
+            let sut = LogEntry(category: "LogEntryTests", namespace: nil, level: level, message: message)
             let encoded = try encoder.encode(sut)
             let decoded = try decoder.decode(LogEntry.self, from: encoded)
             XCTAssertEqual(decoded.created, sut.created)
@@ -49,7 +49,7 @@ final class LogEntryTests: XCTestCase {
         let json = """
         {
             "created": 0,
-            "tag": "LogEntryTests",
+            "category": "LogEntryTests",
             "level": -1337,
             "message": "\(message)"
         }

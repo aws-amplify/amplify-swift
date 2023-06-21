@@ -15,8 +15,8 @@ final class RotatingLoggerTests: XCTestCase {
     
     var systemUnderTest: RotatingLogger!
     var directory: URL!
-    var fileCountLimit = 7
-    var fileSizeLimitInBytes = UInt64(1024)
+    var fileCountLimit = 5
+    var fileSizeLimitInBytes = 1024
     var subscription: Combine.Cancellable! { willSet { subscription?.cancel()} }
     var batches: [any LogBatch]!
     
@@ -25,9 +25,9 @@ final class RotatingLoggerTests: XCTestCase {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         
         systemUnderTest = try RotatingLogger(directory: directory,
-                                             tag: "RotatingLoggerTests",
+                                             category: "RotatingLoggerTests",
+                                             namespace: nil,
                                              logLevel: .verbose,
-                                             fileCountLimit: fileCountLimit,
                                              fileSizeLimitInBytes: fileSizeLimitInBytes)
         batches = []
         subscription = systemUnderTest.logBatchPublisher.sink(receiveValue: { [weak self] in self?.batches.append($0) })

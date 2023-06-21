@@ -12,27 +12,27 @@ public struct AWSCloudWatchLoggingPluginConfiguration: Codable {
     public init(
         logGroupName: String,
         region: String,
-        enablePlugin: Bool = true,
-        cacheMaxSizeInMB: Int = 5,
+        enable: Bool = true,
+        localStoreMaxSizeInMB: Int = 5,
         flushIntervalInSeconds: Int = 60,
-        logToConsole: Bool = false,
+        defaultRemoteConfiguration: DefaultRemoteConfiguration? = nil,
         loggingConstraints: LoggingConstraints = LoggingConstraints()
      ) {
          self.logGroupName = logGroupName
          self.region = region
-         self.enablePlugin = enablePlugin
-         self.cacheMaxSizeInMB = cacheMaxSizeInMB
+         self.enable = enable
+         self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
          self.flushIntervalInSeconds = flushIntervalInSeconds
-         self.logToConsole = logToConsole
+         self.defaultRemoteConfiguration = defaultRemoteConfiguration
          self.loggingConstraints = loggingConstraints
     }
 
-   public let enablePlugin: Bool
+   public let enable: Bool
    public let logGroupName: String
    public let region: String
-   public let cacheMaxSizeInMB: Int
+   public let localStoreMaxSizeInMB: Int
    public let flushIntervalInSeconds: Int
-   public let logToConsole: Bool
+   public let defaultRemoteConfiguration: DefaultRemoteConfiguration?
    public let loggingConstraints: LoggingConstraints
 }
 
@@ -41,7 +41,7 @@ import AWSPluginsCore
 
 extension AWSCloudWatchLoggingPluginConfiguration {
     init(bundle: Bundle) throws {
-        guard let path = bundle.path(forResource: "amplifyconfiguration-logging", ofType: "json") else {
+        guard let path = bundle.path(forResource: "amplifyconfiguration_logging", ofType: "json") else {
             throw LoggingError.configuration(
                 """
                 Could not load default `amplifyconfiguration-logging.json` file

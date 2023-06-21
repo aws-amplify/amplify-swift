@@ -26,14 +26,19 @@ final class AWSCloudWatchLoggingSessionController {
             self.session?.logger.logLevel = logLevel
         }
     }
-    private var client: CloudWatchLogsClientProtocol?
+    
+    var client: CloudWatchLogsClientProtocol?
+    private let localStoreMaxSizeInMB: Int
     private let credentialsProvider: CredentialsProvider
     private let authentication: AuthCategoryUserBehavior
-    private let tag: String
+    private let category: String
+    private let namespace: String?
     private var session: AWSCloudWatchLoggingSession?
     private var consumer: LogBatchConsumer?
     private var batchSubscription: AnyCancellable? { willSet { batchSubscription?.cancel() } }
     private var authSubscription: AnyCancellable? { willSet { authSubscription?.cancel() } }
+    private let logFilter: AWSCloudWatchLoggingFilterBehavior
+    
     private var userIdentifier: String? {
         didSet {
             if oldValue != userIdentifier {
@@ -45,17 +50,23 @@ final class AWSCloudWatchLoggingSessionController {
     /// - Tag: CloudWatchLogSessionController.init
     init(credentialsProvider: CredentialsProvider,
          authentication: AuthCategoryUserBehavior,
-         tag: String,
+         logFilter: AWSCloudWatchLoggingFilterBehavior,
+         category: String,
+         namespace: String?,
          logLevel: LogLevel,
          logGroupName: String,
-         region: String
+         region: String,
+         localStoreMaxSizeInMB: Int
     ) {
         self.credentialsProvider = credentialsProvider
         self.authentication = authentication
-        self.tag = tag
+        self.logFilter = logFilter
+        self.category = category
+        self.namespace = namespace
         self.logLevel = logLevel
         self.logGroupName = logGroupName
         self.region = region
+        self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
     }
     
     func enable() {
@@ -126,9 +137,11 @@ final class AWSCloudWatchLoggingSessionController {
     
     private func updateSession() {
         do {
-            self.session = try AWSCloudWatchLoggingSession(tag: self.tag,
-                                                    logLevel: self.logLevel,
-                                                    userIdentifier: self.userIdentifier)
+            self.session = try AWSCloudWatchLoggingSession(category: self.category,
+                                                           namespace: self.namespace,
+                                                           logLevel: self.logLevel,
+                                                           userIdentifier: self.userIdentifier,
+                                                           localStoreMaxSizeInMB: self.localStoreMaxSizeInMB)
         } catch {
             self.session = nil
             print(error)
@@ -161,30 +174,39 @@ final class AWSCloudWatchLoggingSessionController {
         }
     }
     
+    func flushLogs() async throws {
+        try await session?.logger.flushLogs()
+    }
 }
 
 extension AWSCloudWatchLoggingSessionController: Logger {
     func error(_ message: @autoclosure () -> String) {
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
         session?.logger.error(message())
     }
     
     func error(error: Error) {
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
         session?.logger.error(error: error)
     }
     
     func warn(_ message: @autoclosure () -> String) {
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
         session?.logger.warn(message())
     }
     
     func info(_ message: @autoclosure () -> String) {
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel,userIdentifier: self.userIdentifier) else { return }
         session?.logger.info(message())
     }
     
     func debug(_ message: @autoclosure () -> String) {
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
         session?.logger.debug(message())
     }
     
     func verbose(_ message: @autoclosure () -> String) {
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
         session?.logger.verbose(message())
     }
 }

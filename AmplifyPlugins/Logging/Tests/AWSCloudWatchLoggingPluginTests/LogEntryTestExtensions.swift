@@ -12,7 +12,7 @@ import Foundation
 
 extension LogEntry {
     static func minimumSizeForLogEntry(level: LogLevel) throws -> Int {
-        let entry = LogEntry(tag: "", level: level, message: "", created: Date(timeIntervalSince1970: 0))
+        let entry = LogEntry(category: "", namespace: nil, level: level, message: "", created: Date(timeIntervalSince1970: 0))
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .millisecondsSince1970
         let data = try encoder.encode(entry)

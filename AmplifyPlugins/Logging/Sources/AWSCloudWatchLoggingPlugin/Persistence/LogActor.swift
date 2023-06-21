@@ -24,12 +24,8 @@ actor LogActor {
     /// Initialized the actor with the given directory and fileCountLimit.
     ///
     /// - Tag: LogActor.init
-    init(directory: URL,
-         fileCountLimit: Int,
-         fileSizeLimitInBytes: UInt64) throws {
-        self.rotation = try LogRotation(directory: directory,
-                                        fileCountLimit: fileCountLimit,
-                                        fileSizeLimitInBytes: fileSizeLimitInBytes)
+    init(directory: URL, fileSizeLimitInBytes: Int) throws {
+        self.rotation = try LogRotation(directory: directory, fileSizeLimitInBytes: fileSizeLimitInBytes)
         self.rotationSubject = PassthroughSubject()
     }
     
@@ -63,4 +59,11 @@ actor LogActor {
         try rotation.currentLogFile.synchronize()
     }
     
+    func flushLogs() throws {
+        let logs = try rotation.getAllLogs()
+        for log in logs {
+            rotationSubject.send(log)
+        }
+        try rotation.reset()
+    }
 }

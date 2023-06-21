@@ -43,7 +43,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     }
     
     func testSingleEntryHappyPath() async throws {
-        self.entries = [LogEntry(tag: "CloudWatchLogConsumerTests", level: .error, message: "")]
+        self.entries = [LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "")]
         try await systemUnderTest.consume(batch: self)
         XCTAssertEqual(client.interactions, [
             "describeLogStreams(input:)",
@@ -61,7 +61,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     func testBatchHappyPath() async throws {
         let batchSize = 32
         for _ in 0..<batchSize {
-            self.entries.append(contentsOf: [LogEntry(tag: "CloudWatchLogConsumerTests", level: .error, message: "")])
+            self.entries.append(contentsOf: [LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "")])
         }
         try await systemUnderTest.consume(batch: self)
         XCTAssertEqual(client.interactions, [
@@ -79,7 +79,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     
     func testBatchHalfRetriable() async throws {
         let batchSize = 5
-        let batch = (0..<batchSize).map { LogEntry(tag: "CloudWatchLogConsumerTests", level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
+        let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
         self.entries.append(contentsOf: batch)
 
         let index = batchSize/2
@@ -107,7 +107,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     
     func testTooNewLogEventStartIndexOutOfBounds() async throws {
         let batchSize = 5
-        let batch = (0..<batchSize).map { LogEntry(tag: "CloudWatchLogConsumerTests", level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
+        let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
         self.entries.append(contentsOf: batch)
 
         client.putLogEventsHandler = { _ in
@@ -163,7 +163,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     /// - Then: The batch is completed with an empty list of retriable entries
     func testBatchExpired() async throws {
         let batchSize = 5
-        let batch = (0..<batchSize).map { LogEntry(tag: "CloudWatchLogConsumerTests", level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
+        let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
         self.entries.append(contentsOf: batch)
 
         // Simulating a response indicating that all entries from index 0 are
@@ -196,7 +196,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     /// - Then: The batch is completed with an empty list of retriable entries
     func testBatchTooOld() async throws {
         let batchSize = 5
-        let batch = (0..<batchSize).map { LogEntry(tag: "CloudWatchLogConsumerTests", level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
+        let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
         self.entries.append(contentsOf: batch)
         
         client.putLogEventsHandler = { _ in
@@ -250,7 +250,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         client.putLogEventsHandler = { _ in
             throw TestError.consumeError
         }
-        self.entries.append(LogEntry(tag: "CloudWatchLogConsumerTests", level: .error, message: ""))
+        self.entries.append(LogEntry(category: "CloudWatchLogConsumerTests", namespace: nil, level: .error, message: ""))
         do {
             let _ = try await systemUnderTest.consume(batch: self)
             XCTFail("Expecting exception propagated from mock client.")

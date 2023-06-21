@@ -22,11 +22,6 @@ import Foundation
 ///
 /// - Tag: RotatingLogger
 final class RotatingLogger {
-
-    /// - Tag: RotatingLogger.defaultSizeLimitInBytes
-    static let defaultFileCountLimit: Int = 16
-    
-    static let defaultFileSizeLimit: UInt64 = 5000
     
     /// The [LogLevel](x-source-tag://Amplify.LogLevel) associated with the
     /// receiver.
@@ -34,7 +29,8 @@ final class RotatingLogger {
     /// - Tag: RotatingLogger.logLevel
     var logLevel: Amplify.LogLevel
     
-    private let tag: String
+    private let category: String
+    private let namespace: String?
     private let actor: LogActor
     private let batchSubject: PassthroughSubject<LogBatch, Never>
     private var rotationSubscription: Combine.Cancellable? {
@@ -45,19 +41,17 @@ final class RotatingLogger {
     ///
     /// - Parameter directory: The URL of the directory to use for the log rotation.
     /// - Parameter logLevel: Amplify.LogLevel by which to filter any incomming log events.
-    /// - Parameter fileCountLimit: The maximum number of log files in the log rotation.
     ///
     /// - Tag: RotatingLogger.init
     init(directory: URL,
-         tag: String,
+         category: String,
+         namespace: String?,
          logLevel: Amplify.LogLevel,
-         fileCountLimit: Int = RotatingLogger.defaultFileCountLimit,
-         fileSizeLimitInBytes: UInt64 = RotatingLogger.defaultFileSizeLimit
+         fileSizeLimitInBytes: Int
     ) throws {
-        self.tag = tag
-        self.actor = try LogActor(directory: directory,
-                                  fileCountLimit: fileCountLimit,
-                                  fileSizeLimitInBytes: fileSizeLimitInBytes)
+        self.category = category
+        self.namespace = namespace
+        self.actor = try LogActor(directory: directory, fileSizeLimitInBytes: fileSizeLimitInBytes)
         self.batchSubject = PassthroughSubject()
         self.logLevel = logLevel
     }
@@ -67,6 +61,10 @@ final class RotatingLogger {
     /// - Tag: RotatingLogger.synchronize
     func synchronize() async throws {
         try await actor.synchronize()
+    }
+    
+    func flushLogs() async throws {
+        try await actor.flushLogs()
     }
     
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
@@ -80,7 +78,7 @@ final class RotatingLogger {
                 batchSubject.send(RotatingLogBatch(url: url))
             }
         }
-        let entry = LogEntry(tag: self.tag, level: level, message: message())
+        let entry = LogEntry(category: self.category, namespace: self.namespace, level: level, message: message())
         try await self.actor.record(entry)
     }
 

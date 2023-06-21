@@ -13,14 +13,13 @@ final class LogRotationTests: XCTestCase {
     
     var systemUnderTest: LogRotation!
     var directory: URL!
-    var fileCountLimit = 3
-    var fileSizeLimitInBytes = UInt64(1024)
+    var fileCountLimit = 5
+    var fileSizeLimitInBytes = 1024
 
     override func setUp() async throws {
         directory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         systemUnderTest = try LogRotation(directory: directory,
-                                          fileCountLimit: fileCountLimit,
                                           fileSizeLimitInBytes: fileSizeLimitInBytes)
     }
     
@@ -46,20 +45,37 @@ final class LogRotationTests: XCTestCase {
         ])
 
         systemUnderTest = try LogRotation(directory: directory,
-                                          fileCountLimit: fileCountLimit,
                                           fileSizeLimitInBytes: fileSizeLimitInBytes)
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.1.log")
         try systemUnderTest.rotate()
         
-        let rotatedContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        var rotatedContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         XCTAssertEqual(rotatedContents.map { $0.lastPathComponent }, [
             "amplify.2.log",
             "amplify.1.log",
             "amplify.0.log",
         ])
         
+        try systemUnderTest.rotate()
+        rotatedContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        XCTAssertEqual(rotatedContents.map { $0.lastPathComponent }, [
+            "amplify.2.log",
+            "amplify.3.log",
+            "amplify.1.log",
+            "amplify.0.log",
+        ])
+        
+        try systemUnderTest.rotate()
+        rotatedContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        XCTAssertEqual(rotatedContents.map { $0.lastPathComponent }, [
+            "amplify.4.log",
+            "amplify.2.log",
+            "amplify.3.log",
+            "amplify.1.log",
+            "amplify.0.log",
+        ])
+        
         systemUnderTest = try LogRotation(directory: directory,
-                                          fileCountLimit: fileCountLimit,
                                           fileSizeLimitInBytes: fileSizeLimitInBytes)
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
@@ -75,6 +91,8 @@ final class LogRotationTests: XCTestCase {
             "amplify.0.log",
             "amplify.1.log",
             "amplify.2.log",
+            "amplify.3.log",
+            "amplify.4.log"
         ]))
     }
     
@@ -115,27 +133,11 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
     
-    func testBogusFileCountLimit() throws {
-        do {
-            _ = try LogRotation(directory: directory, fileCountLimit: 0, fileSizeLimitInBytes: 0)
-            XCTFail("Expecting failure when initializing with fileCountLimit=0")
-        } catch {
-            XCTAssertEqual(String(describing: error), "invalidFileCountLimit(0)")
-        }
-        do {
-            _ = try LogRotation(directory: directory, fileCountLimit: 1, fileSizeLimitInBytes: 0)
-            XCTFail("Expecting failure when initializing with fileCountLimit=1")
-        } catch {
-            XCTAssertEqual(String(describing: error), "invalidFileCountLimit(1)")
-        }
-    }
-    
     func testBogusFileSizeLimitInBytes() throws {
         for fileSizeLimitInBytes in 0..<LogRotation.minimumFileSizeLimitInBytes {
             do {
                 _ = try LogRotation(directory: directory,
-                                    fileCountLimit: 2,
-                                    fileSizeLimitInBytes: UInt64(fileSizeLimitInBytes))
+                                    fileSizeLimitInBytes: fileSizeLimitInBytes)
                 XCTFail("Expecting failure when initializing with fileCountLimit=\(fileSizeLimitInBytes)")
                 break
             } catch {

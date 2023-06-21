@@ -19,19 +19,11 @@ final class LogRotation {
     
     /// - Tag: LogRotationError
     enum LogRotationError: Error {
-
-        /// Represents the scenario when a caller attempts to initialize a
-        /// `LogRotation` with an invalid number of files (i.e. 0 or 1 is not
-        /// much of a rotation).
-        ///
-        /// - Tag: LogRotationError.invalidFileCountLimit
-        case invalidFileCountLimit(Int)
-        
         /// Represents the scenario when a caller attempts to initialize a
         /// `LogRotation` with an invalid file size limit (minium is 1KB).
         ///
         /// - Tag: LogRotationError.invalidFileCountLimit
-        case invalidFileSizeLimitInBytes(UInt64)
+        case invalidFileSizeLimitInBytes(Int)
     }
     
     static let minimumFileSizeLimitInBytes = 1024 /* 1KB */
@@ -45,7 +37,7 @@ final class LogRotation {
     let directory: URL
     
     /// - Tag: LogRotation.fileCountLimit
-    let fileCountLimit: Int
+    let fileCountLimit: Int = 5
 
     /// - Tag: LogRotation.fileSizeLimitInBytes
     let fileSizeLimitInBytes: UInt64
@@ -58,22 +50,16 @@ final class LogRotation {
     }
 
     /// - Tag: LogRotation.init
-    init(directory: URL, fileCountLimit: Int, fileSizeLimitInBytes: UInt64) throws {
-        if fileCountLimit == 0 || fileCountLimit == 1 {
-            throw LogRotationError.invalidFileCountLimit(fileCountLimit)
-        }
+    init(directory: URL, fileSizeLimitInBytes: Int) throws {
         if (fileSizeLimitInBytes < LogRotation.minimumFileSizeLimitInBytes) {
             throw LogRotationError.invalidFileSizeLimitInBytes(fileSizeLimitInBytes)
         }
         
-        let absoluteDirectory = directory.absoluteURL
-        
-        self.directory = absoluteDirectory
-        self.fileCountLimit = fileCountLimit
-        self.fileSizeLimitInBytes = fileSizeLimitInBytes
-        self.currentLogFile = try Self.selectNextLogFile(from: absoluteDirectory,
+        self.directory = directory.absoluteURL
+        self.fileSizeLimitInBytes = UInt64(fileSizeLimitInBytes)
+        self.currentLogFile = try Self.selectNextLogFile(from: self.directory,
                                                          fileCountLimit: fileCountLimit,
-                                                         fileSizeLimitInBytes: fileSizeLimitInBytes)
+                                                         fileSizeLimitInBytes: self.fileSizeLimitInBytes)
     }
     
     /// Selects the most-available log file.
@@ -91,6 +77,20 @@ final class LogRotation {
         self.currentLogFile = try Self.selectNextLogFile(from: self.directory,
                                                          fileCountLimit: self.fileCountLimit,
                                                          fileSizeLimitInBytes: self.fileSizeLimitInBytes)
+    }
+    
+    func getAllLogs() throws -> [URL] {
+        return try Self.listLogFiles(in: directory)
+    }
+    
+    func reset() throws {
+        let existingFiles = try Self.listLogFiles(in: directory)
+        for file in existingFiles {
+            try FileManager.default.removeItem(at: file)
+        }
+        self.currentLogFile = try Self.createLogFile(in: directory,
+                                                     index: 0,
+                                                     fileSizeLimitInBytes: fileSizeLimitInBytes)
     }
     
     /// - Tag: LogRotation.selectNextLogFile

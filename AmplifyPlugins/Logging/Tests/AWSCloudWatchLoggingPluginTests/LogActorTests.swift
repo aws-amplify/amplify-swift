@@ -13,8 +13,8 @@ import XCTest
 
 final class LogActorTests: XCTestCase {
     
-    let fileCountLimit = 7
-    let fileSizeLimitInBytes = UInt64(1024)
+    let fileCountLimit = 5
+    let fileSizeLimitInBytes = 1024
     
     var systemUnderTest: LogActor!
     var directory: URL!
@@ -26,7 +26,6 @@ final class LogActorTests: XCTestCase {
         directory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         systemUnderTest = try LogActor(directory: directory,
-                                       fileCountLimit: fileCountLimit,
                                        fileSizeLimitInBytes: fileSizeLimitInBytes)
         subscription = await systemUnderTest.rotationPublisher().sink { [weak self] url in
             self?.rotations.append(url)
@@ -44,7 +43,7 @@ final class LogActorTests: XCTestCase {
     func testRecord() async throws {
         XCTAssertEqual(rotations, [])
         
-        let entry = LogEntry(tag: "LogActorTests", level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
+        let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
         try await systemUnderTest.record(entry)
         try await systemUnderTest.synchronize()
         
@@ -61,8 +60,8 @@ final class LogActorTests: XCTestCase {
         XCTAssertEqual(rotations, [])
         
         let size = try LogEntry.minimumSizeForLogEntry(level: .error)
-        let numberOfEntries = Int(fileSizeLimitInBytes/UInt64(size)) + 1
-        let entries = (0..<numberOfEntries).map { LogEntry(tag: "", level: .error, message: "\($0)", created: .init(timeIntervalSince1970: Double($0))) }
+        let numberOfEntries = (fileSizeLimitInBytes/size) + 1
+        let entries = (0..<numberOfEntries).map { LogEntry(category: "", namespace: nil, level: .error, message: "\($0)", created: .init(timeIntervalSince1970: Double($0))) }
         for entry in entries {
             try await systemUnderTest.record(entry)
         }
