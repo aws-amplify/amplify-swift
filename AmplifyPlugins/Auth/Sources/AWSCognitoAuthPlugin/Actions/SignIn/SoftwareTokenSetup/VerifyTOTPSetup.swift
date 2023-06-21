@@ -12,7 +12,6 @@ import AWSCognitoIdentityProvider
 struct VerifyTOTPSetup: Action {
 
     var identifier: String = "VerifyTOTPSetup"
-
     let session: String
     let totpCode: String
     let friendlyDeviceName: String?
@@ -27,6 +26,8 @@ struct VerifyTOTPSetup: Action {
                 friendlyDeviceName: friendlyDeviceName,
                 session: session,
                 userCode: totpCode)
+
+            // Initiate TOTP verification
             let result = try await client.verifySoftwareToken(input: input)
 
             guard let session = result.session else {
@@ -39,12 +40,14 @@ struct VerifyTOTPSetup: Action {
                        environment: environment)
             await dispatcher.send(responseEvent)
         } catch let error as SignInError {
+            logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
+            logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
@@ -57,7 +60,10 @@ struct VerifyTOTPSetup: Action {
 extension VerifyTOTPSetup: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "session": session.masked(),
+            "totpCode": totpCode.redacted(),
+            "friendlyDeviceName": friendlyDeviceName ?? ""
         ]
     }
 }

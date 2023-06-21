@@ -12,7 +12,6 @@ import AWSCognitoIdentityProvider
 struct SetUpTOTP: Action {
 
     var identifier: String = "SetUpTOTP"
-
     let authResponse: SignInResponseBehavior
     let signInEventData: SignInEventData
 
@@ -23,12 +22,17 @@ struct SetUpTOTP: Action {
             let userpoolEnv = try environment.userPoolEnvironment()
             let client = try userpoolEnv.cognitoUserPoolFactory()
             let input = AssociateSoftwareTokenInput(session: authResponse.session)
+
+            // Initiate Set Up TOTP
             let result = try await client.associateSoftwareToken(input: input)
 
+            guard let username = signInEventData.username else {
+                throw SignInError.unknown(message: "Unable unwrap username to for use during TOTP setup")
+            }
+
             guard let session = result.session,
-                  let secretCode = result.secretCode,
-                  let username = signInEventData.username else {
-                throw SignInError.unknown(message: "Unable to retrieve associate software token response")
+                  let secretCode = result.secretCode else {
+                throw SignInError.unknown(message: "Error unwrapping result associateSoftwareToken result")
             }
 
             let responseEvent = SetUpTOTPEvent(eventType:
@@ -40,12 +44,14 @@ struct SetUpTOTP: Action {
                        environment: environment)
             await dispatcher.send(responseEvent)
         } catch let error as SignInError {
+            logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
             await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.service(error: error)
+            logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SetUpTOTPEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
@@ -58,7 +64,11 @@ struct SetUpTOTP: Action {
 extension SetUpTOTP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "challengeName": authResponse.challengeName?.rawValue ?? "",
+            "session": authResponse.session?.masked() ?? "",
+            "challengeParameters": authResponse.challengeParameters ?? [:],
+            "signInEventData": signInEventData.debugDictionary
         ]
     }
 }

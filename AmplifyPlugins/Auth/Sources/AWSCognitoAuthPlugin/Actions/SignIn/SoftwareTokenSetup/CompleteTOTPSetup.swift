@@ -20,8 +20,7 @@ struct CompleteTOTPSetup: Action {
         do {
             var deviceMetadata = DeviceMetadata.noData
             guard let username = signInEventData.username else {
-                logError("Unable unwrap username to for use in TOTP verification step", environment: environment)
-                throw AuthError.unknown("Unable to unwrap username during TOTP verification")
+                throw SignInError.unknown(message: "Unable to unwrap username during TOTP verification")
             }
             let authEnv = try environment.authEnvironment()
             let userpoolEnv = try environment.userPoolEnvironment()
@@ -93,14 +92,14 @@ struct CompleteTOTPSetup: Action {
             //            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             //            await dispatcher.send(event)
         } catch let error as SignInError {
-            logError(error.localizedDescription, environment: environment)
+            logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
             await dispatcher.send(errorEvent)
         } catch {
-            logError(error.localizedDescription, environment: environment)
             let error = SignInError.service(error: error)
+            logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
