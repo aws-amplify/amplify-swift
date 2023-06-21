@@ -75,17 +75,17 @@ class MFASignInTests: AWSAuthBaseTest {
                 username: username,
                 password: password,
                 options: .init())
-            if case .confirmSignInWithTOTPCode = result.nextStep {
-                let totpCode = TOTPHelper.generateTOTPCode(sharedSecret: totpSetupDetails.sharedSecret)
-                let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
-                    challengeResponse: totpCode)
-                XCTAssertTrue(confirmSignInResult.isSignedIn)
-
-            } else {
+            guard case .confirmSignInWithTOTPCode = result.nextStep else {
                 XCTFail("Next step should be confirmSignInWithTOTPCode")
+                return
             }
+            let totpCode = TOTPHelper.generateTOTPCode(sharedSecret: totpSetupDetails.sharedSecret)
+            let confirmSignInResult = try await Amplify.Auth.confirmSignIn(
+                challengeResponse: totpCode)
+            XCTAssertTrue(confirmSignInResult.isSignedIn)
+
         } catch {
-            XCTFail("SignIn with invalid auth flow should not succeed. \(error)")
+            XCTFail("SignIn should successfully complete. \(error)")
         }
 
         // Clean up user
@@ -149,7 +149,7 @@ class MFASignInTests: AWSAuthBaseTest {
             Amplify.Logging.info("Cannot use confirmSignIn, because don't have access to SMS")
 
         } catch {
-            XCTFail("SignIn with should successfully complete. \(error)")
+            XCTFail("SignIn should successfully complete. \(error)")
         }
 
     }
@@ -225,7 +225,7 @@ class MFASignInTests: AWSAuthBaseTest {
             XCTAssertTrue(confirmSignInResult.isSignedIn)
 
         } catch {
-            XCTFail("SignIn with should successfully complete. \(error)")
+            XCTFail("SignIn should successfully complete. \(error)")
         }
 
         // Clean up user
@@ -298,7 +298,7 @@ class MFASignInTests: AWSAuthBaseTest {
             Amplify.Logging.info("Cannot use confirmSignIn, because don't have access to SMS")
 
         } catch {
-            XCTFail("SignIn with should successfully complete. \(error)")
+            XCTFail("SignIn should successfully complete. \(error)")
         }
     }
 
