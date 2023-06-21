@@ -38,7 +38,7 @@ protocol AWSCognitoAuthPluginBehavior: AuthCategoryPlugin {
         options: AuthClearFederationToIdentityPoolRequest.Options?
     ) async throws
 
-    /// Fetch User MFA preferences
+    /// Fetches users MFA preferences
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior.
@@ -46,11 +46,11 @@ protocol AWSCognitoAuthPluginBehavior: AuthCategoryPlugin {
         options: FetchMFAPreferenceRequest.Options?
     ) async throws -> UserMFAPreference
 
-    /// Fetch User MFA preferences
+    /// Updates users MFA preferences
     ///
     /// - Parameters:
-    ///   - sms: The preference that needs to be set of SMS
-    ///   - totp: The preference that needs to be set for TOTP
+    ///   - sms: The preference that needs to be updated for SMS
+    ///   - totp: The preference that needs to be updated for TOTP
     ///   - options: Parameters specific to plugin behavior.
     func updateMFAPreference(
         sms: MFAPreference?,
