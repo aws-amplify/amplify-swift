@@ -20,10 +20,12 @@ extension MFAType {
         }
     }
 
+    /// String value of MFA Type
     public var rawValue: String {
         return challengeResponse
     }
 
+    /// String value to be used as an input parameter during MFA selection for confirmSignIn API
     public var challengeResponse: String {
         switch self {
         case .sms:
