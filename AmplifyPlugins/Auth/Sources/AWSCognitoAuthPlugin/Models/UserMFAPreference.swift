@@ -12,10 +12,10 @@ import Foundation
 public struct UserMFAPreference {
 
     /// nil if none enabled
-    let enabled: Set<MFAType>?
+    public let enabled: Set<MFAType>?
 
     /// nil if no preference
-    let preferred: MFAType?
+    public let preferred: MFAType?
 
     internal init(enabled: Set<MFAType>?, preferred: MFAType?) {
         self.enabled = enabled

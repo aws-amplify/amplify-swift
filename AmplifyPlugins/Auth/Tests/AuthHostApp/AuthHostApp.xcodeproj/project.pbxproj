@@ -28,6 +28,7 @@
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
 		48916F382A412B2800E3E1B1 /* TOTPSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F372A412B2800E3E1B1 /* TOTPSetupTests.swift */; };
 		48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */; };
+		48916F3C2A42333E00E3E1B1 /* TOTPPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F3B2A42333E00E3E1B1 /* TOTPPreferenceTests.swift */; };
 		48E3AB3128E52590004EE395 /* GetCurrentUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E3AB3028E52590004EE395 /* GetCurrentUserTests.swift */; };
 		681DFEAB28E747B80000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA828E747B80000C36A /* AsyncTesting.swift */; };
 		681DFEAC28E747B80000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA928E747B80000C36A /* AsyncExpectation.swift */; };
@@ -93,6 +94,7 @@
 		485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSRPSignInTests.swift; sourceTree = "<group>"; };
 		48916F372A412B2800E3E1B1 /* TOTPSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPSetupTests.swift; sourceTree = "<group>"; };
 		48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPHelper.swift; sourceTree = "<group>"; };
+		48916F3B2A42333E00E3E1B1 /* TOTPPreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOTPPreferenceTests.swift; sourceTree = "<group>"; };
 		48E3AB3028E52590004EE395 /* GetCurrentUserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetCurrentUserTests.swift; sourceTree = "<group>"; };
 		681DFEA828E747B80000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFEA928E747B80000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				48916F372A412B2800E3E1B1 /* TOTPSetupTests.swift */,
+				48916F3B2A42333E00E3E1B1 /* TOTPPreferenceTests.swift */,
 			);
 			path = TOTPSetupTests;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */,
 				9737C7502880BFD600DA0D2B /* AuthForgetDeviceTests.swift in Sources */,
 				B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */,
+				48916F3C2A42333E00E3E1B1 /* TOTPPreferenceTests.swift in Sources */,
 				485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */,
 				97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */,
 				681DFEAC28E747B80000C36A /* AsyncExpectation.swift in Sources */,
