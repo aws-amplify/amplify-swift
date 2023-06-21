@@ -19,14 +19,17 @@ public struct TOTPSetupDetails {
         self.sharedSecret = secretCode
         self.username = username
     }
-
+    /// Returns a TOTP setup URI that can help the customers avoid barcode scanning and use native password manager to handle TOTP association
+    /// Example: On iOS and MacOS, URI will redirect to associated Password Manager for the platform
+    ///
+    /// throws AuthError.validation if a `URL` cannot be formed with the supplied parameters
+    /// (for example, if the parameter string contains characters that are illegal in a URL, or is an empty string).
     public func getSetupURI(
         appName: String,
         accountName: String? = nil) throws -> URL {
             guard let URL = URL(
                 string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(sharedSecret)&issuer=\(appName)") else {
-                
-                /// throws if a `URL` cannot be formed with the string (for example, if the string contains characters that are illegal in a URL, or is an empty string).
+
                 throw AuthError.validation(
                     "appName or accountName",
                     "Invalid Parameters. Cannot form URL from the supplied appName or accountName",
