@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// A unique generated shared secret code that is used in the TOTP algorithm to generate a one-time code.
+/// Set of allowed MFA types that would be used for continuing sign in during MFA selection step
 public typealias AllowedMFATypes = Set<MFAType>
 
 /// Auth SignIn flow steps
@@ -31,11 +31,11 @@ public enum AuthSignInStep {
     /// Confirmation code for the MFA will be retrieved from the associated Authenticator app
     case confirmSignInWithTOTPCode
 
-    /// Auth step is for setting up TOTP multi factor authentication.
+    /// Auth step is for continuing sign in by setting up TOTP multi factor authentication.
     ///
     case continueSignInWithTOTPSetup(TOTPSetupDetails)
 
-    /// Auth step is selecting multi factor authentication type to continue sign in process.
+    /// Auth step is for continuing sign in by selecting multi factor authentication type
     ///
     case continueSignInWithMFASelection(AllowedMFATypes)
 

@@ -22,8 +22,18 @@ public struct TOTPSetupDetails {
 
     public func getSetupURI(
         appName: String,
-        accountName: String? = nil) -> URL? {
-            URL(string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(sharedSecret)&issuer=\(appName)")
-    }
+        accountName: String? = nil) throws -> URL {
+            guard let URL = URL(
+                string: "otpauth://totp/\(appName):\(accountName ?? username)?secret=\(sharedSecret)&issuer=\(appName)") else {
+                
+                /// throws if a `URL` cannot be formed with the string (for example, if the string contains characters that are illegal in a URL, or is an empty string).
+                throw AuthError.validation(
+                    "appName or accountName",
+                    "Invalid Parameters. Cannot form URL from the supplied appName or accountName",
+                    "Please make sure that the supplied parameters don't contain any characters that are illegal in a URL or is an empty String",
+                    nil)
+            }
+            return URL
+        }
 
 }
