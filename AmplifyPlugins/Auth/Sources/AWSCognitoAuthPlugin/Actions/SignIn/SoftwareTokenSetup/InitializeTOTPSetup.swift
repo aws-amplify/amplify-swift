@@ -10,7 +10,6 @@ import Foundation
 struct InitializeTOTPSetup: Action {
 
     var identifier: String = "InitializeTOTPSetup"
-
     let authResponse: SignInResponseBehavior
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
@@ -26,7 +25,10 @@ struct InitializeTOTPSetup: Action {
 extension InitializeTOTPSetup: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "challengeName": authResponse.challengeName?.rawValue ?? "",
+            "session": authResponse.session?.masked() ?? "",
+            "challengeParameters": authResponse.challengeParameters ?? [:]
         ]
     }
 }
