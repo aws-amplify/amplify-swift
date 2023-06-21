@@ -64,7 +64,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(team)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [syncedTeamReceived], timeout: networkTimeout)
         
         let syncProjectReceived = expectation(description: "received project from sync path")
         hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -84,7 +84,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(project)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [syncProjectReceived], timeout: networkTimeout)
 
         let queriedProjectOptional = try await Amplify.DataStore.query(Project1.self, byId: project.id)
         guard let queriedProject = queriedProjectOptional else {
@@ -126,7 +126,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         }
         project.team = anotherTeam
         _ = try await Amplify.DataStore.save(project)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [syncUpdatedProjectReceived], timeout: networkTimeout)
         
         let queriedProjectOptional = try await Amplify.DataStore.query(Project1.self, byId: project.id)
         XCTAssertNotNil(queriedProjectOptional)
@@ -173,8 +173,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         
         _ = try await Amplify.DataStore.save(team)
         _ = try await Amplify.DataStore.save(project)
-        
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "Delete notification received")
         deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
@@ -206,7 +205,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
         // Once cascade works for hasOne, the following code can be removed.
         _ = try await Amplify.DataStore.delete(team)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
 
         let queriedProject = try await Amplify.DataStore.query(Project1.self, byId: project.id)
         XCTAssertNil(queriedProject)

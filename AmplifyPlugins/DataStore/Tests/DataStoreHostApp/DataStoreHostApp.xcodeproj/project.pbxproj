@@ -319,7 +319,6 @@
 		21BBFC05289C036100B32A39 /* DataStoreTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EA289BFE3400B32A39 /* DataStoreTestBase.swift */; };
 		21BBFC06289C036300B32A39 /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EB289BFE3400B32A39 /* DataStoreInternal.swift */; };
 		21BBFC07289C036600B32A39 /* HubEventsIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */; };
-		21BBFC08289C036800B32A39 /* SyncEngineIntegrationV2TestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */; };
 		21BBFC0B289C037000B32A39 /* TestModelV2Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */; };
 		21BBFC0E289C038500B32A39 /* DataStoreConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F4289BFE3400B32A39 /* DataStoreConnectionScenario5Tests.swift */; };
 		21BBFC0F289C038700B32A39 /* DataStoreConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F5289BFE3400B32A39 /* DataStoreConnectionScenario2Tests.swift */; };
@@ -980,7 +979,6 @@
 		21BBF9EA289BFE3400B32A39 /* DataStoreTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreTestBase.swift; sourceTree = "<group>"; };
 		21BBF9EB289BFE3400B32A39 /* DataStoreInternal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
 		21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HubEventsIntegrationTestBase.swift; sourceTree = "<group>"; };
-		21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncEngineIntegrationV2TestBase.swift; sourceTree = "<group>"; };
 		21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreHubEvent.swift; sourceTree = "<group>"; };
 		21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModelV2Registration.swift; sourceTree = "<group>"; };
 		21BBF9F1289BFE3400B32A39 /* DataStoreConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConfigurationTests.swift; sourceTree = "<group>"; };
@@ -1995,7 +1993,6 @@
 				21BBF9EA289BFE3400B32A39 /* DataStoreTestBase.swift */,
 				21BBF9EB289BFE3400B32A39 /* DataStoreInternal.swift */,
 				21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */,
-				21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */,
 				21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */,
 			);
 			path = TestSupport;
@@ -4035,7 +4032,6 @@
 				21BBFC28289C062000B32A39 /* TestConfigHelper.swift in Sources */,
 				21BBFD3D289C06E400B32A39 /* Post3V2.swift in Sources */,
 				21BBFDE1289C06E400B32A39 /* UserFollowing.swift in Sources */,
-				21BBFC08289C036800B32A39 /* SyncEngineIntegrationV2TestBase.swift in Sources */,
 				21BBFD59289C06E400B32A39 /* MyCustomModel8.swift in Sources */,
 				21BBFD3C289C06E400B32A39 /* Post3V2+Schema.swift in Sources */,
 				21BBFDC3289C06E400B32A39 /* Post6.swift in Sources */,

@@ -236,6 +236,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public func reset() async {
         dispatchedModelSyncedEvents = [:]
+        dataStorePublisher?.sendFinished()
         if let resettable = storageEngine as? Resettable {
             log.verbose("Resetting storageEngine")
             await resettable.reset()

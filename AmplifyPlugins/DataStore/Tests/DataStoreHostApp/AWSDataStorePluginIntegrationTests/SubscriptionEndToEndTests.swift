@@ -6,7 +6,7 @@
 //
 
 import XCTest
-
+import Combine
 import AWSPluginsCore
 
 @testable import Amplify
@@ -40,39 +40,33 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         let originalContent = "Original content from SubscriptionTests at \(Date())"
         let updatedContent = "UPDATED CONTENT from SubscriptionTests at \(Date())"
 
-        let createReceived = asyncExpectation(description: "createReceived")
-        let updateReceived = asyncExpectation(description: "updateReceived")
-        let deleteReceived = asyncExpectation(description: "deleteReceived")
+        let createReceived = expectation(description: "createReceived")
+        let updateReceived = expectation(description: "updateReceived")
+        let deleteReceived = expectation(description: "deleteReceived")
 
-        var hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent else {
-                XCTFail("Can't cast payload as mutation event")
-                return
+        var cancellables = Set<AnyCancellable>()
+        Amplify.Hub.publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .compactMap { $0.data as? MutationEvent }
+            .filter { $0.modelId == id }
+            .map(\.mutationType)
+            .sink {
+                switch $0 {
+                case GraphQLMutationType.create.rawValue:
+                    createReceived.fulfill()
+                case GraphQLMutationType.update.rawValue:
+                    updateReceived.fulfill()
+                case GraphQLMutationType.delete.rawValue:
+                    deleteReceived.fulfill()
+                default:
+                    break
+                }
             }
-            guard mutationEvent.modelId == id else {
-                print("Received unrelated mutation, skipping \(mutationEvent)")
-                return
-            }
-            switch mutationEvent.mutationType {
-            case GraphQLMutationType.create.rawValue:
-                Task { await createReceived.fulfill() }
-            case GraphQLMutationType.update.rawValue:
-                Task { await updateReceived.fulfill() }
-            case GraphQLMutationType.delete.rawValue:
-                Task { await deleteReceived.fulfill() }
-            default:
-                break
-            }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
+            .store(in: &cancellables)
 
         // Act: send create mutation
         try await sendCreateRequest(withId: id, content: originalContent)
-        await waitForExpectations([createReceived], timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: 10)
         // Assert
         let createSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(createSyncData)
@@ -84,7 +78,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         
         // Act: send update mutation
         try await sendUpdateRequest(forId: id, content: updatedContent, version: 1)
-        await waitForExpectations([updateReceived], timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: 10)
         // Assert
         let updateSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(updateSyncData)
@@ -96,7 +90,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         
         // Act: send delete mutation
         try await sendDeleteRequest(forId: id, version: 2)
-        await waitForExpectations([deleteReceived], timeout: networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: 10)
         // Assert
         let deleteSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNil(deleteSyncData)
@@ -210,7 +204,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             }
             queryComplete.fulfill()
         }
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [queryComplete], timeout: networkTimeout)
         guard let post = postFromQuery else {
             return nil
         }
