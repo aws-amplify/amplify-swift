@@ -130,7 +130,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior
     func setUpTOTP(
-        options: TOTPSetupRequest.Options?
+        options: SetUpTOTPRequest.Options?
     ) async throws -> TOTPSetupDetails
 
     /// Verifying TOTP Setup

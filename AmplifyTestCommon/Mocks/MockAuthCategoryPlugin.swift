@@ -100,7 +100,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 
     public func setUpTOTP(
-        options: TOTPSetupRequest.Options?
+        options: SetUpTOTPRequest.Options?
     ) async throws -> TOTPSetupDetails {
         fatalError()
     }

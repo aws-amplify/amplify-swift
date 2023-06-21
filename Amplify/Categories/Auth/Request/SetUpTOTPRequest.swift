@@ -8,7 +8,7 @@
 import Foundation
 
 /// Request to set up TOTP
-public struct TOTPSetupRequest: AmplifyOperationRequest {
+public struct SetUpTOTPRequest: AmplifyOperationRequest {
 
     /// Extra request options defined in `TOTPSetupRequest.Options`
     public var options: Options
@@ -18,7 +18,7 @@ public struct TOTPSetupRequest: AmplifyOperationRequest {
     }
 }
 
-public extension TOTPSetupRequest {
+public extension SetUpTOTPRequest {
 
     struct Options {
 

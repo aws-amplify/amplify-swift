@@ -15,7 +15,7 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
 
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
-    private let request: TOTPSetupRequest
+    private let request: SetUpTOTPRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
@@ -24,7 +24,7 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         HubPayload.EventName.Auth.setUpTOTPAPI
     }
 
-    init(_ request: TOTPSetupRequest,
+    init(_ request: SetUpTOTPRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory) {
         self.request = request

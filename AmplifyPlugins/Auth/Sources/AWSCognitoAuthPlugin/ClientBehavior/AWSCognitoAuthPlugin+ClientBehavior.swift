@@ -168,11 +168,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
     public func setUpTOTP(
-        options: TOTPSetupRequest.Options?
+        options: SetUpTOTPRequest.Options?
     ) async throws -> TOTPSetupDetails {
 
-        let options = options ?? TOTPSetupRequest.Options()
-        let request = TOTPSetupRequest(options: options)
+        let options = options ?? SetUpTOTPRequest.Options()
+        let request = SetUpTOTPRequest(options: options)
         let task = SetUpTOTPTask(
             request,
             authStateMachine: authStateMachine,

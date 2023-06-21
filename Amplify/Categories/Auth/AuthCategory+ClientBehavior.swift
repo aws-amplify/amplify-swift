@@ -76,7 +76,7 @@ extension AuthCategory: AuthCategoryBehavior {
     }
 
     public func setUpTOTP(
-        options: TOTPSetupRequest.Options? = nil
+        options: SetUpTOTPRequest.Options? = nil
     ) async throws -> TOTPSetupDetails {
         try await plugin.setUpTOTP(options: options)
     }
