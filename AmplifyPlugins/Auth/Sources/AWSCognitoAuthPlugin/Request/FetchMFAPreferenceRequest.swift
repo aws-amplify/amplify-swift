@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import Foundation
 
 /// Request for fetching user MFA preferences
 public struct FetchMFAPreferenceRequest: AmplifyOperationRequest {
@@ -23,6 +22,9 @@ public extension FetchMFAPreferenceRequest {
 
     struct Options {
 
-        public init() { }
+        public init() {
+            // No options
+        }
+
     }
 }

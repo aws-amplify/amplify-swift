@@ -8,13 +8,13 @@
 import Amplify
 import Foundation
 
-/// Request for fetching user MFA preferences
+/// Request for udpating user MFA preferences
 public struct UpdateMFAPreferenceRequest: AmplifyOperationRequest {
 
     internal let smsPreference: MFAPreference?
     internal let totpPreference: MFAPreference?
 
-    /// Extra request options defined in `FetchMFAPreferenceRequest.Options`
+    /// Extra request options defined in `UpdateMFAPreferenceRequest.Options`
     public var options: Options
 
     internal init(options: Options,
@@ -30,6 +30,9 @@ public extension UpdateMFAPreferenceRequest {
 
     struct Options {
 
-        public init() { }
+        public init() {
+            // No options
+        }
+        
     }
 }

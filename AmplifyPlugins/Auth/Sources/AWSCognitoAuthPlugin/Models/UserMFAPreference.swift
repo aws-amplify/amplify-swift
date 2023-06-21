@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import Foundation
 
 /// Output for fetching MFA preference
 public struct UserMFAPreference {
