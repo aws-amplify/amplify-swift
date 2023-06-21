@@ -660,16 +660,6 @@
                </Test>
             </SkippedTests>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyUtilsNotificationsTests"
-               BuildableName = "AmplifyUtilsNotificationsTests"
-               BlueprintName = "AmplifyUtilsNotificationsTests"
-               ReferencedContainer = "container:../amplify-swift-utils-notifications">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

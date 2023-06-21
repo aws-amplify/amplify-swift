@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/amplify-swift-utils-notifications.git",
       "state" : {
-        "branch" : "feat/tvOS-and-watchOS",
-        "revision" : "a31c6aa1ad9fe2661bcd5b0998fb5b7d4ec48052"
+        "revision" : "d4fd3c17e8d40efc821f448d3d6cff75b8f3b0dd",
+        "version" : "1.0.0"
       }
     },
     {

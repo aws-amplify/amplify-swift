@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS) || os(macOS)
-
 import Foundation
 
 import XCTest
@@ -84,7 +82,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
-        let result = try await signInWithWebUI()
+        let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
         XCTAssertTrue(result.isSignedIn)
     }
 
@@ -93,7 +91,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         mockHostedUIResult = .failure(.cancelled)
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
@@ -111,7 +109,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         mockHostedUIResult = .failure(.cancelled)
         let errorExpectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
@@ -129,7 +127,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         let signInExpectation = expectation(description: "SignIn operation should complete")
         do {
-            let result = try await signInWithWebUI()
+            let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTAssertTrue(result.isSignedIn)
             signInExpectation.fulfill()
         } catch {
@@ -146,7 +144,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service = error else {
@@ -163,7 +161,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         mockHostedUIResult = .failure(.invalidContext)
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.invalidState = error else {
@@ -191,7 +189,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service = error else {
@@ -219,7 +217,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service = error else {
@@ -273,18 +271,10 @@ class AWSAuthHostedUISignInTests: XCTestCase {
                 .init(name: "state", value: mockState),
                 .init(name: "code", value: mockProof)
             ])
-            let result2 = try await signInWithWebUI()
+            let result2 = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTAssertTrue(result2.isSignedIn)
         } catch {
             XCTFail("Received failure with error \(error)")
         }
     }
-
-    private func signInWithWebUI() async throws -> AuthSignInResult {
-        try await plugin.signInWithWebUI(for: .amazon,
-                                         presentationAnchor: AuthUIPresentationAnchor(),
-                                         options: nil)
-    }
 }
-
-#endif

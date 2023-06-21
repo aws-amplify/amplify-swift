@@ -10,15 +10,9 @@ import Foundation
 import AWSAPIPlugin
 
 class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFactory {
-#if os(watchOS)
-    public static func make() -> NetworkReachabilityProviding? {
-        return MockReachability()
-    }
-#else
     public static func make(for hostname: String) -> NetworkReachabilityProviding? {
         return MockReachability()
     }
-#endif
 }
 
 class MockReachability: NetworkReachabilityProviding {

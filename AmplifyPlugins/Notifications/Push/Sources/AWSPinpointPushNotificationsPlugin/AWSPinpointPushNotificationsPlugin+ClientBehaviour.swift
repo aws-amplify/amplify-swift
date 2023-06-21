@@ -116,24 +116,24 @@ extension AWSPinpointPushNotificationsPlugin {
     @MainActor
     private func handleDeeplinking(for url: URL) {
         log.verbose("Received deeplink: \(url)")
-#if canImport(UIKit) && !os(watchOS)
-    if UIApplication.shared.canOpenURL(url) {
-        UIApplication.shared.open(url)
-    }
-#elseif canImport(AppKit)
-    NSWorkspace.shared.open(url)
-#endif
+    #if canImport(UIKit) && !os(watchOS)
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        }
+    #elseif canImport(AppKit)
+        NSWorkspace.shared.open(url)
+    #endif
     }
 
     @MainActor
     private var applicationState: ApplicationState {
-#if canImport(WatchKit)
-    let application = WKExtension.shared()
-#elseif canImport(UIKit)
-    let application = UIApplication.shared
-#endif
+    #if canImport(WatchKit)
+        let application = WKExtension.shared()
+    #elseif canImport(UIKit)
+        let application = UIApplication.shared
+    #endif
         
-#if canImport(UIKit) || canImport(WatchKit)
+    #if canImport(UIKit) || canImport(WatchKit)
         switch application.applicationState {
         case .background:
             return .background
@@ -145,12 +145,12 @@ extension AWSPinpointPushNotificationsPlugin {
             log.warn("Application is in an unsupported state. Defaulting to inactive.")
             return .inactive
         }
-#elseif canImport(AppKit)
+    #elseif canImport(AppKit)
         let application = NSApplication.shared
         guard application.isRunning else {
             return .inactive
         }
         return application.isActive ? .foreground : .background
-#endif
+    #endif
     }
 }

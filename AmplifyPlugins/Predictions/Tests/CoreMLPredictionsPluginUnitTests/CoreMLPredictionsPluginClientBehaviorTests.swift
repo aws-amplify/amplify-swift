@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-#if canImport(Speech) && canImport(Vision)
+
 import XCTest
 import Amplify
 @testable import CoreMLPredictionsPlugin
@@ -19,4 +19,3 @@ class CoreMLPredictionsPluginTests: CoreMLPredictionsPluginTestBase {
         XCTAssertNotNil(result, "Should return a valid operation")
     }
 }
-#endif

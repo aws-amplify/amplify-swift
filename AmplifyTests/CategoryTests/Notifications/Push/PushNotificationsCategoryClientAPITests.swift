@@ -75,7 +75,6 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         await waitForExpectations(timeout: 1.0)
     }
 
-#if !os(tvOS)
     func testRecordNotificationOpened_shouldSucceed() async throws {
         let response = UNNotificationResponse(coder: MockedKeyedArchiver(requiringSecureCoding: false))!
         let expectedMessage = "recordNotificationOpened(response:\(response))"
@@ -89,7 +88,6 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         try await category.recordNotificationOpened(response)
         await waitForExpectations(timeout: 1.0)
     }
-#endif
 
     private class MockedKeyedArchiver: NSKeyedArchiver {
         override func decodeObject(forKey _: String) -> Any { "" }

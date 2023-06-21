@@ -10,9 +10,9 @@ import Amplify
 import AuthenticationServices
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
-    
+
     weak var webPresentation: AuthUIPresentationAnchor?
-    
+
     func showHostedUI(url: URL,
                       callbackScheme: String,
                       inPrivate: Bool,
@@ -27,7 +27,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                 if let url = url {
                     let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
                     let queryItems = urlComponents?.queryItems ?? []
-                    
+
                     if let error = queryItems.first(where: { $0.name == "error" })?.value {
                         callback(.failure(.serviceMessage(error)))
                         return
@@ -35,7 +35,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                     callback(.success(queryItems))
                 } else if let error = error {
                     callback(.failure(self.convertHostedUIError(error)))
-                    
+
                 } else {
                     callback(.failure(.unknown))
                 }
@@ -45,7 +45,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 #endif
         
         aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
-        
+
         DispatchQueue.main.async {
             aswebAuthenticationSession.start()
         }

@@ -34,11 +34,9 @@ class MockPushNotificationsCategoryPlugin: MessageReporter, PushNotificationsCat
         notify("recordNotificationReceived(userInfo:\(userInfo))")
     }
     
-#if !os(tvOS)
     func recordNotificationOpened(_ response: UNNotificationResponse) {
         notify("recordNotificationOpened(response:\(response))")
     }
-#endif
 }
 
 class MockSecondPushNotificationsCategoryPlugin: MockPushNotificationsCategoryPlugin {

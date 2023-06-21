@@ -164,7 +164,6 @@ class AuthHubEventHandlerTests: XCTestCase {
         await waitForExpectations(timeout: networkTimeout)
     }
 
-#if os(iOS) || os(macOS)
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
     /// - Given: A listener to hub events
@@ -191,7 +190,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
 
         do {
-            try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor(), options: nil)
         } catch {
             XCTFail("Received failure with error \(error)")
         }
@@ -223,13 +222,12 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
         do {
-            try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(for: .amazon, presentationAnchor: AuthUIPresentationAnchor(), options: nil)
         } catch {
             XCTFail("Received failure with error \(error)")
         }
         wait(for: [hubEventExpectation], timeout: 10)
     }
-#endif
 
     /// Test whether HubEvent emits a federatedToIdentityPool event for mocked federated operation
     ///
@@ -483,14 +481,6 @@ class AuthHubEventHandlerTests: XCTestCase {
             hubEventHandler: authHandler,
             analyticsHandler: MockAnalyticsHandler())
     }
-    
-#if os(iOS) || os(macOS)
-    private func signInWithWebUI() async throws {
-        _ = try await plugin.signInWithWebUI(for: .amazon,
-                                             presentationAnchor: AuthUIPresentationAnchor(),
-                                             options: nil)
-    }
-#endif
 
     override func tearDown() async throws {
         plugin = nil

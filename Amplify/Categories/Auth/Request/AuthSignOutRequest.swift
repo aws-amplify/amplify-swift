@@ -36,7 +36,7 @@ public extension AuthSignOutRequest {
         /// Provide a presentation anchor if you have signedIn using `signInWithWebUI`. The signOut webUI will be presented
         /// in the presentation anchor provided.
         public let presentationAnchorForWebUI: AuthUIPresentationAnchor?
-        
+
         public init(globalSignOut: Bool = false,
                     presentationAnchor: AuthUIPresentationAnchor? = nil,
                     pluginOptions: Any? = nil) {

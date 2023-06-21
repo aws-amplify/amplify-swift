@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(Speech) && canImport(Vision)
 import XCTest
 import CoreMLPredictionsPlugin
 
@@ -18,4 +17,3 @@ class CoreMLPredictionsPluginAmplifyVersionableTests: XCTestCase {
     }
 
 }
-#endif

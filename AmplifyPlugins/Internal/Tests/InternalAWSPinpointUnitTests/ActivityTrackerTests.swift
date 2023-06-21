@@ -7,13 +7,6 @@
 
 @testable import InternalAWSPinpoint
 import XCTest
-#if canImport(WatchKit)
-import WatchKit
-#elseif canImport(UIKit)
-import UIKit
-#elseif canImport(AppKit)
-import AppKit
-#endif
 
 class ActivityTrackerTests: XCTestCase {
     private var tracker: ActivityTracker!
@@ -21,33 +14,27 @@ class ActivityTrackerTests: XCTestCase {
     private var timeout: TimeInterval = 1
 
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
-#if canImport(WatchKit)
-    WKExtension.applicationDidEnterBackgroundNotification
-#elseif canImport(UIKit)
-    UIApplication.didEnterBackgroundNotification
-#elseif canImport(AppKit)
-    NSApplication.didResignActiveNotification
-#endif
+    #if canImport(UIKit)
+        UIApplication.didEnterBackgroundNotification
+    #else
+        NSApplication.didResignActiveNotification
+    #endif
     }()
 
     private static  let applicationWillMoveToForegoundNotification: Notification.Name = {
-#if canImport(WatchKit)
-    WKExtension.applicationWillEnterForegroundNotification
-#elseif canImport(UIKit)
-    UIApplication.willEnterForegroundNotification
-#elseif canImport(AppKit)
-    NSApplication.willBecomeActiveNotification
-#endif
+    #if canImport(UIKit)
+        UIApplication.willEnterForegroundNotification
+    #else
+        NSApplication.willBecomeActiveNotification
+    #endif
     }()
 
     private static  var applicationWillTerminateNotification: Notification.Name = {
-#if canImport(WatchKit)
-    WKExtension.applicationWillResignActiveNotification
-#elseif canImport(UIKit)
-    UIApplication.willTerminateNotification
-#elseif canImport(AppKit)
-    NSApplication.willTerminateNotification
-#endif
+    #if canImport(UIKit)
+        UIApplication.willTerminateNotification
+    #else
+        NSApplication.willTerminateNotification
+    #endif
     }()
 
     override func setUp() {
