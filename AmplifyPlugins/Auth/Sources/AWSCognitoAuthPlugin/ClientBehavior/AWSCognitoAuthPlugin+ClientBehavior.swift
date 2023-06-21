@@ -170,7 +170,6 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func setUpTOTP(
         options: SetUpTOTPRequest.Options?
     ) async throws -> TOTPSetupDetails {
-
         let options = options ?? SetUpTOTPRequest.Options()
         let request = SetUpTOTPRequest(options: options)
         let task = SetUpTOTPTask(
@@ -187,7 +186,6 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         code: String,
         options: VerifyTOTPSetupRequest.Options?
     ) async throws {
-
         let options = options ?? VerifyTOTPSetupRequest.Options()
         let request = VerifyTOTPSetupRequest(
             code: code,
