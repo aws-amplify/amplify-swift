@@ -10,6 +10,7 @@ import Foundation
 /// Request to verify TOTP setup
 public struct VerifyTOTPSetupRequest: AmplifyOperationRequest {
 
+    /// Code from the associated Authenticator app that will be used for verification
     public var code: String
 
     /// Extra request options defined in `VerifyTOTPSetupRequest.Options`
