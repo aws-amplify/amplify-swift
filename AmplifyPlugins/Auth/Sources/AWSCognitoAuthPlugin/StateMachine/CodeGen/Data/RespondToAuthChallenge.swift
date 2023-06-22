@@ -39,36 +39,30 @@ extension RespondToAuthChallenge {
                                        attributeKey: nil)
     }
 
-    var getAllowedMFATypesForConfirmSignIn: Set<MFAType> {
-        var allowedMFATypes = Set<MFAType>()
-        guard let mfaCanChooseData = parameters?["MFAS_CAN_CHOOSE"]?.data(using: .utf8),
-              let mfasCanChooseArray = try? JSONDecoder().decode([String].self, from: mfaCanChooseData) else {
-            return allowedMFATypes
-        }
-
-        for mfaTypeValue in mfasCanChooseArray {
-            if let mfaType = MFAType(rawValue: String(mfaTypeValue)) {
-                allowedMFATypes.insert(mfaType)
-            }
-        }
-
-        return allowedMFATypes
+    var getAllowedMFATypesForSelection: Set<MFAType> {
+        return getMFATypes(forKey: "MFAS_CAN_CHOOSE")
     }
 
     var getAllowedMFATypesForSetup: Set<MFAType> {
-        var mfaCanSetup = Set<MFAType>()
-        guard let mfaCanSetupData = parameters?["MFAS_CAN_SETUP"]?.data(using: .utf8),
-              let mfaCanSetupArray = try? JSONDecoder().decode([String].self, from: mfaCanSetupData) else {
-            return mfaCanSetup
+        return getMFATypes(forKey: "MFAS_CAN_SETUP")
+    }
+
+    /// Helper method to extract MFA types from parameters
+    private func getMFATypes(forKey key: String) -> Set<MFAType> {
+        var mfaTypes = Set<MFAType>()
+        guard let mfaTypeParametersData = parameters?[key]?.data(using: .utf8),
+              let mfaTypesArray = try? JSONDecoder().decode(
+                [String].self, from: mfaTypeParametersData) else {
+            return mfaTypes
         }
 
-        for mfaTypeValue in mfaCanSetupArray {
+        for mfaTypeValue in mfaTypesArray {
             if let mfaType = MFAType(rawValue: String(mfaTypeValue)) {
-                mfaCanSetup.insert(mfaType)
+                mfaTypes.insert(mfaType)
             }
         }
 
-        return mfaCanSetup
+        return mfaTypes
     }
 
     var debugDictionary: [String: Any] {

@@ -69,7 +69,7 @@ struct UserPoolSignInHelper: DefaultLogger {
         case .newPasswordRequired:
             return .init(nextStep: .confirmSignInWithNewPassword(challenge.parameters))
         case .selectMFAType:
-            return .init(nextStep: .continueSignInWithMFASelection(challenge.getAllowedMFATypesForConfirmSignIn))
+            return .init(nextStep: .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection))
         case .setUpMFA:
             fatalError("setUpMFA is handled in SignInState.resolvingTOTPSetup state")
         case .unknown(let cognitoChallengeType):
