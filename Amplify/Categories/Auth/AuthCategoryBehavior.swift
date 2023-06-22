@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import AuthenticationServices
-
 #if os(iOS) || os(macOS)
+import AuthenticationServices
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #endif
 

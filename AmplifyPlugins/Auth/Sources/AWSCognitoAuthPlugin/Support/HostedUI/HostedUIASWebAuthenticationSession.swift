@@ -7,7 +7,9 @@
 
 import Foundation
 import Amplify
+#if os(iOS) || os(macOS)
 import AuthenticationServices
+#endif
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
@@ -18,7 +20,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                       inPrivate: Bool,
                       presentationAnchor: AuthUIPresentationAnchor?,
                       callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
-#if !os(tvOS)
+    #if os(iOS) || os(macOS)
         self.webPresentation = presentationAnchor
         let aswebAuthenticationSession = ASWebAuthenticationSession(
             url: url,
@@ -40,19 +42,18 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                     callback(.failure(.unknown))
                 }
             })
-#if os(iOS) || os(macOS)
         aswebAuthenticationSession.presentationContextProvider = self
-#endif
-        
         aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
 
         DispatchQueue.main.async {
             aswebAuthenticationSession.start()
         }
-#endif
+    #else
+        callback(.failure(.serviceMessage("HostedUI is only available in iOS and macOS")))
+    #endif
     }
-    
-#if !os(tvOS)
+
+#if os(iOS) || os(macOS)
     private func convertHostedUIError(_ error: Error) -> HostedUIError {
         if let asWebAuthError = error as? ASWebAuthenticationSessionError {
             switch asWebAuthError.code {

@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import Foundation
 
 /// Request to initiate sign in using a web UI.
@@ -18,7 +19,6 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthWebUISignInRequest.Options`
     public var options: Options
 
-#if os(iOS) || os(macOS)
     /// Presentation anchor on which the webUI is displayed
     public let presentationAnchor: AuthUIPresentationAnchor?
     
@@ -29,12 +29,6 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
         self.authProvider = authProvider
         self.options = options
     }
-#else
-    public init(authProvider: AuthProvider? = nil, options: Options) {
-        self.authProvider = authProvider
-        self.options = options
-    }
-#endif
 }
 
 public extension AuthWebUISignInRequest {
@@ -56,3 +50,4 @@ public extension AuthWebUISignInRequest {
         }
     }
 }
+#endif

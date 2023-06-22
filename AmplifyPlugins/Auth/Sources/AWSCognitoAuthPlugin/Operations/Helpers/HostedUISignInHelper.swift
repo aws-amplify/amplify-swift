@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
 import Foundation
 import Amplify
 
@@ -118,18 +119,10 @@ struct HostedUISignInHelper: DefaultLogger {
         let providerInfo = HostedUIProviderInfo(authProvider: request.authProvider,
                                                 idpIdentifier: idpIdentifier)
         let scopeFromConfig = oauthConfiguration.scopes
-#if os(iOS) || os(macOS)
         let hostedUIOptions = HostedUIOptions(scopes: request.options.scopes ?? scopeFromConfig,
                                               providerInfo: providerInfo,
                                               presentationAnchor: request.presentationAnchor,
                                               preferPrivateSession: privateSession)
-#else
-        let hostedUIOptions = HostedUIOptions(scopes: request.options.scopes ?? scopeFromConfig,
-                                              providerInfo: providerInfo,
-                                              presentationAnchor: nil,
-                                              preferPrivateSession: privateSession)
-
-#endif
         let signInData = SignInEventData(username: nil,
                                          password: nil,
                                          signInMethod: .hostedUI(hostedUIOptions))
@@ -164,3 +157,4 @@ struct HostedUISignInHelper: DefaultLogger {
         }
     }
 }
+#endif

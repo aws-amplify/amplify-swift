@@ -4,6 +4,8 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
+#if os(iOS) || os(macOS)
 import Foundation
 import Amplify
 
@@ -40,3 +42,4 @@ extension AuthWebUISignInRequest.Options {
         return options
     }
 }
+#endif
