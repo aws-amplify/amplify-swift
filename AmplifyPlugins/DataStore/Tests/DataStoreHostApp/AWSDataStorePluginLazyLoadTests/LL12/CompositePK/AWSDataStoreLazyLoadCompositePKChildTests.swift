@@ -24,23 +24,23 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         await setup(withModels: CompositePKModels())
         
         let parent = initParent()
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
         let child = initChild(with: savedParent)
-        try await saveAndWaitForSync(child)
+        try await createAndWaitForSync(child)
     }
     
     func testUpdateCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
         let child = initChild(with: parent)
-        var savedChild = try await saveAndWaitForSync(child)
+        var savedChild = try await createAndWaitForSync(child)
         let loadedParent = try await savedChild.parent
         XCTAssertEqual(loadedParent?.identifier, savedParent.identifier)
         
         // update the child to a new parent
         let newParent = initParent()
-        let savedNewParent = try await saveAndWaitForSync(newParent)
+        let savedNewParent = try await createAndWaitForSync(newParent)
         savedChild.setParent(savedNewParent)
         let updatedChild = try await updateAndWaitForSync(savedChild)
         let loadedNewParent = try await updatedChild.parent
@@ -50,10 +50,10 @@ extension AWSDataStoreLazyLoadCompositePKTests {
     func testUpdateFromNoParentCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
         
         let childWithoutParent = initChild()
-        var savedChild = try await saveAndWaitForSync(childWithoutParent)
+        var savedChild = try await createAndWaitForSync(childWithoutParent)
         let nilParent = try await savedChild.parent
         XCTAssertNil(nilParent)
         
@@ -67,9 +67,9 @@ extension AWSDataStoreLazyLoadCompositePKTests {
     func testDeleteCompositePKChild() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
         let child = initChild(with: parent)
-        let savedChild = try await saveAndWaitForSync(child)
+        let savedChild = try await createAndWaitForSync(child)
         
         try await deleteAndWaitForSync(savedParent)
         try await assertModelDoesNotExist(savedParent)
@@ -80,9 +80,9 @@ extension AWSDataStoreLazyLoadCompositePKTests {
         await setup(withModels: CompositePKModels())
         
         let parent = initParent()
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
         let child = initChild(with: parent)
-        let savedCompositePKChild = try await saveAndWaitForSync(child)
+        let savedCompositePKChild = try await createAndWaitForSync(child)
         
         // query parent and load the children
         let queriedParent = try await query(for: savedParent)
