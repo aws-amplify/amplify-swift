@@ -97,6 +97,7 @@ orbs:
 defaults: &defaults
   macos:
     xcode: '14.3.0'
+    resource_class: macos.x86.medium.gen2
   environment:
     BUNDLE_JOBS: 4
     BUNDLE_RETRY: 3
