@@ -13,7 +13,7 @@ import AppKit
 #endif
 
 /// Issue report screen in developer menu
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(xrOS)
 struct IssueReporter: View {
     @State var issueDescription: String = ""
     @State var includeLogs = true

@@ -9,7 +9,7 @@ import Foundation
 
 /// Extension of `Amplify` for supporting Developer Menu feature
 extension Amplify {
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(xrOS)
     static var devMenu: AmplifyDevMenu?
 
     @MainActor
@@ -30,7 +30,7 @@ extension Amplify {
 
     /// Returns a `PersistentLoggingPlugin` if developer menu feature is enabled in debug mode
     static func getLoggingCategoryPlugin(loggingPlugin: LoggingCategoryPlugin) -> LoggingCategoryPlugin {
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(xrOS)
 #if DEBUG
         if isDevMenuEnabled() {
             return PersistentLoggingPlugin(plugin: loggingPlugin)
