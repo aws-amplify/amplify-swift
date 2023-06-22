@@ -74,14 +74,15 @@ class CredentialStoreOperationClientTests: XCTestCase {
                 try await credentialClient.deleteData(type: .asfDeviceId(username: username))
 
                 // Fetch
-                let asfDeviceId: CredentialStoreData? = try? await credentialClient.fetchData(type: .asfDeviceId(username: username))
+                let asfDeviceId: CredentialStoreData? = try? await credentialClient.fetchData(
+                    type: .asfDeviceId(username: username)
+                )
                 XCTAssertNil(asfDeviceId)
                 expectation.fulfill()
             }
 
         }
-
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1.5, enforceOrder: false)
     }
 
     func testMultipleFailuresDuringFetch() async throws {
