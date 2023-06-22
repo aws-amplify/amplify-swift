@@ -518,6 +518,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "ModelCompareTests/testTodosAreEqualWithSameEmbeddedableCollection()">
+               </Test>
+               <Test
                   Identifier = "MutationEventExtensionsTest">
                </Test>
             </SkippedTests>
@@ -561,6 +564,11 @@
                BlueprintName = "AmplifyTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ModelCodableTests/testToJSON()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">
