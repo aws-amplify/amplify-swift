@@ -117,7 +117,9 @@ public struct DeviceInfo {
     ///
     /// - Tag: DeviceInfo.screenBounds
     public var screenBounds: CGRect {
-    #if canImport(WatchKit)
+    #if os(xrOS)
+        .zero
+    #elseif canImport(WatchKit)
         .zero
     #elseif canImport(UIKit)
         UIScreen.main.nativeBounds

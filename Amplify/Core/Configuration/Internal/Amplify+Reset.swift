@@ -52,7 +52,7 @@ extension Amplify {
         ModelProviderRegistry.reset()
         log.verbose("Resetting ModelRegistry, ModelListDecoderRegistry, ModelProviderRegistry finished")
         
-#if os(iOS)
+#if canImport(UIKit) && !os(xrOS)
         await MainActor.run {
             devMenu = nil
         }
