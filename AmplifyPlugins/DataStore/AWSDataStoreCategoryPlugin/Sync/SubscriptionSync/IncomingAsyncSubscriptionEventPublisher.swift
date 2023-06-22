@@ -73,8 +73,11 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onCreate operation
         let onCreateValueListener = onCreateValueListenerHandler(event:)
-        let onCreateAuthTypeProvider = authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                     operation: .create)
+        let onCreateAuthTypeProvider = authModeStrategy.authTypesFor(
+            schema: modelSchema,
+            operations: [.create, .read]
+        )
+
         self.onCreateValueListener = onCreateValueListener
         self.onCreateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
@@ -94,8 +97,10 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onUpdate operation
         let onUpdateValueListener = onUpdateValueListenerHandler(event:)
-        let onUpdateAuthTypeProvider = authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                     operation: .update)
+        let onUpdateAuthTypeProvider = authModeStrategy.authTypesFor(
+            schema: modelSchema,
+            operations: [.update, .read]
+        )
         self.onUpdateValueListener = onUpdateValueListener
         self.onUpdateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
@@ -115,8 +120,10 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onDelete operation
         let onDeleteValueListener = onDeleteValueListenerHandler(event:)
-        let onDeleteAuthTypeProvider = authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                     operation: .delete)
+        let onDeleteAuthTypeProvider = authModeStrategy.authTypesFor(
+            schema: modelSchema,
+            operations: [.delete, .read]
+        )
         self.onDeleteValueListener = onDeleteValueListener
         self.onDeleteOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
