@@ -8,7 +8,7 @@
 import XCTest
 import Amplify
 
-private struct EncodableStruct: Encodable {
+private struct EncodableStruct: Codable, Equatable {
 
     let id: String
     let name: String
@@ -28,11 +28,15 @@ class AnyEncodableTests: XCTestCase {
         let encodable: Encodable = encodableStruct as Encodable
 
         let jsonEncoder = JSONEncoder()
+        let decoder = JSONDecoder()
         do {
             let encodableStructData = try jsonEncoder.encode(encodableStruct)
             let anyEncodableStructData = try jsonEncoder.encode(encodable.eraseToAnyEncodable())
 
-            XCTAssertEqual(encodableStructData, anyEncodableStructData)
+            let decodedEncodableStruct = try decoder.decode(EncodableStruct.self, from: encodableStructData)
+            let decodedanyEncodableStruct = try decoder.decode(EncodableStruct.self, from: anyEncodableStructData)
+
+            XCTAssertEqual(decodedEncodableStruct, decodedanyEncodableStruct)
         } catch {
             XCTFail(error.localizedDescription)
         }
