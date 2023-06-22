@@ -8,7 +8,7 @@ permissions:
     contents: read
 
 jobs:
-  datastore-integration-lazy-load-test:
+  datastore-integration-lazy-load-test-iOS:
     timeout-minutes: 45
     runs-on: macos-13
     environment: IntegrationTest
@@ -34,4 +34,62 @@ jobs:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginLazyLoadTests
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          xcode_path: '/Applications/Xcode_14.3.app'
+
+  datastore-integration-lazy-load-test-tvOS:
+    timeout-minutes: 30
+    runs-on: macos-13
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
+          scheme: AWSDataStorePluginLazyLoadTests
+          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
+          sdk: appletvsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
+
+  datastore-integration-lazy-load-test-watchOS:
+    timeout-minutes: 45
+    runs-on: macos-13
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
+          scheme: AWSDataStorePluginLazyLoadTestsWatch
+          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
+          sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'

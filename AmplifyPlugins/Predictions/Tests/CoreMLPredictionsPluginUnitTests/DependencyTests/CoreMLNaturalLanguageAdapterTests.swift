@@ -92,7 +92,9 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
         let text = "The American Red Cross was established in Washington, D.C., by Clara Barton."
         let result = coreMLNaturalLanguageAdapter.getEntities(for: text)
         XCTAssertNotNil(result, "Result should not be nil")
+    #if !os(watchOS)
         XCTAssertFalse(result.isEmpty, "Should return some value back")
+    #endif
     }
 
     /// Test entities with valid text

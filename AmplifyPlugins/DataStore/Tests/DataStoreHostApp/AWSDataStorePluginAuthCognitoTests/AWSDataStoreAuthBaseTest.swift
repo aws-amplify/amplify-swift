@@ -12,7 +12,9 @@ import AWSDataStorePlugin
 import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 @testable import Amplify
 
