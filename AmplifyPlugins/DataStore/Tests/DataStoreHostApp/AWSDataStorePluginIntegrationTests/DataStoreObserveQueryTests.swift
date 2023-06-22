@@ -16,8 +16,6 @@ import Combine
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
 class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
-
-    var cancellables = Set<AnyCancellable>()
     
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
@@ -78,6 +76,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - Eventually one of the query snapshots will be returned with `isSynced` true
     ///
     func testObserveQueryInitialSync() async throws {
+        var cancellables = Set<AnyCancellable>()
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
         try await clearDataStore()
@@ -116,6 +115,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - A query snapshot is received on `.modelSynced`
     ///
     func testObserveQueryWhenModelSyncedEvent() async throws {
+        var cancellables = Set<AnyCancellable>()
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
         try await clearDataStore()
@@ -156,10 +156,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The models only contain models based on the predicate
     ///
     func testInitialSyncWithPredicate() async throws {
+        var cancellables = Set<AnyCancellable>()
         let startTime = Temporal.DateTime.now()
         await setUp(
             withModels: TestModelRegistration(),
-            logLevel: .verbose,
             dataStoreConfiguration: .custom(
                 syncMaxRecords: 100,
                 syncExpressions: [
@@ -227,6 +227,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - Each snapshot should have items sorted according to the sort order
     ///
     func testObserveQueryWithSort() async throws {
+        var cancellables = Set<AnyCancellable>()
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
         try await clearDataStore()
@@ -270,6 +271,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The final snapshot should have all the models with `isSynced` true
     ///
     func testObserveQueryWithDataStoreDeltaSync() async throws {
+        var cancellables = Set<AnyCancellable>()
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
@@ -313,6 +315,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The final snapshot should have all the latest models with `isSynced` true
     ///
     func testObserveQuery_withClearedDataStore_fullySyncedWithMaxRecords() async throws {
+        var cancellables = Set<AnyCancellable>()
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         try await clearDataStore()
@@ -363,71 +366,78 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///     - Delete a model that matches the predicate. Model is removed from the snapshot
     ///     - Delete a model that does NOT match the predicate. No snapshot is emitted
     func testPredicateWithCreateUpdateDelete() async throws {
-        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
+        await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let testId = UUID().uuidString
+        let randomTitile = UUID().uuidString
+        let predicate = Post.keys.title.beginsWith(randomTitile) && Post.keys.content == testId
+        let snapshotExpectation1 = expectation(description: "received snapshot 1")
+        let snapshotExpectation23 = expectation(description: "received snapshot 2 / 3")
+        snapshotExpectation23.expectedFulfillmentCount = 2
+        let snapshotExpectation4 = expectation(description: "received snapshot 4")
+        let snapshotExpectation56 = expectation(description: "received snapshot 5 / 6")
+        snapshotExpectation56.expectedFulfillmentCount = 2
+        let snapshotExpectation7 = expectation(description: "received snapshot 7")
+        let snapshotExpectation8 = expectation(description: "received snapshot 8")
+
+        var cancellables = Set<AnyCancellable>()
         var snapshotCount = 0
-        let predicate = Post.keys.title.beginsWith("xyz") && Post.keys.content == testId
-        let snapshotExpectation1 = asyncExpectation(description: "received snapshot 1")
-        let snapshotExpectation23 = asyncExpectation(description: "received snapshot 2 / 3",
-                                                     expectedFulfillmentCount: 2)
-        let snapshotExpectation4 = asyncExpectation(description: "received snapshot 4")
-        let snapshotExpectation56 = asyncExpectation(description: "received snapshot 5 / 6",
-                                                     expectedFulfillmentCount: 2)
-        let snapshotExpectation7 = asyncExpectation(description: "received snapshot 7")
-        let snapshotExpectation8 = asyncExpectation(description: "received snapshot 8")
-        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate)).sink { completed in
-            switch completed {
-            case .finished:
-                break
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        } receiveValue: { querySnapshot in
-            snapshotCount += 1
-            let items = querySnapshot.items
-            if snapshotCount == 1 {
-                self.log.info("\(#function) 1. \(querySnapshot)")
-                XCTAssertEqual(items.count, 0)
-                Task { await snapshotExpectation1.fulfill() }
-            } else if snapshotCount == 2 || snapshotCount == 3 {
-                // See (1), subsequent snapshot should have item with "xyz 1".
-                self.log.info("\(#function) 2/3. \(querySnapshot)")
-                XCTAssertEqual(items.count, 1)
-                XCTAssertEqual(items[0].title, "xyz 1")
-                Task { await snapshotExpectation23.fulfill() }
-            } else if snapshotCount == 4 {
-                // See (2), should not be added to the snapshot.
-                // See (3), should be removed from the snapshot. So the resulting snapshot is empty.
-                self.log.info("\(#function) 4. \(querySnapshot)")
-                XCTAssertEqual(items.count, 0)
-                Task { await snapshotExpectation4.fulfill() }
-            } else if snapshotCount == 5 || snapshotCount == 6 {
-                // See (4). the post that now matches the snapshot should be added
-                self.log.info("\(#function) 5/6. \(querySnapshot)")
-                XCTAssertEqual(items.count, 1)
-                XCTAssertEqual(items[0].title, "xyz 2")
-                Task { await snapshotExpectation56.fulfill() }
-            } else if snapshotCount == 7 {
-                // See (5). the post that matched the predicate was deleted
-                self.log.info("\(#function) 7. \(querySnapshot)")
-                XCTAssertEqual(items.count, 0)
-                Task { await snapshotExpectation7.fulfill() }
-            } else if snapshotCount == 8 {
-                // See (6). Snapshot that is emitted due to "xyz 3" should not contain the deleted model
-                self.log.info("\(#function) 8. \(querySnapshot)")
-                XCTAssertEqual(items.count, 1)
-                XCTAssertEqual(items[0].title, "xyz 3")
-                Task { await snapshotExpectation8.fulfill() }
-            }
-        }.store(in: &cancellables)
-        await waitForExpectations([snapshotExpectation1], timeout: 10)
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate))
+            .sink(receiveCompletion: { completed in
+                switch completed {
+                case .finished:
+                    break
+                case .failure(let error):
+                    XCTFail("\(error)")
+                }
+            }, receiveValue: { querySnapshot in
+                snapshotCount += 1
+                self.log.info("\(#function) XX.\(snapshotCount) \(querySnapshot)")
+                let items = querySnapshot.items
+                if snapshotCount == 1 {
+                    self.log.info("\(#function) 1. \(querySnapshot)")
+                    XCTAssertEqual(items.count, 0)
+                    snapshotExpectation1.fulfill()
+                } else if snapshotCount == 2 || snapshotCount == 3 {
+                    // See (1), subsequent snapshot should have item with "xyz 1".
+                    self.log.info("\(#function) 2/3. \(querySnapshot)")
+                    XCTAssertEqual(items.count, 1)
+                    XCTAssertEqual(items[0].title, "\(randomTitile) 1")
+                    snapshotExpectation23.fulfill()
+                } else if snapshotCount == 4 {
+                    // See (2), should not be added to the snapshot.
+                    // See (3), should be removed from the snapshot. So the resulting snapshot is empty.
+                    self.log.info("\(#function) 4. \(querySnapshot)")
+                    XCTAssertEqual(items.count, 0)
+                    snapshotExpectation4.fulfill()
+                } else if snapshotCount == 5 || snapshotCount == 6 {
+                    // See (4). the post that now matches the snapshot should be added
+                    self.log.info("\(#function) 5/6. \(querySnapshot)")
+                    XCTAssertEqual(items.count, 1)
+                    XCTAssertEqual(items[0].title, "\(randomTitile) 2")
+                    snapshotExpectation56.fulfill()
+                } else if snapshotCount == 7 {
+                    // See (5). the post that matched the predicate was deleted
+                    self.log.info("\(#function) 7. \(querySnapshot)")
+                    XCTAssertEqual(items.count, 0)
+                    snapshotExpectation7.fulfill()
+                } else if snapshotCount == 8 {
+                    // See (6). Snapshot that is emitted due to "xyz 3" should not contain the deleted model
+                    self.log.info("\(#function) 8. \(querySnapshot)")
+                    XCTAssertEqual(items.count, 1)
+                    XCTAssertEqual(items[0].title, "\(randomTitile) 3")
+                    snapshotExpectation8.fulfill()
+                }
+            })
+            .store(in: &cancellables)
+
+        await fulfillment(of: [snapshotExpectation1], timeout: 10)
         
         // (1) Add model that matches predicate - should be received on the snapshot
-        let postMatchPredicate = Post(title: "xyz 1", content: testId, createdAt: .now())
+        let postMatchPredicate = Post(title: "\(randomTitile) 1", content: testId, createdAt: .now())
         
         try await savePostAndWaitForSync(postMatchPredicate)
-        await waitForExpectations([snapshotExpectation23], timeout: 10)
+        await fulfillment(of: [snapshotExpectation23], timeout: 10)
         
         // (2) Add model that does not match predicate - should not be received on the snapshot
         // (3) Update model that used to match the predicate to no longer match - should be removed from snapshot
@@ -437,17 +447,17 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         var postMatchPredicateNoLongerMatches = postMatchPredicate
         postMatchPredicateNoLongerMatches.title = "doesNotMatch"
         try await savePostAndWaitForSync(postMatchPredicateNoLongerMatches)
-        await waitForExpectations([snapshotExpectation4], timeout: 10)
+        await fulfillment(of: [snapshotExpectation4], timeout: 10)
         
         // (4) Update model that does not match predicate to match - should be added to snapshot
         var postDoesNotMatchNowMatches = postDoesNotMatch
-        postDoesNotMatchNowMatches.title = "xyz 2"
+        postDoesNotMatchNowMatches.title = "\(randomTitile) 2"
         try await savePostAndWaitForSync(postDoesNotMatchNowMatches)
-        await waitForExpectations([snapshotExpectation56], timeout: 10)
+        await fulfillment(of: [snapshotExpectation56], timeout: 10)
         
         // (5) Delete the model that matches the predicate - should be removed
         try await deletePostAndWaitForSync(postDoesNotMatchNowMatches)
-        await waitForExpectations([snapshotExpectation7], timeout: 10)
+        await fulfillment(of: [snapshotExpectation7], timeout: 10)
         
         // (6) Delete the model that does not match predicate - should have no snapshot emitted
         let postMatchPredicateNoLongerMatchesExpectation = asyncExpectation(description: " received")
@@ -455,8 +465,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                                            postSyncedExpctation: postMatchPredicateNoLongerMatchesExpectation)
 
         // Save "xyz 3" to force a snapshot to be emitted
-        try await savePostAndWaitForSync(Post(title: "xyz 3", content: testId, createdAt: .now()))
-        await waitForExpectations([snapshotExpectation8], timeout: 10)
+        try await savePostAndWaitForSync(Post(title: "\(randomTitile) 3", content: testId, createdAt: .now()))
+        await fulfillment(of: [snapshotExpectation8], timeout: 10)
     }
 
     /// ObserveQuery is set up with a sort order.
@@ -471,7 +481,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - Delete models. The snapshot should have the models removed
     ///
     func testSortWithCreateUpdateDelete() async throws {
-        await setUp(withModels: TestModelRegistration(), logLevel: .info)
+        await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
 
         let testId = UUID().uuidString
@@ -573,6 +583,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    -  ObserveQuery is not completed.
     ///
     func testObserveQueryShouldResetOnDataStoreStop() async throws {
+        var cancellables = Set<AnyCancellable>()
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = asyncExpectation(description: "query snapshot with isSynced true")
@@ -608,6 +619,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    -  ObserveQuery is not completed.
     ///
     func testObserveQueryShouldResetOnDataStoreClear() async throws {
+        var cancellables = Set<AnyCancellable>()
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = asyncExpectation(description: "query snapshot with isSynced true")
@@ -635,7 +647,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     }
 
     func testObserveQueryShouldStartOnDataStoreStart() async throws {
-        try await setUp(withModels: TestModelRegistration())
+        await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshot = asyncExpectation(description: "first query snapshot")
         let secondSnapshot = asyncExpectation(description: "second query snapshot")
