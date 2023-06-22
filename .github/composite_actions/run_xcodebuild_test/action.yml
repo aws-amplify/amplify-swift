@@ -34,9 +34,7 @@ runs:
         XCODE_PATH: ${{ inputs.xcode_path }}
       run: |
         cd $PROJECT_PATH
-        if [ ! -z "$XCODE_PATH" ]; then
-          sudo xcode-select -s $XCODE_PATH
-        fi
+        sudo xcode-select -s /Applications/Xcode_14.3.app
         xcodebuild -version
         xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
