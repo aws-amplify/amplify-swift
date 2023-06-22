@@ -29,7 +29,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_create_create() async {
+    func test_create_create() async throws {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -203,11 +203,18 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     XCTAssertEqual(mutationEvents.count, 1)
                                     XCTAssertEqual(mutationEvents.first?.mutationType,
                                                    GraphQLMutationType.update.rawValue)
+<<<<<<< HEAD
                                     let firstEventJSON = mutationEvents[0].json
                                     let firstEventData = Data(firstEventJSON.utf8)
                                     guard let mutationEventPost = try? JSONDecoder().decode(
                                         Post.self, from: firstEventData
                                     ) else {
+=======
+
+                                    let firstEventJSON = mutationEvents[0].json
+                                    let firstEventData = Data(firstEventJSON.utf8)
+                                    guard let mutationEventPost = try? JSONDecoder().decode(Post.self, from: firstEventData) else {
+>>>>>>> 18b89606 (assert on model property equality in some ds tests)
                                         return XCTFail("expected Post")
                                     }
                                     XCTAssertEqual(mutationEventPost.id, post.id)
