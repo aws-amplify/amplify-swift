@@ -77,7 +77,7 @@ extension RespondToAuthChallenge {
         case .softwareTokenMfa: return "SOFTWARE_TOKEN_MFA_CODE"
         case .newPasswordRequired: return "NEW_PASSWORD"
         default:
-            let message = "Unsupported challenge response \(challenge)"
+            let message = "Unsupported challenge type for response key generation \(challenge)"
             let error = SignInError.unknown(message: message)
             throw error
         }
