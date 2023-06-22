@@ -8,10 +8,10 @@
 import Foundation
 import Amplify
 
-public protocol AWSAuthSessionBehavior<OIDCCredentials> : AuthSession {
-    associatedtype OIDCCredentials
+public protocol AWSAuthSessionBehavior<TokensType> : AuthSession {
+    associatedtype TokensType
     var awsCredentialsResult: Result<AWSTemporaryCredentials, AuthError> { get }
     var identityIdResult: Result<String, AuthError> { get  }
     var userSubResult: Result<String, AuthError> { get }
-    var oidcTokensResult: Result<OIDCCredentials, AuthError> { get }
+    var tokensResult: Result<TokensType, AuthError> { get }
 }
