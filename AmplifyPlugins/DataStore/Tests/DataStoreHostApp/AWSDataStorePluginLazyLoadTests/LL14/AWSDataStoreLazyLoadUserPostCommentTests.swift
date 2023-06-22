@@ -21,34 +21,34 @@ final class AWSDataStoreLazyLoadUserPostCommentTests: AWSDataStoreLazyLoadBaseTe
     func testSaveUser() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
-        try await saveAndWaitForSync(user)
+        try await createAndWaitForSync(user)
     }
     
     func testSaveUserSettings() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
-        let savedUser = try await saveAndWaitForSync(user)
+        let savedUser = try await createAndWaitForSync(user)
         
         let userSettings = UserSettings(language: "en-us", user: savedUser)
-        try await saveAndWaitForSync(userSettings)
+        try await createAndWaitForSync(userSettings)
     }
     
     func testSavePost() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
-        let savedUser = try await saveAndWaitForSync(user)
+        let savedUser = try await createAndWaitForSync(user)
         let post = Post(title: "title", rating: 1, status: .active, author: savedUser)
-        try await saveAndWaitForSync(post)
+        try await createAndWaitForSync(post)
     }
     
     func testSaveComment() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
-        let savedUser = try await saveAndWaitForSync(user)
+        let savedUser = try await createAndWaitForSync(user)
         let post = Post(title: "title", rating: 1, status: .active, author: savedUser)
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(content: "content", post: savedPost, author: savedUser)
-        try await saveAndWaitForSync(comment)
+        try await createAndWaitForSync(comment)
     }
     
     /// LazyLoad from queried models
@@ -62,13 +62,13 @@ final class AWSDataStoreLazyLoadUserPostCommentTests: AWSDataStoreLazyLoadBaseTe
     func testLazyLoad() async throws {
         await setup(withModels: UserPostCommentModels())
         let user = User(username: "name")
-        let savedUser = try await saveAndWaitForSync(user)
+        let savedUser = try await createAndWaitForSync(user)
         let userSettings = UserSettings(language: "en-us", user: savedUser)
-        try await saveAndWaitForSync(userSettings)
+        try await createAndWaitForSync(userSettings)
         let post = Post(title: "title", rating: 1, status: .active, author: savedUser)
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(content: "content", post: savedPost, author: savedUser)
-        try await saveAndWaitForSync(comment)
+        try await createAndWaitForSync(comment)
         
         // Traverse from User
         let queriedUser = try await query(for: user)

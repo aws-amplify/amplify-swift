@@ -22,7 +22,7 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
     func testSaveCompositePKParent() async throws {
         await setup(withModels: CompositePKModels())
         let parent = initParent()
-        try await saveAndWaitForSync(parent)
+        try await createAndWaitForSync(parent)
     }
 }
 

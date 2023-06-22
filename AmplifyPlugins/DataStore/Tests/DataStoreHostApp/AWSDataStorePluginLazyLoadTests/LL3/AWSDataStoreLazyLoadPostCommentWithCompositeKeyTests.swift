@@ -19,8 +19,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         try await assertComment(savedComment, canLazyLoad: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
         let queriedComment = try await query(for: savedComment)
@@ -91,14 +91,14 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     func testSaveWithoutPost() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let comment = Comment(content: "content")
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: nil))
         let post = Post(title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         queriedComment.setPost(savedPost)
-        let saveCommentWithPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let saveCommentWithPost = try await updateAndWaitForSync(queriedComment)
         let queriedComment2 = try await query(for: saveCommentWithPost)
         try await assertComment(queriedComment2, canLazyLoad: post)
     }
@@ -107,15 +107,15 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         let queriedComment = try await query(for: savedComment)
         assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: [
                             .init(name: Post.keys.id.stringValue, value: post.id),
                             .init(name: Post.keys.title.stringValue, value: post.title)
                         ]))
-        let savedQueriedComment = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let savedQueriedComment = try await updateAndWaitForSync(queriedComment)
         let queriedComment2 = try await query(for: savedQueriedComment)
         try await assertComment(queriedComment2, canLazyLoad: savedPost)
     }
@@ -125,8 +125,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        _ = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: [
@@ -135,9 +135,9 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                         ]))
         
         let newPost = Post(title: "title")
-        _ = try await saveAndWaitForSync(newPost)
+        _ = try await createAndWaitForSync(newPost)
         queriedComment.setPost(newPost)
-        let saveCommentWithNewPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let saveCommentWithNewPost = try await updateAndWaitForSync(queriedComment)
         let queriedComment2 = try await query(for: saveCommentWithNewPost)
         try await assertComment(queriedComment2, canLazyLoad: newPost)
     }
@@ -147,8 +147,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        _ = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: [
@@ -157,7 +157,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                         ]))
         
         queriedComment.setPost(nil)
-        let saveCommentRemovePost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let saveCommentRemovePost = try await updateAndWaitForSync(queriedComment)
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)
         assertLazyReference(queriedCommentNoPost._post,
                         state: .notLoaded(identifiers: nil))
@@ -168,8 +168,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         try await deleteAndWaitForSync(savedPost)
         try await assertModelDoesNotExist(savedComment)
         try await assertModelDoesNotExist(savedPost)
@@ -189,7 +189,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
                    receivedPost.id == post.id {
                         
-                    try await saveAndWaitForSync(comment)
+                    try await createAndWaitForSync(comment)
                     guard let comments = receivedPost.comments else {
                         XCTFail("Lazy List does not exist")
                         return
@@ -221,7 +221,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         await setup(withModels: PostCommentWithCompositeKeyModels())
         try await startAndWaitForReady()
         let post = Post(title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(content: "content", post: post)
         let mutationEventReceived = asyncExpectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Comment.self)
@@ -258,7 +258,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         Task {
             for try await querySnapshot in querySnapshots {
                 if let receivedPost = querySnapshot.items.first {
-                    try await saveAndWaitForSync(comment)
+                    try await createAndWaitForSync(comment)
                     guard let comments = receivedPost.comments else {
                         XCTFail("Lazy List does not exist")
                         return
@@ -291,7 +291,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         try await startAndWaitForReady()
         
         let post = Post(title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(content: "content", post: post)
         let snapshotReceived = asyncExpectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Comment.self, where: Comment.keys.id == comment.id)
