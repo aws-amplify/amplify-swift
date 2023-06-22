@@ -124,6 +124,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             _ = try await Amplify.DataStore.save(postCopy)
             await createdNewItem.fulfill()
         }
+
         await waitForExpectations([createdNewItem])
         await fulfillment(of: [apiRespondedWithSuccess], timeout: 1.0, enforceOrder: false)
 
