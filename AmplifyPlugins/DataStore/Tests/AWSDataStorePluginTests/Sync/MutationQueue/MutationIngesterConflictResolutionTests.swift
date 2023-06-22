@@ -29,7 +29,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_create_create() async {
+    func test_create_create() async throws {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -58,7 +58,15 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
                                     XCTAssertEqual(mutationEvents.count, 1)
-                                    XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
+                                    let firstEventJSON = mutationEvents[0].json
+                                    let firstEventData = Data(firstEventJSON.utf8)
+                                    guard let mutationEventPost = try? JSONDecoder().decode(Post.self, from: firstEventData) else {
+                                        return XCTFail("expected Post")
+                                    }
+                                    XCTAssertEqual(mutationEventPost.id, post.id)
+                                    XCTAssertEqual(mutationEventPost.title, post.title)
+                                    XCTAssertEqual(mutationEventPost.content, post.content)
+                                    XCTAssertEqual(mutationEventPost.createdAt, post.createdAt)
                                 }
                                 mutationEventVerified.fulfill()
         }
@@ -193,7 +201,16 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     XCTAssertEqual(mutationEvents.count, 1)
                                     XCTAssertEqual(mutationEvents.first?.mutationType,
                                                    GraphQLMutationType.update.rawValue)
-                                    XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
+
+                                    let firstEventJSON = mutationEvents[0].json
+                                    let firstEventData = Data(firstEventJSON.utf8)
+                                    guard let mutationEventPost = try? JSONDecoder().decode(Post.self, from: firstEventData) else {
+                                        return XCTFail("expected Post")
+                                    }
+                                    XCTAssertEqual(mutationEventPost.id, post.id)
+                                    XCTAssertEqual(mutationEventPost.title, post.title)
+                                    XCTAssertEqual(mutationEventPost.content, post.content)
+                                    XCTAssertEqual(mutationEventPost.createdAt, post.createdAt)
                                 }
                                 mutationEventVerified.fulfill()
         }
