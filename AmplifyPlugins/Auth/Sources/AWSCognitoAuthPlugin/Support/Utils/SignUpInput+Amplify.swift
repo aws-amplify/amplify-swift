@@ -7,7 +7,9 @@
 
 import Foundation
 import AWSCognitoIdentityProvider
-#if canImport(UIKit)
+#if canImport(WatchKit)
+import WatchKit
+#elseif canImport(UIKit)
 import UIKit
 #endif
 
@@ -61,8 +63,13 @@ extension SignUpInput {
     }
 
     private static var cognitoValidationData: [CognitoIdentityProviderClientTypes.AttributeType]? {
-#if canImport(UIKit)
+#if canImport(WatchKit)
+        let device = WKInterfaceDevice.current()
+#elseif canImport(UIKit)
         let device = UIDevice.current
+#endif
+
+#if canImport(WatchKit) || canImport(UIKit)
         let bundle = Bundle.main
         let bundleVersion = bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String
         let bundleShortVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String

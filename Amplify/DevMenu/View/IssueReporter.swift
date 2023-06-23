@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
-#if canImport(UIKit)
+#if os(iOS)
 import UIKit
 #elseif canImport(AppKit)
 import AppKit
 #endif
 
 /// Issue report screen in developer menu
-#if canImport(UIKit)
+#if os(iOS)
 struct IssueReporter: View {
     @State var issueDescription: String = ""
     @State var includeLogs = true
@@ -120,7 +120,7 @@ struct IssueReporter: View {
                               includeEnvInfo: includeEnvInfo,
                               includeDeviceInfo: includeDeviceInfo)
         let value = IssueInfoHelper.generateMarkdownForIssue(issue: issue)
-#if canImport(UIKit)
+#if os(iOS)
         UIPasteboard.general.string = value
 #elseif canImport(AppKit)
         NSPasteboard.general.setString(value, forType: .string)

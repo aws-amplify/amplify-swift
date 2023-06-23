@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
+#if os(iOS)
 import Foundation
 import SwiftUI
 import UIKit
