@@ -50,7 +50,8 @@ struct UserPoolSignInHelper: DefaultLogger {
 
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
                   case .waitingForAnswer(let totpSetupData) = totpSetupState {
-            return .init(nextStep: .continueSignInWithTOTPSetup(.init(secretCode: totpSetupData.secretCode, username: totpSetupData.username)))
+            return .init(nextStep: .continueSignInWithTOTPSetup(
+                .init(secretCode: totpSetupData.secretCode, username: totpSetupData.username)))
         }
         return nil
     }
@@ -71,7 +72,7 @@ struct UserPoolSignInHelper: DefaultLogger {
         case .selectMFAType:
             return .init(nextStep: .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection))
         case .setUpMFA:
-            fatalError("setUpMFA is handled in SignInState.resolvingTOTPSetup state")
+            throw AuthError.unknown("Invalid state flow. setUpMFA is handled internally in `SignInState.resolvingTOTPSetup` state.")
         case .unknown(let cognitoChallengeType):
             throw AuthError.unknown("Challenge not supported\(cognitoChallengeType)", nil)
         }

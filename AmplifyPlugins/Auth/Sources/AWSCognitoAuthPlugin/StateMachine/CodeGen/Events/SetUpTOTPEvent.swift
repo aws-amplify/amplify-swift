@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public typealias UserSession = String
-
 import Foundation
+
+/// Session value created by the service
+typealias UserSession = String
 
 struct SetUpTOTPEvent: StateMachineEvent {
 

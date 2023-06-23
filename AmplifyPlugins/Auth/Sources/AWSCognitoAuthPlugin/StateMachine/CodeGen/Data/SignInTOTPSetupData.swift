@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 
 struct SignInTOTPSetupData {
@@ -19,7 +18,7 @@ struct SignInTOTPSetupData {
 extension SignInTOTPSetupData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "sharedSecret": secretCode.masked(),
+            "sharedSecret": secretCode.redacted(),
             "session": session.masked(),
             "username": username.masked()
         ]
