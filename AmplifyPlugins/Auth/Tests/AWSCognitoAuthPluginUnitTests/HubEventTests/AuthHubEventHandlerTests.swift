@@ -191,7 +191,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
 
         do {
-            try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor(), options: nil)
         } catch {
             XCTFail("Received failure with error \(error)")
         }
@@ -223,7 +223,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
         do {
-            try await signInWithWebUI()
+            _ = try await plugin.signInWithWebUI(for: .amazon, presentationAnchor: AuthUIPresentationAnchor(), options: nil)
         } catch {
             XCTFail("Received failure with error \(error)")
         }
@@ -483,14 +483,6 @@ class AuthHubEventHandlerTests: XCTestCase {
             hubEventHandler: authHandler,
             analyticsHandler: MockAnalyticsHandler())
     }
-    
-#if os(iOS) || os(macOS)
-    private func signInWithWebUI() async throws {
-        _ = try await plugin.signInWithWebUI(for: .amazon,
-                                             presentationAnchor: AuthUIPresentationAnchor(),
-                                             options: nil)
-    }
-#endif
 
     override func tearDown() async throws {
         plugin = nil
