@@ -14,15 +14,15 @@ import ClientRuntime
 
 public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {    
     public let refreshIntervalInSeconds: Int
-    private static let RemoteLoggingConstraintsTagKey = "com.amazonaws.amplify.logging.etag"
-    private static let RemoteLoggingConstraintsKey = "com.amazonaws.amplify.logging.remoteloggingconstraints"
-    
     private let endpoint: URL
     private let credentialProvider: CredentialsProvider?
     private let region: String
+    private let loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard
+    
     private var loggingConstraint: LoggingConstraints? {
-        return UserDefaults.standard.object(forKey: Self.RemoteLoggingConstraintsKey) as? LoggingConstraints
+        return loggingConstraintsLocalStore.getLocalLoggingConstraints()
     }
+    
     private var eTag: String?
     private var refreshTimer: DispatchSourceTimer? {
         willSet {
@@ -49,7 +49,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     
     public func fetchLoggingConstraints() async throws -> LoggingConstraints {
         var url = URLRequest(url: endpoint)
-        if let etag = UserDefaults.standard.string(forKey: Self.RemoteLoggingConstraintsTagKey) {
+        if let etag = loggingConstraintsLocalStore.getLocalLoggingConstraintsEtag() {
             url.setValue(etag, forHTTPHeaderField: "If-None-Match")
         }
         let signedRequest = try await sigV4Sign(url, region: region)
@@ -58,10 +58,10 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             return cachedValue
         }
         let loggingConstraint = try JSONDecoder().decode(LoggingConstraints.self, from: data)
-        UserDefaults.standard.setValue(loggingConstraint, forKey: Self.RemoteLoggingConstraintsKey)
+        loggingConstraintsLocalStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraint)
         
         if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "If-None-Match") {
-            UserDefaults.standard.setValue(etag, forKey: Self.RemoteLoggingConstraintsTagKey)
+            loggingConstraintsLocalStore.setLocalLoggingConstraintsEtag(etag: etag)
         }
         return loggingConstraint
     }

@@ -8,13 +8,13 @@
 import Foundation
 import Network
 
-protocol NetworkMonitor: AnyObject {
+protocol LoggingNetworkMonitor: AnyObject {
     var isOnline: Bool { get }
     func startMonitoring(using queue: DispatchQueue)
     func stopMonitoring()
 }
 
-extension NWPathMonitor: NetworkMonitor {
+extension NWPathMonitor: LoggingNetworkMonitor {
     var isOnline: Bool {
         currentPath.status == .satisfied
     }

@@ -46,7 +46,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
                 enable: configuration.enable,
                 credentialsProvider: authService.getCredentialsProvider(),
                 authentication: Amplify.Auth,
-                loggingConstraints: configuration.loggingConstraints,
+                loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfigProvider: configuration),
                 logGroupName: configuration.logGroupName,
                 region: configuration.region,
                 localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
@@ -68,7 +68,6 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     
     public func logger(forNamespace namespace: String) -> Logger {
         return LoggerProxy(targets: [loggingClient.logger(forCategory: namespace)])
-        
     }
     
     public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
@@ -117,20 +116,21 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
         if self.loggingPluginConfiguration == nil, let configuration = try? AWSCloudWatchLoggingPluginConfiguration(bundle: Bundle.main) {
             self.loggingPluginConfiguration = configuration
             let authService = AWSAuthService()
+            
+            if let remoteConfig = configuration.defaultRemoteConfiguration, self.remoteLoggingConstraintsProvider == nil {
+                self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(endpoint: remoteConfig.endpoint, region: configuration.region, refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
+            }
+            
             self.loggingClient = AWSCloudWatchLoggingCategoryClient(
                 enable: configuration.enable,
                 credentialsProvider: authService.getCredentialsProvider(),
                 authentication: Amplify.Auth,
-                loggingConstraints: configuration.loggingConstraints,
+                loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfigProvider: configuration),
                 logGroupName: configuration.logGroupName,
                 region: configuration.region,
                 localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
                 flushIntervalInSeconds: configuration.flushIntervalInSeconds
             )
-            
-            if let remoteConfig = configuration.defaultRemoteConfiguration, self.remoteLoggingConstraintsProvider == nil {
-                self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(endpoint: remoteConfig.endpoint, region: configuration.region, refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
-            }
         }
         
         DispatchQueue.main.async { [weak self] in

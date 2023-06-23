@@ -10,9 +10,14 @@ import Amplify
 import AWSPluginsCore
 
 class AWSCloudWatchLoggingFilter: AWSCloudWatchLoggingFilterBehavior{
-    let loggingConstraints: LoggingConstraints
-    init(loggingConstraints: LoggingConstraints) {
-        self.loggingConstraints = loggingConstraints
+    let loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver
+    
+    private var loggingConstraints: LoggingConstraints {
+        return loggingConstraintsResolver.getLoggingConstraints()
+    }
+    
+    init(loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver) {
+        self.loggingConstraintsResolver = loggingConstraintsResolver
     }
     
     func canLog(withCategory: String, logLevel: LogLevel, userIdentifier: String?) -> Bool {

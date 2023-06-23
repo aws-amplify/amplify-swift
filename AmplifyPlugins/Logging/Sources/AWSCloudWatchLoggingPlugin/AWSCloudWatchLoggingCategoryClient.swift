@@ -36,7 +36,7 @@ final class AWSCloudWatchLoggingCategoryClient {
         enable: Bool,
         credentialsProvider: CredentialsProvider,
         authentication: AuthCategoryUserBehavior,
-        loggingConstraints: LoggingConstraints,
+        loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver,
         logGroupName: String,
         region: String,
         localStoreMaxSizeInMB: Int,
@@ -48,7 +48,7 @@ final class AWSCloudWatchLoggingCategoryClient {
         self.logGroupName = logGroupName
         self.region = region
         self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
-        self.logFilter = AWSCloudWatchLoggingFilter(loggingConstraints: loggingConstraints)
+        self.logFilter = AWSCloudWatchLoggingFilter(loggingConstraintsResolver: loggingConstraintsResolver)
         self.automaticFlushLogMonitor = AWSCLoudWatchLoggingMonitor(flushIntervalInSeconds: TimeInterval(flushIntervalInSeconds), eventDelegate: self)
         
     }
