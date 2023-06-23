@@ -219,6 +219,99 @@
 		39E0F2AA28A440A700939D9F /* GraphQLWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BBD28899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift */; };
 		39E0F2AD28A441B100939D9F /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */; };
 		39E0F2AF28A4425C00939D9F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F2AE28A4425C00939D9F /* Todo.swift */; };
+		681B35422A43962D0074F369 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271F289ABFE9003788E3 /* Team2+Schema.swift */; };
+		681B35432A43962D0074F369 /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262707289ABFE6003788E3 /* EnumTestModel.swift */; };
+		681B35442A43962D0074F369 /* ScalarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262720289ABFE9003788E3 /* ScalarContainer.swift */; };
+		681B35452A43962D0074F369 /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262719289ABFE8003788E3 /* Project2.swift */; };
+		681B35462A43962D0074F369 /* EnumTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271E289ABFE9003788E3 /* EnumTestModel+Schema.swift */; };
+		681B35472A43962D0074F369 /* ListStringContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262715289ABFE8003788E3 /* ListStringContainer.swift */; };
+		681B35482A43962D0074F369 /* GraphQLConnectionScenario3Tests+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAD2889996A004BD994 /* GraphQLConnectionScenario3Tests+List.swift */; };
+		681B35492A43962D0074F369 /* GraphQLConnectionScenario3Tests+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB02889996A004BD994 /* GraphQLConnectionScenario3Tests+Helpers.swift */; };
+		681B354A2A43962D0074F369 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681B354B2A43962D0074F369 /* ListIntContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126270C289ABFE6003788E3 /* ListIntContainer.swift */; };
+		681B354C2A43962D0074F369 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262712289ABFE7003788E3 /* Team2.swift */; };
+		681B354D2A43962D0074F369 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698A9F28899921004BD994 /* Todo.swift */; };
+		681B354E2A43962D0074F369 /* ListStringContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262724289ABFE9003788E3 /* ListStringContainer+Schema.swift */; };
+		681B354F2A43962D0074F369 /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262710289ABFE7003788E3 /* Project2+Schema.swift */; };
+		681B35502A43962D0074F369 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272F289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift */; };
+		681B35512A43962D0074F369 /* NestedTypeTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272D289ABFEB003788E3 /* NestedTypeTestModel.swift */; };
+		681B35522A43962D0074F369 /* Post5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262714289ABFE7003788E3 /* Post5+Schema.swift */; };
+		681B35532A43962D0074F369 /* TestEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272C289ABFEB003788E3 /* TestEnum.swift */; };
+		681B35542A43962D0074F369 /* GraphQLConnectionScenario3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAA2889996A004BD994 /* GraphQLConnectionScenario3Tests.swift */; };
+		681B35552A43962D0074F369 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681B35562A43962D0074F369 /* GraphQLTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAF2889996A004BD994 /* GraphQLTestBase.swift */; };
+		681B35572A43962D0074F369 /* GraphQLConnectionScenario4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB32889996A004BD994 /* GraphQLConnectionScenario4Tests.swift */; };
+		681B35582A43962D0074F369 /* PostEditor5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262721289ABFE9003788E3 /* PostEditor5+Schema.swift */; };
+		681B35592A43962D0074F369 /* Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262711289ABFE7003788E3 /* Nested.swift */; };
+		681B355A2A43962D0074F369 /* Comment3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272A289ABFEA003788E3 /* Comment3.swift */; };
+		681B355B2A43962D0074F369 /* Comment6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271B289ABFE8003788E3 /* Comment6+Schema.swift */; };
+		681B355C2A43962D0074F369 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262523289ABB0C003788E3 /* TestConfigHelper.swift */; };
+		681B355D2A43962D0074F369 /* Team1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126270D289ABFE6003788E3 /* Team1.swift */; };
+		681B355E2A43962D0074F369 /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272B289ABFEA003788E3 /* Comment+Schema.swift */; };
+		681B355F2A43962D0074F369 /* GraphQLConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */; };
+		681B35602A43962D0074F369 /* Post5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262703289ABFE5003788E3 /* Post5.swift */; };
+		681B35612A43962D0074F369 /* Nested+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262718289ABFE8003788E3 /* Nested+Schema.swift */; };
+		681B35622A43962D0074F369 /* Post3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126270A289ABFE6003788E3 /* Post3+Schema.swift */; };
+		681B35632A43962D0074F369 /* GraphQLConnectionScenario6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAE2889996A004BD994 /* GraphQLConnectionScenario6Tests.swift */; };
+		681B35642A43962D0074F369 /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262717289ABFE8003788E3 /* Comment4.swift */; };
+		681B35652A43962D0074F369 /* GraphQLModelBasedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB42889996A004BD994 /* GraphQLModelBasedTests.swift */; };
+		681B35662A43962D0074F369 /* ListIntContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262716289ABFE8003788E3 /* ListIntContainer+Schema.swift */; };
+		681B35672A43962D0074F369 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681B35682A43962D0074F369 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262727289ABFEA003788E3 /* Post4+Schema.swift */; };
+		681B35692A43962D0074F369 /* GraphQLConnectionScenario3Tests+Subscribe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB22889996A004BD994 /* GraphQLConnectionScenario3Tests+Subscribe.swift */; };
+		681B356A2A43962D0074F369 /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272E289ABFEB003788E3 /* Post+Schema.swift */; };
+		681B356B2A43962D0074F369 /* Blog6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126270E289ABFE7003788E3 /* Blog6.swift */; };
+		681B356C2A43962D0074F369 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271C289ABFE8003788E3 /* Comment.swift */; };
+		681B356D2A43962D0074F369 /* Post6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126270F289ABFE7003788E3 /* Post6.swift */; };
+		681B356E2A43962D0074F369 /* Post3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262730289ABFEB003788E3 /* Post3.swift */; };
+		681B356F2A43962D0074F369 /* User5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262728289ABFEA003788E3 /* User5+Schema.swift */; };
+		681B35702A43962D0074F369 /* Blog6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262725289ABFEA003788E3 /* Blog6+Schema.swift */; };
+		681B35712A43962D0074F369 /* Comment6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271D289ABFE9003788E3 /* Comment6.swift */; };
+		681B35722A43962D0074F369 /* GraphQLScalarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAB2889996A004BD994 /* GraphQLScalarTests.swift */; };
+		681B35732A43962D0074F369 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262726289ABFEA003788E3 /* Post4.swift */; };
+		681B35742A43962D0074F369 /* ScalarContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262702289ABFE4003788E3 /* ScalarContainer+Schema.swift */; };
+		681B35752A43962D0074F369 /* Project1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262723289ABFE9003788E3 /* Project1.swift */; };
+		681B35762A43962D0074F369 /* Team1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126270B289ABFE6003788E3 /* Team1+Schema.swift */; };
+		681B35772A43962D0074F369 /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271A289ABFE8003788E3 /* AmplifyModels.swift */; };
+		681B35782A43962D0074F369 /* User5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262706289ABFE5003788E3 /* User5.swift */; };
+		681B35792A43962D0074F369 /* GraphQLConnectionScenario1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AA82889996A004BD994 /* GraphQLConnectionScenario1Tests.swift */; };
+		681B357A2A43962D0074F369 /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262722289ABFE9003788E3 /* PostStatus.swift */; };
+		681B357B2A43962D0074F369 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262704289ABFE5003788E3 /* Post.swift */; };
+		681B357C2A43962D0074F369 /* Project1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262713289ABFE7003788E3 /* Project1+Schema.swift */; };
+		681B357D2A43962D0074F369 /* Comment3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262729289ABFEA003788E3 /* Comment3+Schema.swift */; };
+		681B357E2A43962D0074F369 /* GraphQLModelBasedTests+List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAC2889996A004BD994 /* GraphQLModelBasedTests+List.swift */; };
+		681B357F2A43962D0074F369 /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262708289ABFE6003788E3 /* Comment4+Schema.swift */; };
+		681B35802A43962D0074F369 /* Post6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262709289ABFE6003788E3 /* Post6+Schema.swift */; };
+		681B35812A43962D0074F369 /* PostEditor5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262705289ABFE5003788E3 /* PostEditor5.swift */; };
+		681B35822A43962D0074F369 /* GraphQLConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB52889996A004BD994 /* GraphQLConnectionScenario5Tests.swift */; };
+		681B358A2A43965A0074F369 /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C072889B173004BD994 /* TestCommonConstants.swift */; };
+		681B358B2A43965E0074F369 /* TestExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C062889B173004BD994 /* TestExtensions.swift */; };
+		681B358C2A43965E0074F369 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
+		681B358D2A43965E0074F369 /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
+		681B358E2A4396720074F369 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8828A700E000B30280 /* SubscriptionView.swift */; };
+		681B35952A4396CF0074F369 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8028A6C4FB00B30280 /* TestConfigHelper.swift */; };
+		681B35962A4396CF0074F369 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681B35972A4396CF0074F369 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681B35982A4396CF0074F369 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681B35992A4396CF0074F369 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8628A6CEDD00B30280 /* Todo.swift */; };
+		681B359A2A4396CF0074F369 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
+		681B35A52A4396F00074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35A42A4396F00074F369 /* Amplify */; };
+		681B35A72A4396F00074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35A62A4396F00074F369 /* AWSAPIPlugin */; };
+		681B35A92A4396F00074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35A82A4396F00074F369 /* AWSCognitoAuthPlugin */; };
+		681B35AB2A4396F90074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35AA2A4396F90074F369 /* Amplify */; };
+		681B35AD2A4396F90074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35AC2A4396F90074F369 /* AWSAPIPlugin */; };
+		681B35AF2A4396F90074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35AE2A4396F90074F369 /* AWSCognitoAuthPlugin */; };
+		681B35B12A4397000074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35B02A4397000074F369 /* Amplify */; };
+		681B35B32A4397000074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35B22A4397000074F369 /* AWSAPIPlugin */; };
+		681B35B52A4397000074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35B42A4397000074F369 /* AWSCognitoAuthPlugin */; };
+		681B35BA2A43970A0074F369 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
+		681B35BB2A43970A0074F369 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681B35BC2A43970A0074F369 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */; };
+		681B35BD2A43970A0074F369 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681B35BE2A43970A0074F369 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681B35C92A4397180074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35C82A4397180074F369 /* Amplify */; };
+		681B35CB2A4397180074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35CA2A4397180074F369 /* AWSAPIPlugin */; };
+		681B35CD2A4397180074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35CC2A4397180074F369 /* AWSCognitoAuthPlugin */; };
 		681DFE7228E7451E0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		681DFE7328E7451E0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		681DFE7428E7451E0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
@@ -310,6 +403,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 21E73E6A28898D7800D7DB7E;
 			remoteInfo = APIHostApp;
+		};
+		681B358F2A43969C0074F369 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 681B35282A4395730074F369;
+			remoteInfo = APIWatchApp;
+		};
+		681B35A22A4396DB0074F369 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 681B35282A4395730074F369;
+			remoteInfo = APIWatchApp;
+		};
+		681B35C62A4397120074F369 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 681B35282A4395730074F369;
+			remoteInfo = APIWatchApp;
 		};
 		97914BCE2955872A002000EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -546,6 +660,10 @@
 		39E0F2A128A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		39E0F2AE28A4425C00939D9F /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
+		681B35292A4395730074F369 /* APIWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		681B35892A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginFunctionalTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		681B35A12A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		681B35C52A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTIAMTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		681DFE6F28E7451D0000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE7028E7451D0000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
@@ -626,6 +744,46 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35262A4395730074F369 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B35A72A4396F00074F369 /* AWSAPIPlugin in Frameworks */,
+				681B35A52A4396F00074F369 /* Amplify in Frameworks */,
+				681B35A92A4396F00074F369 /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35832A43962D0074F369 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B35AD2A4396F90074F369 /* AWSAPIPlugin in Frameworks */,
+				681B35AB2A4396F90074F369 /* Amplify in Frameworks */,
+				681B35AF2A4396F90074F369 /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B359B2A4396CF0074F369 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B35B32A4397000074F369 /* AWSAPIPlugin in Frameworks */,
+				681B35B12A4397000074F369 /* Amplify in Frameworks */,
+				681B35B52A4397000074F369 /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35BF2A43970A0074F369 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B35CB2A4397180074F369 /* AWSAPIPlugin in Frameworks */,
+				681B35C92A4397180074F369 /* Amplify in Frameworks */,
+				681B35CD2A4397180074F369 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1004,6 +1162,10 @@
 				395906C028AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests.xctest */,
 				97914C182955872A002000EA /* GraphQLAPIStressTests.xctest */,
 				21EA887328F9BC600000BA75 /* AWSAPIPluginLazyLoadTests.xctest */,
+				681B35292A4395730074F369 /* APIWatchApp.app */,
+				681B35892A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch.xctest */,
+				681B35A12A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest */,
+				681B35C52A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1397,6 +1559,100 @@
 			productReference = 39E0F2A128A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		681B35282A4395730074F369 /* APIWatchApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 681B353C2A4395760074F369 /* Build configuration list for PBXNativeTarget "APIWatchApp" */;
+			buildPhases = (
+				681B35252A4395730074F369 /* Sources */,
+				681B35262A4395730074F369 /* Frameworks */,
+				681B35272A4395730074F369 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = APIWatchApp;
+			packageProductDependencies = (
+				681B35A42A4396F00074F369 /* Amplify */,
+				681B35A62A4396F00074F369 /* AWSAPIPlugin */,
+				681B35A82A4396F00074F369 /* AWSCognitoAuthPlugin */,
+			);
+			productName = "APIWatchApp Watch App";
+			productReference = 681B35292A4395730074F369 /* APIWatchApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		681B353E2A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 681B35862A43962D0074F369 /* Build configuration list for PBXNativeTarget "AWSAPIPluginFunctionalTestsWatch" */;
+			buildPhases = (
+				681B35412A43962D0074F369 /* Sources */,
+				681B35832A43962D0074F369 /* Frameworks */,
+				681B35842A43962D0074F369 /* Resources */,
+				681B35852A43962D0074F369 /* Copy Configuration folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				681B35902A43969C0074F369 /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginFunctionalTestsWatch;
+			packageProductDependencies = (
+				681B35AA2A4396F90074F369 /* Amplify */,
+				681B35AC2A4396F90074F369 /* AWSAPIPlugin */,
+				681B35AE2A4396F90074F369 /* AWSCognitoAuthPlugin */,
+			);
+			productName = AWSAPIPluginFunctionalTests;
+			productReference = 681B35892A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		681B35912A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 681B359E2A4396CF0074F369 /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLLambdaAuthTestsWatch" */;
+			buildPhases = (
+				681B35942A4396CF0074F369 /* Sources */,
+				681B359B2A4396CF0074F369 /* Frameworks */,
+				681B359C2A4396CF0074F369 /* Resources */,
+				681B359D2A4396CF0074F369 /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				681B35A32A4396DB0074F369 /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginGraphQLLambdaAuthTestsWatch;
+			packageProductDependencies = (
+				681B35B02A4397000074F369 /* Amplify */,
+				681B35B22A4397000074F369 /* AWSAPIPlugin */,
+				681B35B42A4397000074F369 /* AWSCognitoAuthPlugin */,
+			);
+			productName = AWSAPIPluginGraphQLLambdaAuthTests;
+			productReference = 681B35A12A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		681B35B62A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 681B35C22A43970A0074F369 /* Build configuration list for PBXNativeTarget "AWSAPIPluginRESTIAMTestsWatch" */;
+			buildPhases = (
+				681B35B92A43970A0074F369 /* Sources */,
+				681B35BF2A43970A0074F369 /* Frameworks */,
+				681B35C02A43970A0074F369 /* Resources */,
+				681B35C12A43970A0074F369 /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				681B35C72A4397120074F369 /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginRESTIAMTestsWatch;
+			packageProductDependencies = (
+				681B35C82A4397180074F369 /* Amplify */,
+				681B35CA2A4397180074F369 /* AWSAPIPlugin */,
+				681B35CC2A4397180074F369 /* AWSCognitoAuthPlugin */,
+			);
+			productName = AWSAPIPluginRESTIAMTests;
+			productReference = 681B35C52A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		97914BCC2955872A002000EA /* GraphQLAPIStressTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97914C152955872A002000EA /* Build configuration list for PBXNativeTarget "GraphQLAPIStressTests" */;
@@ -1423,7 +1679,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					213DBC7428A6C47000B30280 = {
@@ -1463,6 +1719,18 @@
 						CreatedOnToolsVersion = 13.4.1;
 						TestTargetID = 21E73E6A28898D7800D7DB7E;
 					};
+					681B35282A4395730074F369 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					681B353E2A43962D0074F369 = {
+						TestTargetID = 681B35282A4395730074F369;
+					};
+					681B35912A4396CF0074F369 = {
+						TestTargetID = 681B35282A4395730074F369;
+					};
+					681B35B62A43970A0074F369 = {
+						TestTargetID = 681B35282A4395730074F369;
+					};
 				};
 			};
 			buildConfigurationList = 21E73E6628898D7800D7DB7E /* Build configuration list for PBXProject "APIHostApp" */;
@@ -1491,6 +1759,10 @@
 				395906BF28AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests */,
 				97914BCC2955872A002000EA /* GraphQLAPIStressTests */,
 				21EA887228F9BC600000BA75 /* AWSAPIPluginLazyLoadTests */,
+				681B35282A4395730074F369 /* APIWatchApp */,
+				681B353E2A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch */,
+				681B35912A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch */,
+				681B35B62A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -1555,6 +1827,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		39E0F29F28A43FB100939D9F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35272A4395730074F369 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35842A43962D0074F369 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B359C2A4396CF0074F369 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35C02A43970A0074F369 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1681,6 +1981,60 @@
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		39E0F2B028A4479B00939D9F /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		681B35852A43962D0074F369 /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		681B359D2A4396CF0074F369 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		681B35C12A43970A0074F369 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2028,6 +2382,115 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		681B35252A4395730074F369 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B358D2A43965E0074F369 /* APIHostAppApp.swift in Sources */,
+				681B358A2A43965A0074F369 /* TestCommonConstants.swift in Sources */,
+				681B358B2A43965E0074F369 /* TestExtensions.swift in Sources */,
+				681B358E2A4396720074F369 /* SubscriptionView.swift in Sources */,
+				681B358C2A43965E0074F369 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35412A43962D0074F369 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B35422A43962D0074F369 /* Team2+Schema.swift in Sources */,
+				681B35432A43962D0074F369 /* EnumTestModel.swift in Sources */,
+				681B35442A43962D0074F369 /* ScalarContainer.swift in Sources */,
+				681B35452A43962D0074F369 /* Project2.swift in Sources */,
+				681B35462A43962D0074F369 /* EnumTestModel+Schema.swift in Sources */,
+				681B35472A43962D0074F369 /* ListStringContainer.swift in Sources */,
+				681B35482A43962D0074F369 /* GraphQLConnectionScenario3Tests+List.swift in Sources */,
+				681B35492A43962D0074F369 /* GraphQLConnectionScenario3Tests+Helpers.swift in Sources */,
+				681B354A2A43962D0074F369 /* AsyncTesting.swift in Sources */,
+				681B354B2A43962D0074F369 /* ListIntContainer.swift in Sources */,
+				681B354C2A43962D0074F369 /* Team2.swift in Sources */,
+				681B354D2A43962D0074F369 /* Todo.swift in Sources */,
+				681B354E2A43962D0074F369 /* ListStringContainer+Schema.swift in Sources */,
+				681B354F2A43962D0074F369 /* Project2+Schema.swift in Sources */,
+				681B35502A43962D0074F369 /* NestedTypeTestModel+Schema.swift in Sources */,
+				681B35512A43962D0074F369 /* NestedTypeTestModel.swift in Sources */,
+				681B35522A43962D0074F369 /* Post5+Schema.swift in Sources */,
+				681B35532A43962D0074F369 /* TestEnum.swift in Sources */,
+				681B35542A43962D0074F369 /* GraphQLConnectionScenario3Tests.swift in Sources */,
+				681B35552A43962D0074F369 /* XCTestCase+AsyncTesting.swift in Sources */,
+				681B35562A43962D0074F369 /* GraphQLTestBase.swift in Sources */,
+				681B35572A43962D0074F369 /* GraphQLConnectionScenario4Tests.swift in Sources */,
+				681B35582A43962D0074F369 /* PostEditor5+Schema.swift in Sources */,
+				681B35592A43962D0074F369 /* Nested.swift in Sources */,
+				681B355A2A43962D0074F369 /* Comment3.swift in Sources */,
+				681B355B2A43962D0074F369 /* Comment6+Schema.swift in Sources */,
+				681B355C2A43962D0074F369 /* TestConfigHelper.swift in Sources */,
+				681B355D2A43962D0074F369 /* Team1.swift in Sources */,
+				681B355E2A43962D0074F369 /* Comment+Schema.swift in Sources */,
+				681B355F2A43962D0074F369 /* GraphQLConnectionScenario2Tests.swift in Sources */,
+				681B35602A43962D0074F369 /* Post5.swift in Sources */,
+				681B35612A43962D0074F369 /* Nested+Schema.swift in Sources */,
+				681B35622A43962D0074F369 /* Post3+Schema.swift in Sources */,
+				681B35632A43962D0074F369 /* GraphQLConnectionScenario6Tests.swift in Sources */,
+				681B35642A43962D0074F369 /* Comment4.swift in Sources */,
+				681B35652A43962D0074F369 /* GraphQLModelBasedTests.swift in Sources */,
+				681B35662A43962D0074F369 /* ListIntContainer+Schema.swift in Sources */,
+				681B35672A43962D0074F369 /* AsyncExpectation.swift in Sources */,
+				681B35682A43962D0074F369 /* Post4+Schema.swift in Sources */,
+				681B35692A43962D0074F369 /* GraphQLConnectionScenario3Tests+Subscribe.swift in Sources */,
+				681B356A2A43962D0074F369 /* Post+Schema.swift in Sources */,
+				681B356B2A43962D0074F369 /* Blog6.swift in Sources */,
+				681B356C2A43962D0074F369 /* Comment.swift in Sources */,
+				681B356D2A43962D0074F369 /* Post6.swift in Sources */,
+				681B356E2A43962D0074F369 /* Post3.swift in Sources */,
+				681B356F2A43962D0074F369 /* User5+Schema.swift in Sources */,
+				681B35702A43962D0074F369 /* Blog6+Schema.swift in Sources */,
+				681B35712A43962D0074F369 /* Comment6.swift in Sources */,
+				681B35722A43962D0074F369 /* GraphQLScalarTests.swift in Sources */,
+				681B35732A43962D0074F369 /* Post4.swift in Sources */,
+				681B35742A43962D0074F369 /* ScalarContainer+Schema.swift in Sources */,
+				681B35752A43962D0074F369 /* Project1.swift in Sources */,
+				681B35762A43962D0074F369 /* Team1+Schema.swift in Sources */,
+				681B35772A43962D0074F369 /* AmplifyModels.swift in Sources */,
+				681B35782A43962D0074F369 /* User5.swift in Sources */,
+				681B35792A43962D0074F369 /* GraphQLConnectionScenario1Tests.swift in Sources */,
+				681B357A2A43962D0074F369 /* PostStatus.swift in Sources */,
+				681B357B2A43962D0074F369 /* Post.swift in Sources */,
+				681B357C2A43962D0074F369 /* Project1+Schema.swift in Sources */,
+				681B357D2A43962D0074F369 /* Comment3+Schema.swift in Sources */,
+				681B357E2A43962D0074F369 /* GraphQLModelBasedTests+List.swift in Sources */,
+				681B357F2A43962D0074F369 /* Comment4+Schema.swift in Sources */,
+				681B35802A43962D0074F369 /* Post6+Schema.swift in Sources */,
+				681B35812A43962D0074F369 /* PostEditor5.swift in Sources */,
+				681B35822A43962D0074F369 /* GraphQLConnectionScenario5Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35942A4396CF0074F369 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B35952A4396CF0074F369 /* TestConfigHelper.swift in Sources */,
+				681B35962A4396CF0074F369 /* AsyncTesting.swift in Sources */,
+				681B35972A4396CF0074F369 /* XCTestCase+AsyncTesting.swift in Sources */,
+				681B35982A4396CF0074F369 /* AsyncExpectation.swift in Sources */,
+				681B35992A4396CF0074F369 /* Todo.swift in Sources */,
+				681B359A2A4396CF0074F369 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		681B35B92A43970A0074F369 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681B35BA2A43970A0074F369 /* RESTWithIAMIntegrationTests.swift in Sources */,
+				681B35BB2A43970A0074F369 /* AsyncTesting.swift in Sources */,
+				681B35BC2A43970A0074F369 /* TestConfigHelper.swift in Sources */,
+				681B35BD2A43970A0074F369 /* XCTestCase+AsyncTesting.swift in Sources */,
+				681B35BE2A43970A0074F369 /* AsyncExpectation.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97914BCF2955872A002000EA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2087,6 +2550,21 @@
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
 			targetProxy = 39E0F2A528A43FB100939D9F /* PBXContainerItemProxy */;
 		};
+		681B35902A43969C0074F369 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 681B35282A4395730074F369 /* APIWatchApp */;
+			targetProxy = 681B358F2A43969C0074F369 /* PBXContainerItemProxy */;
+		};
+		681B35A32A4396DB0074F369 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 681B35282A4395730074F369 /* APIWatchApp */;
+			targetProxy = 681B35A22A4396DB0074F369 /* PBXContainerItemProxy */;
+		};
+		681B35C72A4397120074F369 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 681B35282A4395730074F369 /* APIWatchApp */;
+			targetProxy = 681B35C62A4397120074F369 /* PBXContainerItemProxy */;
+		};
 		97914BCD2955872A002000EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
@@ -2103,13 +2581,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginGraphQLLambdaAuthTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2122,13 +2603,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginGraphQLLambdaAuthTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2141,7 +2625,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2150,10 +2634,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2166,7 +2653,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2175,9 +2662,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2190,7 +2680,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2199,10 +2689,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2215,7 +2708,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2224,9 +2717,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2281,7 +2777,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2335,7 +2831,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -2362,7 +2858,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2371,9 +2867,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.APIHostApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Debug;
 		};
@@ -2394,7 +2893,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2403,9 +2902,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.APIHostApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Release;
 		};
@@ -2420,9 +2922,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2438,9 +2943,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2456,9 +2964,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2474,9 +2985,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2492,9 +3006,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2510,9 +3027,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2524,13 +3044,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLIAMTest";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2542,13 +3065,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLIAMTest";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2560,12 +3086,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2577,17 +3107,81 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
 		};
-		97914C162955872A002000EA /* Debug */ = {
+		681B353A2A4395760074F369 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = APIWatchApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.aws.amplify.swift.APIWatchApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.4;
+			};
+			name = Debug;
+		};
+		681B353B2A4395760074F369 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = APIWatchApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.aws.amplify.swift.APIWatchApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.4;
+			};
+			name = Release;
+		};
+		681B35872A43962D0074F369 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -2604,10 +3198,154 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
+			};
+			name = Debug;
+		};
+		681B35882A43962D0074F369 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
+			};
+			name = Release;
+		};
+		681B359F2A4396CF0074F369 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginGraphQLLambdaAuthTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
+			};
+			name = Debug;
+		};
+		681B35A02A4396CF0074F369 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginGraphQLLambdaAuthTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
+			};
+			name = Release;
+		};
+		681B35C32A43970A0074F369 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
+			};
+			name = Debug;
+		};
+		681B35C42A43970A0074F369 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIWatchApp";
+			};
+			name = Release;
+		};
+		97914C162955872A002000EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2620,7 +3358,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2629,9 +3367,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2729,6 +3470,42 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		681B353C2A4395760074F369 /* Build configuration list for PBXNativeTarget "APIWatchApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				681B353A2A4395760074F369 /* Debug */,
+				681B353B2A4395760074F369 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		681B35862A43962D0074F369 /* Build configuration list for PBXNativeTarget "AWSAPIPluginFunctionalTestsWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				681B35872A43962D0074F369 /* Debug */,
+				681B35882A43962D0074F369 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		681B359E2A4396CF0074F369 /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLLambdaAuthTestsWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				681B359F2A4396CF0074F369 /* Debug */,
+				681B35A02A4396CF0074F369 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		681B35C22A43970A0074F369 /* Build configuration list for PBXNativeTarget "AWSAPIPluginRESTIAMTestsWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				681B35C32A43970A0074F369 /* Debug */,
+				681B35C42A43970A0074F369 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		97914C152955872A002000EA /* Build configuration list for PBXNativeTarget "GraphQLAPIStressTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2768,6 +3545,54 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21698CBE2889D5A9004BD994 /* XCRemoteSwiftPackageReference "CwlPreconditionTesting" */;
 			productName = CwlPreconditionTesting;
+		};
+		681B35A42A4396F00074F369 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		681B35A62A4396F00074F369 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
+		681B35A82A4396F00074F369 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		681B35AA2A4396F90074F369 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		681B35AC2A4396F90074F369 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
+		681B35AE2A4396F90074F369 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		681B35B02A4397000074F369 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		681B35B22A4397000074F369 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
+		681B35B42A4397000074F369 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		681B35C82A4397180074F369 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		681B35CA2A4397180074F369 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
+		681B35CC2A4397180074F369 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SafariServices
 
 import XCTest
 @testable import Amplify

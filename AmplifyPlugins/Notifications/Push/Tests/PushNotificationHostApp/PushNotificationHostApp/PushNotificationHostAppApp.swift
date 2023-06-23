@@ -8,10 +8,22 @@
 
 import SwiftUI
 import Amplify
+import UserNotifications
+#if os(watchOS)
+typealias ApplicationDelegateAdaptor = WKApplicationDelegateAdaptor
+typealias Application = WKApplication
+typealias ApplicationDelegate = WKApplicationDelegate
+typealias BackgroundFetchResult = WKBackgroundFetchResult
+#else
+typealias ApplicationDelegateAdaptor = UIApplicationDelegateAdaptor
+typealias Application = UIApplication
+typealias ApplicationDelegate = UIApplicationDelegate
+typealias BackgroundFetchResult = UIBackgroundFetchResult
+#endif
 
 @main
 struct PushNotificationHostAppApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @ApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -22,19 +34,52 @@ struct PushNotificationHostAppApp: App {
 @MainActor
 class AppDelegate: NSObject { }
 
-extension AppDelegate: UIApplicationDelegate {
+extension AppDelegate: ApplicationDelegate {
+#if os(watchOS)
+    func applicationDidFinishLaunching() {
+        UNUserNotificationCenter.current().delegate = self
+    }
+    
+    func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
+        registerDevice(deviceToken)
+    }
+    
+    func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
+        print(#function, "Failed to register for remote notification", error)
+    }
+#else
     func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+        _ application: Application,
+        didFinishLaunchingWithOptions launchOptions: [Application.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         return true
     }
-
+    
     func application(
-        _ application: UIApplication,
+        _ application: Application,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
+        registerDevice(deviceToken)
+    }
+    
+    func application(
+        _ application: Application,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print(#function, "Failed to register for remote notification", error)
+    }
+#endif
+
+    func application(
+        _ application: Application,
+        didReceiveRemoteNotification userInfo: [AnyHashable : Any]
+    ) async -> BackgroundFetchResult {
+        await recordNotificationReceived(userInfo)
+        return .noData
+    }
+    
+    private func registerDevice(_ deviceToken: Data) {
         Task {
             do {
                 print("Did register remote notification with token", deviceToken)
@@ -44,18 +89,8 @@ extension AppDelegate: UIApplicationDelegate {
             }
         }
     }
-
-    func application(
-        _ application: UIApplication,
-        didFailToRegisterForRemoteNotificationsWithError error: Error
-    ) {
-        print(#function, "Failed to register for remote notification", error)
-    }
-
-    func application(
-        _ application: UIApplication,
-        didReceiveRemoteNotification userInfo: [AnyHashable : Any]
-    ) async -> UIBackgroundFetchResult {
+    
+    private func recordNotificationReceived(_ userInfo: [AnyHashable : Any]) async {
         do {
             try await Amplify.Notifications.Push.recordNotificationReceived(userInfo)
             Amplify.Analytics.flushEvents()
@@ -63,11 +98,19 @@ extension AppDelegate: UIApplicationDelegate {
         } catch {
             print(#function, "Failed to recordNotificationReceived event", error)
         }
-        return .noData
     }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+
+#if os(watchOS)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        await recordNotificationReceived(notification.request.content.userInfo)
+        return .sound
+    }
+#endif
+
+#if !os(tvOS)
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
@@ -80,5 +123,5 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             print(#function, "Failed to recordNotificationOpened event", error)
         }
     }
-
+#endif
 }

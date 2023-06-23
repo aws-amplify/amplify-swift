@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Vision)
 import XCTest
 import Vision
 @testable import CoreMLPredictionsPlugin
@@ -41,3 +42,4 @@ class CoreMLVisionAdapterTests: XCTestCase {
         XCTAssertTrue(result?.entities.isEmpty != true, "The result should contain values for the image provided.")
     }
 }
+#endif

@@ -8,7 +8,7 @@
 import XCTest
 @testable import Amplify
 
-#if canImport(UIKit)
+#if os(iOS)
 // swiftlint:disable:next type_name
 class PersistentLoggingPluginAmplifyVersionableTests: XCTestCase {
 

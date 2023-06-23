@@ -26,7 +26,9 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+    #if os(iOS)
         XCUIDevice.shared.orientation = .portrait
+    #endif
         app.launch()
     }
 
@@ -62,7 +64,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             XCTFail("Failed to find 'Identify User' button")
         }
 
-        let firstAlert = app.alerts.firstMatch
+        let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
             !anyElementContains(text: "Identified User", scope: firstAlert).waitForExistence(timeout: timeout)
         {
@@ -82,7 +84,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             XCTFail("Failed to find 'Register Device' button")
         }
 
-        let firstAlert = app.alerts.firstMatch
+        let firstAlert = firstAlertElement()
         if !firstAlert.waitForExistence(timeout: timeout) ||
             !anyElementContains(text: "Registered Device", scope: firstAlert).waitForExistence(timeout: timeout)
         {
@@ -90,6 +92,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         }
     }
 
+#if !os(tvOS)
     @MainActor
     func testAppInBackground_withPinpointRemoteNotification_recordNotificationOpened() async throws {
         initAmplify()
@@ -114,7 +117,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             deviceId: deviceIdentifier!
         ))
 
-        let notification = XCUIApplication.springboard.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+        let notification = notificationElement()
         if notification.waitForExistence(timeout: timeout) {
             notification.tap()
         } else {
@@ -152,7 +155,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             deviceId: deviceIdentifier!
         ))
 
-        let notification = XCUIApplication.springboard.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+        let notification = notificationElement()
         if notification.waitForExistence(timeout: timeout) {
             notification.tap()
         } else {
@@ -222,6 +225,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             XCTFail("Should not record notification without pinpoint info")
         }
     }
+#endif
 
     private func initAmplify() {
         let initAmplifyButton = app.buttons["Init Amplify"]
@@ -233,11 +237,32 @@ final class PushNotificationHostAppUITests: XCTestCase {
     }
 
     private func grantNotificationPermissionIfNeeded() {
-        let alert = XCUIApplication.springboard.alerts.firstMatch
+    #if os(tvOS)
+        let alert = XCUIApplication.homeScreen.windows["PBDialogWindow"].firstMatch
+    #else
+        let alert = XCUIApplication.homeScreen.alerts.firstMatch
+    #endif
         if alert.waitForExistence(timeout: timeout) {
             XCTAssertTrue(anyElementContains(text: "Would Like to Send You Notifications", scope: alert).exists)
             alert.buttons["Allow"].tap()
         }
+    }
+    
+    private func firstAlertElement() -> XCUIElement {
+    #if os(watchOS)
+        // `SwiftUI.View.alert(isPresented:)` views re matched as tables in watchOS 🤷‍♂️
+        return app.tables.firstMatch
+    #else
+        return app.alerts.firstMatch
+    #endif
+    }
+    
+    private func notificationElement() -> XCUIElement {
+    #if os(watchOS)
+        return XCUIApplication.homeScreen.otherElements["PushNotificationsWatchApp"]
+    #else
+        return XCUIApplication.homeScreen.otherElements.descendants(matching: .any)["NotificationShortLookView"]
+    #endif
     }
 
     private func triggerNotification(notification: PinpointNotification) async throws {
@@ -254,17 +279,20 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
     private func pressHomeButton() {
         XCUIDevice.shared.press(XCUIDevice.Button.home)
-        let springboard = XCUIApplication.springboard
+        let springboard = XCUIApplication.homeScreen
+    #if !os(watchOS)
         springboard.activate()
+    #endif
 
         if !springboard.wait(for: .runningForeground, timeout: timeout) {
             XCTFail("Failed to get back to home screen")
         }
-        
+    #if !os(watchOS)
         if !app.wait(for: .runningBackground, timeout: timeout) {
             XCTFail("Failed to put app to the background")
             return
         }
+    #endif
     }
 
     private func anyElementContains(text: String, scope: XCUIElement) -> XCUIElement {
@@ -279,8 +307,47 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
 }
 
+#if os(tvOS)
+extension XCUIElement {
+    func tap() {
+        XCUIRemote.shared.select(self)
+    }
+}
+
+extension XCUIRemote {
+    func select(_ element: XCUIElement) {
+        let app = XCUIApplication()
+        var isEndReached = false
+        while !element.hasFocus {
+            let previousElement = app.focusedElement
+            press(isEndReached ? .up : .down)
+            if previousElement == app.focusedElement {
+                if isEndReached {
+                    XCTFail("Element \(element) was not found.")
+                    return
+                }
+                isEndReached = true
+            }
+        }
+        
+        print("Element \(element) was found and has been focused, pressing SELECT")
+        press(.select)
+    }
+}
+#endif
+
 extension XCUIApplication {
-    static var springboard: XCUIApplication {
+    static var homeScreen: XCUIApplication {
+    #if os(iOS)
         XCUIApplication(bundleIdentifier: "com.apple.springboard")
+    #elseif os(tvOS)
+        XCUIApplication(bundleIdentifier: "com.apple.PineBoard")
+    #else
+        XCUIApplication(bundleIdentifier: "com.apple.Carousel")
+    #endif
+    }
+    
+    var focusedElement: XCUIElement {
+        descendants(matching: .any).element(matching: NSPredicate(format: "hasFocus == true"))
     }
 }

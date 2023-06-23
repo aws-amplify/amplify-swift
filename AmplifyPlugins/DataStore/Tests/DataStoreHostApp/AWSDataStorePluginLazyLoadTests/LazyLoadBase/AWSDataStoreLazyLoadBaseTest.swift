@@ -12,7 +12,9 @@ import Combine
 import AWSPluginsCore
 import AWSAPIPlugin
 
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 @testable import Amplify
 
 class AWSDataStoreLazyLoadBaseTest: XCTestCase {

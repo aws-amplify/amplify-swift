@@ -8,6 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		03B3827B1594333F4C40DCFC /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 77D412CE71D4C36343815DC9 /* amplifyconfiguration.json */; };
+		681D7D872A42709100F7C310 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 77D412CE71D4C36343815DC9 /* amplifyconfiguration.json */; };
+		681D7D892A4270E900F7C310 /* PredictionsHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830052914027000897087 /* PredictionsHostAppApp.swift */; };
+		681D7D8B2A42710F00F7C310 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681D7D8A2A42710F00F7C310 /* Amplify */; };
+		681D7D8D2A42710F00F7C310 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681D7D8C2A42710F00F7C310 /* AWSCognitoAuthPlugin */; };
+		681D7D8F2A42710F00F7C310 /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681D7D8E2A42710F00F7C310 /* AWSPredictionsPlugin */; };
+		6875F9052A3CCCA3001C9AAF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830072914027000897087 /* ContentView.swift */; };
+		6875F90E2A3CCCB7001C9AAF /* IdentifyBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90542357291425630000D108 /* IdentifyBasicIntegrationTests.swift */; };
+		6875F90F2A3CCCB7001C9AAF /* InterpretBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9054235A291425630000D108 /* InterpretBasicIntegrationTests.swift */; };
+		6875F9102A3CCCB7001C9AAF /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90542359291425630000D108 /* AWSPredictionsPluginTestBase.swift */; };
+		6875F9112A3CCCB7001C9AAF /* ConvertBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90542358291425630000D108 /* ConvertBasicIntegrationTests.swift */; };
+		6875F9142A3CCCB7001C9AAF /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 6875F9092A3CCCB7001C9AAF /* Amplify */; };
+		6875F9152A3CCCB7001C9AAF /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 6875F90B2A3CCCB7001C9AAF /* AWSPredictionsPlugin */; };
+		6875F9162A3CCCB7001C9AAF /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 6875F90A2A3CCCB7001C9AAF /* AWSCognitoAuthPlugin */; };
+		6875F9182A3CCCB7001C9AAF /* testImageText.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9054235E291425630000D108 /* testImageText.jpg */; };
+		6875F9192A3CCCB7001C9AAF /* testImageCeleb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542363291425630000D108 /* testImageCeleb.jpg */; };
+		6875F91A2A3CCCB7001C9AAF /* testImageTextWithTables.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542360291425630000D108 /* testImageTextWithTables.jpg */; };
+		6875F91B2A3CCCB7001C9AAF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9054235B291425630000D108 /* README.md */; };
+		6875F91C2A3CCCB7001C9AAF /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 90542365291425630000D108 /* audio.wav */; };
+		6875F91D2A3CCCB7001C9AAF /* testImageTextForms.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542364291425630000D108 /* testImageTextForms.jpg */; };
+		6875F91E2A3CCCB7001C9AAF /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9054235F291425630000D108 /* testImageLabels.jpg */; };
+		6875F91F2A3CCCB7001C9AAF /* testImageEntities.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542362291425630000D108 /* testImageEntities.jpg */; };
+		6875F9202A3CCCB7001C9AAF /* testImageTextAll.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542361291425630000D108 /* testImageTextAll.jpg */; };
 		902830062914027000897087 /* PredictionsHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830052914027000897087 /* PredictionsHostAppApp.swift */; };
 		902830082914027000897087 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830072914027000897087 /* ContentView.swift */; };
 		9028300A2914027100897087 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 902830092914027100897087 /* Assets.xcassets */; };
@@ -40,6 +62,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6875F9252A3CCCC5001C9AAF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90282FFA2914027000897087 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6875F8EF2A3CCC84001C9AAF;
+			remoteInfo = PredictionsWatchApp;
+		};
 		90283037291402D500897087 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 90282FFA2914027000897087 /* Project object */;
@@ -57,6 +86,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6875F8F02A3CCC84001C9AAF /* PredictionsWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PredictionsWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6875F9242A3CCCB7001C9AAF /* AWSPredictionsPluginIntegrationTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginIntegrationTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		77D412CE71D4C36343815DC9 /* amplifyconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		902830022914027000897087 /* PredictionsHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PredictionsHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		902830052914027000897087 /* PredictionsHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsHostAppApp.swift; sourceTree = "<group>"; };
@@ -87,6 +118,26 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6875F8ED2A3CCC84001C9AAF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681D7D8B2A42710F00F7C310 /* Amplify in Frameworks */,
+				681D7D8F2A42710F00F7C310 /* AWSPredictionsPlugin in Frameworks */,
+				681D7D8D2A42710F00F7C310 /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6875F9122A3CCCB7001C9AAF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6875F9142A3CCCB7001C9AAF /* Amplify in Frameworks */,
+				6875F9152A3CCCB7001C9AAF /* AWSPredictionsPlugin in Frameworks */,
+				6875F9162A3CCCB7001C9AAF /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		90282FFF2914027000897087 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -146,6 +197,8 @@
 				902830022914027000897087 /* PredictionsHostApp.app */,
 				90283033291402D500897087 /* CoreMLPredictionsPluginIntegrationTests.xctest */,
 				903555F829141355004B83C2 /* AWSPredictionsPluginIntegrationTests.xctest */,
+				6875F8F02A3CCC84001C9AAF /* PredictionsWatchApp.app */,
+				6875F9242A3CCCB7001C9AAF /* AWSPredictionsPluginIntegrationTestsWatch.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -235,6 +288,52 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6875F8EF2A3CCC84001C9AAF /* PredictionsWatchApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6875F9032A3CCC86001C9AAF /* Build configuration list for PBXNativeTarget "PredictionsWatchApp" */;
+			buildPhases = (
+				681D7D882A4270A100F7C310 /* Copy amplifyconfiguration */,
+				6875F8EC2A3CCC84001C9AAF /* Sources */,
+				6875F8ED2A3CCC84001C9AAF /* Frameworks */,
+				6875F8EE2A3CCC84001C9AAF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PredictionsWatchApp;
+			packageProductDependencies = (
+				681D7D8A2A42710F00F7C310 /* Amplify */,
+				681D7D8C2A42710F00F7C310 /* AWSCognitoAuthPlugin */,
+				681D7D8E2A42710F00F7C310 /* AWSPredictionsPlugin */,
+			);
+			productName = "NewApp Watch App";
+			productReference = 6875F8F02A3CCC84001C9AAF /* PredictionsWatchApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6875F9062A3CCCB7001C9AAF /* AWSPredictionsPluginIntegrationTestsWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6875F9212A3CCCB7001C9AAF /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTestsWatch" */;
+			buildPhases = (
+				6875F90D2A3CCCB7001C9AAF /* Sources */,
+				6875F9122A3CCCB7001C9AAF /* Frameworks */,
+				6875F9172A3CCCB7001C9AAF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6875F9262A3CCCC5001C9AAF /* PBXTargetDependency */,
+			);
+			name = AWSPredictionsPluginIntegrationTestsWatch;
+			packageProductDependencies = (
+				6875F9092A3CCCB7001C9AAF /* Amplify */,
+				6875F90A2A3CCCB7001C9AAF /* AWSCognitoAuthPlugin */,
+				6875F90B2A3CCCB7001C9AAF /* AWSPredictionsPlugin */,
+			);
+			productName = AWSPredictionsPluginIntegrationTests;
+			productReference = 6875F9242A3CCCB7001C9AAF /* AWSPredictionsPluginIntegrationTestsWatch.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		902830012914027000897087 /* PredictionsHostApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 902830262914027200897087 /* Build configuration list for PBXNativeTarget "PredictionsHostApp" */;
@@ -308,9 +407,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1410;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1410;
 				TargetAttributes = {
+					6875F8EF2A3CCC84001C9AAF = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					6875F9062A3CCCB7001C9AAF = {
+						TestTargetID = 6875F8EF2A3CCC84001C9AAF;
+					};
 					902830012914027000897087 = {
 						CreatedOnToolsVersion = 14.1;
 					};
@@ -342,11 +447,37 @@
 				902830012914027000897087 /* PredictionsHostApp */,
 				90283032291402D500897087 /* CoreMLPredictionsPluginIntegrationTests */,
 				903555F729141355004B83C2 /* AWSPredictionsPluginIntegrationTests */,
+				6875F8EF2A3CCC84001C9AAF /* PredictionsWatchApp */,
+				6875F9062A3CCCB7001C9AAF /* AWSPredictionsPluginIntegrationTestsWatch */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6875F8EE2A3CCC84001C9AAF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681D7D872A42709100F7C310 /* amplifyconfiguration.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6875F9172A3CCCB7001C9AAF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6875F9182A3CCCB7001C9AAF /* testImageText.jpg in Resources */,
+				6875F9192A3CCCB7001C9AAF /* testImageCeleb.jpg in Resources */,
+				6875F91A2A3CCCB7001C9AAF /* testImageTextWithTables.jpg in Resources */,
+				6875F91B2A3CCCB7001C9AAF /* README.md in Resources */,
+				6875F91C2A3CCCB7001C9AAF /* audio.wav in Resources */,
+				6875F91D2A3CCCB7001C9AAF /* testImageTextForms.jpg in Resources */,
+				6875F91E2A3CCCB7001C9AAF /* testImageLabels.jpg in Resources */,
+				6875F91F2A3CCCB7001C9AAF /* testImageEntities.jpg in Resources */,
+				6875F9202A3CCCB7001C9AAF /* testImageTextAll.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		902830002914027000897087 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -403,9 +534,48 @@
 			shellScript = "set -e\n\nSOURCE_DIR=$HOME/.aws-amplify/amplify-ios/testconfiguration\nDESTINATION_DIR=\"$SOURCE_ROOT\"\n\nif [ -d \"$AMPLIFY_CONFIGURATION_PATH\" ]; then\n    echo \"Found AMPLIFY_CONFIGURATION_PATH - copying\"\n    mkdir -p \"$DESTINATION_DIR\"\n    ditto \"$AMPLIFY_CONFIGURATION_PATH\" \"$DESTINATION_DIR\"\n    exit 0\nfi\n\nif [ ! -d \"$SOURCE_DIR\" ]; then\n    echo \"error: Test configuration directory does not exist: ${SOURCE_DIR}\" && exit 1\nfi\n\nmkdir -p \"$DESTINATION_DIR\"\n\nif [ ! -f \"$SOURCE_DIR/AWSPredictionsPluginIntegrationTests-amplifyconfiguration.json\" ]; then\n    echo \"error: Missing AWSPredictionsPluginIntegrationTests-amplifyconfiguration.json from: ${SOURCE_DIR}\" && exit 1\nfi\n\nditto \"$SOURCE_DIR/AWSPredictionsPluginIntegrationTests-amplifyconfiguration.json\" \"$DESTINATION_DIR/amplifyconfiguration.json\"\n";
 			showEnvVarsInLog = 0;
 		};
+		681D7D882A4270A100F7C310 /* Copy amplifyconfiguration */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy amplifyconfiguration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nSOURCE_DIR=$HOME/.aws-amplify/amplify-ios/testconfiguration\nDESTINATION_DIR=\"$SOURCE_ROOT\"\n\nif [ -d \"$AMPLIFY_CONFIGURATION_PATH\" ]; then\n    echo \"Found AMPLIFY_CONFIGURATION_PATH - copying\"\n    mkdir -p \"$DESTINATION_DIR\"\n    ditto \"$AMPLIFY_CONFIGURATION_PATH\" \"$DESTINATION_DIR\"\n    exit 0\nfi\n\nif [ ! -d \"$SOURCE_DIR\" ]; then\n    echo \"error: Test configuration directory does not exist: ${SOURCE_DIR}\" && exit 1\nfi\n\nmkdir -p \"$DESTINATION_DIR\"\n\nif [ ! -f \"$SOURCE_DIR/AWSPredictionsPluginIntegrationTests-amplifyconfiguration.json\" ]; then\n    echo \"error: Missing AWSPredictionsPluginIntegrationTests-amplifyconfiguration.json from: ${SOURCE_DIR}\" && exit 1\nfi\n\nditto \"$SOURCE_DIR/AWSPredictionsPluginIntegrationTests-amplifyconfiguration.json\" \"$DESTINATION_DIR/amplifyconfiguration.json\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6875F8EC2A3CCC84001C9AAF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				681D7D892A4270E900F7C310 /* PredictionsHostAppApp.swift in Sources */,
+				6875F9052A3CCCA3001C9AAF /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6875F90D2A3CCCB7001C9AAF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6875F90E2A3CCCB7001C9AAF /* IdentifyBasicIntegrationTests.swift in Sources */,
+				6875F90F2A3CCCB7001C9AAF /* InterpretBasicIntegrationTests.swift in Sources */,
+				6875F9102A3CCCB7001C9AAF /* AWSPredictionsPluginTestBase.swift in Sources */,
+				6875F9112A3CCCB7001C9AAF /* ConvertBasicIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		90282FFE2914027000897087 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -438,6 +608,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6875F9262A3CCCC5001C9AAF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6875F8EF2A3CCC84001C9AAF /* PredictionsWatchApp */;
+			targetProxy = 6875F9252A3CCCC5001C9AAF /* PBXContainerItemProxy */;
+		};
 		90283038291402D500897087 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 902830012914027000897087 /* PredictionsHostApp */;
@@ -451,6 +626,125 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		6875F9012A3CCC86001C9AAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = NewApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.aws.amplify.swift.NewApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.4;
+			};
+			name = Debug;
+		};
+		6875F9022A3CCC86001C9AAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = NewApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.aws.amplify.swift.NewApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.4;
+			};
+			name = Release;
+		};
+		6875F9222A3CCCB7001C9AAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_PKGINFO_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsWatchApp";
+			};
+			name = Debug;
+		};
+		6875F9232A3CCCB7001C9AAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G3Q4R66M4R;
+				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_PKGINFO_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsWatchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsWatchApp";
+			};
+			name = Release;
+		};
 		902830242914027200897087 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -590,9 +884,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.PredictionsHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Debug;
 		};
@@ -621,9 +918,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.PredictionsHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Release;
 		};
@@ -645,11 +945,14 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.CoreMLPredictionsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
 			};
 			name = Debug;
@@ -672,10 +975,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.CoreMLPredictionsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
 			};
 			name = Release;
@@ -699,11 +1005,14 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.AWSPredictionsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
 			};
 			name = Debug;
@@ -727,10 +1036,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.AWSPredictionsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PredictionsHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PredictionsHostApp";
 			};
 			name = Release;
@@ -738,6 +1050,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6875F9032A3CCC86001C9AAF /* Build configuration list for PBXNativeTarget "PredictionsWatchApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6875F9012A3CCC86001C9AAF /* Debug */,
+				6875F9022A3CCC86001C9AAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6875F9212A3CCCB7001C9AAF /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTestsWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6875F9222A3CCCB7001C9AAF /* Debug */,
+				6875F9232A3CCCB7001C9AAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		90282FFD2914027000897087 /* Build configuration list for PBXProject "PredictionsHostApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -777,6 +1107,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		681D7D8A2A42710F00F7C310 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		681D7D8C2A42710F00F7C310 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		681D7D8E2A42710F00F7C310 /* AWSPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPredictionsPlugin;
+		};
+		6875F9092A3CCCB7001C9AAF /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		6875F90A2A3CCCB7001C9AAF /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		6875F90B2A3CCCB7001C9AAF /* AWSPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPredictionsPlugin;
+		};
 		9028304B2914042800897087 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;

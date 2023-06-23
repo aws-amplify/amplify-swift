@@ -9,7 +9,9 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 /*
  A one-to-one connection where a project has a team.
