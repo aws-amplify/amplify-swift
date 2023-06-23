@@ -25,6 +25,12 @@ extension SignInError {
                case .userNotConfirmedException = internalError {
                 return true
             }
+
+            if let internalError: VerifySoftwareTokenOutputError = serviceError.internalAWSServiceError(),
+               case .userNotConfirmedException = internalError {
+                return true
+            }
+
         default: break
         }
         return false
@@ -39,6 +45,11 @@ extension SignInError {
             }
 
             if let internalError: RespondToAuthChallengeOutputError = serviceError.internalAWSServiceError(),
+               case .passwordResetRequiredException = internalError {
+                return true
+            }
+
+            if let internalError: VerifySoftwareTokenOutputError = serviceError.internalAWSServiceError(),
                case .passwordResetRequiredException = internalError {
                 return true
             }
