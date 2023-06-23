@@ -86,6 +86,8 @@ struct InitiateAuthDeviceSRP: Action {
         _ response: SignInResponseBehavior,
         with stateData: SRPStateData) -> StateMachineEvent {
 
+
+            //HS: TODO: Combine this logic with responedToAuthChallenge
             if let challengeName = response.challengeName {
                 switch challengeName {
                 case .devicePasswordVerifier:

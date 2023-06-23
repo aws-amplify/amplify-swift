@@ -11,7 +11,6 @@ import Amplify
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
-
 import ClientRuntime
 
 extension AWSCognitoAuthPlugin {

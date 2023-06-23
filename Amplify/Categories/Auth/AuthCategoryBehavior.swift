@@ -125,4 +125,22 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - options: Parameters specific to plugin behavior
     func confirmResetPassword(for username: String, with newPassword: String, confirmationCode: String, options: AuthConfirmResetPasswordRequest.Options?) async throws
 
+    /// Initiates TOTP Setup
+    ///
+    /// - Parameters:
+    ///   - options: Parameters specific to plugin behavior
+    func setUpTOTP(
+        options: SetUpTOTPRequest.Options?
+    ) async throws -> TOTPSetupDetails
+
+    /// Verifies TOTP Setup
+    ///
+    /// - Parameters:
+    ///   - code: verification code from the associated Authenticator app
+    ///   - options: Parameters specific to plugin behavior
+    func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options?
+    ) async throws
+
 }
