@@ -11,7 +11,9 @@ import AWSAPIPlugin
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
 

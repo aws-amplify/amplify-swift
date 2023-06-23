@@ -6,10 +6,12 @@
 //
 
 import Foundation
-#if canImport(UIKit)
-import UIKit
-#elseif canImport(WatchKit)
+// Note: It's important to check for WatchKit first because a stripped-down version of UIKit is also
+// available on watchOS
+#if canImport(WatchKit)
 import WatchKit
+#elseif canImport(UIKit)
+import UIKit
 #elseif canImport(IOKit)
 import IOKit
 #endif

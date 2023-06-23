@@ -7,7 +7,9 @@
 
 import Foundation
 import Amplify
+#if os(iOS) || os(macOS)
 import AuthenticationServices
+#endif
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
@@ -18,7 +20,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                       inPrivate: Bool,
                       presentationAnchor: AuthUIPresentationAnchor?,
                       callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
-
+    #if os(iOS) || os(macOS)
         self.webPresentation = presentationAnchor
         let aswebAuthenticationSession = ASWebAuthenticationSession(
             url: url,
@@ -46,8 +48,12 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         DispatchQueue.main.async {
             aswebAuthenticationSession.start()
         }
+    #else
+        callback(.failure(.serviceMessage("HostedUI is only available in iOS and macOS")))
+    #endif
     }
 
+#if os(iOS) || os(macOS)
     private func convertHostedUIError(_ error: Error) -> HostedUIError {
         if let asWebAuthError = error as? ASWebAuthenticationSessionError {
             switch asWebAuthError.code {
@@ -63,11 +69,14 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         }
         return .unknown
     }
+#endif
 }
 
+#if os(iOS) || os(macOS)
 extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationContextProviding {
 
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return webPresentation ?? ASPresentationAnchor()
     }
 }
+#endif

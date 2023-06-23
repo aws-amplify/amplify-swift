@@ -111,7 +111,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
 
             let predicate = CustomerSecondaryIndexV2.keys.accountRepresentativeID.eq(accountRepresentativeID)
 
-            let startTimeQuery1 = CACurrentMediaTime()
+            let startTimeQuery1 = CFAbsoluteTimeGetCurrent()
             startMeasuring()
             guard case .success = queryModelSynchronous(modelType: CustomerSecondaryIndexV2.self,
                                                         predicate: predicate,
@@ -120,7 +120,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 return
             }
             stopMeasuring()
-            let timeElapsedQuery1 = CACurrentMediaTime() - startTimeQuery1
+            let timeElapsedQuery1 = CFAbsoluteTimeGetCurrent() - startTimeQuery1
             averageTimeForQuery += timeElapsedQuery1
             print("Query time \(#function) number of records \(numberOfRecords) : \(timeElapsedQuery1)")
         }
@@ -189,7 +189,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             let predicate = CustomerMultipleSecondaryIndexV2.keys.name.eq(name) &&
             CustomerMultipleSecondaryIndexV2.keys.phoneNumber.beginsWith("1")
 
-            let startTimeQuery1 = CACurrentMediaTime()
+            let startTimeQuery1 = CFAbsoluteTimeGetCurrent()
             startMeasuring()
             guard case .success = queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
                                                         predicate: predicate,
@@ -198,7 +198,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                 return
             }
             stopMeasuring()
-            let timeElapsedQuery1 = CACurrentMediaTime() - startTimeQuery1
+            let timeElapsedQuery1 = CFAbsoluteTimeGetCurrent() - startTimeQuery1
             averageTimeForQuery += timeElapsedQuery1
             print("Query time \(#function) number of records \(numberOfRecords) : \(timeElapsedQuery1)")
         }
@@ -269,7 +269,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             CustomerMultipleSecondaryIndexV2.keys.age.eq(age) &&
             CustomerMultipleSecondaryIndexV2.keys.phoneNumber.beginsWith("1")
 
-            let startTimeQuery1 = CACurrentMediaTime()
+            let startTimeQuery1 = CFAbsoluteTimeGetCurrent()
             startMeasuring()
             guard case .success =
                     queryModelSynchronous(modelType: CustomerMultipleSecondaryIndexV2.self,
@@ -279,7 +279,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
                     return
             }
             stopMeasuring()
-            let timeElapsedQuery1 = CACurrentMediaTime() - startTimeQuery1
+            let timeElapsedQuery1 = CFAbsoluteTimeGetCurrent() - startTimeQuery1
             averageTimeForQuery += timeElapsedQuery1
             print("Query time \(#function) number of records \(numberOfRecords) : \(timeElapsedQuery1)")
         }

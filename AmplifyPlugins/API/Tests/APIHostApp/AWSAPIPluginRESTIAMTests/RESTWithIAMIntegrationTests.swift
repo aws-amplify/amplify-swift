@@ -10,7 +10,11 @@ import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 class RESTWithIAMIntegrationTests: XCTestCase {
 

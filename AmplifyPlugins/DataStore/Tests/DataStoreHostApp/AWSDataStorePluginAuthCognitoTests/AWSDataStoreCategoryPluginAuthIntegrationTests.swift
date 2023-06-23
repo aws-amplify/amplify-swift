@@ -7,9 +7,10 @@
 
 import XCTest
 import AWSDataStorePlugin
-import DataStoreHostApp
 @testable import Amplify
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     let syncReceived = HubPayload.EventName.DataStore.syncReceived

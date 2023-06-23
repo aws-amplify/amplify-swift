@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
 import Foundation
 
 /// Request to initiate sign in using a web UI.
@@ -13,15 +13,15 @@ import Foundation
 /// Note that this call would also be used for sign up, forgot password, confirm password, and similar flows.
 public struct AuthWebUISignInRequest: AmplifyOperationRequest {
 
-    /// Presentation anchor on which the webUI is displayed
-    public let presentationAnchor: AuthUIPresentationAnchor?
-
     /// Optional auth provider to directly sign in with the provider
     public let authProvider: AuthProvider?
 
     /// Extra request options defined in `AuthWebUISignInRequest.Options`
     public var options: Options
 
+    /// Presentation anchor on which the webUI is displayed
+    public let presentationAnchor: AuthUIPresentationAnchor?
+    
     public init(presentationAnchor: AuthUIPresentationAnchor?,
                 authProvider: AuthProvider? = nil,
                 options: Options) {

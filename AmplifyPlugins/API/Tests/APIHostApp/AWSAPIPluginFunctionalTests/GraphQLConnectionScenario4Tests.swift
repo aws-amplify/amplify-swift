@@ -8,7 +8,11 @@
 import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 /*
  (Belongs to) A connection that is bi-directional by adding a many-to-one connection to the type that already have a one-to-many connection.

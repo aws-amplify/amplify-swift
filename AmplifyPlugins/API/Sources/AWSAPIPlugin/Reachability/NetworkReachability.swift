@@ -11,7 +11,11 @@ import Foundation
 public protocol NetworkReachabilityProvidingFactory {
     /// Abstracting the only of Reachability's initializers that we care about into a factory method. Since Reachability
     /// isn't final, we'd have to add a lot of code to conform its initializers otherwise.
+#if os(watchOS)
+    static func make() -> NetworkReachabilityProviding?
+#else
     static func make(for hostname: String) -> NetworkReachabilityProviding?
+#endif
 }
 
 /// Wraps methods and properties of Reachability

@@ -22,7 +22,11 @@ class NetworkReachabilityNotifier {
     public init(host: String,
                 allowsCellularAccess: Bool,
                 reachabilityFactory: NetworkReachabilityProvidingFactory.Type) throws {
+    #if os(watchOS)
+        self.reachability = reachabilityFactory.make()
+    #else
         self.reachability = reachabilityFactory.make(for: host)
+    #endif
         self.allowsCellularAccess = allowsCellularAccess
 
         // Add listener for Reachability and start its notifier
@@ -67,9 +71,15 @@ class NetworkReachabilityNotifier {
 
 // MARK: - Reachability
 extension AmplifyReachability: NetworkReachabilityProvidingFactory {
+#if os(watchOS)
+    public static func make() -> NetworkReachabilityProviding? {
+        return AmplifyReachability()
+    }
+#else
     public static func make(for hostname: String) -> NetworkReachabilityProviding? {
         return try? AmplifyReachability(hostname: hostname)
     }
+#endif
 }
 
 extension AmplifyReachability: NetworkReachabilityProviding { }

@@ -9,7 +9,9 @@ import XCTest
 
 import AWSAPIPlugin
 import AWSPluginsCore
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 @testable import Amplify
 @testable import AWSDataStorePlugin
 
