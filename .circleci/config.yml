@@ -103,6 +103,7 @@ orbs:
 defaults: &defaults
   macos:
     xcode: '14.0.0'
+  resource_class: macos.x86.medium.gen2
   environment:
     BUNDLE_JOBS: 4
     BUNDLE_RETRY: 3
@@ -161,7 +162,6 @@ jobs:
     <<: *defaults
     macos:
       xcode: '14.3.0'
-    resource_class: macos.x86.medium.gen2
     steps:
       - shallow_checkout
       - make_artifacts_directory
@@ -172,7 +172,6 @@ jobs:
     <<: *defaults
     macos:
       xcode: '14.3.0'
-    resource_class: macos.x86.medium.gen2
     steps:
       - shallow_checkout
       - make_artifacts_directory
@@ -192,6 +191,8 @@ jobs:
         type: string
       destination:
         type: string
+    macos:
+      xcode: <<parameters.xcode-version>>
     description: << parameters.scheme >> unit test
     steps:
       - shallow_checkout
@@ -509,6 +510,7 @@ workflows:
           scheme: Amplify
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -516,6 +518,7 @@ workflows:
           scheme: AWSPluginsCore
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -523,6 +526,7 @@ workflows:
           scheme: AWSPinpointAnalyticsPlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -530,6 +534,7 @@ workflows:
           scheme: AWSAPIPlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -537,6 +542,7 @@ workflows:
           scheme: AWSCognitoAuthPlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -544,6 +550,7 @@ workflows:
           scheme: AWSDataStorePlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -551,6 +558,7 @@ workflows:
           scheme: AWSLocationGeoPlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -558,6 +566,7 @@ workflows:
           scheme: InternalAWSPinpointUnitTests
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -565,6 +574,7 @@ workflows:
           scheme: AWSPinpointPushNotificationsPlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -572,6 +582,7 @@ workflows:
           scheme: AWSS3StoragePlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -579,6 +590,7 @@ workflows:
           scheme: AWSPredictionsPlugin
           sdk: appletvsimulator
           destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_tvos_spm
       - unit_test:
@@ -586,6 +598,7 @@ workflows:
           scheme: Amplify
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -593,6 +606,7 @@ workflows:
           scheme: AWSPluginsCore
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -600,6 +614,7 @@ workflows:
           scheme: AWSPinpointAnalyticsPlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -607,6 +622,7 @@ workflows:
           scheme: AWSAPIPlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -614,6 +630,7 @@ workflows:
           scheme: AWSCognitoAuthPlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -621,6 +638,7 @@ workflows:
           scheme: AWSDataStorePlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -628,6 +646,7 @@ workflows:
           scheme: AWSLocationGeoPlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -635,6 +654,7 @@ workflows:
           scheme: InternalAWSPinpointUnitTests
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -642,6 +662,7 @@ workflows:
           scheme: AWSPinpointPushNotificationsPlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -649,6 +670,7 @@ workflows:
           scheme: AWSS3StoragePlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - unit_test:
@@ -656,6 +678,7 @@ workflows:
           scheme: AWSPredictionsPlugin
           sdk: watchsimulator
           destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
       - deploy:
