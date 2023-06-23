@@ -35,7 +35,7 @@ class AWSS3StorageServiceTestBase: XCTestCase {
 
     }
 
-    func testReset() {
+    func testReset() async {
     }
      */
 }

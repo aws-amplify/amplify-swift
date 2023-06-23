@@ -179,7 +179,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 extension AWSInitialSyncOrchestrator: DefaultLogger { }
 
 extension AWSInitialSyncOrchestrator: Resettable {
-    func reset() {
+    func reset() async {
         syncOperationQueue.cancelAllOperations()
         syncOperationQueue.waitUntilAllOperationsAreFinished()
     }
