@@ -5,14 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-
-/// As its name suggests, the `LoggerProxy` class acts as a layer of
+/// As its name suggests, the `BroadcastLogger` class acts as a layer of
 /// indirection that conforms to Amplify's [Logger](x-source-tag://Logger)
 /// protocol that delegates all work to its targets.
 ///
-/// - Tag: LogProxy
-final class LoggerProxy {
+/// - Tag: BroadcastLogger
+final class BroadcastLogger {
     
     /// The default LogLevel used when no targets are available.
     ///
@@ -21,14 +19,14 @@ final class LoggerProxy {
     
     private let targets: [Logger]
     
-    /// - Tag: LogProxy.init
+    /// - Tag: BroadcastLogger.init
     init(targets: [Logger]) {
         self.targets = targets
     }
     
 }
 
-extension LoggerProxy: Logger {
+extension BroadcastLogger: Logger {
     
     var logLevel: Amplify.LogLevel {
         get {

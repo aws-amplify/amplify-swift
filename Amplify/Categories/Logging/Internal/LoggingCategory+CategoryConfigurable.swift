@@ -27,7 +27,7 @@ extension LoggingCategory: CategoryConfigurable {
             }
 
             try plugin.configure(using: configuration?.plugins[plugin.key])
-            self.plugin = plugin
+            self.plugins[plugin.key] = plugin
             configurationState = .configured
         }
     }

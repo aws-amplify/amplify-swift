@@ -29,9 +29,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     }
     
     public var `default`: Logger {
-        return LoggerProxy(targets: [
-            loggingClient.default
-        ])
+        loggingClient.default
     }
     
     public init(
@@ -59,19 +57,19 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     }
 
     public func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
-        return LoggerProxy(targets: [loggingClient.logger(forCategory: category, logLevel: logLevel)])
+        return loggingClient.logger(forCategory: category, logLevel: logLevel)
     }
 
     public func logger(forCategory category: String) -> Logger {
-        return LoggerProxy(targets: [loggingClient.logger(forCategory: category)])
+        return loggingClient.logger(forCategory: category)
     }
     
     public func logger(forNamespace namespace: String) -> Logger {
-        return LoggerProxy(targets: [loggingClient.logger(forCategory: namespace)])
+        return loggingClient.logger(forCategory: namespace)
     }
     
     public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
-        return LoggerProxy(targets: [loggingClient.logger(forCategory: category)])
+        return loggingClient.logger(forCategory: category)
     }
     
     /// enable plugin

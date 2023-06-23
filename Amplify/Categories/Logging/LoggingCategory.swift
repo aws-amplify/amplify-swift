@@ -60,11 +60,7 @@ final public class LoggingCategory: Category {
     /// different mechanism
     let isConfigured = true
 
-    /// Returns the plugin added to the category. Upon creation, the LoggingCategory will have a default plugin and a
-    /// configuration state reflecting that. Customers can still add custom plugins; doing so will remove the default
-    /// plugin.
-    var plugin: LoggingCategoryPlugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: AWSUnifiedLoggingPlugin())
-
+    var plugins: [PluginKey: LoggingCategoryPlugin] = Amplify.getLoggingCategoryPluginLookup(loggingPlugin: AWSUnifiedLoggingPlugin())
     // MARK: - Plugin handling
 
     /// Sets `plugin` as the sole provider of functionality for this category. **Note: this is different from other
@@ -100,12 +96,12 @@ final public class LoggingCategory: Category {
     /// - Parameter key: The PluginKey (String) of the plugin to retrieve
     /// - Returns: The wrapped plugin
     public func getPlugin(for key: PluginKey) throws -> LoggingCategoryPlugin {
-        guard plugin.key == key else {
+        guard let plugin = plugins.first(where: { $0.key == key}) else {
             let error = LoggingError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use the installed plugin, which has the key '\(plugin.key)'")
+                "Either add a plugin for '\(key)', or use the installed plugin, which has the key '\(key)'")
             throw error
         }
-        return plugin
+        return plugin.value
     }
 
     /// Removes the current plugin if its key property matches the provided `key`, and reinstalls the default plugin. If
@@ -114,10 +110,7 @@ final public class LoggingCategory: Category {
     /// - Parameter key: The key used to `add` the plugin
     public func removePlugin(for key: PluginKey) {
         concurrencyQueue.sync {
-            guard plugin.key == key else {
-                return
-            }
-            plugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: AWSUnifiedLoggingPlugin())
+            plugins.removeValue(forKey: key)
         }
     }
 
