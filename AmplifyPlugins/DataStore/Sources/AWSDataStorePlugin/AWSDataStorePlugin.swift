@@ -51,6 +51,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             return nil
         }
         set {
+            if let cancellable = iStorageEngineSink as? AnyCancellable {
+                cancellable.cancel()
+            }
             iStorageEngineSink = newValue
         }
     }
