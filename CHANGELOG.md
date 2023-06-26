@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.12.0 (2023-06-26)
+
+### Features
+
+- Adding support for tvOS and watchOS (#3051)
+
 ## 2.11.7 (2023-06-20)
 
 ### Bug Fixes
