@@ -23,7 +23,6 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         return loggingConstraintsLocalStore.getLocalLoggingConstraints()
     }
     
-    private var eTag: String?
     private var refreshTimer: DispatchSourceTimer? {
         willSet {
             refreshTimer?.cancel()

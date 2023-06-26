@@ -7,7 +7,7 @@
 
 import Foundation
 struct PluginConstants {
-    static let awsCloudWatchLoggingPluginKey = "awsCloudWatchLogPlugin"
+    static let awsCloudWatchLoggingPluginKey = "awsCloudWatchLoggingPlugin"
     static let awsCloudWatchLoggingPluginConfigurationKey = "awsCloudWatchLoggingPlugin"
     static let awsRemoteLoggingConstraintsTagKey = "com.amazonaws.amplify.logging.etag"
     static let awsRemoteLoggingConstraintsKey = "com.amazonaws.amplify.logging.remoteloggingconstraints"

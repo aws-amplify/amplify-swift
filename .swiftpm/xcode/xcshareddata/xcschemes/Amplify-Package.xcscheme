@@ -499,6 +499,13 @@
             BlueprintName = "CoreMLPredictionsPlugin"
             ReferencedContainer = "container:">
          </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSCloudWatchLoggingPlugin"
+            BuildableName = "AWSCloudWatchLoggingPlugin"
+            BlueprintName = "AWSCloudWatchLoggingPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference
