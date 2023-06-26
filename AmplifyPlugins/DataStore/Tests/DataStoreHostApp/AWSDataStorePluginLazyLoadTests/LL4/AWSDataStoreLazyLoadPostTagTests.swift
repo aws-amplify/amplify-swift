@@ -24,9 +24,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedTag = try await saveAndWaitForSync(tag)
-        let savedPostTag = try await saveAndWaitForSync(postTag)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedTag = try await createAndWaitForSync(tag)
+        let savedPostTag = try await createAndWaitForSync(postTag)
         
         try await assertPost(savedPost, canLazyLoad: savedPostTag)
         try await assertTag(savedTag, canLazyLoad: savedPostTag)
@@ -102,16 +102,16 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedTag = try await saveAndWaitForSync(tag)
-        let savedPostTag = try await saveAndWaitForSync(postTag)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedTag = try await createAndWaitForSync(tag)
+        let savedPostTag = try await createAndWaitForSync(postTag)
         
         // update the post tag with a new post
         var queriedPostTag = try await query(for: savedPostTag)
         let newPost = Post(postId: UUID().uuidString, title: "title")
-        _ = try await saveAndWaitForSync(newPost)
+        _ = try await createAndWaitForSync(newPost)
         queriedPostTag.setPostWithTagsCompositeKey(newPost)
-        let savedPostTagWithNewPost = try await saveAndWaitForSync(queriedPostTag, assertVersion: 2)
+        let savedPostTagWithNewPost = try await updateAndWaitForSync(queriedPostTag)
         assertLazyReference(
             savedPostTagWithNewPost._postWithTagsCompositeKey,
             state: .notLoaded(identifiers: [
@@ -125,9 +125,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         // update the post tag with a new tag
         var queriedPostTagWithNewPost = try await query(for: savedPostTagWithNewPost)
         let newTag = Tag(name: "name")
-        _ = try await saveAndWaitForSync(newTag)
+        _ = try await createAndWaitForSync(newTag)
         queriedPostTagWithNewPost.setTagWithCompositeKey(newTag)
-        let savedPostTagWithNewTag = try await saveAndWaitForSync(queriedPostTagWithNewPost, assertVersion: 3)
+        let savedPostTagWithNewTag = try await updateAndWaitForSync(queriedPostTagWithNewPost, assertVersion: 3)
         assertLazyReference(
             savedPostTagWithNewTag._tagWithCompositeKey,
             state: .notLoaded(identifiers: [
@@ -166,9 +166,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedTag = try await saveAndWaitForSync(tag)
-        let savedPostTag = try await saveAndWaitForSync(postTag)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedTag = try await createAndWaitForSync(tag)
+        let savedPostTag = try await createAndWaitForSync(postTag)
         
         try await deleteAndWaitForSync(savedPost)
         
@@ -182,9 +182,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedTag = try await saveAndWaitForSync(tag)
-        let savedPostTag = try await saveAndWaitForSync(postTag)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedTag = try await createAndWaitForSync(tag)
+        let savedPostTag = try await createAndWaitForSync(postTag)
         
         try await deleteAndWaitForSync(savedTag)
         
@@ -198,9 +198,9 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedTag = try await saveAndWaitForSync(tag)
-        let savedPostTag = try await saveAndWaitForSync(postTag)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedTag = try await createAndWaitForSync(tag)
+        let savedPostTag = try await createAndWaitForSync(postTag)
         
         try await deleteAndWaitForSync(savedPostTag)
         
@@ -292,8 +292,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedTag = try await saveAndWaitForSync(tag)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedTag = try await createAndWaitForSync(tag)
         
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
         
@@ -399,8 +399,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
-        try await saveAndWaitForSync(post)
-        try await saveAndWaitForSync(tag)
+        try await createAndWaitForSync(post)
+        try await createAndWaitForSync(tag)
         
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
         

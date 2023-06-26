@@ -8,8 +8,6 @@
 import Foundation
 import Amplify
 
-#if canImport(AuthenticationServices)
-
 struct HostedUIOptions {
 
     let scopes: [String]
@@ -49,5 +47,3 @@ extension HostedUIOptions: Codable {
 }
 
 extension HostedUIOptions: Equatable { }
-
-#endif

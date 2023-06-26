@@ -24,23 +24,25 @@ struct ContentView: View {
     @State var showRegisterTokenDone: Bool = false
 
     var body: some View {
-        VStack {
-            Button("Init Amplify", action: initAmplify)
-
-            Button("Identify User", action: identifyUser)
-            .alert(isPresented: $showIdentifyUserDone) {
-                Alert(title: Text("Identified User"))
+        ScrollView {
+            VStack {
+                Button("Init Amplify", action: initAmplify)
+                
+                Button("Identify User", action: identifyUser)
+                    .alert(isPresented: $showIdentifyUserDone) {
+                        Alert(title: Text("Identified User"))
+                    }
+                
+                Button("Register Device", action: registerDevice)
+                    .alert(isPresented: $showRegisterTokenDone) {
+                        Alert(title: Text("Registered Device"))
+                    }
+                
+                Text(hubEvents.joined(separator: "\n"))
+                Spacer()
             }
-
-            Button("Register Device", action: registerDevice)
-            .alert(isPresented: $showRegisterTokenDone) {
-                Alert(title: Text("Registered Device"))
-            }
-
-            Text(hubEvents.joined(separator: "\n"))
-            Spacer()
+            .padding()
         }
-        .padding()
     }
 
     func initAmplify() {

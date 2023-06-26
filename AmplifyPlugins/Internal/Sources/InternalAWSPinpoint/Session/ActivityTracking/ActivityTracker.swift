@@ -7,9 +7,11 @@
 
 import Amplify
 import Foundation
-#if canImport(UIKit)
+#if canImport(WatchKit)
+import WatchKit
+#elseif canImport(UIKit)
 import UIKit
-#else
+#elseif canImport(AppKit)
 import AppKit
 #endif
 
@@ -58,7 +60,7 @@ protocol ActivityTrackerBehaviour: AnyObject {
 
 class ActivityTracker: ActivityTrackerBehaviour {
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
 #endif
 
@@ -72,23 +74,30 @@ class ActivityTracker: ActivityTrackerBehaviour {
     private var stateMachineSubscriberToken: StateMachineSubscriberToken?
 
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
-    #if canImport(UIKit)
-        UIApplication.didEnterBackgroundNotification
-    #else
-        NSApplication.didResignActiveNotification
-    #endif
+#if canImport(WatchKit)
+    WKExtension.applicationDidEnterBackgroundNotification
+#elseif canImport(UIKit)
+    UIApplication.didEnterBackgroundNotification
+#elseif canImport(AppKit)
+    NSApplication.didResignActiveNotification
+#endif
     }()
 
     private static  let applicationWillMoveToForegoundNotification: Notification.Name = {
-    #if canImport(UIKit)
+    #if canImport(WatchKit)
+        WKExtension.applicationWillEnterForegroundNotification
+    #elseif canImport(UIKit)
         UIApplication.willEnterForegroundNotification
-    #else
+    #elseif canImport(AppKit)
         NSApplication.willBecomeActiveNotification
     #endif
     }()
 
     private static  var applicationWillTerminateNotification: Notification.Name = {
-    #if canImport(UIKit)
+    #if canImport(WatchKit)
+        // There's no willTerminateNotification on watchOS, so using applicationWillResignActive instead.
+        WKExtension.applicationWillResignActiveNotification
+    #elseif canImport(UIKit)
         UIApplication.willTerminateNotification
     #else
         NSApplication.willTerminateNotification
@@ -128,7 +137,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     }
 
     private func beginBackgroundTracking() {
-    #if canImport(UIKit)
+    #if canImport(UIKit) && !os(watchOS)
         if backgroundTrackingTimeout > 0 {
             backgroundTask = UIApplication.shared.beginBackgroundTask(withName: Constants.backgroundTask) { [weak self] in
                 self?.stateMachine.process(.backgroundTrackingDidTimeout)
@@ -145,7 +154,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
 
     private func stopBackgroundTracking() {
         backgroundTimer = nil
-    #if canImport(UIKit)
+    #if canImport(UIKit) && !os(watchOS)
         guard backgroundTask != .invalid else {
             return
         }

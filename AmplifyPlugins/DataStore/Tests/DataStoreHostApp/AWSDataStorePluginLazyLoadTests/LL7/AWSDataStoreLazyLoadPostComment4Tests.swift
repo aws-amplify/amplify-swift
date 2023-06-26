@@ -17,7 +17,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
     func testSavePost() async throws {
         await setup(withModels: PostComment4Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
     }
     
     func testSaveComment() async throws {
@@ -28,8 +28,8 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                               content: "content",
                               post4CommentsPostId: post.postId,
                               post4CommentsTitle: post.title)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
     }
     
     func testLazyLoad() async throws {
@@ -39,8 +39,8 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                               content: "content",
                               post4CommentsPostId: post.postId,
                               post4CommentsTitle: post.title)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         assertComment(savedComment, contains: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
         
@@ -83,14 +83,14 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
     func testSaveWithoutPost() async throws {
         await setup(withModels: PostComment4Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertCommentDoesNotContainPost(queriedComment)
         let post = Post(postId: UUID().uuidString, title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         queriedComment.post4CommentsPostId = savedPost.postId
         queriedComment.post4CommentsTitle = savedPost.title
-        let saveCommentWithPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let saveCommentWithPost = try await updateAndWaitForSync(queriedComment)
         let queriedComment2 = try await query(for: saveCommentWithPost)
         assertComment(queriedComment2, contains: post)
     }
@@ -102,11 +102,11 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                               content: "content",
                               post4CommentsPostId: post.postId,
                               post4CommentsTitle: post.title)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         let queriedComment = try await query(for: savedComment)
         assertComment(queriedComment, contains: post)
-        let savedQueriedComment = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let savedQueriedComment = try await updateAndWaitForSync(queriedComment)
         let queriedComment2 = try await query(for: savedQueriedComment)
         assertComment(queriedComment2, contains: savedPost)
     }
@@ -119,15 +119,15 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                               content: "content",
                               post4CommentsPostId: post.postId,
                               post4CommentsTitle: post.title)
-        _ = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertComment(queriedComment, contains: post)
         let newPost = Post(postId: UUID().uuidString, title: "title")
-        _ = try await saveAndWaitForSync(newPost)
+        _ = try await createAndWaitForSync(newPost)
         queriedComment.post4CommentsPostId = newPost.postId
         queriedComment.post4CommentsTitle = newPost.title
-        let saveCommentWithNewPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let saveCommentWithNewPost = try await updateAndWaitForSync(queriedComment)
         let queriedComment2 = try await query(for: saveCommentWithNewPost)
         assertComment(queriedComment2, contains: newPost)
     }
@@ -140,15 +140,15 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                               content: "content",
                               post4CommentsPostId: post.postId,
                               post4CommentsTitle: post.title)
-        _ = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        _ = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertComment(queriedComment, contains: post)
         
         queriedComment.post4CommentsPostId = nil
         queriedComment.post4CommentsTitle = nil
         
-        let saveCommentRemovePost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
+        let saveCommentRemovePost = try await updateAndWaitForSync(queriedComment)
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)
         assertCommentDoesNotContainPost(queriedCommentNoPost)
     }
@@ -161,8 +161,8 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                               content: "content",
                               post4CommentsPostId: post.postId,
                               post4CommentsTitle: post.title)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        let savedPost = try await createAndWaitForSync(post)
+        let savedComment = try await createAndWaitForSync(comment)
         try await deleteAndWaitForSync(savedPost)
         
         // The expected behavior when deleting a post should be that the
@@ -188,7 +188,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
                    receivedPost.postId == post.postId {
-                    let savedComment = try await saveAndWaitForSync(comment)
+                    let savedComment = try await createAndWaitForSync(comment)
                     try await assertPost(receivedPost, canLazyLoad: savedComment)
                     await mutationEventReceived.fulfill()
                 }
@@ -210,7 +210,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         await setup(withModels: PostComment4Models())
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
                               post4CommentsPostId: post.postId,
@@ -253,7 +253,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         Task {
             for try await querySnapshot in querySnapshots {
                 if let receivedPost = querySnapshot.items.first {
-                    let savedComment = try await saveAndWaitForSync(comment)
+                    let savedComment = try await createAndWaitForSync(comment)
                     try await assertPost(receivedPost, canLazyLoad: savedComment)
                     await snapshotReceived.fulfill()
                 }
@@ -276,7 +276,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         try await startAndWaitForReady()
         
         let post = Post(postId: UUID().uuidString, title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        let savedPost = try await createAndWaitForSync(post)
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
                               post4CommentsPostId: post.postId,

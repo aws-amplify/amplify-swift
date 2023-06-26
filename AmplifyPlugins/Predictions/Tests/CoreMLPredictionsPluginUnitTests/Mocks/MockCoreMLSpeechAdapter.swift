@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Speech)
 import XCTest
 import Amplify
 import Speech
@@ -21,3 +22,4 @@ class MockCoreMLSpeechAdapter: CoreMLSpeechBehavior {
         response
     }
 }
+#endif
