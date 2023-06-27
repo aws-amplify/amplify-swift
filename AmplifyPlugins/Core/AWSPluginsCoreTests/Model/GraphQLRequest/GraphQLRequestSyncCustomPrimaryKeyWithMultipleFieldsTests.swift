@@ -34,7 +34,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: customer))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
                 mutation DeleteCustomerWithMultipleFieldsinPK($input: DeleteCustomerWithMultipleFieldsinPKInput!) {
@@ -103,7 +103,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: CustomerWithMultipleFieldsinPK.modelName,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
                 subscription OnCreateCustomerWithMultipleFieldsinPK {
@@ -142,7 +142,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query))
         let document = documentBuilder.build()
         let documentStringValue = """
         query SyncCustomerWithMultipleFieldsinPKs($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {

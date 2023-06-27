@@ -62,7 +62,7 @@ class GraphQLGetQueryTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
@@ -140,7 +140,7 @@ class GraphQLGetQueryTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query GetComment($id: ID!) {

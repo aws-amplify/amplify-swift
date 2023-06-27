@@ -47,24 +47,16 @@ extension SelectionSet {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
                 child.withEmbeddableFields(embeddedTypeSchema.sortedFields)
                 self.addChild(settingParentOf: child)
-            } else if field._isBelongsToOrHasOne,
+            } else if recursive,
+                      field._isBelongsToOrHasOne,
                       let associatedModelName = field.associatedModelName,
                       let schema = ModelRegistry.modelSchema(from: associatedModelName) {
-                if recursive {
-                    var recursive = recursive
-                    if field._isBelongsToOrHasOne {
-                        recursive = false
-                    }
 
-                    let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
-                    if primaryKeysOnly {
-                        child.withModelFields(schema.primaryKey.fields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
-                    } else {
-                        child.withModelFields(schema.graphQLFields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
-                    }
+                let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
+                let childFields = primaryKeysOnly ? schema.primaryKey.fields : schema.graphQLFields
+                child.withModelFields(childFields, recursive: false, primaryKeysOnly: primaryKeysOnly)
+                self.addChild(settingParentOf: child)
 
-                    self.addChild(settingParentOf: child)
-                }
             } else {
                 self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
             }
@@ -127,6 +119,6 @@ extension SelectionSet {
             result.append(indent + name)
         }
 
-        return result.joined(separator: "\n")
+        return result.joined(separator: "\n    ")
     }
 }
