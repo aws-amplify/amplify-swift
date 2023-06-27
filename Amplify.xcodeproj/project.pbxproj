@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		061FD5B1AF28D70F20D52407 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE4710DB0051BDB010053AA /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */; };
-		2104FE60284E7288007CF949 /* SchemaDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5D284E7288007CF949 /* SchemaDrift.swift */; };
-		2104FE61284E7288007CF949 /* SchemaDrift+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */; };
-		2104FE62284E7288007CF949 /* EnumDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5F284E7288007CF949 /* EnumDrift.swift */; };
 		2104FE4728490338007CF949 /* Blog8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE3F28490337007CF949 /* Blog8+Schema.swift */; };
 		2104FE4828490338007CF949 /* MyNestedModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4028490337007CF949 /* MyNestedModel8.swift */; };
 		2104FE4928490338007CF949 /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4128490338007CF949 /* MyCustomModel8+Schema.swift */; };
@@ -21,6 +18,9 @@
 		2104FE4E28490338007CF949 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4628490338007CF949 /* Post8+Schema.swift */; };
 		2104FE562849115B007CF949 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE542849115B007CF949 /* Comment8+Schema.swift */; };
 		2104FE572849115B007CF949 /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE552849115B007CF949 /* Comment8.swift */; };
+		2104FE60284E7288007CF949 /* SchemaDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5D284E7288007CF949 /* SchemaDrift.swift */; };
+		2104FE61284E7288007CF949 /* SchemaDrift+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */; };
+		2104FE62284E7288007CF949 /* EnumDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5F284E7288007CF949 /* EnumDrift.swift */; };
 		210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922492359634B00CEC295 /* AnalyticsProfile.swift */; };
 		210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */; };
 		210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922562359693800CEC295 /* BasicAnalyticsEvent.swift */; };
@@ -519,6 +519,7 @@
 		97F793D827BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793D727BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift */; };
 		97F793DA27BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793D927BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift */; };
 		A5BD5B125AE6AAD604092274 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5009041CDAAB46551245D381 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
+		B413D8ED2A4B64EE00638FDF /* SubscriptionSelectionSetBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B413D8EC2A4B64EE00638FDF /* SubscriptionSelectionSetBehavior.swift */; };
 		B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */; };
 		B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */; };
 		B4251A072425047D007F59EF /* AuthChangePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */; };
@@ -973,10 +974,6 @@
 		0671E539A66859A57E071091 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
 		09D90ABD9EDED6D6B1780253 /* Pods-Amplify-AWSPluginsCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.release.xcconfig"; sourceTree = "<group>"; };
 		1FA86170C161C5E46E57A5F9 /* Pods-Amplify-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore/Pods-Amplify-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
-		2104FE5D284E7288007CF949 /* SchemaDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaDrift.swift; sourceTree = "<group>"; };
-		2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SchemaDrift+Schema.swift"; sourceTree = "<group>"; };
-		2104FE5F284E7288007CF949 /* EnumDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumDrift.swift; sourceTree = "<group>"; };
-		2104FE3D2849010D007CF949 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		2104FE3F28490337007CF949 /* Blog8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog8+Schema.swift"; sourceTree = "<group>"; };
 		2104FE4028490337007CF949 /* MyNestedModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNestedModel8.swift; sourceTree = "<group>"; };
 		2104FE4128490338007CF949 /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
@@ -987,6 +984,9 @@
 		2104FE4628490338007CF949 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
 		2104FE542849115B007CF949 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
 		2104FE552849115B007CF949 /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
+		2104FE5D284E7288007CF949 /* SchemaDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaDrift.swift; sourceTree = "<group>"; };
+		2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SchemaDrift+Schema.swift"; sourceTree = "<group>"; };
+		2104FE5F284E7288007CF949 /* EnumDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumDrift.swift; sourceTree = "<group>"; };
 		210922492359634B00CEC295 /* AnalyticsProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProfile.swift; sourceTree = "<group>"; };
 		2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsPropertyValue.swift; sourceTree = "<group>"; };
 		210922562359693800CEC295 /* BasicAnalyticsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAnalyticsEvent.swift; sourceTree = "<group>"; };
@@ -1500,6 +1500,7 @@
 		97F793D727BC670B000153D6 /* CustomerMultipleSecondaryIndexV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerMultipleSecondaryIndexV2.swift; sourceTree = "<group>"; };
 		97F793D927BC6720000153D6 /* CustomerMultipleSecondaryIndexV2+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CustomerMultipleSecondaryIndexV2+Schema.swift"; sourceTree = "<group>"; };
 		AF4FA69A23AEB42CF7BB8336 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTests/Pods-Amplify-AmplifyTestConfigs-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B413D8EC2A4B64EE00638FDF /* SubscriptionSelectionSetBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSelectionSetBehavior.swift; sourceTree = "<group>"; };
 		B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordRequest.swift; sourceTree = "<group>"; };
 		B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordOperation.swift; sourceTree = "<group>"; };
 		B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthChangePasswordRequest.swift; sourceTree = "<group>"; };
@@ -1965,16 +1966,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2104FE5C284E7263007CF949 /* SchemaDrift */ = {
-			isa = PBXGroup;
-			children = (
-				2104FE5F284E7288007CF949 /* EnumDrift.swift */,
-				2104FE5D284E7288007CF949 /* SchemaDrift.swift */,
-				2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */,
-			);
-			path = SchemaDrift;
-			sourceTree = "<group>";
-		};
 		2104FE3B28490087007CF949 /* OptionalAssociations */ = {
 			isa = PBXGroup;
 			children = (
@@ -1990,6 +1981,16 @@
 				2104FE4628490338007CF949 /* Post8+Schema.swift */,
 			);
 			path = OptionalAssociations;
+			sourceTree = "<group>";
+		};
+		2104FE5C284E7263007CF949 /* SchemaDrift */ = {
+			isa = PBXGroup;
+			children = (
+				2104FE5F284E7288007CF949 /* EnumDrift.swift */,
+				2104FE5D284E7288007CF949 /* SchemaDrift.swift */,
+				2104FE5E284E7288007CF949 /* SchemaDrift+Schema.swift */,
+			);
+			path = SchemaDrift;
 			sourceTree = "<group>";
 		};
 		21092258235969D000CEC295 /* Event */ = {
@@ -2045,6 +2046,7 @@
 			children = (
 				219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */,
 				2129BE1523948065006363A1 /* GraphQLRequest+Model.swift */,
+				B413D8EC2A4B64EE00638FDF /* SubscriptionSelectionSetBehavior.swift */,
 			);
 			path = GraphQLRequest;
 			sourceTree = "<group>";
@@ -5113,6 +5115,7 @@
 				21420A98237222A900FA140C /* AuthTokenProvider.swift in Sources */,
 				214C6226253A414E0041E96D /* AmplifyAWSServiceConfiguration+Platform.swift in Sources */,
 				21420A91237222A900FA140C /* AWSAuthorizationConfiguration.swift in Sources */,
+				B413D8ED2A4B64EE00638FDF /* SubscriptionSelectionSetBehavior.swift in Sources */,
 				212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */,
 				21420A97237222A900FA140C /* IAMCredentialProvider.swift in Sources */,
 				212CE70D23E9E991007D8E71 /* FilterDecorator.swift in Sources */,

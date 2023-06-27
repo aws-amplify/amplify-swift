@@ -169,22 +169,9 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     public static func subscription(to modelSchema: ModelSchema,
                                     subscriptionType: GraphQLSubscriptionType,
                                     authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
-
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
-                                                               operationType: .subscription, primaryKeysOnly: true)
-        documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription, primaryKeysOnly: true))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, nil), authType: authType))
-        let document = documentBuilder.build()
-
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
-        let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
-
-        return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
-                                                  variables: document.variables,
-                                                  responseType: MutationSyncResult.self,
-                                                  decodePath: document.name,
-                                                  options: requestOptions)
+        return subscription(to: modelSchema,
+                            subscriptionType: subscriptionType,
+                            claims: [:], authType: authType)
     }
 
     public static func subscription(to modelSchema: ModelSchema,
@@ -192,12 +179,19 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                     claims: IdentityClaimsDictionary,
                                     authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
 
+        let optionalClaims = claims.isEmpty ? nil : claims
+        let primaryKeysOnly = (modelSchema as? SubscriptionSelectionSetBehavior)?.includePrimaryKeysOnly ?? false
+
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .subscription,
-                                                               primaryKeysOnly: true)
+                                                               primaryKeysOnly: primaryKeysOnly)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription, primaryKeysOnly: true))
-        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, claims), authType: authType))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(
+            graphQLType: .subscription,
+            primaryKeysOnly: primaryKeysOnly))
+        documentBuilder.add(decorator: AuthRuleDecorator(
+            .subscription(subscriptionType, optionalClaims),
+            authType: authType))
         let document = documentBuilder.build()
 
         let awsPluginOptions = AWSPluginOptions(authType: authType)
@@ -216,6 +210,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  nextToken: String? = nil,
                                  lastSync: Int? = nil,
                                  authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
+        let primaryKeysOnly = (modelSchema as? SubscriptionSelectionSetBehavior)?.includePrimaryKeysOnly ?? false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
@@ -223,7 +218,10 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
             documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query, primaryKeysOnly: true))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(
+            lastSync: lastSync,
+            graphQLType: .query,
+            primaryKeysOnly: primaryKeysOnly))
         documentBuilder.add(decorator: AuthRuleDecorator(.query, authType: authType))
         let document = documentBuilder.build()
 
