@@ -20,6 +20,20 @@
                ReferencedContainer = "container:StorageHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "97914B9E2955798D002000EA"
+               BuildableName = "StorageStressTests.xctest"
+               BlueprintName = "StorageStressTests"
+               ReferencedContainer = "container:StorageHostApp.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -35,17 +49,6 @@
                BlueprintIdentifier = "684FB0A828BEB07200C8A6EB"
                BuildableName = "AWSS3StoragePluginIntegrationTests.xctest"
                BlueprintName = "AWSS3StoragePluginIntegrationTests"
-               ReferencedContainer = "container:StorageHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "97914B942955797E002000EA"
-               BuildableName = "StorageStressTests.xctest"
-               BlueprintName = "StorageStressTests"
                ReferencedContainer = "container:StorageHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>

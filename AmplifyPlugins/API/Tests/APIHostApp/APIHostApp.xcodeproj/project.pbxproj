@@ -549,6 +549,7 @@
 		681DFE6F28E7451D0000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE7028E7451D0000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
+		9072C6802A45F25600BB6021 /* APIHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = APIHostApp.entitlements; sourceTree = "<group>"; };
 		970333E7295CD6F60019981E /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		970333E8295CD6F60019981E /* PostStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
 		970333E9295CD6F60019981E /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
@@ -1011,6 +1012,7 @@
 		21E73E6D28898D7900D7DB7E /* APIHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				9072C6802A45F25600BB6021 /* APIHostApp.entitlements */,
 				681DFE6E28E7451D0000C36A /* AsyncTesting */,
 				213DBB6028A40DAE00B30280 /* Info.plist */,
 				21698C072889B173004BD994 /* TestCommonConstants.swift */,
@@ -1248,7 +1250,7 @@
 				21698A7728899804004BD994 /* Sources */,
 				21698A7828899804004BD994 /* Frameworks */,
 				21698A7928899804004BD994 /* Resources */,
-				21698CC12889D5FE004BD994 /* Copy Configuration folder */,
+				9072C6812A45FED600BB6021 /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -1267,7 +1269,7 @@
 				21698A9128899818004BD994 /* Sources */,
 				21698A9228899818004BD994 /* Frameworks */,
 				21698A9328899818004BD994 /* Resources */,
-				97D494692981A6E000397C75 /* Copy Configuration Files */,
+				9072C6822A45FEF200BB6021 /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -1590,24 +1592,6 @@
 			shellPath = /bin/sh;
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
-		21698CC12889D5FE004BD994 /* Copy Configuration folder */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Configuration folder";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
-		};
 		21EA887C28F9BC720000BA75 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1698,6 +1682,42 @@
 			shellPath = /bin/sh;
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
+		9072C6812A45FED600BB6021 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		9072C6822A45FEF200BB6021 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
 		97914C142955872A002000EA /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1708,24 +1728,6 @@
 			inputPaths = (
 			);
 			name = "Copy Configuration folder";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
-		};
-		97D494692981A6E000397C75 /* Copy Configuration Files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Configuration Files";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -2107,9 +2109,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginGraphQLLambdaAuthTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2126,9 +2132,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginGraphQLLambdaAuthTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2150,10 +2160,14 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2175,9 +2189,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2199,10 +2217,14 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2224,9 +2246,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2350,6 +2376,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = APIHostApp/APIHostApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2371,9 +2398,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.APIHostApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 			};
 			name = Debug;
 		};
@@ -2382,6 +2413,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = APIHostApp/APIHostApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2403,9 +2435,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.APIHostApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 			};
 			name = Release;
 		};
@@ -2420,9 +2456,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2438,9 +2478,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2456,9 +2500,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2474,9 +2522,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2492,9 +2544,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2510,9 +2566,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2528,9 +2588,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLIAMTest";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2546,9 +2610,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLIAMTest";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2563,9 +2631,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2580,9 +2652,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLUserPoolTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
@@ -2604,10 +2680,14 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
@@ -2629,9 +2709,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginFunctionalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;

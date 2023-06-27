@@ -92,6 +92,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
     @MainActor
     func testAppInBackground_withPinpointRemoteNotification_recordNotificationOpened() async throws {
+        #if !os(xrOS)
         initAmplify()
 
         grantNotificationPermissionIfNeeded()
@@ -133,10 +134,12 @@ final class PushNotificationHostAppUITests: XCTestCase {
         if !expectedEvent.waitForExistence(timeout: 3) {
             XCTFail("Failed to receive open_notification event from hub")
         }
+        #endif
     }
 
     @MainActor
     func testAppInBackground_withBasicAppleRemoteNotification_notRecordNotificationOpened() async throws {
+        #if !os(xrOS)
         initAmplify()
 
         grantNotificationPermissionIfNeeded()
@@ -170,6 +173,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
         if unexpectedEvent.waitForExistence(timeout: 3) {
             XCTFail("Should not record notification without pinpoint info.")
         }
+        #endif
     }
 
     @MainActor

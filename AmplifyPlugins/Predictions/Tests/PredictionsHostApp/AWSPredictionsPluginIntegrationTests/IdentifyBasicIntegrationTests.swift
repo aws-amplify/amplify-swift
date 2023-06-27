@@ -154,7 +154,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         }
     }
 
-    func detecCelebrities(_ image: URL) -> AnyCancellable {
+    func detectCelebrities(_ image: URL) -> AnyCancellable {
         Amplify.Publisher.create {
             try await Amplify.Predictions.identify(.celebrities, in: image)
         }

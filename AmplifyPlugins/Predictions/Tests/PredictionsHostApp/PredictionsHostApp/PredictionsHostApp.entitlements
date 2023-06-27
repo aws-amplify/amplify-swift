@@ -3,6 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>keychain-access-groups</key>
-	<array/>
+	<array>
+		<string>$(AppIdentifierPrefix)io.coffee.PredictionsHostApp</string>
+	</array>
 </dict>
 </plist>

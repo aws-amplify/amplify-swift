@@ -36,6 +36,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: GraphQLModelBasedTests.amplifyConfiguration)
+            
             try Amplify.configure(amplifyConfig)
             
             ModelRegistry.register(modelType: Project1.self)

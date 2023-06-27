@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0311113528EBED6500D58441 /* Tests.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 0311113428EBED6500D58441 /* Tests.xcconfig */; };
 		031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 031BC3F228EC9B2C0047B2E8 /* AppIcon.xcassets */; };
 		56043E9329FC4D33003E3424 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
 		562B9AA42A0D703700A96FC6 /* AWSS3StoragePluginRequestRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562B9AA32A0D703700A96FC6 /* AWSS3StoragePluginRequestRecorder.swift */; };
@@ -258,7 +257,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 684FB07828BEAF1600C8A6EB /* Build configuration list for PBXNativeTarget "StorageHostApp" */;
 			buildPhases = (
-				56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration */,
 				684FB06628BEAF1500C8A6EB /* Sources */,
 				684FB06728BEAF1500C8A6EB /* Frameworks */,
 				684FB06828BEAF1500C8A6EB /* Resources */,
@@ -333,6 +331,9 @@
 						CreatedOnToolsVersion = 13.4.1;
 						TestTargetID = 684FB06928BEAF1500C8A6EB;
 					};
+					97914B9E2955798D002000EA = {
+						TestTargetID = 684FB06928BEAF1500C8A6EB;
+					};
 				};
 			};
 			buildConfigurationList = 684FB06528BEAF1500C8A6EB /* Build configuration list for PBXProject "StorageHostApp" */;
@@ -362,7 +363,6 @@
 			files = (
 				031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */,
 				56043E9329FC4D33003E3424 /* amplifyconfiguration.json in Resources */,
-				0311113528EBED6500D58441 /* Tests.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,28 +382,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy amplifyconfiguration";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "${PROJECT_DIR}/copy_configuration.sh\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		684FB06628BEAF1500C8A6EB /* Sources */ = {
@@ -606,7 +584,7 @@
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StorageHostApp/Info.plist;
@@ -621,10 +599,14 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.StorageHostApp;
+				PRODUCT_BUNDLE_IDENTIFIER = coffee.io.com.aws.amplify.StorageHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,7";
 			};
 			name = Debug;
 		};
@@ -637,7 +619,7 @@
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StorageHostApp/Info.plist;
@@ -652,10 +634,14 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.StorageHostApp;
+				PRODUCT_BUNDLE_IDENTIFIER = coffee.io.com.aws.amplify.StorageHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,7";
 			};
 			name = Release;
 		};
@@ -663,15 +649,21 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSS3StoragePluginIntegrationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = coffee.io.com.aws.amplify.AWSS3StoragePluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Debug;
 		};
@@ -679,15 +671,21 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSS3StoragePluginIntegrationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = coffee.io.com.aws.amplify.AWSS3StoragePluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Release;
 		};
@@ -695,15 +693,21 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.StorageStressTests;
+				PRODUCT_BUNDLE_IDENTIFIER = coffee.io.com.aws.amplify.StorageStressTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Debug;
 		};
@@ -711,15 +715,21 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.StorageStressTests;
+				PRODUCT_BUNDLE_IDENTIFIER = coffee.io.com.aws.amplify.StorageStressTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Release;
 		};

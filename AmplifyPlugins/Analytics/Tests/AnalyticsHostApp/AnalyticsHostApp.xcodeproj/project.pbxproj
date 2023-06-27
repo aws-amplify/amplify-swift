@@ -50,6 +50,7 @@
 		6857647628AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		6857648828AE9951000CE2E9 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		90046B9C2A454A1F002A36CC /* AnalyticsHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AnalyticsHostApp.entitlements; sourceTree = "<group>"; };
 		9737697029519DEC0074B63A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		9737697129519DEC0074B63A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
@@ -111,6 +112,7 @@
 		6857645E28AE94D9000CE2E9 /* AnalyticsHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				90046B9C2A454A1F002A36CC /* AnalyticsHostApp.entitlements */,
 				9737696F29519DEC0074B63A /* AsyncTesting */,
 				6857645F28AE94D9000CE2E9 /* AnalyticsHostAppApp.swift */,
 				6857646128AE94D9000CE2E9 /* ContentView.swift */,
@@ -496,10 +498,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AnalyticsHostApp/AnalyticsHostApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -512,11 +515,15 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AnalyticsHostApp;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.com.aws.amplify.analytics.AnalyticsHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 			};
 			name = Debug;
 		};
@@ -524,10 +531,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AnalyticsHostApp/AnalyticsHostApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -540,11 +548,15 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AnalyticsHostApp;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.com.aws.amplify.analytics.AnalyticsHostApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 			};
 			name = Release;
 		};
@@ -554,14 +566,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AWSPinpointAnalyticsPluginIntegrationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.com.aws.amplify.analytics.AWSPinpointAnalyticsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
 			};
 			name = Debug;
@@ -572,14 +588,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AWSPinpointAnalyticsPluginIntegrationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.com.aws.amplify.analytics.AWSPinpointAnalyticsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
 			};
 			name = Release;
@@ -590,14 +610,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AWSAnalyticsStressTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.com.aws.amplify.analytics.AWSAnalyticsStressTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
 			};
 			name = Debug;
@@ -608,14 +632,18 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DEVELOPMENT_TEAM = WQ8PHYV36N;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AWSAnalyticsStressTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.coffee.com.aws.amplify.analytics.AWSAnalyticsStressTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
 			};
 			name = Release;
