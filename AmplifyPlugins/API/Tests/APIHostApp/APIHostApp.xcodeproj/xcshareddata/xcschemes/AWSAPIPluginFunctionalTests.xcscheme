@@ -62,15 +62,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "21698A7A28899804004BD994"
-            BuildableName = "AWSAPIPluginFunctionalTests.xctest"
-            BlueprintName = "AWSAPIPluginFunctionalTests"
-            ReferencedContainer = "container:APIHostApp.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
