@@ -203,20 +203,13 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     XCTAssertEqual(mutationEvents.count, 1)
                                     XCTAssertEqual(mutationEvents.first?.mutationType,
                                                    GraphQLMutationType.update.rawValue)
-<<<<<<< HEAD
+
                                     let firstEventJSON = mutationEvents[0].json
                                     let firstEventData = Data(firstEventJSON.utf8)
                                     guard let mutationEventPost = try? JSONDecoder().decode(
                                         Post.self, from: firstEventData
-                                    ) else {
-=======
+                                    ) else { return XCTFail() }
 
-                                    let firstEventJSON = mutationEvents[0].json
-                                    let firstEventData = Data(firstEventJSON.utf8)
-                                    guard let mutationEventPost = try? JSONDecoder().decode(Post.self, from: firstEventData) else {
->>>>>>> 18b89606 (assert on model property equality in some ds tests)
-                                        return XCTFail("expected Post")
-                                    }
                                     XCTAssertEqual(mutationEventPost.id, post.id)
                                     XCTAssertEqual(mutationEventPost.title, post.title)
                                     XCTAssertEqual(mutationEventPost.content, post.content)
@@ -225,7 +218,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An existing MutationEvent of type .update
