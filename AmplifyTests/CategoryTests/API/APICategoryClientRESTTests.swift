@@ -27,21 +27,16 @@ class APICategoryClientRESTTests: XCTestCase {
 
     func testGet() async throws {
         let plugin = try makeAndAddMockPlugin()
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        var methodWasInvokedOnPlugin = false
+
         plugin.listeners.append { message in
             if message == "get" {
-                methodWasInvokedOnPlugin.fulfill()
+                methodWasInvokedOnPlugin = true
             }
         }
 
-        let getCompleted = asyncExpectation(description: "get completed")
-        Task {
-            _ = try await Amplify.API.get(request: RESTRequest())
-            await getCompleted.fulfill()
-        }
-        await waitForExpectations([getCompleted], timeout: 0.5)
-        
-        await waitForExpectations(timeout: 0.5)
+        _ = try await Amplify.API.get(request: RESTRequest())
+        XCTAssertTrue(methodWasInvokedOnPlugin)
     }
 
     func testCacheInRequest() {
