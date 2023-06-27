@@ -5,6 +5,8 @@
 	<key>aps-environment</key>
 	<string>development</string>
 	<key>keychain-access-groups</key>
-	<array/>
+	<array>
+		<string>$(AppIdentifierPrefix)com.aws.amplify.notification.PushNotificationHostApp</string>
+	</array>
 </dict>
 </plist>
