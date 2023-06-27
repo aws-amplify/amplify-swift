@@ -130,7 +130,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: record))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation UpdateRecord($input: UpdateRecordInput!) {

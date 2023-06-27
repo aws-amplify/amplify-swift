@@ -66,7 +66,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: order))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation CreateCustomerOrder($input: CreateCustomerOrderInput!) {

@@ -103,7 +103,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: CustomerWithMultipleFieldsinPK.modelName,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
                 subscription OnCreateCustomerWithMultipleFieldsinPK {

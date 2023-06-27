@@ -67,7 +67,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation CreatePost($input: CreatePostInput!) {
@@ -110,7 +110,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation UpdatePost($input: UpdatePostInput!) {
@@ -153,7 +153,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation DeletePost($input: DeletePostInput!) {
@@ -195,7 +195,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnCreatePost {

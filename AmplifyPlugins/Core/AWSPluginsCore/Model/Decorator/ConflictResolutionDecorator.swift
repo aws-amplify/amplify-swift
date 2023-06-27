@@ -21,7 +21,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public init(version: Int? = nil,
                 lastSync: Int? = nil,
-                graphQLType: GraphQLOperationType,
+                graphQLType: GraphQLOperationType = .mutation,
                 primaryKeysOnly: Bool = false) {
         self.version = version
         self.lastSync = lastSync

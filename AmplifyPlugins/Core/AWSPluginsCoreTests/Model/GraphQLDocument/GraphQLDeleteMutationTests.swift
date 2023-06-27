@@ -126,7 +126,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelDecorator(model: record))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation DeleteRecord($input: DeleteRecordInput!) {

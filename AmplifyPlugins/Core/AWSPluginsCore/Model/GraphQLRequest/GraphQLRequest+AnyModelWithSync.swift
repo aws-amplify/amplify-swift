@@ -152,7 +152,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version, graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation, authType: authType))
         let document = documentBuilder.build()
 
@@ -251,7 +251,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version, graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation, authType: authType))
         let document = documentBuilder.build()
 
