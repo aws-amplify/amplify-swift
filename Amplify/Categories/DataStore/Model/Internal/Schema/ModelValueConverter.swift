@@ -44,7 +44,9 @@ extension ModelValueConverter {
     }
 
     static var jsonEncoder: JSONEncoder {
-        JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
+        let encoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
+        encoder.outputFormatting = .sortedKeys
+        return encoder
     }
 
     /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used

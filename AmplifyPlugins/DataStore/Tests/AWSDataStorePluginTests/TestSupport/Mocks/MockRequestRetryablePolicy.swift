@@ -30,6 +30,6 @@ class MockRequestRetryablePolicy: RequestRetryablePolicy {
                                      attemptNumber: Int) -> RequestRetryAdvice {
         onRetryRequestAdvice?(urlError, httpURLResponse, attemptNumber)
         // If this breaks, you didn't push anything onto the queue
-        return responseQueue.removeFirst()
+        return !responseQueue.isEmpty ? responseQueue.removeFirst() : .init(shouldRetry: false)
     }
 }
