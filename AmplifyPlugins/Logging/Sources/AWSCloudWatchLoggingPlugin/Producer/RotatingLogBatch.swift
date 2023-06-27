@@ -24,22 +24,9 @@ struct RotatingLogBatch {
         self.created = Date()
         self.url = url
     }
-    
-    private func deleteFileIfNotChanged() throws {
-        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
-        guard let modificationDate = attributes[.modificationDate] as? Date else {
-            return
-        }
-        if Int(modificationDate.timeIntervalSince1970) > Int(created.timeIntervalSince1970) {
-            // The file has changed, so don't delete it.
-            return
-        }
-        try FileManager.default.removeItem(at: url)
-    }
 }
 
 extension RotatingLogBatch: LogBatch {
-
     func readEntries() throws -> [LogEntry] {
         let codec = LogEntryCodec()
         let unsorted = try codec.decode(from: url)
@@ -48,11 +35,7 @@ extension RotatingLogBatch: LogBatch {
         })
     }
 
-    func complete(with unprocessed: [LogEntry]) {
-        do {
-            try deleteFileIfNotChanged()
-        } catch {
-            print(error)
-        }
+    func complete() throws {
+        try FileManager.default.removeItem(at: url)
     }
 }

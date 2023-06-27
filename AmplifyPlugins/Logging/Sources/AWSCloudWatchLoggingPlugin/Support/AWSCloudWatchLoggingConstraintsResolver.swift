@@ -10,11 +10,11 @@ import Amplify
 import AWSPluginsCore
 
 class AWSCloudWatchLoggingConstraintsResolver {
-    let loggingPluginConfigProvider: AWSCloudWatchLoggingPluginConfiguration
+    let loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration
     let loggingConstraintsLocalStore: LoggingConstraintsLocalStore
     
-    init(loggingPluginConfigProvider: AWSCloudWatchLoggingPluginConfiguration, loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard) {
-        self.loggingPluginConfigProvider = loggingPluginConfigProvider
+    init(loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration, loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard) {
+        self.loggingPluginConfiguration = loggingPluginConfiguration
         self.loggingConstraintsLocalStore = loggingConstraintsLocalStore
     }
     
@@ -22,7 +22,7 @@ class AWSCloudWatchLoggingConstraintsResolver {
         if let remoteConstraints = loggingConstraintsLocalStore.getLocalLoggingConstraints() {
             return remoteConstraints
         } else {
-            return loggingPluginConfigProvider.loggingConstraints
+            return loggingPluginConfiguration.loggingConstraints
         }
     }
 }

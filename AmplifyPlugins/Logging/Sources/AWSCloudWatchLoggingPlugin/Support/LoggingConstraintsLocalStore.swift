@@ -18,11 +18,16 @@ protocol LoggingConstraintsLocalStore {
 
 extension UserDefaults: LoggingConstraintsLocalStore {
     func getLocalLoggingConstraints() -> LoggingConstraints? {
-        UserDefaults.standard.object(forKey: PluginConstants.awsRemoteLoggingConstraintsKey) as? LoggingConstraints
+        if let data = UserDefaults.standard.object(forKey: PluginConstants.awsRemoteLoggingConstraintsKey) as? Data {
+            return try? JSONDecoder().decode(LoggingConstraints.self, from: data)
+        }
+        return nil
     }
     
     func setLocalLoggingConstraints(loggingConstraints: LoggingConstraints) {
-        UserDefaults.standard.set(loggingConstraints, forKey: PluginConstants.awsRemoteLoggingConstraintsKey)
+        if let encoded = try? JSONEncoder().encode(loggingConstraints) {
+            UserDefaults.standard.set(encoded, forKey: PluginConstants.awsRemoteLoggingConstraintsKey)
+        }
     }
     
     func getLocalLoggingConstraintsEtag() -> String? {

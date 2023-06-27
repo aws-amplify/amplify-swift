@@ -7,7 +7,6 @@
 
 import Combine
 
-/// - Tag: LogBatchProducer
 protocol LogBatchProducer {
     /// Publisher that produces individual [LogBatch](x-source-tag://LogBatch) values.
     ///

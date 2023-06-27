@@ -1,0 +1,25 @@
+{
+    "defaultLogLevel": "ERROR",
+    "categoryLogLevel": {
+        "API": "NONE",
+        "AUTH": "NONE",
+        "DATASTORE": "INFO",
+        "STORAGE": "DEBUG"
+    },
+    "userLogLevel": {
+        "sub1": {
+            "defaultLogLevel": "INFO",
+            "categoryLogLevel": {
+                "STORAGE": "NONE",
+                "API": "NONE"
+            }
+        },
+        "sub3": {
+            "defaultLogLevel": "INFO",
+            "categoryLogLevel": {
+                "STORAGE": "INFO",
+                "API": "NONE"
+            }
+        }
+    }
+}

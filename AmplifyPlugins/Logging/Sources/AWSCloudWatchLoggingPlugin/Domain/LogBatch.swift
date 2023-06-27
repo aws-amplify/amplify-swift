@@ -10,15 +10,9 @@ import Foundation
 /// - Tag: LogBatch
 protocol LogBatch {
 
-    /// Main payload of the receiver.
-    ///
-    /// - Tag: LogBatch.readEntries
+    /// Read the log entries for this log batch
     func readEntries() throws -> [LogEntry]
 
-    /// Ensures the data associated with the receiver can be cleared or deleted, if the given list of
-    /// unprecessed entries is empty. If a non-empty list is given, the receiver ensures these are handled
-    /// with an appropriate retry-backoff mechanism.
-    ///
-    /// - Tag: LogBatch.complete
-    func complete(with unprocessed:[LogEntry])
+    /// Log Batches have completed, complete the batch by removing from file system
+    func complete() throws
 }

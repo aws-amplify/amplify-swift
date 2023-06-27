@@ -1,0 +1,29 @@
+{
+    "awsCloudWatchLoggingPlugin": {
+        "enable": true,
+        "logGroupName": "testLogGroup",
+        "region": "us-east-1",
+        "localStoreMaxSizeInMB": 5,
+        "flushIntervalInSeconds": 60,
+        "defaultRemoteConfiguration": {
+            "endpoint": "http://www.amazon.com",
+            "refreshIntervalInSeconds": 1200
+        },
+        "loggingConstraints": {
+            "defaultLogLevel": "ERROR",
+            "categoryLogLevel": {
+                    "STORAGE": "WARN",
+                    "API": "WARN"
+            },
+            "userLogLevel": {
+                "cognitoSub1": {
+                    "defaultLogLevel": "ERROR",
+                    "categoryLogLevel": {
+                        "STORAGE": "INFO",
+                        "API": "INFO"
+                    }
+                }
+            }
+        }
+    }
+}

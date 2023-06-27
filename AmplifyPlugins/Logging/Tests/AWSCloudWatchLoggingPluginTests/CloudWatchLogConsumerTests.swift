@@ -19,12 +19,10 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     var logGroupName: String!
     var logStreamName: String!
     var entries: [LogEntry]!
-    var unprocessed: [LogEntry]!
     var interactions: [String]!
     
     override func setUp() async throws {
         entries = []
-        unprocessed = []
         interactions = []
         client = MockCloudWatchLogsClient()
         logGroupName = UUID().uuidString
@@ -34,7 +32,6 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     
     override func tearDown() async throws {
         entries = nil
-        unprocessed = nil
         interactions = nil
         client = nil
         logGroupName = nil
@@ -52,9 +49,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)"
-        ])
-        XCTAssertEqual(unprocessed, [
+            "complete()"
         ])
     }
     
@@ -71,9 +66,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)"
-        ])
-        XCTAssertEqual(unprocessed, [
+            "complete()"
         ])
     }
     
@@ -96,13 +89,13 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         XCTAssertEqual(client.interactions, [
             "describeLogStreams(input:)",
             "createLogStream(input:)",
+            "putLogEvents(input:)",
             "putLogEvents(input:)"
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)"
+            "complete()"
         ])
-        XCTAssertEqual(unprocessed, Array(batch.suffix(from: index)))
     }
     
     func testTooNewLogEventStartIndexOutOfBounds() async throws {
@@ -127,9 +120,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)"
-        ])
-        XCTAssertEqual(unprocessed, [
+            "complete()"
         ])
         
         client.putLogEventsHandler = { _ in
@@ -150,11 +141,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)",
+            "complete()",
             "readEntries()",
-            "complete(with:)",
-        ])
-        XCTAssertEqual(unprocessed, [
+            "complete()",
         ])
     }
     
@@ -185,9 +174,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)"
-        ])
-        XCTAssertEqual(unprocessed, [
+            "complete()"
         ])
     }
     
@@ -216,9 +203,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)"
-        ])
-        XCTAssertEqual(unprocessed, [
+            "complete()"
         ])
     }
     
@@ -237,9 +222,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
         XCTAssertEqual(interactions, [
             "readEntries()",
-            "complete(with:)"
-        ])
-        XCTAssertEqual(unprocessed, [
+            "complete()"
         ])
     }
     
@@ -265,8 +248,6 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         XCTAssertEqual(interactions, [
             "readEntries()",
         ])
-        XCTAssertEqual(unprocessed, [
-        ])
     }
 }
 
@@ -277,9 +258,8 @@ extension CloudWatchLogConsumerTests: LogBatch {
         return entries
     }
     
-    func complete(with unprocessed: [LogEntry]) {
+    func complete() {
         interactions.append(#function)
-        self.unprocessed.append(contentsOf: unprocessed)
     }
     
 }

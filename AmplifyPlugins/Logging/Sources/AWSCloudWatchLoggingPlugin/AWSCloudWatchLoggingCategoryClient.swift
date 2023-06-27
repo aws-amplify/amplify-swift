@@ -30,8 +30,9 @@ final class AWSCloudWatchLoggingCategoryClient {
     private let localStoreMaxSizeInMB: Int
     private var automaticFlushLogMonitor: AWSCLoudWatchLoggingMonitor?
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
+    private var userIdentifier: String?
+    private var authSubscription: AnyCancellable? { willSet { authSubscription?.cancel() } }
     
-    /// - Tag: CloudWatchLoggingCategoryClient.init
     init(
         enable: Bool,
         credentialsProvider: CredentialsProvider,
@@ -50,14 +51,45 @@ final class AWSCloudWatchLoggingCategoryClient {
         self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
         self.logFilter = AWSCloudWatchLoggingFilter(loggingConstraintsResolver: loggingConstraintsResolver)
         self.automaticFlushLogMonitor = AWSCLoudWatchLoggingMonitor(flushIntervalInSeconds: TimeInterval(flushIntervalInSeconds), eventDelegate: self)
-        
+        self.automaticFlushLogMonitor?.setAutomaticFlushIntervals()
+        self.authSubscription = Amplify.Hub.publisher(for: .auth).sink { [weak self] payload in
+            self?.handle(payload: payload)
+        }
     }
     
     func takeUserIdentifierFromCurrentUser() {
+        Task {
+            do {
+                let user = try await authentication.getCurrentUser()
+                self.userIdentifier = user.userId
+            } catch {
+                self.userIdentifier = nil
+            }
+            self.updateSessionControllers()
+        }
+    }
+    
+    private func updateSessionControllers() {
         lock.execute {
             for controller in loggersByKey.values {
-                controller.takeUserIdentifierFromCurrentUser()
+                controller.setCurrentUser(identifier: self.userIdentifier)
             }
+        }
+    }
+    
+    private func handle(payload: HubPayload) {
+        enum CognitoEventName: String {
+            case signInAPI = "Auth.signInAPI"
+            case signOutAPI = "Auth.signOutAPI"
+        }
+        switch payload.eventName {
+        case HubPayload.EventName.Auth.signedIn, CognitoEventName.signInAPI.rawValue:
+            takeUserIdentifierFromCurrentUser()
+        case HubPayload.EventName.Auth.signedOut, CognitoEventName.signOutAPI.rawValue:
+            self.userIdentifier = nil
+            self.updateSessionControllers()
+        default:
+            break
         }
     }
     
@@ -108,7 +140,8 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
                                                             logLevel: logLevel,
                                                             logGroupName: self.logGroupName,
                                                             region: self.region,
-                                                            localStoreMaxSizeInMB: self.localStoreMaxSizeInMB)
+                                                            localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
+                                                            userIdentifier: self.userIdentifier)
             if _enable {
                 controller.enable()
             }
@@ -139,7 +172,9 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     
     func flushLogs() async throws {
         guard _enable else { return }
-        try await loggersByKey.first?.value.flushLogs()
+        for logger in loggersByKey.values {
+            try await logger.flushLogs()
+        }
     }
 }
 

@@ -45,11 +45,11 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
     func consume(batch: LogBatch) async throws {
         let entries = try batch.readEntries()
         if entries.isEmpty {
-            batch.complete(with: [])
+            try batch.complete()
             return
         }
         let events = convertToCloudWatchInputLogEvents(for: entries)
-        try await ensureLogStreamExists()
+        await ensureLogStreamExists()
         let response = try await self.client.putLogEvents(input: PutLogEventsInput(
             logEvents: events,
             logGroupName: self.logGroupName,
@@ -57,19 +57,29 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             sequenceToken: nil
         ))
         let retriableEntries = retriable(entries: entries, in: response)
-        batch.complete(with: retriableEntries)
+        if !retriableEntries.isEmpty {
+            let retriableEvents = convertToCloudWatchInputLogEvents(for: retriableEntries)
+            _ = try await self.client.putLogEvents(input: PutLogEventsInput(
+                logEvents: retriableEvents,
+                logGroupName: self.logGroupName,
+                logStreamName: self.logStreamName,
+                sequenceToken: nil
+            ))
+        }
+        
+        try batch.complete()
     }
     
-    private func ensureLogStreamExists() async throws {
+    private func ensureLogStreamExists() async {
         if ensureLogStreamExistsComplete {
             return
         }
-
+        
         defer {
             ensureLogStreamExistsComplete = true
         }
-
-        let stream = try await self.client.describeLogStreams(input: .init(
+        
+        let stream = try? await self.client.describeLogStreams(input: .init(
             logGroupName: self.logGroupName,
             logStreamNamePrefix: self.logStreamName
         )).logStreams?.first(where: { stream in
@@ -78,7 +88,8 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         if stream != nil {
             return
         }
-        _ = try await self.client.createLogStream(input: .init(
+        
+        _ = try? await self.client.createLogStream(input: .init(
             logGroupName: self.logGroupName,
             logStreamName: self.logStreamName
         ))

@@ -38,6 +38,11 @@ actor LogActor {
     }
     
     private func write(_ data: Data) throws {
+        let currentLogExists = try? FileManager.default.fileExists(atPath: rotation.currentLogFile.fileURL.absoluteString)
+        if currentLogExists == false {
+            try rotation.rotate()
+        }
+        
         if rotation.currentLogFile.hasSpace(for: data) {
             try rotation.currentLogFile.write(data: data)
         } else {
@@ -64,6 +69,5 @@ actor LogActor {
         for log in logs {
             rotationSubject.send(log)
         }
-        try rotation.reset()
     }
 }

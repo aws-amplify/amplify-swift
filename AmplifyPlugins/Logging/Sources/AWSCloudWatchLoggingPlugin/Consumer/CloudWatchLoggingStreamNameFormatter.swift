@@ -49,6 +49,6 @@ struct CloudWatchLoggingStreamNameFormatter {
     ///
     /// - Tag: CloudWatchLogStreamNameFormatter.formattedStreamName
     func formattedStreamName() -> String {
-        return "\(String(describing: deviceIdentifier)).\(userIdentifier ?? "guest")"
+        return "\(deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
     }
 }

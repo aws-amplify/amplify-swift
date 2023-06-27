@@ -64,6 +64,7 @@ final class RotatingLogger {
     }
     
     func flushLogs() async throws {
+        try await setupSubscription()
         try await actor.flushLogs()
     }
     
@@ -71,15 +72,19 @@ final class RotatingLogger {
         if logLevel < level {
             return
         }
-        if (rotationSubscription == nil) {
-            let urlPublisher = await self.actor.rotationPublisher()
-            let batchSubject = self.batchSubject
-            rotationSubscription = urlPublisher.sink { url in
-                batchSubject.send(RotatingLogBatch(url: url))
-            }
-        }
+        try await setupSubscription()
         let entry = LogEntry(category: self.category, namespace: self.namespace, level: level, message: message())
         try await self.actor.record(entry)
+    }
+    
+    private func setupSubscription() async throws {
+        if (rotationSubscription == nil) {
+            let rotationPublisher = await self.actor.rotationPublisher()
+            rotationSubscription = rotationPublisher.sink { [weak self] url in
+                guard let self = self else { return }
+                self.batchSubject.send(RotatingLogBatch(url: url))
+            }
+        }
     }
 
     private func _record(level: LogLevel, message: @autoclosure () -> String) {

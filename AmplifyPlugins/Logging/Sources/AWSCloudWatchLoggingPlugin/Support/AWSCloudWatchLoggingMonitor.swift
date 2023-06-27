@@ -22,7 +22,7 @@ class AWSCLoudWatchLoggingMonitor {
         self.eventDelegate = eventDelegate
     }
 
-    func setAutomaticSubmitEventsInterval() {
+    func setAutomaticFlushIntervals() {
         guard automaticFlushLogsInterval != .zero else {
             automaticFlushLogsTimer = nil
             return

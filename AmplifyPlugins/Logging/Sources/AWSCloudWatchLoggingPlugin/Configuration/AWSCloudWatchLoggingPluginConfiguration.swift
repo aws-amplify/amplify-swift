@@ -44,11 +44,11 @@ extension AWSCloudWatchLoggingPluginConfiguration {
         guard let path = bundle.path(forResource: "amplifyconfiguration_logging", ofType: "json") else {
             throw LoggingError.configuration(
                 """
-                Could not load default `amplifyconfiguration-logging.json` file
+                Could not load default `amplifyconfiguration_logging.json` file
                 """,
                 """
-                Expected to find the file, `amplifyconfiguration-loggingnfig.json` in the app bundle at `\(bundle.bundlePath)`, but
-                it was not present. Either add amplifyconfiguration-logging.json to your app's "Copy Bundle Resources" build phase.
+                Expected to find the file, `amplifyconfiguration_loggingnfig.json` in the app bundle at `\(bundle.bundlePath)`, but
+                it was not present. Either add amplifyconfiguration_logging.json to your app's "Copy Bundle Resources" build phase.
                 """
             )
         }
@@ -89,11 +89,11 @@ extension AWSCloudWatchLoggingPluginConfiguration {
         } catch {
             throw LoggingError.configuration(
                 """
-                Could not decode `amplifyconfiguration-logging.json` into a valid AWSCloudWatchLoggingPluginConfiguration object
+                Could not decode `amplifyconfiguration_logging.json` into a valid AWSCloudWatchLoggingPluginConfiguration object
                 """,
 
                 """
-                `amplifyconfiguration-logging.json` was found, but could not be converted to an AmplifyConfiguration object
+                `amplifyconfiguration_logging.json` was found, but could not be converted to an AmplifyConfiguration object
                 using the default JSONDecoder. The system reported the following error:
                 \(error.localizedDescription)
                 """,

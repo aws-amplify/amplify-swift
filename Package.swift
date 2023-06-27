@@ -389,8 +389,8 @@ let loggingTargets: [Target] = [
             "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginTests",
-        exclude: [
-            "Resources/Info.plist"
+        resources: [
+            .copy("TestResources")
         ]
     )
 ]

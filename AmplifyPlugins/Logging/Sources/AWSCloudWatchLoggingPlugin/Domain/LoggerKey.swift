@@ -10,7 +10,6 @@ import Foundation
 
 /// Simple pair that represents a category + log level combination.
 /// 
-/// - Tag: LoggerKey
 struct LoggerKey: Hashable {
     var category: String
     var logLevel: LogLevel

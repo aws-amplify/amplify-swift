@@ -56,7 +56,8 @@ final class AWSCloudWatchLoggingSessionController {
          logLevel: LogLevel,
          logGroupName: String,
          region: String,
-         localStoreMaxSizeInMB: Int
+         localStoreMaxSizeInMB: Int,
+         userIdentifier: String?
     ) {
         self.credentialsProvider = credentialsProvider
         self.authentication = authentication
@@ -67,13 +68,10 @@ final class AWSCloudWatchLoggingSessionController {
         self.logGroupName = logGroupName
         self.region = region
         self.localStoreMaxSizeInMB = localStoreMaxSizeInMB
+        self.userIdentifier = userIdentifier
     }
     
     func enable() {
-        let channel = Amplify.Hub.publisher(for: .auth)
-        self.authSubscription = channel.sink { [weak self] payload in
-            self?.handle(payload: payload)
-        }
         updateSession()
         updateConsumer()
         connectProducerAndConsumer()
@@ -148,30 +146,8 @@ final class AWSCloudWatchLoggingSessionController {
         }
     }
     
-    private func handle(payload: HubPayload) {
-        enum CognitoEventName: String {
-            case signInAPI = "Auth.signInAPI"
-            case signOutAPI = "Auth.signOutAPI"
-        }
-        switch payload.eventName {
-        case HubPayload.EventName.Auth.signedIn, CognitoEventName.signInAPI.rawValue:
-            takeUserIdentifierFromCurrentUser()
-        case HubPayload.EventName.Auth.signedOut, CognitoEventName.signOutAPI.rawValue:
-            self.userIdentifier = nil
-        default:
-            break
-        }
-    }
-    
-    func takeUserIdentifierFromCurrentUser() {
-        Task {
-            do {
-                let user = try await authentication.getCurrentUser()
-                self.userIdentifier = user.userId
-            } catch {
-                self.userIdentifier = nil
-            }
-        }
+    func setCurrentUser(identifier: String?) {
+        self.userIdentifier = identifier
     }
     
     func flushLogs() async throws {

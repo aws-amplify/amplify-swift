@@ -44,7 +44,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
                 enable: configuration.enable,
                 credentialsProvider: authService.getCredentialsProvider(),
                 authentication: Amplify.Auth,
-                loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfigProvider: configuration),
+                loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
                 logGroupName: configuration.logGroupName,
                 region: configuration.region,
                 localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
@@ -123,17 +123,17 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
                 enable: configuration.enable,
                 credentialsProvider: authService.getCredentialsProvider(),
                 authentication: Amplify.Auth,
-                loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfigProvider: configuration),
+                loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
                 logGroupName: configuration.logGroupName,
                 region: configuration.region,
                 localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
                 flushIntervalInSeconds: configuration.flushIntervalInSeconds
             )
         }
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.loggingClient.takeUserIdentifierFromCurrentUser()
+        DispatchQueue.main.async {
+            self.loggingClient.takeUserIdentifierFromCurrentUser()
         }
+        
     }
 }
 
