@@ -184,7 +184,7 @@ class GraphQLListQueryTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Post.schema)))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query ListPosts($filter: ModelPostFilterInput, $limit: Int) {

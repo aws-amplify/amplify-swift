@@ -26,7 +26,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: order.id, fields: ["orderId": "testOrderId"]))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
         query GetCustomerOrder($id: ID!, $orderId: String!) {

@@ -173,7 +173,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """

@@ -142,7 +142,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
         let document = documentBuilder.build()
         let documentStringValue = """
         query SyncCustomerWithMultipleFieldsinPKs($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {

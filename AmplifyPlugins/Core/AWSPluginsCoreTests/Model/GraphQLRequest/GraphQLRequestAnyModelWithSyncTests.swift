@@ -28,7 +28,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
         query GetPost($id: ID!) {
@@ -232,7 +232,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
         let document = documentBuilder.build()
         let documentStringValue = """
         query SyncPosts($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {

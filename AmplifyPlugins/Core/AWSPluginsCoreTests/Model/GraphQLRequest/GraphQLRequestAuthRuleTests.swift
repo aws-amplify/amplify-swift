@@ -26,7 +26,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: article.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: article.id))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -309,7 +309,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let documentStringValue = """

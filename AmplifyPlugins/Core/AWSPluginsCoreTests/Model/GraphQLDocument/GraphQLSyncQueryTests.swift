@@ -40,7 +40,7 @@ class GraphQLSyncQueryTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Post.schema)))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123, graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query SyncPosts($filter: ModelPostFilterInput, $lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
@@ -84,7 +84,7 @@ class GraphQLSyncQueryTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123, graphQLType: .query))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query SyncComments($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
