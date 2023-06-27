@@ -34,7 +34,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: customer))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil))
         let document = documentBuilder.build()
         let documentStringValue = """
                 mutation DeleteCustomerWithMultipleFieldsinPK($input: DeleteCustomerWithMultipleFieldsinPKInput!) {

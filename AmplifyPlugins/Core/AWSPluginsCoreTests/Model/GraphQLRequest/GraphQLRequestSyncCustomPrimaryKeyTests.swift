@@ -117,7 +117,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: order))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation UpdateCustomerOrder($input: UpdateCustomerOrderInput!) {
@@ -173,7 +173,7 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: order))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil, graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 1, lastSync: nil))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation DeleteCustomerOrder($input: DeleteCustomerOrderInput!) {

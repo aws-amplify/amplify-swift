@@ -85,7 +85,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 5, graphQLType: .mutation))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 5))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!) {
