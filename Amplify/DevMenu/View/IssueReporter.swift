@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
-#if os(iOS)
+#if os(iOS) && !os(xrOS)
 import UIKit
 #elseif canImport(AppKit)
 import AppKit
 #endif
 
 /// Issue report screen in developer menu
-#if canImport(UIKit) && !os(xrOS)
+#if os(iOS) && !os(xrOS)
 struct IssueReporter: View {
     @State var issueDescription: String = ""
     @State var includeLogs = true
