@@ -34,8 +34,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///    - The item observed will be returned in the second snapshot
     ///
     func testItemChangedWillGenerateSnapshot() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshots")
-        let secondSnapshot = asyncExpectation(description: "second query snapshots")
+        let firstSnapshot = expectation(description: "first query snapshots")
+        let secondSnapshot = expectation(description: "second query snapshots")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -54,10 +54,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
                         XCTAssertEqual(querySnapshot.items.count, 0)
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
                         XCTAssertEqual(querySnapshot.items.count, 1)
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -65,11 +65,11 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
     
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
 
         let post = try createPost(id: "1")
         dataStorePublisher.send(input: post)
-        await waitForExpectations([secondSnapshot], timeout: 10)
+        await fulfillment(of: [secondSnapshot], timeout: 10)
     }
     
     ///  ObserveQuery will send a single snapshot when the sync state toggles
