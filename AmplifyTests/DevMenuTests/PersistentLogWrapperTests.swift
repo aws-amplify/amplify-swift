@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit) && !os(xrOS)
+#if os(iOS) && !os(xrOS)
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
