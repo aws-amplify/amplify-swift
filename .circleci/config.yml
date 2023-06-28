@@ -706,9 +706,8 @@ workflows:
           xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
-
       - unit_test:
-          name: watchos_unit_test_amplify
+          name: visionos_unit_test_amplify
           scheme: Amplify
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -716,7 +715,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_awspluginscore
+          name: visionos_unit_test_awspluginscore
           scheme: AWSPluginsCore
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -724,7 +723,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_analytics
+          name: visionos_unit_test_analytics
           scheme: AWSPinpointAnalyticsPlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -732,7 +731,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_api
+          name: visionos_unit_test_api
           scheme: AWSAPIPlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -740,7 +739,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_auth
+          name: visionos_unit_test_auth
           scheme: AWSCognitoAuthPlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -748,7 +747,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_datastore
+          name: visionos_unit_test_datastore
           scheme: AWSDataStorePlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -756,7 +755,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_geo
+          name: visionos_unit_test_geo
           scheme: AWSLocationGeoPlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -764,7 +763,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_internal_pinpoint
+          name: visionos_unit_test_internal_pinpoint
           scheme: InternalAWSPinpointUnitTests
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -772,7 +771,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_push_notifications
+          name: visionos_unit_test_push_notifications
           scheme: AWSPinpointPushNotificationsPlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -780,7 +779,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_storage
+          name: visionos_unit_test_storage
           scheme: AWSS3StoragePlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
@@ -788,7 +787,7 @@ workflows:
           requires:
             - build_amplify_visionos_spm
       - unit_test:
-          name: watchos_unit_test_predictions
+          name: visionos_unit_test_predictions
           scheme: AWSPredictionsPlugin
           sdk: xros1.0
           destination: << pipeline.parameters.visionos-destination >>
