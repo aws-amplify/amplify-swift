@@ -377,6 +377,9 @@ workflows:
       - build_amplify_watchos_spm:
           requires:
             - fortify_scan
+      - build_amplify_visionos_spm:
+          requires:
+            - fortify_scan
       - unit_test:
           name: ios_unit_test_amplify
           scheme: Amplify
