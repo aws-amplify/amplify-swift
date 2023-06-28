@@ -68,3 +68,7 @@ public struct AuthRule {
         self.operations = operations
     }
 }
+
+extension AuthRule: Hashable {
+
+}
