@@ -298,6 +298,7 @@ deploy_requires: &deploy_requires
     - build_amplify_macos_spm
     - build_amplify_tvos_spm
     - build_amplify_watchos_spm
+    - build_amplify_visionos_spm
     - ios_unit_test_amplify
     - ios_unit_test_awspluginscore
     - ios_unit_test_analytics
