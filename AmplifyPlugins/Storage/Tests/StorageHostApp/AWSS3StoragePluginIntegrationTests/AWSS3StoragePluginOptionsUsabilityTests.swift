@@ -89,7 +89,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            XCTAssertTrue(400..<500.contains(response.statusCode))
+            XCTAssertTrue((400..<500).contains(response.statusCode))
         }
         task2.resume()
         await fulfillment(of: [urlExpired], timeout: TestCommonConstants.networkTimeout)
