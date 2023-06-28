@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.30.3 (2023-06-28)
+
+### Bug Fixes
+
+- **datastore-v1**: Multi auth rule for read subscription (#3029)
+
 ## 1.30.2 (2023-06-16)
 
 ## 1.30.1 (2023-05-11)
