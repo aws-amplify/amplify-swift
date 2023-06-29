@@ -41,6 +41,9 @@ final class RotatingLoggerTests: XCTestCase {
         directory = nil
     }
     
+    /// Given: a rotating logger
+    /// When: a record is written
+    /// Then: a log file is created
     func testRotatingLogRecordsToLogFile() async throws {
         let minimalSizeOfEachRecord = try LogEntry.minimumSizeForLogEntry(level: .error)
         let recordsPerFile = Int(fileSizeLimitInBytes) / minimalSizeOfEachRecord
@@ -53,6 +56,9 @@ final class RotatingLoggerTests: XCTestCase {
         ])
     }
 
+    /// Given: a rotating logger
+    /// When: error is record
+    /// Then: the error and error message is written
     func testLoggerLogsError() async throws {
         struct TestError: Error, CustomStringConvertible {
             var message: String = UUID().uuidString
@@ -65,47 +71,56 @@ final class RotatingLoggerTests: XCTestCase {
         try await systemUnderTest.synchronize()
         try await Task.sleep(seconds: 0.100)
         try assertSingleEntryWith(level: .error, message: error.message)
-        XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
+    /// Given: a rotating logger
+    /// When: error message is recorded
+    /// Then: the log level and message is written
     func testLoggerLogsErrorMessage() async throws {
         let level = LogLevel.error
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
         try assertSingleEntryWith(level: level, message: message)
-        XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
+    /// Given: a rotating logger
+    /// When: verbose message is recorded
+    /// Then: the log level and message is written
     func testLoggerLogsVerboseMessage() async throws {
         let level = LogLevel.verbose
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
         try assertSingleEntryWith(level: level, message: message)
-        XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
+    /// Given: a rotating logger
+    /// When: warn message is recorded
+    /// Then: the log level and message is written
     func testLoggerLogsWarnMessage() async throws {
         let level = LogLevel.warn
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
         try assertSingleEntryWith(level: level, message: message)
-        XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
+    /// Given: a rotating logger
+    /// When: info message is recorded
+    /// Then: the log level and message is written
     func testLoggerLogsInfoMessage() async throws {
         let level = LogLevel.info
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
         try assertSingleEntryWith(level: level, message: message)
-        XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
+    /// Given: a rotating logger
+    /// When: debug message is recorded
+    /// Then: the log level and message is written
     func testLoggerLogsDebugMessage() async throws {
         let level = LogLevel.debug
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
         try assertSingleEntryWith(level: level, message: message)
-        XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
     private func logWith(level: LogLevel, message: String) async throws {

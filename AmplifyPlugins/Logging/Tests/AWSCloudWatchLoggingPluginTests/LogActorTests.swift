@@ -41,6 +41,9 @@ final class LogActorTests: XCTestCase {
         directory = nil
     }
     
+    /// Given: a Log Entry
+    /// When: LogActor records the entry
+    /// Then: the log entry is to file
     func testLogActorRecordsEntry() async throws {
         XCTAssertEqual(rotations, [])
         
@@ -57,6 +60,9 @@ final class LogActorTests: XCTestCase {
         XCTAssertEqual(decoded, entry)
     }
     
+    /// Given: a Log Entry that takes up too much
+    /// When: LogActor records the entry
+    /// Then: the log file is rotated and entry is written to a new file
     func testLogActorTriggersFileRotationOnRecord() async throws {
         XCTAssertEqual(rotations, [])
         let size = try LogEntry.minimumSizeForLogEntry(level: .error)

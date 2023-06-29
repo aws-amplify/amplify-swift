@@ -29,6 +29,9 @@ final class LogRotationTests: XCTestCase {
         directory = nil
     }
     
+    /// Given: a log rotation
+    /// When: the current log file is access
+    /// Then: the log file default to ampliyf.0.log
     func testLogRotationDefaultState() throws {
         XCTAssertEqual(systemUnderTest.currentLogFile.available, systemUnderTest.currentLogFile.sizeLimitInBytes)
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
@@ -38,7 +41,10 @@ final class LogRotationTests: XCTestCase {
         ])
     }
     
-    func testLogRotationInitializeWithNonEmptyDirectory() throws {
+    /// Given: a log rotation
+    /// When: a rotation occurs
+    /// Then: then a new rotated log file is created
+    func testLogRotationCreatesNewFiles() throws {
         let originalContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         XCTAssertEqual(originalContents.map { $0.lastPathComponent }, [
             "amplify.0.log"
@@ -80,6 +86,9 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
     
+    /// Given: a log rotation
+    /// When: rotation occurs to the max limit
+    /// Then: the log rotation circles back to 0
     func testLogRotationToMaxLimit() async throws {
         for _ in 0..<(fileCountLimit) {
             XCTAssertEqual(systemUnderTest.currentLogFile.available, systemUnderTest.currentLogFile.sizeLimitInBytes)
