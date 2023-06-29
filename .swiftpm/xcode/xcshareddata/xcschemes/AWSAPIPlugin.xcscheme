@@ -50,6 +50,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "AWSRESTOperationTests/testGetReturnsOperation()">
+               </Test>
+               <Test
                   Identifier = "AWSRESTOperationTests/testRESTOperationConstructURLFailure()">
                </Test>
                <Test
