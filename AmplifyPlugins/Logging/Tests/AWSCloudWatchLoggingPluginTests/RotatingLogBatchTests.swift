@@ -35,7 +35,7 @@ final class RotatingLogBatchTests: XCTestCase {
         }
     }
     
-    func testReadEntries() {
+    func testSuccessfullyyReadEntriesFromDisk() {
         let rotatingLogBatch = RotatingLogBatch(url: fileURL)
         let entries = try? rotatingLogBatch.readEntries()
         XCTAssertEqual(entries?.count, 1)
@@ -45,7 +45,7 @@ final class RotatingLogBatchTests: XCTestCase {
         XCTAssertEqual(entries![0].namespace, "namespace")
     }
     
-    func testCompleteEntries() throws {
+    func testSuccessfullyCompleteEntriesAndRemovesFile() throws {
         let rotatingLogBatch = RotatingLogBatch(url: fileURL)
         try rotatingLogBatch.complete()
         XCTAssertFalse(FileManager.default.fileExists(atPath: fileURL.absoluteString))

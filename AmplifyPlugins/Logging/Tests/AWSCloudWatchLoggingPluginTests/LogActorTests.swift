@@ -41,7 +41,7 @@ final class LogActorTests: XCTestCase {
         directory = nil
     }
     
-    func testRecord() async throws {
+    func testLogActorRecordsEntry() async throws {
         XCTAssertEqual(rotations, [])
         
         let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
@@ -57,7 +57,7 @@ final class LogActorTests: XCTestCase {
         XCTAssertEqual(decoded, entry)
     }
     
-    func testRecordToTriggerRotation() async throws {
+    func testLogActorTriggersFileRotationOnRecord() async throws {
         XCTAssertEqual(rotations, [])
         let size = try LogEntry.minimumSizeForLogEntry(level: .error)
         let numberOfEntries = (fileSizeLimitInBytes/size) + 1

@@ -29,7 +29,7 @@ final class LogRotationTests: XCTestCase {
         directory = nil
     }
     
-    func testDefaultState() throws {
+    func testLogRotationDefaultState() throws {
         XCTAssertEqual(systemUnderTest.currentLogFile.available, systemUnderTest.currentLogFile.sizeLimitInBytes)
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
         let contents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
@@ -38,7 +38,7 @@ final class LogRotationTests: XCTestCase {
         ])
     }
     
-    func testInitializeWithNonEmptyDirectory() throws {
+    func testLogRotationInitializeWithNonEmptyDirectory() throws {
         let originalContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         XCTAssertEqual(originalContents.map { $0.lastPathComponent }, [
             "amplify.0.log"
@@ -80,7 +80,7 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
     
-    func testRotateEmptyAll() async throws {
+    func testLogRotationToMaxLimit() async throws {
         for _ in 0..<(fileCountLimit) {
             XCTAssertEqual(systemUnderTest.currentLogFile.available, systemUnderTest.currentLogFile.sizeLimitInBytes)
             try systemUnderTest.rotate()
@@ -96,7 +96,7 @@ final class LogRotationTests: XCTestCase {
         ]))
     }
     
-    func testRotateToUnderutilized() async throws {
+    func testLogRotationUseUnderutilizedLogFile() async throws {
         let bytes = (0..<systemUnderTest.currentLogFile.sizeLimitInBytes).map { _ in UInt8.random(in: 0..<255) }
         let largeData = Data(bytes)
         let tinyData = Data([1, 2, 3, 4])
@@ -119,7 +119,7 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(contents, tinyData)
     }
     
-    func testRotateToOldestLastModified() async throws {
+    func testLogRotationUsesOldestLastModifiedLogFile() async throws {
         let bytes = (0..<systemUnderTest.currentLogFile.sizeLimitInBytes).map { _ in UInt8.random(in: 0..<255) }
         let data = Data(bytes)
         
@@ -133,7 +133,7 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
     
-    func testBogusFileSizeLimitInBytes() throws {
+    func testLogRotationThrowsErrorWithInvalidFileSizeLimitInBytes() throws {
         for fileSizeLimitInBytes in 0..<LogRotation.minimumFileSizeLimitInBytes {
             do {
                 _ = try LogRotation(directory: directory,

@@ -41,7 +41,7 @@ final class RotatingLoggerTests: XCTestCase {
         directory = nil
     }
     
-    func testBatch() async throws {
+    func testRotatingLogRecordsToLogFile() async throws {
         let minimalSizeOfEachRecord = try LogEntry.minimumSizeForLogEntry(level: .error)
         let recordsPerFile = Int(fileSizeLimitInBytes) / minimalSizeOfEachRecord
         for _ in 0..<(recordsPerFile + 1) {
@@ -53,7 +53,7 @@ final class RotatingLoggerTests: XCTestCase {
         ])
     }
 
-    func testLogError() async throws {
+    func testLoggerLogsError() async throws {
         struct TestError: Error, CustomStringConvertible {
             var message: String = UUID().uuidString
             var description: String {
@@ -63,13 +63,12 @@ final class RotatingLoggerTests: XCTestCase {
         let error = TestError()
         systemUnderTest.error(error: error)
         try await systemUnderTest.synchronize()
-        // TODO: Find a way to wait for the actor task to complete
         try await Task.sleep(seconds: 0.100)
         try assertSingleEntryWith(level: .error, message: error.message)
         XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
-    func testError() async throws {
+    func testLoggerLogsErrorMessage() async throws {
         let level = LogLevel.error
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
@@ -77,7 +76,7 @@ final class RotatingLoggerTests: XCTestCase {
         XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
-    func testVerbose() async throws {
+    func testLoggerLogsVerboseMessage() async throws {
         let level = LogLevel.verbose
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
@@ -85,7 +84,7 @@ final class RotatingLoggerTests: XCTestCase {
         XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
-    func testWarn() async throws {
+    func testLoggerLogsWarnMessage() async throws {
         let level = LogLevel.warn
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
@@ -93,7 +92,7 @@ final class RotatingLoggerTests: XCTestCase {
         XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
-    func testInfo() async throws {
+    func testLoggerLogsInfoMessage() async throws {
         let level = LogLevel.info
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
@@ -101,7 +100,7 @@ final class RotatingLoggerTests: XCTestCase {
         XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
     }
     
-    func testDebug() async throws {
+    func testLoggerLogsDebugMessage() async throws {
         let level = LogLevel.debug
         let message = UUID().uuidString
         try await logWith(level: level, message: message)
@@ -126,7 +125,6 @@ final class RotatingLoggerTests: XCTestCase {
             
         }
         try await systemUnderTest.synchronize()
-        // TODO: Find a way to wait for the actor task to complete
         try await Task.sleep(seconds: 0.100)
     }
     

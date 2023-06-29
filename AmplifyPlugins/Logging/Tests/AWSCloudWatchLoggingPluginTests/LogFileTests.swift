@@ -35,7 +35,7 @@ final class LogFileTests: XCTestCase {
         sizeLimitInBytes = nil
     }
     
-    func testWriteToLimit() throws {
+    func testLogFileWriteToSpaceLimit() throws {
         let bytes = (0..<sizeLimitInBytes).map { _ in UInt8.random(in: 0..<255) }
         let data = Data(bytes)
         
@@ -53,7 +53,7 @@ final class LogFileTests: XCTestCase {
         XCTAssertEqual(contents, data)
     }
     
-    func testWriteBeyondLimit() throws {
+    func testLogFileWriteBeyondSpaceLimitThrowsError() throws {
         let bytes = (0..<sizeLimitInBytes).map { _ in UInt8.random(in: 0..<255) }
         let data = Data(bytes)
         
