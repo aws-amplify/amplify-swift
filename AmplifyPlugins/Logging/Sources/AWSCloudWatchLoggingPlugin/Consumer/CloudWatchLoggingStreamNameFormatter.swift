@@ -28,7 +28,7 @@ struct CloudWatchLoggingStreamNameFormatter {
     init(userIdentifier: String? = nil) {
         self.userIdentifier = userIdentifier
         #if canImport(WatchKit)
-        self.deviceIdentifier = WKInterfaceDevice.current().identifierForVendor
+        self.deviceIdentifier = WKInterfaceDevice.current().identifierForVendor?.uuidString
         #elseif canImport(UIKit)
         self.deviceIdentifier = UIDevice.current.identifierForVendor?.uuidString
         #elseif canImport(AppKit)
