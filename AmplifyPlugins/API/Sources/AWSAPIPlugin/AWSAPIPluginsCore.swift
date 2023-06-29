@@ -18,7 +18,7 @@ import AWSClientRuntime
 // Things that came directly from AWSCore or depended on something from AWSCore
 // TODO: Consolidate this to AWSPluginsCore for all other plugins to use.
 struct AWSAPIPluginsCore {
-    static let version = "visionos-preview"
+    static let version = "visionos-preview-0.0.1"
 
     static var platformMapping: [Platform: String] = [:]
 
