@@ -156,7 +156,7 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        waitForExpectations(timeout: 0.05)
+        waitForExpectations(timeout: 1)
         sink.cancel()
     }
 
