@@ -118,13 +118,9 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         try await startAmplifyAndWaitForSync()
 
         // Save initial model
-        let createdNewItem = expectation(description: "createdNewItem")
         let postCopy = post
-        Task {
-            _ = try await Amplify.DataStore.save(postCopy)
-            createdNewItem.fulfill()
-        }
-        await fulfillment(of: [createdNewItem])
+        _ = try await Amplify.DataStore.save(postCopy)
+
         await fulfillment(of: [apiRespondedWithSuccess], timeout: 1.0, enforceOrder: false)
 
         // Set the responder to reject the mutation. Make sure to push a retry advice before sending
@@ -146,13 +142,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // will be scheduled and probably in "waiting" mode when we send the network unavailable
         // notification below.
         post.content = "Update 1"
-        let savedUpdate1 = expectation(description: "savedUpdate1")
         let postCopy1 = post
-        Task {
-            _ = try await Amplify.DataStore.save(postCopy1)
-            savedUpdate1.fulfill()
-        }
-        await fulfillment(of: [savedUpdate1])
+        _ = try await Amplify.DataStore.save(postCopy1)
 
         // At this point, the MutationEvent table (the backing store for the outgoing mutation
         // queue) has only a record for the interim update. It is marked as `inProcess: true`,
