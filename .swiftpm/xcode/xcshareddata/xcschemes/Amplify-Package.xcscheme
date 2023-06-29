@@ -660,6 +660,86 @@
                </Test>
             </SkippedTests>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSLocationGeoPluginUnitTests"
+               BuildableName = "AWSLocationGeoPluginUnitTests"
+               BlueprintName = "AWSLocationGeoPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSS3StoragePluginUnitTests"
+               BuildableName = "AWSS3StoragePluginUnitTests"
+               BlueprintName = "AWSS3StoragePluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSDataStoreCategoryPluginUnitTests"
+               BuildableName = "AWSDataStoreCategoryPluginUnitTests"
+               BlueprintName = "AWSDataStoreCategoryPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyBigIntegerUnitTests"
+               BuildableName = "AmplifyBigIntegerUnitTests"
+               BlueprintName = "AmplifyBigIntegerUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSAPIPluginUnitTests"
+               BuildableName = "AWSAPIPluginUnitTests"
+               BlueprintName = "AWSAPIPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPluginsCoreUnitTests"
+               BuildableName = "AWSPluginsCoreUnitTests"
+               BlueprintName = "AWSPluginsCoreUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyAsyncTestingUnitTests"
+               BuildableName = "AmplifyAsyncTestingUnitTests"
+               BlueprintName = "AmplifyAsyncTestingUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyUnitTests"
+               BuildableName = "AmplifyUnitTests"
+               BlueprintName = "AmplifyUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

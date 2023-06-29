@@ -56,7 +56,7 @@ let amplifyTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AmplifyTests",
+        name: "AmplifyUnitTests",
         dependencies: [
             "Amplify",
             "AmplifyTestCommon",
@@ -75,7 +75,7 @@ let amplifyTargets: [Target] = [
         linkerSettings: [.linkedFramework("XCTest")]
     ),
     .testTarget(
-        name: "AmplifyAsyncTestingTests",
+        name: "AmplifyAsyncTestingUnitTests",
         dependencies: ["AmplifyAsyncTesting"],
         path: "AmplifyAsyncTesting/Tests/AsyncTestingTests"
     ),
@@ -92,7 +92,7 @@ let amplifyTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AWSPluginsCoreTests",
+        name: "AWSPluginsCoreUnitTests",
         dependencies: [
             "AWSPluginsCore",
             "AmplifyTestCommon",
@@ -119,7 +119,7 @@ let apiTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AWSAPIPluginTests",
+        name: "AWSAPIPluginUnitTests",
         dependencies: [
             "AWSAPIPlugin",
             "AmplifyTestCommon",
@@ -179,7 +179,7 @@ let authTargets: [Target] = [
         resources: [.copy("TestResources")]
     ),
     .testTarget(
-        name: "AmplifyBigIntegerTests",
+        name: "AmplifyBigIntegerUnitTests",
         dependencies: [
             "AmplifyBigInteger"
         ],
@@ -201,7 +201,7 @@ let dataStoreTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AWSDataStoreCategoryPluginTests",
+        name: "AWSDataStoreCategoryPluginUnitTests",
         dependencies: [
             "AWSDataStorePlugin",
             "AmplifyTestCommon",
@@ -227,7 +227,7 @@ let storageTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AWSS3StoragePluginTests",
+        name: "AWSS3StoragePluginUnitTests",
         dependencies: [
             "AWSS3StoragePlugin",
             "AmplifyTestCommon",
@@ -254,7 +254,7 @@ let geoTargets: [Target] = [
         ]
     ),
     .testTarget(
-        name: "AWSLocationGeoPluginTests",
+        name: "AWSLocationGeoPluginUnitTests",
         dependencies: [
             "AWSLocationGeoPlugin",
             "AmplifyTestCommon",
