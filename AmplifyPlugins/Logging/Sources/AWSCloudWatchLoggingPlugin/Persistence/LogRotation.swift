@@ -180,8 +180,11 @@ final class LogRotation {
         fileManager.createFile(atPath: fileURL.path,
                                contents: nil,
                                attributes: [FileAttributeKey : Any]())
-        let resourceValues: [URLResourceKey : Any] = [URLResourceKey.fileProtectionKey: URLFileProtection.complete, URLResourceKey.isExcludedFromBackupKey: true]
-        try (fileURL as NSURL).setResourceValues(resourceValues)
+        if #available(macOS 11.0, *) {
+            let resourceValues: [URLResourceKey : Any] = [URLResourceKey.fileProtectionKey: URLFileProtection.complete, URLResourceKey.isExcludedFromBackupKey: true]
+            try (fileURL as NSURL).setResourceValues(resourceValues)
+        } 
+        
         return try LogFile(forWritingTo: fileURL,
                            sizeLimitInBytes: fileSizeLimitInBytes)
     }
