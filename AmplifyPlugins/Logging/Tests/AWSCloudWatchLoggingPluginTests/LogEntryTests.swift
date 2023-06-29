@@ -20,6 +20,9 @@ final class LogEntryTests: XCTestCase {
         LogLevel.verbose
     ]
     
+    /// Given: a Log Entry
+    /// When: attributes are acccessed
+    /// Then: attributes are set correctly
     func testLogEntryAttributesAreSet() {
         for level in levels {
             let message = UUID().uuidString
@@ -30,6 +33,9 @@ final class LogEntryTests: XCTestCase {
         }
     }
     
+    /// Given: a Log Entry
+    /// When: encoding and decoding occurs
+    /// Then: the log entry is endoded and decoded
     func testLogEntryIsCodable() throws {
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
@@ -44,6 +50,9 @@ final class LogEntryTests: XCTestCase {
         }
     }
     
+    /// Given: a Log Entry json with invalid log level
+    /// When: decoding occurs
+    /// Then: the log level defaults to Error
     func testDecodeDefaultsLogLevelWithInvalidLogLevel() throws {
         let message = UUID().uuidString
         let json = """
