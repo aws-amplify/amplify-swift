@@ -161,6 +161,45 @@ class GraphQLSubscriptionTests: XCTestCase {
         XCTAssertNil(document.variables)
     }
 
+    /// - Given: a `Model` type Comment
+    /// - When:
+    ///   - the model has nested association
+    ///   - the subscription is of type `.onCreate`
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid subscription
+    ///     - the nested field contain only required fields
+    func testOnCreateGraphQLSubscriptionWithPrimaryKeyOnly() {
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema,
+                                                               operationType: .subscription,
+                                                               primaryKeysOnly: true)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription,
+                                                                   primaryKeysOnly: true))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        subscription OnCreateComment {
+          onCreateComment {
+            id
+            content
+            createdAt
+            post {
+              id
+              __typename
+              _deleted
+            }
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "onCreateComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertNil(document.variables)
+    }
+
     /// - Given: a `Model` type
     /// - When:
     ///   - the model has no eager loaded associations

@@ -15,30 +15,47 @@ public struct ModelBasedGraphQLDocumentBuilder {
     private var document: SingleDirectiveGraphQLDocument
     private let modelSchema: ModelSchema
 
-    public init(modelName: String, operationType: GraphQLOperationType) {
+    public init(
+        modelName: String,
+        operationType: GraphQLOperationType,
+        primaryKeysOnly: Bool = false) {
+
         guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
             preconditionFailure("Missing ModelSchema in ModelRegistry for model name: \(modelName)")
         }
 
-        self.init(modelSchema: modelSchema, operationType: operationType)
+        self.init(modelSchema: modelSchema, operationType: operationType, primaryKeysOnly: primaryKeysOnly)
     }
 
     @available(*, deprecated, message: """
     Init with modelType is deprecated, use init with modelSchema instead.
     """)
-    public init(modelType: Model.Type, operationType: GraphQLOperationType) {
-        self.init(modelSchema: modelType.schema, operationType: operationType)
+    public init(
+        modelType: Model.Type,
+        operationType: GraphQLOperationType,
+        primaryKeysOnly: Bool = false) {
+
+            self.init(
+                modelSchema: modelType.schema,
+                operationType: operationType,
+                primaryKeysOnly: primaryKeysOnly
+            )
     }
 
-    public init(modelSchema: ModelSchema, operationType: GraphQLOperationType) {
+    public init(
+        modelSchema: ModelSchema,
+        operationType: GraphQLOperationType,
+        primaryKeysOnly: Bool = false) {
+
         self.modelSchema = modelSchema
+
         switch operationType {
         case .query:
             self.document = GraphQLQuery(modelSchema: modelSchema)
         case .mutation:
             self.document = GraphQLMutation(modelSchema: modelSchema)
         case .subscription:
-            self.document = GraphQLSubscription(modelSchema: modelSchema)
+            self.document = GraphQLSubscription(modelSchema: modelSchema, primaryKeysOnly: primaryKeysOnly)
         }
     }
 
