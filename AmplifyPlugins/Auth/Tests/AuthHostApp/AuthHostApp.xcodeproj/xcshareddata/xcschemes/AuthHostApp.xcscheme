@@ -57,7 +57,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "97914AD42954FE0A002000EA"
+               BlueprintIdentifier = "97914B2629550988002000EA"
                BuildableName = "AuthStressTests.xctest"
                BlueprintName = "AuthStressTests"
                ReferencedContainer = "container:AuthHostApp.xcodeproj">

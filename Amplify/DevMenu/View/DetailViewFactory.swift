@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if os(iOS)
+#if os(iOS) && !os(xrOS)
 import SwiftUI
 
 /// A factory to create detail views based on `DevMenuItemType`

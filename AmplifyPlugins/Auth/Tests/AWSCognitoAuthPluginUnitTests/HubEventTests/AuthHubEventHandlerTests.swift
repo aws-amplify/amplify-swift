@@ -164,6 +164,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         await waitForExpectations(timeout: networkTimeout)
     }
 
+#if !os(xrOS)
 #if os(iOS) || os(macOS)
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
@@ -229,6 +230,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
         wait(for: [hubEventExpectation], timeout: 10)
     }
+#endif
 #endif
 
     /// Test whether HubEvent emits a federatedToIdentityPool event for mocked federated operation

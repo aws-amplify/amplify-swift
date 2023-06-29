@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if !os(xrOS)
 #if os(iOS) || os(macOS)
 
 import Foundation
@@ -280,5 +281,5 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
     }
 }
-
+#endif
 #endif

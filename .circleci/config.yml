@@ -15,6 +15,9 @@ parameters:
   watchos-destination:
     type: string
     default: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
+  visionos-destination:
+    type: string
+    default: name=Apple Vision Pro
 
 orbs:
   aws-cli: circleci/aws-cli@3.1.4
@@ -178,6 +181,17 @@ jobs:
       - run:
           name: Build amplify for watchOS SPM
           command: xcodebuild build -scheme Amplify-Package -sdk watchsimulator -destination "<< pipeline.parameters.watchos-destination >>" | tee "artifacts/build-Ampify-for-watchos-SPM.log" | xcpretty
+  build_amplify_visionos_spm:
+    <<: *defaults
+    macos:
+      xcode: '15.0.0'
+    steps:
+      - shallow_checkout
+      - make_artifacts_directory
+      - run:
+          name: Build amplify for visionOS SPM
+          command: xcodebuild build -scheme Amplify-Package -sdk xros1.0 -destination "<< pipeline.parameters.visionos-destination >>" | tee "artifacts/build-Ampify-for-visionos-SPM.log" | xcpretty
+
 
   unit_test:
     <<: *defaults
@@ -284,6 +298,7 @@ deploy_requires: &deploy_requires
     - build_amplify_macos_spm
     - build_amplify_tvos_spm
     - build_amplify_watchos_spm
+    - build_amplify_visionos_spm
     - ios_unit_test_amplify
     - ios_unit_test_awspluginscore
     - ios_unit_test_analytics
@@ -328,6 +343,17 @@ deploy_requires: &deploy_requires
     - watchos_unit_test_push_notifications
     - watchos_unit_test_storage
     - watchos_unit_test_predictions
+    - visionos_unit_test_amplify
+    - visionos_unit_test_awspluginscore
+    - visionos_unit_test_analytics
+    - visionos_unit_test_api
+    - visionos_unit_test_auth
+    - visionos_unit_test_datastore
+    - visionos_unit_test_geo
+    - visionos_unit_test_push_notifications
+    - visionos_unit_test_internal_pinpoint
+    - visionos_unit_test_storage
+    - visionos_unit_test_predictions
     - fortify_scan
 
 workflows:
@@ -349,6 +375,9 @@ workflows:
           requires:
             - fortify_scan
       - build_amplify_watchos_spm:
+          requires:
+            - fortify_scan
+      - build_amplify_visionos_spm:
           requires:
             - fortify_scan
       - unit_test:
@@ -681,6 +710,94 @@ workflows:
           xcode-version: '14.3.0'
           requires:
             - build_amplify_watchos_spm
+      - unit_test:
+          name: visionos_unit_test_amplify
+          scheme: Amplify
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_awspluginscore
+          scheme: AWSPluginsCore
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_analytics
+          scheme: AWSPinpointAnalyticsPlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_api
+          scheme: AWSAPIPlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_auth
+          scheme: AWSCognitoAuthPlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_datastore
+          scheme: AWSDataStorePlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_geo
+          scheme: AWSLocationGeoPlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_internal_pinpoint
+          scheme: InternalAWSPinpointUnitTests
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_push_notifications
+          scheme: AWSPinpointPushNotificationsPlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_storage
+          scheme: AWSS3StoragePlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
+      - unit_test:
+          name: visionos_unit_test_predictions
+          scheme: AWSPredictionsPlugin
+          sdk: xros1.0
+          destination: << pipeline.parameters.visionos-destination >>
+          xcode-version: '15.0.0'
+          requires:
+            - build_amplify_visionos_spm
       - deploy:
           name: deploy unstable
           <<: *deploy_requires
