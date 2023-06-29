@@ -28,9 +28,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSLocationGeoPluginTests"
-               BuildableName = "AWSLocationGeoPluginTests"
-               BlueprintName = "AWSLocationGeoPluginTests"
+               BlueprintIdentifier = "AWSLocationGeoPluginUnitTests"
+               BuildableName = "AWSLocationGeoPluginUnitTests"
+               BlueprintName = "AWSLocationGeoPluginUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -52,16 +52,6 @@
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSLocationGeoPluginTests"
-               BuildableName = "AWSLocationGeoPluginTests"
-               BlueprintName = "AWSLocationGeoPluginTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

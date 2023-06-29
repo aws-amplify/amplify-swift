@@ -20,6 +20,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AmplifyUnitTests"
+               BuildableName = "AmplifyUnitTests"
+               BlueprintName = "AmplifyUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -39,39 +53,6 @@
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyTests"
-               BuildableName = "AmplifyTests"
-               BlueprintName = "AmplifyTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "APICategoryConfigurationTests/testPreconditionFailureInvokingBeforeConfig()">
-               </Test>
-               <Test
-                  Identifier = "APICategoryConfigurationTests/testPreconditionFailureInvokingWithMultiplePlugins()">
-               </Test>
-               <Test
-                  Identifier = "ConfigurationTests/testPreconditionFailureInvokingBeforeConfig()">
-               </Test>
-               <Test
-                  Identifier = "ConfigurationTests/testPreconditionFailureInvokingWithNoPlugin()">
-               </Test>
-               <Test
-                  Identifier = "DataStoreCategoryConfigurationTests/testPreconditionFailureInvokingBeforeConfig()">
-               </Test>
-               <Test
-                  Identifier = "DataStoreCategoryConfigurationTests/testPreconditionFailureInvokingWithMultiplePlugins()">
-               </Test>
-               <Test
-                  Identifier = "StorageCategoryConfigurationTests">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
