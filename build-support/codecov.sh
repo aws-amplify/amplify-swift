@@ -214,6 +214,7 @@ swiftcov() {
     do
       _proj=${f##*/}
       _proj=${_proj%."$_type"}
+      say "    $_proj"
       if [ "$2" = "" ] || [ "$(echo "$_proj" | grep -i "$2")" != "" ];
       then
         say "    $g+$x Building reports for $_proj $_type"
