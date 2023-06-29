@@ -68,6 +68,9 @@
                   Identifier = "DataStoreCategoryConfigurationTests/testPreconditionFailureInvokingWithMultiplePlugins()">
                </Test>
                <Test
+                  Identifier = "ModelCodableTests/testToJSON()">
+               </Test>
+               <Test
                   Identifier = "StorageCategoryConfigurationTests">
                </Test>
             </SkippedTests>

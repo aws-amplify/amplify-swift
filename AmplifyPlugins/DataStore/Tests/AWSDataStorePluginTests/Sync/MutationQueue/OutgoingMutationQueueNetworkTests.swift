@@ -118,13 +118,9 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         try await startAmplifyAndWaitForSync()
 
         // Save initial model
-        let createdNewItem = expectation(description: "createdNewItem")
         let postCopy = post
-        Task {
-            _ = try await Amplify.DataStore.save(postCopy)
-            createdNewItem.fulfill()
-        }
-        await fulfillment(of: [createdNewItem])
+        _ = try await Amplify.DataStore.save(postCopy)
+
         await fulfillment(of: [apiRespondedWithSuccess], timeout: 1.0, enforceOrder: false)
 
         // Set the responder to reject the mutation. Make sure to push a retry advice before sending
@@ -146,13 +142,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // will be scheduled and probably in "waiting" mode when we send the network unavailable
         // notification below.
         post.content = "Update 1"
-        let savedUpdate1 = expectation(description: "savedUpdate1")
         let postCopy1 = post
-        Task {
-            _ = try await Amplify.DataStore.save(postCopy1)
-            savedUpdate1.fulfill()
-        }
-        await fulfillment(of: [savedUpdate1])
+        _ = try await Amplify.DataStore.save(postCopy1)
 
         // At this point, the MutationEvent table (the backing store for the outgoing mutation
         // queue) has only a record for the interim update. It is marked as `inProcess: true`,
@@ -193,13 +184,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // also expect that it will be overwritten by the next mutation, without ever being synced
         // to the service.
         post.content = "Update 2"
-        let savedUpdate2 = expectation(description: "savedUpdate2")
         let postCopy2 = post
-        Task {
-            _ = try await Amplify.DataStore.save(postCopy2)
-            savedUpdate2.fulfill()
-        }
-        await fulfillment(of: [savedUpdate2])
+        _ = try await Amplify.DataStore.save(postCopy2)
 
         // At this point, the MutationEvent table has only a record for update2. It is marked as
         // `inProcess: false`, because the mutation queue has been fully cancelled.
@@ -210,13 +196,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // even if there were multiple not-in-process mutations, after the reconciliation completes
         // there would only be one record in the MutationEvent table.
         post.content = expectedFinalContent
-        let savedFinalUpdate = expectation(description: "savedFinalUpdate")
         let postCopy3 = post
-        Task {
-            _ = try await Amplify.DataStore.save(postCopy3)
-            savedFinalUpdate.fulfill()
-        }
-        await fulfillment(of: [savedFinalUpdate])
+        _ = try await Amplify.DataStore.save(postCopy3)
 
         let syncStarted = expectation(description: "syncStarted")
         setUpSyncStartedListener(
@@ -250,8 +231,10 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         
         apiPlugin.responders = [.mutateRequestListener: acceptSubsequentMutations]
         reachabilitySubject.send(ReachabilityUpdate(isOnline: true))
-
-        await fulfillment(of: [networkAvailableAgain, syncStarted, expectedFinalContentReceived, outboxEmpty], timeout: 5.0)
+        await fulfillment(
+            of: [syncStarted, outboxEmpty, expectedFinalContentReceived, networkAvailableAgain],
+            timeout: 5
+        )
     }
 
     // MARK: - Utilities
