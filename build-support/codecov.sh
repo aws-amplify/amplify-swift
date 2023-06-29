@@ -206,8 +206,10 @@ urlencode() {
 
 swiftcov() {
   _dir=$(dirname "$1" | sed 's/\(Build\).*/\1/g')
+  say "    $_dir durbane $1 $2"
   for _type in app framework xctest
   do
+    say "    $_type"
     find "$_dir" -name "*.$_type" | while read -r f
     do
       _proj=${f##*/}
