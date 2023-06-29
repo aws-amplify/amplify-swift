@@ -157,7 +157,7 @@ final class AWSCloudWatchLoggingSessionController {
 
 extension AWSCloudWatchLoggingSessionController: Logger {
     func error(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: .error, userIdentifier: self.userIdentifier) else { return }
         session?.logger.error(message())
     }
     
@@ -172,7 +172,7 @@ extension AWSCloudWatchLoggingSessionController: Logger {
     }
     
     func info(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: .info,userIdentifier: self.userIdentifier) else { return }
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: .info, userIdentifier: self.userIdentifier) else { return }
         session?.logger.info(message())
     }
     
