@@ -69,9 +69,6 @@ final class RotatingLogger {
     }
     
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
-        if logLevel < level {
-            return
-        }
         try await setupSubscription()
         let entry = LogEntry(category: self.category, namespace: self.namespace, level: level, message: message())
         try await self.actor.record(entry)
@@ -88,9 +85,6 @@ final class RotatingLogger {
     }
 
     private func _record(level: LogLevel, message: @autoclosure () -> String) {
-        if logLevel < level {
-            return
-        }
         let payload = message()
         Task {
             try await self.record(level: level, message:payload)

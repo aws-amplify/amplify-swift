@@ -33,8 +33,8 @@ final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.logGroupName, "testLogGroup")
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.region, "us-east-1")
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.defaultLogLevel.rawValue, 0)
-        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.categoryLogLevel.count, 2)
-        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.userLogLevel.count, 1)
+        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.categoryLogLevel?.count, 2)
+        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.userLogLevel?.count, 1)
     }
     
     func testConfigurationFromJson() {
@@ -60,8 +60,8 @@ final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.logGroupName, "testLogGroup")
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.region, "us-east-1")
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.defaultLogLevel.rawValue, 0)
-        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.categoryLogLevel.count, 2)
-        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.userLogLevel.count, 1)
+        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.categoryLogLevel?.count, 2)
+        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.userLogLevel?.count, 1)
     }
     
     func testRemoteLoggingConstraintsDeserialization() {
@@ -77,8 +77,8 @@ final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
             return
         }
         XCTAssertEqual(loggingConstraints.defaultLogLevel.rawValue, 0)
-        XCTAssertEqual(loggingConstraints.categoryLogLevel.count, 4)
-        XCTAssertEqual(loggingConstraints.userLogLevel.count, 2)
-        XCTAssertEqual(loggingConstraints.userLogLevel["sub1"]?.defaultLogLevel.rawValue, 2)
+        XCTAssertEqual(loggingConstraints.categoryLogLevel?.count, 4)
+        XCTAssertEqual(loggingConstraints.userLogLevel?.count, 2)
+        XCTAssertEqual(loggingConstraints.userLogLevel?["sub1"]?.defaultLogLevel.rawValue, 2)
     }
 }

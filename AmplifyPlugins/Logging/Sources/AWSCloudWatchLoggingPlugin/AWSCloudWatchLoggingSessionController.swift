@@ -162,27 +162,27 @@ extension AWSCloudWatchLoggingSessionController: Logger {
     }
     
     func error(error: Error) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: .error, userIdentifier: self.userIdentifier) else { return }
         session?.logger.error(error: error)
     }
     
     func warn(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: .warn, userIdentifier: self.userIdentifier) else { return }
         session?.logger.warn(message())
     }
     
     func info(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel,userIdentifier: self.userIdentifier) else { return }
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: .info,userIdentifier: self.userIdentifier) else { return }
         session?.logger.info(message())
     }
     
     func debug(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: .debug, userIdentifier: self.userIdentifier) else { return }
         session?.logger.debug(message())
     }
     
     func verbose(_ message: @autoclosure () -> String) {
-        guard self.logFilter.canLog(withCategory: self.category, logLevel: self.logLevel, userIdentifier: self.userIdentifier) else { return }
+        guard self.logFilter.canLog(withCategory: self.category, logLevel: .verbose, userIdentifier: self.userIdentifier) else { return }
         session?.logger.verbose(message())
     }
 }

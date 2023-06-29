@@ -10,4 +10,5 @@ import Amplify
 
 protocol AWSCloudWatchLoggingFilterBehavior {
     func canLog(withCategory: String, logLevel: LogLevel, userIdentifier: String?) -> Bool
+    func getDefaultLogLevel(forCategory: String, userIdentifier: String?) -> LogLevel
 }

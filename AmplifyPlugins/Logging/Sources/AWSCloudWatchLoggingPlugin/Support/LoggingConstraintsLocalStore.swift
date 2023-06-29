@@ -14,6 +14,7 @@ protocol LoggingConstraintsLocalStore {
     func setLocalLoggingConstraints(loggingConstraints: LoggingConstraints)
     func getLocalLoggingConstraintsEtag() -> String?
     func setLocalLoggingConstraintsEtag(etag: String)
+    func reset()
 }
 
 extension UserDefaults: LoggingConstraintsLocalStore {
@@ -36,5 +37,10 @@ extension UserDefaults: LoggingConstraintsLocalStore {
     
     func setLocalLoggingConstraintsEtag(etag: String) {
         UserDefaults.standard.set(etag, forKey: PluginConstants.awsRemoteLoggingConstraintsTagKey)
+    }
+    
+    func reset() {
+        UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsTagKey)
+        UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsKey)
     }
 }

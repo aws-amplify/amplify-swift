@@ -155,7 +155,8 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
     
     func logger(forCategory category: String) -> Logger {
-        return self.logger(forCategory: category, namespace: nil, logLevel: Amplify.Logging.logLevel)
+        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: self.userIdentifier)
+        return self.logger(forCategory: category, namespace: nil, logLevel: defaultLogLevel)
     }
     
     func logger(forNamespace namespace: String) -> Logger {
@@ -163,7 +164,8 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
     
     func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
-        self.logger(forCategory: category, namespace: namespace, logLevel: Amplify.Logging.logLevel)
+        let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: self.userIdentifier)
+        return self.logger(forCategory: category, namespace: namespace, logLevel: defaultLogLevel)
     }
     
     func getInternalClient() -> CloudWatchLogsClientProtocol {

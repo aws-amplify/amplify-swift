@@ -47,7 +47,7 @@ extension AWSCloudWatchLoggingPluginConfiguration {
                 Could not load default `amplifyconfiguration_logging.json` file
                 """,
                 """
-                Expected to find the file, `amplifyconfiguration_loggingnfig.json` in the app bundle at `\(bundle.bundlePath)`, but
+                Expected to find the file, `amplifyconfiguration_logging.json` in the app bundle at `\(bundle.bundlePath)`, but
                 it was not present. Either add amplifyconfiguration_logging.json to your app's "Copy Bundle Resources" build phase.
                 """
             )

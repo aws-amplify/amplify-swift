@@ -52,18 +52,6 @@ final class RotatingLoggerTests: XCTestCase {
             "amplify.0.log"
         ])
     }
-    
-    func testBypassDebug() async throws {
-        let message = UUID().uuidString
-        systemUnderTest.logLevel = .error
-        systemUnderTest.debug(message)
-        try await systemUnderTest.synchronize()
-        // TODO: Find a way to wait for the actor task to complete
-        try await Task.sleep(seconds: 0.100)
-        
-        try assertLogFileEmpty()
-        XCTAssertEqual(batches.map { String(describing: $0) }, [String]())
-    }
 
     func testLogError() async throws {
         struct TestError: Error, CustomStringConvertible {

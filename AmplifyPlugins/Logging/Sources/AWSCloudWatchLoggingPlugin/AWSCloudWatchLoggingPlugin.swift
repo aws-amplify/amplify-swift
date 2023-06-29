@@ -130,10 +130,28 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
                 flushIntervalInSeconds: configuration.flushIntervalInSeconds
             )
         }
+        
+        if self.loggingPluginConfiguration == nil {
+            throw LoggingError.configuration(
+                """
+                Missing configuration for AWSCloudWatchLoggingPlugin
+                """,
+                """
+                Expected to find the file, `amplifyconfiguration_logging.json` in the app bundle, but
+                it was not present. Either add amplifyconfiguration_logging.json to your app's "Copy Bundle Resources" build phase or provide the plugin
+                configuration when constructing the AWSCloudWatchLoggingPlugin.
+                """
+            )
+        }
+        
+        if self.remoteLoggingConstraintsProvider == nil {
+            let localStore: LoggingConstraintsLocalStore = UserDefaults.standard
+            localStore.reset()
+        }
+        
         DispatchQueue.main.async {
             self.loggingClient.takeUserIdentifierFromCurrentUser()
         }
-        
     }
 }
 

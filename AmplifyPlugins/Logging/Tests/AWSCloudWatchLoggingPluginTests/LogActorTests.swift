@@ -23,6 +23,7 @@ final class LogActorTests: XCTestCase {
     
     override func setUp() async throws {
         rotations = []
+        
         directory = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         systemUnderTest = try LogActor(directory: directory,
@@ -58,7 +59,6 @@ final class LogActorTests: XCTestCase {
     
     func testRecordToTriggerRotation() async throws {
         XCTAssertEqual(rotations, [])
-        
         let size = try LogEntry.minimumSizeForLogEntry(level: .error)
         let numberOfEntries = (fileSizeLimitInBytes/size) + 1
         let entries = (0..<numberOfEntries).map { LogEntry(category: "", namespace: nil, level: .error, message: "\($0)", created: .init(timeIntervalSince1970: Double($0))) }

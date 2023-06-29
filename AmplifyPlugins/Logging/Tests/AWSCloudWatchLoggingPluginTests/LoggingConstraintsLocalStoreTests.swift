@@ -38,8 +38,8 @@ final class LoggingConstraintsLocalStoreTests: XCTestCase {
         
         XCTAssertEqual(localStore.getLocalLoggingConstraintsEtag(), "testString")
         XCTAssertEqual(localStore.getLocalLoggingConstraints()!.defaultLogLevel.rawValue, 0)
-        XCTAssertTrue(localStore.getLocalLoggingConstraints()!.categoryLogLevel.isEmpty)
-        XCTAssertTrue(localStore.getLocalLoggingConstraints()!.userLogLevel.isEmpty)
+        XCTAssertTrue(localStore.getLocalLoggingConstraints()!.categoryLogLevel!.isEmpty)
+        XCTAssertTrue(localStore.getLocalLoggingConstraints()!.userLogLevel!.isEmpty)
     }
     
     func testSetCacheDataWithValidLoggingConstraints() {
@@ -52,7 +52,7 @@ final class LoggingConstraintsLocalStoreTests: XCTestCase {
         
         XCTAssertEqual(localStore.getLocalLoggingConstraintsEtag(), "testString")
         XCTAssertEqual(localStore.getLocalLoggingConstraints()?.defaultLogLevel.rawValue, 1)
-        XCTAssertEqual(localStore.getLocalLoggingConstraints()!.categoryLogLevel.count, 1)
-        XCTAssertTrue(localStore.getLocalLoggingConstraints()!.userLogLevel.isEmpty)
+        XCTAssertEqual(localStore.getLocalLoggingConstraints()!.categoryLogLevel!.count, 1)
+        XCTAssertTrue(localStore.getLocalLoggingConstraints()!.userLogLevel!.isEmpty)
     }
 }

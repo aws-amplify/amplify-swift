@@ -45,7 +45,9 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
                 config: config,
                 expiration: expiration)
         case .putObject:
-            let input = PutObjectInput(bucket: bucket, key: key)
+            //let input = PutObjectInput(bucket: bucket, key: key)
+            let metadata = ["author": "john doe"]
+            let input = PutObjectInput(bucket: bucket, key: key, metadata: metadata)
             preSignedUrl = try await input.presignURL(
                 config: config,
                 expiration: expiration)
