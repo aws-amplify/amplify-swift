@@ -205,7 +205,7 @@ jobs:
           command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>"  | tee "artifacts/test-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.scheme >> coverage report to Codecov
-          command: bash $CIRCLE_WORKING_DIRECTORY/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
+          command: bash $CIRCLE_WORKING_DIRECTORY/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>Tests$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
