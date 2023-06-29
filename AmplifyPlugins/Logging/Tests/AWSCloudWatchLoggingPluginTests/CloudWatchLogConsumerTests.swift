@@ -39,7 +39,10 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         systemUnderTest = nil
     }
     
-    func testConsumerProcessValidSingleLogBatch() async throws {
+    /// - Given: A list of a single log entry
+    /// - When: CloudWatchLoggingConsumer consumes the a log batch
+    /// - Then: The batch is read and completed
+    func testConsumerProcessValidLogBatch() async throws {
         self.entries = [LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "")]
         try await systemUnderTest.consume(batch: self)
         XCTAssertEqual(client.interactions, [
@@ -53,6 +56,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
+    /// - Given: A list of log entries
+    /// - When: CloudWatchLoggingConsumer consumes the a log batch
+    /// - Then: The batch is read and completed
     func testConsumerProcessValidLargeBatch() async throws {
         let batchSize = 32
         for _ in 0..<batchSize {
@@ -70,6 +76,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
+    /// - Given: A list of log entries with 50% rejectable entries
+    /// - When: CloudWatchLoggingConsumer consumes the a log batch
+    /// - Then: The batch is read and completed and the rejected entries are retried
     func testConsumerRetriesWithRejectedLogBatch() async throws {
         let batchSize = 5
         let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
@@ -98,6 +107,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
+    /// - Given: A list of log entries with client response of TooNewLogEventStartIndexOutOfBounds
+    /// - When: CloudWatchLoggingConsumer consumes the a log batch
+    /// - Then: The batch is read and completed and the entries are retried
     func testTooNewLogEventStartIndexOutOfBoundsAreRetried() async throws {
         let batchSize = 5
         let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
@@ -226,6 +238,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
+    /// Given: an entry that results in a client error
+    /// When: An attempt to consume it takes place
+    /// Then: an exception is thrown
     func testClientThrowsOnClientError() async throws {
         enum TestError: Error {
             case consumeError
