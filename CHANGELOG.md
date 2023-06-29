@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.30.4 (2023-06-29)
+
+### Bug Fixes
+
+- **datastore**: Enable subscription selection set to contain required fields only (#3016)
+
 ## 1.30.3 (2023-06-28)
 
 ### Bug Fixes
