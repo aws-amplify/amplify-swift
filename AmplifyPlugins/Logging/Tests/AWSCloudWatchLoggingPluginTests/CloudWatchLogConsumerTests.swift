@@ -39,7 +39,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         systemUnderTest = nil
     }
     
-    func testSingleEntryHappyPath() async throws {
+    func testConsumerProcessValidSingleLogBatch() async throws {
         self.entries = [LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "")]
         try await systemUnderTest.consume(batch: self)
         XCTAssertEqual(client.interactions, [
@@ -53,7 +53,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
-    func testBatchHappyPath() async throws {
+    func testConsumerProcessValidLargeBatch() async throws {
         let batchSize = 32
         for _ in 0..<batchSize {
             self.entries.append(contentsOf: [LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "")])
@@ -70,7 +70,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
-    func testBatchHalfRetriable() async throws {
+    func testConsumerRetriesWithRejectedLogBatch() async throws {
         let batchSize = 5
         let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
         self.entries.append(contentsOf: batch)
@@ -98,7 +98,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
-    func testTooNewLogEventStartIndexOutOfBounds() async throws {
+    func testTooNewLogEventStartIndexOutOfBoundsAreRetried() async throws {
         let batchSize = 5
         let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
         self.entries.append(contentsOf: batch)
@@ -226,7 +226,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
-    func testClientThrows() async throws {
+    func testClientThrowsOnClientError() async throws {
         enum TestError: Error {
             case consumeError
         }

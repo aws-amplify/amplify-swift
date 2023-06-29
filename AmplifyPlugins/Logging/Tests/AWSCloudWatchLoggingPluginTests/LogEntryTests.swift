@@ -20,7 +20,7 @@ final class LogEntryTests: XCTestCase {
         LogLevel.verbose
     ]
     
-    func testAttributes() {
+    func testLogEntryAttributesAreSet() {
         for level in levels {
             let message = UUID().uuidString
             let sut = LogEntry(category: "LogEntryTests", namespace: nil, level: level, message: message)
@@ -30,7 +30,7 @@ final class LogEntryTests: XCTestCase {
         }
     }
     
-    func testCodable() throws {
+    func testLogEntryIsCodable() throws {
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
         for level in levels {
@@ -44,7 +44,7 @@ final class LogEntryTests: XCTestCase {
         }
     }
     
-    func testDecodeWithBogusLogLevel() throws {
+    func testDecodeDefaultsLogLevelWithInvalidLogLevel() throws {
         let message = UUID().uuidString
         let json = """
         {
