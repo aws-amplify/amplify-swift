@@ -6,7 +6,7 @@
 //
 
 #if !os(xrOS)
-#elseif os(iOS) || os(macOS)
+#if os(iOS) || os(macOS)
 
 import Foundation
 
@@ -281,5 +281,5 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
     }
 }
-
+#endif
 #endif
