@@ -26,7 +26,16 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 
 ## Platform Support
 
-Amplify supports iOS 13+, macOS 10.15+, watchOS 7+, and tvOS 13+.
+| Platform  | Versions  | Support Level |
+| ---------: | -------:  | :-----------: |
+| iOS       | 13+       | GA            |
+| macOS     | 10.15+    | GA            |
+| tvOS      | 13+       | GA            |
+| watchOS   | 7+        | GA            |
+| visionOS  | 1+        | Preview*      |
+
+> To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
+> For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
 
 ## License
 
