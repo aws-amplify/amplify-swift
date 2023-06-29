@@ -57,6 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "213DBBD928A5770000B30280"
+            BuildableName = "AWSDataStorePluginAuthCognitoTests.xctest"
+            BlueprintName = "AWSDataStorePluginAuthCognitoTests"
+            ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

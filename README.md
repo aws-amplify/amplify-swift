@@ -55,6 +55,12 @@ When Amplify adds a new enumeration value, we will publish a new **minor** versi
 of the library.
 
 Applications that evaluate all members of an enumeration using a `switch` statement can add a `default` case to prevent new cases from causing compile warnings or errors.
+| watchOS   | 7+        | GA            |
+| visionOS  | 1+        | Preview       |
+
+To use the vision-os preview branch, add Amplify Swift targeting the `visionos-preview` branch.
+
+![Add package dependency](readme-images/spm_visionos-preview_branch.png)
 
 #### Semantic versioning and dependencies update
 
