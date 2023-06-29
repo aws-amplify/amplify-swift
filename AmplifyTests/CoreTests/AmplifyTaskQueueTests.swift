@@ -30,16 +30,15 @@ import Amplify
 // that the in-process task completes before the new one is executed.
 
 final class AmplifyTaskQueueTests: XCTestCase {
+
+    /// Test basic TaskQueue.sync behavior
+    ///
+    /// - Given: A task queue
+    /// - When: I add tasks to the queue using the `sync` method
+    /// - Then: The tasks execute in the order added
     func testSync() async throws {
         for _ in 1 ... 1_000 {
             try await doSyncTest()
-        }
-    }
-
-    func addSync(expectation: XCTestExpectation, to taskQueue: TaskQueue<Void>) async throws {
-        try await taskQueue.sync {
-            try await Task.sleep(nanoseconds: 1)
-            expectation.fulfill()
         }
     }
 
@@ -48,10 +47,21 @@ final class AmplifyTaskQueueTests: XCTestCase {
         let expectation2 = expectation(description: "expectation2")
         let expectation3 = expectation(description: "expectation3")
 
-        let tq = TaskQueue<Void>()
-        try await addSync(expectation: expectation1, to: tq)
-        try await addSync(expectation: expectation2, to: tq)
-        try await addSync(expectation: expectation3, to: tq)
+        let taskQueue = TaskQueue<Void>()
+        try await taskQueue.sync {
+            try await Task.sleep(nanoseconds: 1)
+            expectation1.fulfill()
+        }
+
+        try await taskQueue.sync {
+            try await Task.sleep(nanoseconds: 1)
+            expectation2.fulfill()
+        }
+
+        try await taskQueue.sync {
+            try await Task.sleep(nanoseconds: 1)
+            expectation3.fulfill()
+        }
 
         await fulfillment(of: [expectation1, expectation2, expectation3], enforceOrder: true)
     }
