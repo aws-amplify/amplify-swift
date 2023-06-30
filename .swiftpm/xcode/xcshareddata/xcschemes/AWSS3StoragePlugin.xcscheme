@@ -52,6 +52,16 @@
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSS3StoragePluginUnitTests"
+               BuildableName = "AWSS3StoragePluginUnitTests"
+               BlueprintName = "AWSS3StoragePluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -16,9 +16,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyAsyncTestingTests"
-               BuildableName = "AmplifyAsyncTestingTests"
-               BlueprintName = "AmplifyAsyncTestingTests"
+               BlueprintIdentifier = "AmplifyAsyncTestingUnitTests"
+               BuildableName = "AmplifyAsyncTestingUnitTests"
+               BlueprintName = "AmplifyAsyncTestingUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
