@@ -169,7 +169,7 @@ final class LogRotation {
         return Int(indexString)
     }
 
-    /// - Returns: An empty [LogFile](x-source-tag://LogFile) within the given
+    /// - Returns: An empty LogFile within the given
     /// directory using the given index whose name matches the
     /// amplify.<index>.log name pattern.
     private static func createLogFile(in directory: URL,
@@ -183,9 +183,11 @@ final class LogRotation {
         if #available(macOS 11.0, *) {
             let resourceValues: [URLResourceKey : Any] = [URLResourceKey.fileProtectionKey: URLFileProtection.complete, URLResourceKey.isExcludedFromBackupKey: true]
             try (fileURL as NSURL).setResourceValues(resourceValues)
-        } 
+        }  else {
+            let resourceValues: [URLResourceKey : Any] = [URLResourceKey.isExcludedFromBackupKey: true]
+            try (fileURL as NSURL).setResourceValues(resourceValues)
+        }
         
-        return try LogFile(forWritingTo: fileURL,
-                           sizeLimitInBytes: fileSizeLimitInBytes)
+        return try LogFile(forWritingTo: fileURL, sizeLimitInBytes: fileSizeLimitInBytes)
     }
 }
