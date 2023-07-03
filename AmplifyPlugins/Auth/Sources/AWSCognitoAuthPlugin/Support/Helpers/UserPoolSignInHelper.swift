@@ -72,7 +72,10 @@ struct UserPoolSignInHelper: DefaultLogger {
         case .selectMFAType:
             return .init(nextStep: .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection))
         case .setUpMFA:
-            throw AuthError.unknown("Invalid state flow. setUpMFA is handled internally in `SignInState.resolvingTOTPSetup` state.")
+            throw AuthError.invalidState(
+                "Invalid state flow. setUpMFA is handled internally in `SignInState.resolvingTOTPSetup` state.",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWSWithoutLineInfo(),
+                nil)
         case .unknown(let cognitoChallengeType):
             throw AuthError.unknown("Challenge not supported\(cognitoChallengeType)", nil)
         }
