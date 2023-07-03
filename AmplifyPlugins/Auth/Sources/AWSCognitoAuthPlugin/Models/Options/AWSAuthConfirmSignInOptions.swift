@@ -13,8 +13,15 @@ public struct AWSAuthConfirmSignInOptions {
 
     public let metadata: [String: String]?
 
-    public init(userAttributes: [AuthUserAttribute]? = nil, metadata: [String: String]? = nil) {
-        self.userAttributes = userAttributes
-        self.metadata = metadata
-    }
+    /// Device name that would be provided to Cognito when setting up TOTP
+    public let friendlyDeviceName: String?
+
+    public init(
+        userAttributes: [AuthUserAttribute]? = nil,
+        metadata: [String: String]? = nil,
+        friendlyDeviceName: String? = nil) {
+            self.userAttributes = userAttributes
+            self.metadata = metadata
+            self.friendlyDeviceName = friendlyDeviceName
+        }
 }
