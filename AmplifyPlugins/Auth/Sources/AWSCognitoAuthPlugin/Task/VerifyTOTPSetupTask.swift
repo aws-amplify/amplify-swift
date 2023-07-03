@@ -58,16 +58,22 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
         let result = try await userPoolService.verifySoftwareToken(input: input)
 
         guard let output = result.status else {
-            throw AuthError.service("Result cannot be retrieved", "")
+            throw AuthError.service(
+                "Unable to retrieve the result object from the response.",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
         }
 
         switch output {
         case .error:
-            throw AuthError.service("Unknown error", "")
+            throw AuthError.service(
+                "Unknown error occurred while verifying TOTP setup",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
         case .success:
             return
         case .sdkUnknown(let error):
-            throw AuthError.service("Unknown error", error)
+            throw AuthError.service(
+                error,
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
         }
 
     }
