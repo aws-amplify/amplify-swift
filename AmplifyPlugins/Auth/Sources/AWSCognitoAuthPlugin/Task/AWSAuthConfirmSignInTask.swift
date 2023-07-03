@@ -49,17 +49,36 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             AuthPluginErrorConstants.invalidStateError, nil)
 
         guard case .configured(let authNState, _) = await authStateMachine.currentState,
-              case .signingIn(let signInState) = authNState,
-              case .resolvingChallenge(let challengeState, _, _) = signInState else {
+              case .signingIn(let signInState) = authNState else {
             throw invalidStateError
         }
 
-        switch challengeState {
-        case .waitingForAnswer, .error:
-            log.verbose("Sending confirm signIn event: \(challengeState)")
-            await sendConfirmSignInEvent()
-        default:
-            throw invalidStateError
+        if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState {
+
+            // If the challenge type is of type .selectMFAType, 
+            // Then we need to validate whether MFA type passed in the request is supported by the plugin.
+            // The only supported MFA Type selection is SMS or TOTP.
+            // If challenge type is not supported,
+            // then we need to throw an error stating that the user is not allowed to select the MFA type passed in the request.
+            if case .selectMFAType = challengeType {
+                try validateRequestForMFASelection()
+            }
+
+            switch challengeState {
+            case .waitingForAnswer, .error:
+                log.verbose("Sending confirm signIn event: \(challengeState)")
+                await sendConfirmSignInEvent()
+            default:
+                throw invalidStateError
+            }
+        } else if case .resolvingTOTPSetup(let resolvingSetupTokenState, _) = signInState {
+            switch resolvingSetupTokenState {
+            case .waitingForAnswer, .error:
+                log.verbose("Sending confirm signIn event: \(resolvingSetupTokenState)")
+                await sendConfirmTOTPSetupEvent()
+            default:
+                throw invalidStateError
+            }
         }
 
         let stateSequences = await authStateMachine.listen()
@@ -94,7 +113,30 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         throw invalidStateError
     }
 
+    func validateRequestForMFASelection() throws {
+        let challengeResponse = request.challengeResponse
+
+        guard let _ = MFAType(rawValue: challengeResponse) else {
+            throw AuthError.validation(
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.field,
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.errorDescription,
+                AuthPluginErrorConstants.confirmSignInMFASelectionResponseError.recoverySuggestion)
+        }
+    }
+
     func sendConfirmSignInEvent() async {
+        let event = SignInChallengeEvent(
+            eventType: .verifyChallengeAnswer(createConfirmSignInEventData()))
+        await authStateMachine.send(event)
+    }
+
+    func sendConfirmTOTPSetupEvent() async {
+        let event = SetUpTOTPEvent(
+            eventType: .verifyChallengeAnswer(createConfirmSignInEventData()))
+        await authStateMachine.send(event)
+    }
+
+    private func createConfirmSignInEventData() -> ConfirmSignInEventData {
         let pluginOptions = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)
 
         // Convert the attributes to [String: String]
@@ -103,13 +145,11 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             into: [String: String]()) {
                 $0[attributePrefix + $1.key.rawValue] = $1.value
             } ?? [:]
-        let confirmSignInData = ConfirmSignInEventData(
+        return ConfirmSignInEventData(
             answer: self.request.challengeResponse,
             attributes: attributes,
-            metadata: pluginOptions?.metadata)
-        let event = SignInChallengeEvent(
-            eventType: .verifyChallengeAnswer(confirmSignInData))
-        await authStateMachine.send(event)
+            metadata: pluginOptions?.metadata,
+            friendlyDeviceName: pluginOptions?.friendlyDeviceName)
     }
 
 }
