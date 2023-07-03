@@ -57,18 +57,9 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
         }
 
         // Get the current user for passing in the result, so that TOTP URI could constructed
-        let authUser: AuthUser
+        let taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
+        let authUser = try await taskHelper.getCurrentUser()
 
-        let currentState = await authStateMachine.currentState
-        if case .configured(let authNState, _) = currentState,
-           case .signedIn(let signInData) = authNState {
-            authUser = AWSAuthUser(username: signInData.username, userId: signInData.userId)
-        } else {
-            throw AuthError.invalidState(
-                "Auth State not in a valid state for the user",
-                AuthPluginErrorConstants.invalidStateError,
-                nil)
-        }
         return .init(secretCode: secretCode,
                      username: authUser.username)
 
