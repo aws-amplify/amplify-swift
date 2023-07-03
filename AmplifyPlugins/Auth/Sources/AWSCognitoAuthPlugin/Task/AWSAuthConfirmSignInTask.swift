@@ -55,7 +55,9 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
 
         if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState {
 
-            // Validate if request valid MFA selection
+            // If the challenge type is of type .selectMFAType, 
+            // then we need to validate whether SMS or TOTP is allowed to be selected
+            // If NOT, then we need to throw an error stating that the user is not allowed to select the MFA type passed in the request.
             if case .selectMFAType = challengeType {
                 try validateRequestForMFASelection()
             }
