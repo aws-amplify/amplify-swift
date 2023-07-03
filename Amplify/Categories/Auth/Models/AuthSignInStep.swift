@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Set of allowed MFA types that would be used for continuing sign in during MFA selection step
+public typealias AllowedMFATypes = Set<MFAType>
+
 /// Auth SignIn flow steps
 ///
 ///
@@ -22,6 +25,19 @@ public enum AuthSignInStep {
     /// Auth step required the user to give a new password.
     ///
     case confirmSignInWithNewPassword(AdditionalInfo?)
+
+    /// Auth step is TOTP multi factor authentication.
+    ///
+    /// Confirmation code for the MFA will be retrieved from the associated Authenticator app
+    case confirmSignInWithTOTPCode
+
+    /// Auth step is for continuing sign in by setting up TOTP multi factor authentication.
+    ///
+    case continueSignInWithTOTPSetup(TOTPSetupDetails)
+
+    /// Auth step is for continuing sign in by selecting multi factor authentication type
+    ///
+    case continueSignInWithMFASelection(AllowedMFATypes)
 
     /// Auth step required the user to change their password.
     ///
