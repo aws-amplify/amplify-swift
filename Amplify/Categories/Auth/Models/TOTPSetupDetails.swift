@@ -15,8 +15,8 @@ public struct TOTPSetupDetails {
     /// username that will be used to construct the URI
     public let username: String
 
-    public init(secretCode: String, username: String) {
-        self.sharedSecret = secretCode
+    public init(sharedSecret: String, username: String) {
+        self.sharedSecret = sharedSecret
         self.username = username
     }
     /// Returns a TOTP setup URI that can help the customers avoid barcode scanning and use native password manager to handle TOTP association
