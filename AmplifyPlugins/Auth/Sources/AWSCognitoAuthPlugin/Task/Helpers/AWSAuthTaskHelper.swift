@@ -82,6 +82,33 @@ class AWSAuthTaskHelper: DefaultLogger {
         }
     }
 
+    func getCurrentUser() async throws -> AuthUser {
+        await didStateMachineConfigured()
+        let authState = await authStateMachine.currentState
+        
+        guard case .configured(let authenticationState, _) = authState else {
+            throw AuthError.configuration(
+                "Plugin not configured",
+                AuthPluginErrorConstants.configurationError)
+        }
+        
+        switch authenticationState {
+        case .notConfigured:
+            throw AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
+        case .signedIn(let signInData):
+            let authUser = AWSAuthUser(username: signInData.username, userId: signInData.userId)
+            return authUser
+        case .signedOut, .configured:
+            throw AuthError.signedOut(
+                "There is no user signed in to retrieve current user",
+                "Call Auth.signIn to sign in a user and then call Auth.getCurrentUser", nil)
+        case .error(let authNError):
+            throw authNError.authError
+        default:
+            throw AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError, nil)
+        }
+    }
+
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
@@ -89,4 +116,5 @@ class AWSAuthTaskHelper: DefaultLogger {
     public var log: Logger {
         Self.log
     }
+
 }
