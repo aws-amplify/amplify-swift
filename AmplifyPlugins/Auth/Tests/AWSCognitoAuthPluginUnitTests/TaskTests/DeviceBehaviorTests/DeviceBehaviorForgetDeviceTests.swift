@@ -27,7 +27,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
     /// Test a successful forgetDevice call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successull response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke forgetDevice
     /// - Then:
@@ -39,7 +39,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
     /// Test a successful forgetDevice call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke forgetDevice with an AWSAuthDevice
     /// - Then:

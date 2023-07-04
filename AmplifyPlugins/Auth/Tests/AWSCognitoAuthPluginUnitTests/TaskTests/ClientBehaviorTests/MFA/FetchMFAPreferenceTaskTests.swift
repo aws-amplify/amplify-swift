@@ -18,7 +18,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
 
     /// Test a successful fetchMFAPreference call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke fetchMFAPreference
     /// - Then:
@@ -45,7 +45,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
 
     /// Test a successful fetchMFAPreference call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke fetchMFAPreference
     /// - Then:
@@ -72,7 +72,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
 
     /// Test a successful fetchMFAPreference call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke fetchMFAPreference
     /// - Then:
@@ -98,7 +98,60 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
 
     /// Test a successful fetchMFAPreference call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response with an invalid MFA type string
+    /// - When:
+    ///    - I invoke fetchMFAPreference
+    /// - Then:
+    ///    - I should get a successful result
+    ///
+    func testInvalidResponseForUserMFASettingsList() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    userMFASettingList: ["DUMMY"]
+                )
+            })
+
+        do {
+            let fetchMFAPreferenceResult = try await plugin.fetchMFAPreference()
+            XCTAssertNil(fetchMFAPreferenceResult.enabled)
+            XCTAssertNil(fetchMFAPreferenceResult.preferred)
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
+    /// Test a successful fetchMFAPreference call
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response with an invalid MFA type string
+    /// - When:
+    ///    - I invoke fetchMFAPreference
+    /// - Then:
+    ///    - I should get a successful result
+    ///
+    func testInvalidResponseForUserMFAPreference() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "DUMMY",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            })
+
+        do {
+            let fetchMFAPreferenceResult = try await plugin.fetchMFAPreference()
+            XCTAssertNotNil(fetchMFAPreferenceResult.enabled)
+            XCTAssertNil(fetchMFAPreferenceResult.preferred)
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
+    /// Test a successful fetchMFAPreference call
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke fetchMFAPreference
     /// - Then:

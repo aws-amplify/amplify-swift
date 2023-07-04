@@ -53,7 +53,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
     /// Test a successful resetPassword call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke resetPassword with username
     /// - Then:
@@ -73,7 +73,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
     /// Test a resetPassword call with nil UserCodeDeliveryDetails
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke resetPassword with username
     /// - Then:
@@ -100,7 +100,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
     /// Test a resetPassword call with empty username
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke resetPassword with empty username
     /// - Then:
