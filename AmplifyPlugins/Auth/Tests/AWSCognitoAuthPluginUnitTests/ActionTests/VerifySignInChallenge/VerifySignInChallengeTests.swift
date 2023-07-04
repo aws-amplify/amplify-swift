@@ -18,9 +18,11 @@ class VerifySignInChallengeTests: XCTestCase {
                                                           username: "usernameMock",
                                                           session: "mockSession",
                                                           parameters: [:])
-    let mockConfirmEvent = ConfirmSignInEventData(answer: "1233",
-                                              attributes: [:],
-                                              metadata: [:])
+    let mockConfirmEvent = ConfirmSignInEventData(
+        answer: "1233",
+        attributes: [:],
+        metadata: [:],
+        friendlyDeviceName: nil)
 
     /// Test if valid input are given the service call is made
     ///
