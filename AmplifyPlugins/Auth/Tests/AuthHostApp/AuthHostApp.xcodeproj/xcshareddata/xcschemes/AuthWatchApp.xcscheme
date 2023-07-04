@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1320"
-   version = "1.3">
+   LastUpgradeVersion = "1430"
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "485CB53927B614CE006CCEC7"
-               BuildableName = "AuthHostApp.app"
-               BlueprintName = "AuthHostApp"
+               BlueprintIdentifier = "681B767F2A3CB86B004B59D9"
+               BuildableName = "AuthWatchApp.app"
+               BlueprintName = "AuthWatchApp"
                ReferencedContainer = "container:AuthHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,40 +27,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "YES">
-      <CodeCoverageTargets>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AWSCognitoAuthPlugin"
-            BuildableName = "AWSCognitoAuthPlugin"
-            BlueprintName = "AWSCognitoAuthPlugin"
-            ReferencedContainer = "container:../../../..">
-         </BuildableReference>
-      </CodeCoverageTargets>
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "485CB59E27B61E04006CCEC7"
-               BuildableName = "AuthIntegrationTests.xctest"
-               BlueprintName = "AuthIntegrationTests"
-               ReferencedContainer = "container:AuthHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "97914B2629550988002000EA"
-               BuildableName = "AuthStressTests.xctest"
-               BlueprintName = "AuthStressTests"
-               ReferencedContainer = "container:AuthHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
+      shouldAutocreateTestPlan = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -76,9 +43,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "485CB53927B614CE006CCEC7"
-            BuildableName = "AuthHostApp.app"
-            BlueprintName = "AuthHostApp"
+            BlueprintIdentifier = "681B767F2A3CB86B004B59D9"
+            BuildableName = "AuthWatchApp.app"
+            BlueprintName = "AuthWatchApp"
             ReferencedContainer = "container:AuthHostApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -93,9 +60,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "485CB53927B614CE006CCEC7"
-            BuildableName = "AuthHostApp.app"
-            BlueprintName = "AuthHostApp"
+            BlueprintIdentifier = "681B767F2A3CB86B004B59D9"
+            BuildableName = "AuthWatchApp.app"
+            BlueprintName = "AuthWatchApp"
             ReferencedContainer = "container:AuthHostApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
