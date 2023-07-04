@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-extension MFAType {
+extension MFAType: DefaultLogger {
 
     internal init?(rawValue: String) {
         if rawValue.caseInsensitiveCompare("SMS_MFA") == .orderedSame {
@@ -16,6 +16,7 @@ extension MFAType {
         } else if rawValue.caseInsensitiveCompare("SOFTWARE_TOKEN_MFA") == .orderedSame {
             self = .totp
         } else {
+            Self.log.error("Tried to initialize an unsupported MFA type with value: \(rawValue) ")
             return nil
         }
     }

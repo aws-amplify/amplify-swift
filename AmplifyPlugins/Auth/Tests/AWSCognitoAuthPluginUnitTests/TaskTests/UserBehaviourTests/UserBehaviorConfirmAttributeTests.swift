@@ -15,7 +15,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
 
     /// Test a successful confirmUpdateUserAttributes call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke confirmUpdateUserAttributes with confirmation code
     /// - Then:

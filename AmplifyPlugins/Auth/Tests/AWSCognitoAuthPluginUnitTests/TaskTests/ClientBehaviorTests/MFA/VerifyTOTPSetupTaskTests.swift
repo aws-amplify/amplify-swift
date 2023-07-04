@@ -42,9 +42,6 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
         }
     }
 
-
-//case invalidUserPoolConfigurationException(InvalidUserPoolConfigurationException)
-
     // MARK: Service error handling test
 
     /// Test a verifyTOTPSetup call with forbiddenException response from service

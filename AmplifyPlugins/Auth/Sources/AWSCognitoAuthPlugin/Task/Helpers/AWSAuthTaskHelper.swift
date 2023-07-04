@@ -85,13 +85,13 @@ class AWSAuthTaskHelper: DefaultLogger {
     func getCurrentUser() async throws -> AuthUser {
         await didStateMachineConfigured()
         let authState = await authStateMachine.currentState
-
+        
         guard case .configured(let authenticationState, _) = authState else {
             throw AuthError.configuration(
                 "Plugin not configured",
                 AuthPluginErrorConstants.configurationError)
         }
-
+        
         switch authenticationState {
         case .notConfigured:
             throw AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
@@ -106,6 +106,7 @@ class AWSAuthTaskHelper: DefaultLogger {
             throw authNError.authError
         default:
             throw AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError, nil)
+        }
     }
 
 }
