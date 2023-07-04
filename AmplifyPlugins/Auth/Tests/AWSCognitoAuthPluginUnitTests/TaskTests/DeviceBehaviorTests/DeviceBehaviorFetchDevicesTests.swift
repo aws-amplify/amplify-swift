@@ -62,7 +62,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
     /// Test a successful fetchDevices call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke fetchDevices
     /// - Then:

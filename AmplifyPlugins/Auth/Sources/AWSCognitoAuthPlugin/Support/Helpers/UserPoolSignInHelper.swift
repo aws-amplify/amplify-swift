@@ -51,7 +51,7 @@ struct UserPoolSignInHelper: DefaultLogger {
         } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
                   case .waitingForAnswer(let totpSetupData) = totpSetupState {
             return .init(nextStep: .continueSignInWithTOTPSetup(
-                .init(secretCode: totpSetupData.secretCode, username: totpSetupData.username)))
+                .init(sharedSecret: totpSetupData.secretCode, username: totpSetupData.username)))
         }
         return nil
     }
