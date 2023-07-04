@@ -126,6 +126,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func confirmResetPassword(for username: String, with newPassword: String, confirmationCode: String, options: AuthConfirmResetPasswordRequest.Options?) async throws
 
     /// Initiates TOTP Setup
+    /// 
+    /// Invoke this operation to setup TOTP for the user while signed in.
+    /// Calling this method will initiate TOTP setup process and returns a shared secret that can be used to generate QR code. 
+    /// The setup details also contains a URI generator helper that can be used to retireve a TOTP Setup URI.
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior
@@ -134,6 +138,9 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ) async throws -> TOTPSetupDetails
 
     /// Verifies TOTP Setup
+    ///
+    /// Invoke this operation to verify TOTP setup for the user while signed in.
+    /// Calling this method with the verification code from the associated Authenticator app will complete the TOTP setup process.
     ///
     /// - Parameters:
     ///   - code: verification code from the associated Authenticator app
