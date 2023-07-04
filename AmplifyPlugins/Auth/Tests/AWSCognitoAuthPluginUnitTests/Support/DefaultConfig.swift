@@ -30,7 +30,7 @@ enum Defaults {
             "UserAgent": "aws-amplify/cli",
             "Version": "0.1.0",
             "IdentityManager": [
-                "Default": []
+                "Default": [String: String]()
             ],
             "CredentialsProvider": [
                 "CognitoIdentity": [

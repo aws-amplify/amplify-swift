@@ -704,7 +704,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///
     func testSessionWhenWaitingConfirmSignIn() async throws {
         let signInMethod = SignInMethod.apiBased(.userSRP)
-        let challenge = SignInChallengeState.waitingForAnswer(.testData, signInMethod)
+        let challenge = SignInChallengeState.waitingForAnswer(.testData(), signInMethod)
         let initialState = AuthState.configured(
             AuthenticationState.signingIn(
                 .resolvingChallenge(challenge, .smsMfa, signInMethod)),
