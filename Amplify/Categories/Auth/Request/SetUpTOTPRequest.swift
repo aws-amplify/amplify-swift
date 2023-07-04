@@ -10,7 +10,7 @@ import Foundation
 /// Request to set up TOTP
 public struct SetUpTOTPRequest: AmplifyOperationRequest {
 
-    /// Extra request options defined in `TOTPSetupRequest.Options`
+    /// Extra request options defined in `SetUpTOTPRequest.Options`
     public var options: Options
 
     public init(options: Options) {
