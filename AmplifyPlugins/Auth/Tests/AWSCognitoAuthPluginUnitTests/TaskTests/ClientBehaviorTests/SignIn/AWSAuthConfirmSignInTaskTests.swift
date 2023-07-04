@@ -26,7 +26,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     
     /// Test a successful confirmSignIn call with .done as next step
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
@@ -55,7 +55,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     
     /// Test a confirmSignIn call with an empty confirmation code
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke confirmSignIn with an empty confirmation code
     /// - Then:
@@ -80,9 +80,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         }
     }
     
-    /// Test a confirmSignIn call with an empty confirmation code followed by a second valaid confirmSignIn call
+    /// Test a confirmSignIn call with an empty confirmation code followed by a second valid confirmSignIn call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke second confirmSignIn after confirmSignIn with an empty confirmation code
     /// - Then:
@@ -115,7 +115,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
     /// Test a confirmSignIn call with client metadata and user attributes
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke confirmSignIn with an  confirmation code and plugin options
     /// - Then:
@@ -411,7 +411,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - When:
     ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -442,7 +442,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - When:
     ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
         self.mockIdentityProvider = MockIdentityProvider(

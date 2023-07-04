@@ -15,7 +15,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
     /// Test a successful updateUserAttributes call with .done as next step
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
@@ -205,7 +205,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .emailRole as underlyingError
     ///
     func testUpdateUserAttributesWithInvalidEmailRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
@@ -291,7 +291,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testUpdateUserAttributesWithinvalidSmsRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
@@ -319,7 +319,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testUpdateUserAttributesCodeWithInvalidSmsRoleTrustRelationshipException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in

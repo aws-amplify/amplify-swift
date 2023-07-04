@@ -69,7 +69,7 @@ class SetUpTOTPTask: AuthSetUpTOTPTask, DefaultLogger {
                 AuthPluginErrorConstants.invalidStateError,
                 nil)
         }
-        return .init(secretCode: secretCode,
+        return .init(sharedSecret: secretCode,
                      username: authUser.username)
 
     }

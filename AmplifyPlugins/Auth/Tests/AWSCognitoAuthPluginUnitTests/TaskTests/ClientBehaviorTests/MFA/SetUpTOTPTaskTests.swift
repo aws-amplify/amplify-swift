@@ -18,7 +18,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
     /// Test a successful set up TOTP call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke setUpTOTP
     /// - Then:
