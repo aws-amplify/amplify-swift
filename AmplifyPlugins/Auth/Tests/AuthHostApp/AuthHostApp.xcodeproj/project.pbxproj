@@ -31,6 +31,11 @@
 		48916F382A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */; };
 		48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */; };
 		48916F3C2A42333E00E3E1B1 /* MFAPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */; };
+		48BCE8922A5456460012C3CD /* TOTPSetupWhenAuthenticatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F372A412B2800E3E1B1 /* TOTPSetupWhenAuthenticatedTests.swift */; };
+		48BCE8932A54564C0012C3CD /* TOTPSetupWhenUnauthenticatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483B0D332A42BB1400A1196B /* TOTPSetupWhenUnauthenticatedTests.swift */; };
+		48BCE8942A54564C0012C3CD /* MFASignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48599D492A429893009DE21C /* MFASignInTests.swift */; };
+		48BCE8952A54564C0012C3CD /* MFAPreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F3B2A42333E00E3E1B1 /* MFAPreferenceTests.swift */; };
+		48BCE8962A5456600012C3CD /* TOTPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48916F392A412CEE00E3E1B1 /* TOTPHelper.swift */; };
 		48E3AB3128E52590004EE395 /* GetCurrentUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E3AB3028E52590004EE395 /* GetCurrentUserTests.swift */; };
 		681B76952A3CB8DA004B59D9 /* AuthHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53D27B614CE006CCEC7 /* AuthHostAppApp.swift */; };
 		681B76962A3CB8DD004B59D9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53F27B614CE006CCEC7 /* ContentView.swift */; };
@@ -750,8 +755,12 @@
 				681B76A72A3CBBAE004B59D9 /* AuthConfirmSignUpTests.swift in Sources */,
 				681B76A82A3CBBAE004B59D9 /* AuthSignOutTests.swift in Sources */,
 				681B76A92A3CBBAE004B59D9 /* AuthFetchDeviceTests.swift in Sources */,
+				48BCE8922A5456460012C3CD /* TOTPSetupWhenAuthenticatedTests.swift in Sources */,
+				48BCE8962A5456600012C3CD /* TOTPHelper.swift in Sources */,
 				681B76AA2A3CBBAE004B59D9 /* AsyncExpectation.swift in Sources */,
+				48BCE8932A54564C0012C3CD /* TOTPSetupWhenUnauthenticatedTests.swift in Sources */,
 				681B76AB2A3CBBAE004B59D9 /* GetCurrentUserTests.swift in Sources */,
+				48BCE8952A54564C0012C3CD /* MFAPreferenceTests.swift in Sources */,
 				681B76AC2A3CBBAE004B59D9 /* AWSAuthBaseTest.swift in Sources */,
 				681B76AD2A3CBBAE004B59D9 /* SignedOutAuthSessionTests.swift in Sources */,
 				681B76AE2A3CBBAE004B59D9 /* AuthSignInHelper.swift in Sources */,
@@ -768,6 +777,7 @@
 				681B76B92A3CBBAE004B59D9 /* SignedInAuthSessionTests.swift in Sources */,
 				681B76BA2A3CBBAE004B59D9 /* AuthSignUpTests.swift in Sources */,
 				681B76BB2A3CBBAE004B59D9 /* AuthConfirmResetPasswordTests.swift in Sources */,
+				48BCE8942A54564C0012C3CD /* MFASignInTests.swift in Sources */,
 				681B76BC2A3CBBAE004B59D9 /* AuthDeleteUserTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
