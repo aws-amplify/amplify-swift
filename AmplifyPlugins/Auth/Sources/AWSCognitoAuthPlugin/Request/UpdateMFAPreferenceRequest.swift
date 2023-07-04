@@ -11,14 +11,13 @@ import Foundation
 /// Request for udpating user MFA preferences
 public struct UpdateMFAPreferenceRequest: AmplifyOperationRequest {
 
-    public let smsPreference: MFAPreference?
-    
-    public let totpPreference: MFAPreference?
+    internal let smsPreference: MFAPreference?
+    internal let totpPreference: MFAPreference?
 
     /// Extra request options defined in `UpdateMFAPreferenceRequest.Options`
     public var options: Options
 
-    public init(options: Options,
+    internal init(options: Options,
                   smsPreference: MFAPreference?,
                   totpPreference: MFAPreference?) {
         self.options = options
