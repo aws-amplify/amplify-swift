@@ -220,6 +220,15 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
         }
     }
 
+    /// Test a confirmSignIn call with CodeMismatchException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeMismatchException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .codeMismatch as underlyingError
+    ///
     func testConfirmSignInRetryWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -417,7 +426,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -448,7 +457,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
         self.mockIdentityProvider = MockIdentityProvider(

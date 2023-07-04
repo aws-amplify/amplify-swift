@@ -175,7 +175,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup
     /// - Then:
-    ///    - I should get a .service error with .softwareTokenMFANotEnabled as underlyingError
+    ///    - I should get a .service error with .mfaMethodNotFound as underlyingError
     ///
     func testVerifyTOTPSetupWithSoftwareTokenMFANotFoundException() async {
 
@@ -266,7 +266,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup with a valid confirmation code
     /// - Then:
-    ///    - I should get a .service error with .resourceNotFound as underlyingError
+    ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testVerifyTOTPSetupInWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -297,7 +297,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup with a valid confirmation code
     /// - Then:
-    ///    - I should get a .service error with .resourceNotFound as underlyingError
+    ///    - I should get a .service error with .softwareTokenMFANotEnabled as underlyingError
     ///
     func testVerifyTOTPSetupInWithEnableSoftwareTokenMFAException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -328,7 +328,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup with a valid confirmation code
     /// - Then:
-    ///    - I should get a .service error with .resourceNotFound as underlyingError
+    ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
     func testVerifyTOTPSetupInWithPasswordResetRequiredException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -359,7 +359,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup with a valid confirmation code
     /// - Then:
-    ///    - I should get a .service error with .resourceNotFound as underlyingError
+    ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
     func testVerifyTOTPSetupInWithTooManyRequestsException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -390,7 +390,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup with a valid confirmation code
     /// - Then:
-    ///    - I should get a .service error with .resourceNotFound as underlyingError
+    ///    - I should get a .service error with .userNotFound as underlyingError
     ///
     func testVerifyTOTPSetupInWithUserNotFoundException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -421,7 +421,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup with a valid confirmation code
     /// - Then:
-    ///    - I should get a .service error with .resourceNotFound as underlyingError
+    ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
     func testVerifyTOTPSetupInWithUserNotConfirmedException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -452,7 +452,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke verifyTOTPSetup with a valid confirmation code
     /// - Then:
-    ///    - I should get a .service error with .resourceNotFound as underlyingError
+    ///    - I should get a .service error
     ///
     func testVerifyTOTPSetupInWithInvalidUserPoolConfigurationException() async {
         self.mockIdentityProvider = MockIdentityProvider(

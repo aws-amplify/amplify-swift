@@ -29,13 +29,13 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
             AuthorizationState.sessionEstablished(.testData))
     }
 
-    /// Test a successful confirmSignIn call with .done as next step
+    /// Test a successful confirmSignIn call with .confirmSignInWithSMSMFACode as next step
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with SMS as selection
     /// - Then:
-    ///    - I should get a successful result with .done as the next step
+    ///    - I should get a successful result with .confirmSignInWithSMSMFACode as the next step
     ///
     func testSuccessfulConfirmSignInWithSMSAsMFASelection() async {
 
@@ -61,13 +61,13 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
         }
     }
 
-    /// Test a successful confirmSignIn call with .done as next step
+    /// Test a successful confirmSignIn call with .confirmSignInWithTOTPCode as next step
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with TOTP as selection
     /// - Then:
-    ///    - I should get a successful result with .done as the next step
+    ///    - I should get a successful result with .confirmSignInWithTOTPCode as the next step
     ///
     func testSuccessfulConfirmSignInWithTOTPAsMFASelection() async {
 
@@ -93,11 +93,11 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
         }
     }
 
-    /// Test a confirmSignIn call with an empty confirmation code
+    /// Test a confirmSignIn call with an invalid MFA selection
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
+    /// - Given: an auth plugin with mocked service.
     /// - When:
-    ///    - I invoke confirmSignIn with an empty confirmation code
+    ///    - I invoke confirmSignIn with a invalid (dummy) MFA selection
     /// - Then:
     ///    - I should get an .validation error
     ///
@@ -123,9 +123,9 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
 
     /// Test a confirmSignIn call with an empty confirmation code
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
+    /// - Given: an auth plugin with mocked service.
     /// - When:
-    ///    - I invoke confirmSignIn with an empty confirmation code
+    ///    - I invoke confirmSignIn with an empty MFA selection
     /// - Then:
     ///    - I should get an .validation error
     ///
@@ -148,13 +148,13 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
         }
     }
 
-    /// Test a confirmSignIn call with an empty confirmation code followed by a second valid confirmSignIn call
+    /// Test a confirmSignIn call with an empty MFA selection followed by a second valid confirmSignIn call
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
-    ///    - I invoke second confirmSignIn after confirmSignIn with an empty confirmation code
+    ///    - I invoke second confirmSignIn after confirmSignIn with an invalid MFA selection
     /// - Then:
-    ///    - I should get a successful result with .done as the next step
+    ///    - I should get a successful result with .confirmSignInWithTOTPCode as the next step
     ///
     func testSuccessfullyConfirmSignInAfterAFailedConfirmSignIn() async {
 
@@ -192,7 +192,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   aliasExistsException response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .aliasExists as underlyingError
     ///
@@ -224,7 +224,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   CodeMismatchException response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
@@ -250,6 +250,17 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
         }
     }
 
+    /// Test a successful confirmSignIn call after a CodeMismatchException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeMismatchException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid MFA selection
+    /// - Then:
+    ///    - I should get a .service error with .codeMismatch as underlyingError
+    /// - Then:
+    ///    - I invoke confirmSignIn with a valid MFA selection, I should get a successful result
+    ///
     func testConfirmSignInRetryWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -272,11 +283,15 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
 
             self.mockIdentityProvider = MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return .testData()
+                    return .testData(challenge: .softwareTokenMfa)
                 })
             do {
                 let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: MFAType.totp.challengeResponse)
-                XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
+                guard case .confirmSignInWithTOTPCode = confirmSignInResult.nextStep else {
+                    XCTFail("Result should be .confirmSignInWithTOTPCode for next step")
+                    return
+                }
+                XCTAssertFalse(confirmSignInResult.isSignedIn, "Signin result should NOT be complete")
             } catch {
                 XCTFail("Received failure with error \(error)")
             }
@@ -289,7 +304,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   CodeExpiredException response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .codeExpired as underlyingError
     ///
@@ -320,7 +335,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get an .unknown error
     ///
@@ -348,7 +363,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   InvalidLambdaResponseException response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
@@ -380,7 +395,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   InvalidParameterException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
@@ -413,7 +428,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   InvalidPasswordException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with  .invalidPassword as underlyingError
     ///
@@ -445,9 +460,9 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   InvalidSmsRoleAccessPolicyException response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -476,9 +491,9 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
     ///   CodeDeliveryFailureException response
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -507,7 +522,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     /// - Given: an auth plugin with mocked service with no User Pool configuration
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .configuration error
     ///
@@ -554,7 +569,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   MFAMethodNotFoundException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with  .mfaMethodNotFound as underlyingError
     ///
@@ -587,7 +602,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   NotAuthorizedException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
@@ -616,7 +631,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   PasswordResetRequiredException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .resetPassword as next step
     ///
@@ -646,7 +661,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   SoftwareTokenMFANotFoundException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .softwareTokenMFANotEnabled as underlyingError
     ///
@@ -679,7 +694,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   TooManyRequestsException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
@@ -712,7 +727,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   UnexpectedLambdaException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
@@ -745,7 +760,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   UserLambdaValidationException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
@@ -778,7 +793,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   UserNotConfirmedException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get .confirmSignUp as next step
     ///
@@ -807,7 +822,7 @@ class ConfirmSignInWithMFASelectionTaskTests: BasePluginTest {
     ///   UserNotFoundException response
     ///
     /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
+    ///    - I invoke confirmSignIn with a valid MFA selection
     /// - Then:
     ///    - I should get a .userNotFound error
     ///

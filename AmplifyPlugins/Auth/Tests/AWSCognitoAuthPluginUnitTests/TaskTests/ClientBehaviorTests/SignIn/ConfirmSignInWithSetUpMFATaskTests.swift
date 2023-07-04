@@ -172,6 +172,17 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
         }
     }
 
+    /// Test a confirmSignIn call with CodeMismatchException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeMismatchException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .codeMismatch as underlyingError
+    ///   Then:
+    ///    - RETRY SHOULD ALSO SUCCEED
+    ///    
     func testConfirmSignInRetryWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in

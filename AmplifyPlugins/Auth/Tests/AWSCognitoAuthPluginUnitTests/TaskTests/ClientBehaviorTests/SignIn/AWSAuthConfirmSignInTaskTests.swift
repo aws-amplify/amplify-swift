@@ -411,7 +411,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - When:
     ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
         self.mockIdentityProvider = MockIdentityProvider(
@@ -442,7 +442,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - When:
     ///    - I invoke confirmSignIn with a valid confirmation code
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
         self.mockIdentityProvider = MockIdentityProvider(
