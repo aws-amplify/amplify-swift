@@ -105,12 +105,15 @@ final class LogRotationTests: XCTestCase {
         ]))
     }
     
+    /// Given: a log rotation with existing under-utilized file
+    /// When: rotation occurs
+    /// Then: the log rotation rotates to the under-utilized log file
     func testLogRotationUseUnderutilizedLogFile() async throws {
         let bytes = (0..<systemUnderTest.currentLogFile.sizeLimitInBytes).map { _ in UInt8.random(in: 0..<255) }
         let largeData = Data(bytes)
         let tinyData = Data([1, 2, 3, 4])
         
-        // Fill-up all files except for the one at index 3
+        // Fill-up all files except for the one at chosen index
         let chosenIndex = 1
         for index in 0..<(fileCountLimit) {
             if (index != chosenIndex) {
@@ -128,6 +131,9 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(contents, tinyData)
     }
     
+    /// Given: a log rotation
+    /// When: rotation occurs to the max limit
+    /// Then: the log rotation circles back to oldest last modified log file
     func testLogRotationUsesOldestLastModifiedLogFile() async throws {
         let bytes = (0..<systemUnderTest.currentLogFile.sizeLimitInBytes).map { _ in UInt8.random(in: 0..<255) }
         let data = Data(bytes)
@@ -142,6 +148,9 @@ final class LogRotationTests: XCTestCase {
         XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
     }
     
+    /// Given: the minimum allowed file size
+    /// When: a log rotation is constructed below the minimum file size limit
+    /// Then: the construction fails with an invalid size limit error
     func testLogRotationThrowsErrorWithInvalidFileSizeLimitInBytes() throws {
         for fileSizeLimitInBytes in 0..<LogRotation.minimumFileSizeLimitInBytes {
             do {

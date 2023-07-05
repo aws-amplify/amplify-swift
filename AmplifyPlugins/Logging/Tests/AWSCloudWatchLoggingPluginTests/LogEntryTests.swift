@@ -50,7 +50,7 @@ final class LogEntryTests: XCTestCase {
         }
     }
     
-    /// Given: a Log Entry json with invalid log level
+    /// Given: a Log Entry json with invalid log level that is below 0
     /// When: decoding occurs
     /// Then: the log level defaults to Error
     func testDecodeDefaultsLogLevelWithInvalidLogLevel() throws {
@@ -59,7 +59,7 @@ final class LogEntryTests: XCTestCase {
         {
             "created": 0,
             "category": "LogEntryTests",
-            "level": -1337,
+            "level": -1,
             "message": "\(message)"
         }
         """
