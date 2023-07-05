@@ -372,6 +372,34 @@ let predictionsTargets: [Target] = [
     )
 ]
 
+let loggingTargets: [Target] = [
+    .target(
+        name: "AWSCloudWatchLoggingPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .product(name: "AWSCloudWatch", package: "aws-sdk-swift"),
+            .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
+        ],
+        path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "AWSCloudWatchLoggingPluginTests",
+        dependencies: [
+            "AWSCloudWatchLoggingPlugin",
+            "AmplifyTestCommon",
+            "AWSPluginsTestCommon"
+        ],
+        path: "AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginTests",
+        resources: [
+            .copy("TestResources")
+        ]
+    )
+]
+
 let targets: [Target] = amplifyTargets
     + apiTargets
     + authTargets
@@ -382,6 +410,7 @@ let targets: [Target] = amplifyTargets
     + pushNotificationsTargets
     + internalPinpointTargets
     + predictionsTargets
+    + loggingTargets
 
 let package = Package(
     name: "Amplify",
@@ -430,7 +459,11 @@ let package = Package(
         .library(
             name: "CoreMLPredictionsPlugin",
             targets: ["CoreMLPredictionsPlugin"]
-        )
+        ),
+        .library(
+            name: "AWSCloudWatchLoggingPlugin",
+            targets: ["AWSCloudWatchLoggingPlugin"]
+        ),
     ],
     dependencies: dependencies,
     targets: targets
