@@ -14,10 +14,12 @@ struct LogEntry: Codable, Hashable {
     /// The timestamp representing the creation time of the log entry or event.
     let created: Date
 
-    /// The logical tag of the log entry or event. This will likely be a
+    /// The Amplify category logical tag of the log entry or event. This will likely be a
     /// Category name.
     let category: String
     
+    /// Additional logical tag of the log entry or event. This will likely be a
+    /// the namespace of the code module being logged.
     let namespace: String?
 
     /// An integer representation of the [LogLevel](x-source-tag://LogLevel)

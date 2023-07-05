@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Represents a batch of log that has a series of log entries to produce/consume
 protocol LogBatch {
 
     /// Read the log entries for this log batch

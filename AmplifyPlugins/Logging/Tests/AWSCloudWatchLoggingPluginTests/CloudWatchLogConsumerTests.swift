@@ -39,9 +39,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         systemUnderTest = nil
     }
     
-    /// - Given: A list of a single log entry
-    /// - When: CloudWatchLoggingConsumer consumes the a log batch
-    /// - Then: The batch is read and completed
+    /// - Given: a single log entry
+    /// - When: CloudWatchLoggingConsumer consumes a log batch
+    /// - Then: the batch is read and completed
     func testConsumerProcessValidLogBatch() async throws {
         self.entries = [LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "")]
         try await systemUnderTest.consume(batch: self)
@@ -56,9 +56,9 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         ])
     }
     
-    /// - Given: A list of log entries
-    /// - When: CloudWatchLoggingConsumer consumes the a log batch
-    /// - Then: The batch is read and completed
+    /// - Given: a list of log entries
+    /// - When: CloudWatchLoggingConsumer consumes a log batch
+    /// - Then: the batch is read and completed
     func testConsumerProcessValidLargeBatch() async throws {
         let batchSize = 32
         for _ in 0..<batchSize {
@@ -77,7 +77,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     }
     
     /// - Given: A list of log entries with 50% rejectable entries
-    /// - When: CloudWatchLoggingConsumer consumes the a log batch
+    /// - When: CloudWatchLoggingConsumer consumes a log batch
     /// - Then: The batch is read and completed and the rejected entries are retried
     func testConsumerRetriesWithRejectedLogBatch() async throws {
         let batchSize = 5
@@ -108,7 +108,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
     }
     
     /// - Given: A list of log entries with client response of TooNewLogEventStartIndexOutOfBounds
-    /// - When: CloudWatchLoggingConsumer consumes the a log batch
+    /// - When: CloudWatchLoggingConsumer consumes a log batch
     /// - Then: The batch is read and completed and the entries are retried
     func testTooNewLogEventStartIndexOutOfBoundsAreRetried() async throws {
         let batchSize = 5

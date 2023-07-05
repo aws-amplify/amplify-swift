@@ -10,7 +10,7 @@ import os.log
 final class OSLogWrapper: Logger {
     private let osLog: OSLog
     
-    var enable: Bool = true
+    var enabled: Bool = true
     
     var getLogLevel: () -> LogLevel
 
@@ -29,7 +29,7 @@ final class OSLogWrapper: Logger {
     }
 
     public func error(_ message: @autoclosure () -> String) {
-        guard enable else { return }
+        guard enabled else { return }
         os_log("%@",
                log: osLog,
                type: OSLogType.error,
@@ -37,7 +37,7 @@ final class OSLogWrapper: Logger {
     }
 
     public func error(error: Error) {
-        guard enable else { return }
+        guard enabled else { return }
         os_log("%@",
                log: osLog,
                type: OSLogType.error,
@@ -45,7 +45,7 @@ final class OSLogWrapper: Logger {
     }
 
     public func warn(_ message: @autoclosure () -> String) {
-        guard enable, logLevel.rawValue >= LogLevel.warn.rawValue else {
+        guard enabled, logLevel.rawValue >= LogLevel.warn.rawValue else {
             return
         }
 
@@ -56,7 +56,7 @@ final class OSLogWrapper: Logger {
     }
 
     public func info(_ message: @autoclosure () -> String) {
-        guard enable, logLevel.rawValue >= LogLevel.info.rawValue else {
+        guard enabled, logLevel.rawValue >= LogLevel.info.rawValue else {
             return
         }
 
@@ -67,7 +67,7 @@ final class OSLogWrapper: Logger {
     }
 
     public func debug(_ message: @autoclosure () -> String) {
-        guard enable, logLevel.rawValue >= LogLevel.debug.rawValue else {
+        guard enabled, logLevel.rawValue >= LogLevel.debug.rawValue else {
             return
         }
 
@@ -78,7 +78,7 @@ final class OSLogWrapper: Logger {
     }
 
     public func verbose(_ message: @autoclosure () -> String) {
-        guard enable, logLevel.rawValue >= LogLevel.verbose.rawValue else {
+        guard enabled, logLevel.rawValue >= LogLevel.verbose.rawValue else {
             return
         }
 

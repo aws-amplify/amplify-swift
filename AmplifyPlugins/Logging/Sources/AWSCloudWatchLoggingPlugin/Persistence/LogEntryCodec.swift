@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Struct encode and decode LogEntry 
 struct LogEntryCodec {
 
     private static let lineDelimiter = Data([0x0A]) /* '\n' */
@@ -41,10 +42,7 @@ struct LogEntryCodec {
     }
     
     func decode(from fileURL: URL) throws -> [LogEntry] {
-        guard let scheme = fileURL.scheme else {
-            throw DecodingError.invalidScheme(log: fileURL)
-        }
-        guard scheme == "file" else {
+        guard fileURL.isFileURL else {
             throw DecodingError.invalidScheme(log: fileURL)
         }
         let data = try Data(contentsOf: fileURL)
