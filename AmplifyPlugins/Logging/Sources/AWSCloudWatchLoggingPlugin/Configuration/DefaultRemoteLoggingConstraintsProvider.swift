@@ -118,7 +118,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             do {
                 _ = try await self.fetchLoggingConstraints()
             } catch {
-                //TODO: log error
+                Amplify.Logging.warn("Error fetching remote logging constraints: \(error)")
             }
         }
     }

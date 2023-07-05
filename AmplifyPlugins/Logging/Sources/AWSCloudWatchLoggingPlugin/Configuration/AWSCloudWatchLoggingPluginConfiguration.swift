@@ -36,9 +36,6 @@ public struct AWSCloudWatchLoggingPluginConfiguration: Codable {
    public let loggingConstraints: LoggingConstraints
 }
 
-import Amplify
-import AWSPluginsCore
-
 extension AWSCloudWatchLoggingPluginConfiguration {
     init(bundle: Bundle) throws {
         guard let path = bundle.path(forResource: "amplifyconfiguration_logging", ofType: "json") else {
