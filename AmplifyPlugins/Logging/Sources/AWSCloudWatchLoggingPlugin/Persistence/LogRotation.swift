@@ -12,7 +12,7 @@ final class LogRotation {
     
     enum LogRotationError: Error {
         /// Represents the scenario when a caller attempts to initialize a
-        /// `LogRotation` with an invalid file size limit (minium is 1KB).
+        /// `LogRotation` with an invalid file size limit (minimum is 1KB).
         case invalidFileSizeLimitInBytes(Int)
     }
     
@@ -84,7 +84,7 @@ final class LogRotation {
         }
         
         if let underutilized = try Self.oldestUnderutilizedFile(from: existingFiles,
-                                                           sizeLimitInBytes: fileSizeLimitInBytes) {
+                                                                sizeLimitInBytes: fileSizeLimitInBytes) {
             return try LogFile(forAppending: underutilized,
                                sizeLimitInBytes: fileSizeLimitInBytes)
         }
@@ -119,7 +119,7 @@ final class LogRotation {
         return (lastIndex + 1) % fileCountLimit
     }
     
-    /// - Returns: The URL for the file with the oldest last modified date that
+    /// - Returns: The URL for the file with the oldest last modified date (assumes that the list of files are presorted by date with oldest last) that
     ///            also is taking up less than half of the size limit.
     private static func oldestUnderutilizedFile(from existingFiles: [URL], sizeLimitInBytes: UInt64) throws -> URL? {
         let fileManager: FileManager = FileManager.default
