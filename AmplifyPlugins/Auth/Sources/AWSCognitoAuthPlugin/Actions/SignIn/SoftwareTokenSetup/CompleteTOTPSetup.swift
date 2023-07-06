@@ -81,16 +81,7 @@ struct CompleteTOTPSetup: Action {
             logVerbose("\(#fileID) Sending event \(responseEvent)",
                        environment: environment)
             await dispatcher.send(responseEvent)
-            // TODO: HS:
-            //        } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
-            //            logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
-            //            // Remove the saved device details and retry verify challenge
-            //            await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
-            //            let event = SignInChallengeEvent(
-            //                eventType: .retryVerifyChallengeAnswer(confirmSignEventData)
-            //            )
-            //            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            //            await dispatcher.send(event)
+
         } catch let error as SignInError {
             logError(error.authError.errorDescription, environment: environment)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
@@ -106,21 +97,6 @@ struct CompleteTOTPSetup: Action {
             await dispatcher.send(errorEvent)
         }
     }
-
-// TODO: HS: Figure out if this is needed
-//    func deviceNotFound(error: Error, deviceMetadata: DeviceMetadata) -> Bool {
-//
-//        // If deviceMetadata was not send, the error returned is not from device not found.
-//        if case .noData = deviceMetadata {
-//            return false
-//        }
-//
-//        if let serviceError: RespondToAuthChallengeOutputError = error.internalAWSServiceError(),
-//           case .resourceNotFoundException = serviceError {
-//            return true
-//        }
-//        return false
-//    }
 
 }
 
