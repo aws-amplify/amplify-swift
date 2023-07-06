@@ -33,13 +33,8 @@ public extension AWSCognitoAuthPlugin {
         try await task.value
     }
 
-    func fetchMFAPreference(
-        options: FetchMFAPreferenceRequest.Options? = nil
-    ) async throws -> UserMFAPreference {
-        let options = options ?? FetchMFAPreferenceRequest.Options()
-        let request = FetchMFAPreferenceRequest(options: options)
+    func fetchMFAPreference() async throws -> UserMFAPreference {
         let task = FetchMFAPreferenceTask(
-            request,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await task.value
@@ -47,16 +42,11 @@ public extension AWSCognitoAuthPlugin {
 
     func updateMFAPreference(
         sms: MFAPreference?,
-        totp: MFAPreference?,
-        options: UpdateMFAPreferenceRequest.Options? = nil
+        totp: MFAPreference?
     ) async throws {
-        let options = options ?? UpdateMFAPreferenceRequest.Options()
-        let request = UpdateMFAPreferenceRequest(
-            options: options,
-            smsPreference: sms,
-            totpPreference: totp)
         let task = UpdateMFAPreferenceTask(
-            request,
+            smsPreference: sms,
+            totpPreference: totp,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await task.value

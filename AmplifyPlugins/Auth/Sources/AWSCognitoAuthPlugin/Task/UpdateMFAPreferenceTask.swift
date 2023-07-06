@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-protocol AuthUpdateMFAPreferenceTask: AmplifyAuthTask where Request == UpdateMFAPreferenceRequest,
+protocol AuthUpdateMFAPreferenceTask: AmplifyAuthTask where Request == Void,
                                                             Success == Void,
                                                             Failure == AuthError {}
 
@@ -24,7 +24,8 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
 
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
-    private let request: UpdateMFAPreferenceRequest
+    private let smsPreference: MFAPreference?
+    private let totpPreference: MFAPreference?
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
@@ -33,10 +34,12 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
         HubPayload.EventName.Auth.updateMFAPreferenceAPI
     }
 
-    init(_ request: UpdateMFAPreferenceRequest,
+    init(smsPreference: MFAPreference?,
+         totpPreference: MFAPreference?,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory) {
-        self.request = request
+        self.smsPreference = smsPreference
+        self.totpPreference = totpPreference
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
@@ -60,8 +63,8 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
         let userPoolService = try userPoolFactory()
         let input = SetUserMFAPreferenceInput(
             accessToken: accessToken,
-            smsMfaSettings: request.smsPreference?.smsSetting,
-            softwareTokenMfaSettings: request.totpPreference?.softwareTokenSetting)
+            smsMfaSettings: smsPreference?.smsSetting,
+            softwareTokenMfaSettings: totpPreference?.softwareTokenSetting)
         _ = try await userPoolService.setUserMFAPreference(input: input)
     }
 }
