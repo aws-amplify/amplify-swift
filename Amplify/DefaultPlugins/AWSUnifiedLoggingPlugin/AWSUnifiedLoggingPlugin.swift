@@ -44,9 +44,11 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
         return type(of: self).key
     }
 
-    /// For protocol conformance only--this plugin has no applicable configurations
+    /// Look for optional configuration to disable logging, console logging is enabled by default unless configured otherwise
     public func configure(using configuration: Any?) throws {
-        // Do nothing
+        if let consoleConfiguration = ConsoleLoggingConfiguration(bundle: Bundle.main), consoleConfiguration.enable == false {
+            self.disable()
+        }
     }
 
     /// Removes listeners and empties the message queue
@@ -95,6 +97,28 @@ extension AWSUnifiedLoggingPlugin {
     public func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
         let wrapper = logWrapper(for: category)
         wrapper.logLevel = logLevel
+        return wrapper
+    }
+    
+    public func enable() {
+        for (_, logger) in registeredLogs {
+            logger.enabled = true
+        }
+    }
+    
+    public func disable() {
+        for (_, logger) in registeredLogs {
+            logger.enabled = false
+        }
+    }
+    
+    public func logger(forNamespace namespace: String) -> Logger {
+        let wrapper = logWrapper(for: namespace)
+        return wrapper
+    }
+    
+    public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+        let wrapper = logWrapper(for: category + namespace)
         return wrapper
     }
 }
