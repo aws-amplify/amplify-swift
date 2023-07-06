@@ -32,7 +32,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let setUpTOTPResult = try await plugin.setUpTOTP(options: nil)
+            let setUpTOTPResult = try await plugin.setUpTOTP()
             XCTAssertEqual(setUpTOTPResult.sharedSecret, "sharedSecret")
         } catch {
             XCTFail("Received failure with error \(error)")
@@ -59,7 +59,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
 
         } catch {
@@ -90,7 +90,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
 
         } catch {
@@ -121,7 +121,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
 
         } catch {
@@ -152,7 +152,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -185,7 +185,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.notAuthorized(_, _, _) = error else {
@@ -214,7 +214,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -245,7 +245,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -277,7 +277,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let _ = try await plugin.setUpTOTP(options: nil)
+            let _ = try await plugin.setUpTOTP()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.unknown = error else {
