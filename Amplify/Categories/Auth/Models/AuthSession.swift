@@ -12,6 +12,9 @@ public protocol AuthSession {
 
     /// True if the current user has signed in
     ///
+    /// App developers can use this flag to make local decisions about the content to display (e.g., "Should I show this protected
+    /// page?") but cannot use it to make any further assertions about whether a network operation is likely to succeed or not.
+    ///
     /// `true` if a user has authenticated, via any of:
     /// - ``AuthCategoryBehavior/signIn(username:password:options:)``
     /// - ``AuthCategoryBehavior/signInWithWebUI(presentationAnchor:options:)``
