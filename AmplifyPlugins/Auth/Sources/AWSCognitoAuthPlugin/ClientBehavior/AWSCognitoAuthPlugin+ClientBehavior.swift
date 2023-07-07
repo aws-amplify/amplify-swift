@@ -167,13 +167,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         }
     }
 
-    public func setUpTOTP(
-        options: SetUpTOTPRequest.Options?
-    ) async throws -> TOTPSetupDetails {
-        let options = options ?? SetUpTOTPRequest.Options()
-        let request = SetUpTOTPRequest(options: options)
+    public func setUpTOTP() async throws -> TOTPSetupDetails {
         let task = SetUpTOTPTask(
-            request,
             authStateMachine: authStateMachine,
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await taskQueue.sync {
