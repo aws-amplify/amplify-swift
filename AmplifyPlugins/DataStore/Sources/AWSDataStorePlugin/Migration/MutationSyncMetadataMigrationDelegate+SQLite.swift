@@ -129,4 +129,11 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
     }
 }
 
-extension SQLiteMutationSyncMetadataMigrationDelegate: DefaultLogger { }
+extension SQLiteMutationSyncMetadataMigrationDelegate: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

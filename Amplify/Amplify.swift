@@ -110,4 +110,12 @@ public class Amplify {
     }
 }
 
-extension Amplify: DefaultLogger { }
+extension Amplify: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: String(describing: self))
+    }
+
+    public var log: Logger {
+        Self.log
+    }
+}

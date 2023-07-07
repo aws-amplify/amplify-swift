@@ -114,7 +114,15 @@ struct RefreshHostedUITokens: Action {
     }
 }
 
-extension RefreshHostedUITokens: DefaultLogger { }
+extension RefreshHostedUITokens: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension RefreshHostedUITokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

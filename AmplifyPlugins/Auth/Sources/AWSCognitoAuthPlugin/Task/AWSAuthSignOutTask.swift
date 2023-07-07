@@ -77,4 +77,12 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
         await authStateMachine.send(event)
     }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
 }

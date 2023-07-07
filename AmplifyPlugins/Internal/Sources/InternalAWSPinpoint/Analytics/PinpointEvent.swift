@@ -89,7 +89,15 @@ extension PinpointEvent: Equatable {
 }
 
 // MARK: - DefaultLogger
-extension PinpointEvent: DefaultLogger {}
+extension PinpointEvent: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 // MARK: - CustomStringConvertible
 extension PinpointEvent: CustomStringConvertible {

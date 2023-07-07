@@ -85,4 +85,11 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
         await authStateMachine.send(event)
         await taskHelper.didStateMachineConfigured()
     }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
 }

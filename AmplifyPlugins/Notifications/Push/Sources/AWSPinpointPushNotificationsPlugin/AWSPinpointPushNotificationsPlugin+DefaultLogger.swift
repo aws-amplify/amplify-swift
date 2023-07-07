@@ -7,4 +7,11 @@
 
 import Amplify
 
-extension AWSPinpointPushNotificationsPlugin: DefaultLogger {}
+extension AWSPinpointPushNotificationsPlugin: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.pushNotifications.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

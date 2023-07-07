@@ -219,7 +219,14 @@ class SessionClient: SessionClientBehaviour {
 }
 
 // MARK: - DefaultLogger
-extension SessionClient: DefaultLogger {}
+extension SessionClient: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension SessionClient {
     struct Constants {

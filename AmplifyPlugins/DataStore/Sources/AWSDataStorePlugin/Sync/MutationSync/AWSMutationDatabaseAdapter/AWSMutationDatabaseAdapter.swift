@@ -40,7 +40,14 @@ final class AWSMutationDatabaseAdapter {
 
 }
 
-extension AWSMutationDatabaseAdapter: DefaultLogger { }
+extension AWSMutationDatabaseAdapter: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension AWSMutationDatabaseAdapter: Resettable {
 

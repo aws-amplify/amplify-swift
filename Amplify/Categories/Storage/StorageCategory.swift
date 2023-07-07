@@ -94,3 +94,12 @@ final public class StorageCategory: Category {
     }
 
 }
+
+extension StorageCategory: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.storage.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

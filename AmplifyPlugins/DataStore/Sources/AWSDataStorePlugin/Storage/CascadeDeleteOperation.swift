@@ -541,4 +541,11 @@ extension CascadeDeleteOperation {
     }
 }
 
-extension CascadeDeleteOperation: DefaultLogger { }
+extension CascadeDeleteOperation: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

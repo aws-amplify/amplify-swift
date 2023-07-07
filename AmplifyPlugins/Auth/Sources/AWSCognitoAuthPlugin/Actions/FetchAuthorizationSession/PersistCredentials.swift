@@ -37,7 +37,15 @@ struct PersistCredentials: Action {
     }
 }
 
-extension PersistCredentials: DefaultLogger { }
+extension PersistCredentials: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension PersistCredentials: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

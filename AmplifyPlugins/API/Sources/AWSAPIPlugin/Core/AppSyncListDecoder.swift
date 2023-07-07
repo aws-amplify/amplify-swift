@@ -50,4 +50,11 @@ public struct AppSyncListDecoder: ModelListDecoder {
     }
 }
 
-extension AppSyncListDecoder: DefaultLogger { }
+extension AppSyncListDecoder: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

@@ -41,4 +41,11 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
         log.verbose("Cleared federation")
         return
     }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
 }

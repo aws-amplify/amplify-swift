@@ -241,4 +241,11 @@ final class InitialSyncOperation: AsynchronousOperation {
 
 }
 
-extension InitialSyncOperation: DefaultLogger { }
+extension InitialSyncOperation: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

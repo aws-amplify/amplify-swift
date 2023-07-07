@@ -55,4 +55,11 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
                                         proposedPassword: request.newPassword)
         _ = try await userPoolService.changePassword(input: input)
     }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
 }

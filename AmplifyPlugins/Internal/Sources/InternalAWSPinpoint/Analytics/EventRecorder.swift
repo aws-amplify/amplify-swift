@@ -310,7 +310,14 @@ class EventRecorder: AnalyticsEventRecording {
     }
 }
 
-extension EventRecorder: DefaultLogger {}
+extension EventRecorder: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension EventRecorder {
     private struct Constants {

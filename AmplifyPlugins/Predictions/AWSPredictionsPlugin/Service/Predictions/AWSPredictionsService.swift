@@ -116,4 +116,11 @@ class AWSPredictionsService {
     }
 }
 
-extension AWSPredictionsService: DefaultLogger {}
+extension AWSPredictionsService: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.predictions.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

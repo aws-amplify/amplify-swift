@@ -103,3 +103,12 @@ final public class PredictionsCategory: Category {
     }
 
 }
+
+extension PredictionsCategory: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.predictions.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

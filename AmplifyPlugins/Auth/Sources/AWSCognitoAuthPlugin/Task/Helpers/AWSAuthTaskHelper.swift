@@ -82,4 +82,11 @@ class AWSAuthTaskHelper: DefaultLogger {
         }
     }
 
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
 }

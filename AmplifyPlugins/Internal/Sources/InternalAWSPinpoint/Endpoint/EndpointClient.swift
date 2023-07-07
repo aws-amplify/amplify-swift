@@ -232,7 +232,14 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 }
 
-extension EndpointClient: DefaultLogger {}
+extension EndpointClient: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName)
+    }
+    public nonisolated var log: Logger {
+        Self.log
+    }
+}
 
 extension EndpointClient {
     struct Constants {

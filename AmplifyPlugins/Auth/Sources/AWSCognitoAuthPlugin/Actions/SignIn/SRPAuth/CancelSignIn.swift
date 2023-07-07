@@ -21,7 +21,15 @@ struct CancelSignIn: Action {
     }
 }
 
-extension CancelSignIn: DefaultLogger { }
+extension CancelSignIn: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension CancelSignIn: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

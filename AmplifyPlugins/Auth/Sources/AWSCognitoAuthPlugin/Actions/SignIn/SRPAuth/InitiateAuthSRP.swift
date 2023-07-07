@@ -108,7 +108,15 @@ struct InitiateAuthSRP: Action {
     }
 }
 
-extension InitiateAuthSRP: DefaultLogger { }
+extension InitiateAuthSRP: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension InitiateAuthSRP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

@@ -60,7 +60,15 @@ struct InitializeRefreshSession: Action {
     }
 }
 
-extension InitializeRefreshSession: DefaultLogger { }
+extension InitializeRefreshSession: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension InitializeRefreshSession: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

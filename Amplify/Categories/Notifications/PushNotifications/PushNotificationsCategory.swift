@@ -94,3 +94,12 @@ public final class PushNotificationsCategory: Category {
         plugins.removeValue(forKey: key)
     }
 }
+
+extension PushNotificationsCategory: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.pushNotifications.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

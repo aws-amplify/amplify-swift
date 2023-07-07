@@ -267,4 +267,11 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     
 }
 
-extension AppSyncListProvider: DefaultLogger { }
+extension AppSyncListProvider: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

@@ -221,7 +221,14 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 }
 
-extension AWSModelReconciliationQueue: DefaultLogger { }
+extension AWSModelReconciliationQueue: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 // MARK: Resettable
 extension AWSModelReconciliationQueue: Resettable {

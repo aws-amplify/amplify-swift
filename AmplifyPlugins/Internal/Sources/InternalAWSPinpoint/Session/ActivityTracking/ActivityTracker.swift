@@ -51,7 +51,15 @@ enum ApplicationState {
 
 extension ApplicationState: Equatable {}
 
-extension ApplicationState: DefaultLogger {}
+extension ApplicationState: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName)
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 protocol ActivityTrackerBehaviour: AnyObject {
     var backgroundTrackingTimeout: TimeInterval { set get }
