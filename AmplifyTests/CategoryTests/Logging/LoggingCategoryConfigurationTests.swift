@@ -92,8 +92,8 @@ class LoggingCategoryConfigurationTests: XCTestCase {
     /// - When:
     ///    - I add a custom plugin
     /// - Then:
-    ///    - The default plugin is replaced with the custom one
-    func testCustomPluginReplacesDefault() throws {
+    ///    - The default plugin is added with the custom one
+    func testCustomPluginApppendsDefault() throws {
         let plugin1 = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin1)
 
@@ -107,7 +107,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: AWSUnifiedLoggingPlugin.key))
+        XCTAssertNotNil(try Amplify.Logging.getPlugin(for: AWSUnifiedLoggingPlugin.key))
         XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
     }
 
