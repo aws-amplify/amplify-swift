@@ -46,7 +46,7 @@ extension Amplify {
     }
     
     static func getLoggingCategoryPluginLookup(loggingPlugin: LoggingCategoryPlugin) -> [PluginKey: LoggingCategoryPlugin] {
-#if canImport(UIKit)
+#if os(iOS)
 #if DEBUG
         if isDevMenuEnabled() {
             let persistentLoggingPlugin = PersistentLoggingPlugin(plugin: loggingPlugin)
