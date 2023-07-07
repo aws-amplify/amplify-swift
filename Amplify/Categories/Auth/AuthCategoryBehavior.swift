@@ -130,11 +130,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// Calling this method will initiate TOTP setup process and returns a shared secret that can be used to generate QR code. 
     /// The setup details also contains a URI generator helper that can be used to retireve a TOTP Setup URI.
     ///
-    /// - Parameters:
-    ///   - options: Parameters specific to plugin behavior
-    func setUpTOTP(
-        options: SetUpTOTPRequest.Options?
-    ) async throws -> TOTPSetupDetails
+    func setUpTOTP() async throws -> TOTPSetupDetails
 
     /// Verifies TOTP Setup
     ///
