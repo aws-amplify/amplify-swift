@@ -113,7 +113,7 @@ final public class LoggingCategory: Category {
 
 extension LoggingCategory: DefaultLogger {
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.logging.displayName)
+        Amplify.Logging.logger(forCategory: CategoryType.logging.displayName, forNamespace: String(describing: self))
     }
     public var log: Logger {
         Self.log

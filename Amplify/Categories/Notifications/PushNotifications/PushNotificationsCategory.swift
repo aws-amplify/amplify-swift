@@ -97,7 +97,7 @@ public final class PushNotificationsCategory: Category {
 
 extension PushNotificationsCategory: DefaultLogger {
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.pushNotifications.displayName)
+        Amplify.Logging.logger(forCategory: CategoryType.pushNotifications.displayName, forNamespace: String(describing: self))
     }
     public var log: Logger {
         Self.log

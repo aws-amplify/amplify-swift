@@ -97,7 +97,7 @@ final public class StorageCategory: Category {
 
 extension StorageCategory: DefaultLogger {
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.storage.displayName)
+        Amplify.Logging.logger(forCategory: CategoryType.storage.displayName, forNamespace: String(describing: self))
     }
     public var log: Logger {
         Self.log

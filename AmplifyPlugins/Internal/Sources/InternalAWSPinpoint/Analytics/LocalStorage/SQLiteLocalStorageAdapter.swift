@@ -109,7 +109,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
 
 extension SQLiteLocalStorageAdapter: DefaultLogger {
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName)
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
     
     public var log: Logger {

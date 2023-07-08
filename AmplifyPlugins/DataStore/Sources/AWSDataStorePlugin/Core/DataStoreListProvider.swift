@@ -102,7 +102,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
 
 extension DataStoreListProvider: DefaultLogger {
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
     }
     public var log: Logger {
         Self.log

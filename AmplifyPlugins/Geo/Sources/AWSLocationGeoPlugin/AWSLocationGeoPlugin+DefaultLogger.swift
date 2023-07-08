@@ -9,7 +9,7 @@ import Amplify
 
 extension AWSLocationGeoPlugin: DefaultLogger {
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.geo.displayName)
+        Amplify.Logging.logger(forCategory: CategoryType.geo.displayName, forNamespace: String(describing: self))
     }
     public var log: Logger {
         Self.log

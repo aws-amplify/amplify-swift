@@ -34,7 +34,7 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
     }
     
     public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName)
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
     
     public var log: Logger {
