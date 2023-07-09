@@ -14,7 +14,8 @@ class AWSCloudWatchLoggingConstraintsResolver {
     let loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration
     let loggingConstraintsLocalStore: LoggingConstraintsLocalStore
     
-    init(loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration, loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard) {
+    init(loggingPluginConfiguration: AWSCloudWatchLoggingPluginConfiguration,
+         loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard) {
         self.loggingPluginConfiguration = loggingPluginConfiguration
         self.loggingConstraintsLocalStore = loggingConstraintsLocalStore
     }
