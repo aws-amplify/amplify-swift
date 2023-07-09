@@ -40,17 +40,24 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         await ensureLogStreamExists()
         
         let batchByteSize = try encoder.encode(entries).count
-        
         if entries.count > AWSCloudWatchConstants.maxLogEvents {
-            let chunkedEntries = entries.chunked(into: AWSCloudWatchConstants.maxLogEvents)
-            for chunk in chunkedEntries {
-                try await sendLogEvents(chunk)
+            let smallerEntries = entries.chunked(into: AWSCloudWatchConstants.maxLogEvents)
+            for entries in smallerEntries {
+                let entrySize = try encoder.encode(entries).count
+                if entrySize > AWSCloudWatchConstants.maxBatchByteSize {
+                    let chunks = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
+                    for chunk in chunks {
+                        try await sendLogEvents(chunk)
+                    }
+                } else {
+                    try await sendLogEvents(entries)
+                }
             }
             
         } else if batchByteSize > AWSCloudWatchConstants.maxBatchByteSize {
-            let chunkedEntries = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
-            for chunk in chunkedEntries {
-                try await sendLogEvents(chunk)
+            let smallerEntries = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
+            for entries in smallerEntries {
+                try await sendLogEvents(entries)
             }
         } else {
             try await sendLogEvents(entries)
