@@ -264,6 +264,54 @@ final class CloudWatchLogConsumerTests: XCTestCase {
             "readEntries()",
         ])
     }
+    
+    /// - Given: a list of log entries that is bigger than the maximum putLogEvents size Limit
+    /// - When: CloudWatchLoggingConsumer consumes a log batch
+    /// - Then: the batch is read, chunked into entries that is under the size limit and sent and completed
+    func testConsumerChunkBatchesBasedOnMaxSize() async throws {
+        let batchSize = 5
+        let bytesPerLogMessage = 300_000
+        let bytes = (0..<bytesPerLogMessage).map { _ in UInt8.random(in: 0..<255) }
+        let data = Data(bytes)
+        
+        
+        for index in 0..<batchSize {
+            self.entries.append(contentsOf: [LogEntry(category: "CloudWatchLogConsumerTests", namespace:String(index), level: .error, message: data.base64EncodedString())])
+        }
+        try await systemUnderTest.consume(batch: self)
+        XCTAssertEqual(client.interactions, [
+            "describeLogStreams(input:)",
+            "createLogStream(input:)",
+            "putLogEvents(input:)",
+            "putLogEvents(input:)",
+            "putLogEvents(input:)"
+        ])
+        XCTAssertEqual(interactions, [
+            "readEntries()",
+            "complete()"
+        ])
+    }
+    
+    /// - Given: a list of log entries that is bigger than the maximum putLogEvents count Limit
+    /// - When: CloudWatchLoggingConsumer consumes a log batch
+    /// - Then: the batch is read, chunked into entries that is under the count limit and sent and completed
+    func testConsumerChunkBatchesBasedOnMaxCount() async throws {
+        let batchSize = 12_000
+        let batch = (0..<batchSize).map { LogEntry(category: "CloudWatchLogConsumerTests", namespace:nil, level: .error, message: "\($0)", created: Date(timeIntervalSince1970: Double($0))) }
+        self.entries.append(contentsOf: batch)
+        
+        try await systemUnderTest.consume(batch: self)
+        XCTAssertEqual(client.interactions, [
+            "describeLogStreams(input:)",
+            "createLogStream(input:)",
+            "putLogEvents(input:)",
+            "putLogEvents(input:)",
+        ])
+        XCTAssertEqual(interactions, [
+            "readEntries()",
+            "complete()"
+        ])
+    }
 }
 
 extension CloudWatchLogConsumerTests: LogBatch {

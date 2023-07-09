@@ -17,7 +17,7 @@ class CloudWatchLoggingConsumer {
     private let logGroupName: String
     private let logStreamName: String
     private var ensureLogStreamExistsComplete: Bool = false
-    
+    private let encoder = JSONEncoder()
     init(
         client: CloudWatchLogsClientProtocol,
         logGroupName: String,
@@ -37,23 +37,23 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             try batch.complete()
             return
         }
-        let events = convertToCloudWatchInputLogEvents(for: entries)
         await ensureLogStreamExists()
-        let response = try await self.client.putLogEvents(input: PutLogEventsInput(
-            logEvents: events,
-            logGroupName: self.logGroupName,
-            logStreamName: self.logStreamName,
-            sequenceToken: nil
-        ))
-        let retriableEntries = retriable(entries: entries, in: response)
-        if !retriableEntries.isEmpty {
-            let retriableEvents = convertToCloudWatchInputLogEvents(for: retriableEntries)
-            _ = try await self.client.putLogEvents(input: PutLogEventsInput(
-                logEvents: retriableEvents,
-                logGroupName: self.logGroupName,
-                logStreamName: self.logStreamName,
-                sequenceToken: nil
-            ))
+        
+        let batchByteSize = try encoder.encode(entries).count
+        
+        if entries.count > AWSCloudWatchConstants.maxLogEvents {
+            let chunkedEntries = entries.chunked(into: AWSCloudWatchConstants.maxLogEvents)
+            for chunk in chunkedEntries {
+                try await sendLogEvents(chunk)
+            }
+            
+        } else if batchByteSize > AWSCloudWatchConstants.maxBatchByteSize {
+            let chunkedEntries = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
+            for chunk in chunkedEntries {
+                try await sendLogEvents(chunk)
+            }
+        } else {
+            try await sendLogEvents(entries)
         }
         
         try batch.complete()
@@ -84,6 +84,26 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         ))
     }
     
+    private func sendLogEvents(_ entries: [LogEntry]) async throws {
+        let events = convertToCloudWatchInputLogEvents(for: entries)
+        let response = try await self.client.putLogEvents(input: PutLogEventsInput(
+            logEvents: events,
+            logGroupName: self.logGroupName,
+            logStreamName: self.logStreamName,
+            sequenceToken: nil
+        ))
+        let retriableEntries = retriable(entries: entries, in: response)
+        if !retriableEntries.isEmpty {
+            let retriableEvents = convertToCloudWatchInputLogEvents(for: retriableEntries)
+            _ = try await self.client.putLogEvents(input: PutLogEventsInput(
+                logEvents: retriableEvents,
+                logGroupName: self.logGroupName,
+                logStreamName: self.logStreamName,
+                sequenceToken: nil
+            ))
+        }
+    }
+    
     private func convertToCloudWatchInputLogEvents(for entries: [LogEntry]) -> [CloudWatchLogsClientTypes.InputLogEvent] {
         let formatter = CloudWatchLoggingEntryFormatter()
         return entries.map { entry in
@@ -108,5 +128,24 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             retriableEntries.append(entries[index])
         }
         return retriableEntries
+    }
+    
+    private func chunk(_ entries: [LogEntry], into maxByteSize: Int64) throws -> [[LogEntry]] {
+        var chunks: [[LogEntry]] = []
+        var chunk: [LogEntry] = []
+        var currentChunkSize = 0
+        for entry in entries {
+            let entrySize = try encoder.encode(entry).count
+            if currentChunkSize + entrySize < maxByteSize {
+                chunk.append(entry)
+                currentChunkSize = currentChunkSize + entrySize
+            } else {
+                chunks.append(chunk)
+                chunk = [entry]
+                currentChunkSize = currentChunkSize + entrySize
+            }
+        }
+        
+        return chunks
     }
 }
