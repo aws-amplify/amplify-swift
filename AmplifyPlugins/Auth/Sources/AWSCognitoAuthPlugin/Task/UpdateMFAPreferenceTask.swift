@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-protocol AuthUpdateMFAPreferenceTask: AmplifyAuthTask where Request == Void,
+protocol AuthUpdateMFAPreferenceTask: AmplifyAuthTask where Request == Never,
                                                             Success == Void,
                                                             Failure == AuthError {}
 

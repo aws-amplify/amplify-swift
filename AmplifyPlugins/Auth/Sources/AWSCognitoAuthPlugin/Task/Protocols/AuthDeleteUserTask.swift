@@ -7,7 +7,7 @@
 import Foundation
 import Amplify
 
-protocol AuthDeleteUserTask: AmplifyAuthTask where Request == Void, Success == Void, Failure == AuthError { }
+protocol AuthDeleteUserTask: AmplifyAuthTask where Request == Never, Success == Void, Failure == AuthError { }
 
 public extension HubPayload.EventName.Auth {
 
