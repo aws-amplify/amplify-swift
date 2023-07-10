@@ -34,12 +34,9 @@ struct PluginInfoHelper {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
         
-        pluginList.append(
-            makePluginInfoItem(
-                for: Amplify.Logging.plugin.key,
-                versionable: Amplify.Logging.plugin as? AmplifyVersionable
-            )
-        )
+        pluginList.append(contentsOf: Amplify.Logging.plugins.map {
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
         
         pluginList.append(contentsOf: Amplify.Predictions.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
