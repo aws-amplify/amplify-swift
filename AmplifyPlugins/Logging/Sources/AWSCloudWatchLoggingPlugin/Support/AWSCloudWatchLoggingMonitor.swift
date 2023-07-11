@@ -39,8 +39,7 @@ class AWSCLoudWatchLoggingMonitor {
         automaticFlushLogsTimer?.resume()
     }
 
-    func createRepeatingTimer(timeInterval: TimeInterval,
-                                     eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
+    func createRepeatingTimer(timeInterval: TimeInterval, eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
         timer.setEventHandler(handler: eventHandler)

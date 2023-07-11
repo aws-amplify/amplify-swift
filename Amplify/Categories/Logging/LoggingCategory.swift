@@ -19,9 +19,7 @@ final public class LoggingCategory: Category {
         /// After a custom plugin is added and `configure` is invoked
         case configured
     }
-
-    let concurrencyQueue = DispatchQueue(label: "com.amazonaws.Amplify.Logging.concurrency",
-                                         target: DispatchQueue.global())
+    
     let lock: NSLocking = NSLock()
 
     public let categoryType = CategoryType.logging
@@ -58,13 +56,11 @@ final public class LoggingCategory: Category {
 
     /// For any external cases, Logging is always ready to be used. Internal configuration state is tracked via a
     /// different mechanism
-    let isConfigured = true
+    var isConfigured: Bool {
+        return plugins.count > 0
+    }
 
-    /// Returns the plugin added to the category. Upon creation, the LoggingCategory will have a default plugin and a
-    /// configuration state reflecting that. Customers can still add custom plugins; doing so will remove the default
-    /// plugin.
-    var plugin: LoggingCategoryPlugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: AWSUnifiedLoggingPlugin())
-
+    var plugins: [PluginKey: LoggingCategoryPlugin] = Amplify.getLoggingCategoryPluginLookup(loggingPlugin: AWSUnifiedLoggingPlugin())
     // MARK: - Plugin handling
 
     /// Sets `plugin` as the sole provider of functionality for this category. **Note: this is different from other
@@ -82,17 +78,15 @@ final public class LoggingCategory: Category {
     ///
     /// - Parameter plugin: The Plugin to add
     public func add(plugin: LoggingCategoryPlugin) throws {
-        try concurrencyQueue.sync {
-            let key = plugin.key
-            guard !key.isEmpty else {
-                let pluginDescription = String(describing: plugin)
-                let error = LoggingError.configuration("Plugin \(pluginDescription) has an empty `key`.",
-                    "Set the `key` property for \(String(describing: plugin))")
-                throw error
-            }
-
-            configurationState = .pendingConfiguration(Amplify.getLoggingCategoryPlugin(loggingPlugin: plugin))
+        let key = plugin.key
+        guard !key.isEmpty else {
+            let pluginDescription = String(describing: plugin)
+            let error = LoggingError.configuration("Plugin \(pluginDescription) has an empty `key`.",
+                "Set the `key` property for \(String(describing: plugin))")
+            throw error
         }
+
+        configurationState = .pendingConfiguration(Amplify.getLoggingCategoryPlugin(loggingPlugin: plugin))
     }
 
     /// Returns the added plugin with the specified `key` property.
@@ -100,9 +94,9 @@ final public class LoggingCategory: Category {
     /// - Parameter key: The PluginKey (String) of the plugin to retrieve
     /// - Returns: The wrapped plugin
     public func getPlugin(for key: PluginKey) throws -> LoggingCategoryPlugin {
-        guard plugin.key == key else {
+        guard let plugin = plugins.first(where: { $0.key == key})?.value else {
             let error = LoggingError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use the installed plugin, which has the key '\(plugin.key)'")
+                "Either add a plugin for '\(key)', or use the installed plugin, which has the key '\(key)'")
             throw error
         }
         return plugin
@@ -113,12 +107,7 @@ final public class LoggingCategory: Category {
     ///
     /// - Parameter key: The key used to `add` the plugin
     public func removePlugin(for key: PluginKey) {
-        concurrencyQueue.sync {
-            guard plugin.key == key else {
-                return
-            }
-            plugin = Amplify.getLoggingCategoryPlugin(loggingPlugin: AWSUnifiedLoggingPlugin())
-        }
+        plugins.removeValue(forKey: key)
     }
 
 }

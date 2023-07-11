@@ -11,10 +11,10 @@ extension LoggingCategory: Resettable {
 
     public func reset() async {
         log.verbose("Resetting \(categoryType) plugin")
-        await plugin.reset()
-        log.verbose("Resetting \(categoryType) plugin: finished")
-        concurrencyQueue.sync {
-            configurationState = .default
+        for (_, plugin) in plugins {
+            await plugin.reset()
         }
+        log.verbose("Resetting \(categoryType) plugin: finished")
+        configurationState = .default
     }
 }

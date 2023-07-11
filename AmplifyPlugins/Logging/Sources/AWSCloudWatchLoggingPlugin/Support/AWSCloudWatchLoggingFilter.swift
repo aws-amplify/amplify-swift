@@ -34,7 +34,6 @@ class AWSCloudWatchLoggingFilter: AWSCloudWatchLoggingFilterBehavior {
                 return logLevel.rawValue <= categoryLogLevel.rawValue && categoryLogLevel != .none
             }
             return logLevel.rawValue <= userConstraints.defaultLogLevel.rawValue && userConstraints.defaultLogLevel != .none
-
         }
         
         // 2. look for category constraint, is category and log level enabled
