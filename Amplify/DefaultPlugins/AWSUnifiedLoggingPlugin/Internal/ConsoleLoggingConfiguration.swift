@@ -11,8 +11,8 @@ public struct ConsoleLoggingConfiguration: Codable {
     public init(enable: Bool = true) {
          self.enable = enable
     }
-
-   public let enable: Bool
+    
+    public let enable: Bool
 }
 
 extension ConsoleLoggingConfiguration {
