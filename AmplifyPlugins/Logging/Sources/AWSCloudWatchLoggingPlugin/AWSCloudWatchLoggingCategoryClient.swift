@@ -20,6 +20,7 @@ import Network
 ///
 /// - Tag: CloudWatchLoggingCategoryClient
 final class AWSCloudWatchLoggingCategoryClient {
+
     private var enabled: Bool = true
 
     private let lock = NSLock()

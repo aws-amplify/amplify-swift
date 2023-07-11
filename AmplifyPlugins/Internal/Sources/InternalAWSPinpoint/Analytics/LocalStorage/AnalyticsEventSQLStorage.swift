@@ -223,4 +223,11 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     }
 }
 
-extension AnalyticsEventSQLStorage: DefaultLogger { }
+extension AnalyticsEventSQLStorage: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

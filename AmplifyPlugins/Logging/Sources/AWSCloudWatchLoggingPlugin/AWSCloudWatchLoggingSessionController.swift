@@ -43,7 +43,6 @@ final class AWSCloudWatchLoggingSessionController {
             authSubscription?.cancel()
         }
     }
-    
     private var userIdentifier: String? {
         didSet {
             if oldValue != userIdentifier {
@@ -51,7 +50,7 @@ final class AWSCloudWatchLoggingSessionController {
             }
         }
     }
-    
+
     var logLevel: LogLevel {
         didSet {
             self.session?.logger.logLevel = logLevel
