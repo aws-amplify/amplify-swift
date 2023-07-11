@@ -24,21 +24,21 @@ extension UserDefaults: LoggingConstraintsLocalStore {
         }
         return nil
     }
-    
+
     func setLocalLoggingConstraints(loggingConstraints: LoggingConstraints) {
         if let encoded = try? JSONEncoder().encode(loggingConstraints) {
             UserDefaults.standard.set(encoded, forKey: PluginConstants.awsRemoteLoggingConstraintsKey)
         }
     }
-    
+
     func getLocalLoggingConstraintsEtag() -> String? {
         return UserDefaults.standard.string(forKey: PluginConstants.awsRemoteLoggingConstraintsTagKey)
     }
-    
+
     func setLocalLoggingConstraintsEtag(etag: String) {
         UserDefaults.standard.set(etag, forKey: PluginConstants.awsRemoteLoggingConstraintsTagKey)
     }
-    
+
     func reset() {
         UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsTagKey)
         UserDefaults.standard.removeObject(forKey: PluginConstants.awsRemoteLoggingConstraintsKey)

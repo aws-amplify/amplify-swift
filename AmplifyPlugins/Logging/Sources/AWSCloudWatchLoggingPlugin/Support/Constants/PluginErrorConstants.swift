@@ -30,15 +30,15 @@ struct PluginErrorConstants {
     static let invalidRegion: PluginErrorString = (
         "The region is invalid",
         "Make sure the region is of the AWS regions, like 'us-east-1', etc...")
-    
+
     static let missingLogGroupName: PluginErrorString = (
         "The 'logGroupName' key is missing from the configuration",
         "Make sure 'logGroupName' is in the dictionary for the plugin configuration")
-    
+
     static let invalidLogGroupName: PluginErrorString = (
         "The logGroupName is invalid",
         "Make sure the logGroupName is correct")
-    
+
     static let emptyLogGroupName: PluginErrorString = (
         "The logGroupName value is empty",
         "Add the group name as the value to the 'logGroupName' key in the plugin configuration")
