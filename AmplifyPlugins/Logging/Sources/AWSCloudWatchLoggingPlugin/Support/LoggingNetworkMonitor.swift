@@ -19,11 +19,11 @@ extension NWPathMonitor: LoggingNetworkMonitor {
     var isOnline: Bool {
         currentPath.status == .satisfied
     }
-    
+
     func startMonitoring(using queue: DispatchQueue) {
         start(queue: queue)
     }
-    
+
     func stopMonitoring() {
         cancel()
     }

@@ -20,7 +20,8 @@ import Network
 ///
 /// - Tag: CloudWatchLoggingCategoryClient
 final class AWSCloudWatchLoggingCategoryClient {
-    private var _enable: Bool = true
+
+    private var enabled: Bool = true
 
     private let lock = NSLock()
     private let logGroupName: String
@@ -46,7 +47,7 @@ final class AWSCloudWatchLoggingCategoryClient {
         flushIntervalInSeconds: Int,
         networkMonitor: LoggingNetworkMonitor = NWPathMonitor()
     ) {
-        self._enable = enable
+        self.enabled = enable
         self.credentialsProvider = credentialsProvider
         self.authentication = authentication
         self.logGroupName = logGroupName
@@ -108,7 +109,7 @@ final class AWSCloudWatchLoggingCategoryClient {
 
 extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     func enable() {
-        _enable = true
+        enabled = true
         lock.execute {
             for controller in loggersByKey.values {
                 controller.enable()
@@ -117,7 +118,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
     
     func disable() {
-        _enable = false
+        enabled = false
         lock.execute {
             for controller in loggersByKey.values {
                 controller.disable()
@@ -148,7 +149,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
                                                                    localStoreMaxSizeInMB: self.localStoreMaxSizeInMB,
                                                                    userIdentifier: self.userIdentifier,
                                                                    networkMonitor: self.networkMonitor)
-            if _enable {
+            if enabled {
                 controller.enable()
             }
             loggersByKey[key] = controller
@@ -175,11 +176,19 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
     }
     
     func getInternalClient() -> CloudWatchLogsClientProtocol {
-        loggersByKey.first!.value.client!
+        guard let client = loggersByKey.first(where: { $0.value.client != nil })?.value.client else {
+            return Fatal.preconditionFailure(
+                """
+                AWSCloudWatchLoggingPlugin is missing an internal AWS CloudWatch client.  Ensure that
+                the AWSCloudWatchLoggingPlugin is configured.
+                """
+            )
+        }
+        return client
     }
     
     func flushLogs() async throws {
-        guard _enable else { return }
+        guard enabled else { return }
         for logger in loggersByKey.values {
             try await logger.flushLogs()
         }

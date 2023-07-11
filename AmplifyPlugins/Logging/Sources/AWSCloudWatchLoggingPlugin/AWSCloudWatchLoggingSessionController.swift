@@ -19,16 +19,9 @@ import Network
 /// - Tag: CloudWatchLogSessionController
 final class AWSCloudWatchLoggingSessionController {
     
-    let logGroupName: String
-    let region: String
-    
-    var logLevel: LogLevel {
-        didSet {
-            self.session?.logger.logLevel = logLevel
-        }
-    }
-    
     var client: CloudWatchLogsClientProtocol?
+    private let logGroupName: String
+    private let region: String
     private let localStoreMaxSizeInMB: Int
     private let credentialsProvider: CredentialsProvider
     private let authentication: AuthCategoryUserBehavior
@@ -36,16 +29,31 @@ final class AWSCloudWatchLoggingSessionController {
     private let namespace: String?
     private var session: AWSCloudWatchLoggingSession?
     private var consumer: LogBatchConsumer?
-    private var batchSubscription: AnyCancellable? { willSet { batchSubscription?.cancel() } }
-    private var authSubscription: AnyCancellable? { willSet { authSubscription?.cancel() } }
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
     private let networkMonitor: LoggingNetworkMonitor
     
+    private var batchSubscription: AnyCancellable? {
+        willSet {
+            batchSubscription?.cancel()
+        }
+    }
+    
+    private var authSubscription: AnyCancellable? {
+        willSet {
+            authSubscription?.cancel()
+        }
+    }
     private var userIdentifier: String? {
         didSet {
             if oldValue != userIdentifier {
                 userIdentifierDidChange()
             }
+        }
+    }
+
+    var logLevel: LogLevel {
+        didSet {
+            self.session?.logger.logLevel = logLevel
         }
     }
 
@@ -89,11 +97,7 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     private func updateConsumer() {
-        do {
-            self.consumer = try createConsumer()
-        } catch {
-            self.consumer = nil
-        }
+        self.consumer = try? createConsumer()
     }
 
     private func createConsumer() throws -> LogBatchConsumer? {

@@ -15,9 +15,9 @@ class AWSCLoudWatchLoggingMonitor {
             automaticFlushLogsTimer?.cancel()
         }
     }
-    
+
     private weak var eventDelegate: AWSCloudWatchLoggingMonitorDelegate?
-    
+
     init(flushIntervalInSeconds: TimeInterval, eventDelegate: AWSCloudWatchLoggingMonitorDelegate?) {
         self.automaticFlushLogsInterval = flushIntervalInSeconds
         self.eventDelegate = eventDelegate
@@ -29,8 +29,8 @@ class AWSCLoudWatchLoggingMonitor {
             automaticFlushLogsTimer = nil
             return
         }
-        
-        automaticFlushLogsTimer = Self.createRepeatingTimer(
+
+        automaticFlushLogsTimer = createRepeatingTimer(
             timeInterval: automaticFlushLogsInterval,
             eventHandler: { [weak self] in
                 guard let self = self else { return }
@@ -39,8 +39,7 @@ class AWSCLoudWatchLoggingMonitor {
         automaticFlushLogsTimer?.resume()
     }
 
-    static func createRepeatingTimer(timeInterval: TimeInterval,
-                                     eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
+    func createRepeatingTimer(timeInterval: TimeInterval, eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
         timer.setEventHandler(handler: eventHandler)
