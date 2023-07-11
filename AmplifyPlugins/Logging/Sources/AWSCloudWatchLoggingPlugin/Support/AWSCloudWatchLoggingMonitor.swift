@@ -30,7 +30,7 @@ class AWSCLoudWatchLoggingMonitor {
             return
         }
 
-        automaticFlushLogsTimer = Self.createRepeatingTimer(
+        automaticFlushLogsTimer = createRepeatingTimer(
             timeInterval: automaticFlushLogsInterval,
             eventHandler: { [weak self] in
                 guard let self = self else { return }
@@ -39,7 +39,7 @@ class AWSCLoudWatchLoggingMonitor {
         automaticFlushLogsTimer?.resume()
     }
 
-    static func createRepeatingTimer(timeInterval: TimeInterval,
+    func createRepeatingTimer(timeInterval: TimeInterval,
                                      eventHandler: @escaping () -> Void) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))
         timer.schedule(deadline: .now() + timeInterval, repeating: timeInterval)
