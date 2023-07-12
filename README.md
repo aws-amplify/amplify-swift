@@ -20,11 +20,22 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 - [Authentication](https://docs.amplify.aws/lib/auth/getting-started/q/platform/ios) - for managing your users.
 - [DataStore](https://docs.amplify.aws/lib/datastore/getting-started/q/platform/ios) - for making it easier to program for a distributed data store for offline and online scenarios.
 - [Geo](https://docs.amplify.aws/lib/geo/getting-started/q/platform/ios) - for adding location-based capabilities to your app.
+- [Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios/) - for connecting your app with machine learning services.
+- [Push Notifications](https://docs.amplify.aws/lib/push-notifications/getting-started/q/platform/ios/) - for integrating push notifications in your app.
 - [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
 
 ## Platform Support
 
-Amplify supports iOS 13+ and macOS 10.15+. Support for watchOS and tvOS is coming in future releases.
+| Platform  | Versions  | Support Level |
+| ---------: | -------:  | :-----------: |
+| iOS       | 13+       | GA            |
+| macOS     | 10.15+    | GA            |
+| tvOS      | 13+       | GA            |
+| watchOS   | 7+        | GA            |
+| visionOS  | 1+        | Preview*      |
+
+> To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
+> For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
 
 ## License
 
@@ -32,7 +43,7 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires Xcode 13.4 or higher to build.
+Amplify requires Xcode 13.4 or higher to build for iOS and macOS. Building for watchOS and tvOS requires Xcode 14.3 or higher.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|

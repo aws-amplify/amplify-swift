@@ -22,7 +22,7 @@ extension AWSAPIPlugin: Resettable {
         authService = nil
 
         reachabilityMapLock.execute {
-                reachabilityMap.removeAll()
+            reachabilityMap.removeAll()
         }
 
         subscriptionConnectionFactory = nil

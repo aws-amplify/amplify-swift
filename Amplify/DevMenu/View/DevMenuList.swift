@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
+#if os(iOS)
 import SwiftUI
 
 /// View containing a list of developer menu items

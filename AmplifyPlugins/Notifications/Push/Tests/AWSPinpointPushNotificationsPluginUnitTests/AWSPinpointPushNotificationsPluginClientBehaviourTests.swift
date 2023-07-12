@@ -174,6 +174,7 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
     }
     
     // MARK: - Record Notification opened tests
+#if !os(tvOS)
     func testRecordNotificationOpened_withValidCampaignPayload_shouldRecordEvent() async throws {
         let response = UNNotificationResponse(coder: createCoder(for: .campaign))!
         try await plugin.recordNotificationOpened(response)
@@ -203,6 +204,7 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
         XCTAssertEqual(mockPinpoint.setRemoteGlobalAttributesCount, 0)
         XCTAssertEqual(mockPinpoint.recordCount, 0)
     }
+#endif
     
     private func createUserInfo(for source: PushNotification.Source) -> Notifications.Push.UserInfo {
         return [

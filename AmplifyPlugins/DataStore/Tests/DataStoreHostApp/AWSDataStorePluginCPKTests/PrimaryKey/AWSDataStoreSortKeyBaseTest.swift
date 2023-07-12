@@ -14,7 +14,9 @@ import AWSAPIPlugin
 import AWSDataStorePlugin
 
 @testable import Amplify
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 class AWSDataStoreSortKeyBaseTest: XCTestCase {
     static let defaultConfigFile = "AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration"

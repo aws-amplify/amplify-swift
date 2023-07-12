@@ -8,7 +8,9 @@
 import XCTest
 import AWSPluginsCore
 import Amplify
+#if !os(watchOS)
 import DataStoreHostApp
+#endif
 
 extension AWSDataStoreCategoryPluginAuthIntegrationTests {
     func saveModel<T: Model>(_ model: T) async throws {

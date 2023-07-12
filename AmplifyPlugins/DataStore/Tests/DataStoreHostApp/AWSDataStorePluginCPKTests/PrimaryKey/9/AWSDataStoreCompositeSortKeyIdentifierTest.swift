@@ -12,7 +12,9 @@ import AWSAPIPlugin
 import AWSDataStorePlugin
 
 @testable import Amplify
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 fileprivate struct TestModels: AmplifyModelRegistration {
     func registerModels(registry: ModelRegistry.Type) {

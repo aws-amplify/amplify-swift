@@ -125,8 +125,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             await createdNewItem.fulfill()
         }
         await waitForExpectations([createdNewItem])
-        
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [apiRespondedWithSuccess], timeout: 1.0, enforceOrder: false)
 
         // Set the responder to reject the mutation. Make sure to push a retry advice before sending
         // a new mutation.

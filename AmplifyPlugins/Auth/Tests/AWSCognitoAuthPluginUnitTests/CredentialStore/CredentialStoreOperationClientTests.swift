@@ -49,72 +49,73 @@ class CredentialStoreOperationClientTests: XCTestCase {
     }
 
     func testMultipleSuccess() async throws {
+        await withThrowingTaskGroup(of: Void.self, body: { group in
+            for _ in 1...100 {
+                group.addTask {
+                    let deviceId = "someDeviceID-\(UUID().uuidString)"
+                    let username = "someUsername-\(UUID().uuidString)"
+                    // Store
+                    try await self.credentialClient.storeData(data: .asfDeviceId(deviceId, username))
 
-        let expectation = expectation(description: "Run multiple store operations")
-        expectation.expectedFulfillmentCount = 100
+                    // Fetch
+                    let fetchedId = try await self.credentialClient.fetchData(type: .asfDeviceId(username: username))
+                    switch fetchedId {
+                    case .asfDeviceId(let fetchedId, let fetchedUsername):
+                        XCTAssertEqual(deviceId, fetchedId)
+                        XCTAssertEqual(username, fetchedUsername)
+                    default:
+                        XCTFail("Should return asfdevice")
+                    }
 
-        for _ in 1...expectation.expectedFulfillmentCount {
-            Task {
-                let deviceId = "someDeviceID-\(UUID().uuidString)"
-                let username = "someUsername-\(UUID().uuidString)"
-                // Store
-                try await credentialClient.storeData(data: .asfDeviceId(deviceId, username))
+                    // Delete
+                    try await self.credentialClient.deleteData(type: .asfDeviceId(username: username))
 
-                // Fetch
-                let fetchedId = try await credentialClient.fetchData(type: .asfDeviceId(username: username))
-                switch fetchedId {
-                case .asfDeviceId(let fetchedId, let fetchedUsername):
-                    XCTAssertEqual(deviceId, fetchedId)
-                    XCTAssertEqual(username, fetchedUsername)
-                default:
-                    XCTFail("Should return asfdevice")
+                    // Fetch
+                    do {
+                        _ = try await self.credentialClient.fetchData(
+                            type: .asfDeviceId(username: username)
+                        )
+                        XCTFail("Expected error on initial fetch")
+                    } catch {}
                 }
-
-                // Delete
-                try await credentialClient.deleteData(type: .asfDeviceId(username: username))
-
-                // Fetch
-                let asfDeviceId: CredentialStoreData? = try? await credentialClient.fetchData(type: .asfDeviceId(username: username))
-                XCTAssertNil(asfDeviceId)
-                expectation.fulfill()
             }
-
-        }
-
-        await waitForExpectations(timeout: 1)
+        })
     }
 
     func testMultipleFailuresDuringFetch() async throws {
+        await withThrowingTaskGroup(of: Void.self, body: { group in
+            for _ in 1...100 {
+                group.addTask {
+                    let deviceId = "someDeviceID-\(UUID().uuidString)"
+                    let username = "someUsername-\(UUID().uuidString)"
 
-        let expectation = expectation(description: "Run multiple store operations")
-        expectation.expectedFulfillmentCount = 100
+                    // Fetch
+                    do {
+                        _ = try await self.credentialClient.fetchData(
+                            type: .asfDeviceId(username: username)
+                        )
+                        XCTFail("Expected error on initial fetch")
+                    } catch {}
 
-        for _ in 1...expectation.expectedFulfillmentCount {
-            Task {
-                let deviceId = "someDeviceID-\(UUID().uuidString)"
-                let username = "someUsername-\(UUID().uuidString)"
+                    // Store
+                    try await self.credentialClient.storeData(
+                        data: .asfDeviceId(deviceId, username)
+                    )
 
-                // Fetch
-                let deviceData: CredentialStoreData? = try? await credentialClient.fetchData(
-                    type: .asfDeviceId(username: username))
-                XCTAssertNil(deviceData)
+                    // Delete
+                    try await self.credentialClient.deleteData(
+                        type: .asfDeviceId(username: username)
+                    )
 
-                // Store
-                try await credentialClient.storeData(
-                    data: .asfDeviceId(deviceId, username))
-
-                // Delete
-                try await credentialClient.deleteData(type: .asfDeviceId(username: username))
-
-                // Fetch
-                let asfDeviceId: CredentialStoreData? = try? await credentialClient.fetchData(type: .asfDeviceId(username: username))
-                XCTAssertNil(asfDeviceId)
-
-                expectation.fulfill()
+                    // Fetch
+                    do {
+                        _ = try await self.credentialClient.fetchData(
+                            type: .asfDeviceId(username: username)
+                        )
+                        XCTFail("Expected error on second fetch")
+                    } catch {}
+                }
             }
-
-        }
-
-        await waitForExpectations(timeout: 1)
+        })
     }
 }

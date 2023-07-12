@@ -19,8 +19,9 @@ class AWSLocationGeoPluginConfigureTests: AWSLocationGeoPluginTestBase {
 
     // MARK: - Configuration tests
 
-    func testConfigureSuccess() {
-        geoPlugin.reset()
+    func testConfigureSuccess() async {
+        let resettable = geoPlugin as Resettable
+        await resettable.reset()
 
         do {
             try geoPlugin.configure(using: GeoPluginTestConfig.geoPluginConfigJSON)

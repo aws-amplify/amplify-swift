@@ -46,7 +46,11 @@ extension MultiServiceBehavior {
     /// Method that fetch result from offline and online service
     func invokeMultiServiceCalls() async throws -> MultiServiceResponse<ServiceResult> {
         async let onlineTask = try fetchOnlineResult()
+    #if os(iOS) || os(macOS)
         async let offlineTask = try fetchOfflineResult()
+    #else
+        async let offlineTask: ServiceResult? = nil
+    #endif
         let (online, offline) = try await (onlineTask, offlineTask)
         return MultiServiceResponse(onlineResult: online, offlineResult: offline)
     }

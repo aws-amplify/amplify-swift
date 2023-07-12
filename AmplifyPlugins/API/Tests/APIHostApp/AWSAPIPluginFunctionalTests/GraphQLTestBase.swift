@@ -7,7 +7,11 @@
 
 import XCTest
 import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 class GraphQLTestBase: XCTestCase {
     func mutateModel<M: Model>(request: GraphQLRequest<M>) async throws -> M {

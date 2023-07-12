@@ -72,7 +72,7 @@ class PinpointRequestsRegistryTests: XCTestCase {
 
     private func createSdkRequest(for api: PinpointRequestsRegistry.API?) throws -> SdkHttpRequest {
         let apiPath = api?.rawValue ?? "otherApi"
-        let endpoint = try Endpoint(urlString: "https://host:port/path/\(apiPath)/suffix")
+        let endpoint = try Endpoint(urlString: "https://host:42/path/\(apiPath)/suffix")
         let headers = [
             "User-Agent": "mocked_user_agent"
         ]

@@ -34,7 +34,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testSaveHasOneParent_withoutChild_success() async throws {
         await setup(withModels: HasOneModels())
         let parent = HasOneParent()
-        try await saveAndWaitForSync(parent)
+        try await createAndWaitForSync(parent)
     }
 
     /*
@@ -47,7 +47,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testSaveHasOneChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
-        try await saveAndWaitForSync(child)
+        try await createAndWaitForSync(child)
     }
 
     /*
@@ -60,10 +60,10 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testSaveHasOneParent_withChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
-        try await saveAndWaitForSync(child)
+        try await createAndWaitForSync(child)
         // populating `hasOneParentChildId` is required to sync successfully
         let parent = HasOneParent(child: child, hasOneParentChildId: child.id)
-        try await saveAndWaitForSync(parent)
+        try await createAndWaitForSync(parent)
         
         // Query from API
         let response = try await Amplify.API.query(request: .get(HasOneParent.self, byId: parent.id))
@@ -113,9 +113,9 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testUpdateHasOneParent_withNewChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
-        let savedChild = try await saveAndWaitForSync(child)
+        let savedChild = try await createAndWaitForSync(child)
         let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
 
         var queriedParent = try await query(for: savedParent)
         XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
@@ -127,7 +127,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
                             ]))
 
         let newChild = HasOneChild()
-        let savedNewChild = try await saveAndWaitForSync(newChild)
+        let savedNewChild = try await createAndWaitForSync(newChild)
 
         // Update parent to new child
         queriedParent.setChild(savedNewChild)
@@ -191,7 +191,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testDeleteHasOneChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
-        let savedChild = try await saveAndWaitForSync(child)
+        let savedChild = try await createAndWaitForSync(child)
         try await assertModelExists(savedChild)
 
         try await deleteAndWaitForSync(savedChild)
@@ -209,7 +209,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testDeleteHasOneParent_withoutChild_success() async throws {
         await setup(withModels: HasOneModels())
         let parent = HasOneParent()
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
         try await assertModelExists(savedParent)
 
         try await deleteAndWaitForSync(savedParent)
@@ -227,9 +227,9 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testDeleteHasOneParent_withChild_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
-        let savedChild = try await saveAndWaitForSync(child)
+        let savedChild = try await createAndWaitForSync(child)
         let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
 
         let queriedParent = try await query(for: savedParent)
         XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
@@ -250,9 +250,9 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
     func testDeleteHasOneChild_withParent_success() async throws {
         await setup(withModels: HasOneModels())
         let child = HasOneChild()
-        let savedChild = try await saveAndWaitForSync(child)
+        let savedChild = try await createAndWaitForSync(child)
         let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
-        let savedParent = try await saveAndWaitForSync(parent)
+        let savedParent = try await createAndWaitForSync(parent)
 
         let queriedParent = try await query(for: savedParent)
         XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)

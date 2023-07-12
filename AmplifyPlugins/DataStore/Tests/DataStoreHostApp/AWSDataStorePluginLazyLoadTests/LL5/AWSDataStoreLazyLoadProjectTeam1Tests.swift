@@ -23,7 +23,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
     func testSaveTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         try await assertModelExists(savedTeam)
     }
     
@@ -31,7 +31,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: ProjectTeam1Models())
         let project = Project(projectId: UUID().uuidString,
                               name: "name")
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         try await assertModelExists(savedProject)
         assertProjectDoesNotContainTeam(savedProject)
     }
@@ -39,7 +39,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
     func testSaveProjectWithTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         
         // Project initializer variation #1 (pass both team reference and fields in)
         let project = Project(projectId: UUID().uuidString,
@@ -47,7 +47,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
                               team: team,
                               project1TeamTeamId: team.teamId,
                               project1TeamName: team.name)
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         let queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
         
@@ -55,7 +55,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         let project2 = Project(projectId: UUID().uuidString,
                                name: "name",
                                team: team)
-        let savedProject2 = try await saveAndWaitForSync(project2)
+        let savedProject2 = try await createAndWaitForSync(project2)
         let queriedProject2 = try await query(for: savedProject2)
         assertProjectDoesNotContainTeam(queriedProject2)
         
@@ -64,7 +64,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
                                name: "name",
                                project1TeamTeamId: team.teamId,
                                project1TeamName: team.name)
-        let savedProject3 = try await saveAndWaitForSync(project3)
+        let savedProject3 = try await createAndWaitForSync(project3)
         let queriedProject3 = try await query(for: savedProject3)
         assertProject(queriedProject3, hasTeam: savedTeam)
     }
@@ -73,9 +73,9 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: ProjectTeam1Models())
         
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         let projectWithTeam = initializeProjectWithTeam(savedTeam)
-        let savedProjectWithTeam = try await saveAndWaitForSync(projectWithTeam)
+        let savedProjectWithTeam = try await createAndWaitForSync(projectWithTeam)
         let queriedProjectWithTeam = try await query(for: savedProjectWithTeam)
         assertProject(queriedProjectWithTeam, hasTeam: savedTeam)
         
@@ -86,7 +86,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
 
         // Update the team with the project.
         queriedTeam.setProject(queriedProjectWithTeam)
-        let savedTeamWithProject = try await saveAndWaitForSync(queriedTeam, assertVersion: 2)
+        let savedTeamWithProject = try await updateAndWaitForSync(queriedTeam)
         
         assertLazyReference(
             savedTeamWithProject._project,
@@ -121,65 +121,65 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
     func testSaveProjectWithTeamThenUpdate() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         assertProject(savedProject, hasTeam: savedTeam)
         let queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
-        let updatedProject = try await saveAndWaitForSync(project, assertVersion: 2)
+        let updatedProject = try await updateAndWaitForSync(project)
         assertProject(updatedProject, hasTeam: savedTeam)
     }
     
     func testSaveProjectWithoutTeamUpdateProjectWithTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let project = Project(projectId: UUID().uuidString, name: "name")
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         assertProjectDoesNotContainTeam(savedProject)
         
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         var queriedProject = try await query(for: savedProject)
         queriedProject.project1TeamTeamId = team.teamId
         queriedProject.project1TeamName = team.name
-        let savedProjectWithNewTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
+        let savedProjectWithNewTeam = try await updateAndWaitForSync(queriedProject)
         assertProject(savedProjectWithNewTeam, hasTeam: savedTeam)
     }
     
     func testSaveTeamSaveProjectWithTeamUpdateProjectToNoTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         var queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
         queriedProject.project1TeamTeamId = nil
         queriedProject.project1TeamName = nil
-        let savedProjectWithNoTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
+        let savedProjectWithNoTeam = try await updateAndWaitForSync(queriedProject)
         assertProjectDoesNotContainTeam(savedProjectWithNoTeam)
     }
     
     func testSaveProjectWithTeamUpdateProjectToNewTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         let newTeam = Team(teamId: UUID().uuidString, name: "name")
-        let savedNewTeam = try await saveAndWaitForSync(newTeam)
+        let savedNewTeam = try await createAndWaitForSync(newTeam)
         var queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
         queriedProject.project1TeamTeamId = newTeam.teamId
         queriedProject.project1TeamName = newTeam.name
-        let savedProjectWithNewTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
+        let savedProjectWithNewTeam = try await updateAndWaitForSync(queriedProject)
         assertProject(queriedProject, hasTeam: savedNewTeam)
     }
     
     func testDeleteTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         try await assertModelExists(savedTeam)
         try await deleteAndWaitForSync(savedTeam)
         try await assertModelDoesNotExist(savedTeam)
@@ -188,7 +188,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
     func testDeleteProject() async throws {
         await setup(withModels: ProjectTeam1Models())
         let project = Project(projectId: UUID().uuidString, name: "name")
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         try await assertModelExists(savedProject)
         try await deleteAndWaitForSync(savedProject)
         try await assertModelDoesNotExist(savedProject)
@@ -197,9 +197,9 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
     func testDeleteProjectWithTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
-        let savedProject = try await saveAndWaitForSync(project)
+        let savedProject = try await createAndWaitForSync(project)
         
         try await assertModelExists(savedProject)
         try await assertModelExists(savedTeam)
@@ -217,7 +217,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: ProjectTeam1Models())
         try await startAndWaitForReady()
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
         
         let mutationEventReceived = asyncExpectation(description: "Received mutation event")
@@ -278,7 +278,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: ProjectTeam1Models())
         try await startAndWaitForReady()
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let savedTeam = try await saveAndWaitForSync(team)
+        let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
         
         let snapshotReceived = asyncExpectation(description: "Received query snapshot")

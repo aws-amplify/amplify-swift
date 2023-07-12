@@ -118,7 +118,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
             }
         })
 
-        waitForExpectations(timeout: 0.05)
+        waitForExpectations(timeout: 1.0)
         sink.cancel()
     }
 }

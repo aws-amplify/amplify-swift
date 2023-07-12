@@ -79,7 +79,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }
 
     /// Test whether calling reset removes the plugin added

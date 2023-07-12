@@ -12,7 +12,9 @@ import Combine
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
@@ -36,7 +38,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     
     func testCreate() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let date = Temporal.DateTime.now()
         let newPost = Post(
@@ -55,20 +57,25 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let syncReceived = expectation(description: "SyncReceived(MutationEvent(version: 1))")
         let localEventReceived = expectation(description: "received mutation event with version nil")
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
+
         Amplify.Hub.publisher(for: .dataStore)
             .sink { payload in
                 let event = DataStoreHubEvent(payload: payload)
                 switch event {
-                case .outboxMutationEnqueued:
-                    outboxMutationEnqueued.fulfill()
+                case .outboxMutationEnqueued(let event):
+                    if event.element.model.identifier == newPost.identifier {
+                        outboxMutationEnqueued.fulfill()
+                    }
                 case .outboxStatus(let status):
                     if !status.isEmpty {
                         outboxIsNotEmptyReceived.fulfill()
                     } else {
                         outboxIsEmptyReceived.fulfill()
                     }
-                case .outboxMutationProcessed:
-                    outboxMutationProcessed.fulfill()
+                case .outboxMutationProcessed(let event):
+                    if event.element.model.identifier == newPost.identifier {
+                        outboxMutationProcessed.fulfill()
+                    }
                 case .syncReceived(let mutationEvent):
                     guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                         return
@@ -77,14 +84,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                         XCTAssertEqual(post.content, newPost.content)
                         XCTAssertEqual(mutationEvent.version, 1)
                         syncReceived.fulfill()
-                        return
                     }
                 default:
                     break
                 }
             }.store(in: &cancellables)
 
-        let task = Task {
+        Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
@@ -109,7 +115,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             syncReceived,
             localEventReceived,
             remoteEventReceived
-        ], timeout: 10)
+        ], timeout: 30)
     }
 
     func testCreateMutateDelete() async throws {
@@ -530,8 +536,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
 
         let parallelSize = 100
-        let initExpectation = asyncExpectation(description: "expect MutationEventPublisher works fine")
-        let parallelExpectation = asyncExpectation(description: "expect parallel processing no data loss")
+        let initExpectation = expectation(description: "expect MutationEventPublisher works fine")
+        let parallelExpectation = expectation(description: "expect parallel processing no data loss")
 
         let newPost = Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
 
@@ -553,7 +559,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             .compactMap(extractPost)
             .sink { post in
                 if post.title == newPost.title {
-                    Task { await initExpectation.fulfill() }
+                    initExpectation.fulfill()
                 }
 
                 if post.title.hasPrefix(titlePrefix) {
@@ -561,11 +567,11 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
 
                 if expectedResult.count == parallelSize {
-                    Task { await parallelExpectation.fulfill() }
+                    parallelExpectation.fulfill()
                 }
             }
         try await Amplify.DataStore.save(newPost)
-        await AsyncTesting.waitForExpectations([initExpectation], timeout: 10)
+        await fulfillment(of: [initExpectation], timeout: 10)
         try await Task.sleep(seconds: 1)
 
         for post in posts {
@@ -573,7 +579,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 try? await Amplify.DataStore.save(post)
             }
         }
-        await AsyncTesting.waitForExpectations([parallelExpectation], timeout: Double(parallelSize))
+        await fulfillment(of: [parallelExpectation], timeout: Double(parallelSize))
         cancellable.cancel()
         XCTAssertEqual(expectedResult, Set(posts.map(\.title)))
     }

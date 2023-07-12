@@ -26,6 +26,7 @@ class AWSPinpointPushNotificationsPluginTestBase: XCTestCase {
     }
     
     override func tearDown() async throws {
-        plugin.reset()
+        let resettable = plugin as Resettable
+        await resettable.reset()
     }
 }

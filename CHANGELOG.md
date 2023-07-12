@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.12.0 (2023-06-26)
+
+### Features
+
+- Adding support for tvOS and watchOS (#3051)
+
+## 2.11.7 (2023-06-20)
+
+### Bug Fixes
+
+- **datastore**: support CPK sort key with AWS date types (#3020)
+- **datastore**: support CPK with sortKey for GraphQL scalar types (#3012)
+
 ## 2.11.6 (2023-06-07)
 
 ### Bug Fixes

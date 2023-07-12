@@ -8,14 +8,16 @@
 import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 import AWSAPIPlugin
 
 class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
 
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationV2Tests-amplifyconfiguration"
 
-    static let networkTimeout = TimeInterval(180)
+    static let networkTimeout = TimeInterval(60)
     let networkTimeout = SyncEngineIntegrationV2TestBase.networkTimeout
 
     // Convenience property to obtain a handle to the underlying storage adapter implementation, for use in asserting
