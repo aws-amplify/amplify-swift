@@ -56,8 +56,12 @@ final class WebSocketSession {
         task?.resume()
     }
 
-    func close(with code: URLSessionWebSocketTask.CloseCode, reason: Data = .init()) {
-        task?.cancel(with: code, reason: reason)
+    func close(with code: URLSessionWebSocketTask.CloseCode?, reason: Data? = nil) {
+        if let code {
+            task?.cancel(with: code, reason: reason)
+        } else {
+            task?.cancel()
+        }
     }
 
     func send(

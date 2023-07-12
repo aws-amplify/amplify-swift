@@ -54,6 +54,10 @@ public final class FaceLivenessSession: LivenessService {
         serverEventListeners[event] = listener
     }
 
+    public func closeSocket(with code: URLSessionWebSocketTask.CloseCode) {
+        websocket.close(with: code)
+    }
+
     public func initializeLivenessStream(withSessionID sessionID: String, userAgent: String = "") throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
         components?.queryItems = [
