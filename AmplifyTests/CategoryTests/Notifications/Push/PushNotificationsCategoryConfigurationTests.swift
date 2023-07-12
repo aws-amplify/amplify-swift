@@ -123,7 +123,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(createAmplifyConfig())
 
         await Amplify.reset()
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }
 
     // MARK: - Category tests
@@ -140,7 +140,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(createAmplifyConfig())
 
         try await Amplify.Notifications.Push.identifyUser(userId: "test")
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1.0)
     }
 
     func testUsingCategory_withMultiplePlugins_shouldThrowFatalError() async throws {
@@ -234,7 +234,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(createAmplifyConfig(hasSecondPlugin: true))
 
         try await Amplify.Notifications.Push.getPlugin(for: "MockSecondPushNotificationsCategoryPlugin").identifyUser(userId: "test", userProfile: nil)
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin], timeout: 1.0)
     }
 
     func testUsingPlugin_callingConfigure_shouldSucceed() throws {

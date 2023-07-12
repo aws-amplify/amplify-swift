@@ -14,7 +14,7 @@ extension AWSLocationGeoPlugin {
     ///
     /// Sets stored objects to nil to allow deallocation, then calls onComplete closure
     /// to signal the reset has completed.
-    public func reset() {
+    public func reset() async {
         locationService = nil
         authService = nil
         pluginConfig = nil

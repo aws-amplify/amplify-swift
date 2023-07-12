@@ -73,7 +73,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }
 
     func testResetRemovesAddedPlugin() async throws {

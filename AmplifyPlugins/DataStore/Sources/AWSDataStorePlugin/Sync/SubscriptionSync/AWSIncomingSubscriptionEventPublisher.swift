@@ -68,13 +68,13 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
 // MARK: Resettable
 extension AWSIncomingSubscriptionEventPublisher: Resettable {
 
-    func reset() {
+    func reset() async {
         Amplify.log.verbose("Resetting asyncEvents")
         asyncEvents.reset()
         Amplify.log.verbose("Resetting asyncEvents: finished")
 
         Amplify.log.verbose("Resetting mapper")
-        mapper.reset()
+        await mapper.reset()
         Amplify.log.verbose("Resetting mapper: finished")
     }
 

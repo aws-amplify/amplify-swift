@@ -5,13 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import XCTest
 @testable import AWSAPIPlugin
 
 class AWSAPICategoryPluginResetTests: AWSAPICategoryPluginTestBase {
 
     func testReset() async {
-        await apiPlugin.reset()
+        let resettable = apiPlugin as Resettable
+        await resettable.reset()
 
         XCTAssertNotNil(apiPlugin.mapper)
         XCTAssertEqual(apiPlugin.mapper.operations.count, 0)
