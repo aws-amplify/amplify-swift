@@ -33,7 +33,9 @@ runs:
         PROJECT_PATH: ${{ inputs.project_path }}
         XCODE_PATH: ${{ inputs.xcode_path }}
       run: |
-        cd $PROJECT_PATH
+        if [ ! -z "$PROJECT_PATH" ]; then
+          cd $PROJECT_PATH
+        fi
         if [ ! -z "$XCODE_PATH" ]; then
           sudo xcode-select -s $XCODE_PATH
         fi
