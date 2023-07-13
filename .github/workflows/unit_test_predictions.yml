@@ -17,6 +17,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: AWSPredictionsPlugin
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   predictions-unit-test-macOS:
     runs-on: macos-13

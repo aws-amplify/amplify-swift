@@ -17,6 +17,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: AWSPinpointAnalyticsPlugin
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   analytics-unit-test-macOS:
     runs-on: macos-13
