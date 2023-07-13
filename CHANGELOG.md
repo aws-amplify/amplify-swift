@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.13.0 (2023-07-13)
+
+### Features
+
+- Add default reset implementation for Plugins (#3080)
+
+### Bug Fixes
+
+- encoded key ordering (#3057)
+
 ## 2.12.0 (2023-06-26)
 
 ### Features
