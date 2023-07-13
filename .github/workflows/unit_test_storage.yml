@@ -13,7 +13,9 @@ jobs:
   storage-unit-test-iOS:
     runs-on: macos-13
     steps:
-      - uses: ./.github/composite_actions/checkout
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -23,7 +25,9 @@ jobs:
   storage-unit-test-macOS:
     runs-on: macos-13
     steps:
-      - uses: ./.github/composite_actions/checkout
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -35,7 +39,9 @@ jobs:
   storage-unit-test-tvOS:
     runs-on: macos-13
     steps:
-      - uses: ./.github/composite_actions/checkout
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -47,7 +53,9 @@ jobs:
   storage-unit-test-watchOS:
     runs-on: macos-13
     steps:
-      - uses: ./.github/composite_actions/checkout
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
