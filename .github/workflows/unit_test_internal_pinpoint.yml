@@ -1,0 +1,61 @@
+name: Unit Tests | Internal Pinpoint
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+    contents: read
+
+jobs:
+  internal-pinpoint-unit-test-iOS:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+      - name: Run Unit Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: InternalAWSPinpointUnitTests
+
+  internal-pinpoint-unit-test-macOS:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+      - name: Run Unit Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: InternalAWSPinpointUnitTests
+          destination: platform=macOS,arch=x86_64
+          sdk: macosx
+          xcode_path: '/Applications/Xcode_14.3.app'
+
+  internal-pinpoint-unit-test-tvOS:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+      - name: Run Unit Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: scheme: InternalAWSPinpointUnitTests
+          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
+          sdk: appletvsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
+
+  internal-pinpoint-unit-test-watchOS:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+      - name: Run Unit Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: InternalAWSPinpointUnitTests
+          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
+          sdk: watchsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
