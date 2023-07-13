@@ -59,8 +59,10 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         interactions.append(#function)
     }
 
-    public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventHandler) {
+        
+    public func download(serviceKey: String, fileURL: URL?, accelerate: Bool?, onEvent: @escaping StorageServiceDownloadEventHandler) {
         interactions.append(#function)
+
         downloadCalled += 1
 
         downloadServiceKey = serviceKey
@@ -75,10 +77,14 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
         return URL(fileURLWithPath: NSTemporaryDirectory())
     }
 
-    public func getPreSignedURL(serviceKey: String, signingOperation: AWSS3SigningOperation, expires: Int) async throws -> URL {
-        interactions.append("\(#function) \(serviceKey) \(signingOperation) \(expires)")
-        return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
-    }
+    public func getPreSignedURL(
+        serviceKey: String,
+        signingOperation: AWSS3SigningOperation,
+        accelerate: Bool?,
+        expires: Int) async throws -> URL {
+            interactions.append("\(#function) \(serviceKey) \(signingOperation) \(expires)")
+            return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
+        }
 
     var validateObjectExistenceHandler: (String) async throws -> Void = { _ in }
 
@@ -91,6 +97,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
                        uploadSource: UploadSource,
                        contentType: String?,
                        metadata: [String: String]?,
+                       accelerate: Bool?,
                        onEvent: @escaping StorageServiceUploadEventHandler) {
         interactions.append(#function)
         uploadCalled += 1
@@ -109,6 +116,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
                                 uploadSource: UploadSource,
                                 contentType: String?,
                                 metadata: [String: String]?,
+                                accelerate: Bool?,
                                 onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
         interactions.append(#function)
         multiPartUploadCalled += 1
