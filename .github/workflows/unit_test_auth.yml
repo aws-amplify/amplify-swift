@@ -19,7 +19,7 @@ jobs:
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: "$SCHEME"
+          scheme: ${{ env.SCHEME }}
           xcode_path: '/Applications/Xcode_14.3.app'
 
   auth-unit-test-macOS:
@@ -31,7 +31,7 @@ jobs:
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: "$SCHEME"
+          scheme: ${{ env.SCHEME }}
           destination: platform=macOS,arch=x86_64
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
@@ -45,7 +45,7 @@ jobs:
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: "$SCHEME"
+          scheme: ${{ env.SCHEME }}
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
@@ -59,7 +59,7 @@ jobs:
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: "$SCHEME"
+          scheme: ${{ env.SCHEME }}
           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
