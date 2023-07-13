@@ -42,7 +42,7 @@ jobs:
       - name: Build Amplify Swift for tvOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
-          scheme: scheme: Amplify-Package
+          scheme: Amplify-Package
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'

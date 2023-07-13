@@ -41,7 +41,7 @@ jobs:
       - name: Run Unit Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: scheme: AWSPredictionsPlugin
+          scheme: AWSPredictionsPlugin
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
