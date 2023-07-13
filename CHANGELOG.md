@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.14.1 (2023-07-13)
+
+### Bug Fixes
+
+- **predictions**: add method to send socket close frame (#3081)
+
 ## 2.14.0 (2023-07-13)
 
 ### Features
