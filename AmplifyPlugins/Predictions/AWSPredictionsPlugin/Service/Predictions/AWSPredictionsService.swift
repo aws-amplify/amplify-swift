@@ -101,16 +101,6 @@ class AWSPredictionsService {
         self.predictionsConfig = configuration
     }
 
-    func reset() {
-        awsTranslate = nil
-        awsRekognition = nil
-        awsTextract = nil
-        awsComprehend = nil
-        awsPolly = nil
-        awsTranscribeStreaming = nil
-        identifier = nil
-    }
-
     func getEscapeHatch<T>(client: PredictionsAWSService<T>) -> T {
         client.fetch(self)
     }

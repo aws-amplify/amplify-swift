@@ -413,7 +413,7 @@ extension OutgoingMutationQueue: Subscriber {
 }
 
 extension OutgoingMutationQueue: Resettable {
-    func reset() {
+    func reset() async {
         doStopWithoutNotifyingStateMachine()
     }
 }

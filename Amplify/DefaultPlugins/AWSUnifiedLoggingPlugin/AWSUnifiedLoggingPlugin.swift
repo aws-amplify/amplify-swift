@@ -50,7 +50,7 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
     }
 
     /// Removes listeners and empties the message queue
-    public func reset() {
+    public func reset() async {
         concurrencyQueue.sync {
             registeredLogs = [:]
         }

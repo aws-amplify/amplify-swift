@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   storage-integration-test-iOS:
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -32,6 +32,8 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
           scheme: AWSS3StoragePluginIntegrationTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   storage-integration-test-tvOS:
     runs-on: macos-13

@@ -72,7 +72,7 @@ orbs:
         parameters:
           xcode-version:
             type: string
-            default: 13.4.1
+            default: 14.3.0
           simulator-device:
             type: string
             default: iPhone 13
@@ -102,7 +102,7 @@ orbs:
 
 defaults: &defaults
   macos:
-    xcode: '14.0.0'
+    xcode: '14.3.0'
   resource_class: macos.x86.medium.gen2
   environment:
     BUNDLE_JOBS: 4
@@ -184,7 +184,7 @@ jobs:
     parameters:
       xcode-version:
         type: string
-        default: 14.0.0
+        default: 14.3.0
       scheme:
         type: string
       sdk:

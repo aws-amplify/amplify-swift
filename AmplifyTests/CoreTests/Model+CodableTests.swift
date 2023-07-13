@@ -11,7 +11,7 @@ import AmplifyTestCommon
 
 class ModelCodableTests: XCTestCase {
     let postJSONWithFractionalSeconds = """
-    {"id":"post-1","title":"title","content":"content","comments":[],"createdAt":"1970-01-12T13:46:40.123Z"}
+    {"comments":[],"content":"content","createdAt":"1970-01-12T13:46:40.123Z","id":"post-1","title":"title"}
     """
 
     let postJSONWithoutFractionalSeconds = """
@@ -23,25 +23,27 @@ class ModelCodableTests: XCTestCase {
         ModelRegistry.register(modelType: Comment.self)
     }
 
-    func testToJSON() {
+    func testToJSON() throws {
         let createdAt = Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000.123))
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: createdAt)
-        XCTAssertEqual(try? post.toJSON(), postJSONWithFractionalSeconds)
+        let j = try post.toJSON()
+        print(j)
+        XCTAssertEqual(try post.toJSON(), postJSONWithFractionalSeconds)
     }
 
-    func testDecodeWithFractionalSeconds() {
-        let post = try? ModelRegistry.decode(modelName: Post.modelName, from: postJSONWithFractionalSeconds) as? Post
+    func testDecodeWithFractionalSeconds() throws {
+        let post = try ModelRegistry.decode(modelName: Post.modelName, from: postJSONWithFractionalSeconds) as? Post
         XCTAssertEqual(post?.id, "post-1")
         XCTAssertEqual(post?.title, "title")
         XCTAssertEqual(post?.content, "content")
         XCTAssertEqual(post?.createdAt, Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000.123)))
     }
 
-    func testDecodeWithoutFractionalSeconds() {
-        let post = try? ModelRegistry.decode(modelName: Post.modelName, from: postJSONWithoutFractionalSeconds) as? Post
+    func testDecodeWithoutFractionalSeconds() throws {
+        let post = try ModelRegistry.decode(modelName: Post.modelName, from: postJSONWithoutFractionalSeconds) as? Post
         XCTAssertEqual(post?.id, "post-1")
         XCTAssertEqual(post?.title, "title")
         XCTAssertEqual(post?.content, "content")

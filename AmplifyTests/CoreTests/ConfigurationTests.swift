@@ -119,7 +119,7 @@ class ConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        wait(for: [resetWasInvoked], timeout: 1.0)
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }
 
     func testResetAllowsReconfiguration() async throws {

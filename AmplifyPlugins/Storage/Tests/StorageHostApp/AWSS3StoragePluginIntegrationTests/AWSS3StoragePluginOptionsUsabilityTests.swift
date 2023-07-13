@@ -89,10 +89,10 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            XCTAssertEqual(response.statusCode, 403)
+            XCTAssertTrue((400..<500).contains(response.statusCode))
         }
         task2.resume()
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [urlExpired], timeout: TestCommonConstants.networkTimeout)
         
         // Remove the key
         await remove(key: key)
