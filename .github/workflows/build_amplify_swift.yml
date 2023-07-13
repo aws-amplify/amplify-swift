@@ -7,7 +7,7 @@ permissions:
     contents: read
 
 jobs:
-  analytics-unit-test-iOS:
+  build-amplify-swift-iOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -19,7 +19,7 @@ jobs:
           scheme: Amplify-Package
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  analytics-unit-test-macOS:
+  build-amplify-swift-macOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -33,7 +33,7 @@ jobs:
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  analytics-unit-test-tvOS:
+  build-amplify-swift-tvOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -47,7 +47,7 @@ jobs:
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  analytics-unit-test-watchOS:
+  build-amplify-swift-watchOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
