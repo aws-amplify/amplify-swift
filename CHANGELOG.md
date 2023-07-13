@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.14.0 (2023-07-13)
+
+### Features
+
+- **auth**: Add OIDC support types & docs (#3064) (#3082)
+
 ## 2.13.0 (2023-07-13)
 
 ### Features
