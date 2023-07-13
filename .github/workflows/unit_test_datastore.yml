@@ -20,6 +20,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
           xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-unit-test-macOS:
