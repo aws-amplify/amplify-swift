@@ -1,7 +1,7 @@
 name: Unit Test | Amplify
 on:
   workflow_dispatch:
-  push:
+  # push:
 
 permissions:
     contents: read
