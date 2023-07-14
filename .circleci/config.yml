@@ -301,11 +301,7 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - checkout_code:
-          filter:
-            branches:
-              only:
-                - v1
+      - checkout_code
       - install_gems:
           requires:
             - checkout_code
