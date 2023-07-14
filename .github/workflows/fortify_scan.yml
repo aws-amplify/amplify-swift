@@ -47,9 +47,11 @@ jobs:
       - name: Run Installer
         continue-on-error: true
         run: |
-          arch -86_64 Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
-          Fortify/bin/fortifyupdate -acceptKey
-          Fortify/bin/sourceanalyzer -version
+          arch -x86_64 Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+          export PATH=~/amplify-swift/Fortify/bin:$PATH
+          echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
+          fortifyupdate -acceptKey
+          sourceanalyzer -version
 
       - name: Run Scan
         run: |
