@@ -282,17 +282,6 @@ jobs:
 
 deploy_requires: &deploy_requires
   requires:
-    - build_test_amplify
-    - build_amplify_spm
-    - build_test_aws_plugins_core
-    - unit_test_analytics
-    - unit_test_api
-    - unit_test_auth
-    - unit_test_core_ml
-    - unit_test_datastore
-    - unit_test_geo
-    - unit_test_predictions
-    - unit_test_storage
     - fortify_scan
 
 workflows:
