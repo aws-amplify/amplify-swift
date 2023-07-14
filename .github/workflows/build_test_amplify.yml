@@ -1,7 +1,7 @@
 name: Build Test Amplify
 on:
   workflow_dispatch:
-  workflow_call:
+  push:
 
 env:
   DESTINATION: 'platform=iOS Simulator,name=iPhone 13,OS=latest'
