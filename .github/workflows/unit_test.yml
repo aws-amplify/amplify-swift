@@ -17,7 +17,7 @@ jobs:
       - name: Unit Test AWSPluginsCore
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          project_path: ./AmplifyPlugins/AWSPluginsCore/
+          project_path: .
           workspace: Amplify.xcworkspace
           scheme: AWSPluginsCore
 
@@ -32,7 +32,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Analytics/
-          workspace: AnalyticsCategoryPlugin
+          workspace: AnalyticsCategoryPlugin.xcworkspace
           scheme: AWSPinpointAnalyticsPlugin
 
   unit-test-api:
@@ -46,7 +46,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/API/
-          workspace: APICategoryPlugin
+          workspace: APICategoryPlugin.xcworkspace
           scheme: AWSAPICategoryPlugin
 
   unit-test-auth:
@@ -60,7 +60,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Auth/
-          workspace: AWSCognitoAuthPlugin
+          workspace: AWSCognitoAuthPlugin.xcworkspace
           scheme: AWSCognitoAuthPlugin
 
   unit-test-datastore:
@@ -74,7 +74,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/DataStore/
-          workspace: DataStoreCategoryPlugin
+          workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreCategoryPlugin
 
   unit-test-geo:
@@ -88,7 +88,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Geo/
-          workspace: GeoCategoryPlugin
+          workspace: GeoCategoryPlugin.xcworkspace
           scheme: AWSLocationGeoPlugin
 
   unit-test-predictions:
@@ -102,7 +102,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Predictions/
-          workspace: PredictionsCategoryPlugin
+          workspace: PredictionsCategoryPlugin.xcworkspace
           scheme: CoreMLPredictionsPlugin
 
   unit-test-storage:
@@ -116,5 +116,5 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Storage/
-          workspace: StoragePlugin
+          workspace: StoragePlugin.xcworkspace
           scheme: AWSS3StoragePlugin
