@@ -28,7 +28,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GHAFortifySession
-          role-duration-seconds: 300
+          role-duration-seconds: 900
 
       - name: Download License
         run: |
