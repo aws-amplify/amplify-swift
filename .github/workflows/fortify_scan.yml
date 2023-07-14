@@ -45,6 +45,7 @@ jobs:
             aws s3 cp s3://${{ secrets.AWS_S3_FORTIFY_BUCKET }}${{ vars.SCRIPTS_PATH }} fortify_scan.sh
 
       - name: Run Installer
+        continue-on-error: true
         run: |
           Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
           export PATH=~/amplify-swift/Fortify/bin:$PATH
