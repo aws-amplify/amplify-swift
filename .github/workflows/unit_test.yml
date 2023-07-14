@@ -1,0 +1,120 @@
+name: Unit Test | Amplify
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+    contents: read
+
+jobs:
+  unit-test-aws-plugins-core:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test AWSPluginsCore
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/AWSPluginsCore/
+          workspace: Amplify.xcworkspace
+          scheme: AWSPluginsCore
+
+  unit-test-analytics:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test Analytics
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Analytics/
+          workspace: AnalyticsCategoryPlugin
+          scheme: AWSPinpointAnalyticsPlugin
+
+  unit-test-api:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test API
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/API/
+          workspace: APICategoryPlugin
+          scheme: AWSAPICategoryPlugin
+
+  unit-test-auth:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test Auth
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Auth/
+          workspace: AWSCognitoAuthPlugin
+          scheme: AWSCognitoAuthPlugin
+
+  unit-test-datastore:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test DataStore
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin
+          scheme: AWSDataStoreCategoryPlugin
+
+  unit-test-geo:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test Geo
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Geo/
+          workspace: GeoCategoryPlugin
+          scheme: AWSLocationGeoPlugin
+
+  unit-test-predictions:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test Predictions
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Predictions/
+          workspace: PredictionsCategoryPlugin
+          scheme: CoreMLPredictionsPlugin
+
+  unit-test-storage:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Unit Test Auth
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Storage/
+          workspace: StoragePlugin
+          scheme: AWSS3StoragePlugin
