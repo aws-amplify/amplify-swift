@@ -305,7 +305,7 @@ workflows:
       - install_gems:
           requires:
             - checkout_code
-          filter:
+          filters:
             branches:
               only:
                 - v1
@@ -314,7 +314,7 @@ workflows:
             - amplify-swift-aws-s3-download
           requires:
             - install_gems
-          filter:
+          filters:
             branches:
               only:
                 - v1
