@@ -27,6 +27,11 @@ extension LoggingCategory: CategoryConfigurable {
 
         try plugin.configure(using: configuration?.plugins[plugin.key])
         self.plugins[plugin.key] = plugin
+        
+        if let consolePlugin = try? self.getPlugin(for: AWSUnifiedLoggingPlugin.key) {
+            try consolePlugin.configure(using: configuration?.plugins[consolePlugin.key])
+        }
+        
         configurationState = .configured
     }
 
