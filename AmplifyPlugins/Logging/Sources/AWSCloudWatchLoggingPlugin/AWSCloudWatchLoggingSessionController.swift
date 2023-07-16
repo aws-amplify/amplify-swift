@@ -130,7 +130,10 @@ final class AWSCloudWatchLoggingSessionController {
                 do {
                     try await consumer.consume(batch: batch)
                 } catch {
-                    print(error)
+                    Amplify.Logging.default.error("Error flushing logs with error \(error.localizedDescription)")
+                    let payload = HubPayload(eventName: HubPayload.EventName.Logging.flushLogFailure, context: error.localizedDescription)
+                    Amplify.Hub.dispatch(to: HubChannel.logging, payload: payload)
+                    try batch.complete()
                 }
             }
         }

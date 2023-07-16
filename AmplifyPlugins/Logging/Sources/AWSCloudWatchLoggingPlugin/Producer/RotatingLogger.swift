@@ -67,7 +67,15 @@ final class RotatingLogger {
     private func _record(level: LogLevel, message: @autoclosure () -> String) {
         let payload = message()
         Task {
-            try await self.record(level: level, message:payload)
+            do {
+                try await self.record(level: level, message:payload)
+            } catch {
+                let payload = HubPayload(
+                    eventName: HubPayload.EventName.Logging.writeLogFailure,
+                    context: error.localizedDescription,
+                    data: payload)
+                Amplify.Hub.dispatch(to: HubChannel.logging, payload: payload)
+            }
         }
     }
 }
