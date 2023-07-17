@@ -94,7 +94,8 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
             do {
                 let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
                 let serviceKey = prefix + request.key
-                storageService.download(serviceKey: serviceKey, fileURL: self.request.local) { [weak self] event in
+                let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
+                storageService.download(serviceKey: serviceKey, fileURL: self.request.local, accelerate: accelerate) { [weak self] event in
                     self?.onServiceEvent(event: event)
                 }
             } catch {
