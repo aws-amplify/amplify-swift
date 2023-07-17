@@ -55,10 +55,11 @@ extension ConsoleLoggingConfiguration {
     static func decodeConfiguration(from data: Data) throws -> ConsoleLoggingConfiguration? {
         do {
             if let configuration = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let configurationJson = configuration["consoleLoggingPlugin"] as? String
+               let configurationJson = configuration["consoleLoggingPlugin"] as? [String: Any]
             {
                 let decoder = JSONDecoder()
-                let consoleLoggingConfiguration = try decoder.decode(ConsoleLoggingConfiguration.self, from: Data(configurationJson.utf8))
+                let data = try JSONSerialization.data(withJSONObject: configurationJson)
+                let consoleLoggingConfiguration = try decoder.decode(ConsoleLoggingConfiguration.self, from: data)
                 return consoleLoggingConfiguration
             }
         } catch {

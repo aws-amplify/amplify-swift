@@ -27,7 +27,9 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
     private var registeredLogs = [String: OSLogWrapper]()
 
     let subsystem: String
-
+    var enabled: Bool = true
+    private let lock = NSLock()
+    
     /// Initializes the logging system with a default log, and immediately registers a default logger
     public init() {
         self.subsystem = Bundle.main.bundleIdentifier ?? "com.amazonaws.amplify.AWSUnifiedLoggingPlugin"
@@ -72,6 +74,7 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
             let osLog = OSLog(subsystem: subsystem, category: category)
             let wrapper = OSLogWrapper(osLog: osLog,
                                        getLogLevel: { Amplify.Logging.logLevel })
+            wrapper.enabled = enabled
             registeredLogs[key] = wrapper
             return wrapper
         }
@@ -101,14 +104,20 @@ extension AWSUnifiedLoggingPlugin {
     }
     
     public func enable() {
-        for (_, logger) in registeredLogs {
-            logger.enabled = true
+        enabled = true
+        lock.execute {
+            for (_, logger) in registeredLogs {
+                logger.enabled = enabled
+            }
         }
     }
     
     public func disable() {
-        for (_, logger) in registeredLogs {
-            logger.enabled = false
+        enabled = false
+        lock.execute {
+            for (_, logger) in registeredLogs {
+                logger.enabled = enabled
+            }
         }
     }
     

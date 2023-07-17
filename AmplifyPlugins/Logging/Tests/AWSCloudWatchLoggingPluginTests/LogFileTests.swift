@@ -58,13 +58,13 @@ final class LogFileTests: XCTestCase {
     
     /// Given: a data is written
     /// When: there is not enough space to write
-    /// Then: the log file throws errror
-    func testLogFileWriteBeyondSpaceLimitThrowsError() throws {
-        let bytes = (0..<sizeLimitInBytes).map { _ in UInt8.random(in: 0..<255) }
+    /// Then: the log writes data
+    func testLogFileWritesBeyondSpaceLimit() throws {
+        let bytes = (0..<sizeLimitInBytes*2).map { _ in UInt8.random(in: 0..<255) }
         let data = Data(bytes)
         
         let availableBeforeWrite = systemUnderTest.hasSpace(for: data)
-        XCTAssertTrue(availableBeforeWrite)
+        XCTAssertFalse(availableBeforeWrite)
         
         try systemUnderTest.write(data: data)
 
@@ -75,17 +75,5 @@ final class LogFileTests: XCTestCase {
         
         let contents = FileManager.default.contents(atPath: fileURL.path)
         XCTAssertEqual(contents, data)
-        
-        do {
-            try systemUnderTest.write(data: data)
-            XCTFail("Expecting failure")
-        } catch {
-            XCTAssertNotNil(error)
-        }
-        
-        // Not partial writes allowed
-        let contentsAfterFailure = FileManager.default.contents(atPath: fileURL.path)
-        XCTAssertEqual(contentsAfterFailure, data)
     }
-    
 }

@@ -10,12 +10,6 @@ import Foundation
 /// Represents an individual log file on disk used as part of a
 /// LogRotation
 final class LogFile {
-    
-    /// Error types owned by the LogFile class.
-    enum IOError: Error {
-        case spaceExceeded(data: Data, sizeLimitInBytes: UInt64)
-    }
-    
     let fileURL: URL
     let sizeLimitInBytes: UInt64
     
@@ -48,7 +42,11 @@ final class LogFile {
     
     /// Returns the number of bytes available in the underlying file.
     var available: UInt64 {
-        return sizeLimitInBytes - count
+        if sizeLimitInBytes > count {
+            return sizeLimitInBytes - count
+        } else {
+            return 0
+        }
     }
     
     /// Attempts to close the underlying log file.
@@ -68,11 +66,7 @@ final class LogFile {
     
     /// Writes the given **single line of text** represented as a
     /// Data  to the underlying log file.
-    func write(data: Data) throws {
-        if !hasSpace(for: data) {
-            throw IOError.spaceExceeded(data: data, sizeLimitInBytes: sizeLimitInBytes)
-        }
-        
+    func write(data: Data) throws {        
         if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
             try self.handle.write(contentsOf: data)
         } else {
