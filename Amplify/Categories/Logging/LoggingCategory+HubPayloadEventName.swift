@@ -12,5 +12,5 @@ public extension HubPayload.EventName {
 
 public extension HubPayload.EventName.Logging {
     static let writeLogFailure = "Logging.writeLogFailure"
-    static let flushLogFailure = "Logging.writeLogFailure"
+    static let flushLogFailure = "Logging.flushLogFailure"
 }

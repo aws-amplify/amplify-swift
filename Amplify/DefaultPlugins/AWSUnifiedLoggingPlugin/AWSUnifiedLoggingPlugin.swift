@@ -28,6 +28,7 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
 
     let subsystem: String
     var enabled: Bool = true
+    private let lock = NSLock()
     
     /// Initializes the logging system with a default log, and immediately registers a default logger
     public init() {
@@ -104,15 +105,19 @@ extension AWSUnifiedLoggingPlugin {
     
     public func enable() {
         enabled = true
-        for (_, logger) in registeredLogs {
-            logger.enabled = enabled
+        lock.execute {
+            for (_, logger) in registeredLogs {
+                logger.enabled = enabled
+            }
         }
     }
     
     public func disable() {
         enabled = false
-        for (_, logger) in registeredLogs {
-            logger.enabled = enabled
+        lock.execute {
+            for (_, logger) in registeredLogs {
+                logger.enabled = enabled
+            }
         }
     }
     

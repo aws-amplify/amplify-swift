@@ -20,17 +20,17 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
     let mockCloudWatchLogClient = MockCloudWatchLogsClient()
     let mockLoggingNetworkMonitor = MockLoggingNetworkMonitor()
     let category = "amplifytest"
-    
+
     override func tearDown() async throws {
         systemUnderTest = nil
         let file = getLogFile()
         do {
             try FileManager.default.removeItem(atPath: file.path)
         } catch {
-            
+
         }
     }
-    
+
     /// Given: an AWSCloudWatchLoggingSessionController
     /// When: a flush log is called and fails to flush logs
     /// Then: a flushLogFailure Hub Event is sent to the Logging channel
@@ -44,19 +44,30 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
                 break
             }
         }
-        
+
         let bytes = (0..<1024).map { _ in UInt8.random(in: 0..<255) }
         let fileURL = getLogFile()
         FileManager.default.createFile(atPath: fileURL.path,
                                        contents: Data(bytes),
                                        attributes: [FileAttributeKey: Any]())
-        systemUnderTest = AWSCloudWatchLoggingSessionController(credentialsProvider: mockCredentialProvider, authentication: mockAuth, logFilter: mockLoggingFilter, category: category, namespace: nil, logLevel: .error, logGroupName: "logGroupName", region: "us-east-1", localStoreMaxSizeInMB: 1, userIdentifier: nil, networkMonitor: mockLoggingNetworkMonitor)
+        systemUnderTest = AWSCloudWatchLoggingSessionController(
+            credentialsProvider: mockCredentialProvider,
+            authentication: mockAuth,
+            logFilter: mockLoggingFilter,
+            category: category,
+            namespace: nil,
+            logLevel: .error,
+            logGroupName: "logGroupName",
+            region: "us-east-1",
+            localStoreMaxSizeInMB: 1,
+            userIdentifier: nil,
+            networkMonitor: mockLoggingNetworkMonitor)
         systemUnderTest.client = mockCloudWatchLogClient
         systemUnderTest.enable()
         try await systemUnderTest.flushLogs()
         await fulfillment(of: [hubEventExpectation], timeout: 2)
     }
-    
+
     private func getLogFile() -> URL {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         return documents.appendingPathComponent("amplify")
@@ -71,7 +82,7 @@ class MockLoggingFilter: AWSCloudWatchLoggingFilterBehavior {
     func canLog(withCategory category: String, logLevel: LogLevel, userIdentifier: String?) -> Bool {
         return true
     }
-    
+
     func getDefaultLogLevel(forCategory category: String, userIdentifier: String?) -> LogLevel {
         return .verbose
     }
