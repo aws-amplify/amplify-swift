@@ -6,7 +6,7 @@
 //
 
 public extension HubPayload.EventName {
-    /// Analytics hub events
+    /// Logging hub events
     struct Logging { }
 }
 
