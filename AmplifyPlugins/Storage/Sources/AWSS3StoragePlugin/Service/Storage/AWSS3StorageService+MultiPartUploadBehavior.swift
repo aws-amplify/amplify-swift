@@ -14,7 +14,6 @@ extension AWSS3StorageService {
                          uploadSource: UploadSource,
                          contentType: String?,
                          metadata: [String: String]?,
-                         accelerate: Bool?,
                          onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
