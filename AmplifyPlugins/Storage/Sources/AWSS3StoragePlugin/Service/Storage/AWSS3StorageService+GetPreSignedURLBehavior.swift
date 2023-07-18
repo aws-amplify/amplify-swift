@@ -14,13 +14,8 @@ extension AWSS3StorageService {
 
     func getPreSignedURL(serviceKey: String,
                          signingOperation: AWSS3SigningOperation,
-                         accelerate: Bool?,
                          expires: Int) async throws -> URL {
-        return try await preSignedURLBuilder.getPreSignedURL(
-            key: serviceKey,
-            signingOperation: signingOperation,
-            accelerate: accelerate,
-            expires: Int64(expires))
+        return try await preSignedURLBuilder.getPreSignedURL(key: serviceKey, signingOperation: signingOperation, expires: Int64(expires))
     }
 
     func validateObjectExistence(serviceKey: String) async throws {

@@ -30,13 +30,9 @@ extension AWSS3StoragePlugin {
         if let pluginOptions = options.pluginOptions as? AWSStorageGetURLOptions, pluginOptions.validateObjectExistence {
             try await storageService.validateObjectExistence(serviceKey: serviceKey)
         }
-        let accelerate = try AWSS3PluginOptions.accelerateValue(
-            pluginOptions: options.pluginOptions)
-        let result = try await storageService.getPreSignedURL(
-            serviceKey: serviceKey,
-            signingOperation: .getObject,
-            accelerate: accelerate,
-            expires: options.expires)
+        let result = try await storageService.getPreSignedURL(serviceKey: serviceKey,
+                                                              signingOperation: .getObject,
+                                                              expires: options.expires)
 
         let channel = HubChannel(from: categoryType)
         let payload = HubPayload(eventName: HubPayload.EventName.Storage.getURL, context: options, data: result)

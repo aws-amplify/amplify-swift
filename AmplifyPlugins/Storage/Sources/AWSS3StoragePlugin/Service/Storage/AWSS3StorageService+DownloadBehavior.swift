@@ -12,8 +12,7 @@ extension AWSS3StorageService {
 
     func download(serviceKey: String,
                   fileURL: URL?,
-                  accelerate: Bool?,
-              onEvent: @escaping StorageServiceDownloadEventHandler) {
+                  onEvent: @escaping StorageServiceDownloadEventHandler) {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
             onEvent(.failed(storageError))
@@ -28,10 +27,7 @@ extension AWSS3StorageService {
 
         Task {
             do {
-                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
-                                                                                 signingOperation: .getObject,
-                                                                                 accelerate: accelerate,
-                                                                                 expires: nil)
+                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey, signingOperation: .getObject, expires: nil)
                 startDownload(preSignedURL: preSignedURL, transferTask: transferTask)
             } catch {
                 onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
