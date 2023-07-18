@@ -398,6 +398,34 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Amplify_AWSCloudWatchLoggingPluginTests"
+               BuildableName = "Amplify_AWSCloudWatchLoggingPluginTests"
+               BlueprintName = "Amplify_AWSCloudWatchLoggingPluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSCloudWatchLoggingPlugin"
+               BuildableName = "AWSCloudWatchLoggingPlugin"
+               BlueprintName = "AWSCloudWatchLoggingPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -483,6 +511,13 @@
             BlueprintIdentifier = "CoreMLPredictionsPlugin"
             BuildableName = "CoreMLPredictionsPlugin"
             BlueprintName = "CoreMLPredictionsPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSCloudWatchLoggingPlugin"
+            BuildableName = "AWSCloudWatchLoggingPlugin"
+            BlueprintName = "AWSCloudWatchLoggingPlugin"
             ReferencedContainer = "container:">
          </BuildableReference>
       </CodeCoverageTargets>
@@ -659,6 +694,16 @@
                   Identifier = "CoreMLVisionAdapterTests/testDetectLabels()">
                </Test>
             </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSCloudWatchLoggingPluginTests"
+               BuildableName = "AWSCloudWatchLoggingPluginTests"
+               BlueprintName = "AWSCloudWatchLoggingPluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
          </TestableReference>
       </Testables>
    </TestAction>

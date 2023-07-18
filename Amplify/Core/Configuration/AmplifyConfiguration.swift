@@ -135,9 +135,12 @@ extension Amplify {
             }
         }
 
-        // Always configure Logging, Hub and Auth first, so they are available to other categories.
+        // Always configure logging first since Auth dependings on logging
+        try configure(CategoryType.logging.category, using: resolvedConfiguration)
+
+        // Always configure Hub and Auth next, so they are available to other categories.
         // Auth is a special case for other plugins which depend on using Auth when being configured themselves.
-        let manuallyConfiguredCategories = [CategoryType.logging, .hub, .auth]
+        let manuallyConfiguredCategories = [CategoryType.hub, .auth]
         for categoryType in manuallyConfiguredCategories {
             try configure(categoryType.category, using: resolvedConfiguration)
         }

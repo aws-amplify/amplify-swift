@@ -118,7 +118,15 @@ struct VerifyPasswordSRP: Action {
     }
 }
 
-extension VerifyPasswordSRP: DefaultLogger { }
+extension VerifyPasswordSRP: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension VerifyPasswordSRP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

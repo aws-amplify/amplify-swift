@@ -43,7 +43,7 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires Xcode 13.4 or higher to build for iOS and macOS. Building for watchOS and tvOS requires Xcode 14.3 or higher.
+Amplify requires Xcode 14.1 or higher to build for iOS and macOS. Building for watchOS and tvOS requires Xcode 14.3 or higher.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|

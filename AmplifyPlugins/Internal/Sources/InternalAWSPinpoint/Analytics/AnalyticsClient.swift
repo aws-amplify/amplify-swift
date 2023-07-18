@@ -298,7 +298,15 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     }
 }
 
-extension AnalyticsClient: DefaultLogger { }
+extension AnalyticsClient: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
+    }
+    
+    public nonisolated var log: Logger {
+        Self.log
+    }
+}
 
 extension AnalyticsClient {
     private struct Constants {

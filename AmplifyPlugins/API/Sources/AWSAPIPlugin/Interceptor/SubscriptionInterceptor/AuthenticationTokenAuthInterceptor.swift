@@ -77,7 +77,14 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptorAsync {
 }
 
 // MARK: AuthorizationTokenAuthInterceptor + DefaultLogger
-extension AuthenticationTokenAuthInterceptor: DefaultLogger {}
+extension AuthenticationTokenAuthInterceptor: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 // MARK: - TokenAuthenticationHeader
 /// Authentication header for user pool based auth

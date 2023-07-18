@@ -176,7 +176,14 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     }
 }
 
-extension AWSInitialSyncOrchestrator: DefaultLogger { }
+extension AWSInitialSyncOrchestrator: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension AWSInitialSyncOrchestrator: Resettable {
     func reset() async {

@@ -96,3 +96,12 @@ final public class APICategory: Category {
         plugins.removeValue(forKey: key)
     }
 }
+
+extension APICategory: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
