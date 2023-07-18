@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.15.0 (2023-07-18)
+
+### Features
+
+- **logging**: add CloudWatch Logging plugin (#3095)
+
 ## 2.14.1 (2023-07-13)
 
 ### Bug Fixes
