@@ -92,7 +92,7 @@ public struct AppSyncModelMetadataUtils {
                         modelJSON.updateValue(metadataJSON, forKey: modelField.name)
                     } else {
                         Amplify.API.log.error("""
-                        Found assocation but failed to add metadata to existing model: \(modelJSON)
+                        Found association but failed to add metadata to existing model: \(modelJSON)
                         """)
                     }
                 }
@@ -123,7 +123,7 @@ public struct AppSyncModelMetadataUtils {
                         modelJSON.updateValue(metadataJSON, forKey: modelField.name)
                     } else {
                         log.error("""
-                         Found assocation but failed to add metadata to existing model: \(modelJSON)
+                         Found association but failed to add metadata to existing model: \(modelJSON)
                          """)
                     }
                 }
@@ -204,4 +204,11 @@ public struct AppSyncModelMetadataUtils {
     }
 }
 
-extension AppSyncModelMetadataUtils: DefaultLogger { }
+extension AppSyncModelMetadataUtils: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

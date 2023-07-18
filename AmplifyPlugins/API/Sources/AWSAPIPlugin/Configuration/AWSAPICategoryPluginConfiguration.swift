@@ -190,4 +190,11 @@ public struct AWSAPICategoryPluginConfiguration {
 }
 
 // MARK: AWSAPICategoryPluginConfiguration + DefaultLogger
-extension AWSAPICategoryPluginConfiguration: DefaultLogger {}
+extension AWSAPICategoryPluginConfiguration: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

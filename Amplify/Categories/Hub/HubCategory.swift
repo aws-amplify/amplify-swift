@@ -118,3 +118,12 @@ final public class HubCategory: Category {
     }
 
 }
+
+extension HubCategory: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.hub.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

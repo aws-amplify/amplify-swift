@@ -56,6 +56,15 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     func shouldRetry(error: APIError?) -> Bool
 }
 
+extension RetryableGraphQLOperationBehavior {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
+
 // MARK: RetryableGraphQLOperationBehavior + default implementation
 extension RetryableGraphQLOperationBehavior {
     public func start(request: GraphQLRequest<Payload>) {
