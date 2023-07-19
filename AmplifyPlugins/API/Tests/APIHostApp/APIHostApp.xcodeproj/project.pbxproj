@@ -197,6 +197,9 @@
 		21DFAEB2295F9F8C00B4A883 /* PhoneCall+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAC295F9F8C00B4A883 /* PhoneCall+Schema.swift */; };
 		21DFAEB3295F9F8C00B4A883 /* Transcript+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAD295F9F8C00B4A883 /* Transcript+Schema.swift */; };
 		21DFAEB5295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEB4295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift */; };
+		21E581E22A6707900027D13A /* GraphQLConnectionScenario1APISwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E581E12A6707900027D13A /* GraphQLConnectionScenario1APISwiftTests.swift */; };
+		21E581E42A6835920027D13A /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E581E32A6835910027D13A /* API.swift */; };
+		21E581E62A698C4D0027D13A /* GraphQLConnectionScenario3APISwiftTests+Subscribe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E581E52A698C4D0027D13A /* GraphQLConnectionScenario3APISwiftTests+Subscribe.swift */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
@@ -638,6 +641,9 @@
 		21DFAEAC295F9F8C00B4A883 /* PhoneCall+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhoneCall+Schema.swift"; sourceTree = "<group>"; };
 		21DFAEAD295F9F8C00B4A883 /* Transcript+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Transcript+Schema.swift"; sourceTree = "<group>"; };
 		21DFAEB4295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadPhoneCallTests.swift; sourceTree = "<group>"; };
+		21E581E12A6707900027D13A /* GraphQLConnectionScenario1APISwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario1APISwiftTests.swift; sourceTree = "<group>"; };
+		21E581E32A6835910027D13A /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		21E581E52A698C4D0027D13A /* GraphQLConnectionScenario3APISwiftTests+Subscribe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLConnectionScenario3APISwiftTests+Subscribe.swift"; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHostAppApp.swift; sourceTree = "<group>"; };
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -881,13 +887,16 @@
 		21698A7C28899805004BD994 /* AWSAPIPluginFunctionalTests */ = {
 			isa = PBXGroup;
 			children = (
+				21E581E32A6835910027D13A /* API.swift */,
 				212626CA289ABC79003788E3 /* Base */,
 				21698AA82889996A004BD994 /* GraphQLConnectionScenario1Tests.swift */,
+				21E581E12A6707900027D13A /* GraphQLConnectionScenario1APISwiftTests.swift */,
 				21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */,
 				21698AAA2889996A004BD994 /* GraphQLConnectionScenario3Tests.swift */,
 				21698AB02889996A004BD994 /* GraphQLConnectionScenario3Tests+Helpers.swift */,
 				21698AAD2889996A004BD994 /* GraphQLConnectionScenario3Tests+List.swift */,
 				21698AB22889996A004BD994 /* GraphQLConnectionScenario3Tests+Subscribe.swift */,
+				21E581E52A698C4D0027D13A /* GraphQLConnectionScenario3APISwiftTests+Subscribe.swift */,
 				21698AB32889996A004BD994 /* GraphQLConnectionScenario4Tests.swift */,
 				21698AB52889996A004BD994 /* GraphQLConnectionScenario5Tests.swift */,
 				21698AAE2889996A004BD994 /* GraphQLConnectionScenario6Tests.swift */,
@@ -2119,6 +2128,7 @@
 				681DFE7228E7451E0000C36A /* AsyncTesting.swift in Sources */,
 				2126273B289ABFEB003788E3 /* ListIntContainer.swift in Sources */,
 				21262741289ABFEB003788E3 /* Team2.swift in Sources */,
+				21E581E62A698C4D0027D13A /* GraphQLConnectionScenario3APISwiftTests+Subscribe.swift in Sources */,
 				21698AA328899921004BD994 /* Todo.swift in Sources */,
 				21262753289ABFEB003788E3 /* ListStringContainer+Schema.swift in Sources */,
 				2126273F289ABFEB003788E3 /* Project2+Schema.swift in Sources */,
@@ -2131,6 +2141,7 @@
 				21698ABE2889996A004BD994 /* GraphQLTestBase.swift in Sources */,
 				21698AC22889996A004BD994 /* GraphQLConnectionScenario4Tests.swift in Sources */,
 				21262750289ABFEB003788E3 /* PostEditor5+Schema.swift in Sources */,
+				21E581E42A6835920027D13A /* API.swift in Sources */,
 				21262740289ABFEB003788E3 /* Nested.swift in Sources */,
 				21262759289ABFEB003788E3 /* Comment3.swift in Sources */,
 				2126274A289ABFEB003788E3 /* Comment6+Schema.swift in Sources */,
@@ -2142,6 +2153,7 @@
 				21262747289ABFEB003788E3 /* Nested+Schema.swift in Sources */,
 				21262739289ABFEB003788E3 /* Post3+Schema.swift in Sources */,
 				21698ABD2889996A004BD994 /* GraphQLConnectionScenario6Tests.swift in Sources */,
+				21E581E22A6707900027D13A /* GraphQLConnectionScenario1APISwiftTests.swift in Sources */,
 				21262746289ABFEB003788E3 /* Comment4.swift in Sources */,
 				21698AC32889996A004BD994 /* GraphQLModelBasedTests.swift in Sources */,
 				21262745289ABFEB003788E3 /* ListIntContainer+Schema.swift in Sources */,
