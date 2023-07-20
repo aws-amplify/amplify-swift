@@ -90,6 +90,7 @@
 		21809B7B2A69BC0800F70E38 /* GraphQLWithIAMIntegrationAPISwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21809B7A2A69BC0800F70E38 /* GraphQLWithIAMIntegrationAPISwiftTests.swift */; };
 		21809B7D2A69CF6D00F70E38 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21809B7C2A69CF6D00F70E38 /* API.swift */; };
 		21809B7F2A69CF8800F70E38 /* GraphQLWithUserPoolIntegrationAPISwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21809B7E2A69CF8800F70E38 /* GraphQLWithUserPoolIntegrationAPISwiftTests.swift */; };
+		21809B812A69D09B00F70E38 /* GraphQLScalarAPISwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21809B802A69D09B00F70E38 /* GraphQLScalarAPISwiftTests.swift */; };
 		218D0193291AE3750068D133 /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D018F291AE3750068D133 /* Post4V2.swift */; };
 		218D0194291AE3750068D133 /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0190291AE3750068D133 /* Comment4V2.swift */; };
 		218D0195291AE3750068D133 /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0191291AE3750068D133 /* Comment4V2+Schema.swift */; };
@@ -537,6 +538,7 @@
 		21809B7A2A69BC0800F70E38 /* GraphQLWithIAMIntegrationAPISwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLWithIAMIntegrationAPISwiftTests.swift; sourceTree = "<group>"; };
 		21809B7C2A69CF6D00F70E38 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		21809B7E2A69CF8800F70E38 /* GraphQLWithUserPoolIntegrationAPISwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLWithUserPoolIntegrationAPISwiftTests.swift; sourceTree = "<group>"; };
+		21809B802A69D09B00F70E38 /* GraphQLScalarAPISwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLScalarAPISwiftTests.swift; sourceTree = "<group>"; };
 		218D018F291AE3750068D133 /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
 		218D0190291AE3750068D133 /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
 		218D0191291AE3750068D133 /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
@@ -911,6 +913,7 @@
 				21698AB42889996A004BD994 /* GraphQLModelBasedTests.swift */,
 				21698AAC2889996A004BD994 /* GraphQLModelBasedTests+List.swift */,
 				21698AAB2889996A004BD994 /* GraphQLScalarTests.swift */,
+				21809B802A69D09B00F70E38 /* GraphQLScalarAPISwiftTests.swift */,
 				21698AAF2889996A004BD994 /* GraphQLTestBase.swift */,
 				212626CB289ABC89003788E3 /* Models */,
 				21698AA92889996A004BD994 /* README.md */,
@@ -2131,6 +2134,7 @@
 			files = (
 				2126274E289ABFEB003788E3 /* Team2+Schema.swift in Sources */,
 				21262736289ABFEB003788E3 /* EnumTestModel.swift in Sources */,
+				21809B812A69D09B00F70E38 /* GraphQLScalarAPISwiftTests.swift in Sources */,
 				2126274F289ABFEB003788E3 /* ScalarContainer.swift in Sources */,
 				21262748289ABFEB003788E3 /* Project2.swift in Sources */,
 				2126274D289ABFEB003788E3 /* EnumTestModel+Schema.swift in Sources */,
