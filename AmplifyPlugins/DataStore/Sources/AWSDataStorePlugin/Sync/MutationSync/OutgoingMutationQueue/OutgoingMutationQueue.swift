@@ -413,9 +413,16 @@ extension OutgoingMutationQueue: Subscriber {
 }
 
 extension OutgoingMutationQueue: Resettable {
-    func reset() {
+    func reset() async {
         doStopWithoutNotifyingStateMachine()
     }
 }
 
-extension OutgoingMutationQueue: DefaultLogger { }
+extension OutgoingMutationQueue: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

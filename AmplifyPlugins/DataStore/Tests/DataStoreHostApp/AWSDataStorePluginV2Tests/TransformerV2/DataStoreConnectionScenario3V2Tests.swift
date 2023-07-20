@@ -8,7 +8,9 @@
 import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 /*
 (HasMany) A Post that can have many comments (Explicit)
@@ -68,7 +70,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(comment)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncedPostReceived, syncCommentReceived], timeout: TestCommonConstants.networkTimeout)
         
         let queriedComment = try await Amplify.DataStore.query(Comment3V2.self, byId: comment.id)
         XCTAssertEqual(queriedComment, comment)
@@ -166,7 +168,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await(waitForExpectations(timeout: TestCommonConstants.networkTimeout))
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let queriedPost = try await Amplify.DataStore.query(Post3V2.self, byId: post.id)
         XCTAssertEqual(queriedPost, post)
@@ -198,7 +200,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await(waitForExpectations(timeout: TestCommonConstants.networkTimeout))
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
         
         let updatedTitle = "updatedTitle"
         post.title = updatedTitle
@@ -220,7 +222,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             }
         }
         _ = try await Amplify.DataStore.save(post)
-        await(waitForExpectations(timeout: TestCommonConstants.networkTimeout))
+        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostWithSync() async throws {
@@ -250,7 +252,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await(waitForExpectations(timeout: TestCommonConstants.networkTimeout))
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted post from sync event")
         hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -274,7 +276,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         }
         
         _ = try await Amplify.DataStore.delete(post)
-        await(waitForExpectations(timeout: TestCommonConstants.networkTimeout))
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostCascadeToComments() async throws {
@@ -313,7 +315,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         }
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(comment)
-        await(waitForExpectations(timeout: TestCommonConstants.networkTimeout))
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 2 // 1 post and 1 comment
@@ -342,7 +344,7 @@ class DataStoreConnectionScenario3V2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.delete(post)
         // TODO: Deleting the comment should not be necessary. Cascade delete is not working
         _ = try await Amplify.DataStore.delete(comment)
-        await(waitForExpectations(timeout: TestCommonConstants.networkTimeout))
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 }
 

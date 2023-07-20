@@ -5,10 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Speech)
 import Foundation
 import Amplify
+import Speech
 
 protocol CoreMLSpeechBehavior: AnyObject {
-
-    func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void)
+    func getTranscription(_ audioData: URL) async throws -> SFSpeechRecognitionResult
 }
+#endif

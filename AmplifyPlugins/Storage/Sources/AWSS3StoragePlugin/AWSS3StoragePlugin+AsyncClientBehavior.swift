@@ -27,6 +27,9 @@ extension AWSS3StoragePlugin {
         let prefix = try await prefixResolver.resolvePrefix(for: options.accessLevel,
                                                             targetIdentityId: options.targetIdentityId)
         let serviceKey = prefix + request.key
+        if let pluginOptions = options.pluginOptions as? AWSStorageGetURLOptions, pluginOptions.validateObjectExistence {
+            try await storageService.validateObjectExistence(serviceKey: serviceKey)
+        }
         let result = try await storageService.getPreSignedURL(serviceKey: serviceKey,
                                                               signingOperation: .getObject,
                                                               expires: options.expires)

@@ -39,8 +39,10 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
             let accessToken = try await taskHelper.getAccessToken()
             try await changePassword(with: accessToken)
             log.verbose("Received success")
-        } catch let error as ChangePasswordOutputError {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
+        } catch let error as AuthError {
+            throw error
         } catch let error {
             throw AuthError.configuration("Unable to execute auth task", AuthPluginErrorConstants.configurationError, error)
         }
@@ -52,5 +54,12 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
                                         previousPassword: request.oldPassword,
                                         proposedPassword: request.newPassword)
         _ = try await userPoolService.changePassword(input: input)
+    }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
     }
 }

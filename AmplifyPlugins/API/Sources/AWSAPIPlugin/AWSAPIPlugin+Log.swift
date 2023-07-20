@@ -10,6 +10,6 @@ import AppSyncRealTimeClient
 
 extension AWSAPIPlugin {
     var log: Logger {
-        Amplify.Logging.logger(forCategory: key)
+        Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
     }
 }

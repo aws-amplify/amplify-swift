@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
+#if os(iOS)
 import Foundation
 
 /// `LoggingCategoryPlugin` that wraps another`LoggingCategoryPlugin` and saves the logs in memory
@@ -26,6 +26,22 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
 
     public func logger(forCategory category: String) -> Logger {
         return plugin.logger(forCategory: category)
+    }
+    
+    public func enable() {
+        plugin.enable()
+    }
+    
+    public func disable() {
+        plugin.disable()
+    }
+    
+    public func logger(forNamespace namespace: String) -> Logger {
+        plugin.logger(forNamespace: namespace)
+    }
+    
+    public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+        plugin.logger(forCategory: category, forNamespace: namespace)
     }
 
     public func reset() async {

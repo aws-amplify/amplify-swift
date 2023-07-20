@@ -18,27 +18,51 @@ import Foundation
 ///
 /// There are two exceptions to this. The `Logging` and `Hub` categories are configured with a default plugin that is
 /// available at initialization.
+///
+/// - Tag: Amplify
 public class Amplify {
 
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
     /// ConfigurationError.amplifyAlreadyConfigured error.
+    ///
+    /// - Tag: Amplify.isConfigured
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
     // ease of testing.
+
+    /// - Tag: Amplify.Analytics
     public static internal(set) var Analytics = AnalyticsCategory()
+
+    /// - Tag: Amplify.API
     public static internal(set) var API: APICategory = APICategory()
+
+    /// - Tag: Amplify.Auth
     public static internal(set) var Auth = AuthCategory()
+
+    /// - Tag: Amplify.DataStore
     public static internal(set) var DataStore = DataStoreCategory()
+
+    /// - Tag: Amplify.Geo
     public static internal(set) var Geo = GeoCategory()
+
+    /// - Tag: Amplify.Hub
     public static internal(set) var Hub = HubCategory()
+
+    /// - Tag: Amplify.Notifications
     public static internal(set) var Notifications = NotificationsCategory()
+
+    /// - Tag: Amplify.Predictions
     public static internal(set) var Predictions = PredictionsCategory()
+
+    /// - Tag: Amplify.Storage
     public static internal(set) var Storage = StorageCategory()
 
-    // Special case category. We protect this with an AtomicValue because it is used by reset()
-    // methods during setup & teardown of tests
+    /// Special case category. We protect this with an AtomicValue because it is used by reset()
+    /// methods during setup & teardown of tests
+    ///
+    /// - Tag: Amplify.Logging
     public static internal(set) var Logging: LoggingCategory {
         get {
             loggingAtomic.get()
@@ -51,7 +75,10 @@ public class Amplify {
 
     /// Adds `plugin` to the category
     ///
+    /// See: [Category.removePlugin(for:)](x-source-tag://Category.removePlugin)
+    ///
     /// - Parameter plugin: The plugin to add
+    /// - Tag: Amplify.add_plugin
     public static func add<P: Plugin>(plugin: P) throws {
         log.debug("Adding plugin: \(plugin))")
         switch plugin {
@@ -83,4 +110,12 @@ public class Amplify {
     }
 }
 
-extension Amplify: DefaultLogger { }
+extension Amplify: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: String(describing: self))
+    }
+
+    public var log: Logger {
+        Self.log
+    }
+}

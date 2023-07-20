@@ -8,11 +8,11 @@
 import Amplify
 import AWSComprehend
 
-extension AWSComprehendPartOfSpeechTagType {
+extension ComprehendClientTypes.PartOfSpeechTagType {
     // swiftlint:disable cyclomatic_complexity
-    func getSpeechType() -> SpeechType {
+    func getSpeechType() -> Predictions.PartOfSpeech {
         switch self {
-        case .unknown:
+        case .sdkUnknown:
             return .unknown
         case .adj:
             return .adjective
@@ -30,7 +30,7 @@ extension AWSComprehendPartOfSpeechTagType {
             return .noun
         case .num:
             return .numeral
-        case .O:
+        case .o:
             return .other
         case .part:
             return .particle
@@ -50,8 +50,6 @@ extension AWSComprehendPartOfSpeechTagType {
             return .adverb
         case .aux:
             return .auxiliary
-        @unknown default:
-            return .unknown
         }
     }
 }

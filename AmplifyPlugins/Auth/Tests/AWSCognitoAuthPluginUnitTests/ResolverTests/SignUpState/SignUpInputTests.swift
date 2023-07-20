@@ -31,9 +31,11 @@ class SignUpInputTests: XCTestCase {
                                 clientMetadata: [:],
                                 validationData: [:],
                                 attributes: [:],
+                                asfDeviceId: "asFDeviceId",
                                 environment: environment)
 
         XCTAssertNotNil(input.secretHash)
+        XCTAssertNotNil(input.userContextData)
     }
 
     func testSignUpInputWithoutClientSecret() throws {
@@ -54,13 +56,15 @@ class SignUpInputTests: XCTestCase {
                                 clientMetadata: [:],
                                 validationData: [:],
                                 attributes: [:],
+                                asfDeviceId: nil,
                                 environment: environment)
 
         XCTAssertNil(input.secretHash)
+        XCTAssertNil(input.userContextData)
     }
 
-    func testSignUpInputValidationData() throws {
 #if canImport(UIKit)
+    func testSignUpInputValidationData() throws {
         let username = "jeff"
         let password = "a2z"
         let clientSecret = UUID().uuidString
@@ -78,9 +82,12 @@ class SignUpInputTests: XCTestCase {
                                 clientMetadata: [:],
                                 validationData: [:],
                                 attributes: [:],
+                                asfDeviceId: "asFDeviceId",
                                 environment: environment)
 
         XCTAssertNotNil(input.validationData)
+        XCTAssertNotNil(input.userContextData)
+
         XCTAssertGreaterThan(input.validationData?.count ?? 0, 0)
         if let validationData = input.validationData {
             assertHasAttributeType(name: "cognito:iOSVersion", validationData: validationData)
@@ -88,10 +95,8 @@ class SignUpInputTests: XCTestCase {
             assertHasAttributeType(name: "cognito:deviceName", validationData: validationData)
             assertHasAttributeType(name: "cognito:model", validationData: validationData)
         }
-#else
-        throw XCTSkip("Skipping test when not iOS")
-#endif
     }
+#endif
 
     func assertHasAttributeType(name: String,
                                 validationData: [CognitoIdentityProviderClientTypes.AttributeType],

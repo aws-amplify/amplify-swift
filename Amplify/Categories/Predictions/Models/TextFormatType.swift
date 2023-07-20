@@ -5,12 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Describes different text formats passed a type parameter
-/// to identify().
+extension Predictions {
+    /// Describes different text formats passed a type parameter
+    /// to identify().
+    public struct TextFormatType: Equatable {
+        let id: UInt8
 
-public enum TextFormatType: String {
-    case form
-    case table
-    case plain
-    case all
+        public static let all = Self(id: 0)
+        public static let form = Self(id: 1)
+        public static let table = Self(id: 2)
+        public static let plain = Self(id: 3)
+    }
 }

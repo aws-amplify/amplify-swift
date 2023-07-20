@@ -12,11 +12,12 @@ import Combine
 import AWSPluginsCore
 import AWSAPIPlugin
 
+#if !os(watchOS)
+@testable import DataStoreHostApp
+#endif
 @testable import Amplify
 
 class AWSDataStoreLazyLoadBaseTest: XCTestCase {
-    var requests: Set<AnyCancellable> = []
-    
     var amplifyConfig: AmplifyConfiguration!
     
     var apiOnly: Bool = false
@@ -28,12 +29,11 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
     
     override func tearDown() async throws {
-        if (!apiOnly || !modelsOnly) && clearOnTearDown {
+        if !(apiOnly || modelsOnly) {
             try await clearDataStore()
         }
-        
-        requests = []
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
     
     func setupConfig() {
@@ -68,10 +68,10 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: .custom(syncMaxRecords: 100)))
-            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
             try Amplify.configure(amplifyConfig)
             
-            try await deleteMutationEvents()
+            try await Amplify.DataStore.start()
         } catch {
             XCTFail("Error during setup: \(error)")
         }
@@ -105,7 +105,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models, sessionFactory: AmplifyURLSessionFactory()))
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -121,21 +121,20 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
     
     func startAndWaitForReady() async throws {
-        let dataStoreReady = asyncExpectation(description: "DataStore `ready` event received")
+        var requests: Set<AnyCancellable> = []
+        let dataStoreReady = expectation(description: "DataStore `ready` event received")
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify
             .Hub
             .publisher(for: .dataStore)
             .sink { event in
                 if event.eventName == dataStoreEvents.ready {
-                    Task {
-                        await dataStoreReady.fulfill()
-                    }
+                    dataStoreReady.fulfill()
                 }
             }
             .store(in: &requests)
         try await startDataStore()
-        await waitForExpectations([dataStoreReady], timeout: 60)
+        await fulfillment(of: [dataStoreReady], timeout: 60)
     }
     
     func startDataStore() async throws {
@@ -148,45 +147,65 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
     
     @discardableResult
-    func saveAndWaitForSync<M: Model>(_ model: M, assertVersion: Int = 1) async throws -> M {
-        let modelSynced = asyncExpectation(description: "model was synced successfully")
-        let mutationEvents = Amplify.DataStore.observe(M.self)
-        Task {
-            for try await mutationEvent in mutationEvents {
-                if mutationEvent.version == assertVersion && mutationEvent.modelId == model.identifier {
-                    await modelSynced.fulfill()
-                }
+    func createAndWaitForSync<M: Model>(_ model: M) async throws -> M {
+        var requests: Set<AnyCancellable> = []
+        let modelSynced = expectation(description: "create model was synced successfully")
+        Amplify.Hub.publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .compactMap { $0.data as? MutationEvent }
+            .filter { $0.modelName == model.modelName }
+            .filter { $0.modelId == model.identifier }
+            .filter { $0.mutationType == MutationEvent.MutationType.create.rawValue }
+            .sink { _ in
+                modelSynced.fulfill()
             }
-        }
+            .store(in: &requests)
+
         let savedModel = try await Amplify.DataStore.save(model)
-        await waitForExpectations([modelSynced], timeout: 100)
+        await fulfillment(of: [modelSynced], timeout: 100)
         return savedModel
     }
     
     @discardableResult
-    func updateAndWaitForSync<M: Model>(_ model: M, assertVersion: Int = 2) async throws -> M {
-        try await saveAndWaitForSync(model, assertVersion: assertVersion)
+    func updateAndWaitForSync<M: Model>(_ model: M, assertVersion: Int? = nil) async throws -> M {
+        var requests: Set<AnyCancellable> = []
+        let modelSynced = expectation(description: "update model was synced successfully")
+        Amplify.Hub.publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .compactMap { $0.data as? MutationEvent }
+            .filter { $0.modelName == model.modelName }
+            .filter { $0.modelId == model.identifier }
+            .filter { $0.mutationType == MutationEvent.MutationType.update.rawValue }
+            .compactMap(\.version)
+            .filter { version in
+                assertVersion.map({ $0 == version }) ?? true
+            }
+            .sink { _ in
+                modelSynced.fulfill()
+            }
+            .store(in: &requests)
+
+        let updatedModel = try await Amplify.DataStore.save(model)
+        await fulfillment(of: [modelSynced], timeout: 100)
+        return updatedModel
     }
 
     func deleteAndWaitForSync<M: Model>(_ model: M) async throws {
-        let modelSynced = asyncExpectation(description: "model was synced successfully")
+        var requests: Set<AnyCancellable> = []
+        let modelSynced = expectation(description: "delete model was synced successfully")
         let dataStoreEvents = HubPayload.EventName.DataStore.self
-        Amplify
-            .Hub
-            .publisher(for: .dataStore)
-            .sink { event in
-                if event.eventName == dataStoreEvents.outboxMutationProcessed,
-                   let outboxMutationEvent = event.data as? OutboxMutationEvent,
-                   outboxMutationEvent.modelName == model.modelName,
-                   outboxMutationEvent.element.model.identifier == model.identifier,
-                   outboxMutationEvent.element.deleted == true {
-                    Task { await modelSynced.fulfill() }
-                    
-                }
+        Amplify.Hub.publisher(for: .dataStore)
+            .filter { $0.eventName == dataStoreEvents.syncReceived }
+            .compactMap { $0.data as? MutationEvent }
+            .filter { $0.modelName == model.modelName }
+            .filter { $0.modelId == model.identifier }
+            .filter { $0.mutationType == MutationEvent.MutationType.delete.rawValue }
+            .sink { _ in
+                modelSynced.fulfill()
             }
             .store(in: &requests)
         try await Amplify.DataStore.delete(model)
-        await waitForExpectations([modelSynced], timeout: 10)
+        await fulfillment(of: [modelSynced], timeout: 10)
     }
     
     enum AssertListState {

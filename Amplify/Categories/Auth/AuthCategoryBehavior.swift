@@ -6,9 +6,8 @@
 //
 
 import Foundation
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
 import AuthenticationServices
-
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #endif
 
@@ -50,7 +49,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// SignIn to the authentication provider
     ///
     /// Username and password are optional values, check the plugin documentation to decide on what all values need to
-    /// passed. For example in a passwordless flow you just need to pass the username and the passwordcould be nil.
+    /// passed. For example in a passwordless flow you just need to pass the username and the password could be nil.
     ///
     /// - Parameters:
     ///   - username: Username to signIn the user
@@ -60,7 +59,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 password: String?,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface

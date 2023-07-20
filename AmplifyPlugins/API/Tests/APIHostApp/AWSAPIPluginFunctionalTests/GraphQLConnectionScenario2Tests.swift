@@ -8,7 +8,11 @@
 import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
+#if os(watchOS)
+@testable import APIWatchApp
+#else
 @testable import APIHostApp
+#endif
 
 /*
  A one-to-one connection where a project has one team,

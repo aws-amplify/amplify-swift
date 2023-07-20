@@ -8,14 +8,16 @@
 import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 import AWSAPIPlugin
 
 class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
 
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationV2Tests-amplifyconfiguration"
 
-    static let networkTimeout = TimeInterval(180)
+    static let networkTimeout = TimeInterval(60)
     let networkTimeout = SyncEngineIntegrationV2TestBase.networkTimeout
 
     // Convenience property to obtain a handle to the underlying storage adapter implementation, for use in asserting
@@ -28,18 +30,29 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
         let storageAdapter = storageEngine.storageAdapter as! SQLiteStorageEngineAdapter
         return storageAdapter
     }
+
+    override func setUp() {
+        continueAfterFailure = true
+    }
+
+    override func tearDown() async throws {
+        try await Amplify.DataStore.clear()
+        await Amplify.reset()
+        try await Task.sleep(seconds: 1)
+    }
+
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
     func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
 
-        continueAfterFailure = false
-
-        await Amplify.reset()
         Amplify.Logging.logLevel = logLevel
 
         do {
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSAPIPlugin(
+                modelRegistration: models,
+                sessionFactory: AmplifyURLSessionFactory()
+            ))
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: .custom(syncMaxRecords: 100)))
         } catch {
@@ -95,6 +108,6 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
         let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
         try Amplify.configure(amplifyConfig)
         try await Amplify.DataStore.start()
-        await waitForExpectations(timeout: 100.0)
+        await fulfillment(of: [eventReceived], timeout: 100)
     }
 }

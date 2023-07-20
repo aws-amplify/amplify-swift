@@ -35,7 +35,7 @@ class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             return try await getUserAttributes(with: accessToken)
-        } catch let error as GetUserOutputError {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error

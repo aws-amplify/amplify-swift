@@ -36,9 +36,7 @@ class AWSAuthFetchDevicesTask: AuthFetchDevicesTask {
             let accessToken = try await taskHelper.getAccessToken()
             let devices = try await fetchDevices(with: accessToken)
             return devices
-        } catch let error as ListDevicesOutputError {
-            throw error.authError
-        } catch let error as SdkError<ListDevicesOutputError> {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error

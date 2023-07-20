@@ -33,6 +33,10 @@ struct VerifyDevicePasswordSRP: Action {
             let secretBlock = try secretBlock(secretBlockString)
             let serverPublicB = try serverPublic(parameters)
 
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.authEnvironment().credentialsClient)
+
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
                 with: environment)
@@ -62,6 +66,7 @@ struct VerifyDevicePasswordSRP: Action {
                 secretBlock: secretBlockString,
                 signature: signature,
                 deviceMetadata: deviceMetadata,
+                asfDeviceId: asfDeviceId,
                 environment: userPoolEnv)
 
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
@@ -90,7 +95,15 @@ struct VerifyDevicePasswordSRP: Action {
     }
 }
 
-extension VerifyDevicePasswordSRP: DefaultLogger { }
+extension VerifyDevicePasswordSRP: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension VerifyDevicePasswordSRP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

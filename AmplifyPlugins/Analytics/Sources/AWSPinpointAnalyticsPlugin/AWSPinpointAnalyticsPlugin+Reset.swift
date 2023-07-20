@@ -11,7 +11,7 @@ import Foundation
 
 extension AWSPinpointAnalyticsPlugin {
     /// Resets the state of the plugin
-    public func reset() {
+    public func reset() async {
         if pinpoint != nil {
             pinpoint = nil
         }

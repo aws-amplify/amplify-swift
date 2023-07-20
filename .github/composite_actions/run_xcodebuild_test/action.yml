@@ -8,6 +8,9 @@ inputs:
   project_path:
     required: false
     type: string
+  xcode_path:
+    required: false
+    type: string
   destination:
     required: false
     type: string
@@ -28,7 +31,12 @@ runs:
       env:
         SCHEME: ${{ inputs.scheme }}
         PROJECT_PATH: ${{ inputs.project_path }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
       run: |
         cd $PROJECT_PATH
-        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
-      shell: bash 
+        if [ ! -z "$XCODE_PATH" ]; then
+          sudo xcode-select -s $XCODE_PATH
+        fi
+        xcodebuild -version
+        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+      shell: bash

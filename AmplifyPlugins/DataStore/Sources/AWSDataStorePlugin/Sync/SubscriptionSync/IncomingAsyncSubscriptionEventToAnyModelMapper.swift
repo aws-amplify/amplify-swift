@@ -94,7 +94,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
 }
 
 extension IncomingAsyncSubscriptionEventToAnyModelMapper: Resettable {
-    func reset() {
+    func reset() async {
         log.verbose("Resetting modelsFromSubscription and subscription")
         modelsFromSubscription.send(completion: .finished)
         subscription?.cancel()
@@ -103,4 +103,11 @@ extension IncomingAsyncSubscriptionEventToAnyModelMapper: Resettable {
     }
 }
 
-extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }
+extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

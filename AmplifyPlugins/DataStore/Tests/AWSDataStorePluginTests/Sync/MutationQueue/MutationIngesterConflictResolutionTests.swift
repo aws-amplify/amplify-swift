@@ -58,7 +58,17 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
                                     XCTAssertEqual(mutationEvents.count, 1)
-                                    XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
+                                    let firstEventJSON = mutationEvents[0].json
+                                    let firstEventData = Data(firstEventJSON.utf8)
+                                    guard let mutationEventPost = try? JSONDecoder().decode(
+                                        Post.self, from: firstEventData
+                                    ) else {
+                                        return XCTFail("expected Post")
+                                    }
+                                    XCTAssertEqual(mutationEventPost.id, post.id)
+                                    XCTAssertEqual(mutationEventPost.title, post.title)
+                                    XCTAssertEqual(mutationEventPost.content, post.content)
+                                    XCTAssertEqual(mutationEventPost.createdAt, post.createdAt)
                                 }
                                 mutationEventVerified.fulfill()
         }
@@ -193,7 +203,17 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                     XCTAssertEqual(mutationEvents.count, 1)
                                     XCTAssertEqual(mutationEvents.first?.mutationType,
                                                    GraphQLMutationType.update.rawValue)
-                                    XCTAssertEqual(mutationEvents.first?.json, try? post.toJSON())
+                                    let firstEventJSON = mutationEvents[0].json
+                                    let firstEventData = Data(firstEventJSON.utf8)
+                                    guard let mutationEventPost = try? JSONDecoder().decode(
+                                        Post.self, from: firstEventData
+                                    ) else {
+                                        return XCTFail("expected Post")
+                                    }
+                                    XCTAssertEqual(mutationEventPost.id, post.id)
+                                    XCTAssertEqual(mutationEventPost.title, post.title)
+                                    XCTAssertEqual(mutationEventPost.content, post.content)
+                                    XCTAssertEqual(mutationEventPost.createdAt, post.createdAt)
                                 }
                                 mutationEventVerified.fulfill()
         }

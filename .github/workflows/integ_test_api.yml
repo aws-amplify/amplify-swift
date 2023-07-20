@@ -1,4 +1,4 @@
-name: API Integration Tests
+name: Integration Tests | API - All
 on:
   workflow_dispatch:
   push:
@@ -28,215 +28,48 @@ jobs:
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-     
-  api-functional-test:
+
+  functional-test:
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_api_functional.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginFunctionalTests
-            
-  api-graphql-user-pool-test:
+  graphql-user-pool-test:
     if: ${{ false }}
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_api_graphql_user_pool.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginGraphQLUserPoolTests
-
-  api-graphql-auth-directive-test:
+  graphql-auth-directive-test:
     if: ${{ false }}
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_api_graphql_auth_directive.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginGraphQLAuthDirectiveTests
-
-  api-graphql-iam-test:
+  graphql-iam-test:
     if: ${{ false }}
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_api_graphql_iam.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginGraphQLIAMTests
-
-  api-graphql-lambda-auth-test:
+  graphql-lambda-auth-test:
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_api_graphql_lambda_auth.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginGraphQLLambdaAuthTests
-
-  api-lazy-load-test:
-    needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginLazyLoadTests
-
-  api-rest-user-pool-test:
+  graphql-lazy-load-test:
     if: ${{ false }}
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_api_graphql_lazy_load.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginRESTUserPoolTests
-
-  api-rest-iam-test:
+  rest-user-pool-test:
+    if: ${{ false }}
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_api_rest_user_pool.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: api
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-          scheme: AWSAPIPluginRESTIAMTests
+  rest-iam-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_api_rest_iam.yml
+    secrets: inherit

@@ -9,9 +9,11 @@ import Foundation
 import AWSRekognition
 import Amplify
 
-class IdentifyLabelsResultTransformers: IdentifyResultTransformers {
-    static func processLabels(_ rekognitionLabels: [AWSRekognitionLabel]) -> [Label] {
-        var labels = [Label]()
+enum IdentifyLabelsResultTransformers { 
+    static func processLabels(
+        _ rekognitionLabels: [RekognitionClientTypes.Label]
+    ) -> [Predictions.Label] {
+        var labels = [Predictions.Label]()
         for rekognitionLabel in rekognitionLabels {
 
             guard let name = rekognitionLabel.name else {
@@ -20,61 +22,74 @@ class IdentifyLabelsResultTransformers: IdentifyResultTransformers {
 
             let parents = processParents(rekognitionLabel.parents)
 
-            let metadata = LabelMetadata(confidence: Double(
-                truncating: rekognitionLabel.confidence ?? 0.0), parents: parents)
+            let metadata = Predictions.Label.Metadata(
+                confidence: Double(rekognitionLabel.confidence ?? 0.0),
+                parents: parents
+            )
 
             let boundingBoxes = processInstances(rekognitionLabel.instances)
 
-            let label = Label(name: name, metadata: metadata, boundingBoxes: boundingBoxes)
+            let label = Predictions.Label(
+                name: name,
+                metadata: metadata,
+                boundingBoxes: boundingBoxes
+            )
             labels.append(label)
-
         }
+
         return labels
     }
 
-    static func processModerationLabels(_ rekognitionLabels: [AWSRekognitionModerationLabel]) -> [Label] {
-        var labels = [Label]()
+    static func processModerationLabels(
+        _ rekognitionLabels: [RekognitionClientTypes.ModerationLabel]
+    ) -> [Predictions.Label] {
+        var labels = [Predictions.Label]()
         for rekognitionLabel in rekognitionLabels {
 
             guard let name = rekognitionLabel.name else {
                 continue
             }
-            var parents = [Parent]()
+            var parents = [Predictions.Parent]()
             if let parentName = rekognitionLabel.parentName {
-                let parent = Parent(name: parentName)
+                let parent = Predictions.Parent(name: parentName)
                 parents.append(parent)
             }
-            let metadata = LabelMetadata(confidence: Double(
-                truncating: rekognitionLabel.confidence ?? 0.0), parents: parents)
+            let metadata = Predictions.Label.Metadata(
+                confidence: Double(rekognitionLabel.confidence ?? 0), parents: parents
+            )
 
-            let label = Label(name: name, metadata: metadata, boundingBoxes: nil)
+            let label = Predictions.Label(name: name, metadata: metadata, boundingBoxes: nil)
 
             labels.append(label)
         }
         return labels
     }
 
-    static func processParents(_ rekognitionParents: [AWSRekognitionParent]?) -> [Parent] {
-        var parents = [Parent]()
+    static func processParents(
+        _ rekognitionParents: [RekognitionClientTypes.Parent]?
+    ) -> [Predictions.Parent] {
+        var parents = [Predictions.Parent]()
         guard let rekognitionParents = rekognitionParents else {
             return parents
         }
 
         for parent in rekognitionParents {
             if let name = parent.name {
-                parents.append(Parent(name: name))
+                parents.append(Predictions.Parent(name: name))
             }
         }
         return parents
     }
 
-    static func processInstances(_ rekognitionInstances: [AWSRekognitionInstance]?) -> [CGRect] {
+    static func processInstances(
+        _ rekognitionInstances: [RekognitionClientTypes.Instance]?
+    ) -> [CGRect] {
         var boundingBoxes = [CGRect]()
         guard let rekognitionInstances = rekognitionInstances else {
             return boundingBoxes
         }
         for rekognitionInstance in rekognitionInstances {
-            guard let boundingBox = processBoundingBox(rekognitionInstance.boundingBox) else {
+            guard let boundingBox = IdentifyResultTransformers.processBoundingBox(rekognitionInstance.boundingBox) else {
                 continue
             }
             boundingBoxes.append(boundingBox)

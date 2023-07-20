@@ -12,6 +12,9 @@ import AWSDataStorePlugin
 import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+#if !os(watchOS)
+@testable import DataStoreHostApp
+#endif
 
 @testable import Amplify
 
@@ -63,8 +66,6 @@ class AuthRecorderInterceptor: URLRequestInterceptor {
 }
 
 class AWSDataStoreAuthBaseTest: XCTestCase {
-    var requests: Set<AnyCancellable> = []
-
     var amplifyConfig: AmplifyConfiguration!
     var user1: TestUser?
     var user2: TestUser?
@@ -76,9 +77,9 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
     override func tearDown() async throws {
         try await clearDataStore()
-        requests = []
         try await signOut()
         await Amplify.reset()
+        try await Task.sleep(seconds: 1)
     }
 
     // MARK: - Test Helpers
@@ -155,9 +156,11 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration,
-               testType: DataStoreAuthTestType,
-               apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin() }) async throws {
+    func setup(
+        withModels models: AmplifyModelRegistration,
+        testType: DataStoreAuthTestType,
+        apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()) }
+    ) async throws {
         do {
             setupCredentials(forAuthStrategy: testType)
 
@@ -299,8 +302,11 @@ extension AWSDataStoreAuthBaseTest {
     
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
-    func assertDataStoreReady(_ expectations: AuthTestExpectations,
-                              expectedModelSynced: Int = 1) async throws {
+    func assertDataStoreReady(
+        _ expectations: AuthTestExpectations,
+        expectedModelSynced: Int = 1
+    ) async throws {
+        var requests: Set<AnyCancellable> = []
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify
@@ -338,9 +344,12 @@ extension AWSDataStoreAuthBaseTest {
     ///   - model: model instance saved and then deleted
     ///   - expectations: test expectations
     ///   - onFailure: failure callback
-    func assertMutations<M: Model>(model: M,
-                                   _ expectations: AuthTestExpectations,
-                                   onFailure: @escaping (_ error: DataStoreError) -> Void) async throws {
+    func assertMutations<M: Model>(
+        model: M,
+        _ expectations: AuthTestExpectations,
+        onFailure: @escaping (_ error: DataStoreError) -> Void
+    ) async throws {
+        var requests: Set<AnyCancellable> = []
         Amplify
             .Hub
             .publisher(for: .dataStore)

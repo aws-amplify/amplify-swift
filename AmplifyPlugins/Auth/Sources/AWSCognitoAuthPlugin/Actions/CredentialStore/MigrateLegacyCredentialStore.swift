@@ -357,7 +357,15 @@ struct MigrateLegacyCredentialStore: Action {
     }
 }
 
-extension MigrateLegacyCredentialStore: DefaultLogger { }
+extension MigrateLegacyCredentialStore: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension MigrateLegacyCredentialStore: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

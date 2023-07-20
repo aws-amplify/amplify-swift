@@ -5,16 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCore
 import Amplify
 
 public struct ConvertConfiguration {
-    public let region: AWSRegionType
+    public let region: String
     public var translateText: TranslateTextConfiguration?
     public var speechGenerator: SpeechGeneratorConfiguration?
     public var transcription: TranscriptionConfiguration?
 
-    init(_ region: AWSRegionType) {
+    init(_ region: String) {
         self.region = region
         self.translateText = nil
         self.speechGenerator = nil
@@ -23,8 +22,8 @@ public struct ConvertConfiguration {
 }
 
 public struct TranslateTextConfiguration {
-    public let sourceLanguage: LanguageType
-    public let targetLanguage: LanguageType
+    public let sourceLanguage: Predictions.Language
+    public let targetLanguage: Predictions.Language
 }
 
 public struct SpeechGeneratorConfiguration {
@@ -32,7 +31,7 @@ public struct SpeechGeneratorConfiguration {
 }
 
 public struct TranscriptionConfiguration {
-    public let language: LanguageType
+    public let language: Predictions.Language
 }
 
 extension ConvertConfiguration: Decodable {
@@ -48,53 +47,71 @@ extension ConvertConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        var awsRegion: AWSRegionType?
+        var awsRegion: String?
 
-        if let configuration = try values.decodeIfPresent(TranslateTextConfiguration.self,
-                                                          forKey: .translateText) {
+        if let configuration = try values.decodeIfPresent(
+            TranslateTextConfiguration.self,
+            forKey: .translateText
+        ) {
             self.translateText = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self,
-                                                             forKey: .translateText)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .translateText
+            )
+
             awsRegion = awsRegion ?? ConvertConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.translateText = nil
         }
 
-        if let configuration = try values.decodeIfPresent(SpeechGeneratorConfiguration.self,
-                                                          forKey: .speechGenerator) {
+        if let configuration = try values.decodeIfPresent(
+            SpeechGeneratorConfiguration.self,
+            forKey: .speechGenerator
+        ) {
             self.speechGenerator = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self,
-                                                             forKey: .speechGenerator)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .speechGenerator
+            )
+
             awsRegion = awsRegion ?? ConvertConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.speechGenerator = nil
         }
 
-        if let configuration = try values.decodeIfPresent(TranscriptionConfiguration.self, forKey: .transcription) {
+        if let configuration = try values.decodeIfPresent(
+            TranscriptionConfiguration.self,
+            forKey: .transcription
+        ) {
             self.transcription = configuration
-            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self, forKey: .transcription)
+            let nestedContainer = try values.nestedContainer(
+                keyedBy: SubRegion.self,
+                forKey: .transcription
+            )
+
             awsRegion = awsRegion ?? ConvertConfiguration.getRegionIfPresent(nestedContainer)
         } else {
             self.transcription = nil
         }
 
-        guard  let region = awsRegion else {
-            throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
-                                                       PluginErrorMessage.missingRegion.recoverySuggestion)
+        guard let region = awsRegion else {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorMessage.missingRegion.errorDescription,
+                PluginErrorMessage.missingRegion.recoverySuggestion
+            )
         }
         self.region = region
     }
 
-    static func getRegionIfPresent(_ container: KeyedDecodingContainer<SubRegion>) -> AWSRegionType? {
-        guard let textRegionString = try? container.decodeIfPresent(String.self, forKey: .region) as NSString? else {
+    static func getRegionIfPresent(_ container: KeyedDecodingContainer<SubRegion>) -> String? {
+        guard let textRegionString = try? container.decodeIfPresent(String.self, forKey: .region) else {
             return nil
         }
-        return textRegionString.aws_regionTypeValue()
+        return textRegionString
     }
 }
 
 extension TranslateTextConfiguration: Decodable {
-
     enum CodingKeys: String, CodingKey {
         case sourceLanguage = "sourceLang"
         case targetLanguage = "targetLang"
@@ -102,12 +119,12 @@ extension TranslateTextConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        self.sourceLanguage = try values.decode(LanguageType.self, forKey: .sourceLanguage)
-        self.targetLanguage = try values.decode(LanguageType.self, forKey: .targetLanguage)
+        let source = try values.decode(String.self, forKey: .sourceLanguage)
+        let target = try values.decode(String.self, forKey: .targetLanguage)
+        self.sourceLanguage = .init(code: source)
+        self.targetLanguage = .init(code: target)
     }
 }
-
-extension LanguageType: Decodable {}
 
 extension SpeechGeneratorConfiguration: Decodable {
     enum CodingKeys: String, CodingKey {
@@ -127,6 +144,7 @@ extension TranscriptionConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        self.language = try values.decode(LanguageType.self, forKey: .language)
+        let language = try values.decode(String.self, forKey: .language)
+        self.language = .init(code: language)
     }
 }

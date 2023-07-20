@@ -21,13 +21,13 @@ enum StorageTransferType {
         case remove = 6
     }
 
-    case getPreSignedURL(onEvent: AWSS3StorageServiceBehaviour.StorageServiceGetPreSignedURLEventHandler)
-    case download(onEvent: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler)
-    case upload(onEvent: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler)
-    case multiPartUpload(onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler)
+    case getPreSignedURL(onEvent: AWSS3StorageServiceBehavior.StorageServiceGetPreSignedURLEventHandler)
+    case download(onEvent: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler)
+    case upload(onEvent: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler)
+    case multiPartUpload(onEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler)
     case multiPartUploadPart(uploadId: UploadID, partNumber: PartNumber)
-    case list(onEvent: AWSS3StorageServiceBehaviour.StorageServiceListEventHandler)
-    case remove(onEvent: AWSS3StorageServiceBehaviour.StorageServiceDeleteEventHandler)
+    case list(onEvent: AWSS3StorageServiceBehavior.StorageServiceListEventHandler)
+    case remove(onEvent: AWSS3StorageServiceBehavior.StorageServiceDeleteEventHandler)
 
     var name: String {
         switch self {
@@ -151,11 +151,11 @@ enum StorageTransferType {
             return result
         }
 
-        private static var defaultGetPreSignedURLEvent: AWSS3StorageServiceBehaviour.StorageServiceGetPreSignedURLEventHandler = { _ in  }
-        private static var defaultDownloadEvent: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler = { _ in  }
-        private static var defaultUploadEvent: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler = { _ in }
-        private static var defaultMultiPartUploadEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { _ in }
-        private static var defaultListEvent: AWSS3StorageServiceBehaviour.StorageServiceListEventHandler = { _ in  }
-        private static var defaultRemoveEvent: AWSS3StorageServiceBehaviour.StorageServiceDeleteEventHandler = { _ in  }
+        private static var defaultGetPreSignedURLEvent: AWSS3StorageServiceBehavior.StorageServiceGetPreSignedURLEventHandler = { _ in  }
+        private static var defaultDownloadEvent: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler = { _ in  }
+        private static var defaultUploadEvent: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler = { _ in }
+        private static var defaultMultiPartUploadEvent: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler = { _ in }
+        private static var defaultListEvent: AWSS3StorageServiceBehavior.StorageServiceListEventHandler = { _ in  }
+        private static var defaultRemoveEvent: AWSS3StorageServiceBehavior.StorageServiceDeleteEventHandler = { _ in  }
     }
 }

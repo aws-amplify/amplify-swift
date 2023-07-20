@@ -11,7 +11,7 @@ import Amplify
 import AWSS3
 @testable import AWSS3StoragePlugin
 
-public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
+public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
 
     // MARK: method call counts
     var interactions: [String] = []
@@ -78,6 +78,13 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     public func getPreSignedURL(serviceKey: String, signingOperation: AWSS3SigningOperation, expires: Int) async throws -> URL {
         interactions.append("\(#function) \(serviceKey) \(signingOperation) \(expires)")
         return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
+    }
+
+    var validateObjectExistenceHandler: (String) async throws -> Void = { _ in }
+
+    public func validateObjectExistence(serviceKey: String) async throws {
+        interactions.append("\(#function) \(serviceKey)")
+        try await validateObjectExistenceHandler(serviceKey)
     }
 
     public func upload(serviceKey: String,

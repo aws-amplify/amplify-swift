@@ -52,6 +52,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 }
                 self?.handleSignInEvent(result)
 
+        #if os(iOS) || os(macOS)
             case HubPayload.EventName.Auth.webUISignInAPI:
                 guard let event = payload.data as? AWSAuthWebUISignInTask.AmplifyAuthTaskResult,
                       case let .success(result) = event else {
@@ -65,7 +66,8 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                     return
                 }
                 self?.handleSignInEvent(result)
-
+        #endif
+                
             case HubPayload.EventName.Auth.deleteUserAPI:
                 guard let event = payload.data as? AWSAuthDeleteUserTask.AmplifyAuthTaskResult,
                       case .success = event else {

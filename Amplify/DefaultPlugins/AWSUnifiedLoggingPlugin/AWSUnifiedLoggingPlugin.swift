@@ -27,7 +27,9 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
     private var registeredLogs = [String: OSLogWrapper]()
 
     let subsystem: String
-
+    var enabled: Bool = true
+    private let lock = NSLock()
+    
     /// Initializes the logging system with a default log, and immediately registers a default logger
     public init() {
         self.subsystem = Bundle.main.bundleIdentifier ?? "com.amazonaws.amplify.AWSUnifiedLoggingPlugin"
@@ -44,13 +46,15 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
         return type(of: self).key
     }
 
-    /// For protocol conformance only--this plugin has no applicable configurations
+    /// Look for optional configuration to disable logging, console logging is enabled by default unless configured otherwise
     public func configure(using configuration: Any?) throws {
-        // Do nothing
+        if let consoleConfiguration = ConsoleLoggingConfiguration(bundle: Bundle.main), consoleConfiguration.enable == false {
+            self.disable()
+        }
     }
 
     /// Removes listeners and empties the message queue
-    public func reset() {
+    public func reset() async {
         concurrencyQueue.sync {
             registeredLogs = [:]
         }
@@ -70,6 +74,7 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
             let osLog = OSLog(subsystem: subsystem, category: category)
             let wrapper = OSLogWrapper(osLog: osLog,
                                        getLogLevel: { Amplify.Logging.logLevel })
+            wrapper.enabled = enabled
             registeredLogs[key] = wrapper
             return wrapper
         }
@@ -95,6 +100,34 @@ extension AWSUnifiedLoggingPlugin {
     public func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
         let wrapper = logWrapper(for: category)
         wrapper.logLevel = logLevel
+        return wrapper
+    }
+    
+    public func enable() {
+        enabled = true
+        lock.execute {
+            for (_, logger) in registeredLogs {
+                logger.enabled = enabled
+            }
+        }
+    }
+    
+    public func disable() {
+        enabled = false
+        lock.execute {
+            for (_, logger) in registeredLogs {
+                logger.enabled = enabled
+            }
+        }
+    }
+    
+    public func logger(forNamespace namespace: String) -> Logger {
+        let wrapper = logWrapper(for: namespace)
+        return wrapper
+    }
+    
+    public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
+        let wrapper = logWrapper(for: category + namespace)
         return wrapper
     }
 }

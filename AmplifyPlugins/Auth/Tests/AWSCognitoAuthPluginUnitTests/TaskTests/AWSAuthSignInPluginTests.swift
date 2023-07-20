@@ -28,15 +28,17 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .done response
     ///
     func testSuccessfulSignIn() async {
-
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            InitiateAuthOutputResponse(
+        let clientMetadata = ["somekey": "somevalue"]
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
+            return InitiateAuthOutputResponse(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
                 session: "someSession")
-        }, mockRespondToAuthChallengeResponse: { _ in
-            RespondToAuthChallengeOutputResponse(
+        }, mockRespondToAuthChallengeResponse: { input in
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
+            return RespondToAuthChallengeOutputResponse(
                 authenticationResult: .init(
                     accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
@@ -49,8 +51,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: clientMetadata)
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -96,9 +97,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .userSRP)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: ["somekey": "somevalue"],
+            authFlowType: .userSRP
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -149,6 +151,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a valid response
     ///
     func testSignInWithEmptyPassword() async {
+
+        self.mockIdentity = MockIdentity(
+            mockGetIdResponse: getId,
+            mockGetCredentialsResponse: getCredentials)
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -306,23 +312,27 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testCustomAuthWithAdditionalInfo() async {
 
-        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            InitiateAuthOutputResponse(
+        let clientMetadata = ["somekey": "somevalue"]
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
+            return InitiateAuthOutputResponse(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
                 challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
                 session: "someSession")
-        }, mockRespondToAuthChallengeResponse: { _ in
-            RespondToAuthChallengeOutputResponse(
+        }, mockRespondToAuthChallengeResponse: { input in
+            XCTAssertEqual(clientMetadata, input.clientMetadata)
+            return RespondToAuthChallengeOutputResponse(
                 authenticationResult: .none,
                 challengeName: .customChallenge,
                 challengeParameters: ["paramKey": "value"],
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .customWithSRP)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: clientMetadata,
+            authFlowType: .customWithSRP
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
@@ -567,9 +577,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .userPassword)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: ["somekey": "somevalue"],
+            authFlowType: .userPassword
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signIn(
@@ -610,9 +621,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"],
-                                                 authFlowType: .customWithoutSRP)
+        let pluginOptions = AWSAuthSignInOptions(
+            metadata: ["somekey": "somevalue"],
+            authFlowType: .customWithoutSRP
+        )
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signIn(
@@ -674,6 +686,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .lambda error
     ///
     func testSignInWithInvalidLambdaResponseException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidLambdaResponseException(.init())
         })
@@ -702,6 +715,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .invalidParameter error
     ///
     func testSignInWithInvalidParameterException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidParameterException(.init())
         })
@@ -730,6 +744,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .configuration error
     ///
     func testSignInWithInvalidUserPoolConfigurationException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidUserPoolConfigurationException(.init())
         })
@@ -757,6 +772,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .notAuthorized error
     ///
     func testSignInWithNotAuthorizedException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.notAuthorizedException(.init())
         })
@@ -784,6 +800,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .resetPassword as next step
     ///
     func testSignInWithPasswordResetRequiredException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.passwordResetRequiredException(.init())
         })
@@ -812,6 +829,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .resetPassword as next step
     ///
     func testSignInWithPasswordResetRequiredException2() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             let serviceError = SdkError<InitiateAuthOutputError>
                 .service(.passwordResetRequiredException(PasswordResetRequiredException()),
@@ -843,6 +861,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .resourceNotFound error
     ///
     func testSignInWithResourceNotFoundException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.resourceNotFoundException(.init())
         })
@@ -871,6 +890,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .requestLimitExceeded error
     ///
     func testSignInWithTooManyRequestsException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.tooManyRequestsException(.init())
         })
@@ -899,6 +919,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .lambda error
     ///
     func testSignInWithUnexpectedLambdaException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.unexpectedLambdaException(.init())
         })
@@ -927,6 +948,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .lambda error
     ///
     func testSignInWithUserLambdaValidationException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userLambdaValidationException(.init())
         })
@@ -983,6 +1005,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .confirmSignUp as next step
     ///
     func testSignInWithUserNotConfirmedException2() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             let serviceError = SdkError<InitiateAuthOutputError>
                 .service(.userNotConfirmedException(UserNotConfirmedException()),
@@ -1014,6 +1037,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .userNotFound error
     ///
     func testSignInWithUserNotFoundException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userNotFoundException(.init())
         })
@@ -1044,6 +1068,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .aliasExists error
     ///
     func testSignInWithAliasExistsException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -1078,6 +1103,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///    - I should get a .service error with .invalidPassword error
     ///
     func testSignInWithInvalidPasswordException() async {
+
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -1126,8 +1152,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -1164,6 +1189,70 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             XCTAssertTrue(result2.isSignedIn)
         } catch {
             XCTFail("Received failure with error \(error)")
+        }
+    }
+
+    /// Test a signIn with valid inputs
+    ///
+    /// - Given: Given an auth plugin with mocked service.
+    ///
+    /// - When:
+    ///    - I invoke signIn with valid values, and
+    ///      AuthN is success whereas AuthZ fails
+    ///      In This case, GetId throws an exception
+    /// - Then:
+    ///    - I should get a service exception and should not be signed in
+    ///
+    func testSuccessfulSignInWithFailingIdentity() async {
+
+        self.mockIdentity = MockIdentity(
+            mockGetIdResponse: { _ in
+                throw GetIdOutputError.invalidParameterException(.init(message: "Invalid parameter passed"))
+            },
+            mockGetCredentialsResponse: getCredentials)
+
+        self.mockIdentityProvider = MockIdentityProvider(mockRevokeTokenResponse: { _ in
+            RevokeTokenOutputResponse()
+        }, mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .init(
+                    accessToken: Defaults.validAccessToken,
+                    expiresIn: 300,
+                    idToken: "idToken",
+                    newDeviceMetadata: nil,
+                    refreshToken: "refreshToken",
+                    tokenType: ""),
+                challengeName: .none,
+                challengeParameters: [:],
+                session: "session")
+        })
+
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
+        let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+
+        do {
+            _ = try await plugin.signIn(username: "username", password: "password", options: options)
+            XCTFail("Sign In with failing authorization should throw an error")
+
+        } catch AuthError.service(_, _, let error) {
+            guard let cognitoError = error as? AWSCognitoAuthError else {
+                XCTFail("Underlying error should be of type AWSCognitoAuthError")
+                return
+            }
+
+            guard case AWSCognitoAuthError.invalidParameter = cognitoError else {
+                XCTFail("Error thrown should be an AWSCognitoAuthError.invalidParameter")
+                return
+            }
+
+        } catch {
+            XCTFail("Error thrown should be an AuthError but got:\n\(error)")
         }
     }
 }

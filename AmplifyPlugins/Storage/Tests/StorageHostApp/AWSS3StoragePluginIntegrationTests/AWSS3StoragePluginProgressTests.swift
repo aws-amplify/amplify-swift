@@ -24,6 +24,9 @@ import Amplify
 /// of ~0-1MB. After ~1 MB, I start getting notified more frequently.
 class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
 
+    /// - Given: An upload task
+    /// - When: A subscription to its progress `resultPublisher` is established **during** upload
+    /// - Then: Its publisher emits progress values and completes alongside the upload
     func testUploadProgressViaPublisher() async throws {
         var cancellables = Set<AnyCancellable>()
 
@@ -56,6 +59,9 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         await remove(key: key)
     }
 
+    /// - Given: An upload task
+    /// - When: A subscription to its progress `resultPublisher` is established **after** completion
+    /// - Then: Its publisher completes immediately
     func testPublisherDeliveryAfterUploadCompletes() async throws {
         var cancellables = Set<AnyCancellable>()
 
@@ -92,6 +98,44 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             .store(in: &cancellables)
         await waitForExpectations(timeout: 0.5)
         // Remove the key
+        await remove(key: key)
+    }
+
+    /// - Given: An upload task
+    /// - When: Its progress AsyncSequence is iterated while the upload is **in progress**
+    /// - Then: Its iteration completes when the upload is done
+    func testUploadAndMonitorProgressUntilCompletion() async throws {
+        let key = UUID().uuidString
+        let task = Amplify.Storage.uploadData(
+            key: key,
+            data: .testDataOfSize(.bytes(64*1024))
+        )
+        let progress = await task.progress
+        var progressReports: [Progress] = []
+        for await current in progress {
+            XCTAssertGreaterThan(current.fractionCompleted, 0)
+            XCTAssertLessThanOrEqual(current.fractionCompleted, 1)
+            progressReports.append(current)
+        }
+        XCTAssertGreaterThan(progressReports.count, 0)
+        _ = try await task.value
+        await remove(key: key)
+    }
+
+    /// - Given: An upload task
+    /// - When: Its progress AsyncSequence is iterated **after** completion
+    /// - Then: Its iteration completes without providing a value
+    func testUploadAndMonitorProgressAfterCompletion() async throws {
+        let key = UUID().uuidString
+        let task = Amplify.Storage.uploadData(
+            key: key,
+            data: .testDataOfSize(.bytes(256))
+        )
+        _ = try await task.value
+        let progress = await task.progress
+        for await current in progress {
+            XCTFail("Not expecting a current progress value but got: \(current)")
+        }
         await remove(key: key)
     }
 }

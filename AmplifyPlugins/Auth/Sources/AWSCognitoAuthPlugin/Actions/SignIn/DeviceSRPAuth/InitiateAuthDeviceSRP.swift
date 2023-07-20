@@ -33,6 +33,10 @@ struct InitiateAuthDeviceSRP: Action {
                 for: username,
                 with: environment)
 
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.authEnvironment().credentialsClient)
+
             let srpStateData = SRPStateData(
                 username: username,
                 password: "",
@@ -45,6 +49,7 @@ struct InitiateAuthDeviceSRP: Action {
                 username: username,
                 environment: userPoolEnv,
                 deviceMetadata: deviceMetadata,
+                asfDeviceId: asfDeviceId,
                 session: authResponse.session,
                 publicHexValue: srpKeyPair.publicKeyHexValue)
 
@@ -99,7 +104,15 @@ struct InitiateAuthDeviceSRP: Action {
 
 }
 
-extension InitiateAuthDeviceSRP: DefaultLogger { }
+extension InitiateAuthDeviceSRP: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension InitiateAuthDeviceSRP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

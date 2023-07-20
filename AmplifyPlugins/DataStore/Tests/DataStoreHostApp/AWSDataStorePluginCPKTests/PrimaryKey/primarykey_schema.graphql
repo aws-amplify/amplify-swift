@@ -203,7 +203,19 @@ type Comment8 @model {
   postTitle: String # customized foreign key for parent sort key
 }
 
-# CLI.9. Many To Many
+# CLI.9. CPK sortKey in ID type
+
+type Post9 @model {
+  postId: ID! @primaryKey
+  title: String
+  comments: [Comment9]! @hasMany(indexName: "byPost9", fields: ["postId"])
+}
+
+type Comment9 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["postId"])
+  postId: ID! @index(name: "byPost9")
+  content: String
+}
 
 #type Post9 @model {
 #    customPostId: ID! @primaryKey(sortKeyFields: ["title"])
@@ -238,4 +250,64 @@ type Comment4V2 @model @auth(rules: [{allow: public}]) {
   postID: ID! @index(name: "byPost4", sortKeyFields: ["content"])
   content: String!
   post: Post4V2 @belongsTo(fields: ["postID"])
+}
+
+# CLI.11
+type Post11 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: Int!
+}
+
+# CLI.12
+type Post12 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: Float!
+}
+
+# CLI.13
+type Post13 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: AWSDateTime!
+}
+
+# CLI.14
+type Post14 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: AWSDate!
+}
+
+# CLI.15
+type Post15 @model {
+  postId: ID! @primaryKey(sortKeyFields: ["sk"])
+  sk: AWSTime!
+}
+
+# CLI.16
+type Post16 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSURL!
+}
+
+# CLI.17
+type Post17 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSEmail!
+}
+
+# CLI.18
+type Post18 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSPhone!
+}
+
+# CLI.19
+type Post19 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSIPAddress!
+}
+
+# CLI.20
+type Post20 @model {
+    postId: ID! @primaryKey(sortKeyFields: ["sk"])
+    sk: AWSTimestamp!
 }

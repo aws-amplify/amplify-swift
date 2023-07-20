@@ -342,13 +342,185 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPredictionsPlugin"
+               BuildableName = "AWSPredictionsPlugin"
+               BlueprintName = "AWSPredictionsPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CoreMLPredictionsPlugin"
+               BuildableName = "CoreMLPredictionsPlugin"
+               BlueprintName = "CoreMLPredictionsPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Amplify_AWSPredictionsPluginUnitTests"
+               BuildableName = "Amplify_AWSPredictionsPluginUnitTests"
+               BlueprintName = "Amplify_AWSPredictionsPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Amplify_AWSCognitoAuthPluginUnitTests"
+               BuildableName = "Amplify_AWSCognitoAuthPluginUnitTests"
+               BlueprintName = "Amplify_AWSCognitoAuthPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Amplify_AWSCloudWatchLoggingPluginTests"
+               BuildableName = "Amplify_AWSCloudWatchLoggingPluginTests"
+               BlueprintName = "Amplify_AWSCloudWatchLoggingPluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSCloudWatchLoggingPlugin"
+               BuildableName = "AWSCloudWatchLoggingPlugin"
+               BlueprintName = "AWSCloudWatchLoggingPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSAPIPlugin"
+            BuildableName = "AWSAPIPlugin"
+            BlueprintName = "AWSAPIPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSCognitoAuthPlugin"
+            BuildableName = "AWSCognitoAuthPlugin"
+            BlueprintName = "AWSCognitoAuthPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSDataStorePlugin"
+            BuildableName = "AWSDataStorePlugin"
+            BlueprintName = "AWSDataStorePlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSLocationGeoPlugin"
+            BuildableName = "AWSLocationGeoPlugin"
+            BlueprintName = "AWSLocationGeoPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSPinpointAnalyticsPlugin"
+            BuildableName = "AWSPinpointAnalyticsPlugin"
+            BlueprintName = "AWSPinpointAnalyticsPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSPinpointPushNotificationsPlugin"
+            BuildableName = "AWSPinpointPushNotificationsPlugin"
+            BlueprintName = "AWSPinpointPushNotificationsPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSPluginsCore"
+            BuildableName = "AWSPluginsCore"
+            BlueprintName = "AWSPluginsCore"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSPredictionsPlugin"
+            BuildableName = "AWSPredictionsPlugin"
+            BlueprintName = "AWSPredictionsPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSS3StoragePlugin"
+            BuildableName = "AWSS3StoragePlugin"
+            BlueprintName = "AWSS3StoragePlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "Amplify"
+            BuildableName = "Amplify"
+            BlueprintName = "Amplify"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "CoreMLPredictionsPlugin"
+            BuildableName = "CoreMLPredictionsPlugin"
+            BlueprintName = "CoreMLPredictionsPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSCloudWatchLoggingPlugin"
+            BuildableName = "AWSCloudWatchLoggingPlugin"
+            BlueprintName = "AWSCloudWatchLoggingPlugin"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -492,6 +664,44 @@
                BlueprintIdentifier = "AWSPinpointPushNotificationsPluginUnitTests"
                BuildableName = "AWSPinpointPushNotificationsPluginUnitTests"
                BlueprintName = "AWSPinpointPushNotificationsPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPredictionsPluginUnitTests"
+               BuildableName = "AWSPredictionsPluginUnitTests"
+               BlueprintName = "AWSPredictionsPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CoreMLPredictionsPluginUnitTests"
+               BuildableName = "CoreMLPredictionsPluginUnitTests"
+               BlueprintName = "CoreMLPredictionsPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "CoreMLVisionAdapterTests/testDetectEntities()">
+               </Test>
+               <Test
+                  Identifier = "CoreMLVisionAdapterTests/testDetectLabels()">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSCloudWatchLoggingPluginTests"
+               BuildableName = "AWSCloudWatchLoggingPluginTests"
+               BlueprintName = "AWSCloudWatchLoggingPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

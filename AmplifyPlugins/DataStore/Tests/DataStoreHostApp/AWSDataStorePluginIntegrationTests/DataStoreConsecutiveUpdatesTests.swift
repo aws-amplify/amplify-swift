@@ -11,7 +11,9 @@ import AWSPluginsCore
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable type_body_length
@@ -156,8 +158,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         // query the deleted post immediately
         let queryResult = try await queryPost(byId: newPost.id)
         XCTAssertNil(queryResult)
-
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: newPost.id)

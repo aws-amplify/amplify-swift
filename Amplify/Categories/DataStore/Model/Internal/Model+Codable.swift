@@ -71,11 +71,12 @@ extension Model where Self: Codable {
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
     public func toJSON(encoder: JSONEncoder? = nil) throws -> String {
-        let resolvedEncoder: JSONEncoder
-        if let encoder = encoder {
-            resolvedEncoder = encoder
-        } else {
-            resolvedEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
+        var resolvedEncoder = encoder ?? JSONEncoder(
+            dateEncodingStrategy: ModelDateFormatting.encodingStrategy
+        )
+
+        if isKnownUniquelyReferenced(&resolvedEncoder) {
+            resolvedEncoder.outputFormatting = .sortedKeys
         }
 
         let data = try resolvedEncoder.encode(self)

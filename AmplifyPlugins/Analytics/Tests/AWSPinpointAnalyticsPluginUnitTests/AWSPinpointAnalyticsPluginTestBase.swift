@@ -50,6 +50,7 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
-        analyticsPlugin.reset()
+        let resettable = analyticsPlugin as Resettable
+        await resettable.reset()
     }
 }

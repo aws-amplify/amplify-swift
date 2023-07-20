@@ -32,6 +32,7 @@ public extension AuthSignOutRequest {
         /// SignOut the user from all devices. Check the plugin specific definition on what global signOut means.
         public let globalSignOut: Bool
 
+#if os(iOS) || os(macOS)
         /// Provide a presentation anchor if you have signedIn using `signInWithWebUI`. The signOut webUI will be presented
         /// in the presentation anchor provided.
         public let presentationAnchorForWebUI: AuthUIPresentationAnchor?
@@ -43,13 +44,21 @@ public extension AuthSignOutRequest {
             self.pluginOptions = pluginOptions
             self.presentationAnchorForWebUI = presentationAnchor
         }
+#else
+        public init(globalSignOut: Bool = false, pluginOptions: Any? = nil) {
+            self.globalSignOut = globalSignOut
+            self.pluginOptions = pluginOptions
+        }
+#endif
     }
 
 
 }
 
+#if os(iOS) || os(macOS)
 extension AuthSignOutRequest.Options {
     public static func presentationAnchor(_ anchor: AuthUIPresentationAnchor) -> AuthSignOutRequest.Options {
         return AuthSignOutRequest.Options(presentationAnchor: anchor)
     }
 }
+#endif

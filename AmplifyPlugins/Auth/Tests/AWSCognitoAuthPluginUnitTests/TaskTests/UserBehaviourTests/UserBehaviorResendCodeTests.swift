@@ -11,6 +11,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class UserBehaviorResendCodeTests: BasePluginTest {
 
@@ -75,7 +76,10 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithCodeMismatchException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw GetUserAttributeVerificationCodeOutputError.codeDeliveryFailureException(.init())
+            throw SdkError.service(
+                GetUserAttributeVerificationCodeOutputError.codeDeliveryFailureException(
+                    .init()),
+                .init(body: .empty, statusCode: .accepted))
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)

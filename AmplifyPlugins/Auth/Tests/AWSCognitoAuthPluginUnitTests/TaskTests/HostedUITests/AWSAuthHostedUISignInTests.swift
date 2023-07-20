@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
+
 import Foundation
 
 import XCTest
@@ -257,8 +259,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -279,3 +280,5 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
     }
 }
+
+#endif

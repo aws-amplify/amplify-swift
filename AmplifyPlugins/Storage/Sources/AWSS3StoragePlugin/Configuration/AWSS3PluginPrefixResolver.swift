@@ -10,12 +10,17 @@ import Amplify
 import AWSPluginsCore
 
 /// Resolves the final prefix prepended to the S3 key for a given request.
+///
+/// - Tag: AWSS3PluginPrefixResolver
 public protocol AWSS3PluginPrefixResolver {
+    /// - Tag: AWSS3PluginPrefixResolver.resolvePrefix
     func resolvePrefix(for accessLevel: StorageAccessLevel,
                        targetIdentityId: String?) async throws -> String
 }
 
 /// Convenience resolver. Resolves the provided key as-is, with no manipulation
+///
+/// - Tag: PassThroughPrefixResolver
 public struct PassThroughPrefixResolver: AWSS3PluginPrefixResolver {
     public func resolvePrefix(for accessLevel: StorageAccessLevel,
                               targetIdentityId: String?) async throws -> String {
@@ -24,13 +29,18 @@ public struct PassThroughPrefixResolver: AWSS3PluginPrefixResolver {
 }
 
 /// AWSS3StoragePlugin default logic
-struct StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
+///
+/// - Tag: StorageAccessLevelAwarePrefixResolver
+struct StorageAccessLevelAwarePrefixResolver {
     let authService: AWSAuthServiceBehavior
 
+    /// - Tag: StorageAccessLevelAwarePrefixResolver.init
     public init(authService: AWSAuthServiceBehavior) {
         self.authService = authService
     }
+}
 
+extension StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
     func resolvePrefix(for accessLevel: StorageAccessLevel,
                        targetIdentityId: String?) async throws -> String {
         do {

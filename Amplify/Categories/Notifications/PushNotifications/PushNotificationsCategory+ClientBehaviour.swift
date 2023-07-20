@@ -21,7 +21,9 @@ extension PushNotificationsCategory: PushNotificationsCategoryBehaviour {
         try await plugin.recordNotificationReceived(userInfo)
     }
     
+#if !os(tvOS)
     public func recordNotificationOpened(_ response: UNNotificationResponse) async throws {
         try await plugin.recordNotificationOpened(response)
     }
+#endif
 }

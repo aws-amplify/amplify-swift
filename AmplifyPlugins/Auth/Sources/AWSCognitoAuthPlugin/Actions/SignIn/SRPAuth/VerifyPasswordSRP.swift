@@ -14,11 +14,14 @@ struct VerifyPasswordSRP: Action {
 
     let stateData: SRPStateData
     let authResponse: InitiateAuthOutputResponse
+    let clientMetadata: ClientMetadata
 
     init(stateData: SRPStateData,
-         authResponse: InitiateAuthOutputResponse) {
+         authResponse: InitiateAuthOutputResponse,
+         clientMetadata: ClientMetadata) {
         self.stateData = stateData
         self.authResponse = authResponse
+        self.clientMetadata = clientMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -41,6 +44,10 @@ struct VerifyPasswordSRP: Action {
             let secretBlock = try secretBlock(secretBlockString)
             let serverPublicB = try serverPublic(parameters)
 
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.authEnvironment().credentialsClient)
+
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
                 with: environment)
@@ -56,7 +63,9 @@ struct VerifyPasswordSRP: Action {
                 session: authResponse.session,
                 secretBlock: secretBlockString,
                 signature: signature,
+                clientMetadata: clientMetadata,
                 deviceMetadata: deviceMetadata,
+                asfDeviceId: asfDeviceId,
                 environment: userPoolEnv)
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
@@ -78,7 +87,7 @@ struct VerifyPasswordSRP: Action {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
             // Remove the saved device details and retry password verify
             await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
-            let event = SignInEvent(eventType: .retryRespondPasswordVerifier(stateData, authResponse))
+            let event = SignInEvent(eventType: .retryRespondPasswordVerifier(stateData, authResponse, clientMetadata))
             logVerbose("\(#fileID) Sending event \(event)",
                        environment: environment)
             await dispatcher.send(event)
@@ -109,7 +118,15 @@ struct VerifyPasswordSRP: Action {
     }
 }
 
-extension VerifyPasswordSRP: DefaultLogger { }
+extension VerifyPasswordSRP: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension VerifyPasswordSRP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

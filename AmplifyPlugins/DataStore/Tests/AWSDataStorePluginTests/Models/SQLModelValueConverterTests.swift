@@ -51,7 +51,7 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
     ///     - non-model types must be strings
     ///     - bool must be `Int` (1 or 0)
     ///     - the remaining types should not change
-    func testModelWithEveryTypeConversionToBindings() {
+    func testModelWithEveryTypeConversionToBindings() throws {
         let nonModelJSON = "{\"someString\":\"string\",\"someEnum\":\"foo\"}"
         let example = exampleModel
 
@@ -67,7 +67,17 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
         XCTAssertEqual(bindings[4] as? Double, 6.5) // doubleField
         XCTAssertEqual(bindings[5] as? String, "bar") // enumField
         XCTAssertEqual(bindings[6] as? Int, 20) // intField
-        XCTAssertEqual(bindings[7] as? String, nonModelJSON) // nonModelField
+
+        let jsonBinding = try (bindings[7] as? String)
+            .map { Data($0.utf8) }
+            .flatMap {
+                try JSONSerialization
+                    .jsonObject(with: $0, options: []) as? [String: String]
+            }
+        let expectedJSONBinding = try JSONSerialization
+            .jsonObject(with: Data(nonModelJSON.utf8)) as? [String: String]
+
+        XCTAssertEqual(jsonBinding, expectedJSONBinding) // nonModelField
     }
 
     /// - Given: a `ExampleWithEveryType` model instance

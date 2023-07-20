@@ -25,7 +25,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
 >, StorageDownloadFileOperation {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
-    let storageService: AWSS3StorageServiceBehaviour
+    let storageService: AWSS3StorageServiceBehavior
     let authService: AWSAuthServiceBehavior
 
     var storageTaskReference: StorageTaskReference?
@@ -35,7 +35,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
 
     init(_ request: StorageDownloadFileRequest,
          storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehaviour,
+         storageService: AWSS3StorageServiceBehavior,
          authService: AWSAuthServiceBehavior,
          progressListener: InProcessListener? = nil,
          resultListener: ResultListener? = nil) {

@@ -72,7 +72,7 @@ class PinpointRequestsRegistryTests: XCTestCase {
 
     private func createSdkRequest(for api: PinpointRequestsRegistry.API?) throws -> SdkHttpRequest {
         let apiPath = api?.rawValue ?? "otherApi"
-        let endpoint = try Endpoint(urlString: "https://host:port/path/\(apiPath)/suffix")
+        let endpoint = try Endpoint(urlString: "https://host:42/path/\(apiPath)/suffix")
         let headers = [
             "User-Agent": "mocked_user_agent"
         ]
@@ -89,14 +89,26 @@ private extension HttpClientEngine {
 }
 
 private class MockSDKRuntimeConfiguration: SDKRuntimeConfiguration {
+    var encoder: ClientRuntime.RequestEncoder?
+    var decoder: ClientRuntime.ResponseDecoder?
+    var httpClientConfiguration: ClientRuntime.HttpClientConfiguration
+    var idempotencyTokenGenerator: ClientRuntime.IdempotencyTokenGenerator
+    var clientLogMode: ClientRuntime.ClientLogMode
+    var partitionID: String?
+    
     let logger: LogAgent
     let retryer: SDKRetryer
     var endpoint: String? = nil
     private let mockedHttpClientEngine : HttpClientEngine
 
     init(httpClientEngine: HttpClientEngine) throws {
+        let defaultSDKRuntimeConfig = try DefaultSDKRuntimeConfiguration("MockSDKRuntimeConfiguration")
+        httpClientConfiguration = defaultSDKRuntimeConfig.httpClientConfiguration
+        idempotencyTokenGenerator = defaultSDKRuntimeConfig.idempotencyTokenGenerator
+        clientLogMode = defaultSDKRuntimeConfig.clientLogMode
+        
         logger = MockLogAgent()
-        retryer = try SDKRetryer(options: .init(backOffRetryOptions: .init()))
+        retryer = try SDKRetryer(options: RetryOptions(jitterMode: .default))
         mockedHttpClientEngine = httpClientEngine
     }
 

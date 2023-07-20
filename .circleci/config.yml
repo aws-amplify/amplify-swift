@@ -9,9 +9,16 @@ parameters:
   macos-destination:
     type: string
     default: platform=macOS,arch=x86_64
+  tvos-destination:
+    type: string
+    default: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
+  watchos-destination:
+    type: string
+    default: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
 
 orbs:
   aws-cli: circleci/aws-cli@3.1.4
+  ruby: circleci/ruby@2.0.0
   # Using inline orb for now
   getting-started-smoke-test:
     orbs:
@@ -65,7 +72,7 @@ orbs:
         parameters:
           xcode-version:
             type: string
-            default: 13.4.1
+            default: 14.3.0
           simulator-device:
             type: string
             default: iPhone 13
@@ -95,35 +102,33 @@ orbs:
 
 defaults: &defaults
   macos:
-    xcode: '14.0.0'
-  working_directory: ~/amplify-swift
+    xcode: '14.3.0'
+  resource_class: macos.x86.medium.gen2
   environment:
-    BUNDLE_PATH: vendor/bundle
-
-references:
-  repo_cache_key: &repo_cache_key v2-repo-{{ .Branch }}-{{ .Revision }}
-
-  restore_repo: &restore_repo
-    restore_cache:
-      keys:
-        - *repo_cache_key
-        - v2-repo-{{ .Branch }}
-        - v2-repo
+    BUNDLE_JOBS: 4
+    BUNDLE_RETRY: 3
 
 commands:
-
-  restore_gems:
-    steps:
-      - restore_cache:
-          keys:
-            - v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
-            - v2-gems-
-
-  check_bundle:
+  shallow_checkout:
     steps:
       - run:
-          name: Check bundle
-          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
+          name: Checkout code shallow and change to working directory
+          command: |
+            git clone --depth 10 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" $CIRCLE_WORKING_DIRECTORY
+            cd $CIRCLE_WORKING_DIRECTORY
+
+            if [ -n "$CIRCLE_TAG" ]; then
+              echo 'Fetch tag'
+              git fetch --depth 10 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
+            elif [[ $(echo $CIRCLE_PULL_REQUEST | grep -E "${CIRCLE_BRANCH}$") ]]; then
+              echo 'Fetch pull request'
+              git fetch --depth 10 --force origin "$CIRCLE_BRANCH/head:remotes/origin/$CIRCLE_BRANCH"
+            else
+              echo 'Fetch branch'
+              git fetch --depth 10 --force origin "$CIRCLE_BRANCH:remotes/origin/$CIRCLE_BRANCH"
+            fi
+            echo "Checking out the CI HEAD"
+            git reset --hard "$CIRCLE_SHA1"
 
   make_artifacts_directory:
     steps:
@@ -137,36 +142,10 @@ commands:
           path: artifacts
 
 jobs:
-  checkout_code:
-    <<: *defaults
-    steps:
-      - *restore_repo
-      - checkout
-      - save_cache:
-          key: *repo_cache_key
-          paths:
-            - ~/amplify-swift
-
-  install_gems:
-    <<: *defaults
-    steps:
-      - *restore_repo
-      - restore_gems
-      - run:
-          name: Bundle install
-          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
-          environment:
-            BUNDLE_JOBS: 4
-            BUNDLE_RETRY: 3
-      - save_cache:
-          key: v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-
   build_amplify_ios_spm:
     <<: *defaults
     steps:
-      - *restore_repo
+      - shallow_checkout
       - make_artifacts_directory
       - run:
           name: Build amplify for ios SPM
@@ -174,27 +153,49 @@ jobs:
   build_amplify_macos_spm:
     <<: *defaults
     steps:
-      - *restore_repo
+      - shallow_checkout
       - make_artifacts_directory
       - run:
           name: Build amplify for macos SPM
           command: xcodebuild build -scheme Amplify-Package -sdk macosx -destination "<< pipeline.parameters.macos-destination >>" | tee "artifacts/build-Ampify-for-macos-SPM.log" | xcpretty
+  build_amplify_tvos_spm:
+    <<: *defaults
+    macos:
+      xcode: '14.3.0'
+    steps:
+      - shallow_checkout
+      - make_artifacts_directory
+      - run:
+          name: Build amplify for tvOS SPM
+          command: xcodebuild build -scheme Amplify-Package -sdk appletvsimulator -destination "<< pipeline.parameters.tvos-destination >>" | tee "artifacts/build-Ampify-for-tvos-SPM.log" | xcpretty
+  build_amplify_watchos_spm:
+    <<: *defaults
+    macos:
+      xcode: '14.3.0'
+    steps:
+      - shallow_checkout
+      - make_artifacts_directory
+      - run:
+          name: Build amplify for watchOS SPM
+          command: xcodebuild build -scheme Amplify-Package -sdk watchsimulator -destination "<< pipeline.parameters.watchos-destination >>" | tee "artifacts/build-Ampify-for-watchos-SPM.log" | xcpretty
 
   unit_test:
     <<: *defaults
     parameters:
       xcode-version:
         type: string
-        default: 14.0.0
+        default: 14.3.0
       scheme:
         type: string
       sdk:
         type: string
       destination:
         type: string
+    macos:
+      xcode: <<parameters.xcode-version>>
     description: << parameters.scheme >> unit test
     steps:
-      - *restore_repo
+      - shallow_checkout
       - make_artifacts_directory
       - run:
           name: Build << parameters.scheme >>
@@ -204,7 +205,7 @@ jobs:
           command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>"  | tee "artifacts/test-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.scheme >> coverage report to Codecov
-          command: bash ~/amplify-swift/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
+          command: bash $CIRCLE_WORKING_DIRECTORY/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
@@ -212,12 +213,11 @@ jobs:
   generate_api_docs:
     <<: *defaults
     steps:
-      - *restore_repo
-      - restore_gems
-      - check_bundle
+      - checkout
+      - ruby/install-deps
       - run:
           name: Jazzy API doc generation
-          command: bash ~/amplify-swift/CircleciScripts/jazzy_doc_gen.sh
+          command: bash $CIRCLE_WORKING_DIRECTORY/CircleciScripts/jazzy_doc_gen.sh
 
   deploy:
     <<: *defaults
@@ -230,18 +230,17 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - '3f:b4:9f:aa:0b:d7:c5:16:fb:44:44:35:cb:a7:70:e0'
-      - *restore_repo
-      - restore_gems
-      - check_bundle
+      - checkout
+      - ruby/install-deps
       - run:
           name: Release Amplify for Swift
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
-  
+
   fortify_scan:
     <<: *defaults
     steps:
-      - *restore_repo
+      - shallow_checkout
       - run:
           name: Make source directory
           command: |
@@ -269,8 +268,8 @@ jobs:
           name: Run Installer
           command: |
             Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
-            export PATH=~/amplify-swift/Fortify/bin:$PATH
-            echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
+            export PATH=$CIRCLE_WORKING_DIRECTORY/Fortify/bin:$PATH
+            echo "export PATH=$CIRCLE_WORKING_DIRECTORY/Fortify/bin:\$PATH" >> "$BASH_ENV"
             fortifyupdate -acceptKey
             sourceanalyzer -version
       - run:
@@ -283,6 +282,8 @@ deploy_requires: &deploy_requires
   requires:
     - build_amplify_ios_spm
     - build_amplify_macos_spm
+    - build_amplify_tvos_spm
+    - build_amplify_watchos_spm
     - ios_unit_test_amplify
     - ios_unit_test_awspluginscore
     - ios_unit_test_analytics
@@ -290,8 +291,10 @@ deploy_requires: &deploy_requires
     - ios_unit_test_auth
     - ios_unit_test_datastore
     - ios_unit_test_geo
+    - ios_unit_test_internal_pinpoint
     - ios_unit_test_push_notifications
     - ios_unit_test_storage
+    - ios_unit_test_predictions
     - macos_unit_test_amplify
     - macos_unit_test_awspluginscore
     - macos_unit_test_analytics
@@ -299,8 +302,32 @@ deploy_requires: &deploy_requires
     - macos_unit_test_auth
     - macos_unit_test_datastore
     - macos_unit_test_geo
+    - macos_unit_test_internal_pinpoint
     - macos_unit_test_push_notifications
     - macos_unit_test_storage
+    - macos_unit_test_predictions
+    - tvos_unit_test_amplify
+    - tvos_unit_test_awspluginscore
+    - tvos_unit_test_analytics
+    - tvos_unit_test_api
+    - tvos_unit_test_auth
+    - tvos_unit_test_datastore
+    - tvos_unit_test_geo
+    - tvos_unit_test_internal_pinpoint
+    - tvos_unit_test_push_notifications
+    - tvos_unit_test_storage
+    - tvos_unit_test_predictions
+    - watchos_unit_test_amplify
+    - watchos_unit_test_awspluginscore
+    - watchos_unit_test_analytics
+    - watchos_unit_test_api
+    - watchos_unit_test_auth
+    - watchos_unit_test_datastore
+    - watchos_unit_test_geo
+    - watchos_unit_test_internal_pinpoint
+    - watchos_unit_test_push_notifications
+    - watchos_unit_test_storage
+    - watchos_unit_test_predictions
     - fortify_scan
 
 workflows:
@@ -309,21 +336,21 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - checkout_code
-      - install_gems:
-          requires:
-            - checkout_code
       - fortify_scan:
           context:
             - amplify-swift-aws-s3-download
-          requires:
-            - install_gems
       - build_amplify_ios_spm:
           requires:
             - fortify_scan
       - build_amplify_macos_spm:
           requires:
-            - fortify_scan         
+            - fortify_scan
+      - build_amplify_tvos_spm:
+          requires:
+            - fortify_scan
+      - build_amplify_watchos_spm:
+          requires:
+            - fortify_scan
       - unit_test:
           name: ios_unit_test_amplify
           scheme: Amplify
@@ -374,6 +401,13 @@ workflows:
           requires:
             - build_amplify_ios_spm
       - unit_test:
+          name: ios_unit_test_internal_pinpoint
+          scheme: InternalAWSPinpointUnitTests
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
           name: ios_unit_test_push_notifications
           scheme: AWSPinpointPushNotificationsPlugin
           sdk: iphonesimulator
@@ -383,6 +417,13 @@ workflows:
       - unit_test:
           name: ios_unit_test_storage
           scheme: AWSS3StoragePlugin
+          sdk: iphonesimulator
+          destination: << pipeline.parameters.ios-destination >>
+          requires:
+            - build_amplify_ios_spm
+      - unit_test:
+          name: ios_unit_test_predictions
+          scheme: AWSPredictionsPlugin
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
@@ -437,6 +478,13 @@ workflows:
           requires:
             - build_amplify_macos_spm
       - unit_test:
+          name: macos_unit_test_internal_pinpoint
+          scheme: InternalAWSPinpointUnitTests
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
           name: macos_unit_test_push_notifications
           scheme: AWSPinpointPushNotificationsPlugin
           sdk: macosx
@@ -450,13 +498,196 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - build_amplify_macos_spm
+      - unit_test:
+          name: macos_unit_test_predictions
+          scheme: AWSPredictionsPlugin
+          sdk: macosx
+          destination: << pipeline.parameters.macos-destination >>
+          requires:
+            - build_amplify_macos_spm
+      - unit_test:
+          name: tvos_unit_test_amplify
+          scheme: Amplify
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_awspluginscore
+          scheme: AWSPluginsCore
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_analytics
+          scheme: AWSPinpointAnalyticsPlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_api
+          scheme: AWSAPIPlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_auth
+          scheme: AWSCognitoAuthPlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_datastore
+          scheme: AWSDataStorePlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_geo
+          scheme: AWSLocationGeoPlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_internal_pinpoint
+          scheme: InternalAWSPinpointUnitTests
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_push_notifications
+          scheme: AWSPinpointPushNotificationsPlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_storage
+          scheme: AWSS3StoragePlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: tvos_unit_test_predictions
+          scheme: AWSPredictionsPlugin
+          sdk: appletvsimulator
+          destination: << pipeline.parameters.tvos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_tvos_spm
+      - unit_test:
+          name: watchos_unit_test_amplify
+          scheme: Amplify
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_awspluginscore
+          scheme: AWSPluginsCore
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_analytics
+          scheme: AWSPinpointAnalyticsPlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_api
+          scheme: AWSAPIPlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_auth
+          scheme: AWSCognitoAuthPlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_datastore
+          scheme: AWSDataStorePlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_geo
+          scheme: AWSLocationGeoPlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_internal_pinpoint
+          scheme: InternalAWSPinpointUnitTests
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_push_notifications
+          scheme: AWSPinpointPushNotificationsPlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_storage
+          scheme: AWSS3StoragePlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
+      - unit_test:
+          name: watchos_unit_test_predictions
+          scheme: AWSPredictionsPlugin
+          sdk: watchsimulator
+          destination: << pipeline.parameters.watchos-destination >>
+          xcode-version: '14.3.0'
+          requires:
+            - build_amplify_watchos_spm
       - deploy:
           name: deploy unstable
           <<: *deploy_requires
           filters:
             branches:
               only:
-                - main 
+                - main
       - deploy:
           name: deploy stable
           lane: release

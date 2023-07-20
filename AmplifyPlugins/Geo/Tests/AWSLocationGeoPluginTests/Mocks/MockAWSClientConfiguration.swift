@@ -15,6 +15,20 @@ import XCTest
 @testable import AWSPluginsTestCommon
 
 class MockAWSClientConfiguration: LocationClientConfigurationProtocol {
+    var encoder: ClientRuntime.RequestEncoder?
+    
+    var decoder: ClientRuntime.ResponseDecoder?
+    
+    var httpClientEngine: ClientRuntime.HttpClientEngine
+    
+    var httpClientConfiguration: ClientRuntime.HttpClientConfiguration
+    
+    var idempotencyTokenGenerator: ClientRuntime.IdempotencyTokenGenerator
+    
+    var clientLogMode: ClientRuntime.ClientLogMode
+    
+    var partitionID: String?
+    
     var useFIPS: Bool?
 
     var useDualStack: Bool?
@@ -38,12 +52,18 @@ class MockAWSClientConfiguration: LocationClientConfigurationProtocol {
     var retryer: SDKRetryer
 
     init(config: AWSLocationGeoPluginConfiguration) throws {
+        let defaultSDKRuntimeConfig = try DefaultSDKRuntimeConfiguration("MockAWSClientConfiguration")
+        
+        self.httpClientEngine = defaultSDKRuntimeConfig.httpClientEngine
+        self.httpClientConfiguration = defaultSDKRuntimeConfig.httpClientConfiguration
+        self.idempotencyTokenGenerator = defaultSDKRuntimeConfig.idempotencyTokenGenerator
+        self.clientLogMode = defaultSDKRuntimeConfig.clientLogMode
         self.credentialsProvider = MockAWSAuthService().getCredentialsProvider()
         self.region = config.regionName
         self.signingRegion = ""
         self.endpointResolver = MockEndPointResolver()
         self.logger = MockLogAgent()
-        self.retryer = try SDKRetryer(options: RetryOptions(backOffRetryOptions: ExponentialBackOffRetryOptions()))
+        self.retryer = try SDKRetryer(options: RetryOptions(jitterMode: .default))
     }
 }
 

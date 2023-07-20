@@ -12,6 +12,7 @@ import AWSCognitoIdentityProvider
 import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
 
 class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
@@ -134,7 +135,10 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw ForgetDeviceOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
+                throw SdkError.service(
+                    ForgetDeviceOutputError.invalidParameterException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

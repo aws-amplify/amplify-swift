@@ -536,7 +536,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 ///
 /// - Returns: the path to the user document directory.
 private func getDocumentPath() -> URL? {
-    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    return try? FileManager.default.url(
+        for: .documentDirectory,
+        in: .userDomainMask,
+        appropriateFor: nil,
+        create: true
+    )
 }
 
 extension DataStoreError {
@@ -550,4 +555,11 @@ extension DataStoreError {
     }
 }
 
-extension SQLiteStorageEngineAdapter: DefaultLogger { }
+extension SQLiteStorageEngineAdapter: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

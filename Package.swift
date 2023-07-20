@@ -2,13 +2,18 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
-let platforms: [SupportedPlatform] = [.iOS(.v13), .macOS(.v10_15)]
+let platforms: [SupportedPlatform] = [
+    .iOS(.v13),
+    .macOS(.v10_15),
+    .tvOS(.v13),
+    .watchOS(.v7)
+]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.6.1"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.13.0"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.0.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.13.2"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
-    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.0.0")
+    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
 ]
 
 let amplifyTargets: [Target] = [
@@ -280,7 +285,8 @@ let internalPinpointTargets: [Target] = [
         name: "InternalAWSPinpointUnitTests",
         dependencies: [
             "InternalAWSPinpoint",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "AmplifyAsyncTesting"
         ],
         path: "AmplifyPlugins/Internal/Tests/InternalAWSPinpointUnitTests"
     )
@@ -322,8 +328,89 @@ let pushNotificationsTargets: [Target] = [
     )
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets +
-                        geoTargets + analyticsTargets + pushNotificationsTargets + internalPinpointTargets
+let predictionsTargets: [Target] = [
+    .target(
+        name: "AWSPredictionsPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .target(name: "CoreMLPredictionsPlugin"),
+            .product(name: "AWSComprehend", package: "aws-sdk-swift"),
+            .product(name: "AWSPolly", package: "aws-sdk-swift"),
+            .product(name: "AWSRekognition", package: "aws-sdk-swift"),
+            .product(name: "AWSTextract", package: "aws-sdk-swift"),
+            .product(name: "AWSTranscribeStreaming", package: "aws-sdk-swift"),
+            .product(name: "AWSTranslate", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyPlugins/Predictions/AWSPredictionsPlugin",
+        exclude: []
+    ),
+    .testTarget(
+        name: "AWSPredictionsPluginUnitTests",
+        dependencies: ["AWSPredictionsPlugin"],
+        path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests",
+        resources: [.copy("TestResources/TestImages") ]
+    ),
+    .target(
+        name: "CoreMLPredictionsPlugin",
+        dependencies: [
+            .target(name: "Amplify")
+        ],
+        path: "AmplifyPlugins/Predictions/CoreMLPredictionsPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "CoreMLPredictionsPluginUnitTests",
+        dependencies: [
+            "CoreMLPredictionsPlugin",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Predictions/Tests/CoreMLPredictionsPluginUnitTests",
+        resources: [.copy("TestResources/TestImages")]
+    )
+]
+
+let loggingTargets: [Target] = [
+    .target(
+        name: "AWSCloudWatchLoggingPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .product(name: "AWSCloudWatch", package: "aws-sdk-swift"),
+            .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
+        ],
+        path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "AWSCloudWatchLoggingPluginTests",
+        dependencies: [
+            "AWSCloudWatchLoggingPlugin",
+            "AmplifyTestCommon",
+            "AWSPluginsTestCommon"
+        ],
+        path: "AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginTests",
+        resources: [
+            .copy("TestResources")
+        ]
+    )
+]
+
+let targets: [Target] = amplifyTargets
+    + apiTargets
+    + authTargets
+    + dataStoreTargets
+    + storageTargets
+    + geoTargets
+    + analyticsTargets
+    + pushNotificationsTargets
+    + internalPinpointTargets
+    + predictionsTargets
+    + loggingTargets
 
 let package = Package(
     name: "Amplify",
@@ -364,7 +451,19 @@ let package = Package(
         .library(
             name: "AWSPinpointPushNotificationsPlugin",
             targets: ["AWSPinpointPushNotificationsPlugin"]
-        )
+        ),
+        .library(
+            name: "AWSPredictionsPlugin",
+            targets: ["AWSPredictionsPlugin"]
+        ),
+        .library(
+            name: "CoreMLPredictionsPlugin",
+            targets: ["CoreMLPredictionsPlugin"]
+        ),
+        .library(
+            name: "AWSCloudWatchLoggingPlugin",
+            targets: ["AWSCloudWatchLoggingPlugin"]
+        ),
     ],
     dependencies: dependencies,
     targets: targets

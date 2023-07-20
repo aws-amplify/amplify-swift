@@ -28,11 +28,16 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
         try request.hasError()
         let userPoolEnvironment = authEnvironment.userPoolEnvironment
         do {
+
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: request.username,
+                credentialStoreClient: authEnvironment.credentialsClient)
             let metadata = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.metadata
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
             let input = ConfirmSignUpInput(username: request.username,
                                            confirmationCode: request.code,
                                            clientMetadata: metadata,
+                                           asfDeviceId: asfDeviceId,
                                            environment: userPoolEnvironment)
             _ = try await client.confirmSignUp(input: input)
             log.verbose("Received success")
@@ -48,5 +53,12 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
                 error)
             throw error
         }
+    }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
     }
 }

@@ -1,4 +1,4 @@
-name: DataStore Integration Tests
+name: Integration Tests | DataStore - All
 on:
   workflow_dispatch:
   push:
@@ -6,7 +6,7 @@ on:
 
 permissions:
     id-token: write
-    contents: read 
+    contents: read
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -29,31 +29,37 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-  datastore-integration-test:
-    timeout-minutes: 30
+  datastore-base-test:
     needs: prepare-for-test
-    runs-on: macos-12
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
+    uses: ./.github/workflows/integ_test_datastore_base.yml
+    secrets: inherit
 
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+  datastore-auth-iam-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_datastore_auth_iam.yml
+    secrets: inherit
 
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: datastore
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+  datastore-cpk-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_datastore_cpk.yml
+    secrets: inherit
 
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginIntegrationTests
+  datastore-lazy-load-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_datastore_lazy_load.yml
+    secrets: inherit
 
- 
+  datastore-multi-auth-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_datastore_multi_auth.yml
+    secrets: inherit
+
+  datastore-transformer-v2-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_datastore_v2.yml
+    secrets: inherit
+
+  datastore-auth-cognito-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_datastore_auth_cognito.yml
+    secrets: inherit

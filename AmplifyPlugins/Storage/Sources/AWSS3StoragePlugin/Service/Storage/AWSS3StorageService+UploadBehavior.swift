@@ -57,17 +57,16 @@ extension AWSS3StorageService {
         var request = URLRequest(url: preSignedURL)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpMethod = "PUT"
+        request.networkServiceType = .responsiveData
 
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
-
-        /*
-        let userAgent = AWSServiceConfiguration.baseUserAgent()
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-         */
 
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
+        urlRequestDelegate?.willSend(request: request)
         let uploadTask = urlSession.uploadTask(with: request, fromFile: fileURL)
+        urlRequestDelegate?.didSend(request: request)
         transferTask.sessionTask = uploadTask
 
         // log task identifier?

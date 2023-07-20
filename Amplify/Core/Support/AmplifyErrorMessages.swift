@@ -6,7 +6,10 @@
 //
 
 /// Commonly used cross-category error messages.
+///
+/// - Tag: AmplifyErrorMessages
 public struct AmplifyErrorMessages {
+    /// - Tag: AmplifyErrorMessages.reportBugToAWS
     public static func reportBugToAWS(file: StaticString = #file,
                                       function: StaticString = #function,
                                       line: UInt = #line) -> String {
@@ -21,12 +24,14 @@ public struct AmplifyErrorMessages {
         """
     }
 
+    /// - Tag: AmplifyErrorMessages.shouldNotHappenReportBugToAWS
     public static func shouldNotHappenReportBugToAWS(file: StaticString = #file,
                                                      function: StaticString = #function,
                                                      line: UInt = #line) -> String {
         "This should not happen. \(reportBugToAWS(file: file, function: function, line: line))"
     }
 
+    /// - Tag: AmplifyErrorMessages.shouldNotHappenReportBugToAWSWithoutLineInfo
     public static func shouldNotHappenReportBugToAWSWithoutLineInfo() -> String {
         """
         This should not happen. There is a possibility that there is a bug if this error persists. \

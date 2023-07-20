@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SafariServices
 
 import XCTest
 @testable import Amplify
@@ -23,6 +22,35 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }, mockGlobalSignOutResponse: { _ in
                 try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            },
+            mockDeleteUserOutputResponse: { _ in
+                try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
+    /// Test a deleteUser when sign out failed
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   sign out failure
+    ///
+    /// - When:
+    ///    - I invoke deleteUser
+    /// - Then:
+    ///    - I should still be able to get a success for delete user
+    ///
+    func testSignOutFailureWhenDeleteUserIsSuccess() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                throw RevokeTokenOutputError.unsupportedTokenTypeException(.init())
+            }, mockGlobalSignOutResponse: { _ in
+                throw GlobalSignOutOutputError.internalErrorException(.init())
             },
             mockDeleteUserOutputResponse: { _ in
                 try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -55,9 +83,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockDeleteUserOutputResponse: { _ in
-                let crtError = ClientRuntime.ClientError.retryError(
-                    CRTError.crtError(
-                        AWSError(errorCode: 1059)))
+                let crtError = ClientRuntime.ClientError.retryError(CommonRunTimeError.crtError(CRTError(code: 1059)))
                 throw SdkError<DeleteUserOutputError>.client(crtError)
             }
         )
@@ -92,9 +118,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockDeleteUserOutputResponse: { _ in
-                let crtError = ClientRuntime.ClientError.retryError(
-                    CRTError.crtError(
-                        AWSError(errorCode: 1059)))
+                let crtError = ClientRuntime.ClientError.retryError(CommonRunTimeError.crtError(CRTError(code: 1059)))
                 throw SdkError<DeleteUserOutputError>.client(crtError)
             }
         )
@@ -374,6 +398,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     ///    - I invoke deleteUser
     /// - Then:
     ///    - I should get a .service error with .userNotFound error
+    ///      AuthN should be in signedOut state
     ///
     func testDeleteUserWithUserNotFoundException() async {
         mockIdentityProvider = MockIdentityProvider(
@@ -396,6 +421,19 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce userNotFound error but instead produced \(error)")
                 return
             }
+        }
+
+        switch await plugin.authStateMachine.currentState {
+        case .configured(let authNState, let authZState):
+            switch (authNState, authZState) {
+            case (.signedOut, .configured):
+                print("AuthN and AuthZ are in a valid state")
+            default:
+                XCTFail("AuthN should be in signed out state")
+            }
+        default:
+            XCTFail("Auth should be in configured state")
+
         }
     }
 

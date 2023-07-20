@@ -30,7 +30,7 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testSavePerson() async throws {
         await setup(withModels: PhoneCallModels())
         let person = Person(name: "name")
-        try await saveAndWaitForSync(person)
+        try await createAndWaitForSync(person)
     }
     
     /// Saving a PhoneCall, requires a caller and a callee, should be successful.
@@ -45,12 +45,12 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testSavePhoneCall() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
-        let savedCaller = try await saveAndWaitForSync(caller)
+        let savedCaller = try await createAndWaitForSync(caller)
         let callee = Person(name: "callee")
-        let savedCallee = try await saveAndWaitForSync(callee)
+        let savedCallee = try await createAndWaitForSync(callee)
 
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
-        let savedPhoneCall = try await saveAndWaitForSync(phoneCall)
+        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         let queriedPhoneCall = try await query(for: savedPhoneCall)
         assertLazyReference(queriedPhoneCall._caller,
                             state: .notLoaded(identifiers: [.init(name: "id", value: caller.id)]))
@@ -84,9 +84,9 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testSavePhoneCallAndTranscriptBiDirectional() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
-        let savedCaller = try await saveAndWaitForSync(caller)
+        let savedCaller = try await createAndWaitForSync(caller)
         let callee = Person(name: "callee")
-        let savedCallee = try await saveAndWaitForSync(callee)
+        let savedCallee = try await createAndWaitForSync(callee)
         var phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
         
@@ -95,9 +95,9 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         // phoneCall.setTranscript(transcript)
         phoneCall.phoneCallTranscriptId = transcript.id
         
-        let savedPhoneCall = try await saveAndWaitForSync(phoneCall)
+        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         XCTAssertEqual(savedPhoneCall.phoneCallTranscriptId, transcript.id)
-        let savedTranscript = try await saveAndWaitForSync(transcript)
+        let savedTranscript = try await createAndWaitForSync(transcript)
         assertLazyReference(savedTranscript._phoneCall,
                             state: .notLoaded(identifiers: [
                                 .init(name: PhoneCall.keys.id.stringValue, value: savedPhoneCall.id)
@@ -130,14 +130,14 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testUpdatePhoneCallToTranscript() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
-        let savedCaller = try await saveAndWaitForSync(caller)
+        let savedCaller = try await createAndWaitForSync(caller)
         let callee = Person(name: "callee")
-        let savedCallee = try await saveAndWaitForSync(callee)
+        let savedCallee = try await createAndWaitForSync(callee)
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
-        let savedPhoneCall = try await saveAndWaitForSync(phoneCall)
+        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         XCTAssertNil(savedPhoneCall.phoneCallTranscriptId)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
-        let savedTranscript = try await saveAndWaitForSync(transcript)
+        let savedTranscript = try await createAndWaitForSync(transcript)
         
         
         var queriedPhoneCall = try await query(for: savedPhoneCall)
@@ -149,7 +149,7 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testDeletePerson() async throws {
         await setup(withModels: PhoneCallModels())
         let person = Person(name: "name")
-        let savedPerson = try await saveAndWaitForSync(person)
+        let savedPerson = try await createAndWaitForSync(person)
         
         try await deleteAndWaitForSync(savedPerson)
         try await assertModelDoesNotExist(savedPerson)
@@ -166,11 +166,11 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testDeletePhoneCall() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
-        let savedCaller = try await saveAndWaitForSync(caller)
+        let savedCaller = try await createAndWaitForSync(caller)
         let callee = Person(name: "callee")
-        let savedCallee = try await saveAndWaitForSync(callee)
+        let savedCallee = try await createAndWaitForSync(callee)
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
-        let savedPhoneCall = try await saveAndWaitForSync(phoneCall)
+        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
         
         try await deleteAndWaitForSync(savedPhoneCall)
         try await assertModelExists(caller)
@@ -189,11 +189,11 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testDeletePersonWithPhoneCall() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
-        let savedCaller = try await saveAndWaitForSync(caller)
+        let savedCaller = try await createAndWaitForSync(caller)
         let callee = Person(name: "callee")
-        let savedCallee = try await saveAndWaitForSync(callee)
+        let savedCallee = try await createAndWaitForSync(callee)
         let phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
-        let savedPhoneCall = try await saveAndWaitForSync(phoneCall)
+        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
      
         try await deleteAndWaitForSync(savedCaller)
         try await assertModelDoesNotExist(savedCaller)
@@ -213,15 +213,15 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testDeleteTranscript() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
-        let savedCaller = try await saveAndWaitForSync(caller)
+        let savedCaller = try await createAndWaitForSync(caller)
         let callee = Person(name: "callee")
-        let savedCallee = try await saveAndWaitForSync(callee)
+        let savedCallee = try await createAndWaitForSync(callee)
         var phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
         phoneCall.phoneCallTranscriptId = transcript.id
         
-        let savedPhoneCall = try await saveAndWaitForSync(phoneCall)
-        let savedTranscript = try await saveAndWaitForSync(transcript)
+        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
+        let savedTranscript = try await createAndWaitForSync(transcript)
         
         try await deleteAndWaitForSync(transcript)
         try await assertModelDoesNotExist(transcript)
@@ -239,15 +239,15 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
     func testDeletePhoneCallWithTranscript() async throws {
         await setup(withModels: PhoneCallModels())
         let caller = Person(name: "caller")
-        let savedCaller = try await saveAndWaitForSync(caller)
+        let savedCaller = try await createAndWaitForSync(caller)
         let callee = Person(name: "callee")
-        let savedCallee = try await saveAndWaitForSync(callee)
+        let savedCallee = try await createAndWaitForSync(callee)
         var phoneCall = PhoneCall(caller: savedCaller, callee: savedCallee)
         let transcript = Transcript(text: "text", phoneCall: phoneCall)
         phoneCall.phoneCallTranscriptId = transcript.id
         
-        let savedPhoneCall = try await saveAndWaitForSync(phoneCall)
-        let savedTranscript = try await saveAndWaitForSync(transcript)
+        let savedPhoneCall = try await createAndWaitForSync(phoneCall)
+        let savedTranscript = try await createAndWaitForSync(transcript)
         
         try await deleteAndWaitForSync(savedPhoneCall)
         try await assertModelDoesNotExist(savedPhoneCall)

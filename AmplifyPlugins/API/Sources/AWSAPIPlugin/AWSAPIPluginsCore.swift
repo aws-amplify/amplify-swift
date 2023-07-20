@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
+#if canImport(WatchKit)
+import WatchKit
+#elseif canImport(UIKit)
 import UIKit
 #endif
 import Foundation
@@ -21,14 +23,16 @@ struct AWSAPIPluginsCore {
     static var platformMapping: [Platform: String] = [:]
 
     static var systemName: String {
-#if canImport(UIKit)
+#if canImport(WatchKit)
+        WKInterfaceDevice.current().systemName.replacingOccurrences(of: " ", with: "-")
+#elseif canImport(UIKit)
         UIDevice.current.systemName.replacingOccurrences(of: " ", with: "-")
-#else
+#elseif os(macOS)
         "macOS"
 #endif
     }
     static var systemVersion: String {
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
         UIDevice.current.systemVersion
 #else
         ProcessInfo.processInfo.operatingSystemVersionString

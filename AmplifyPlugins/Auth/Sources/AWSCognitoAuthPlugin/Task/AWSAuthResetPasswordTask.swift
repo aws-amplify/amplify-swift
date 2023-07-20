@@ -36,9 +36,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger {
             let result = try await resetPassword()
             log.verbose("Received result")
             return result
-        } catch let error as ForgotPasswordOutputError {
-            throw error.authError
-        } catch let error as SdkError<ForgotPasswordOutputError> {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error
@@ -97,5 +95,13 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask, DefaultLogger {
         let nextStep = AuthResetPasswordStep.confirmResetPasswordWithCode(deliveryDetails, [:])
         let authResetPasswordResult = AuthResetPasswordResult(isPasswordReset: false, nextStep: nextStep)
         return authResetPasswordResult
+    }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
     }
 }

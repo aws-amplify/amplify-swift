@@ -41,6 +41,13 @@ protocol FileManagerBehaviour {
 }
 
 extension FileManager: FileManagerBehaviour, DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+    
     func createDirectory(atPath path: String, withIntermediateDirectories createIntermediates: Bool) throws {
         try createDirectory(atPath: path,
                         withIntermediateDirectories: createIntermediates,
@@ -265,7 +272,14 @@ class PinpointContext {
 }
 
 // MARK: - DefaultLogger
-extension PinpointContext: DefaultLogger {}
+extension PinpointContext: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension PinpointContext {
     struct Constants {

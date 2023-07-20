@@ -294,11 +294,59 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let receivedPost = asyncExpectation(description: "received Post")
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
                                          postSyncedExpctation: receivedPost)
-        await waitForExpectations([snapshotWithIsSynced, receivedPost], timeout: 100)
+        await waitForExpectations([snapshotWithIsSynced, receivedPost], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
         XCTAssertTrue(snapshots.last!.isSynced)
         XCTAssertTrue(snapshots.last!.items.count > numberOfPosts)
+    }
+
+
+    /// ObserveQuery with DataStore sync. Ensure datastore is cleared.
+    /// When ObserveQuery is called, it will start DataStore and perform a full sync on max records.
+    ///
+    /// - Given: DataStore is cleared.
+    /// - When:
+    ///    - ObserveQuery is called to do perform full sync
+    /// - Then:
+    ///    - The first snapshot should have the old data and `isSynced` false
+    ///    - The final snapshot should have all the latest models with `isSynced` true
+    ///
+    func testObserveQuery_withClearedDataStore_fullySyncedWithMaxRecords() async throws {
+        await setUp(withModels: TestModelRegistration())
+        try await startAmplifyAndWaitForReady()
+        try await clearDataStore()
+
+        let snapshotWithIsSynced = asyncExpectation(description: "query snapshot with isSynced true")
+        var snapshots = [DataStoreQuerySnapshot<Post>]()
+
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self)).sink { completed in
+            switch completed {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        } receiveValue: { querySnapshot in
+            snapshots.append(querySnapshot)
+            if querySnapshot.isSynced {
+                Task { await snapshotWithIsSynced.fulfill() }
+            }
+        }.store(in: &cancellables)
+
+        let newPost = Post(title: "title", content: "content", createdAt: .now())
+        let receivedPost = asyncExpectation(description: "received Post")
+        try await savePostAndWaitForSync(newPost,
+                                         postSyncedExpctation: receivedPost)
+
+        await waitForExpectations([snapshotWithIsSynced, receivedPost], timeout: 30)
+        XCTAssertTrue(snapshots.count >= 2)
+        XCTAssertFalse(snapshots[0].isSynced)
+        XCTAssertEqual(1, snapshots.filter({ $0.isSynced }).count)
+
+        let theSyncedSnapshot = snapshots.first(where: { $0.isSynced })
+        XCTAssertNotNil(theSyncedSnapshot)
+        XCTAssertTrue(theSyncedSnapshot!.items.contains(newPost))
     }
 
     /// ObserveQuery is set up with a query predicate.
@@ -428,8 +476,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
         let testId = UUID().uuidString
         var snapshotCount = 0
-        let observeQueryReadyForTest = asyncExpectation(description: "observeQuery initial query completed")
-        let allSnapshotsReceived = asyncExpectation(description: "query snapshots received")
+        let observeQueryReadyForTest = expectation(description: "observeQuery initial query completed")
+        let allSnapshotsReceived = expectation(description: "query snapshots received")
         let sink = Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self,
                                                      where: Post.keys.content == testId,
                                                      sort: .ascending(Post.keys.title)))
@@ -447,7 +495,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 switch snapshotCount {
                 case 1:
                     XCTAssertEqual(items.count, 0)
-                    Task { await observeQueryReadyForTest.fulfill() }
+                    observeQueryReadyForTest.fulfill()
                 case 2, 3:
                     XCTAssertEqual(items.count, 1)
                     XCTAssertEqual(items[0].title, "a")
@@ -479,14 +527,14 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                     XCTAssertEqual(items[0].title, "b")
                 case 14:
                     XCTAssertEqual(items.count, 0)
-                    Task { await allSnapshotsReceived.fulfill() }
+                    allSnapshotsReceived.fulfill()
                 default:
                     break
                 }
 
             }
 
-        await waitForExpectations([observeQueryReadyForTest], timeout: 10)
+        await fulfillment(of: [observeQueryReadyForTest], timeout: 10)
         // (1) Add several models
         let postA = Post(title: "a", content: testId, createdAt: .now())
         try await savePostAndWaitForSync(postA)
@@ -511,7 +559,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         try await deletePostAndWaitForSync(postNFromA)
         try await deletePostAndWaitForSync(postBFromZ)
 
-        await waitForExpectations([allSnapshotsReceived], timeout: 100)
+        await fulfillment(of: [allSnapshotsReceived], timeout: 100)
 
         sink.cancel()
     }

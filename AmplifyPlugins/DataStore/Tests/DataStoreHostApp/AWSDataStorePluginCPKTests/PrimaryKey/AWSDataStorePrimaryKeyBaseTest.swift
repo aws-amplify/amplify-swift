@@ -10,6 +10,9 @@ import XCTest
 import Combine
 import AWSDataStorePlugin
 import AWSAPIPlugin
+#if !os(watchOS)
+@testable import DataStoreHostApp
+#endif
 
 @testable import Amplify
 
@@ -33,9 +36,12 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
     func setup(withModels models: AmplifyModelRegistration) {
         do {
             loadAmplifyConfig()
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: .custom(syncMaxRecords: 100)
+            ))
 
-            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
 
             Amplify.Logging.logLevel = .verbose
 
