@@ -3,51 +3,7 @@
 #if canImport(AWSAPIPlugin)
 import Foundation
 
-/// Represents an error encountered during the execution of a GraphQL operation.
-///
-///  - SeeAlso: [The Response Format section in the GraphQL specification](https://facebook.github.io/graphql/#sec-Response-Format)
-public struct GraphQLError: Error {
-  private let object: JSONObject
-  
-  init(_ object: JSONObject) {
-    self.object = object
-  }
-  
-  init(_ message: String) {
-    self.init(["message": message])
-  }
-  
-  /// GraphQL servers may provide additional entries as they choose to produce more helpful or machine‐readable errors.
-  public subscript(key: String) -> Any? {
-    return object[key]
-  }
-  
-  /// A description of the error.
-  public var message: String {
-    return self["message"] as! String
-  }
-  
-  /// A list of locations in the requested GraphQL document associated with the error.
-  public var locations: [Location]? {
-    return (self["locations"] as? [JSONObject])?.map(Location.init)
-  }
-  
-  /// Represents a location in a GraphQL document.
-  public struct Location {
-    /// The line number of a syntax element.
-    public let line: Int
-    /// The column number of a syntax element.
-    public let column: Int
-    
-    init(_ object: JSONObject) {
-      line = object["line"] as! Int
-      column = object["column"] as! Int
-    }
-  }
-}
-
 public protocol GraphQLInputValue {
-  func evaluate(with variables: [String: JSONEncodable]?) throws -> Any
 }
 
 public struct GraphQLVariable {
@@ -59,61 +15,11 @@ public struct GraphQLVariable {
 }
 
 extension GraphQLVariable: GraphQLInputValue {
-  public func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
-    guard let value = variables?[name] else {
-      throw GraphQLError("Variable \(name) was not provided.")
-    }
-    return value.jsonValue
-  }
 }
 
 extension JSONEncodable {
   public func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
     return jsonValue
-  }
-}
-
-extension Dictionary: GraphQLInputValue {
-  public func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
-    return try evaluate(with: variables) as JSONObject
-  }
-}
-
-extension Dictionary {
-  public func evaluate(with variables: [String: JSONEncodable]?) throws -> JSONObject {
-    var jsonObject = JSONObject(minimumCapacity: count)
-    for (key, value) in self {
-      if case let (key as String, value as GraphQLInputValue) = (key, value) {
-        let evaluatedValue = try value.evaluate(with: variables)
-        if !(evaluatedValue is NSNull) {
-          jsonObject[key] = evaluatedValue
-        }
-      } else {
-        fatalError("Dictionary is only GraphQLInputValue if Value is (and if Key is String)")
-      }
-    }
-    return jsonObject
-  }
-}
-
-extension Array: GraphQLInputValue {
-  public func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
-    return try evaluate(with: variables) as [Any]
-  }
-}
-
-extension Array {
-  public func evaluate(with variables: [String: JSONEncodable]?) throws -> [Any] {
-    var jsonArray = [Any]()
-    jsonArray.reserveCapacity(count)
-    for (value) in self {
-      if case let (value as GraphQLInputValue) = value {
-        jsonArray.append(try value.evaluate(with: variables))
-      } else {
-        fatalError("Array is only GraphQLInputValue if Element is")
-      }
-    }
-    return jsonArray
   }
 }
 
@@ -141,16 +47,9 @@ public extension GraphQLMapConvertible {
   }
 }
 
-public extension GraphQLMapConvertible {
-  func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
-    return try graphQLMap.evaluate(with: variables)
-  }
-}
-
 public typealias GraphQLID = String
 
 public protocol GraphQLOperation: AnyObject {
-  static var rootCacheKey: String { get }
   
   static var operationString: String { get }
   static var requestString: String { get }
@@ -176,29 +75,13 @@ public extension GraphQLOperation {
 }
 
 public protocol GraphQLQuery: GraphQLOperation {}
-public extension GraphQLQuery {
-  static var rootCacheKey: String { return "QUERY_ROOT" }
-}
 
 public protocol GraphQLMutation: GraphQLOperation {}
-public extension GraphQLMutation {
-  static var rootCacheKey: String { return "MUTATION_ROOT" }
-}
 
 public protocol GraphQLSubscription: GraphQLOperation {}
 
-public extension GraphQLSubscription {
-    static var rootCacheKey: String { return "SUBSCRIPTION_ROOT" }
-}
-
 public protocol GraphQLFragment: GraphQLSelectionSet {
   static var possibleTypes: [String] { get }
-}
-
-public extension GraphQLOperation {
-    static func getResponseGraphQLSelections() -> [GraphQLSelection] {
-        return Data.selections
-    }
 }
 
 public typealias Snapshot = [String: Any?]
@@ -212,7 +95,7 @@ public protocol GraphQLSelectionSet: Decodable {
 
 extension GraphQLSelectionSet {
     public init(from decoder: Decoder) throws {
-        if let jsonObject = try? JSONValue(from: decoder) {
+        if let jsonObject = try? APISwiftJSONValue(from: decoder) {
             let encoder = JSONEncoder()
             let jsonData = try encoder.encode(jsonObject)
             let decodedDictionary = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [String: Any]
@@ -221,6 +104,52 @@ extension GraphQLSelectionSet {
             self.init(snapshot: optionalDictionary)
         } else {
             self.init(snapshot: [:])
+        }
+    }
+}
+
+enum APISwiftJSONValue: Codable {
+    case array([APISwiftJSONValue])
+    case boolean(Bool)
+    case number(Double)
+    case object([String: APISwiftJSONValue])
+    case string(String)
+    case null
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let value = try? container.decode([String: APISwiftJSONValue].self) {
+            self = .object(value)
+        } else if let value = try? container.decode([APISwiftJSONValue].self) {
+            self = .array(value)
+        } else if let value = try? container.decode(Double.self) {
+            self = .number(value)
+        } else if let value = try? container.decode(Bool.self) {
+            self = .boolean(value)
+        } else if let value = try? container.decode(String.self) {
+            self = .string(value)
+        } else {
+            self = .null
+        }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        
+        switch self {
+        case .array(let value):
+            try container.encode(value)
+        case .boolean(let value):
+            try container.encode(value)
+        case .number(let value):
+            try container.encode(value)
+        case .object(let value):
+            try container.encode(value)
+        case .string(let value):
+            try container.encode(value)
+        case .null:
+            try container.encodeNil()
         }
     }
 }
@@ -247,15 +176,6 @@ public struct GraphQLField: GraphQLSelection {
     
     self.type = type
   }
-  
-  func cacheKey(with variables: [String: JSONEncodable]?) throws -> String {
-    if let argumentValues = try arguments?.evaluate(with: variables), !argumentValues.isEmpty {
-      let argumentsKey = orderIndependentKey(for: argumentValues)
-      return "\(name)(\(argumentsKey))"
-    } else {
-      return name
-    }
-  }
 }
 
 public indirect enum GraphQLOutputType {
@@ -272,16 +192,6 @@ public indirect enum GraphQLOutputType {
       return self
     }
   }
-}
-
-private func orderIndependentKey(for object: JSONObject) -> String {
-  return object.sorted { $0.key < $1.key }.map {
-    if let object = $0.value as? JSONObject {
-      return "[\($0.key):\(orderIndependentKey(for: object))]"
-    } else {
-      return "\($0.key):\($0.value)"
-    }
-  }.joined(separator: ",")
 }
 
 public struct GraphQLBooleanCondition: GraphQLSelection {
@@ -350,54 +260,6 @@ public enum JSONDecodingError: Error, LocalizedError {
       return "Wrong type"
     case .couldNotConvert(let value, let expectedType):
       return "Could not convert \"\(value)\" to \(expectedType)"
-    }
-  }
-}
-
-enum JSONValue {
-    case array([JSONValue])
-    case boolean(Bool)
-    case number(Double)
-    case object([String: JSONValue])
-    case string(String)
-    case null
-}
-
-extension JSONValue: Codable {
-    init(from decoder: Decoder) throws {
-      let container = try decoder.singleValueContainer()
-
-      if let value = try? container.decode([String: JSONValue].self) {
-          self = .object(value)
-      } else if let value = try? container.decode([JSONValue].self) {
-          self = .array(value)
-      } else if let value = try? container.decode(Double.self) {
-          self = .number(value)
-      } else if let value = try? container.decode(Bool.self) {
-          self = .boolean(value)
-      } else if let value = try? container.decode(String.self) {
-          self = .string(value)
-      } else {
-          self = .null
-      }
-  }
-
-  func encode(to encoder: Encoder) throws {
-    var container = encoder.singleValueContainer()
-
-    switch self {
-    case .array(let value):
-        try container.encode(value)
-    case .boolean(let value):
-        try container.encode(value)
-    case .number(let value):
-        try container.encode(value)
-    case .object(let value):
-        try container.encode(value)
-    case .string(let value):
-        try container.encode(value)
-    case .null:
-        try container.encodeNil()
     }
   }
 }
@@ -549,6 +411,13 @@ extension URL: JSONDecodable, JSONEncodable {
     return self.absoluteString
   }
 }
+
+extension Dictionary {
+  static func += (lhs: inout Dictionary, rhs: Dictionary) {
+    lhs.merge(rhs) { (_, new) in new }
+  }
+}
+
 #elseif canImport(AWSAppSync)
 import AWSAppSync
 #endif
