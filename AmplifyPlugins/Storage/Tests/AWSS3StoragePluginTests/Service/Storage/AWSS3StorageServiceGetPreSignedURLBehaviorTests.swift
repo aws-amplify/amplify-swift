@@ -68,10 +68,11 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     func testForGetObject() async throws {
         let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
                                                             signingOperation: .getObject,
+                                                            accelerate: nil,
                                                             expires: expires)
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
-            "getPreSignedURL(key:signingOperation:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.getObject) \(String(describing: expires))"
+            "getPreSignedURL(key:signingOperation:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.getObject) \(String(describing: expires))"
         ])
     }
     
@@ -81,10 +82,11 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     func testForPutObject() async throws {
         let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
                                                             signingOperation: .putObject,
+                                                            accelerate: nil,
                                                             expires: expires)
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
-            "getPreSignedURL(key:signingOperation:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) \(String(describing: expires))"
+            "getPreSignedURL(key:signingOperation:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) \(String(describing: expires))"
         ])
     }
     
@@ -95,10 +97,11 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
         let operation = AWSS3SigningOperation.uploadPart(partNumber: 0, uploadId: UUID().uuidString)
         let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
                                                             signingOperation: operation,
+                                                            accelerate: nil,
                                                             expires: expires)
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
-            "getPreSignedURL(key:signingOperation:expires:) \(serviceKey ?? "") \(operation) \(String(describing: expires))"
+            "getPreSignedURL(key:signingOperation:accelerate:expires:) \(serviceKey ?? "") \(operation) \(String(describing: expires))"
         ])
     }
 
