@@ -14,6 +14,7 @@ extension AWSS3StorageService {
                 uploadSource: UploadSource,
                 contentType: String?,
                 metadata: [String: String]?,
+                accelerate: Bool?,
                 onEvent: @escaping StorageServiceUploadEventHandler) {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
@@ -35,6 +36,7 @@ extension AWSS3StorageService {
             do {
                 let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
                                                                                  signingOperation: .putObject,
+                                                                                 accelerate: accelerate,
                                                                                  expires: nil)
                 startUpload(preSignedURL: preSignedURL,
                             fileURL: uploadFileURL,

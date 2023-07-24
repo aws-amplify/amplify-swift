@@ -65,7 +65,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         ])
         let expectedServiceKey = "public/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject 18000"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject 18000"
         ])
     }
     
@@ -120,7 +120,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
         ])
     }
 
@@ -152,7 +152,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
         ])
     }
 
@@ -173,7 +173,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         let expectedExpires = 18000
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
         ])
     }
 

@@ -19,8 +19,12 @@ final class MockAWSS3PreSignedURLBuilder {
 }
 
 extension MockAWSS3PreSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior {
-    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64?) async throws -> URL {
-        interactions.append("\(#function) \(key) \(signingOperation) \(String(describing: expires))")
-        return try await getPreSignedURLHandler(key, signingOperation, expires)
-    }
+    func getPreSignedURL(
+        key: String,
+        signingOperation: AWSS3SigningOperation,
+        accelerate: Bool?,
+        expires: Int64?) async throws -> URL {
+            interactions.append("\(#function) \(key) \(signingOperation) \(String(describing: expires))")
+            return try await getPreSignedURLHandler(key, signingOperation, expires)
+        }
 }
