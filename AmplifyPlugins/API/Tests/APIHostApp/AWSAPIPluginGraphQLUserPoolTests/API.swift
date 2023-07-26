@@ -1,11 +1,8 @@
 //  This file was automatically generated and should not be edited.
-
 #if canImport(AWSAPIPlugin)
 import Foundation
-
 public protocol GraphQLInputValue {
 }
-
 public struct GraphQLVariable {
   let name: String
   
@@ -13,18 +10,14 @@ public struct GraphQLVariable {
     self.name = name
   }
 }
-
 extension GraphQLVariable: GraphQLInputValue {
 }
-
 extension JSONEncodable {
   public func evaluate(with variables: [String: JSONEncodable]?) throws -> Any {
     return jsonValue
   }
 }
-
 public typealias GraphQLMap = [String: JSONEncodable?]
-
 extension Dictionary where Key == String, Value == JSONEncodable? {
   public var withNilValuesRemoved: Dictionary<String, JSONEncodable> {
     var filtered = Dictionary<String, JSONEncodable>(minimumCapacity: count)
@@ -36,20 +29,16 @@ extension Dictionary where Key == String, Value == JSONEncodable? {
     return filtered
   }
 }
-
 public protocol GraphQLMapConvertible: JSONEncodable {
   var graphQLMap: GraphQLMap { get }
 }
-
 public extension GraphQLMapConvertible {
   var jsonValue: Any {
     return graphQLMap.withNilValuesRemoved.jsonValue
   }
 }
-
 public typealias GraphQLID = String
-
-public protocol GraphQLOperation: AnyObject {
+public protocol APISwiftGraphQLOperation: AnyObject {
   
   static var operationString: String { get }
   static var requestString: String { get }
@@ -59,40 +48,30 @@ public protocol GraphQLOperation: AnyObject {
   
   associatedtype Data: GraphQLSelectionSet
 }
-
-public extension GraphQLOperation {
+public extension APISwiftGraphQLOperation {
   static var requestString: String {
     return operationString
   }
-
   static var operationIdentifier: String? {
     return nil
   }
-
   var variables: GraphQLMap? {
     return nil
   }
 }
-
-public protocol GraphQLQuery: GraphQLOperation {}
-
-public protocol GraphQLMutation: GraphQLOperation {}
-
-public protocol GraphQLSubscription: GraphQLOperation {}
-
+public protocol GraphQLQuery: APISwiftGraphQLOperation {}
+public protocol GraphQLMutation: APISwiftGraphQLOperation {}
+public protocol GraphQLSubscription: APISwiftGraphQLOperation {}
 public protocol GraphQLFragment: GraphQLSelectionSet {
   static var possibleTypes: [String] { get }
 }
-
 public typealias Snapshot = [String: Any?]
-
 public protocol GraphQLSelectionSet: Decodable {
   static var selections: [GraphQLSelection] { get }
   
   var snapshot: Snapshot { get }
   init(snapshot: Snapshot)
 }
-
 extension GraphQLSelectionSet {
     public init(from decoder: Decoder) throws {
         if let jsonObject = try? APISwiftJSONValue(from: decoder) {
@@ -100,14 +79,12 @@ extension GraphQLSelectionSet {
             let jsonData = try encoder.encode(jsonObject)
             let decodedDictionary = try JSONSerialization.jsonObject(with: jsonData, options: []) as! [String: Any]
             let optionalDictionary = decodedDictionary.mapValues { $0 as Any? }
-
             self.init(snapshot: optionalDictionary)
         } else {
             self.init(snapshot: [:])
         }
     }
 }
-
 enum APISwiftJSONValue: Codable {
     case array([APISwiftJSONValue])
     case boolean(Bool)
@@ -153,10 +130,8 @@ enum APISwiftJSONValue: Codable {
         }
     }
 }
-
 public protocol GraphQLSelection {
 }
-
 public struct GraphQLField: GraphQLSelection {
   let name: String
   let alias: String?
@@ -177,7 +152,6 @@ public struct GraphQLField: GraphQLSelection {
     self.type = type
   }
 }
-
 public indirect enum GraphQLOutputType {
   case scalar(JSONDecodable.Type)
   case object([GraphQLSelection])
@@ -193,7 +167,6 @@ public indirect enum GraphQLOutputType {
     }
   }
 }
-
 public struct GraphQLBooleanCondition: GraphQLSelection {
   let variableName: String
   let inverted: Bool
@@ -205,7 +178,6 @@ public struct GraphQLBooleanCondition: GraphQLSelection {
     self.selections = selections;
   }
 }
-
 public struct GraphQLTypeCondition: GraphQLSelection {
   let possibleTypes: [String]
   let selections: [GraphQLSelection]
@@ -215,7 +187,6 @@ public struct GraphQLTypeCondition: GraphQLSelection {
     self.selections = selections;
   }
 }
-
 public struct GraphQLFragmentSpread: GraphQLSelection {
   let fragment: GraphQLFragment.Type
   
@@ -223,7 +194,6 @@ public struct GraphQLFragmentSpread: GraphQLSelection {
     self.fragment = fragment
   }
 }
-
 public struct GraphQLTypeCase: GraphQLSelection {
   let variants: [String: [GraphQLSelection]]
   let `default`: [GraphQLSelection]
@@ -233,17 +203,13 @@ public struct GraphQLTypeCase: GraphQLSelection {
     self.default = `default`;
   }
 }
-
 public typealias JSONObject = [String: Any]
-
 public protocol JSONDecodable {
   init(jsonValue value: Any) throws
 }
-
 public protocol JSONEncodable: GraphQLInputValue {
   var jsonValue: Any { get }
 }
-
 public enum JSONDecodingError: Error, LocalizedError {
   case missingValue
   case nullValue
@@ -263,7 +229,6 @@ public enum JSONDecodingError: Error, LocalizedError {
     }
   }
 }
-
 extension String: JSONDecodable, JSONEncodable {
   public init(jsonValue value: Any) throws {
     guard let string = value as? String else {
@@ -271,12 +236,10 @@ extension String: JSONDecodable, JSONEncodable {
     }
     self = string
   }
-
   public var jsonValue: Any {
     return self
   }
 }
-
 extension Int: JSONDecodable, JSONEncodable {
   public init(jsonValue value: Any) throws {
     guard let number = value as? NSNumber else {
@@ -284,12 +247,10 @@ extension Int: JSONDecodable, JSONEncodable {
     }
     self = number.intValue
   }
-
   public var jsonValue: Any {
     return self
   }
 }
-
 extension Float: JSONDecodable, JSONEncodable {
   public init(jsonValue value: Any) throws {
     guard let number = value as? NSNumber else {
@@ -297,12 +258,10 @@ extension Float: JSONDecodable, JSONEncodable {
     }
     self = number.floatValue
   }
-
   public var jsonValue: Any {
     return self
   }
 }
-
 extension Double: JSONDecodable, JSONEncodable {
   public init(jsonValue value: Any) throws {
     guard let number = value as? NSNumber else {
@@ -310,12 +269,10 @@ extension Double: JSONDecodable, JSONEncodable {
     }
     self = number.doubleValue
   }
-
   public var jsonValue: Any {
     return self
   }
 }
-
 extension Bool: JSONDecodable, JSONEncodable {
   public init(jsonValue value: Any) throws {
     guard let bool = value as? Bool else {
@@ -323,12 +280,10 @@ extension Bool: JSONDecodable, JSONEncodable {
     }
     self = bool
   }
-
   public var jsonValue: Any {
     return self
   }
 }
-
 extension RawRepresentable where RawValue: JSONDecodable {
   public init(jsonValue value: Any) throws {
     let rawValue = try RawValue(jsonValue: value)
@@ -339,13 +294,11 @@ extension RawRepresentable where RawValue: JSONDecodable {
     }
   }
 }
-
 extension RawRepresentable where RawValue: JSONEncodable {
   public var jsonValue: Any {
     return rawValue.jsonValue
   }
 }
-
 extension Optional where Wrapped: JSONDecodable {
   public init(jsonValue value: Any) throws {
     if value is NSNull {
@@ -355,7 +308,6 @@ extension Optional where Wrapped: JSONDecodable {
     }
   }
 }
-
 extension Optional: JSONEncodable {
   public var jsonValue: Any {
     switch self {
@@ -368,7 +320,6 @@ extension Optional: JSONEncodable {
     }
   }
 }
-
 extension Dictionary: JSONEncodable {
   public var jsonValue: Any {
     return jsonObject
@@ -386,7 +337,6 @@ extension Dictionary: JSONEncodable {
     return jsonObject
   }
 }
-
 extension Array: JSONEncodable {
   public var jsonValue: Any {
     return map() { element -> (Any) in
@@ -398,7 +348,6 @@ extension Array: JSONEncodable {
     }
   }
 }
-
 extension URL: JSONDecodable, JSONEncodable {
   public init(jsonValue value: Any) throws {
     guard let string = value as? String else {
@@ -406,18 +355,15 @@ extension URL: JSONDecodable, JSONEncodable {
     }
     self.init(string: string)!
   }
-
   public var jsonValue: Any {
     return self.absoluteString
   }
 }
-
 extension Dictionary {
   static func += (lhs: inout Dictionary, rhs: Dictionary) {
     lhs.merge(rhs) { (_, new) in new }
   }
 }
-
 #elseif canImport(AWSAppSync)
 import AWSAppSync
 #endif
