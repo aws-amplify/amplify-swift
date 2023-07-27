@@ -14,7 +14,7 @@ import Amplify
 #endif
 
 class GraphQLTestBase: XCTestCase {
-    func mutateModel<M: Model>(request: GraphQLRequest<M>) async throws -> M {
+    func mutateModel<M: Decodable>(request: GraphQLRequest<M>) async throws -> M {
         let result = try await Amplify.API.mutate(request: request)
         switch result {
         case .success(let object):
@@ -24,7 +24,7 @@ class GraphQLTestBase: XCTestCase {
         }
     }
 
-    func queryModel<M: Model>(request: GraphQLRequest<M?>) async throws -> M? {
+    func queryModel<M: Decodable>(request: GraphQLRequest<M?>) async throws -> M? {
         let result = try await Amplify.API.query(request: request)
         switch result {
         case .success(let object):

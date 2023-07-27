@@ -235,8 +235,13 @@ type Nested {
 ```
 
 3.  `amplify push`
+ 
+```
+? Do you want to generate code for your newly created GraphQL API (Y/n) `Y`
+```
+Generate the API.swift file. This file has already been copied over to the tests. Use it if you need to replace the existing one if there are any updates to the CLI/codegen version. 
 
-? Do you want to generate code for your newly created GraphQL API (Y/n) `N`
+Keep in mind that the API.swift file in the tests has been manually modified to encapsulate the types under `APISwift` struct. This is to avoid type collision with the modelgen types.
 
 4. Copy `amplifyconfiguration.json` over as `GraphQLModelBasedTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
 
