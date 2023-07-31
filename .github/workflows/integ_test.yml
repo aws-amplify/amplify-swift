@@ -1,7 +1,6 @@
 name: Integration Tests
 on:
-  push:
-    branches: [v1]
+  workflow_call:
 
 permissions:
     id-token: write
