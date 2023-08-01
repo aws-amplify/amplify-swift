@@ -1,0 +1,60 @@
+name: Fortify Scan
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches-ignore:
+      - main
+      - release
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  fortify-scan:
+    runs-on: macos-latest
+    environment: Fortify
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make source directory
+        run: |
+          mkdir source
+          cp -r Amplify source
+          cp -r AmplifyPlugins source
+      - name: Configure AWS credentials for fetching fortify resources
+        uses: aws-actions/configure-aws-credentials@05b148adc31e091bafbaf404f745055d4d3bc9d2 # Pin to 1.6.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GHAFortifySession
+          role-duration-seconds: 900
+
+      - name: Download License
+        run: |
+          aws s3 cp s3://${{ secrets.AWS_S3_FORTIFY_BUCKET }}${{ vars.LICENSE_PATH }} fortify.license
+
+      - name: Download Installer
+        run: |
+          aws s3 cp s3://${{ secrets.AWS_S3_FORTIFY_BUCKET }}${{ vars.INSTALLER_PATH }} Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+          tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+          unzip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
+
+      - name: Download Scripts
+        run: |
+            aws s3 cp s3://${{ secrets.AWS_S3_FORTIFY_BUCKET }}${{ vars.SCRIPTS_PATH }} fortify_scan.sh
+
+      - name: Run Installer
+        run: |
+          Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir ~/amplify-swift/Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+          export PATH=~/amplify-swift/Fortify/bin:$PATH
+          fortifyupdate -acceptKey
+          sourceanalyzer -version
+
+      - name: Run Scan
+        run: |
+          export PATH=~/amplify-swift/Fortify/bin:$PATH
+          sh ./fortify_scan.sh source
