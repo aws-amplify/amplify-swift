@@ -89,6 +89,24 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     }
 
     @MainActor
+    func testSuccessfulSignIn_missingExpiresIn() async throws {
+        mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
+                           "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken] as [String: Any]
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { _ in
+            return (HTTPURLResponse(), self.mockJson)
+        }
+
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+        XCTAssertTrue(result.isSignedIn)
+    }
+
+    @MainActor
     func testUserCancelSignIn() async {
         mockHostedUIResult = .failure(.cancelled)
         let expectation  = expectation(description: "SignIn operation should complete")
