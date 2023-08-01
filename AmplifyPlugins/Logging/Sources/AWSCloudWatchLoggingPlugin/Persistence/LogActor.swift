@@ -59,6 +59,6 @@ actor LogActor {
     
     func deleteLogs() throws {
         try rotation.reset()
-        try rotation.currentLogFile.synchronize()
+        try synchronize()
     }
 }
