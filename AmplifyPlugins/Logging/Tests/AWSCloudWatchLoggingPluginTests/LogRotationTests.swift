@@ -163,4 +163,30 @@ final class LogRotationTests: XCTestCase {
             }
         }
     }
+    
+    /// Given: a log rotation
+    /// When: reset is executed
+    /// Then: log rotation is reset to 0
+    func testLogRotationResets() throws {
+        let originalContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        XCTAssertEqual(originalContents.map { $0.lastPathComponent }, [
+            "amplify.0.log"
+        ])
+
+        systemUnderTest = try LogRotation(directory: directory,
+                                          fileSizeLimitInBytes: fileSizeLimitInBytes)
+        XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.1.log")
+        try systemUnderTest.rotate()
+        
+        var rotatedContents = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        XCTAssertEqual(rotatedContents.map { $0.lastPathComponent }, [
+            "amplify.2.log",
+            "amplify.1.log",
+            "amplify.0.log",
+        ])
+    
+        
+        try systemUnderTest.reset()
+        XCTAssertEqual(systemUnderTest.currentLogFile.fileURL.lastPathComponent, "amplify.0.log")
+    }
 }

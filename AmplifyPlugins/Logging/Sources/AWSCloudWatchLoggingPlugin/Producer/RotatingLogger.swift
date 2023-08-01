@@ -48,6 +48,10 @@ final class RotatingLogger {
         try await actor.flushLogs()
     }
     
+    func resetLogs() async throws {
+        try await actor.deleteLogs()
+    }
+    
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
         try await setupSubscription()
         let entry = LogEntry(category: self.category, namespace: self.namespace, level: level, message: message())

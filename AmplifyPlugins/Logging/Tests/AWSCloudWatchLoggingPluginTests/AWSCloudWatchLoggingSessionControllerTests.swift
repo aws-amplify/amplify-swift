@@ -20,9 +20,13 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
     let mockCloudWatchLogClient = MockCloudWatchLogsClient()
     let mockLoggingNetworkMonitor = MockLoggingNetworkMonitor()
     let category = "amplifytest"
+    var unsubscribeToken: UnsubscribeToken?
 
     override func tearDown() async throws {
         systemUnderTest = nil
+        if let token = unsubscribeToken {
+            Amplify.Hub.removeListener(token)
+        }
         let file = getLogFile()
         do {
             try FileManager.default.removeItem(atPath: file.path)
@@ -36,7 +40,7 @@ final class AWSCloudWatchLoggingSessionControllerTests: XCTestCase {
     /// Then: a flushLogFailure Hub Event is sent to the Logging channel
     func testConsumeFailureSendsHubEvent() async throws {
         let hubEventExpectation = expectation(description: "Should receive the hub event")
-        _ = Amplify.Hub.listen(to: .logging) { payload in
+        unsubscribeToken = Amplify.Hub.listen(to: .logging) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Logging.flushLogFailure:
                 hubEventExpectation.fulfill()
