@@ -4,6 +4,8 @@ Thank you for your interest in contributing to our project! <3 Whether it's a bu
 
 - [History & Ethos](#our-history-and-ethos)
   - [Our Design](#our-design)
+- [Semantic versioning](#semantic-versioning)
+  - [Semantic versioning and enumeration cases](#semantic-versioning-and-enumeration-cases)
 - [Getting Started](#getting-started)
 - [Testing](#testing)
 - [Tools](#tools)
