@@ -38,6 +38,32 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
         self.expiration = expiration
     }
 
+    public init(idToken: String,
+                accessToken: String,
+                refreshToken: String,
+                expiresIn: Int? = nil) {
+
+        if let expiresIn =  expiresIn {
+            self.init(idToken: idToken,
+                      accessToken: accessToken,
+                      refreshToken: refreshToken,
+                      expiresIn: expiresIn)
+        } else {
+            // If for some reason, failed to extract "exp" value, use the value as zero and don't block the user
+            var expirationDoubleValue: Double = 0
+            if let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: idToken).get(),
+               let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get(),
+               let idTokenExpiration = idTokenClaims["exp"]?.doubleValue,
+               let accessTokenExpiration = accessTokenClaims["exp"]?.doubleValue {
+                expirationDoubleValue = min(idTokenExpiration, accessTokenExpiration)
+            }
+            self.init(idToken: idToken,
+                      accessToken: accessToken,
+                      refreshToken: refreshToken,
+                      expiresIn: Int(expirationDoubleValue.rounded(.down)))
+        }
+    }
+
 }
 
 extension AWSCognitoUserPoolTokens: Equatable { }

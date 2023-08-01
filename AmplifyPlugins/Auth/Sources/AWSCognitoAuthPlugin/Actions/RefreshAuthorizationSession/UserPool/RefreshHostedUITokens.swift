@@ -97,13 +97,12 @@ struct RefreshHostedUITokens: Action {
             throw FetchSessionError.service(error)
 
         } else if let idToken = json["id_token"] as? String,
-                  let accessToken = json["access_token"] as? String,
-                  let expiresIn = json["expires_in"] as? Int {
+                  let accessToken = json["access_token"] as? String {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
                 refreshToken: existingSignedIndata.cognitoUserPoolTokens.refreshToken,
-                expiresIn: expiresIn)
+                expiresIn: json["expires_in"] as? Int)
             return SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
