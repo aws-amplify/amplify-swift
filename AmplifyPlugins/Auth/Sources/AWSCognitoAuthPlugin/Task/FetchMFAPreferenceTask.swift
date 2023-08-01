@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-protocol AuthFetchMFAPreferenceTask: AmplifyAuthTask where Request == Void,
+protocol AuthFetchMFAPreferenceTask: AmplifyAuthTask where Request == Never,
                                                            Success == UserMFAPreference,
                                                            Failure == AuthError {}
 
