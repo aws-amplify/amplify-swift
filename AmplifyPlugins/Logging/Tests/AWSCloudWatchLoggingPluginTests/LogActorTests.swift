@@ -111,7 +111,7 @@ final class LogActorTests: XCTestCase {
     
     
     /// Given: a LogActor
-    /// When: get all logs is excuted
+    /// When: get all logs is called
     /// Then: all logs are returned
     func testLogActorReturnsLogList() async throws {
         var logs = try await systemUnderTest.getLogs()
