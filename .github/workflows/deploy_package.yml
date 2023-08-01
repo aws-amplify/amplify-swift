@@ -20,10 +20,12 @@ jobs:
   integration-tests:
     name: Run Integration Tests
     uses: ./.github/workflows/integ_test.yml
+    secrets: inherit
 
   fortify:
     name: Run Fortify Scan
     uses: ./.github/workflows/fortify_scan.yml
+    secrets: inherit
 
   release:
     environment: Release
