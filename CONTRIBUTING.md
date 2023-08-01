@@ -27,6 +27,17 @@ Thank you for your interest in contributing to our project! <3 Whether it's a bu
 
 For a brief history and our ethos/design philosophy around the Amplify project please refer to this [document](/ETHOS.md).
 
+## Semantic versioning
+
+We follow [semantic versioning](https://semver.org/) for our releases.
+
+### Semantic versioning and enumeration cases
+
+When Amplify adds a new enumeration value, we will publish a new **minor** version
+of the library.
+
+Applications that evaluate all members of an enumeration using a `switch` statement can add a `default` case to prevent new cases from causing compile warnings or errors.
+
 ## Getting Started
 
 To get started with the Amplify Library for Swift, first make sure you have Xcode 13.4 or later installed.

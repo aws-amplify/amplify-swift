@@ -37,6 +37,17 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 > To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
 > For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
 
+## Semantic versioning
+
+We follow [semantic versioning](https://semver.org/) for our releases.
+
+### Semantic versioning and enumeration cases
+
+When Amplify adds a new enumeration value, we will publish a new **minor** version
+of the library.
+
+Applications that evaluate all members of an enumeration using a `switch` statement can add a `default` case to prevent new cases from causing compile warnings or errors.
+
 ## License
 
 This library is licensed under the Apache 2.0 License. 
