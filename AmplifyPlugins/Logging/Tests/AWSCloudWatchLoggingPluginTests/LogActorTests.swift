@@ -90,4 +90,23 @@ final class LogActorTests: XCTestCase {
         }
         XCTAssertEqual(decoded.sorted(), entries.sorted())
     }
+    
+    /// Given: a Log file
+    /// When: LogActor deletes the log
+    /// Then: the log file is emptied
+    func testLogActorDeletesEntry() async throws {
+        let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
+        try await systemUnderTest.record(entry)
+        try await systemUnderTest.synchronize()
+        
+        let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let fileURL = try XCTUnwrap(files.first)
+        var contents = try XCTUnwrap(FileManager.default.contents(atPath: fileURL.path))
+        XCTAssertNotNil(contents)
+        
+        try await systemUnderTest.deleteLogs()
+        contents = try XCTUnwrap(FileManager.default.contents(atPath: fileURL.path))
+        XCTAssertTrue(contents.isEmpty)
+    }
+    
 }

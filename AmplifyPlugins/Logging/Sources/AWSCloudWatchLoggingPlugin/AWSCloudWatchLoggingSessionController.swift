@@ -140,7 +140,7 @@ final class AWSCloudWatchLoggingSessionController {
     }
     
     private func userIdentifierDidChange() {
-        flushCurrentLogs()
+        resetCurrentLogs()
         updateSession()
         updateConsumer()
         connectProducerAndConsumer()
@@ -167,10 +167,10 @@ final class AWSCloudWatchLoggingSessionController {
         try await session?.logger.flushLogs()
     }
     
-    private func flushCurrentLogs() {
+    private func resetCurrentLogs() {
         Task {
             do {
-                try await flushLogs()
+                try await session?.logger.resetLogs()
             } catch {
                 Amplify.Logging.error("Error resetting logs with \(error)")
             }

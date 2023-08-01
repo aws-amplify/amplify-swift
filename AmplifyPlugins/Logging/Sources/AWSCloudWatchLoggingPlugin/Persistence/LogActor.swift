@@ -56,4 +56,9 @@ actor LogActor {
             rotationSubject.send(log)
         }
     }
+    
+    func deleteLogs() throws {
+        try rotation.reset()
+        try rotation.currentLogFile.synchronize()
+    }
 }
