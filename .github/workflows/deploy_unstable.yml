@@ -1,0 +1,16 @@
+name: Build, Test and Release | Unstable version
+on:
+  push:
+    branches:
+      v1
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  release-unstable:
+    uses: ./.github/workflows/deploy_package.yml
+    with:
+      type: unstable
+    secrets: inherit

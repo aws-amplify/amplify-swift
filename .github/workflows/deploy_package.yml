@@ -1,0 +1,81 @@
+name: Deploy Package
+on:
+  workflow_call:
+    inputs:
+      type:
+        description: 'The type of deployment. Valid values are unstable (default) and release'
+        default: 'unstable'
+        required: false
+        type: string
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  build-and-test-amplify:
+    name: Build and Test Amplify
+    uses: ./.github/workflows/build_test_amplify.yml
+
+  unit-tests:
+    name: Run Plugins Unit Tests
+    uses: ./.github/workflows/unit_test.yml
+
+  integration-tests:
+    name: Run Integration Tests
+    uses: ./.github/workflows/integ_test.yml
+
+  fortify:
+    name: Run Fortify Scan
+    uses: ./.github/workflows/fortify_scan.yml
+
+  release:
+    name: Release new ${{ inputs.type }} version
+    environment: Release
+    needs: [unit-tests, fortify, integration-tests]
+    runs-on: macos-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 #v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ format('{0}.release', github.run_id) }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-duration-seconds: 900
+
+      - id: retrieve-token
+        name: Retrieve Deploy Token
+        env:
+          DEPLOY_SECRET_ARN: ${{ secrets.DEPLOY_SECRET_ARN }}
+        run: |
+          PAT=$(aws secretsmanager get-secret-value \
+          --secret-id "$DEPLOY_SECRET_ARN" \
+          | jq ".SecretString | fromjson | .Credential")
+          echo "token=$PAT" >> $GITHUB_OUTPUT
+
+      - name: Checkout repo
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+        with:
+          fetch-depth: 10
+          token: ${{steps.retrieve-token.outputs.token}}
+
+      - name: Restore Gems Cache
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: vendor/bundle
+          key: v2-gems-${{ hashFiles('**/Gemfile.lock') }}
+
+      - name: Install Bundle
+        env:
+          BUNDLE_PATH: vendor/bundle
+        run: |
+            bundle config set --local path $BUNDLE_PATH
+            bundle check || bundle install
+
+      - name:  Release Pods
+        env:
+          COCOAPODS_SECRET_ARN: ${{ secrets.COCOAPODS_SECRET_ARN }}
+          WORKING_DIRECTORY: ${{ github.workspace }}
+          GITHUB_EMAIL: aws-amplify-ops@amazon.com
+          GITHUB_USER: aws-amplify-ops
+        run: bundle exec fastlane ${{ inputs.type }}
