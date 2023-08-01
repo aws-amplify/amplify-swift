@@ -87,3 +87,4 @@ GraphQLWithIAMIntegrationTests-amplifyconfiguration.json
 GraphQLWithIAMIntegrationTests-credentials.json
 
 AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json
+*.code-workspace

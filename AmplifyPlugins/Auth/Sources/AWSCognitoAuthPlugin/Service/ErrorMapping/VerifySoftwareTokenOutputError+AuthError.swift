@@ -19,7 +19,7 @@ extension VerifySoftwareTokenOutputError: AuthErrorConvertible {
         case .enableSoftwareTokenMFAException(let exception):
             return AuthError.service(
                 exception.message ?? "Unable to enable software token MFA",
-                AuthPluginErrorConstants.serviceError,
+                AuthPluginErrorConstants.softwareTokenNotFoundError,
                 AWSCognitoAuthError.softwareTokenMFANotEnabled)
         case .forbiddenException(let forbiddenException):
             return .service(

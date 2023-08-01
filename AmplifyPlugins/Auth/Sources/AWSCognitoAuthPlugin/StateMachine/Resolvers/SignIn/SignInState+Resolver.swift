@@ -142,6 +142,14 @@ extension SignInState {
                                  actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                    let action = InitializeTOTPSetup(
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
+                                 actions: [action])
+                }
+
                 let resolution = CustomSignInState.Resolver().resolve(
                     oldState: customSignInState, byApplying: event)
                 let signingInWithCustom = SignInState.signingInWithCustom(
@@ -175,6 +183,14 @@ extension SignInState {
                         username: username,
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                    let action = InitializeTOTPSetup(
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
                                  actions: [action])
                 }
 
@@ -215,6 +231,19 @@ extension SignInState {
                         signInMethod), actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateTOTPSetup(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = InitializeTOTPSetup(
+                        authResponse: challengeResponse)
+                    return .init(
+                        newState: .resolvingTOTPSetup(
+                            .notStarted,
+                            .init(username: username,
+                                  password: nil,
+                                  signInMethod: signInMethod)),
+                        actions: [action])
+                }
+
                 let resolution = SignInChallengeState.Resolver().resolve(
                     oldState: challengeState,
                     byApplying: event)
@@ -243,6 +272,14 @@ extension SignInState {
                         username: username,
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateTOTPSetup(_, let challengeResponse) = signInEvent.eventType {
+                    let action = InitializeTOTPSetup(
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingTOTPSetup(.notStarted, signInEventData),
                                  actions: [action])
                 }
 
@@ -316,6 +353,19 @@ extension SignInState {
                         subState,
                         challenge.challenge.authChallengeType,
                         signInMethod), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateTOTPSetup(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = InitializeTOTPSetup(
+                        authResponse: challengeResponse)
+                    return .init(newState:
+                            .resolvingTOTPSetup(
+                                .notStarted,
+                                .init(username: username,
+                                      password: nil,
+                                      signInMethod: signInMethod)),
+                                 actions: [action])
                 }
 
                 let resolution = DeviceSRPState.Resolver().resolve(oldState: deviceSrpState,
