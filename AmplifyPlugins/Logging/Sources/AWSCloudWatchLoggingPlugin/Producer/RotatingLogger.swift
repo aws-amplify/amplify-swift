@@ -48,6 +48,12 @@ final class RotatingLogger {
         try await actor.flushLogs()
     }
     
+    func getLogBatches() async throws -> [RotatingLogBatch] {
+        let logs = try await actor.getLogs()
+        let logBatches = logs.map({RotatingLogBatch(url: $0)})
+        return logBatches
+    }
+    
     func resetLogs() async throws {
         try await actor.deleteLogs()
     }

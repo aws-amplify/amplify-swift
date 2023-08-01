@@ -123,6 +123,22 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: level, message: message)
     }
     
+    /// Given: a rotating logger
+    /// When: get log batch is called
+    /// Then: a list of log batches is returned
+    func testRotatingLogReturnsLogBatches() async throws {
+        var logBatches = try await systemUnderTest.getLogBatches()
+        XCTAssertEqual(logBatches.count, 1)
+        let size = try LogEntry.minimumSizeForLogEntry(level: .error)
+        let recordsPerFile = (fileSizeLimitInBytes/size)
+        for _ in 0..<recordsPerFile {
+            try await systemUnderTest.record(level: .error, message: "Test message")
+        }
+        try await systemUnderTest.synchronize()
+        logBatches = try await systemUnderTest.getLogBatches()
+        XCTAssertEqual(logBatches.count, 2)
+    }
+    
     private func logWith(level: LogLevel, message: String) async throws {
         switch level {
         case .error:

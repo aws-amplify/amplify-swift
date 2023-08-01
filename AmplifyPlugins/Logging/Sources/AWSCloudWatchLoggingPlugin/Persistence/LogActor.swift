@@ -57,6 +57,11 @@ actor LogActor {
         }
     }
     
+    func getLogs() throws -> [URL] {
+        let logs = try rotation.getAllLogs()
+        return logs
+    }
+    
     func deleteLogs() throws {
         try rotation.reset()
         try synchronize()
