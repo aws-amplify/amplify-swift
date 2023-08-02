@@ -50,11 +50,8 @@ actor LogActor {
         try rotation.currentLogFile.synchronize()
     }
     
-    func flushLogs() throws {
-        let logs = try rotation.getAllLogs()
-        for log in logs {
-            rotationSubject.send(log)
-        }
+    func getLogs() throws -> [URL] {
+        return try rotation.getAllLogs()
     }
     
     func deleteLogs() throws {

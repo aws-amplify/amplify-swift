@@ -109,4 +109,22 @@ final class LogActorTests: XCTestCase {
         XCTAssertTrue(contents.isEmpty)
     }
     
+    
+    /// Given: a LogActor with 1 existing log
+    /// When: get all logs is called after writing and rotating to a new log
+    /// Then: 2 log files are returned
+    func testLogActorReturnsLogList() async throws {
+        var logs = try await systemUnderTest.getLogs()
+        XCTAssertEqual(logs.count, 1)
+        let size = try LogEntry.minimumSizeForLogEntry(level: .error)
+        let numberOfEntries = (fileSizeLimitInBytes/size) + 1
+        let entries = (0..<numberOfEntries).map { LogEntry(category: "", namespace: nil, level: .error, message: "\($0)", created: .init(timeIntervalSince1970: Double($0))) }
+        for entry in entries {
+            try await systemUnderTest.record(entry)
+        }
+        try await systemUnderTest.synchronize()
+        
+        logs = try await systemUnderTest.getLogs()
+        XCTAssertEqual(logs.count, 2)
+    }
 }
