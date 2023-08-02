@@ -16,6 +16,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 
     public let refreshToken: String
 
+    @available(*, deprecated, message: "Use of `expiration` is deprecated, use `exp` claim in the `idToken` or `accessToken` for expiries")
     public let expiration: Date
 
     public init(idToken: String,
@@ -49,18 +50,24 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
                       refreshToken: refreshToken,
                       expiresIn: expiresIn)
         } else {
-            // If for some reason, failed to extract "exp" value, use the value as zero and don't block the user
-            var expirationDoubleValue: Double = 0
-            if let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: idToken).get(),
-               let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get(),
-               let idTokenExpiration = idTokenClaims["exp"]?.doubleValue,
-               let accessTokenExpiration = accessTokenClaims["exp"]?.doubleValue {
-                expirationDoubleValue = min(idTokenExpiration, accessTokenExpiration)
+
+            var expirationDoubleValue: Double? = nil
+            if let idTokenExpiration = try? AWSAuthService().getTokenClaims(tokenString: idToken).get()["exp"]?.doubleValue {
+                expirationDoubleValue = idTokenExpiration
             }
+            if let accessTokenExpiration = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get()["exp"]?.doubleValue {
+                if let unwrappedExpirationDoubleValue = expirationDoubleValue {
+                    expirationDoubleValue = min(unwrappedExpirationDoubleValue, accessTokenExpiration)
+                } else {
+                    expirationDoubleValue = accessTokenExpiration
+                }
+            }
+
             self.init(idToken: idToken,
                       accessToken: accessToken,
                       refreshToken: refreshToken,
-                      expiresIn: Int(expirationDoubleValue.rounded(.down)))
+                      // If for some reason, failed to extract "exp" value, use the value as zero and don't block the user
+                      expiresIn: Int((expirationDoubleValue ?? 0).rounded(.down)))
         }
     }
 
