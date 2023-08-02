@@ -42,7 +42,7 @@ jobs:
         run: |
           PAT=$(aws secretsmanager get-secret-value \
           --secret-id "$DEPLOY_SECRET_ARN" \
-          | jq ".SecretString | fromjson | .Credential")
+          | jq -r ".SecretString | fromjson | .Credential")
           echo "token=$PAT" >> $GITHUB_OUTPUT
 
       - name: Checkout repo
