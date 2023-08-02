@@ -110,9 +110,9 @@ final class LogActorTests: XCTestCase {
     }
     
     
-    /// Given: a LogActor
-    /// When: get all logs is called
-    /// Then: all logs are returned
+    /// Given: a LogActor with 1 existing log
+    /// When: get all logs is called after writing and rotating to a new log
+    /// Then: 2 log files are returned
     func testLogActorReturnsLogList() async throws {
         var logs = try await systemUnderTest.getLogs()
         XCTAssertEqual(logs.count, 1)

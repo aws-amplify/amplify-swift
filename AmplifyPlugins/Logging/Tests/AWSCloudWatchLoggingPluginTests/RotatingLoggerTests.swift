@@ -123,9 +123,9 @@ final class RotatingLoggerTests: XCTestCase {
         try assertSingleEntryWith(level: level, message: message)
     }
     
-    /// Given: a rotating logger
-    /// When: get log batch is called
-    /// Then: a list of log batches is returned
+    /// Given: a rotating logger with 1 existing log batch
+    /// When: get log batch is called after writing and rotating to new log file
+    /// Then: a list of log batches with a count of 2 is returned
     func testRotatingLogReturnsLogBatches() async throws {
         var logBatches = try await systemUnderTest.getLogBatches()
         XCTAssertEqual(logBatches.count, 1)
