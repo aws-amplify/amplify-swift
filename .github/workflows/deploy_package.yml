@@ -21,18 +21,15 @@ jobs:
     name: Run Plugins Unit Tests
     uses: ./.github/workflows/unit_test.yml
 
-  integration-tests:
-    name: Run Integration Tests
-    uses: ./.github/workflows/integ_test.yml
-
   fortify:
     name: Run Fortify Scan
     uses: ./.github/workflows/fortify_scan.yml
+    secrets: inherit
 
   release:
     name: Release new ${{ inputs.type }} version
     environment: Release
-    needs: [unit-tests, fortify, integration-tests]
+    needs: [build-and-test-amplify, unit-tests, fortify]
     runs-on: macos-latest
     steps:
       - name: Configure AWS credentials
