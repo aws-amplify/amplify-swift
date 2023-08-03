@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSCognitoAuthPlugin
+@testable import AWSCognitoAuthPlugin
 
 extension AWSCognitoUserPoolTokens {
 
@@ -39,5 +39,18 @@ extension AWSCognitoUserPoolTokens {
             accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             refreshToken: "refreshToken",
             expiresIn: 121)
+    }
+
+    static var testDataWithoutExp: AWSCognitoUserPoolTokens {
+        let tokenDataWithoutExp = [
+            "sub": "1234567890",
+            "username": "John Doe",
+            "iat": "1516239022"
+        ]
+        return AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenDataWithoutExp),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenDataWithoutExp),
+            refreshToken: "refreshToken",
+            expiresIn: nil)
     }
 }
