@@ -1,42 +1,27 @@
-name: Deploy Package
+name: Deploy Documentation
 on:
   workflow_call:
-    inputs:
-      type:
-        description: 'The type of deployment. Valid values are unstable (default) and release'
-        default: 'unstable'
-        required: false
-        type: string
+  workflow_dispatch:
 
 permissions:
   id-token: write
   contents: write
 
 jobs:
-  unit-tests:
-    name: Run Plugins Unit Tests
-    uses: ./.github/workflows/unit_test.yml
-
-  fortify:
-    name: Run Fortify Scan
-    uses: ./.github/workflows/fortify_scan.yml
-    secrets: inherit
-
-  release:
-    environment: Release
-    name: Release new ${{ inputs.type }} version
-    needs: [unit-tests, fortify]
+  release-doc:
+    name: Release documentation
     runs-on: macos-latest
+    environment: Release
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 #v2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-session-name: ${{ format('{0}.release', github.run_id) }}
+          role-session-name: ${{ format('{0}.release-doc', github.run_id) }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - id: retrieve-token
-        name: Retrieve Token
+      - name: Retrieve Token
+        id: retrieve-token
         env:
           DEPLOY_SECRET_ARN: ${{ secrets.DEPLOY_SECRET_ARN }}
         run: |
@@ -48,7 +33,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
-          fetch-depth: 10
           token: ${{steps.retrieve-token.outputs.token}}
 
       - name: Setup Ruby
@@ -57,8 +41,8 @@ jobs:
           ruby-version: '3.2.1'
           bundler-cache: true
 
-      - name:  Release Package
+      - name: Generate doc
         env:
           GITHUB_EMAIL: aws-amplify-ops@amazon.com
           GITHUB_USER: aws-amplify-ops
-        run: bundle exec fastlane ${{ inputs.type }}
+        run: bash ./CircleciScripts/jazzy_doc_gen.sh

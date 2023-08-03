@@ -5,12 +5,12 @@
 
 set -e
 
-echo "Working Directory: $CIRCLE_WORKING_DIRECTORY"
+echo "Working Directory: $GITHUB_WORKSPACE"
 
 git config user.email $GITHUB_EMAIL
 git config user.name $GITHUB_USER
 
-cd $CIRCLE_WORKING_DIRECTORY
+cd $GITHUB_WORKSPACE
 bundle exec jazzy --swift-build-tool spm --build-tool-arguments -Xswiftc,-swift-version,-Xswiftc,5
 ln -s ../readme-images docs
 git add docs
