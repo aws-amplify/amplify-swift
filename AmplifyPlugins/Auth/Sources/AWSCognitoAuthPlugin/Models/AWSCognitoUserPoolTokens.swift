@@ -41,10 +41,10 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
         self.expiration = expiration
     }
 
-    public init(idToken: String,
-                accessToken: String,
-                refreshToken: String,
-                expiresIn: Int? = nil) {
+    init(idToken: String,
+         accessToken: String,
+         refreshToken: String,
+         expiresIn: Int? = nil) {
 
         self.idToken = idToken
         self.accessToken = accessToken
@@ -71,7 +71,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
             self.expiration = Date().addingTimeInterval(TimeInterval((expirationDoubleValue ?? 0)))
         }
     }
-
+    
 }
 
 extension AWSCognitoUserPoolTokens: Equatable { }

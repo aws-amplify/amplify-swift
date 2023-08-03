@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSCognitoAuthPlugin
+@testable import AWSCognitoAuthPlugin
 
 extension AWSCognitoUserPoolTokens {
 
