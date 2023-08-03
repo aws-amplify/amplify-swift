@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.15.2 (2023-08-03)
+
+### Bug Fixes
+
+- **Auth**: Refactor the expires in logic of the authentication result (#3114)
+- **logging**: update flushlog to be blocking end to end (#3113)
+- **logging**: delete logs when user identifier changes (#3110)
+
 ## 2.15.1 (2023-07-24)
 
 ## 2.15.0 (2023-07-18)
