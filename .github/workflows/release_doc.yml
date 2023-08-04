@@ -1,6 +1,5 @@
 name: Deploy Documentation
 on:
-  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -10,6 +9,7 @@ permissions:
 jobs:
   release-doc:
     name: Release documentation
+    if: ${{ github.ref_name == 'release' }}
     runs-on: macos-latest
     environment: Release
     steps:

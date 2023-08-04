@@ -15,9 +15,3 @@ jobs:
       type: release
     secrets: inherit
 
-  release-doc:
-    name: Release documentation
-    uses: ./.github/workflows/release_doc.yml
-    needs:
-      - release-stable
-    secrets: inherit
