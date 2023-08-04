@@ -10,6 +10,7 @@ permissions:
 jobs:
   push-notification-integration-test-iOS:
     runs-on: macos-12
+    timeout-minutes: 20
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -47,6 +48,7 @@ jobs:
 
   push-notification-integration-test-tvOS:
     runs-on: macos-13
+    timeout-minutes: 20
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -81,12 +83,13 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
           scheme: PushNotificationHostApp
-          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
+          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
 
   push-notification-integration-test-watchOS:
     runs-on: macos-13
+    timeout-minutes: 20
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -121,6 +124,6 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
           scheme: PushNotificationWatchTests
-          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
+          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
