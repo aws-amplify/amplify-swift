@@ -381,10 +381,7 @@ let loggingTargets: [Target] = [
             .product(name: "AWSCloudWatch", package: "aws-sdk-swift"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
-        path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
-        exclude: [
-            "Resources/Info.plist"
-        ]
+        path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin"
     ),
     .testTarget(
         name: "AWSCloudWatchLoggingPluginTests",
