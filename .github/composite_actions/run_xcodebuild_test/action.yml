@@ -23,6 +23,10 @@ inputs:
     required: false
     type: string
     default: ''
+  submit_coverage:
+    required: false
+    type: boolean
+    default: false
 
 runs:
   using: "composite"
@@ -39,6 +43,27 @@ runs:
         if [ ! -z "$XCODE_PATH" ]; then
           sudo xcode-select -s $XCODE_PATH
         fi
+        coverageFlags=""
+        if [ "${{ inputs.submit_coverage }}" == true ]; then
+          echo "Code Coverage is enabled!"
+          coverageFlags+="-derivedDataPath Build/ -clonedSourcePackagesDirPath "~/Library/Developer/Xcode/DerivedData/$SCHEME" -enableCodeCoverage YES build test"
+        fi
         xcodebuild -version
-        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $coverageFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
+
+    - name: Generate Coverage report
+      if: ${{ inputs.submit_coverage == 'true' }}
+      run: |
+        echo "Generating Coverage report..."
+        cd Build/Build/ProfileData
+        cd $(ls -d */|head -n 1)
+        directory=${PWD##*/}
+        pathCoverage=Build/Build/ProfileData/${directory}/Coverage.profdata
+        cd ../../../../
+        xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage Build/Build/Products/Debug-iphonesimulator/$SCHEME.o > info.lcov
+      shell: bash
+
+    - name: Upload Coverage report to Codecov
+      if: ${{ inputs.submit_coverage == 'true' }}
+      uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4

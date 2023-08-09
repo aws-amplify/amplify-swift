@@ -15,50 +15,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepare-for-tests:
-    runs-on: macos-12
-    environment: UnitTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
   build-amplify-swift:
-    needs: prepare-for-tests
     uses: ./.github/workflows/build_amplify_swift.yml
 
   analytics-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_analytics.yml
 
   api-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_api.yml
 
   auth-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_auth.yml
 
   datastore-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_datastore.yml
 
   geo-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_geo.yml
 
   internal-pinpoint-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_internal_pinpoint.yml
 
   predictions-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_predictions.yml
 
   push-notifications-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_push_notifications.yml
 
   storage-unit-test:
-    needs: prepare-for-tests
     uses: ./.github/workflows/unit_test_storage.yml
