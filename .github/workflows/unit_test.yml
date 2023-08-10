@@ -18,6 +18,9 @@ jobs:
   build-amplify-swift:
     uses: ./.github/workflows/build_amplify_swift.yml
 
+  amplify-unit-test:
+    uses: ./.github/workflows/unit_test_amplify.yml
+
   analytics-unit-test:
     uses: ./.github/workflows/unit_test_analytics.yml
 

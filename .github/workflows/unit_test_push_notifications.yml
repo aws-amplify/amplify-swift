@@ -22,7 +22,7 @@ jobs:
           scheme: ${{ env.SCHEME }}
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
           xcode_path: '/Applications/Xcode_14.3.app'
-          submit_coverage: true
+          submit_coverage_report: true
 
   push-notifications-unit-test-macOS:
     runs-on: macos-13
