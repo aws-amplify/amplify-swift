@@ -11,6 +11,11 @@ on:
         required: false
         type: boolean
         default: false
+      timeout-minutes:
+        description: 'The timeout for each execution'
+        required: false
+        default: 25
+        type: number
 
 env:
   SCHEME: ${{ inputs.scheme }}
@@ -21,6 +26,7 @@ permissions:
 jobs:
   test-iOS:
     runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
@@ -38,6 +44,7 @@ jobs:
 
   test-macOS:
     runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
@@ -52,6 +59,7 @@ jobs:
 
   test-tvOS:
     runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
@@ -66,6 +74,7 @@ jobs:
 
   test-watchOS:
     runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:

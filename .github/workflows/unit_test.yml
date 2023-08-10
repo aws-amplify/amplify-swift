@@ -15,10 +15,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-amplify-swift:
-    name: Build Amplify
-    uses: ./.github/workflows/build_amplify_swift.yml
-
   unit-tests-without-coverage:
     name: ${{ matrix.scheme }} Unit Tests
     strategy:
