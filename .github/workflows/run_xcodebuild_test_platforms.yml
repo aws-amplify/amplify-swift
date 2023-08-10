@@ -19,7 +19,7 @@ permissions:
     contents: read
 
 jobs:
-  unit-tests-iOS:
+  test-iOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -33,10 +33,10 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           submit_coverage_report: ${{ inputs.submit_coverage_report }}
       - name: Upload Coverage report to Codecov
-        if: ${{ inputs.submit_coverage_report == 'true' }}
+        if: ${{ inputs.submit_coverage_report == true }}
         uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
 
-  unit-tests-macOS:
+  test-macOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -50,7 +50,7 @@ jobs:
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  unit-tests-tvOS:
+  test-tvOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -64,7 +64,7 @@ jobs:
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  unit-tests-watchOS:
+  test-watchOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
