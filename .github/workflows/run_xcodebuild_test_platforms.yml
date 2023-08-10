@@ -1,36 +1,48 @@
-name: Unit Tests | Internal Pinpoint
+name: Run xcodebuild test on all supported platforms
 on:
-  workflow_dispatch:
   workflow_call:
+    inputs:
+      scheme:
+        description: 'The scheme to run the unit tests'
+        required: true
+        type: string
+      submit_coverage_report:
+        description: 'Whether to generate and report code coverage'
+        required: false
+        type: boolean
+        default: false
 
 env:
-  SCHEME: InternalAWSPinpoint
+  SCHEME: ${{ inputs.scheme }}
 
 permissions:
     contents: read
 
 jobs:
-  internal-pinpoint-unit-test-iOS:
+  unit-tests-iOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           persist-credentials: false
-      - name: Run Unit Test Suite
+      - name: Run iOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
           xcode_path: '/Applications/Xcode_14.3.app'
-          submit_coverage_report: true
+          submit_coverage_report: ${{ inputs.submit_coverage_report }}
+      - name: Upload Coverage report to Codecov
+        if: ${{ inputs.submit_coverage_report == 'true' }}
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
 
-  internal-pinpoint-unit-test-macOS:
+  unit-tests-macOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           persist-credentials: false
-      - name: Run Unit Test Suite
+      - name: Run macOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -38,13 +50,13 @@ jobs:
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  internal-pinpoint-unit-test-tvOS:
+  unit-tests-tvOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           persist-credentials: false
-      - name: Run Unit Test Suite
+      - name: Run tvOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -52,13 +64,13 @@ jobs:
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  internal-pinpoint-unit-test-watchOS:
+  unit-tests-watchOS:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           persist-credentials: false
-      - name: Run Unit Test Suite
+      - name: Run watchOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}

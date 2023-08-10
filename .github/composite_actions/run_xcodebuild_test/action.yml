@@ -62,7 +62,3 @@ runs:
         cd ../../../../
         xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage Build/Build/Products/Debug-iphonesimulator/$SCHEME.o > Coverage.lcov
       shell: bash
-
-    - name: Upload Coverage report to Codecov
-      if: ${{ inputs.submit_coverage_report == 'true' }}
-      uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
