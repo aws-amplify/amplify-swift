@@ -16,34 +16,42 @@ concurrency:
 
 jobs:
   build-amplify-swift:
+    name: Build Amplify
     uses: ./.github/workflows/build_amplify_swift.yml
 
-  amplify-unit-test:
-    uses: ./.github/workflows/unit_test_amplify.yml
+  unit-tests-without-coverage:
+    name: ${{ matrix.scheme }} Unit Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          InternalAWSPinpointUnitTests
+        ]
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: ${{ matrix.scheme }}
+      submit_coverage_report: false
 
-  analytics-unit-test:
-    uses: ./.github/workflows/unit_test_analytics.yml
-
-  api-unit-test:
-    uses: ./.github/workflows/unit_test_api.yml
-
-  auth-unit-test:
-    uses: ./.github/workflows/unit_test_auth.yml
-
-  datastore-unit-test:
-    uses: ./.github/workflows/unit_test_datastore.yml
-
-  geo-unit-test:
-    uses: ./.github/workflows/unit_test_geo.yml
-
-  internal-pinpoint-unit-test:
-    uses: ./.github/workflows/unit_test_internal_pinpoint.yml
-
-  predictions-unit-test:
-    uses: ./.github/workflows/unit_test_predictions.yml
-
-  push-notifications-unit-test:
-    uses: ./.github/workflows/unit_test_push_notifications.yml
-
-  storage-unit-test:
-    uses: ./.github/workflows/unit_test_storage.yml
+  unit-tests-with-coverage:
+    name: ${{ matrix.scheme }} Unit Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin
+        ]
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: ${{ matrix.scheme }}
+      submit_coverage_report: true

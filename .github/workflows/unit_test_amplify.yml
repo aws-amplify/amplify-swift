@@ -1,7 +1,6 @@
 name: Unit Tests | Amplify
 on:
   workflow_dispatch:
-  workflow_call:
 
 permissions:
     contents: read
@@ -11,4 +10,3 @@ jobs:
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:
       scheme: Amplify
-      submit_coverage_report: true

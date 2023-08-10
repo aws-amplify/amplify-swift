@@ -23,7 +23,7 @@ inputs:
     required: false
     type: string
     default: ''
-  submit_coverage_report:
+  generate_coverage:
     required: false
     type: boolean
     default: false
@@ -41,10 +41,11 @@ runs:
           cd $PROJECT_PATH
         fi
         if [ ! -z "$XCODE_PATH" ]; then
+          echo "Using Xcode $XCODE_PATH"
           sudo xcode-select -s $XCODE_PATH
         fi
         coverageFlags=""
-        if [ "${{ inputs.submit_coverage_report }}" == true ]; then
+        if [ "${{ inputs.generate_coverage }}" == "true" ]; then
           echo "Code Coverage is enabled!"
           coverageFlags+="-derivedDataPath Build/ -clonedSourcePackagesDirPath "~/Library/Developer/Xcode/DerivedData/$SCHEME" -enableCodeCoverage YES build test"
         fi
@@ -53,7 +54,7 @@ runs:
       shell: bash
 
     - name: Generate Coverage report
-      if: ${{ inputs.submit_coverage_report == 'true' }}
+      if: ${{ inputs.generate_coverage == 'true' }}
       run: |
         echo "Generating Coverage report..."
         cd Build/Build/ProfileData

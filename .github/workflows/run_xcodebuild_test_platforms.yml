@@ -31,7 +31,7 @@ jobs:
           scheme: ${{ env.SCHEME }}
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
           xcode_path: '/Applications/Xcode_14.3.app'
-          submit_coverage_report: ${{ inputs.submit_coverage_report }}
+          generate_coverage: ${{ inputs.submit_coverage_report }}
       - name: Upload Coverage report to Codecov
         if: ${{ inputs.submit_coverage_report == true }}
         uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
