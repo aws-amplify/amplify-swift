@@ -49,6 +49,7 @@ runs:
           echo "Code Coverage is enabled!"
           coverageFlags+="-derivedDataPath Build/ -clonedSourcePackagesDirPath "~/Library/Developer/Xcode/DerivedData/$SCHEME" -enableCodeCoverage YES build test"
         fi
+        xcode-select -p
         xcodebuild -version
         xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $coverageFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
