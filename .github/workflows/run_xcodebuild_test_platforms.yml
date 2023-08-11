@@ -30,6 +30,7 @@ permissions:
 
 jobs:
   test-iOS:
+    name: ${{ inputs.scheme }} iOS Tests
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
@@ -47,9 +48,10 @@ jobs:
         if: ${{ inputs.submit_coverage_report == true }}
         uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
         with:
-          flags: $${{ inputs.coverage_flags }}
+          flags: ${{ inputs.coverage_flags }}
 
   test-macOS:
+    name: ${{ inputs.scheme }} macOS Tests
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
@@ -65,6 +67,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   test-tvOS:
+    name: ${{ inputs.scheme }} tvOS Tests
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
@@ -80,6 +83,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   test-watchOS:
+    name: ${{ inputs.scheme }} watchOS Tests
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
