@@ -6,16 +6,21 @@ on:
         description: 'The scheme to run the unit tests'
         required: true
         type: string
+      timeout-minutes:
+        description: 'The timeout for each execution'
+        required: false
+        type: number
+        default: 30
       submit_coverage_report:
         description: 'Whether to generate and report code coverage'
         required: false
         type: boolean
         default: false
-      timeout-minutes:
-        description: 'The timeout for each execution'
+      coverage_flags:
+        description: 'What flag to include in the coverage report, separated by commas'
         required: false
-        default: 35
-        type: number
+        type: string
+        default: 'unittests'
 
 env:
   SCHEME: ${{ inputs.scheme }}
@@ -41,6 +46,8 @@ jobs:
       - name: Upload Coverage report to Codecov
         if: ${{ inputs.submit_coverage_report == true }}
         uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
+        with:
+          flags: $${{ inputs.coverage_flags }}
 
   test-macOS:
     runs-on: macos-13

@@ -1,7 +1,6 @@
 coverage:
-  branch: ruisebas/test-coverage
+  branch: main
   status:
     project:
       default:
-        target: 80%
         threshold: 1%
