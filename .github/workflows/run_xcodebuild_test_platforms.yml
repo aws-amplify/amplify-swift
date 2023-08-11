@@ -14,7 +14,7 @@ on:
       timeout-minutes:
         description: 'The timeout for each execution'
         required: false
-        default: 25
+        default: 35
         type: number
 
 env:
@@ -28,7 +28,7 @@ jobs:
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
       - name: Run iOS Test Suite
@@ -46,7 +46,7 @@ jobs:
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
       - name: Run macOS Test Suite
@@ -61,7 +61,7 @@ jobs:
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
       - name: Run tvOS Test Suite
@@ -76,7 +76,7 @@ jobs:
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
       - name: Run watchOS Test Suite
