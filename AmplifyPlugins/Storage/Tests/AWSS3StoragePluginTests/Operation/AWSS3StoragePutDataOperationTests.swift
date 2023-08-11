@@ -41,7 +41,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        waitForOperationToFinish(operation)
+        XCTAssertTrue(operation.isFinished)
     }
 
     func testUploadDataOperationGetIdentityIdError() {
@@ -71,7 +71,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        waitForOperationToFinish(operation)
+        XCTAssertTrue(operation.isFinished)
     }
 
     func testUploadDataOperationUploadSuccess() {
@@ -113,7 +113,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        waitForOperationToFinish(operation)
+        XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
                                         key: testKey,
@@ -157,7 +157,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        waitForOperationToFinish(operation)
+        XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
                                         key: testKey,
@@ -212,7 +212,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        waitForOperationToFinish(operation)
+        XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.multiPartUploadCalled, 1)
         mockStorageService.verifyMultiPartUpload(serviceKey: expectedServiceKey,
                                                  key: testKey,
