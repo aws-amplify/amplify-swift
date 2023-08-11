@@ -1,0 +1,95 @@
+name: Run xcodebuild test on all supported platforms
+on:
+  workflow_call:
+    inputs:
+      scheme:
+        description: 'The scheme to run the unit tests'
+        required: true
+        type: string
+      timeout-minutes:
+        description: 'The timeout for each execution'
+        required: false
+        type: number
+        default: 30
+      submit_coverage_report:
+        description: 'Whether to generate and report code coverage'
+        required: false
+        type: boolean
+        default: false
+      coverage_flags:
+        description: 'What flag to include in the coverage report, separated by commas'
+        required: false
+        type: string
+        default: 'unittests'
+
+env:
+  SCHEME: ${{ inputs.scheme }}
+
+permissions:
+    contents: read
+
+jobs:
+  test-iOS:
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Run iOS Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
+          generate_coverage: ${{ inputs.submit_coverage_report }}
+      - name: Upload Coverage report to Codecov
+        if: ${{ inputs.submit_coverage_report == true }}
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
+        with:
+          flags: $${{ inputs.coverage_flags }}
+
+  test-macOS:
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Run macOS Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=macOS,arch=x86_64
+          sdk: macosx
+          xcode_path: '/Applications/Xcode_14.3.app'
+
+  test-tvOS:
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Run tvOS Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
+          sdk: appletvsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
+
+  test-watchOS:
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Run watchOS Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
+          sdk: watchsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'

@@ -1,4 +1,4 @@
-name: Unit Tests | Internal Pinpoint
+name: Unit Tests | Logging
 on:
   workflow_dispatch:
 
@@ -6,7 +6,7 @@ permissions:
     contents: read
 
 jobs:
-  internal-pinpoint-unit-tests:
+  logging-unit-tests:
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:
-      scheme: InternalAWSPinpointUnitTests
+      scheme: AWSCloudWatchLoggingPlugin
