@@ -18,7 +18,7 @@ struct ChallengeConfig: Codable {
     let ovalIouHeightThreshold: Double
     let ovalIouThreshold: Double
     let ovalIouWidthThreshold: Double
-    let ovalFitTimeout: Double
+    let ovalFitTimeout: Int
 
     enum CodingKeys: String, CodingKey {
         case blazeFaceDetectionThreshold = "BlazeFaceDetectionThreshold"

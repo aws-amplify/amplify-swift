@@ -55,7 +55,7 @@ extension FaceLivenessSession.OvalMatchChallenge {
         public let iouThreshold: Double
         public let iouWidthThreshold: Double
         public let iouHeightThreshold: Double
-        public let ovalFitTimeout: Double
+        public let ovalFitTimeout: Int
 
         public init(
             boundingBox: FaceLivenessSession.BoundingBox,
@@ -63,7 +63,7 @@ extension FaceLivenessSession.OvalMatchChallenge {
             iouThreshold: Double,
             iouWidthThreshold: Double,
             iouHeightThreshold: Double,
-            ovalFitTimeout: Double
+            ovalFitTimeout: Int
         ) {
             self.boundingBox = boundingBox
             self.heightWidthRatio = heightWidthRatio
