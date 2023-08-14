@@ -8,25 +8,52 @@
 import AWSTranslate
 import Amplify
 
-extension ServiceErrorMapping where T == TranslateTextOutputError {
-    static let translateText: Self = .init { error in
-        switch error {
-        case .detectedLanguageLowConfidenceException(let detectedLanguageLowConfidenceException):
-            return PredictionsError.service(.detectedLanguageLowConfidence)
-        case .internalServerException(let internalServerException):
-            return PredictionsError.service(.internalServerError)
-        case .invalidRequestException(let invalidRequestException):
-            return PredictionsError.service(.invalidRequest)
-        case .resourceNotFoundException, .serviceUnavailableException:
-            return PredictionsError.service(.resourceNotFound)
-        case .textSizeLimitExceededException(let textSizeLimitExceededException):
-            return PredictionsError.service(.textSizeLimitExceeded)
-        case .tooManyRequestsException(let tooManyRequestsException):
-            return PredictionsError.service(.throttling)
-        case .unsupportedLanguagePairException(let unsupportedLanguagePairException):
-            return PredictionsError.service(.unsupportedLanguagePair)
-        case .unknown:
-            return PredictionsError.unknownServiceError(error)
-        }
+extension AWSTranslate.DetectedLanguageLowConfidenceException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+    var predictionsError: PredictionsError {
+        .service(.detectedLanguageLowConfidence)
+    }
+}
+
+extension AWSTranslate.InternalServerException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+    var predictionsError: PredictionsError {
+        .service(.internalServerError)
+    }
+}
+
+
+extension AWSTranslate.InvalidRequestException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+    var predictionsError: PredictionsError {
+        .service(.invalidRequest)
+    }
+}
+
+extension AWSTranslate.ResourceNotFoundException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+    var predictionsError: PredictionsError {
+        .service(.resourceNotFound)
+    }
+}
+
+extension AWSTranslate.TextSizeLimitExceededException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+    var predictionsError: PredictionsError {
+        .service(.textSizeLimitExceeded)
+    }
+}
+
+extension AWSTranslate.TooManyRequestsException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+    var predictionsError: PredictionsError {
+        .service(.throttling)
+    }
+}
+
+extension AWSTranslate.UnsupportedLanguagePairException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+    var predictionsError: PredictionsError {
+        .service(.unsupportedLanguagePair)
     }
 }

@@ -8,59 +8,104 @@
 import AWSPolly
 import Amplify
 
-extension ServiceErrorMapping where T == SynthesizeSpeechOutputError {
-    static let synthesizeSpeech: Self = .init { error in
-        switch error {
-        case .invalidSampleRateException:
-            return PredictionsError.service(.invalidSampleRate)
-        case .languageNotSupportedException:
-            return PredictionsError.service(.unsupportedLanguage)
-        case .serviceFailureException:
-            return PredictionsError.service(.internalServerError)
-        case .textLengthExceededException:
-            return PredictionsError.service(.textSizeLimitExceeded)
-        case .lexiconNotFoundException:
-            return PredictionsError.service(
-                .init(
-                    description: "Amazon Polly can't find the specified lexicon. This could be caused by a lexicon that is missing, its name is misspelled or specifying a lexicon that is in a different region.",
-                    recoverySuggestion: "Verify that the lexicon exists, is in the region (see ListLexicons) and that you spelled its name is spelled correctly. Then try again.",
-                    underlyingError: error
-                )
+extension AWSPolly.InvalidSampleRateException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.invalidSampleRate)
+    }
+}
+
+extension AWSPolly.LanguageNotSupportedException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.unsupportedLanguage)
+    }
+}
+
+extension AWSPolly.ServiceFailureException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.internalServerError)
+    }
+}
+
+extension AWSPolly.TextLengthExceededException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.textSizeLimitExceeded)
+    }
+}
+
+extension AWSPolly.LexiconNotFoundException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
+            .init(
+                description: "Amazon Polly can't find the specified lexicon. This could be caused by a lexicon that is missing, its name is misspelled or specifying a lexicon that is in a different region.",
+                recoverySuggestion: "Verify that the lexicon exists, is in the region (see ListLexicons) and that you spelled its name is spelled correctly. Then try again.",
+                underlyingError: self
             )
-        case .marksNotSupportedForFormatException:
-            return PredictionsError.service(
-                .init(
-                    description: "Speech marks are not supported for the OutputFormat selected.",
-                    recoverySuggestion: "Speech marks are only available for content in json format.",
-                    underlyingError: error
-                )
+        )
+    }
+}
+
+extension AWSPolly.MarksNotSupportedForFormatException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
+            .init(
+                description: "Speech marks are not supported for the OutputFormat selected.",
+                recoverySuggestion: "Speech marks are only available for content in json format.",
+                underlyingError: self
             )
-        case .invalidSsmlException:
-            return PredictionsError.service(
-                .init(
-                    description: "The SSML you provided is invalid.",
-                    recoverySuggestion: "Verify the SSML syntax, spelling of tags and values, and then try again.",
-                    underlyingError: error
-                )
+        )
+    }
+}
+
+extension AWSPolly.InvalidSsmlException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
+            .init(
+                description: "The SSML you provided is invalid.",
+                recoverySuggestion: "Verify the SSML syntax, spelling of tags and values, and then try again.",
+                underlyingError: self
             )
-        case .ssmlMarksNotSupportedForTextTypeException:
-            return PredictionsError.service(
-                .init(
-                    description: "SSML speech marks are not supported for plain text-type input.",
-                    recoverySuggestion: "",
-                    underlyingError: error
-                )
+        )
+    }
+}
+
+extension AWSPolly.SsmlMarksNotSupportedForTextTypeException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
+            .init(
+                description: "SSML speech marks are not supported for plain text-type input.",
+                recoverySuggestion: "",
+                underlyingError: self
             )
-        case .engineNotSupportedException:
-            return PredictionsError.service(
-                .init(
-                    description: "This engine is not compatible with the voice that you have designated.",
-                    recoverySuggestion: "Choose a new voice that is compatible with the engine or change the engine and restart the operation.",
-                    underlyingError: error
-                )
+        )
+    }
+}
+
+extension AWSPolly.EngineNotSupportedException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
+            .init(
+                description: "This engine is not compatible with the voice that you have designated.",
+                recoverySuggestion: "Choose a new voice that is compatible with the engine or change the engine and restart the operation.",
+                underlyingError: self
             )
-        case .unknown:
-            return PredictionsError.unknownServiceError(error)
-        }
+        )
     }
 }

@@ -8,17 +8,31 @@
 import AWSComprehend
 import Amplify
 
-extension ServiceErrorMapping where T == DetectDominantLanguageOutputError {
-    static let detectDominantLanguage: Self = .init { error in
-        switch error {
-        case .internalServerException:
-            return PredictionsError.service(.internalServerError)
-        case .invalidRequestException:
-            return PredictionsError.service(.invalidRequest)
-        case .textSizeLimitExceededException:
-            return PredictionsError.service(.textSizeLimitExceeded)
-        case .unknown:
-            return PredictionsError.unknownServiceError(error)
-        }
+protocol PredictionsErrorConvertible {
+    var fallbackDescription: String { get }
+    var predictionsError: PredictionsError { get }
+}
+
+extension AWSComprehend.InternalServerException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.internalServerError)
+    }
+}
+
+extension AWSComprehend.InvalidRequestException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.invalidRequest)
+    }
+}
+
+extension AWSComprehend.TextSizeLimitExceededException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.textSizeLimitExceeded)
     }
 }

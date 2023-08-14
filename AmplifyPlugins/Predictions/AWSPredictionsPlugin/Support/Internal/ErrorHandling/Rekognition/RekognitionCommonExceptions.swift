@@ -9,41 +9,103 @@ import AWSRekognition
 import Amplify
 import ClientRuntime
 
-enum RekognitionCommonExceptions {
-    static func imageTooLarge(_ error: Error, statusCode:  HttpStatusCode?) -> PredictionsError  {
-        return .service(
+
+extension AWSRekognition.HumanLoopQuotaExceededException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
+            .init(
+                description: "",
+                recoverySuggestion: "",
+                httpStatusCode: httpResponse.statusCode.rawValue,
+                underlyingError: self
+            )
+        )
+    }
+}
+
+extension AWSRekognition.ResourceNotFoundException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.resourceNotFound)
+    }
+}
+
+extension AWSRekognition.ThrottlingException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.throttling)
+    }
+}
+
+extension AWSRekognition.InternalServerError: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.internalServerError)
+    }
+}
+
+extension AWSRekognition.AccessDeniedException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(.accessDenied)
+    }
+}
+
+extension AWSRekognition.ImageTooLargeException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
             .init(
                 description: "The image you sent was too large.",
                 recoverySuggestion: "Try downsizing the image and sending it again.",
-                httpStatusCode: statusCode?.rawValue,
-                underlyingError: error
+                httpStatusCode: httpResponse.statusCode.rawValue,
+                underlyingError: self
             )
         )
     }
+}
 
-    static func invalidImageFormat(_ error: Error, statusCode:  HttpStatusCode?) -> PredictionsError  {
-        return .service(
+extension AWSRekognition.InvalidImageFormatException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
             .init(
                 description: "The provided image format isn't supported.",
                 recoverySuggestion: "Use a supported image format (.JPEG and .PNG) and try again.",
-                httpStatusCode: statusCode?.rawValue,
-                underlyingError: error
+                httpStatusCode: httpResponse.statusCode.rawValue,
+                underlyingError: self
             )
         )
     }
+}
 
-    static func invalidParameter(_ error: Error, statusCode:  HttpStatusCode?) -> PredictionsError  {
-        return .service(
+extension AWSRekognition.InvalidParameterException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
+        .service(
             .init(
                 description: "An input parameter violated a constraint.",
                 recoverySuggestion: "Validate your parameters before calling the API operation again.",
-                httpStatusCode: statusCode?.rawValue,
-                underlyingError: error
+                httpStatusCode: httpResponse.statusCode.rawValue,
+                underlyingError: self
             )
         )
     }
+}
 
-    static func invalidS3Object(_ error: Error, statusCode:  HttpStatusCode?) -> PredictionsError  {
+extension AWSRekognition.InvalidS3ObjectException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
         .service(
             .init(
                 description: "The number of requests exceeded your throughput limit.",
@@ -52,13 +114,17 @@ enum RekognitionCommonExceptions {
                 Check the limits here:
                 https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_rekognition
                 """,
-                httpStatusCode: statusCode?.rawValue,
-                underlyingError: error
+                httpStatusCode: httpResponse.statusCode.rawValue,
+                underlyingError: self
             )
         )
     }
+}
 
-    static func provisionedThroughputExceeded(_ error: Error, statusCode:  HttpStatusCode?) -> PredictionsError  {
+extension AWSRekognition.ProvisionedThroughputExceededException: PredictionsErrorConvertible {
+    var fallbackDescription: String { "" }
+
+    var predictionsError: PredictionsError {
         .service(
             .init(
                 description: "The number of requests exceeded your throughput limit.",
@@ -67,8 +133,8 @@ enum RekognitionCommonExceptions {
                 Check the limits here:
                 https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_rekognition
                 """,
-                httpStatusCode: statusCode?.rawValue,
-                underlyingError: error
+                httpStatusCode: httpResponse.statusCode.rawValue,
+                underlyingError: self
             )
         )
     }

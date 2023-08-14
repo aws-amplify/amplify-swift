@@ -44,8 +44,8 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
             default: throw PredictionsError.unknown("Missing respose", "", nil)
             }
 
-        } catch let error as SynthesizeSpeechOutputError {
-            throw ServiceErrorMapping.synthesizeSpeech.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }
