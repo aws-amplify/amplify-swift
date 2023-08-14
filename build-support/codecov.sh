@@ -1727,6 +1727,8 @@ then
       || echo ''
   fi
 
+  say "  --> network: $network"
+
   if echo "$network" | grep -m1 '\(.c\.cpp\|.cxx\|.h\|.hpp\|.m\|.swift\|.vala\)$' 1>/dev/null;
   then
     # skip brackets
@@ -1820,8 +1822,8 @@ else
   say "    ${e}query:${x} $query"
 
   # Full query (to display on terminal output)
-  query=$(echo "package=$package-$VERSION&token=$token&$query" | tr -d ' ')
   queryNoToken=$(echo "package=$package-$VERSION&token=<hidden>&$query" | tr -d ' ')
+  query=$(echo "package=$package-$VERSION&token=$token&$query" | tr -d ' ')
 
   if [ "$ft_s3" = "1" ];
   then

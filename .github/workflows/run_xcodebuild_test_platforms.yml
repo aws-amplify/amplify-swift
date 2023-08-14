@@ -48,7 +48,7 @@ jobs:
         if: ${{ inputs.submit_coverage_report == true }}
         shell: bash
         run: |
-          build-support/codecov.sh -F '${{ inputs.coverage_flags }}' -J '^${{ env.SCHEME }}$'
+          build-support/codecov.sh -F '${{ inputs.coverage_flags }}' -z Coverage.lcov
 
   # test-macOS:
   #   name: ${{ inputs.scheme }} macOS Tests
