@@ -78,13 +78,14 @@ extension AWSLocation.ValidationException: GeoErrorConvertible {
 extension AWSClientRuntime.UnknownAWSHTTPServiceError: GeoErrorConvertible {
     var fallbackDescription: String { "" }
 
-    var authError: AuthError {
+    var geoError: Geo.Error {
         .unknown(
             """
             Unknown service error occured with:
             - status: \(httpResponse.statusCode)
             - message: \(message ?? fallbackDescription)
             """,
+            "",
             self
         )
     }

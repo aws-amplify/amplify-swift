@@ -97,9 +97,14 @@ extension AWSLocationGeoPlugin {
                                  country: $0.country)
             }
             return places
+        } catch let error as GeoErrorConvertible {
+            throw error.geoError
         } catch {
-            let geoError = GeoErrorHelper.mapAWSLocationError(error)
-            throw geoError
+            throw Geo.Error.unknown(
+                error.localizedDescription,
+                "See underlying error.",
+                error
+            )
         }
     }
 
@@ -167,9 +172,14 @@ extension AWSLocationGeoPlugin {
                                  country: $0.country)
             }
             return places
+        } catch let error as GeoErrorConvertible {
+            throw error.geoError
         } catch {
-            let geoError = GeoErrorHelper.mapAWSLocationError(error)
-            throw geoError
+            throw Geo.Error.unknown(
+                error.localizedDescription,
+                "See underlying error.",
+                error
+            )
         }
     }
 
