@@ -46,10 +46,4 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     override func tearDown() async throws {
         await Amplify.reset()
     }
-    
-    func waitForOperationToFinish(_ operation: AsynchronousOperation) {
-        while !operation.isFinished {
-            Thread.sleep(forTimeInterval: 0.2)
-        }
-    }
 }
