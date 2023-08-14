@@ -14,6 +14,8 @@ enum AuthenticationError: Error {
 }
 
 extension AuthenticationError: AuthErrorConvertible {
+    var fallbackDescription: String { "" }
+
     var authError: AuthError {
         switch self {
         case .configuration(let message):

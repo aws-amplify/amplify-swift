@@ -16,6 +16,8 @@ enum SignOutError: Error {
 }
 
 extension SignOutError: AuthErrorConvertible {
+    var fallbackDescription: String { "" }
+
     var authError: AuthError {
         switch self {
         case .userCancelled:

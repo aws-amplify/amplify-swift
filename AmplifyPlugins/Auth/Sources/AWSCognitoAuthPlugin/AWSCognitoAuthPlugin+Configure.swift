@@ -88,7 +88,7 @@ extension AWSCognitoAuthPlugin {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
                 region: userPoolConfig.region,
-                endpointResolver: userPoolConfig.endpoint?.resolver,
+                serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver),
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
             )
 

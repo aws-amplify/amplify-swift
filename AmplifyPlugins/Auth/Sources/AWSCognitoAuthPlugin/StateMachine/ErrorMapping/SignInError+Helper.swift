@@ -15,40 +15,25 @@ extension SignInError {
     var isUserNotConfirmed: Bool {
         switch self {
         case .service(error: let serviceError):
-
-            if let internalError: InitiateAuthOutputError = serviceError.internalAWSServiceError(),
-               case .userNotConfirmedException = internalError {
-                return true
-            }
-
-            if let internalError: RespondToAuthChallengeOutputError = serviceError.internalAWSServiceError(),
-               case .userNotConfirmedException = internalError {
-                return true
-            }
-        default: break
+            return serviceError is AWSCognitoIdentityProvider.UserNotConfirmedException
+        default:
+            return false
         }
-        return false
     }
 
     var isResetPassword: Bool {
         switch self {
         case .service(error: let serviceError):
-            if let internalError: InitiateAuthOutputError = serviceError.internalAWSServiceError(),
-               case .passwordResetRequiredException = internalError {
-                return true
-            }
-
-            if let internalError: RespondToAuthChallengeOutputError = serviceError.internalAWSServiceError(),
-               case .passwordResetRequiredException = internalError {
-                return true
-            }
-        default: break
+            return serviceError is AWSCognitoIdentityProvider.PasswordResetRequiredException
+        default:
+            return false
         }
-        return false
     }
 }
 
 extension SignInError: AuthErrorConvertible {
+    var fallbackDescription: String { "" }
+
     var authError: AuthError {
         switch self {
         case .configuration(let message):
@@ -77,6 +62,7 @@ extension SignInError: AuthErrorConvertible {
 }
 
 extension HostedUIError: AuthErrorConvertible {
+    var fallbackDescription: String { "" }
 
     var authError: AuthError {
         switch self {

@@ -19,6 +19,8 @@ enum AuthorizationError: Error {
 }
 
 extension AuthorizationError: AuthErrorConvertible {
+    var fallbackDescription: String { "" }
+
     var authError: AuthError {
         switch self {
         case .sessionExpired:

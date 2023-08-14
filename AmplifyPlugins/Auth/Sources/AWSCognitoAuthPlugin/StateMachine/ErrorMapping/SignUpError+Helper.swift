@@ -9,6 +9,8 @@ import Foundation
 import Amplify
 
 extension SignUpError: AuthErrorConvertible {
+    var fallbackDescription: String { "" }
+
     var authError: AuthError {
         switch self {
         case .invalidState(message: let message):
