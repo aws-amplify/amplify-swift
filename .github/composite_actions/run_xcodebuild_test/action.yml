@@ -61,6 +61,6 @@ runs:
         cd Build/Build/ProfileData
         cd $(ls -d */|head -n 1)
         pathCoverage=Build/Build/ProfileData/${PWD##*/}/Coverage.profdata
-        cd ../../../../
-        xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage Build/Build/Products/Debug-${{ inputs.sdk }}/$SCHEME.o > Coverage.lcov
+        cd ${{ github.workspace }}
+        xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage Build/Build/Products/Debug-${{ inputs.sdk }}/$SCHEME.o > $SCHEME-Coverage.lcov
       shell: bash

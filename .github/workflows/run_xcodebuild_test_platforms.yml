@@ -11,16 +11,11 @@ on:
         required: false
         type: number
         default: 30
-      submit_coverage_report:
+      generate_coverage_report:
         description: 'Whether to generate and report code coverage'
         required: false
         type: boolean
         default: false
-      coverage_flags:
-        description: 'What flag to include in the coverage report, separated by commas'
-        required: false
-        type: string
-        default: 'tests'
 
 env:
   SCHEME: ${{ inputs.scheme }}
@@ -43,12 +38,16 @@ jobs:
           scheme: ${{ env.SCHEME }}
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
-          generate_coverage: ${{ inputs.submit_coverage_report }}
-      - name: Upload Coverage report to Codecov
-        if: ${{ inputs.submit_coverage_report == true }}
-        shell: bash
-        run: |
-          build-support/codecov.sh -F '${{ inputs.coverage_flags }}'
+          generate_coverage: ${{ inputs.generate_coverage_report }}
+      - name: Upload Report File
+        if: ${{ inputs.generate_coverage_report == true }}
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
+        with:
+          name: ${{ env.SCHEME }}-Coverage-${{ github.sha }}
+          path: ${{ github.workspace }}/${{ env.SCHEME }}-Coverage.lcov
+          if-no-files-found: error
+          retention-days: 1
+
 
   test-macOS:
     name: ${{ inputs.scheme }} macOS Tests

@@ -26,29 +26,53 @@ jobs:
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
-      submit_coverage_report: false
+      generate_coverage_report: false
 
   unit-tests-with-coverage:
-    name: ${{ matrix.scheme.name }} Unit Tests
+    name: ${{ matrix.scheme }} Unit Tests
     strategy:
       fail-fast: false
       matrix:
         scheme: [
-          { name: Amplify, flags: 'Amplify,unit_tests' },
-          { name: AWSPluginsCore, flags: 'AWSPluginsCore,unit_tests' },
-          { name: AWSAPIPlugin, flags: 'API_plugin_unit_test,unit_tests' },
-          { name: AWSCloudWatchLoggingPlugin, flags: 'Logging_plugin_unit_test,unit_tests' },
-          { name: AWSCognitoAuthPlugin, flags: 'Auth_plugin_unit_test,unit_tests' },
-          { name: AWSDataStorePlugin, flags: 'DataStore_plugin_unit_test,unit_tests' },
-          { name: AWSLocationGeoPlugin, flags: 'Geo_plugin_unit_test,unit_tests' },
-          { name: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
-          { name: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
-          { name: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
-          { name: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
-          { name: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin
         ]
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:
-      scheme: ${{ matrix.scheme.name }}
-      submit_coverage_report: true
-      coverage_flags: ${{ matrix.scheme.flags }}
+      scheme: ${{ matrix.scheme }}
+      generate_coverage_report: true
+
+  report-coverage:
+    name: ${{ matrix.file.scheme }} Coverage Report
+    needs: [unit-tests-with-coverage]
+    strategy:
+      fail-fast: false
+      matrix:
+        file: [
+          { scheme: Amplify, flags: 'Amplify,unit_tests' },
+          { scheme: AWSPluginsCore, flags: 'AWSPluginsCore,unit_tests' },
+          { scheme: AWSAPIPlugin, flags: 'API_plugin_unit_test,unit_tests' },
+          { scheme: AWSCloudWatchLoggingPlugin, flags: 'Logging_plugin_unit_test,unit_tests' },
+          { scheme: AWSCognitoAuthPlugin, flags: 'Auth_plugin_unit_test,unit_tests' },
+          { scheme: AWSDataStorePlugin, flags: 'DataStore_plugin_unit_test,unit_tests' },
+          { scheme: AWSLocationGeoPlugin, flags: 'Geo_plugin_unit_test,unit_tests' },
+          { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
+          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
+          { scheme: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
+        ]
+    uses: ./.github/workflows/upload_coverage_report.yml
+    with:
+      scheme: ${{ matrix.file.scheme }}
+      flags: ${{ matrix.file.flags }}
