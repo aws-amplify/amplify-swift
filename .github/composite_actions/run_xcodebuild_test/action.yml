@@ -47,7 +47,7 @@ runs:
         coverageFlags=""
         if [ "${{ inputs.generate_coverage }}" == "true" ]; then
           echo "Code Coverage is enabled!"
-          coverageFlags+="-derivedDataPath Build/ -clonedSourcePackagesDirPath "~/Library/Developer/Xcode/DerivedData/$SCHEME" -enableCodeCoverage YES build test"
+          coverageFlags+="-derivedDataPath Build/ -clonedSourcePackagesDirPath "~/Library/Developer/Xcode/DerivedData/$SCHEME" -enableCodeCoverage YES"
         fi
         xcode-select -p
         xcodebuild -version
@@ -62,5 +62,5 @@ runs:
         cd $(ls -d */|head -n 1)
         pathCoverage=Build/Build/ProfileData/${PWD##*/}/Coverage.profdata
         cd ../../../../
-        xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage Build/Build/Products/Debug-iphonesimulator/$SCHEME.o > Coverage.lcov
+        xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage Build/Build/Products/Debug-${{ inputs.sdk }}/$SCHEME.o > Coverage.lcov
       shell: bash

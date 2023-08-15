@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       scheme:
-        description: 'The scheme to run the unit tests'
+        description: 'The scheme to run the tests'
         required: true
         type: string
       timeout-minutes:
@@ -20,7 +20,7 @@ on:
         description: 'What flag to include in the coverage report, separated by commas'
         required: false
         type: string
-        default: 'unittests'
+        default: 'tests'
 
 env:
   SCHEME: ${{ inputs.scheme }}
@@ -46,9 +46,9 @@ jobs:
           generate_coverage: ${{ inputs.submit_coverage_report }}
       - name: Upload Coverage report to Codecov
         if: ${{ inputs.submit_coverage_report == true }}
-        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
-        with:
-          flags: ${{ inputs.coverage_flags }}
+        shell: bash
+        run: |
+          build-support/codecov.sh -F '${{ inputs.coverage_flags }}'
 
   test-macOS:
     name: ${{ inputs.scheme }} macOS Tests
