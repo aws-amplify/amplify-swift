@@ -34,9 +34,18 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
                 )
             }
 
-            let textToSpeechResult = Predictions.Convert.TextToSpeech.Result(
-                audioData: speech.toBytes().getData()
-            )
+            switch speech {
+            case .data(let data?):
+                let textToSpeechResult = Predictions.Convert.TextToSpeech.Result(
+                    audioData: data
+                )
+                return textToSpeechResult
+            default:
+                // TODO: throw an applicable error here
+                throw PredictionsError.unknown("Missing response", "", nil)
+            }
+
+
             return textToSpeechResult
         } catch let error as SynthesizeSpeechOutputError {
             throw ServiceErrorMapping.synthesizeSpeech.map(error)
