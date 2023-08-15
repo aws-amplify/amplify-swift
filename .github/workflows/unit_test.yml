@@ -34,20 +34,21 @@ jobs:
       fail-fast: false
       matrix:
         scheme: [
-          Amplify,
-          AWSPluginsCore,
-          AWSAPIPlugin,
-          AWSCloudWatchLoggingPlugin,
-          AWSCognitoAuthPlugin,
-          AWSDataStorePlugin,
-          AWSLocationGeoPlugin,
-          AWSPredictionsPlugin,
-          AWSPinpointAnalyticsPlugin,
-          AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin,
-          CoreMLPredictionsPlugin
+          { name: Amplify, flags: Amplify,unit_tests },
+          { name: AWSPluginsCore, flags: AWSPluginsCore,unit_tests },
+          { name: AWSAPIPlugin, flags: API_plugin_unit_test,unit_tests },
+          { name: AWSCloudWatchLoggingPlugin, flags: Logging_plugin_unit_test,unit_tests },
+          { name: AWSCognitoAuthPlugin, flags: Auth_plugin_unit_test,unit_tests },
+          { name: AWSDataStorePlugin, flags: DataStore_plugin_unit_test,unit_tests },
+          { name: AWSLocationGeoPlugin, flags: Geo_plugin_unit_test,unit_tests },
+          { name: AWSPredictionsPlugin, flags: Predictions_plugin_unit_test,unit_tests },
+          { name: AWSPinpointAnalyticsPlugin, flags: Analytics_plugin_unit_test,unit_tests },
+          { name: AWSPinpointPushNotificationsPlugin, flags: PushNotifications_plugin_unit_test,unit_tests },
+          { name: AWSS3StoragePlugin, flags: Storage_plugin_unit_test,unit_tests },
+          { name: CoreMLPredictionsPlugin, flags: CoreMLPredictions_plugin_unit_test,unit_tests }
         ]
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:
-      scheme: ${{ matrix.scheme }}
+      scheme: ${{ matrix.scheme.name }}
       submit_coverage_report: true
+      coverage_flags: ${{ matrix.scheme.flags }}

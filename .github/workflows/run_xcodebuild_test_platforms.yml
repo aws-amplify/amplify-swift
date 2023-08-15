@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       scheme:
-        description: 'The scheme to run the unit tests'
+        description: 'The scheme to run the tests'
         required: true
         type: string
       timeout-minutes:
@@ -20,7 +20,7 @@ on:
         description: 'What flag to include in the coverage report, separated by commas'
         required: false
         type: string
-        default: 'unittests'
+        default: 'tests'
 
 env:
   SCHEME: ${{ inputs.scheme }}
