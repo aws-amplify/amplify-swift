@@ -9,7 +9,7 @@ let platforms: [SupportedPlatform] = [
     .watchOS(.v7)
 ]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.13.0"),
+    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.22.0"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.0.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.13.2"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
