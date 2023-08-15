@@ -21,10 +21,10 @@ class IAMAuthInterceptor: AuthInterceptorAsync {
                                                            RealtimeProviderConstants.amzDate.lowercased(),
                                                            RealtimeProviderConstants.iamSecurityTokenKey.lowercased()]
 
-    let authProvider: CredentialsProvider
+    let authProvider: CredentialsProviding
     let region: AWSRegionType
 
-    init(_ authProvider: CredentialsProvider, region: AWSRegionType) {
+    init(_ authProvider: CredentialsProviding, region: AWSRegionType) {
         self.authProvider = authProvider
         self.region = region
     }
@@ -60,8 +60,14 @@ class IAMAuthInterceptor: AuthInterceptorAsync {
         guard var urlComponents = URLComponents(url: request.url, resolvingAgainstBaseURL: false) else {
             return request
         }
-        let headerQuery = URLQueryItem(name: RealtimeProviderConstants.header, value: base64Auth)
-        let payloadQuery = URLQueryItem(name: RealtimeProviderConstants.payload, value: payloadBase64)
+        let headerQuery = Foundation.URLQueryItem(
+            name: RealtimeProviderConstants.header,
+            value: base64Auth
+        )
+        let payloadQuery = Foundation.URLQueryItem(
+            name: RealtimeProviderConstants.payload,
+            value: payloadBase64
+        )
         urlComponents.queryItems = [headerQuery, payloadQuery]
         guard let signedUrl = urlComponents.url else {
             return request
