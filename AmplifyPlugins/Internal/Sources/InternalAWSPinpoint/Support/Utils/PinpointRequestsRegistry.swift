@@ -69,7 +69,9 @@ private struct CustomPinpointHttpClientEngine: HttpClientEngine {
         let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
         headers.update(name: userAgentHeader,
                        value: "\(currentUserAgent)\(userAgentSuffix)")
-        request.headers = headers
+
+        // FIXME: request.headers is now get only
+        /* request.headers = headers */
 
         await PinpointRequestsRegistry.shared.unregisterSources(for: pinpointApi)
         return try await httpClientEngine.execute(request: request)
