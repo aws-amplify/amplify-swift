@@ -31,8 +31,9 @@ extension AWSLocationGeoPlugin {
         let credentialsProvider = authService.getCredentialsProvider()
         let region = configuration.regionName
         let serviceConfiguration = try LocationClient.LocationClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: region)
+            region: region,
+            credentialsProvider: credentialsProvider
+        )
 
         let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
