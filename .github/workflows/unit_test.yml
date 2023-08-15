@@ -53,7 +53,7 @@ jobs:
       generate_coverage_report: true
 
   report-coverage:
-    name: Report Coverage
+    name: ${{ matrix.file.scheme }} Coverage Report
     needs: [unit-tests-with-coverage]
     strategy:
       fail-fast: false
