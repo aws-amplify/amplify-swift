@@ -48,52 +48,52 @@ jobs:
         if: ${{ inputs.submit_coverage_report == true }}
         shell: bash
         run: |
-          build-support/codecov.sh -F '${{ inputs.coverage_flags }}' -z Coverage.lcov
+          build-support/codecov.sh -F '${{ inputs.coverage_flags }}'
 
-  # test-macOS:
-  #   name: ${{ inputs.scheme }} macOS Tests
-  #   runs-on: macos-13
-  #   timeout-minutes: ${{ inputs.timeout-minutes }}
-  #   steps:
-  #     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
-  #       with:
-  #         persist-credentials: false
-  #     - name: Run macOS Test Suite
-  #       uses: ./.github/composite_actions/run_xcodebuild_test
-  #       with:
-  #         scheme: ${{ env.SCHEME }}
-  #         destination: platform=macOS,arch=x86_64
-  #         sdk: macosx
-  #         xcode_path: '/Applications/Xcode_14.3.app'
+  test-macOS:
+    name: ${{ inputs.scheme }} macOS Tests
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Run macOS Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=macOS,arch=x86_64
+          sdk: macosx
+          xcode_path: '/Applications/Xcode_14.3.app'
 
-  # test-tvOS:
-  #   name: ${{ inputs.scheme }} tvOS Tests
-  #   runs-on: macos-13
-  #   timeout-minutes: ${{ inputs.timeout-minutes }}
-  #   steps:
-  #     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
-  #       with:
-  #         persist-credentials: false
-  #     - name: Run tvOS Test Suite
-  #       uses: ./.github/composite_actions/run_xcodebuild_test
-  #       with:
-  #         scheme: ${{ env.SCHEME }}
-  #         destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
-  #         sdk: appletvsimulator
-  #         xcode_path: '/Applications/Xcode_14.3.app'
+  test-tvOS:
+    name: ${{ inputs.scheme }} tvOS Tests
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Run tvOS Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
+          sdk: appletvsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
 
-  # test-watchOS:
-  #   name: ${{ inputs.scheme }} watchOS Tests
-  #   runs-on: macos-13
-  #   timeout-minutes: ${{ inputs.timeout-minutes }}
-  #   steps:
-  #     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
-  #       with:
-  #         persist-credentials: false
-  #     - name: Run watchOS Test Suite
-  #       uses: ./.github/composite_actions/run_xcodebuild_test
-  #       with:
-  #         scheme: ${{ env.SCHEME }}
-  #         destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
-  #         sdk: watchsimulator
-  #         xcode_path: '/Applications/Xcode_14.3.app'
+  test-watchOS:
+    name: ${{ inputs.scheme }} watchOS Tests
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Run watchOS Test Suite
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
+          sdk: watchsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'

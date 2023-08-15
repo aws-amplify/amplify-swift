@@ -15,18 +15,18 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
-  # unit-tests-without-coverage:
-  #   name: ${{ matrix.scheme }} Unit Tests
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       scheme: [
-  #         InternalAWSPinpointUnitTests
-  #       ]
-  #   uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
-  #   with:
-  #     scheme: ${{ matrix.scheme }}
-  #     submit_coverage_report: false
+  unit-tests-without-coverage:
+    name: ${{ matrix.scheme }} Unit Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          InternalAWSPinpointUnitTests
+        ]
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: ${{ matrix.scheme }}
+      submit_coverage_report: false
 
   unit-tests-with-coverage:
     name: ${{ matrix.scheme }} Unit Tests
@@ -34,18 +34,18 @@ jobs:
       fail-fast: false
       matrix:
         scheme: [
-          # Amplify,
-          # AWSPluginsCore,
-          # AWSAPIPlugin,
-          # AWSCloudWatchLoggingPlugin,
-          # AWSCognitoAuthPlugin,
-          # AWSDataStorePlugin,
-          # AWSLocationGeoPlugin,
-          # AWSPredictionsPlugin,
-          # AWSPinpointAnalyticsPlugin,
-          # AWSPinpointPushNotificationsPlugin,
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
           AWSS3StoragePlugin,
-          # CoreMLPredictionsPlugin
+          CoreMLPredictionsPlugin
         ]
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:

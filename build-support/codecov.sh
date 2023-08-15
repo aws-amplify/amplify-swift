@@ -1727,8 +1727,6 @@ then
       || echo ''
   fi
 
-  say "  --> network: $network"
-
   if echo "$network" | grep -m1 '\(.c\.cpp\|.cxx\|.h\|.hpp\|.m\|.swift\|.vala\)$' 1>/dev/null;
   then
     # skip brackets
