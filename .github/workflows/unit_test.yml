@@ -29,7 +29,7 @@ jobs:
       generate_coverage_report: false
 
   unit-tests-with-coverage:
-    name: ${{ matrix.scheme.name }} Unit Tests
+    name: ${{ matrix.scheme }} Unit Tests
     strategy:
       fail-fast: false
       matrix:
@@ -53,37 +53,26 @@ jobs:
       generate_coverage_report: true
 
   report-coverage:
+    name: Report Coverage
     needs: [unit-tests-with-coverage]
-    runs-on: macos-13
     strategy:
       fail-fast: false
       matrix:
         file: [
-          { prefix: Amplify, flags: 'Amplify,unit_tests' },
-          { prefix: AWSPluginsCore, flags: 'AWSPluginsCore,unit_tests' },
-          { prefix: AWSAPIPlugin, flags: 'API_plugin_unit_test,unit_tests' },
-          { prefix: AWSCloudWatchLoggingPlugin, flags: 'Logging_plugin_unit_test,unit_tests' },
-          { prefix: AWSCognitoAuthPlugin, flags: 'Auth_plugin_unit_test,unit_tests' },
-          { prefix: AWSDataStorePlugin, flags: 'DataStore_plugin_unit_test,unit_tests' },
-          { prefix: AWSLocationGeoPlugin, flags: 'Geo_plugin_unit_test,unit_tests' },
-          { prefix: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
-          { prefix: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
-          { prefix: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
-          { prefix: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
-          { prefix: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
+          { scheme: Amplify, flags: 'Amplify,unit_tests' },
+          { scheme: AWSPluginsCore, flags: 'AWSPluginsCore,unit_tests' },
+          { scheme: AWSAPIPlugin, flags: 'API_plugin_unit_test,unit_tests' },
+          { scheme: AWSCloudWatchLoggingPlugin, flags: 'Logging_plugin_unit_test,unit_tests' },
+          { scheme: AWSCognitoAuthPlugin, flags: 'Auth_plugin_unit_test,unit_tests' },
+          { scheme: AWSDataStorePlugin, flags: 'DataStore_plugin_unit_test,unit_tests' },
+          { scheme: AWSLocationGeoPlugin, flags: 'Geo_plugin_unit_test,unit_tests' },
+          { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
+          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
+          { scheme: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
         ]
-    steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
-        with:
-          persist-credentials: false
-
-      - name: Retrieve Coverage file
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a #v3.0.2
-        with:
-          name: ${{ matrix.file.prefix }}-Coverage-${{ github.sha }}
-          path: ${{ github.workspace }}
-
-      - name: Upload report to Codecov
-        shell: bash
-        run: |
-          build-support/codecov.sh -F '${{ matrix.file.flags }}'
+    uses: ./.github/workflows/upload_coverage_report.yml
+    with:
+      scheme: ${{ matrix.file.scheme }}
+      flags: ${{ matrix.file.flags }}
