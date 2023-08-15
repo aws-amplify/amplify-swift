@@ -31,7 +31,9 @@ extension UserAgentSuffixAppender: HttpClientEngine {
             name: userAgentHeader,
             value: "\(currentUserAgent) \(suffix)"
         )
-        request.headers = headers
+        // TODO: fix this
+        // Cannot assign to property: 'headers' is a get-only property
+        /* request.headers = headers */
         return try await target.execute(request: request)
     }
 }
