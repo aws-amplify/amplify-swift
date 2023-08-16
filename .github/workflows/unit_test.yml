@@ -76,3 +76,15 @@ jobs:
     with:
       scheme: ${{ matrix.file.scheme }}
       flags: ${{ matrix.file.flags }}
+
+  unit-test-pass-confirmation:
+    name: Confirm Passing Unit Tests
+    if: ${{ !cancelled() }}
+    needs: [
+      unit-tests-with-coverage,
+      unit-tests-without-coverage
+    ]
+    env:
+      FAILED: ${{ contains(needs.*.result, 'failure') }}
+    steps:
+      - run: exit $FAILED
