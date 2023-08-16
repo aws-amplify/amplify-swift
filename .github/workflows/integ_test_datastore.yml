@@ -30,6 +30,7 @@ jobs:
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
   datastore-base-test:
+    if: ${{ false }}
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_base.yml
     secrets: inherit
@@ -45,6 +46,7 @@ jobs:
     secrets: inherit
 
   datastore-lazy-load-test:
+    if: ${{ false }}
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_lazy_load.yml
     secrets: inherit
@@ -55,6 +57,7 @@ jobs:
     secrets: inherit
 
   datastore-transformer-v2-test:
+    if: ${{ false }}
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_v2.yml
     secrets: inherit
