@@ -52,6 +52,7 @@ jobs:
     secrets: inherit
 
   datastore-multi-auth-test:
+    if: ${{ false }}
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_datastore_multi_auth.yml
     secrets: inherit

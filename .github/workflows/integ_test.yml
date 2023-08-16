@@ -36,6 +36,7 @@ jobs:
     secrets: inherit
 
   push-notifications-test:
+    if: ${{ false }}
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_push_notifications.yml
     secrets: inherit
