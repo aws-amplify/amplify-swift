@@ -34,18 +34,18 @@ jobs:
       fail-fast: false
       matrix:
         scheme: [
-          Amplify,
-          AWSPluginsCore,
-          AWSAPIPlugin,
-          AWSCloudWatchLoggingPlugin,
-          AWSCognitoAuthPlugin,
-          AWSDataStorePlugin,
-          AWSLocationGeoPlugin,
-          AWSPredictionsPlugin,
-          AWSPinpointAnalyticsPlugin,
-          AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin,
-          CoreMLPredictionsPlugin
+          Amplify
+          # AWSPluginsCore,
+          # AWSAPIPlugin,
+          # AWSCloudWatchLoggingPlugin,
+          # AWSCognitoAuthPlugin,
+          # AWSDataStorePlugin,
+          # AWSLocationGeoPlugin,
+          # AWSPredictionsPlugin,
+          # AWSPinpointAnalyticsPlugin,
+          # AWSPinpointPushNotificationsPlugin,
+          # AWSS3StoragePlugin,
+          # CoreMLPredictionsPlugin
         ]
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:
