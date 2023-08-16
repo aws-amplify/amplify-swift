@@ -78,6 +78,7 @@ jobs:
       flags: ${{ matrix.file.flags }}
 
   unit-test-pass-confirmation:
+    runs-on: ubuntu-latest
     name: Confirm Passing Unit Tests
     if: ${{ !cancelled() }}
     needs: [
