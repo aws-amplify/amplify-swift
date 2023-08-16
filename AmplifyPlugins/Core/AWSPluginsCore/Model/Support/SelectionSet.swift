@@ -129,6 +129,7 @@ extension SelectionSet {
                 result.append(innerSelectionSetField.stringValue(indentSize: indentSize + 2))
             }
             result.append(doubleIndent + "}")
+            result.append(doubleIndent + "nextToken")
             result.append(indent + "}")
         case .value:
             guard let name = value.name else {

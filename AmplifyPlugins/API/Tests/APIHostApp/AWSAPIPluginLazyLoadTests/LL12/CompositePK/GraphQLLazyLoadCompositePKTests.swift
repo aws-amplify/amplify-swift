@@ -40,8 +40,8 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
             [parent.children, parent.implicitChildren, parent.strangeChildren, parent.childrenSansBelongsTo]
         })
         let expectedDocument = """
-        query GetCompositePKParent($content: String!, $customId: ID!) {
-          getCompositePKParent(content: $content, customId: $customId) {
+        query GetCompositePKParent {
+          getCompositePKParent(content: "content", customId: "\(savedParent.customId)") {
             customId
             content
             createdAt
@@ -60,6 +60,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
                 }
                 __typename
               }
+              nextToken
             }
             implicitChildren {
               items {
@@ -74,6 +75,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
                 }
                 __typename
               }
+              nextToken
             }
             strangeChildren {
               items {
@@ -88,6 +90,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
                 }
                 __typename
               }
+              nextToken
             }
             childrenSansBelongsTo {
               items {
@@ -99,6 +102,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
                 updatedAt
                 __typename
               }
+              nextToken
             }
           }
         }

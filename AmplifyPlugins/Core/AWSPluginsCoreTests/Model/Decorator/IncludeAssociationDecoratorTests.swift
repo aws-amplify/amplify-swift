@@ -165,6 +165,7 @@ class IncludeAssociationDecoratorTests: XCTestCase {
                 }
                 __typename
               }
+              nextToken
             }
             """
         let selectionSet = createSelectionSet(for: Post.self, includes: { post in [post.comments] })
@@ -217,6 +218,7 @@ class IncludeAssociationDecoratorTests: XCTestCase {
                 }
                 __typename
               }
+              nextToken
             }
             """
         let selectionSet = createSelectionSet(for: Book.self, includes: { book in
@@ -271,6 +273,7 @@ class IncludeAssociationDecoratorTests: XCTestCase {
                 }
                 __typename
               }
+              nextToken
             }
             """
         let selectionSet = createSelectionSet(for: Author.self, includes: { author in
@@ -310,6 +313,7 @@ class IncludeAssociationDecoratorTests: XCTestCase {
                 }
                 __typename
               }
+              nextToken
             }
             """
         let selectionSet = createSelectionSet(for: Author.self, includes: { author in

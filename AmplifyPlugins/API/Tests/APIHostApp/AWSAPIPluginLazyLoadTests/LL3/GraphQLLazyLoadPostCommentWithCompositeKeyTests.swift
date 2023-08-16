@@ -104,6 +104,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
                   }
                   __typename
                 }
+                nextToken
               }
             }
             __typename
@@ -166,6 +167,28 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
         let comments = queriedPost.comments!
         assertList(comments, state: .isLoaded(count: 1))
         assertLazyReference(comments.first!._post, state: .loaded(model: createdPost))
+    }
+    
+    func testListPostsThenFetchComments() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels())
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        
+        let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
+        assertList(queriedPosts, state: .isLoaded(count: 1))
+        var comments = queriedPosts.first!.comments!
+        assertList(comments,
+                   state: .isNotLoaded(associatedIdentifiers: [post.id, post.title], associatedFields: ["post"]))
+        try await comments.fetch()
+        var allComments = comments.elements
+        while comments.hasNextPage() {
+            let nextPage = try await comments.getNextPage()
+            allComments.append(contentsOf: nextPage.elements)
+            comments = nextPage
+        }
+        XCTAssertEqual(allComments.count, 1)
     }
     
     func testListPostsListComments() async throws {

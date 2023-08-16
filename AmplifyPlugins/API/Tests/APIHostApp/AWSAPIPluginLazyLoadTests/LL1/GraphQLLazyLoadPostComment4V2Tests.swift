@@ -100,6 +100,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                   }
                   __typename
                 }
+                nextToken
               }
             }
             __typename
@@ -161,6 +162,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                   }
                   __typename
                 }
+                nextToken
               }
             }
             __typename
