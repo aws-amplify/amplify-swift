@@ -233,6 +233,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let post1 = Post(title: "title", content: "content", createdAt: .now())
         let post2 = Post(title: "title", content: "content", createdAt: .now().add(value: 1, to: .second))
         let snapshotWithSavedPost = expectation(description: "query snapshot with saved post")
+        snapshotWithSavedPost.expectedFulfillmentCount = 2
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, sort: .ascending(Post.keys.createdAt)))
         .sink { completed in
             switch completed {
@@ -549,11 +550,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         // (2) Update models to move them into different orders
         var postNFromA = postA
         postNFromA.title = "n"
-        try await savePostAndWaitForSync(postNFromA)
+        let postNFromAExpectation = expectation(description: "postNFromAExpectation")
+        try await savePostAndWaitForSync(postNFromA, postSyncedExpctation: postNFromAExpectation)
 
         var postBFromZ = postZ
         postBFromZ.title = "b"
-        try await savePostAndWaitForSync(postBFromZ)
+        let postBFromZExpectation = expectation(description: "postBFromZExpectation")
+        try await savePostAndWaitForSync(postBFromZ, postSyncedExpctation: postBFromZExpectation)
 
         // (3) Delete models
         try await deletePostAndWaitForSync(postM)
@@ -671,6 +674,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     func savePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
         // Wait for a fulfillment count of 2 (first event due to the locally source mutation saved to the local store
         // and the second event due to the subscription event received from the remote store)
+
         let receivedPost = postSyncedExpctation ?? {
             let e = expectation(description: "received Post")
             e.expectedFulfillmentCount = 2
