@@ -74,6 +74,6 @@ class DataStoreStressBaseTest: XCTestCase {
 
         try await Amplify.DataStore.start()
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [eventReceived], timeout: networkTimeout)
     }
 }

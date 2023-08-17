@@ -30,13 +30,13 @@ class LocalStoreIntegrationTestBase: XCTestCase {
     }
 
     override func tearDown() async throws {
-        let clearComplete = asyncExpectation(description: "clear completed")
+        let clearComplete = expectation(description: "clear completed")
         
         Task {
             try await Amplify.DataStore.clear()
             await clearComplete.fulfill()
         }
-        await waitForExpectations([clearComplete], timeout: 5)
+        await fulfillment(of: [clearComplete], timeout: 5)
         await Amplify.reset()
     }
 

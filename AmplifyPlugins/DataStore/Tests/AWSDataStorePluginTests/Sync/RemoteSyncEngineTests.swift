@@ -130,7 +130,20 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        await waitForExpectations(timeout: defaultAsyncWaitTimeout)
+        await fulfillment(
+            of: [
+                storageAdapterAvailable,
+                subscriptionsPaused,
+                mutationsPaused,
+                stateMutationsCleared,
+                subscriptionsInitialized,
+                subscriptionsEstablishedReceived,
+                cleanedup,
+                failureOnInitialSync,
+                retryAdviceReceivedNetworkError
+            ],
+            timeout: defaultAsyncWaitTimeout
+        )
         remoteSyncEngineSink.cancel()
         Amplify.Hub.removeListener(hubListener)
     }

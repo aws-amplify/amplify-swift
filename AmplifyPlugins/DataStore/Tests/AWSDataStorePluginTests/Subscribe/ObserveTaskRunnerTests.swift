@@ -16,26 +16,27 @@ final class ObserveTaskRunnerTests: XCTestCase {
         let runner = ObserveTaskRunner(publisher: dataStorePublisher.publisher)
         let sequence = runner.sequence
         
-        let started = asyncExpectation(description: "started")
-        let mutationEventReceived = asyncExpectation(description: "mutationEvent received",
-                                                     expectedFulfillmentCount: 5)
-        let mutationEventReceivedAfterCancel = asyncExpectation(description: "mutationEvent received", isInverted: true)
+        let started = expectation(description: "started")
+        let mutationEventReceived = expectation(description: "mutationEvent received")
+        mutationEventReceived.expectedFulfillmentCount = 5
+        let mutationEventReceivedAfterCancel = expectation(description: "mutationEvent received")
+        mutationEventReceivedAfterCancel.isInverted = true
         
         let task = Task {
             do {
-                await started.fulfill()
+                started.fulfill()
                 for try await mutationEvent in sequence {
                     if mutationEvent.id == "id" {
-                        await mutationEventReceived.fulfill()
+                        mutationEventReceived.fulfill()
                     } else {
-                        await mutationEventReceivedAfterCancel.fulfill()
+                        mutationEventReceivedAfterCancel.fulfill()
                     }
                 }
             } catch {
                 XCTFail("Unexpected error \(error)")
             }
         }
-        await waitForExpectations([started], timeout: 10.0)
+        await fulfillment(of: [started], timeout: 10.0)
         var mutationEvent = MutationEvent(id: "id",
                                           modelId: "id",
                                           modelName: "name",
@@ -46,7 +47,7 @@ final class ObserveTaskRunnerTests: XCTestCase {
         dataStorePublisher.send(input: mutationEvent)
         dataStorePublisher.send(input: mutationEvent)
         dataStorePublisher.send(input: mutationEvent)
-        await waitForExpectations([mutationEventReceived], timeout: 1.0)
+        await fulfillment(of: [mutationEventReceived], timeout: 1.0)
         
         task.cancel()
         mutationEvent = MutationEvent(id: "id2",
@@ -55,6 +56,6 @@ final class ObserveTaskRunnerTests: XCTestCase {
                                       json: "json",
                                       mutationType: .create)
         dataStorePublisher.send(input: mutationEvent)
-        await waitForExpectations([mutationEventReceivedAfterCancel], timeout: 1.0)
+        await fulfillment(of: [mutationEventReceivedAfterCancel], timeout: 1.0)
     }
 }

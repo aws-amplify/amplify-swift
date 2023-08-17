@@ -51,7 +51,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
-        wait(for: [eventsNotSaved], timeout: 5.0)
+        await fulfillment(of: [eventsNotSaved], timeout: 5.0)
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events
@@ -120,7 +120,17 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        await waitForExpectations(timeout: 5.0)
+        await fulfillment(
+            of: [
+                event1Saved,
+                event2Saved,
+                event3Saved,
+                eventsSentViaPublisher1,
+                eventsSentViaPublisher2,
+                eventsSentViaPublisher3
+            ],
+            timeout: 5.0
+        )
         queueSink.cancel()
     }
 
@@ -190,7 +200,15 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        await waitForExpectations(timeout: 5.0)
+        await fulfillment(
+            of: [
+                event1Saved,
+                event3Saved,
+                eventsSentViaPublisher1,
+                eventsSentViaPublisher3
+            ],
+            timeout: 5.0
+        )
         queueSink.cancel()
     }
 
@@ -283,7 +301,15 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        await waitForExpectations(timeout: 5.0)
+        await fulfillment(
+            of: [
+                allEventsProcessed,
+                eventsSentViaPublisher1,
+                eventsSentViaPublisher2,
+                eventsSentViaPublisher3
+            ],
+            timeout: 5.0
+        )
         queueSink.cancel()
     }
 
@@ -351,7 +377,15 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(
+            of: [
+                event1ShouldBeProcessed,
+                event2ShouldBeProcessed,
+                eventsSentViaPublisher1,
+                eventsSentViaPublisher2
+            ],
+            timeout: 1.0
+        )
 
         let event1ShouldNotBeProcessed = expectation(description: "Event 1 should not be processed")
         event1ShouldNotBeProcessed.isInverted = true
@@ -393,7 +427,15 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
         subscriptionEventsSubject.send(.mutationEvent(mutationSync))
 
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(
+            of: [
+                event1ShouldNotBeProcessed,
+                event2ShouldNotBeProcessed,
+                event3ShouldBeProcessed,
+                eventsSentViaPublisher3
+            ],
+            timeout: 1.0
+        )
         queueSink.cancel()
     }
 
@@ -437,7 +479,7 @@ extension ModelReconciliationQueueBehaviorTests {
         })
 
         subscriptionEventsSubject.send(completion: completion)
-        wait(for: [eventSentViaPublisher], timeout: 1.0)
+        await fulfillment(of: [eventSentViaPublisher], timeout: 1.0)
         queueSink.cancel()
     }
 
@@ -465,7 +507,7 @@ extension ModelReconciliationQueueBehaviorTests {
         })
 
         subscriptionEventsSubject.send(completion: completion)
-        wait(for: [eventSentViaPublisher], timeout: 1.0)
+        await fulfillment(of: [eventSentViaPublisher], timeout: 1.0)
         queueSink.cancel()
     }
 
@@ -493,7 +535,7 @@ extension ModelReconciliationQueueBehaviorTests {
         })
 
         subscriptionEventsSubject.send(completion: completion)
-        wait(for: [eventSentViaPublisher], timeout: 1.0)
+        await fulfillment(of: [eventSentViaPublisher], timeout: 1.0)
         queueSink.cancel()
     }
 }

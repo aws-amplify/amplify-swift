@@ -87,7 +87,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [completed], timeout: 1)
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
                                                                                   predicate: predicate) else {
             XCTFail("Failed to query")
@@ -361,7 +361,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -422,7 +422,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
         guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -729,7 +729,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
         XCTAssertEqual(submittedEvents.count, 2)
         // The delete mutations should be synced in reverse order (children to parent)
         XCTAssertEqual(submittedEvents[0].modelName, CommentWithCompositeKey.modelName)
@@ -797,7 +797,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
         XCTAssertEqual(submittedEvents.count, 3)
         // The delete mutations should be synced in reverse order (children to parent)
         XCTAssertEqual(submittedEvents[0].modelName, Dish.modelName)

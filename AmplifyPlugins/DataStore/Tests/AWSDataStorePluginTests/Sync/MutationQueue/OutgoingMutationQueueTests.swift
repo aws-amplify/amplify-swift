@@ -80,16 +80,17 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         try await startAmplifyAndWaitForSync()
+        _ = try await Amplify.DataStore.save(post)
 
-        let saveSuccess = asyncExpectation(description: "save success")
-        Task {
-            _ = try await Amplify.DataStore.save(post)
-            await saveSuccess.fulfill()
-        }
-        await waitForExpectations([saveSuccess], timeout: 1.0)
-        
-        
-        await waitForExpectations(timeout: 5.0, handler: nil)
+        await fulfillment(
+            of: [
+                outboxStatusOnStart,
+                outboxStatusOnMutationEnqueued,
+                outboxMutationEnqueued,
+                createMutationSent
+            ],
+            timeout: 5.0
+        )
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -142,7 +143,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         }
 
-        wait(for: [mutationEventSaved], timeout: 1.0)
+        await fulfillment(of: [mutationEventSaved], timeout: 1.0)
 
         var outboxStatusReceivedCurrentCount = 0
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
@@ -188,7 +189,15 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             try await startAmplify()
         }
 
-        await waitForExpectations(timeout: 5.0, handler: nil)
+        await fulfillment(
+            of: [
+                outboxStatusOnStart,
+                outboxStatusOnMutationEnqueued,
+                mutation1Sent,
+                mutation2Sent
+            ],
+            timeout: 5.0
+        )
         Amplify.Hub.removeListener(hubListener)
     }
 

@@ -122,7 +122,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
 
         try await Amplify.DataStore.start()
 
-        await waitForExpectations(timeout: 60)
+        await fulfillment(of: [ready, subscriptionsEstablished, modelsSynced], timeout: 60)
     }
 
     /// Assert that a save and a delete mutation complete successfully.
@@ -152,7 +152,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
 
         let savedModels = try await Amplify.DataStore.save(model)
         XCTAssertNotNil(savedModels)
-        await waitForExpectations(timeout: 60)
+        await fulfillment(of: [mutationSaveProcessed], timeout: 60)
         
         let mutationDeleteProcessed = expectation(description: "mutation delete processed")
         Amplify
@@ -173,7 +173,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
             .store(in: &requests)
         
         try await Amplify.DataStore.delete(model)
-        await waitForExpectations(timeout: 60)
+        await fulfillment(of: [mutationDeleteProcessed], timeout: 60)
     }
 
     /// Assert that a save and a delete mutation complete successfully.
@@ -211,7 +211,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
         // save child
         _ = try await Amplify.DataStore.save(child)
 
-        await waitForExpectations(timeout: 60)
+        await fulfillment(of: [mutationSaveProcessed], timeout: 60)
         
         guard shouldDeleteParent else {
             return
@@ -242,6 +242,6 @@ extension AWSDataStorePrimaryKeyBaseTest {
         
         // delete parent
         try await Amplify.DataStore.delete(parent)
-        await waitForExpectations(timeout: 60)
+        await fulfillment(of: [mutationDeleteProcessed], timeout: 60)
     }
 }

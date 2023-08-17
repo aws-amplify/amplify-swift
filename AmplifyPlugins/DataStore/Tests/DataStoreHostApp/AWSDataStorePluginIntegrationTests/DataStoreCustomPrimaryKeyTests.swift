@@ -69,7 +69,7 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
 
         // create customer order
         _ = try await Amplify.DataStore.save(customerOrder)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         // update customer order
         let updateReceived = expectation(description: "Update notification received")
@@ -102,7 +102,7 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(updatedCustomerOrder)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
         
         // query the updated order
         let queriedOrder = try await Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id)
@@ -144,7 +144,7 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.delete(CustomerOrder.self, withIdentifier: updatedCustomerOrder.id)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
         
         // query the customer order after deletion
         let queriedOrder2 = try await Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id)

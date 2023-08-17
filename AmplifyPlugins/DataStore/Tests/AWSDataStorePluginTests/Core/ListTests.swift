@@ -49,7 +49,7 @@ class ListTests: BaseDataStoreTests {
             XCTFail("\(error)")
         }
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     // MARK: - Helpers

@@ -189,7 +189,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
         let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
         
-        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Project.self)
         Task {
             for try await mutationEvent in mutationEvents {
@@ -210,7 +210,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([mutationEventReceived], timeout: 60)
+        await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
     
@@ -218,7 +218,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: ProjectTeam5Models())
         try await startAndWaitForReady()
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Team.self)
         Task {
             for try await mutationEvent in mutationEvents {
@@ -239,7 +239,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([mutationEventReceived], timeout: 60)
+        await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
     
@@ -250,7 +250,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
         let savedTeam = try await createAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
         
-        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Project.self, where: Project.keys.projectId == project.projectId)
         Task {
             for try await querySnapshot in querySnapshots {
@@ -268,7 +268,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([snapshotReceived], timeout: 60)
+        await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
     
@@ -276,7 +276,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: ProjectTeam5Models())
         try await startAndWaitForReady()
         let team = Team(teamId: UUID().uuidString, name: "name")
-        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Team.self, where: Team.keys.teamId == team.teamId)
         Task {
             for try await querySnapshot in querySnapshots {
@@ -294,7 +294,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([snapshotReceived], timeout: 60)
+        await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
 }

@@ -83,7 +83,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = try await queryPost(byId: updatedPost.id)
         XCTAssertEqual(queryResult, updatedPost)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)
@@ -202,8 +202,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         updatedPost.title = "MyUpdatedPost"
         updatedPost.content = "This is my updated post."
 
-        let saveSyncReceived = asyncExpectation(description: "Received create mutation event on subscription for Post")
-        let deleteSyncReceived = asyncExpectation(description: "Received delete mutation event on subscription for Post")
+        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
+        let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
@@ -237,7 +237,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
         // save the post, update and delete immediately
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations([saveSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveSyncReceived], timeout: networkTimeout)
 
         _ = try await Amplify.DataStore.save(updatedPost)
         try await Amplify.DataStore.delete(updatedPost)
@@ -246,7 +246,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = try await queryPost(byId: newPost.id)
         XCTAssertNil(queryResult)
 
-        await waitForExpectations([deleteSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)
