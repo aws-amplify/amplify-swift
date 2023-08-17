@@ -50,7 +50,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 for try await querySnapshot in querySnapshots {
                     snapshots.append(querySnapshot)
                     if querySnapshot.isSynced {
-                        await snapshotWithIsSynced.fulfill()
+                        snapshotWithIsSynced.fulfill()
                     }
                 }
             } catch {
@@ -58,7 +58,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
             XCTAssertTrue(snapshots.count >= 2)
             XCTAssertFalse(snapshots[0].isSynced)
-            await querySnapshotsCancelled.fulfill()
+            querySnapshotsCancelled.fulfill()
         }
         let receivedPost = expectation(description: "received Post")
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
@@ -93,7 +93,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshots.append(querySnapshot)
             if querySnapshot.isSynced {
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
@@ -135,10 +135,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             snapshots.append(querySnapshot)
             if !isObserveQueryReadyForTest && querySnapshot.isSynced {
                 isObserveQueryReadyForTest = true
-                Task { await observeQueryReadyForTest.fulfill() }
+                observeQueryReadyForTest.fulfill()
             }
             if querySnapshot.items.contains(where: { $0.id == post.id }) {
-                Task { await snapshotWithPost.fulfill() }
+                snapshotWithPost.fulfill()
             }
         }.store(in: &cancellables)
         await fulfillment(of: [observeQueryReadyForTest], timeout: 100)
@@ -198,12 +198,12 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             snapshots.append(querySnapshot)
             if !snapshotWithIsSyncedFulfilled && querySnapshot.isSynced {
                 snapshotWithIsSyncedFulfilled = true
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             } else if snapshotWithIsSyncedFulfilled {
                 if querySnapshot.items.count >= 4
                    && querySnapshot.items.allSatisfy({ $0.title.contains(randomTitle)})
                 {
-                    Task { await receivedPostFromObserveQuery.fulfill() }
+                    receivedPostFromObserveQuery.fulfill()
                 }
             }
             
@@ -250,7 +250,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 let actualPost1 = items.removeLast()
                 XCTAssertEqual(actualPost2.id, post2.id)
                 XCTAssertEqual(actualPost1.id, post1.id)
-                Task { await snapshotWithSavedPost.fulfill() }
+                snapshotWithSavedPost.fulfill()
             }
         }.store(in: &cancellables)
 
@@ -288,7 +288,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshots.append(querySnapshot)
             if querySnapshot.isSynced {
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
@@ -330,7 +330,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshots.append(querySnapshot)
             if querySnapshot.isSynced {
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             }
         }.store(in: &cancellables)
 
@@ -369,11 +369,12 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         var snapshotCount = 0
         let predicate = Post.keys.title.beginsWith("xyz") && Post.keys.content == testId
         let snapshotExpectation1 = expectation(description: "received snapshot 1")
-        let snapshotExpectation23 = expectation(description: "received snapshot 2 / 3",
-                                                     expectedFulfillmentCount: 2)
+        let snapshotExpectation23 = expectation(description: "received snapshot 2 / 3")
+        snapshotExpectation23.expectedFulfillmentCount = 2
+
         let snapshotExpectation4 = expectation(description: "received snapshot 4")
-        let snapshotExpectation56 = expectation(description: "received snapshot 5 / 6",
-                                                     expectedFulfillmentCount: 2)
+        let snapshotExpectation56 = expectation(description: "received snapshot 5 / 6")
+        snapshotExpectation56.expectedFulfillmentCount = 2
         let snapshotExpectation7 = expectation(description: "received snapshot 7")
         let snapshotExpectation8 = expectation(description: "received snapshot 8")
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate)).sink { completed in
@@ -389,36 +390,36 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             if snapshotCount == 1 {
                 self.log.info("\(#function) 1. \(querySnapshot)")
                 XCTAssertEqual(items.count, 0)
-                Task { await snapshotExpectation1.fulfill() }
+                snapshotExpectation1.fulfill()
             } else if snapshotCount == 2 || snapshotCount == 3 {
                 // See (1), subsequent snapshot should have item with "xyz 1".
                 self.log.info("\(#function) 2/3. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
                 XCTAssertEqual(items[0].title, "xyz 1")
-                Task { await snapshotExpectation23.fulfill() }
+                snapshotExpectation23.fulfill()
             } else if snapshotCount == 4 {
                 // See (2), should not be added to the snapshot.
                 // See (3), should be removed from the snapshot. So the resulting snapshot is empty.
                 self.log.info("\(#function) 4. \(querySnapshot)")
                 XCTAssertEqual(items.count, 0)
-                Task { await snapshotExpectation4.fulfill() }
+                snapshotExpectation4.fulfill()
             } else if snapshotCount == 5 || snapshotCount == 6 {
                 // See (4). the post that now matches the snapshot should be added
                 self.log.info("\(#function) 5/6. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
                 XCTAssertEqual(items[0].title, "xyz 2")
-                Task { await snapshotExpectation56.fulfill() }
+                snapshotExpectation56.fulfill()
             } else if snapshotCount == 7 {
                 // See (5). the post that matched the predicate was deleted
                 self.log.info("\(#function) 7. \(querySnapshot)")
                 XCTAssertEqual(items.count, 0)
-                Task { await snapshotExpectation7.fulfill() }
+                snapshotExpectation7.fulfill()
             } else if snapshotCount == 8 {
                 // See (6). Snapshot that is emitted due to "xyz 3" should not contain the deleted model
                 self.log.info("\(#function) 8. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
                 XCTAssertEqual(items[0].title, "xyz 3")
-                Task { await snapshotExpectation8.fulfill() }
+                snapshotExpectation8.fulfill()
             }
         }.store(in: &cancellables)
         await fulfillment(of: [snapshotExpectation1], timeout: 10)
@@ -580,17 +581,18 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self))
             .sink { onComplete($0) } receiveValue: { querySnapshot in
                 if querySnapshot.isSynced {
-                    Task { await firstSnapshotWithIsSynced.fulfill() }
+                    firstSnapshotWithIsSynced.fulfill()
                 }
             }.store(in: &cancellables)
         await fulfillment(of: [firstSnapshotWithIsSynced], timeout: 10)
         
-        let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed",
-                                                             isInverted: true)
+        let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
+        observeQueryReceivedCompleted.isInverted = true
+
         onComplete = { completed in
             switch completed {
             case .finished:
-                Task { await observeQueryReceivedCompleted.fulfill() }
+                observeQueryReceivedCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
@@ -615,17 +617,17 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self))
             .sink { onComplete($0) } receiveValue: { querySnapshot in
                 if querySnapshot.isSynced {
-                    Task { await firstSnapshotWithIsSynced.fulfill() }
+                    firstSnapshotWithIsSynced.fulfill()
                 }
             }.store(in: &cancellables)
         await fulfillment(of: [firstSnapshotWithIsSynced], timeout: 100)
         
-        let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed",
-                                                             isInverted: true)
+        let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
+        observeQueryReceivedCompleted.isInverted = true
         onComplete = { completed in
             switch completed {
             case .finished:
-                Task { await observeQueryReceivedCompleted.fulfill() }
+                observeQueryReceivedCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
@@ -635,25 +637,26 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     }
 
     func testObserveQueryShouldStartOnDataStoreStart() async throws {
-        try await setUp(withModels: TestModelRegistration())
+        await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshot = expectation(description: "first query snapshot")
         let secondSnapshot = expectation(description: "second query snapshot")
-        let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed", isInverted: true)
+        let observeQueryReceivedCompleted = XCTestExpectation(description: "observeQuery received completed")
+        observeQueryReceivedCompleted.isInverted = true
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
         let sink = Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self)).sink { completed in
             switch completed {
             case .finished:
-                Task { await observeQueryReceivedCompleted.fulfill() }
+                observeQueryReceivedCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
             }
         } receiveValue: { querySnapshot in
             querySnapshots.append(querySnapshot)
             if querySnapshots.count == 1 {
-                Task { await firstSnapshot.fulfill() }
+                firstSnapshot.fulfill()
             } else if querySnapshots.count == 2 {
-                Task { await secondSnapshot.fulfill() }
+                secondSnapshot.fulfill()
             }
         }
         await fulfillment(of: [firstSnapshot], timeout: 100)
@@ -665,17 +668,21 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     }
 
     // MARK: - Helpers
-    func savePostAndWaitForSync(_ post: Post, postSyncedExpctation: AsyncExpectation? = nil) async throws {
+    func savePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
         // Wait for a fulfillment count of 2 (first event due to the locally source mutation saved to the local store
         // and the second event due to the subscription event received from the remote store)
-        let receivedPost = postSyncedExpctation ?? expectation(description: "received Post",
-                                                                    expectedFulfillmentCount: 2)
+        let receivedPost = postSyncedExpctation ?? {
+            let e = expectation(description: "received Post")
+            e.expectedFulfillmentCount = 2
+            return e
+        }()
+
         Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
                     if mutationEvent.modelId == post.id {
-                        await receivedPost.fulfill()
+                        receivedPost.fulfill()
                     }
                 }
             } catch {
@@ -689,17 +696,21 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }
     }
 
-    func deletePostAndWaitForSync(_ post: Post, postSyncedExpctation: AsyncExpectation? = nil) async throws {
+    func deletePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
         // Wait for a fulfillment count of 2 (first event due to the locally source mutation deleted from the local
         // store and the second event due to the subscription event received from the remote store)
-        let deletedPost = postSyncedExpctation ?? expectation(description: "deleted Post",
-                                                                   expectedFulfillmentCount: 2)
+        let deletedPost = postSyncedExpctation ?? {
+            let e = expectation(description: "deleted Post")
+            e.expectedFulfillmentCount = 2
+            return e
+        }()
+
         Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
                     if mutationEvent.modelId == post.id {
-                        await deletedPost.fulfill()
+                        deletedPost.fulfill()
                     }
                 }
             } catch {
