@@ -79,7 +79,6 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
         try await clearDataStore()
         try await signOut()
         await Amplify.reset()
-        try await Task.sleep(seconds: 1)
     }
 
     // MARK: - Test Helpers

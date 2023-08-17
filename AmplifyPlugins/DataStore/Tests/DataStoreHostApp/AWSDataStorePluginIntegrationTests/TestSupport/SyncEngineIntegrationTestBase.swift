@@ -44,7 +44,6 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         try await super.tearDown()
         try await clearDataStore()
         await Amplify.reset()
-        try await Task.sleep(seconds: 1)
     }
 
     func setUp(

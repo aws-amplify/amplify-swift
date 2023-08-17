@@ -33,7 +33,6 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             try await clearDataStore()
         }
         await Amplify.reset()
-        try await Task.sleep(seconds: 1)
     }
     
     func setupConfig() {

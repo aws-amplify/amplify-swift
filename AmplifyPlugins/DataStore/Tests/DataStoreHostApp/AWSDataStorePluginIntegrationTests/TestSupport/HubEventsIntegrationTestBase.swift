@@ -43,7 +43,6 @@ class HubEventsIntegrationTestBase: XCTestCase {
     override func tearDown() async throws {
         try await Amplify.DataStore.clear()
         await Amplify.reset()
-        try await Task.sleep(seconds: 1)
     }
 
     func configureAmplify(withModels models: AmplifyModelRegistration) throws {

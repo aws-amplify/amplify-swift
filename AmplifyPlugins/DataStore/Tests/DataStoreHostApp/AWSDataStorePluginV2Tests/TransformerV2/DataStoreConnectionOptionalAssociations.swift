@@ -226,7 +226,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             XCTFail("Failed to query comment without post")
             return
         }
-        
+
         XCTAssertNil(queriedCommentWithoutPost.post)
         
         queriedPost.blog = nil

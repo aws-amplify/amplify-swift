@@ -572,7 +572,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         try await Amplify.DataStore.save(newPost)
         await fulfillment(of: [initExpectation], timeout: 10)
-        try await Task.sleep(seconds: 1)
 
         for post in posts {
             Task {
