@@ -2,9 +2,20 @@ name: Build | Amplify Swift
 on:
   workflow_call:
   workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+      - release
+
+env:
+  SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
   build-amplify-swift-iOS:
@@ -17,8 +28,6 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
-        env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: ${{ runner.os }}-iOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -29,7 +38,7 @@ jobs:
         id: build-cache
         with:
           path: Build
-          key: ${{ runner.os }}-iOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-iOS-build-${{ github.ref_name }}
       - name: Build Amplify Swift for iOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -48,8 +57,6 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
-        env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: ${{ runner.os }}-macOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -60,7 +67,7 @@ jobs:
         id: build-cache
         with:
           path: Build
-          key: ${{ runner.os }}-macOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-macOS-build-${{ github.ref_name }}
       - name: Build Amplify Swift for macOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -80,8 +87,6 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
-        env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: ${{ runner.os }}-tvOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -92,7 +97,7 @@ jobs:
         id: build-cache
         with:
           path: Build
-          key: ${{ runner.os }}-tvOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-tvOS-build-${{ github.ref_name }}
       - name: Build Amplify Swift for tvOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -112,8 +117,6 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
-        env:
-          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: ${{ runner.os }}-watchOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -124,7 +127,7 @@ jobs:
         id: build-cache
         with:
           path: Build
-          key: ${{ runner.os }}-watchOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-watchOS-build-${{ github.ref_name }}
       - name: Build Amplify Swift for watchOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:

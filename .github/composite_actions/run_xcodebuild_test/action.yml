@@ -66,7 +66,7 @@ runs:
         fi
 
         retryFlags=""
-        if [ "${{ inputs.retry-on-failure }}" == "true" ]; then
+        if [ "${{ inputs.retry_on_failure }}" == "true" ]; then
           echo "Retries are enabled"
           retryFlags+="-retry-tests-on-failure"
         fi

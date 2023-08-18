@@ -20,13 +20,8 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
-  build-amplify:
-    name: Build Amplify-Package
-    uses: ./.github/workflows/build_amplify_swift.yml
-
   unit-tests-without-coverage:
     name: ${{ matrix.scheme }} Unit Tests
-    needs: [build-amplify]
     strategy:
       fail-fast: false
       matrix:
@@ -40,7 +35,6 @@ jobs:
 
   unit-tests-with-coverage:
     name: ${{ matrix.scheme }} Unit Tests
-    needs: [build-amplify]
     strategy:
       fail-fast: false
       matrix:
