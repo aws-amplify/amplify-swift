@@ -49,12 +49,6 @@ jobs:
           generate_coverage: ${{ inputs.generate_coverage_report }}
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Upload results
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
-        with:
-          name: ${{ env.SCHEME }}-iOS-TestResults-${{ github.sha }}.html
-          path: ${{ github.workspace }}/build/reports/tests.html
-          retention-days: 1
       - name: Upload Report File
         if: ${{ inputs.generate_coverage_report == true }}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
@@ -90,12 +84,6 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Upload results
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
-        with:
-          name: ${{ env.SCHEME }}-macOS-TestResults-${{ github.sha }}.html
-          path: ${{ github.workspace }}/build/reports/tests.html
-          retention-days: 1
 
   test-tvOS:
     name: ${{ inputs.scheme }} tvOS Tests
@@ -122,12 +110,6 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Upload results
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
-        with:
-          name: ${{ env.SCHEME }}-tvOS-TestResults-${{ github.sha }}.html
-          path: ${{ github.workspace }}/build/reports/tests.html
-          retention-days: 1
 
   test-watchOS:
     name: ${{ inputs.scheme }} watchOS Tests
@@ -154,9 +136,3 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Upload results
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
-        with:
-          name: ${{ env.SCHEME }}-watchOS-TestResults-${{ github.sha }}.html
-          path: ${{ github.workspace }}/build/reports/tests.html
-          retention-days: 1
