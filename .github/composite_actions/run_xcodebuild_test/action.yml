@@ -79,7 +79,7 @@ runs:
 
         derivedDataPath=""
         if [ ! -z "$DERIVED_DATA_PATH" ]; then
-          echo "Using custom cloned source packages path"
+          echo "Using custom DerivedData path"
           derivedDataPath+="-derivedDataPath $DERIVED_DATA_PATH"
         fi  
 
