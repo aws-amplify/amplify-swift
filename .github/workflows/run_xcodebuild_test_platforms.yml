@@ -40,6 +40,11 @@ jobs:
           key: ${{ runner.os }}-iOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-iOS-packages-
+      - name: Restore build cache
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-iOS-build-${{ github.sha }}
       - name: Run iOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -49,6 +54,12 @@ jobs:
           generate_coverage: ${{ inputs.generate_coverage_report }}
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
+      - name: Save the build cache
+        if: failure()
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-iOS-build-${{ github.sha }}
       - name: Upload Report File
         if: ${{ inputs.generate_coverage_report == true }}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
@@ -75,6 +86,11 @@ jobs:
           key: ${{ runner.os }}-macOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-macOS-packages-
+      - name: Restore build cache
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-macOS-build-${{ github.sha }}
       - name: Run macOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -84,6 +100,12 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
+      - name: Save the build cache
+        if: failure()
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-macOS-build-${{ github.sha }}
 
   test-tvOS:
     name: ${{ inputs.scheme }} tvOS Tests
@@ -101,6 +123,11 @@ jobs:
           key: ${{ runner.os }}-tvOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-tvOS-packages-
+      - name: Restore build cache
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-tvOS-build-${{ github.sha }}
       - name: Run tvOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -110,6 +137,12 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
+      - name: Save the build cache
+        if: failure()
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-tvOS-build-${{ github.sha }}
 
   test-watchOS:
     name: ${{ inputs.scheme }} watchOS Tests
@@ -127,6 +160,11 @@ jobs:
           key: ${{ runner.os }}-watchOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-watchOS-packages-
+      - name: Restore build cache
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-watchOS-build-${{ github.sha }}
       - name: Run watchOS Test Suite
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -136,3 +174,9 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
+      - name: Save the build cache
+        if: failure()
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ runner.os }}-watchOS-build-${{ github.sha }}
