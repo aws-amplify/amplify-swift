@@ -27,6 +27,10 @@ inputs:
     required: false
     type: boolean
     default: false
+  retry-on-failure:
+    required: false
+    type: boolean
+    default: false
 
 runs:
   using: "composite"
@@ -49,9 +53,16 @@ runs:
           echo "Code Coverage is enabled!"
           coverageFlags+="-derivedDataPath Build/ -clonedSourcePackagesDirPath "~/Library/Developer/Xcode/DerivedData/$SCHEME" -enableCodeCoverage YES"
         fi
+
+        retryFlags=""
+        if [ "${{ inputs.retry-on-failure }}" == "true" ]; then
+          echo "Retries are enabled"
+          retryFlags+="-retry-tests-on-failure"
+        fi
+
         xcode-select -p
         xcodebuild -version
-        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $coverageFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $coverageFlags $retryFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
 
     - name: Generate Coverage report
