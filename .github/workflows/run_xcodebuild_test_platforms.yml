@@ -35,6 +35,8 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-iOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -53,7 +55,7 @@ jobs:
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
           generate_coverage: ${{ inputs.generate_coverage_report }}
-          retry_on_failure: false
+          retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: Build
       - name: Upload Report File
@@ -77,6 +79,8 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-macOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -95,7 +99,7 @@ jobs:
           destination: platform=macOS,arch=x86_64
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
-          retry_on_failure: false
+          retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: Build
 
@@ -110,6 +114,8 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-tvOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -128,7 +134,7 @@ jobs:
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
-          retry_on_failure: false
+          retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: Build
 
@@ -143,6 +149,8 @@ jobs:
       - name: Cache packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         id: packages-cache
+        env:
+          SEGMENT_DOWNLOAD_TIMEOUT_MINS: 4
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-watchOS-packages-${{ hashFiles('**/Package.resolved') }}
@@ -161,6 +169,6 @@ jobs:
           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
-          retry_on_failure: false
+          retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: Build
