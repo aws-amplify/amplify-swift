@@ -7,9 +7,6 @@ on:
       - main
       - release
 
-env:
-  SEGMENT_DOWNLOAD_TIMEOUT_MINS: 1
-
 permissions:
   contents: read
 
@@ -26,6 +23,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
+        timeout-minutes: 4
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -48,6 +46,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
+        timeout-minutes: 4
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -71,6 +70,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
+        timeout-minutes: 4
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -94,6 +94,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
+        timeout-minutes: 4
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
