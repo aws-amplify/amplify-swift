@@ -32,15 +32,15 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
-      - name: Restore packages cache
+      - name: Cache packages
         timeout-minutes: 4
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-iOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-iOS-packages-
-      - name: Restore build cache
+      - name: Attempt to restore the build cache
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -54,7 +54,8 @@ jobs:
           generate_coverage: ${{ inputs.generate_coverage_report }}
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Save the build cache
+          derived_data_path: ${{ github.workspace }}/Build
+      - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
@@ -78,15 +79,15 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
-      - name: Restore packages cache
+      - name: Cache packages
         timeout-minutes: 4
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-macOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-macOS-packages-
-      - name: Restore build cache
+      - name: Attempt to restore the build cache
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -100,7 +101,8 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Save the build cache
+          derived_data_path: ${{ github.workspace }}/Build
+      - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
@@ -115,15 +117,15 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
-      - name: Restore packages cache
+      - name: Cache packages
         timeout-minutes: 4
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-tvOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-tvOS-packages-
-      - name: Restore build cache
+      - name: Attempt to restore the build cache
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -137,7 +139,8 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Save the build cache
+          derived_data_path: ${{ github.workspace }}/Build
+      - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
@@ -152,15 +155,15 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
-      - name: Restore packages cache
+      - name: Cache packages
         timeout-minutes: 4
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           key: ${{ runner.os }}-watchOS-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-watchOS-packages-
-      - name: Restore build cache
+      - name: Attempt to restore the build cache
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -174,7 +177,8 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
-      - name: Save the build cache
+          derived_data_path: ${{ github.workspace }}/Build
+      - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
