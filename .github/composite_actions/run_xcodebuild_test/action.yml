@@ -39,6 +39,10 @@ inputs:
     required: false
     type: string
     default: ''
+  test_without_building:
+    required: false
+    type: boolean
+    default: false
 
 runs:
   using: "composite"
@@ -90,9 +94,17 @@ runs:
           retryFlags+="-retry-tests-on-failure"
         fi
 
+        action=""
+        if [ "${{ inputs.test_without_building }}" == "true" ]; then
+          echo "Testing without building..."
+          action="test-without-building"
+        else
+          action="test"
+        fi
+
         xcode-select -p
         xcodebuild -version
-        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags $retryFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags $retryFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
 
     - name: Generate Coverage report

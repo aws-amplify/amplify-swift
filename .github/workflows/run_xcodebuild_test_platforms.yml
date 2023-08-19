@@ -41,6 +41,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-iOS-packages-
       - name: Attempt to restore the build cache
+        id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -55,6 +56,7 @@ jobs:
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -88,6 +90,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-macOS-packages-
       - name: Attempt to restore the build cache
+        id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -102,6 +105,7 @@ jobs:
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -126,6 +130,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-tvOS-packages-
       - name: Attempt to restore the build cache
+        id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -140,6 +145,7 @@ jobs:
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -164,6 +170,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-watchOS-packages-
       - name: Attempt to restore the build cache
+        id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -178,6 +185,7 @@ jobs:
           retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
         if: failure()
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
