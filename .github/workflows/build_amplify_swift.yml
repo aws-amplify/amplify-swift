@@ -23,6 +23,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
+        id: cache-packages
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -37,6 +38,7 @@ jobs:
           scheme: Amplify-Package
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
 
   build-amplify-swift-macOS:
@@ -47,6 +49,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
+        id: cache-packages
         timeout-minutes: 4
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
@@ -61,6 +64,7 @@ jobs:
           destination: platform=macOS,arch=x86_64
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
 
   build-amplify-swift-tvOS:
@@ -72,6 +76,7 @@ jobs:
           persist-credentials: false
       - name: Cache packages
         timeout-minutes: 4
+        id: cache-packages
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -85,6 +90,7 @@ jobs:
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
 
   build-amplify-swift-watchOS:
@@ -95,6 +101,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
+        id: cache-packages
         timeout-minutes: 4
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
@@ -109,6 +116,7 @@ jobs:
           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
 
   confirm-pass:

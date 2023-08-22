@@ -19,15 +19,7 @@ inputs:
     required: false
     type: string
     default: 'iphonesimulator'
-  other_flags:
-    required: false
-    type: string
-    default: ''
   generate_coverage:
-    required: false
-    type: boolean
-    default: false
-  retry_on_failure:
     required: false
     type: boolean
     default: false
@@ -47,6 +39,10 @@ inputs:
     required: false
     type: boolean
     default: false
+  other_flags:
+    required: false
+    type: string
+    default: ''
 
 runs:
   using: "composite"
@@ -97,12 +93,6 @@ runs:
           clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
         fi
 
-        retryFlags=""
-        if [ "${{ inputs.retry_on_failure }}" == "true" ]; then
-          echo "Retries are enabled"
-          retryFlags+="-retry-tests-on-failure"
-        fi
-
         action=""
         if [ "${{ inputs.test_without_building }}" == "true" ]; then
           echo "Testing without building..."
@@ -113,7 +103,7 @@ runs:
 
         xcode-select -p
         xcodebuild -version
-        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags $retryFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
 
     - name: Generate Coverage report
