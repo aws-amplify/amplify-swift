@@ -39,6 +39,10 @@ inputs:
     required: false
     type: string
     default: ''
+  disable_package_resolution:
+    required: false
+    type: boolean
+    default: false
   test_without_building:
     required: false
     type: boolean
@@ -66,7 +70,7 @@ runs:
         clonedSourcePackagesPath=""
         if [ ! -z "$CLONED_SOURCE_PACKAGES_PATH" ]; then
           echo "Using custom cloned source packages path"
-          clonedSourcePackagesPath+="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
+          clonedSourcePackagesPath+="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH -disableAutomaticPackageResolution"
         fi
 
         derivedDataPath=""
@@ -86,6 +90,11 @@ runs:
           if [ -z "$derivedDataPath" ]; then
             derivedDataPath+="-derivedDataPath Build/"
           fi
+        fi
+
+        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
+          echo "Disabling Automatic Package Resolution"
+          clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
         fi
 
         retryFlags=""
