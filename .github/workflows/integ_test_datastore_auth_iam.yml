@@ -33,6 +33,7 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginAuthIAMTests
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-integration-auth-iam-test-tvOS:
     timeout-minutes: 30

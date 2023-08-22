@@ -33,6 +33,7 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginAuthCognitoTests
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-integration-auth-cognito-test-tvOS:
     timeout-minutes: 30
