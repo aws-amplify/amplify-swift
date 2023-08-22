@@ -47,7 +47,7 @@ jobs:
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-iOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Run iOS Test Suite
         id: run-tests
         continue-on-error: true
@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-iOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Upload Report File
         if: ${{ inputs.generate_coverage_report == true }}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
@@ -113,7 +113,7 @@ jobs:
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-macOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-macOS-build-${{ github.sha }}
       - name: Run macOS Test Suite
         id: run-tests
         continue-on-error: true
@@ -145,7 +145,7 @@ jobs:
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-macOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-macOS-build-${{ github.sha }}
 
   test-tvOS:
     name: ${{ inputs.scheme }} tvOS Tests
@@ -170,7 +170,7 @@ jobs:
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-tvOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
       - name: Run tvOS Test Suite
         id: run-tests
         continue-on-error: true
@@ -202,7 +202,7 @@ jobs:
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-tvOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
 
   test-watchOS:
     name: ${{ inputs.scheme }} watchOS Tests
@@ -227,7 +227,7 @@ jobs:
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-watchOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
       - name: Run watchOS Test Suite
         id: run-tests
         continue-on-error: true
@@ -259,4 +259,4 @@ jobs:
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ runner.os }}-watchOS-build-${{ github.sha }}
+          key: ${{ runner.os }}-${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
