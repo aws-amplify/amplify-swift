@@ -16,11 +16,15 @@ jobs:
   unit-tests:
     name: Run Plugins Unit Tests
     uses: ./.github/workflows/unit_test.yml
+    with:
+      identifier: 'workflow-call-unit-test'
 
   fortify:
     name: Run Fortify Scan
     uses: ./.github/workflows/fortify_scan.yml
     secrets: inherit
+    with:
+      identifier: 'workflow-call-fortify'
 
   release:
     environment: Release
