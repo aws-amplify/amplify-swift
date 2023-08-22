@@ -33,7 +33,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Cache packages
-        timeout-minutes: 1
+        timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
@@ -48,6 +48,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ runner.os }}-iOS-build-${{ github.sha }}
       - name: Run iOS Test Suite
+        id: run-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -59,7 +60,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
-        if: failure()
+        if: failure() && steps.run-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -97,6 +98,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ runner.os }}-macOS-build-${{ github.sha }}
       - name: Run macOS Test Suite
+        id: run-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -108,7 +110,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
-        if: failure()
+        if: failure() && steps.run-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -137,6 +139,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ runner.os }}-tvOS-build-${{ github.sha }}
       - name: Run tvOS Test Suite
+        id: run-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -148,7 +151,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
-        if: failure()
+        if: failure() && steps.run-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -177,6 +180,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ runner.os }}-watchOS-build-${{ github.sha }}
       - name: Run watchOS Test Suite
+        id: run-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -188,7 +192,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
-        if: failure()
+        if: failure() && steps.run-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
