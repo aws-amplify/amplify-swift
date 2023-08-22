@@ -1,6 +1,11 @@
 name: Unit Tests | All
 on:
   workflow_call:
+    inputs:
+      identifier:
+        required: true
+        type: string
+
   workflow_dispatch:
   push:
     branches-ignore:

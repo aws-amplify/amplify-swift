@@ -2,6 +2,11 @@ name: Integration Tests
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      identifier:
+        required: true
+        type: string
+
   push:
     branches: [main]
 
