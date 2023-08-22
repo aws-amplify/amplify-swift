@@ -50,19 +50,32 @@ jobs:
           key: ${{ runner.os }}-iOS-build-${{ github.sha }}
       - name: Run iOS Test Suite
         id: run-tests
+        continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
           generate_coverage: ${{ inputs.generate_coverage_report }}
-          retry_on_failure: true
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+      - name: Re-Run iOS Test Suite
+        if: failure() && steps.run-tests.outcome=='failure'
+        id: rerun-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
+          generate_coverage: ${{ inputs.generate_coverage_report }}
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Save the build cache for re-runs
-        if: failure() && steps.run-tests.outcome=='failure'
+        if: failure() && steps.rerun-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -108,7 +121,6 @@ jobs:
           destination: platform=macOS,arch=x86_64
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
-          retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
@@ -151,7 +163,6 @@ jobs:
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
-          retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
@@ -194,7 +205,6 @@ jobs:
           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
-          retry_on_failure: true
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/${{ env.SCHEME }}
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
