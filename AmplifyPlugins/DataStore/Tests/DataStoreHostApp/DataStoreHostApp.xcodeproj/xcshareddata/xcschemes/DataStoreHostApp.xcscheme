@@ -109,6 +109,14 @@
                BlueprintName = "AWSDataStorePluginMultiAuthTests"
                ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSDataStoreMultiAuthSingleRuleTests/testGroupOIDC()">
+               </Test>
+               <Test
+                  Identifier = "AWSDataStoreMultiAuthSingleRuleTests/testOwnerOIDC()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">

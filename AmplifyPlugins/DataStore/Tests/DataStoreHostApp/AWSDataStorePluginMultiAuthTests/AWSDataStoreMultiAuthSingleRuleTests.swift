@@ -88,25 +88,29 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
         let expectations = makeExpectations()
 
         // we're only interested in "ready-state" expectations
-        await expectations.query.fulfill()
-        await expectations.mutationSave.fulfill()
-        await expectations.mutationSaveProcessed.fulfill()
-        await expectations.mutationDelete.fulfill()
-        await expectations.mutationDeleteProcessed.fulfill()
+        expectations.query.fulfill()
+        expectations.mutationSave.fulfill()
+        expectations.mutationSaveProcessed.fulfill()
+        expectations.mutationDelete.fulfill()
+        expectations.mutationDeleteProcessed.fulfill()
 
         // GroupUPPost won't sync for user2 but DataStore should reach a
         // "ready" state
-        await expectations.modelsSynced.fulfill()
+        expectations.modelsSynced.fulfill()
         await assertDataStoreReady(expectations, expectedModelSynced: 0)
 
         assertUsedAuthTypes([.amazonCognitoUserPools])
 
-        await fulfillment(of: [
+        await fulfillment(
+            of: [
                 expectations.query,
                 expectations.mutationSave,
                 expectations.mutationSaveProcessed,
                 expectations.mutationDelete,
-                expectations.mutationDeleteProcessed], timeout: TestCommonConstants.networkTimeout)
+                expectations.mutationDeleteProcessed
+            ],
+            timeout: TestCommonConstants.networkTimeout
+        )
     }
 
     func testGroupOIDC() throws {
