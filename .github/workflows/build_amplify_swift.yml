@@ -94,6 +94,7 @@ jobs:
       - name: Attempt to restore dependencies cache
         timeout-minutes: 4
         id: cache-packages
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -126,6 +127,7 @@ jobs:
       - name: Attempt to restore dependencies cache
         id: cache-packages
         timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
