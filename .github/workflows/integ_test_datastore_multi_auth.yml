@@ -33,6 +33,7 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginMultiAuthTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
           xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-integration-multi-auth-test-tvOS:
