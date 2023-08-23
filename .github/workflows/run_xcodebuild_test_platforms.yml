@@ -62,7 +62,7 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Retry iOS Test Suite if needed
-        if: failure() && steps.run-tests.outcome=='failure'
+        if: steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -128,7 +128,7 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Retry macOS Test Suite if needed
-        if: failure() && steps.run-tests.outcome=='failure'
+        if: steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -185,7 +185,7 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Retry tvOS Test Suite if needed
-        if: failure() && steps.run-tests.outcome=='failure'
+        if: steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -242,7 +242,7 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
       - name: Retry watchOS Test Suite if needed
-        if: failure() && steps.run-tests.outcome=='failure'
+        if: steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
