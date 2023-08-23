@@ -16,6 +16,8 @@ jobs:
   build-amplify-swift:
     name: Build Amplify package
     uses: ./.github/workflows/build_amplify_swift.yml
+    with:
+      identifier: 'workflow-call-build-amplify-swift'
   
   unit-tests:
     name: Run Plugins Unit Tests
@@ -33,7 +35,7 @@ jobs:
   release:
     environment: Release
     name: Release new ${{ inputs.type }} version
-    needs: [unit-tests, fortify]
+    needs: [unit-tests, fortify, build-amplify-swift]
     runs-on: macos-latest
     env:
       GITHUB_EMAIL: aws-amplify-ops@amazon.com
