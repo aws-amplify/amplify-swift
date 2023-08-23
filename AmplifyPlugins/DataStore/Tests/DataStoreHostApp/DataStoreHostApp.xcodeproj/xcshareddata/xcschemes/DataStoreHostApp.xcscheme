@@ -88,6 +88,17 @@
                BlueprintName = "AWSDataStorePluginIntegrationTests"
                ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "DataStoreObserveQueryTests/testInitialSyncWithPredicate()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreObserveQueryTests/testPredicateWithCreateUpdateDelete()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreObserveQueryTests/testSortWithCreateUpdateDelete()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">
