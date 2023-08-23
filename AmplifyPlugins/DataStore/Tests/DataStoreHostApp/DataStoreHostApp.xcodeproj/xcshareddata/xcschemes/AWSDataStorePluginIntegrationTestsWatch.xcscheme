@@ -33,6 +33,18 @@
                   Identifier = "DataStoreLocalStoreTests">
                </Test>
                <Test
+                  Identifier = "DataStoreObserveQueryTests/testInitialSyncWithPredicate()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreObserveQueryTests/testObserveQueryInitialSync()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreObserveQueryTests/testPredicateWithCreateUpdateDelete()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreObserveQueryTests/testSortWithCreateUpdateDelete()">
+               </Test>
+               <Test
                   Identifier = "DataStoreTestBase">
                </Test>
                <Test
