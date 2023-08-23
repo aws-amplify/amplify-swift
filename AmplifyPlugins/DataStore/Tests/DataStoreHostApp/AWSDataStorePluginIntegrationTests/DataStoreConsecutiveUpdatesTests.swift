@@ -221,12 +221,12 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
             if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                 XCTAssertEqual(post, newPost)
                 XCTAssertEqual(mutationEvent.version, 1)
-                Task { await saveSyncReceived.fulfill() }
+                saveSyncReceived.fulfill()
             }
 
             if mutationEvent.version == 3 {
                 XCTAssertEqual(post, updatedPost)
-                Task { await deleteSyncReceived.fulfill() }
+                deleteSyncReceived.fulfill()
             }
         }
 
@@ -325,14 +325,14 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(newPost)
-        wait(for: [saveSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveSyncReceived], timeout: networkTimeout)
 
         for index in 1 ... updateCount {
             updatedPost.title = updatedPostDefaultTitle + String(index)
             _ = try await Amplify.DataStore.save(updatedPost)
         }
 
-        wait(for: [updateSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)
@@ -340,7 +340,6 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
-        let apiQuerySuccess = expectation(description: "API query is successful")
         let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
         switch mutationSyncResult {
         case .success(let data):

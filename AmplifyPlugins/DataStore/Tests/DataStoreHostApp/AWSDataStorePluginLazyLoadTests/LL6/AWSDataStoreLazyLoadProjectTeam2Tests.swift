@@ -196,7 +196,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
                    let receivedProject = try? mutationEvent.decodeModel(as: Project.self),
                    receivedProject.projectId == project.projectId {
                     assertProject(receivedProject, hasTeam: savedTeam)
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -225,7 +225,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
                    let receivedTeam = try? mutationEvent.decodeModel(as: Team.self),
                    receivedTeam.teamId == team.teamId {
                         
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -254,7 +254,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
             for try await querySnapshot in querySnapshots {
                 if let receivedProject = querySnapshot.items.first {
                     assertProject(receivedProject, hasTeam: savedTeam)
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }
@@ -280,7 +280,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
             for try await querySnapshot in querySnapshots {
                 if let receivedTeam = querySnapshot.items.first {
                     XCTAssertEqual(receivedTeam.teamId, team.teamId)
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }
