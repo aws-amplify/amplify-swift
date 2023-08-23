@@ -39,6 +39,16 @@
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CoreMLPredictionsPluginUnitTests"
+               BuildableName = "CoreMLPredictionsPluginUnitTests"
+               BlueprintName = "CoreMLPredictionsPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

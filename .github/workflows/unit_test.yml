@@ -1,6 +1,11 @@
 name: Unit Tests | All
 on:
   workflow_call:
+    inputs:
+      identifier:
+        required: true
+        type: string
+
   workflow_dispatch:
   push:
     branches-ignore:
@@ -11,54 +16,81 @@ permissions:
     contents: read
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
-  prepare-for-tests:
-    runs-on: macos-12
-    environment: UnitTest
+  unit-tests-without-coverage:
+    name: ${{ matrix.scheme }} Unit Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          InternalAWSPinpointUnitTests
+        ]
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: ${{ matrix.scheme }}
+      generate_coverage_report: false
+
+  unit-tests-with-coverage:
+    name: ${{ matrix.scheme }} Unit Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin
+        ]
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: ${{ matrix.scheme }}
+      generate_coverage_report: true
+
+  report-coverage:
+    name: ${{ matrix.file.scheme }} Coverage Report
+    needs: [unit-tests-with-coverage]
+    strategy:
+      fail-fast: false
+      matrix:
+        file: [
+          { scheme: Amplify, flags: 'Amplify,unit_tests' },
+          { scheme: AWSPluginsCore, flags: 'AWSPluginsCore,unit_tests' },
+          { scheme: AWSAPIPlugin, flags: 'API_plugin_unit_test,unit_tests' },
+          { scheme: AWSCloudWatchLoggingPlugin, flags: 'Logging_plugin_unit_test,unit_tests' },
+          { scheme: AWSCognitoAuthPlugin, flags: 'Auth_plugin_unit_test,unit_tests' },
+          { scheme: AWSDataStorePlugin, flags: 'DataStore_plugin_unit_test,unit_tests' },
+          { scheme: AWSLocationGeoPlugin, flags: 'Geo_plugin_unit_test,unit_tests' },
+          { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
+          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
+          { scheme: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
+        ]
+    uses: ./.github/workflows/upload_coverage_report.yml
+    with:
+      scheme: ${{ matrix.file.scheme }}
+      flags: ${{ matrix.file.flags }}
+
+  unit-test-pass-confirmation:
+    runs-on: ubuntu-latest
+    name: Confirm Passing Unit Tests
+    if: ${{ !cancelled() }}
+    needs: [
+      unit-tests-with-coverage,
+      unit-tests-without-coverage
+    ]
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
-  build-amplify-swift:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/build_amplify_swift.yml
-
-  analytics-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_analytics.yml
-
-  api-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_api.yml
-
-  auth-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_auth.yml
-
-  datastore-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_datastore.yml
-
-  geo-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_geo.yml
-
-  internal-pinpoint-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_internal_pinpoint.yml
-
-  predictions-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_predictions.yml
-
-  push-notifications-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_push_notifications.yml
-
-  storage-unit-test:
-    needs: prepare-for-tests
-    uses: ./.github/workflows/unit_test_storage.yml
+      - run: exit $EXIT_CODE

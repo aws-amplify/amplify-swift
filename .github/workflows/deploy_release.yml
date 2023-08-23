@@ -14,3 +14,4 @@ jobs:
     with:
       type: release
     secrets: inherit
+

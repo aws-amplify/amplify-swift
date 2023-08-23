@@ -39,7 +39,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -52,3 +52,12 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@822fe5ef9a15bd752ef127e9ff6eac38ec37dd9c
 
+  confirm-pass:
+    runs-on: ubuntu-latest
+    name: Confirm Passing CodeQL Scan
+    if: ${{ !cancelled() }}
+    needs: [ analyze ]
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
+    steps:
+      - run: exit $EXIT_CODE

@@ -1,66 +1,12 @@
 name: Unit Tests | Storage
 on:
   workflow_dispatch:
-  workflow_call:
-
-env:
-  SCHEME: AWSS3StoragePlugin
 
 permissions:
     contents: read
 
 jobs:
-  storage-unit-test-iOS:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-      - name: Run Unit Test Suite
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          scheme: ${{ env.SCHEME }}
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
-          xcode_path: '/Applications/Xcode_14.3.app'
-
-  storage-unit-test-macOS:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-      - name: Run Unit Test Suite
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          scheme: ${{ env.SCHEME }}
-          destination: platform=macOS,arch=x86_64
-          sdk: macosx
-          xcode_path: '/Applications/Xcode_14.3.app'
-
-  storage-unit-test-tvOS:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-      - name: Run Unit Test Suite
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          scheme: ${{ env.SCHEME }}
-          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
-          sdk: appletvsimulator
-          xcode_path: '/Applications/Xcode_14.3.app'
-
-  storage-unit-test-watchOS:
-    runs-on: macos-13
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-      - name: Run Unit Test Suite
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          scheme: ${{ env.SCHEME }}
-          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
-          sdk: watchsimulator
-          xcode_path: '/Applications/Xcode_14.3.app'
+  storage-unit-tests:
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: AWSS3StoragePlugin
