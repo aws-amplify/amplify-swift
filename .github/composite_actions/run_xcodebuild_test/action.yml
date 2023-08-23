@@ -19,6 +19,10 @@ inputs:
     required: false
     type: string
     default: 'iphonesimulator'
+  other_flags:
+    required: false
+    type: string
+    default: ''
   generate_coverage:
     required: false
     type: boolean
@@ -39,10 +43,6 @@ inputs:
     required: false
     type: boolean
     default: false
-  other_flags:
-    required: false
-    type: string
-    default: ''
 
 runs:
   using: "composite"
@@ -66,7 +66,7 @@ runs:
         clonedSourcePackagesPath=""
         if [ ! -z "$CLONED_SOURCE_PACKAGES_PATH" ]; then
           echo "Using custom cloned source packages path"
-          clonedSourcePackagesPath+="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH -disableAutomaticPackageResolution"
+          clonedSourcePackagesPath+="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
         fi
 
         derivedDataPath=""
@@ -93,12 +93,10 @@ runs:
           clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
         fi
 
-        action=""
+        action="test"
         if [ "${{ inputs.test_without_building }}" == "true" ]; then
           echo "Testing without building..."
-          action="test-without-building"
-        else
-          action="test"
+          action+="-without-building"
         fi
 
         xcode-select -p
