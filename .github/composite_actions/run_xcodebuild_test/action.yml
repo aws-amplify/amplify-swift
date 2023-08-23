@@ -80,7 +80,7 @@ runs:
           echo "Code Coverage is enabled!"
           coverageFlags+="-enableCodeCoverage YES"
           if [ -z "$clonedSourcePackagesPath" ]; then
-            clonedSourcePackagesPath+="-clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/$SCHEME"
+            clonedSourcePackagesPath+="-clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify"
           fi
 
           if [ -z "$derivedDataPath" ]; then
