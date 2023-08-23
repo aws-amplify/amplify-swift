@@ -18,7 +18,8 @@ permissions:
 jobs:
   upload-coverage:
     name: ${{ inputs.scheme }} Coverage Report
-    runs-on: macos-13
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:

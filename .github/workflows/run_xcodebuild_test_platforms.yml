@@ -32,13 +32,54 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache
+        id: restore-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Run iOS Test Suite
+        id: run-tests
+        continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
           generate_coverage: ${{ inputs.generate_coverage_report }}
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+      - name: Retry iOS Test Suite if needed
+        if: steps.run-tests.outcome=='failure'
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
+          generate_coverage: ${{ inputs.generate_coverage_report }}
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true
+          test_without_building: true
+      - name: Save the build cache for re-runs
+        if: failure() && steps.retry-tests.outcome=='failure'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Upload Report File
         if: ${{ inputs.generate_coverage_report == true }}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
@@ -57,13 +98,54 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache
+        id: restore-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
       - name: Run macOS Test Suite
+        id: run-tests
+        continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
           destination: platform=macOS,arch=x86_64
           sdk: macosx
           xcode_path: '/Applications/Xcode_14.3.app'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+      - name: Retry macOS Test Suite if needed
+        if: steps.run-tests.outcome=='failure'
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=macOS,arch=x86_64
+          sdk: macosx
+          xcode_path: '/Applications/Xcode_14.3.app'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true
+          test_without_building: true
+      - name: Save the build cache for re-runs
+        if: failure() && steps.retry-tests.outcome=='failure'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
 
   test-tvOS:
     name: ${{ inputs.scheme }} tvOS Tests
@@ -73,13 +155,54 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache
+        id: restore-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
       - name: Run tvOS Test Suite
+        id: run-tests
+        continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+      - name: Retry tvOS Test Suite if needed
+        if: steps.run-tests.outcome=='failure'
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
+          sdk: appletvsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true
+          test_without_building: true
+      - name: Save the build cache for re-runs
+        if: failure() && steps.retry-tests.outcome=='failure'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
 
   test-watchOS:
     name: ${{ inputs.scheme }} watchOS Tests
@@ -89,10 +212,51 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache
+        id: restore-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
       - name: Run watchOS Test Suite
+        id: run-tests
+        continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+      - name: Retry watchOS Test Suite if needed
+        if: steps.run-tests.outcome=='failure'
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ env.SCHEME }}
+          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
+          sdk: watchsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true
+          test_without_building: true
+      - name: Save the build cache for re-runs
+        if: failure() && steps.retry-tests.outcome=='failure'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}

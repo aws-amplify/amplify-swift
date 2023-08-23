@@ -19,6 +19,10 @@ inputs:
     required: false
     type: string
     default: 'iphonesimulator'
+  disable_package_resolution:
+    required: false
+    type: boolean
+    default: false
   other_flags:
     required: false
     type: string
@@ -39,6 +43,11 @@ runs:
         if [ ! -z "$XCODE_PATH" ]; then
           sudo xcode-select -s $XCODE_PATH
         fi
+
+        otherFlags="${{ inputs.other_flags }}"
+        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
+          otherFlags+=" -disableAutomaticPackageResolution"
+        fi
         xcodebuild -version
-        xcodebuild build -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild build -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
