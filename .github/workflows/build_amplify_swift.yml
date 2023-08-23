@@ -29,9 +29,9 @@ jobs:
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: ${{ runner.os }}-iOS-packages-${{ hashFiles('**/Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-iOS-packages-
+            amplify-packages-
       - name: Build Amplify Swift for iOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -54,9 +54,9 @@ jobs:
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: ${{ runner.os }}-macOS-packages-${{ hashFiles('**/Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-macOS-packages-
+            amplify-packages-
       - name: Build Amplify Swift for macOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -80,9 +80,9 @@ jobs:
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: ${{ runner.os }}-tvOS-packages-${{ hashFiles('**/Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-tvOS-packages-
+            amplify-packages-
       - name: Build Amplify Swift for tvOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -106,9 +106,9 @@ jobs:
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: ${{ runner.os }}-watchOS-packages-${{ hashFiles('**/Package.resolved') }}
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-watchOS-packages-
+            amplify-packages-
       - name: Build Amplify Swift for watchOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
