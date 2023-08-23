@@ -13,6 +13,10 @@ permissions:
   contents: write
 
 jobs:
+  build-amplify-swift:
+    name: Build Amplify package
+    uses: ./.github/workflows/build_amplify_swift.yml
+  
   unit-tests:
     name: Run Plugins Unit Tests
     uses: ./.github/workflows/unit_test.yml

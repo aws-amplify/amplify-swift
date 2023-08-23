@@ -22,11 +22,11 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
-      - name: Cache packages
+      - name: Attempt to restore dependencies cache
         id: cache-packages
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
@@ -40,6 +40,12 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
+      - name: Save the dependencies cache if necessary
+        if: steps.cache-packages.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: ${{ steps.cache-packages.outputs.cache-primary-key }}
 
   build-amplify-swift-macOS:
     runs-on: macos-13
