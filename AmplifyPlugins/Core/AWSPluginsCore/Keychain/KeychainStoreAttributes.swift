@@ -22,6 +22,7 @@ extension KeychainStoreAttributes {
             KeychainStore.Constants.Class: itemClass,
             KeychainStore.Constants.AttributeService: service
         ]
+        query[KeychainStore.Constants.UseDataProtectionKeyChain] = kCFBooleanTrue
         if let accessGroup = accessGroup {
             query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
         }
