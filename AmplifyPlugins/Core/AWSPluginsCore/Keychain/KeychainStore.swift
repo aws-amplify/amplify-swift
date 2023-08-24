@@ -149,7 +149,6 @@ public struct KeychainStore: KeychainStoreBehavior {
         switch fetchStatus {
         case errSecSuccess:
             #if os(macOS)
-            // Never update an existing keychain item on OS X, since the existing item could have unauthorized apps in the Access Control List. Fixes zero-day Keychain vuln found here: https://drive.google.com/file/d/0BxxXk1d3yyuZOFlsdkNMSGswSGs/view
             SecItemDelete(getQuery as CFDictionary)
             fallthrough
             #else
