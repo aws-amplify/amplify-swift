@@ -34,6 +34,7 @@ jobs:
     uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
+      timeout-minutes: 50
       generate_coverage_report: false
       retry_on_error: false
       other_flags: -test-iterations 100 -run-tests-until-failure
