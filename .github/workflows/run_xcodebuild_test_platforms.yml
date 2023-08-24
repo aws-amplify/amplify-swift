@@ -28,6 +28,7 @@ on:
 
 env:
   SCHEME: ${{ inputs.scheme }}
+  RETRY_ON_ERROR: ${{ inputs.retry_on_error }}
 
 permissions:
     contents: read
@@ -59,7 +60,7 @@ jobs:
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Run iOS Test Suite
         id: run-tests
-        continue-on-error: ${{ inputs.retry_on_error == 'true' }}
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -127,7 +128,7 @@ jobs:
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
       - name: Run macOS Test Suite
         id: run-tests
-        continue-on-error: ${{ inputs.retry_on_error == 'true' }}
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -186,7 +187,7 @@ jobs:
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
       - name: Run tvOS Test Suite
         id: run-tests
-        continue-on-error: ${{ inputs.retry_on_error == 'true' }}
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -245,7 +246,7 @@ jobs:
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
       - name: Run watchOS Test Suite
         id: run-tests
-        continue-on-error: ${{ inputs.retry_on_error == 'true' }}
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
