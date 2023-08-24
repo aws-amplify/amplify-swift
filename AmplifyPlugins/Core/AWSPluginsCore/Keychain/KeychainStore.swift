@@ -151,14 +151,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             #if os(macOS)
             // Never update an existing keychain item on OS X, since the existing item could have unauthorized apps in the Access Control List. Fixes zero-day Keychain vuln found here: https://drive.google.com/file/d/0BxxXk1d3yyuZOFlsdkNMSGswSGs/view
             SecItemDelete(getQuery as CFDictionary)
-            var attributesToSet = attributes.defaultSetQuery()
-            attributesToSet[Constants.AttributeAccount] = key
-            attributesToSet[Constants.ValueData] = value
-
-            let addStatus = SecItemAdd(attributesToSet as CFDictionary, nil)
-            if addStatus != errSecSuccess {
-                throw KeychainStoreError.securityError(addStatus)
-            }
+            fallthrough 
             #else
             var attributesToUpdate = [String: Any]()
             attributesToUpdate[Constants.ValueData] = value
@@ -167,6 +160,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             if updateStatus != errSecSuccess {
                 throw KeychainStoreError.securityError(updateStatus)
             }
+            return
             #endif
         case errSecItemNotFound:
             var attributesToSet = attributes.defaultSetQuery()
