@@ -13,21 +13,34 @@ permissions:
   contents: write
 
 jobs:
+  build-amplify-swift:
+    name: Build Amplify package
+    uses: ./.github/workflows/build_amplify_swift.yml
+    with:
+      identifier: 'workflow-call-build-amplify-swift'
+  
   unit-tests:
     name: Run Plugins Unit Tests
     uses: ./.github/workflows/unit_test.yml
+    with:
+      identifier: 'workflow-call-unit-test'
 
   fortify:
     name: Run Fortify Scan
     uses: ./.github/workflows/fortify_scan.yml
     secrets: inherit
+    with:
+      identifier: 'workflow-call-fortify'
 
   release:
     environment: Release
     name: Release new ${{ inputs.type }} version
-    needs: [unit-tests, fortify]
+    needs: [unit-tests, fortify, build-amplify-swift]
     runs-on: macos-latest
-    steps: 
+    env:
+      GITHUB_EMAIL: aws-amplify-ops@amazon.com
+      GITHUB_USER: aws-amplify-ops
+    steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 #v2
         with:
@@ -58,7 +71,11 @@ jobs:
           bundler-cache: true
 
       - name:  Release Package
-        env:
-          GITHUB_EMAIL: aws-amplify-ops@amazon.com
-          GITHUB_USER: aws-amplify-ops
         run: bundle exec fastlane ${{ inputs.type }}
+
+      - name: Release docs
+        if: ${{ inputs.type == 'release' }}
+        working-directory: ${{ github.workspace }}
+        run: |
+          git checkout -B gh-pages
+          bash ./CircleciScripts/jazzy_doc_gen.sh

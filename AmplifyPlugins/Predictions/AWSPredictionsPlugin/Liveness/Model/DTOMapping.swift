@@ -31,7 +31,8 @@ func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSes
             heightWidthRatio: challengeConfig.ovalHeightWidthRatio,
             iouThreshold: challengeConfig.ovalIouThreshold,
             iouWidthThreshold: challengeConfig.ovalIouWidthThreshold,
-            iouHeightThreshold: challengeConfig.ovalIouHeightThreshold
+            iouHeightThreshold: challengeConfig.ovalIouHeightThreshold,
+            ovalFitTimeout: challengeConfig.ovalFitTimeout
         )
     )
 }

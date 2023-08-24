@@ -1,0 +1,48 @@
+name: Deploy Documentation
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  release-doc:
+    name: Release documentation
+    if: ${{ github.ref_name == 'release' }}
+    runs-on: macos-latest
+    environment: Release
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 #v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ format('{0}.release-doc', github.run_id) }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Retrieve Token
+        id: retrieve-token
+        env:
+          DEPLOY_SECRET_ARN: ${{ secrets.DEPLOY_SECRET_ARN }}
+        run: |
+          PAT=$(aws secretsmanager get-secret-value \
+          --secret-id "$DEPLOY_SECRET_ARN" \
+          | jq -r ".SecretString | fromjson | .Credential")
+          echo "token=$PAT" >> $GITHUB_OUTPUT
+
+      - name: Checkout repo
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+        with:
+          token: ${{steps.retrieve-token.outputs.token}}
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939 # v1.152.0
+        with:
+          ruby-version: '3.2.1'
+          bundler-cache: true
+
+      - name: Generate doc
+        env:
+          GITHUB_EMAIL: aws-amplify-ops@amazon.com
+          GITHUB_USER: aws-amplify-ops
+        run: bash ./CircleciScripts/jazzy_doc_gen.sh

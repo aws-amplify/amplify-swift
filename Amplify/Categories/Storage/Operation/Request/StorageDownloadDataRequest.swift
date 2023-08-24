@@ -51,11 +51,25 @@ public extension StorageDownloadDataRequest {
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
         ///
+        /// As an example, if using the AWSS3StoragePlugin, one may be want to add something like the
+        /// following (please note that `useAccelerateEndpoint`
+        /// [should first be setup](https://docs.amplify.aws/lib/storage/transfer-acceleration/q/platform/js/),
+        /// otherwise, requests will fail):
+        ///
+        /// ```
+        ///  let options = StorageDownloadDataRequest.Options(
+        ///      pluginOptions: [
+        ///          "useAccelerateEndpoint": true
+        ///      ]
+        ///  )
+        /// ```
+        ///
+        /// # Reference
+        /// * [Storage - Use Transfer Acceleration](https://docs.amplify.aws/lib/storage/transfer-acceleration/q/platform/js/)
+        /// * [Transfer Acceleration](https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html)
+        ///
         /// - Tag: StorageDownloadDataRequestOptions.pluginOptions
         public let pluginOptions: Any?
-
-        // TODO: transferAcceleration should be in pluginOptions
-        // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
 
         ///
         /// - Tag: StorageDownloadDataRequestOptions.init

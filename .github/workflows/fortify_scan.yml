@@ -2,6 +2,11 @@ name: Fortify Scan
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      identifier:
+        required: true
+        type: string
+
   push:
     branches-ignore:
       - main
@@ -11,12 +16,16 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main'}}
+
 jobs:
   fortify-scan:
     runs-on: macos-latest
     environment: Fortify
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
 
@@ -26,7 +35,7 @@ jobs:
           cp -r Amplify source
           cp -r AmplifyPlugins source
       - name: Configure AWS credentials for fetching fortify resources
-        uses: aws-actions/configure-aws-credentials@05b148adc31e091bafbaf404f745055d4d3bc9d2 # Pin to 1.6.1
+        uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 #v2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
@@ -58,3 +67,13 @@ jobs:
         run: |
           export PATH=~/amplify-swift/Fortify/bin:$PATH
           sh ./fortify_scan.sh source
+
+  confirm-pass:
+    runs-on: ubuntu-latest
+    name: Confirm Passing Fortify Scan
+    if: ${{ !cancelled() }}
+    needs: [ fortify-scan ]
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
+    steps:
+      - run: exit $EXIT_CODE

@@ -55,19 +55,22 @@ extension FaceLivenessSession.OvalMatchChallenge {
         public let iouThreshold: Double
         public let iouWidthThreshold: Double
         public let iouHeightThreshold: Double
+        public let ovalFitTimeout: Int
 
         public init(
             boundingBox: FaceLivenessSession.BoundingBox,
             heightWidthRatio: Double,
             iouThreshold: Double,
             iouWidthThreshold: Double,
-            iouHeightThreshold: Double
+            iouHeightThreshold: Double,
+            ovalFitTimeout: Int
         ) {
             self.boundingBox = boundingBox
             self.heightWidthRatio = heightWidthRatio
             self.iouThreshold = iouThreshold
             self.iouWidthThreshold = iouWidthThreshold
             self.iouHeightThreshold = iouHeightThreshold
+            self.ovalFitTimeout = ovalFitTimeout
         }
     }
 }

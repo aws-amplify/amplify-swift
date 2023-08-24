@@ -23,6 +23,26 @@ inputs:
     required: false
     type: string
     default: ''
+  generate_coverage:
+    required: false
+    type: boolean
+    default: false
+  cloned_source_packages_path:
+    required: false
+    type: string
+    default: ''
+  derived_data_path:
+    required: false
+    type: string
+    default: ''
+  disable_package_resolution:
+    required: false
+    type: boolean
+    default: false
+  test_without_building:
+    required: false
+    type: boolean
+    default: false
 
 runs:
   using: "composite"
@@ -32,13 +52,76 @@ runs:
         SCHEME: ${{ inputs.scheme }}
         PROJECT_PATH: ${{ inputs.project_path }}
         XCODE_PATH: ${{ inputs.xcode_path }}
+        CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
+        DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
       run: |
         if [ ! -z "$PROJECT_PATH" ]; then
           cd $PROJECT_PATH
         fi
         if [ ! -z "$XCODE_PATH" ]; then
+          echo "Using Xcode $XCODE_PATH"
           sudo xcode-select -s $XCODE_PATH
         fi
+
+        clonedSourcePackagesPath=""
+        if [ ! -z "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+          echo "Using custom cloned source packages path"
+          clonedSourcePackagesPath+="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
+        fi
+
+        derivedDataPath=""
+        if [ ! -z "$DERIVED_DATA_PATH" ]; then
+          echo "Using custom DerivedData path"
+          derivedDataPath+="-derivedDataPath $DERIVED_DATA_PATH"
+        fi
+
+        coverageFlags=""
+        if [ "${{ inputs.generate_coverage }}" == "true" ]; then
+          echo "Code Coverage is enabled!"
+          coverageFlags+="-enableCodeCoverage YES"
+          if [ -z "$clonedSourcePackagesPath" ]; then
+            clonedSourcePackagesPath+="-clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify"
+          fi
+
+          if [ -z "$derivedDataPath" ]; then
+            derivedDataPath+="-derivedDataPath Build/"
+          fi
+        fi
+
+        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
+          echo "Disabling Automatic Package Resolution"
+          clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
+        fi
+
+        action="test"
+        if [ "${{ inputs.test_without_building }}" == "true" ]; then
+          echo "Testing without building..."
+          action+="-without-building"
+        fi
+
+        xcode-select -p
         xcodebuild -version
-        xcodebuild test -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' ${{ inputs.other_flags }} $clonedSourcePackagesPath $derivedDataPath $coverageFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+      shell: bash
+
+    - name: Generate Coverage report
+      if: ${{ inputs.generate_coverage == 'true' }}
+      env:
+        SCHEME: ${{ inputs.scheme }}
+        DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
+      run: |
+        echo "Generating Coverage report..."
+
+        derivedDataPath=""
+        if [ ! -z "$DERIVED_DATA_PATH" ]; then
+          derivedDataPath="$DERIVED_DATA_PATH"
+        else
+          derivedDataPath="Build"
+        fi
+
+        cd $derivedDataPath/Build/ProfileData
+        cd $(ls -d */|head -n 1)
+        pathCoverage=Build/Build/ProfileData/${PWD##*/}/Coverage.profdata
+        cd ${{ github.workspace }}
+        xcrun llvm-cov export -format="lcov" -instr-profile $pathCoverage $derivedDataPath/Build/Products/Debug-${{ inputs.sdk }}/$SCHEME.o > $SCHEME-Coverage.lcov
       shell: bash

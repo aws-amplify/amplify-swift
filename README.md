@@ -9,7 +9,8 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 
 [**Getting Started Guide**](https://docs.amplify.aws/start/q/integration/ios)
 
-[![CircleCI](https://circleci.com/gh/aws-amplify/amplify-swift.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-swift)
+[![CI/CD](https://img.shields.io/github/actions/workflow/status/aws-amplify/amplify-swift/deploy_unstable.yml?logo=github&label=CI%2FCD)](https://github.com/aws-amplify/amplify-swift/actions/workflows/deploy_unstable.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/aws-amplify/amplify-swift?logo=codecov&label=codecov)](https://app.codecov.io/gh/aws-amplify/amplify-swift)
 [![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC)
 
 ## Features/APIs
