@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.15.4 (2023-08-25)
+
+### Bug Fixes
+
+- **core**: update keychain setter for macOS (#3174)
+
 ## 2.15.3 (2023-08-24)
 
 ## 2.15.2 (2023-08-03)
