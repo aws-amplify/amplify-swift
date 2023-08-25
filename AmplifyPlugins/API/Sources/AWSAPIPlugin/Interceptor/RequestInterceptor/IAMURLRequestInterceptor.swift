@@ -37,7 +37,7 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
 
         request.setValue(URLRequestConstants.ContentType.applicationJson, forHTTPHeaderField: URLRequestConstants.Header.contentType)
         request.setValue(host, forHTTPHeaderField: "host")
-        request.setValue(AWSAPIPluginsCore.baseUserAgent(), forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        request.setValue(AmplifyAWSServiceConfiguration.frameworkMetaData().description, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
         let httpMethod = (request.httpMethod?.uppercased())
             .flatMap(HttpMethodType.init(rawValue:)) ?? .get

@@ -112,7 +112,8 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
     ) -> URLRequest {
         var urlRequest = URLRequest(url: endpointConfig.baseURL)
-        urlRequest.setValue(AWSAPIPluginsCore.baseUserAgent(), forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        urlRequest.setValue(AmplifyAWSServiceConfiguration.frameworkMetaData().description,
+                            forHTTPHeaderField: URLRequestConstants.Header.userAgent)
         return urlRequest
     }
     
@@ -311,7 +312,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
     ) -> URLRequest {
         var urlRequest = URLRequest(url: endpointConfig.baseURL)
-        urlRequest.setValue(AWSAPIPluginsCore.baseUserAgent(), forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        urlRequest.setValue(AmplifyAWSServiceConfiguration.frameworkMetaData().description,
+                            forHTTPHeaderField: URLRequestConstants.Header.userAgent)
         return urlRequest
     }
 

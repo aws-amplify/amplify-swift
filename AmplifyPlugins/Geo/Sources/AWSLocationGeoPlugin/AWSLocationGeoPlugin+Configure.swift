@@ -32,6 +32,7 @@ extension AWSLocationGeoPlugin {
         let region = configuration.regionName
         let serviceConfiguration = try LocationClient.LocationClientConfiguration(
             credentialsProvider: credentialsProvider,
+            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
             region: region)
 
         let location = LocationClient(config: serviceConfiguration)

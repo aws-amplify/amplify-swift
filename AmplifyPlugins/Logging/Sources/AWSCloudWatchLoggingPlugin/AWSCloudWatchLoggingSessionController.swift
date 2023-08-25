@@ -104,6 +104,7 @@ final class AWSCloudWatchLoggingSessionController {
         if self.client == nil {
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
                 credentialsProvider: credentialsProvider,
+                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: region
             )
             self.client = CloudWatchLogsClient(config: configuration)
