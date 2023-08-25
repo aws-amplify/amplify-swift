@@ -23,7 +23,13 @@ public struct AuthSignUpResult {
     ///
     public let nextStep: AuthSignUpStep
 
-    public init(_ nextStep: AuthSignUpStep) {
+    public let userID: String?
+
+    public init(
+        nextStep: AuthSignUpStep,
+        userID: String?
+    ) {
         self.nextStep = nextStep
+        self.userID = userID
     }
 }
