@@ -223,7 +223,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
-        
+
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.subscribe,
                    request: request,
