@@ -148,7 +148,10 @@ public struct KeychainStore: KeychainStoreBehavior {
         let fetchStatus = SecItemCopyMatching(getQuery as CFDictionary, nil)
         switch fetchStatus {
         case errSecSuccess:
-
+            #if os(macOS)
+            SecItemDelete(getQuery as CFDictionary)
+            fallthrough
+            #else
             var attributesToUpdate = [String: Any]()
             attributesToUpdate[Constants.ValueData] = value
 
@@ -156,6 +159,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             if updateStatus != errSecSuccess {
                 throw KeychainStoreError.securityError(updateStatus)
             }
+            #endif
         case errSecItemNotFound:
             var attributesToSet = attributes.defaultSetQuery()
             attributesToSet[Constants.AttributeAccount] = key

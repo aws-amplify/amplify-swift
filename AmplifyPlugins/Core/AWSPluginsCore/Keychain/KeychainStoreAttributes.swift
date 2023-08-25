@@ -20,8 +20,10 @@ extension KeychainStoreAttributes {
     func defaultGetQuery() -> [String: Any] {
         var query: [String: Any] = [
             KeychainStore.Constants.Class: itemClass,
-            KeychainStore.Constants.AttributeService: service
+            KeychainStore.Constants.AttributeService: service,
+            KeychainStore.Constants.UseDataProtectionKeyChain: kCFBooleanTrue
         ]
+        
         if let accessGroup = accessGroup {
             query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
         }
