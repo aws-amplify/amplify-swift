@@ -16,13 +16,15 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let iamCredentialsProvider: IAMCredentialsProvider
     let region: AWSRegionType
     let endpointType: AWSAPICategoryPluginEndpointType
-
+    let userAgent: String
+    
     init(iamCredentialsProvider: IAMCredentialsProvider,
          region: AWSRegionType,
          endpointType: AWSAPICategoryPluginEndpointType) {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
         self.endpointType = endpointType
+        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     }
 
     func intercept(_ request: URLRequest) async throws -> URLRequest {
@@ -37,7 +39,7 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
 
         request.setValue(URLRequestConstants.ContentType.applicationJson, forHTTPHeaderField: URLRequestConstants.Header.contentType)
         request.setValue(host, forHTTPHeaderField: "host")
-        request.setValue(AmplifyAWSServiceConfiguration.frameworkMetaData().description, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        request.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
         let httpMethod = (request.httpMethod?.uppercased())
             .flatMap(HttpMethodType.init(rawValue:)) ?? .get

@@ -11,19 +11,19 @@ import Foundation
 
 struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
 
+    let userAgent: String
     let apiKeyProvider: APIKeyProvider
 
     init(apiKeyProvider: APIKeyProvider) {
         self.apiKeyProvider = apiKeyProvider
+        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     }
 
     func intercept(_ request: URLRequest) -> URLRequest {
         var modifiedRequest = request
         let apiKey = apiKeyProvider.getAPIKey()
-        modifiedRequest.addValue(apiKey,
-                                 forHTTPHeaderField: URLRequestConstants.Header.xApiKey)
-        modifiedRequest.setValue(AmplifyAWSServiceConfiguration.frameworkMetaData().description,
-                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        modifiedRequest.addValue(apiKey, forHTTPHeaderField: URLRequestConstants.Header.xApiKey)
+        modifiedRequest.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
         return modifiedRequest
     }

@@ -21,6 +21,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
     var apiAuthProviderFactory: APIAuthProviderFactory
+    let userAgent: String
     
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
@@ -38,6 +39,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
+        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     }
     
     public func cancel() {
@@ -112,8 +114,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
     ) -> URLRequest {
         var urlRequest = URLRequest(url: endpointConfig.baseURL)
-        urlRequest.setValue(AmplifyAWSServiceConfiguration.frameworkMetaData().description,
-                            forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        urlRequest.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
         return urlRequest
     }
     
@@ -203,7 +204,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
-
+    let userAgent: String
+    
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
     var apiAuthProviderFactory: APIAuthProviderFactory
@@ -222,7 +224,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
-
+        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
+        
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.subscribe,
                    request: request,
@@ -312,8 +315,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
     ) -> URLRequest {
         var urlRequest = URLRequest(url: endpointConfig.baseURL)
-        urlRequest.setValue(AmplifyAWSServiceConfiguration.frameworkMetaData().description,
-                            forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        urlRequest.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
         return urlRequest
     }
 
