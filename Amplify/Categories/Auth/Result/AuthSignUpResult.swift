@@ -27,7 +27,7 @@ public struct AuthSignUpResult {
 
     public init(
         nextStep: AuthSignUpStep,
-        userID: String?
+        userID: String? = nil
     ) {
         self.nextStep = nextStep
         self.userID = userID
