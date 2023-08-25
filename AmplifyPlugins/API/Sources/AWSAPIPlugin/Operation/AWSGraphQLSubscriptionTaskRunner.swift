@@ -21,7 +21,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
     var apiAuthProviderFactory: APIAuthProviderFactory
-    let userAgent: String
+    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
@@ -39,7 +39,6 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
-        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     }
     
     public func cancel() {
@@ -204,7 +203,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
-    let userAgent: String
+    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
@@ -224,7 +223,6 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
-        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
         
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.subscribe,

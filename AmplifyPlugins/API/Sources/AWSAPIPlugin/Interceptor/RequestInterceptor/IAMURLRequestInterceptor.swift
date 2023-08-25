@@ -16,7 +16,7 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let iamCredentialsProvider: IAMCredentialsProvider
     let region: AWSRegionType
     let endpointType: AWSAPICategoryPluginEndpointType
-    let userAgent: String
+    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     
     init(iamCredentialsProvider: IAMCredentialsProvider,
          region: AWSRegionType,
@@ -24,7 +24,6 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
         self.endpointType = endpointType
-        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     }
 
     func intercept(_ request: URLRequest) async throws -> URLRequest {
