@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.15.5 (2023-08-28)
+
+### Bug Fixes
+
+- update user agent values to be consistent across plugins (#3178)
+
 ## 2.15.4 (2023-08-25)
 
 ### Bug Fixes
