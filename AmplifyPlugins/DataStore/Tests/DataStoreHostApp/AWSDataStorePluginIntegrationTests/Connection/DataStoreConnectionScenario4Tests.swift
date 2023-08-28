@@ -92,10 +92,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         let comment = try await saveComment(content: "content", post: post)
         try await Amplify.DataStore.delete(comment)
         let queriedComment = try await Amplify.DataStore.query(Comment4.self, byId: comment.id)
-        guard queriedComment == nil else {
-            XCTFail("Should be nil after deletion")
-            return
-        }
+        XCTAssertNil(queriedComment, "Should be nil after deletion")
     }
 
     func testListCommentsByPostID() async throws {
