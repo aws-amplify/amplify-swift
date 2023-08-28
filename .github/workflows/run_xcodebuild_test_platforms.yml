@@ -73,7 +73,7 @@ jobs:
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
           other_flags: ${{ inputs.other_flags }}
       - name: Retry iOS Test Suite if needed
-        if: inputs.retry_on_error == 'true' && steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -141,7 +141,7 @@ jobs:
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
           other_flags: ${{ inputs.other_flags }}
       - name: Retry macOS Test Suite if needed
-        if: inputs.retry_on_error == 'true' && steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -200,7 +200,7 @@ jobs:
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
           other_flags: ${{ inputs.other_flags }}
       - name: Retry tvOS Test Suite if needed
-        if: inputs.retry_on_error == 'true' && steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -259,7 +259,7 @@ jobs:
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
           other_flags: ${{ inputs.other_flags }}
       - name: Retry watchOS Test Suite if needed
-        if: inputs.retry_on_error == 'true' && steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
