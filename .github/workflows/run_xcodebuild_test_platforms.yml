@@ -16,9 +16,19 @@ on:
         required: false
         type: boolean
         default: false
+      retry_on_error:
+        description: 'Whether to automatically retry if the tests fail'
+        required: false
+        type: boolean
+        default: true
+      other_flags:
+        required: false
+        type: string
+        default: ''
 
 env:
   SCHEME: ${{ inputs.scheme }}
+  RETRY_ON_ERROR: ${{ inputs.retry_on_error }}
 
 permissions:
     contents: read
@@ -50,7 +60,7 @@ jobs:
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Run iOS Test Suite
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -61,8 +71,9 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+          other_flags: ${{ inputs.other_flags }}
       - name: Retry iOS Test Suite if needed
-        if: steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -74,6 +85,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
           test_without_building: true
+          other_flags: ${{ inputs.other_flags }}
       - name: Save the build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -116,7 +128,7 @@ jobs:
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
       - name: Run macOS Test Suite
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -127,8 +139,9 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+          other_flags: ${{ inputs.other_flags }}
       - name: Retry macOS Test Suite if needed
-        if: steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -140,6 +153,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
           test_without_building: true
+          other_flags: ${{ inputs.other_flags }}
       - name: Save the build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -173,7 +187,7 @@ jobs:
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
       - name: Run tvOS Test Suite
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -184,8 +198,9 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+          other_flags: ${{ inputs.other_flags }}
       - name: Retry tvOS Test Suite if needed
-        if: steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -197,6 +212,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
           test_without_building: true
+          other_flags: ${{ inputs.other_flags }}
       - name: Save the build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -230,7 +246,7 @@ jobs:
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
       - name: Run watchOS Test Suite
         id: run-tests
-        continue-on-error: true
+        continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           scheme: ${{ env.SCHEME }}
@@ -241,8 +257,9 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+          other_flags: ${{ inputs.other_flags }}
       - name: Retry watchOS Test Suite if needed
-        if: steps.run-tests.outcome=='failure'
+        if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
@@ -254,6 +271,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
           test_without_building: true
+          other_flags: ${{ inputs.other_flags }}
       - name: Save the build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
