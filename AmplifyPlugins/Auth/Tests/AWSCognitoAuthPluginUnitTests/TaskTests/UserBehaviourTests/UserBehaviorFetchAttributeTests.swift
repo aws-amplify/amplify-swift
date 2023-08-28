@@ -15,7 +15,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
 
     /// Test a successful fetchUserAttributes call with .done as next step
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke fetchUserAttributes
     /// - Then:

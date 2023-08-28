@@ -12,6 +12,7 @@ struct ConfirmSignInEventData {
     let answer: String
     let attributes: [String: String]
     let metadata: [String: String]?
+    let friendlyDeviceName: String?
 
 }
 

@@ -53,7 +53,7 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 
     /// Test a successful resendSignUpCode call with .email as the destination of AuthCodeDeliveryDetails
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke resendSignUpCode with username
     /// - Then:

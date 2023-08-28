@@ -85,21 +85,12 @@ struct InitiateAuthDeviceSRP: Action {
     func parseResponse(
         _ response: SignInResponseBehavior,
         with stateData: SRPStateData) -> StateMachineEvent {
-
-            if let challengeName = response.challengeName {
-                switch challengeName {
-                case .devicePasswordVerifier:
-                    return SignInEvent(eventType: .respondDevicePasswordVerifier(stateData, response))
-                default:
-                    let message = "Unsupported challenge response during DeviceSRPAuth \(challengeName)"
-                    let error = SignInError.unknown(message: message)
-                    return SignInEvent(eventType: .throwAuthError(error))
-                }
-            } else {
-                let message = "Response did not contain challenge info"
-                let error = SignInError.invalidServiceResponse(message: message)
+            guard case .devicePasswordVerifier = response.challengeName else {
+                let message = "Unsupported challenge response during DeviceSRPAuth \(response.challengeName ?? .sdkUnknown("Response did not contain challenge info"))"
+                let error = SignInError.unknown(message: message)
                 return SignInEvent(eventType: .throwAuthError(error))
             }
+            return SignInEvent(eventType: .respondDevicePasswordVerifier(stateData, response))
         }
 
 }

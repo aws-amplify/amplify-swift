@@ -166,4 +166,31 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             return try await task.value
         }
     }
+
+    public func setUpTOTP() async throws -> TOTPSetupDetails {
+        let task = SetUpTOTPTask(
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! TOTPSetupDetails
+    }
+
+
+    public func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options?
+    ) async throws {
+        let options = options ?? VerifyTOTPSetupRequest.Options()
+        let request = VerifyTOTPSetupRequest(
+            code: code,
+            options: options)
+        let task = VerifyTOTPSetupTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        _ = try await taskQueue.sync {
+            return try await task.value
+        }
+    }
 }

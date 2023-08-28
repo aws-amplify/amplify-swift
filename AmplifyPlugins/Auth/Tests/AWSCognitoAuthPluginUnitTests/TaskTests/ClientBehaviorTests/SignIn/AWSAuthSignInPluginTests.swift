@@ -645,6 +645,129 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     }
 
 
+    func testSignInWithNextStepTOTP() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .softwareTokenMfa,
+                challengeParameters: ["paramKey": "value"],
+                session: "session")
+        })
+
+        let options = AuthSignInRequest.Options()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            guard case .confirmSignInWithTOTPCode = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithTOTPCode for next step")
+                return
+            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+        } catch {
+            XCTFail("Should not produce error")
+        }
+    }
+
+    func testSignInWithNextStepSelectMFAType() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .selectMfaType,
+                challengeParameters: ["MFAS_CAN_CHOOSE": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"],
+                session: "session")
+        })
+
+        let options = AuthSignInRequest.Options()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            guard case .continueSignInWithMFASelection(let allowedMFaTypes) = result.nextStep else {
+                XCTFail("Result should be .continueSignInWithMFASelection for next step")
+                return
+            }
+            XCTAssertTrue(!allowedMFaTypes.isEmpty, "Allowed MFA types should have TOTP and SMS")
+            XCTAssertEqual(allowedMFaTypes, Set([MFAType.sms, MFAType.totp]))
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+        } catch {
+            XCTFail("Should not produce error")
+        }
+    }
+
+    func testSignInWithNextStepSetupMFA() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .mfaSetup,
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"],
+                session: "session")
+        }, mockAssociateSoftwareTokenResponse: { _ in
+                return .init(secretCode: "123456", session: "session")
+        } )
+
+        let options = AuthSignInRequest.Options()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            guard case .continueSignInWithTOTPSetup(let totpSetupDetails) = result.nextStep else {
+                XCTFail("Result should be .continueSignInWithTOTPSetup for next step")
+                return
+            }
+            XCTAssertNotNil(totpSetupDetails)
+            XCTAssertEqual(totpSetupDetails.sharedSecret, "123456")
+            XCTAssertEqual(totpSetupDetails.username, "username")
+        } catch {
+            XCTFail("Should not produce error")
+        }
+    }
+
+    func testSignInWithNextStepSetupMFAWithUnavailableMFAType() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .mfaSetup,
+                challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\"]"],
+                session: "session")
+        }, mockAssociateSoftwareTokenResponse: { _ in
+            return .init(secretCode: "123456", session: "session")
+        } )
+
+        let options = AuthSignInRequest.Options()
+        do {
+            _ = try await plugin.signIn(username: "username", password: "password", options: options)
+            XCTFail("Should not continue as MFA type is not available for setup")
+        } catch {
+            guard case AuthError.service = error else {
+                XCTFail("Should produce as service error")
+                return
+            }
+        }
+    }
+
     // MARK: - Service error for initiateAuth
 
     /// Test a signIn with `InternalErrorException` from service

@@ -17,7 +17,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
 
     /// Test a successful changePassword call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke changePassword with old password and new password
     /// - Then:

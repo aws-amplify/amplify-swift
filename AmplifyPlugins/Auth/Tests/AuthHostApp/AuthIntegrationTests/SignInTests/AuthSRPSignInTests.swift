@@ -233,7 +233,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///         Make sure that you do not enter email and phone number, so that adding a new attribute could also be tested
     ///
     ///   DISABLED TEST, because it needs special setup
-    func testNewPasswordRequired() async {
+    func testNewPasswordRequired() async throws {
+        throw XCTSkip("TODO: fix this test. Need custom resource")
 
         let username = "YOUR USERNAME CREATED IN COGNITO FOR TESTING TEMP PASSWORD FLOW"
         let tempPassword = "YOUR TEMP PASSWORD THAT WAS SET"

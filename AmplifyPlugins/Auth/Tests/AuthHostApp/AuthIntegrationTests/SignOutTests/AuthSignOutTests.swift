@@ -75,7 +75,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
     /// - When:
     ///    - I invoke signOut
     /// - Then:
-    ///    - I should get a successul result
+    ///    - I should get a successful result
     ///
     func testSignedOutWithUnAuthState() async throws {
         _ = await Amplify.Auth.signOut()
