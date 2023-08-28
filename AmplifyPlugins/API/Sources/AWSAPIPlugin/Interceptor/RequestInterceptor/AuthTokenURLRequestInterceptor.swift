@@ -10,7 +10,10 @@ import AWSPluginsCore
 import Foundation
 
 struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
-
+    
+    static let AWSDateISO8601DateFormat2 = "yyyyMMdd'T'HHmmss'Z'"
+    
+    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     let authTokenProvider: AuthTokenProvider
 
     init(authTokenProvider: AuthTokenProvider) {
@@ -24,14 +27,14 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         }
         let date = Date()
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = AWSAPIPluginsCore.AWSDateISO8601DateFormat2
+        dateFormatter.dateFormat = Self.AWSDateISO8601DateFormat2
         let amzDate = dateFormatter.string(from: date)
 
         mutableRequest.setValue(amzDate,
                                 forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
         mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson,
                                 forHTTPHeaderField: URLRequestConstants.Header.contentType)
-        mutableRequest.setValue(AWSAPIPluginsCore.baseUserAgent(),
+        mutableRequest.setValue(userAgent,
                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
         
         let token: String

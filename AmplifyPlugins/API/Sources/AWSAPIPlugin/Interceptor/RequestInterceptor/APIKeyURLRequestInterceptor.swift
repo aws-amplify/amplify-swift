@@ -11,6 +11,7 @@ import Foundation
 
 struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
 
+    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
     let apiKeyProvider: APIKeyProvider
 
     init(apiKeyProvider: APIKeyProvider) {
@@ -20,10 +21,8 @@ struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
     func intercept(_ request: URLRequest) -> URLRequest {
         var modifiedRequest = request
         let apiKey = apiKeyProvider.getAPIKey()
-        modifiedRequest.addValue(apiKey,
-                                 forHTTPHeaderField: URLRequestConstants.Header.xApiKey)
-        modifiedRequest.setValue(AWSAPIPluginsCore.baseUserAgent(),
-                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        modifiedRequest.addValue(apiKey, forHTTPHeaderField: URLRequestConstants.Header.xApiKey)
+        modifiedRequest.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
         return modifiedRequest
     }
