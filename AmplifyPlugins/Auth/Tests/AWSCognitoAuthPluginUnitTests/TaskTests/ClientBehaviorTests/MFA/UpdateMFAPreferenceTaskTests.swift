@@ -33,13 +33,18 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
         for smsPreference in allSMSPreferences {
             for totpPreference in allTOTPPreference {
                 self.mockIdentityProvider = MockIdentityProvider(
+                    mockGetUserAttributeResponse: { request in
+                        return .init(
+                            userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                        )
+                    },
                     mockSetUserMFAPreferenceResponse: { request in
                         XCTAssertEqual(
                             request.smsMfaSettings,
-                            smsPreference.smsSetting)
+                            smsPreference.smsSetting())
                         XCTAssertEqual(
                             request.softwareTokenMfaSettings,
-                            totpPreference.softwareTokenSetting)
+                            totpPreference.softwareTokenSetting())
 
                         return .init()
                     })
@@ -67,9 +72,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithInternalErrorException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
+            }
+        )
 
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
@@ -92,9 +105,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithInvalidParameterException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.invalidParameterException(.init())
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.invalidParameterException(.init())
+            }
+        )
 
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
@@ -121,9 +142,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithNotAuthorizedException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.notAuthorizedException(.init(message: "message"))
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.notAuthorizedException(.init(message: "message"))
+            }
+        )
 
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
@@ -148,9 +177,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithPasswordResetRequiredException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.passwordResetRequiredException(.init())
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.passwordResetRequiredException(.init())
+            }
+        )
 
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
@@ -179,9 +216,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithResourceNotFoundException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.resourceNotFoundException(.init())
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.resourceNotFoundException(.init())
+            }
+        )
 
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
@@ -210,9 +255,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithForbiddenException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.forbiddenException(.init())
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.forbiddenException(.init())
+            }
+        )
 
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
@@ -237,9 +290,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithUserNotConfirmedException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.userNotConfirmedException(.init())
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.userNotConfirmedException(.init())
+            }
+        )
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
             XCTFail("Should return an error if the result from service is invalid")
@@ -267,9 +328,17 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
     ///
     func testUpdateMFAPreferenceWithUserNotFoundException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockSetUserMFAPreferenceResponse: { _ in
-            throw SetUserMFAPreferenceOutputError.userNotFoundException(.init())
-        })
+        mockIdentityProvider = MockIdentityProvider(
+            mockGetUserAttributeResponse: { request in
+                return .init(
+                    preferredMfaSetting: "SOFTWARE_TOKEN_MFA",
+                    userMFASettingList: ["SOFTWARE_TOKEN_MFA", "SMS_MFA"]
+                )
+            },
+            mockSetUserMFAPreferenceResponse: { _ in
+                throw SetUserMFAPreferenceOutputError.userNotFoundException(.init())
+            }
+        )
         do {
             _ = try await plugin.updateMFAPreference(sms: .enabled, totp: .enabled)
             XCTFail("Should return an error if the result from service is invalid")

@@ -26,11 +26,11 @@ public enum MFAPreference {
 }
 
 extension MFAPreference {
-    
-    var smsSetting: CognitoIdentityProviderClientTypes.SMSMfaSettingsType? {
+
+    func smsSetting(isCurrentlyPreferred: Bool? = nil) -> CognitoIdentityProviderClientTypes.SMSMfaSettingsType? {
         switch self {
         case .enabled:
-            return .init(enabled: true)
+            return .init(enabled: true, preferredMfa: isCurrentlyPreferred ?? false)
         case .preferred:
             return .init(enabled: true, preferredMfa: true)
         case .notPreferred:
@@ -39,11 +39,11 @@ extension MFAPreference {
             return .init(enabled: false)
         }
     }
-    
-    var softwareTokenSetting: CognitoIdentityProviderClientTypes.SoftwareTokenMfaSettingsType? {
+
+    func softwareTokenSetting(isCurrentlyPreferred: Bool? = nil) -> CognitoIdentityProviderClientTypes.SoftwareTokenMfaSettingsType? {
         switch self {
         case .enabled:
-            return .init(enabled: true)
+            return .init(enabled: true, preferredMfa: isCurrentlyPreferred ?? false)
         case .preferred:
             return .init(enabled: true, preferredMfa: true)
         case .notPreferred:
