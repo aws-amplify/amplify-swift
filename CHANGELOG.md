@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.16.0 (2023-08-28)
+
+### Features
+
+- **Auth**: Updating the Sign In resolver to add new cases  (#3104)
+- **Auth**: Remove options from API's (#3075)
+- **Auth**: Removed deviceNotFound TODO which is not applicable for TOTP (#3074)
+- **Auth**: Enable tests for watchOS and tvOS (#3073)
+- **Auth**: Worked on review comments and cleaning up unit tests (#3071)
+- **Auth**: Adding TOTP integration tests (#3047)
+- **Auth**: Add unit tests for TOTP (#3046)
+- **Auth**: Adding TOTP states, events, data models and resolvers (#3045)
+- **Auth**: Adding TOTP state machine actions (#3044)
+- **Auth**: Adding TOTP tasks and requests to AWSAuthCognitoPlugin (#3043)
+- **Auth**: Adding TOTP service behaviour (#3042)
+- **Auth**: Adding TOTP related models to AWSCognitoPlugin (#3041)
+- **Auth**: Adding TOTP support in Amplify Auth category (#3040)
+
 ## 2.15.5 (2023-08-28)
 
 ### Bug Fixes
