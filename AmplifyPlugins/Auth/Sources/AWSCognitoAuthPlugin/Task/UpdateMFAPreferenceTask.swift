@@ -62,7 +62,7 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
     func updateMFAPreference(with accessToken: String) async throws {
         let userPoolService = try userPoolFactory()
         let currentPreference = try await userPoolService.getUser(input: .init(accessToken: accessToken))
-        let preferredMFAType = MFAType(rawValue: currentPreference.preferredMfaSetting ?? "")
+        let preferredMFAType = currentPreference.preferredMfaSetting.map(MFAType.init(rawValue:))
         let input = SetUserMFAPreferenceInput(
             accessToken: accessToken,
             smsMfaSettings: smsPreference?.smsSetting(isCurrentlyPreferred: preferredMFAType == .sms),
