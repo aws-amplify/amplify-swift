@@ -258,6 +258,10 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     }
 
     @MainActor
+    /// Given: A HostedUI response with `error` and `error_description` query parameters.
+    /// When: Invoking `signInWithWebUI`
+    /// Then: The caller should receive an `AuthError.service` where the `errorDescription`
+    /// is `"\(error) \(error_description)"`
     func testTokenErrorResponse() async throws {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
