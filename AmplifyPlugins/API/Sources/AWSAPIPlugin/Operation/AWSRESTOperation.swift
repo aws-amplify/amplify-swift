@@ -116,7 +116,7 @@ final public class AWSRESTOperation: AmplifyOperation<
                 }
             }
 
-            // apply customized request headers
+            // The headers from the request object should override any of the same header modifications done by the intercepters above
             finalRequest = RESTOperationRequestUtils.applyCustomizeRequestHeaders(request.headers, on: finalRequest)
 
             if isCancelled {
