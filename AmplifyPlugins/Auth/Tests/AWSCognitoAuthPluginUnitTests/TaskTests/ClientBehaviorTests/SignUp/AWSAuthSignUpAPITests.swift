@@ -126,6 +126,63 @@ class AWSAuthSignUpAPITests: BasePluginTest {
         XCTAssertFalse(result.isSignUpComplete, "Signin result should be complete")
     }
 
+    /// Given: A response from Cognito SignUp when `userConfirmed == true` and a present `userSub`
+    /// When: Invoking `signUp(username:password:options:)`
+    /// Then: The caller should receive an `AuthSignUpResult` where `nextStep == .done` and
+    /// `userID` is the `userSub` returned by the service.
+    func test_signUp_done_withUserSub() async throws {
+        let sub = UUID().uuidString
+        mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: nil,
+                    userConfirmed: true,
+                    userSub: sub
+                )
+            }
+        )
+
+        let result = try await plugin.signUp(
+            username: "foo",
+            password: "bar",
+            options: nil
+        )
+
+        XCTAssertEqual(result.nextStep, .done)
+        XCTAssertEqual(result.userID, sub)
+        XCTAssertTrue(result.isSignUpComplete)
+    }
+
+    /// Given: A response from Cognito SignUp that includes `codeDeliveryDetails` where `userConfirmed == false`
+    /// When: Invoking `signUp(username:password:options:)`
+    /// Then: The caller should receive an `AuthSignUpResult` where `nextStep == .confirmUser` and
+    /// the applicable associated value of that case and the `userID` both equal the `userSub` returned by the service.
+    func test_signUp_confirmUser_userIDsMatch() async throws {
+        let sub = UUID().uuidString
+        mockIdentityProvider = MockIdentityProvider(
+            mockSignUpResponse: { _ in
+                return .init(
+                    codeDeliveryDetails: .init(
+                        attributeName: "some attribute",
+                        deliveryMedium: .email,
+                        destination: ""
+                    ),
+                    userConfirmed: false,
+                    userSub: sub
+                )
+            }
+        )
+
+        let result = try await plugin.signUp(
+            username: "foo",
+            password: "bar",
+            options: nil
+        )
+
+        guard case .confirmUser(_, _, let userID) = result.nextStep else { return }
+        XCTAssertEqual(result.userID, userID)
+    }
+
     func testSignUpServiceError() async {
 
         let errorsToTest: [(signUpOutputError: SignUpOutputError, cognitoError: AWSCognitoAuthError)] = [
