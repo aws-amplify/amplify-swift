@@ -116,6 +116,9 @@ final public class AWSRESTOperation: AmplifyOperation<
                 }
             }
 
+            // apply customized request headers
+            finalRequest = RESTOperationRequestUtils.applyCustomizeRequestHeaders(request.headers, on: finalRequest)
+
             if isCancelled {
                 finish()
                 return

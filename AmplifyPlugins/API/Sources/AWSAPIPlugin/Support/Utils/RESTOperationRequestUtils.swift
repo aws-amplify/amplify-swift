@@ -57,17 +57,29 @@ final class RESTOperationRequestUtils {
                                     headers: [String: String]?,
                                     requestPayload: Data?) -> URLRequest {
 
+        let baseHeaders = ["content-type": "application/json"]
         var baseRequest = URLRequest(url: url)
-        var requestHeaders = ["content-type": "application/json"]
-        if let headers = headers {
-            for (key, value) in headers {
-                requestHeaders[key] = value
-            }
-        }
-        baseRequest.allHTTPHeaderFields = requestHeaders
+        baseRequest = applyCustomizeRequestHeaders(
+            baseHeaders.merging(headers ?? [:], uniquingKeysWith: { _, new in new }),
+            on: baseRequest
+        )
         baseRequest.httpMethod = operationType.rawValue
         baseRequest.httpBody = requestPayload
         return baseRequest
+    }
+
+    static func applyCustomizeRequestHeaders(_ headers: [String: String]?, on request: URLRequest) -> URLRequest {
+        guard let headers = headers,
+              let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest
+        else {
+            return request
+        }
+
+        for (key, value) in headers {
+            mutableRequest.setValue(value, forHTTPHeaderField: key)
+        }
+
+        return mutableRequest as URLRequest
     }
 
     private static let permittedQueryParamCharacters = CharacterSet.alphanumerics

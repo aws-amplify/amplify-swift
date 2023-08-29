@@ -95,6 +95,18 @@ class RESTRequestUtilsTests: XCTestCase {
             )
         )
     }
+
+    func testApplyCustomizeRequestHeaders_withCutomeHeaders_successfullyOverride() {
+        var request = URLRequest(url: URL(string: "https://aws.amazon.com")!)
+        request.allHTTPHeaderFields = ["Content-Type": "application/json"]
+        let headers = ["Content-Type": "text/plain"]
+        let requestWithHeaders = RESTOperationRequestUtils.applyCustomizeRequestHeaders(headers, on: request)
+        XCTAssertNotNil(requestWithHeaders.allHTTPHeaderFields)
+        for (key, value) in headers {
+            XCTAssertEqual(requestWithHeaders.allHTTPHeaderFields![key], value)
+        }
+    }
+
 }
 
 extension RESTRequestUtilsTests {
