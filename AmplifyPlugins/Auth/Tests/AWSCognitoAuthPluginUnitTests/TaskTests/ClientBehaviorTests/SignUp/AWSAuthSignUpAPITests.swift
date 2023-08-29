@@ -179,7 +179,9 @@ class AWSAuthSignUpAPITests: BasePluginTest {
             options: nil
         )
 
-        guard case .confirmUser(_, _, let userID) = result.nextStep else { return }
+        guard case .confirmUser(_, _, let userID) = result.nextStep else {
+            return XCTFail("expected .confirmUser nextStep")
+        }
         XCTAssertEqual(result.userID, userID)
     }
 
