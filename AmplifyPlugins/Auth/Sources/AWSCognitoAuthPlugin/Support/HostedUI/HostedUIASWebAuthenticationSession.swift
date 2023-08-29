@@ -33,9 +33,9 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                     if let error = queryItems.first(where: { $0.name == "error" })?.value {
                         let errorDescription = queryItems.first(
                             where: { $0.name == "error_description" }
-                        )?.value?.trim() ?? error
-
-                        callback(.failure(.serviceMessage(errorDescription)))
+                        )?.value?.trim() ?? ""
+                        let message = "\(error) \(errorDescription)"
+                        callback(.failure(.serviceMessage(message)))
                         return
                     }
                     callback(.success(queryItems))
