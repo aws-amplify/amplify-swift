@@ -127,12 +127,19 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the build cache
+      - name: Attempt to restore the scheme build cache
         id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
+      - name: Attempt to restore the Amplify build cache
+        if: steps.restore-build.outputs.cache-hit != true
+        id: restore-amplify-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-macOS-latest-build-main
       - name: Run macOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
@@ -186,12 +193,19 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the build cache
+      - name: Attempt to restore the scheme build cache
         id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
+      - name: Attempt to restore the Amplify build cache
+        if: steps.restore-build.outputs.cache-hit != true
+        id: restore-amplify-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-tvOS-latest-build-main
       - name: Run tvOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
@@ -245,12 +259,19 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the build cache
+      - name: Attempt to restore the scheme build cache
         id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
+      - name: Attempt to restore the Amplify build cache
+        if: steps.restore-build.outputs.cache-hit != true
+        id: restore-amplify-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-watchOS-latest-build-main
       - name: Run watchOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}

@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -40,7 +41,7 @@ jobs:
         id: cache-build
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: amplify-iOS-latest-build-main
@@ -53,10 +54,20 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
-      - name: Enforce a cache update
+      - name: Delete the old build cache
+        if: steps.cache-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
         run: |
-          CACHE_KEY="amplify-iOS-latest-build-$GITHUB_SHA"
-          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete ${{ steps.cache-build.outputs.cache-primary-key }} --confirm
+        shell: bash
+      - name: Save the build cache
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.cache-build.outputs.cache-primary-key }}
 
   build-for-testing-amplify-swift-macOS:
     runs-on: macos-13
@@ -79,7 +90,7 @@ jobs:
         id: cache-build
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: amplify-macOS-latest-build-main
@@ -93,10 +104,20 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
-      - name: Enforce a cache update
+      - name: Delete the old build cache
+        if: steps.cache-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
         run: |
-          CACHE_KEY="amplify-macOS-latest-build-$GITHUB_SHA"
-          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete ${{ steps.cache-build.outputs.cache-primary-key }} --confirm
+        shell: bash
+      - name: Save the build cache
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.cache-build.outputs.cache-primary-key }}
 
   build-for-testing-amplify-swift-tvOS:
     runs-on: macos-13
@@ -119,7 +140,7 @@ jobs:
         id: cache-build
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: amplify-tvOS-latest-build-main
@@ -133,10 +154,20 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
-      - name: Enforce a cache update
+      - name: Delete the old build cache
+        if: steps.cache-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
         run: |
-          CACHE_KEY="amplify-tvOS-latest-build-$GITHUB_SHA"
-          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete ${{ steps.cache-build.outputs.cache-primary-key }} --confirm
+        shell: bash
+      - name: Save the build cache
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.cache-build.outputs.cache-primary-key }}
 
   build-for-testing-amplify-swift-watchOS:
     runs-on: macos-13
@@ -159,7 +190,7 @@ jobs:
         id: cache-build
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: amplify-watchOS-latest-build-main
@@ -173,7 +204,17 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
-      - name: Enforce a cache update
+      - name: Delete the old build cache
+        if: steps.cache-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
         run: |
-          CACHE_KEY="amplify-watchOS-latest-build-$GITHUB_SHA"
-          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete ${{ steps.cache-build.outputs.cache-primary-key }} --confirm
+        shell: bash
+      - name: Save the build cache
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.cache-build.outputs.cache-primary-key }}
