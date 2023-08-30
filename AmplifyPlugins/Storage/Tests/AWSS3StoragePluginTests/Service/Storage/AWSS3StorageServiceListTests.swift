@@ -99,7 +99,8 @@ final class AWSS3StorageServiceListTests: XCTestCase {
     func testSdkError() async throws {
         client.listObjectsV2Handler = { _ in
             let response = HttpResponse(body: .empty, statusCode: .forbidden)
-            throw try SdkError<ListObjectsV2OutputError>.service(ListObjectsV2OutputError(httpResponse: response), response)
+            let error = try await NoSuchBucket(httpResponse: response)
+            throw error
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         do {

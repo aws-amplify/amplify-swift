@@ -10,21 +10,6 @@ import Amplify
 import AWSS3
 import AWSClientRuntime
 
-extension AWSS3.NotFound: StorageErrorConvertible {
-    var storageError: StorageError {
-        .keyNotFound(
-            "<TODO serviceKey>",
-            "Unable to generate URL for non-existent key: <TODO serviceKey>",
-            "Please ensure the key is valid or the object has been uploaded",
-            nil
-        )
-    }
-
-    var fallbackDescription: String {
-        ""
-    }
-}
-
 extension AWSS3.NoSuchBucket: StorageErrorConvertible {
     var storageError: StorageError {
         .service(

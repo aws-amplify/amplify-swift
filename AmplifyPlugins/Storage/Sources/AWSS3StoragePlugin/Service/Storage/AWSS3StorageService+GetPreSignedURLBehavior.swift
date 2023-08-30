@@ -24,6 +24,13 @@ extension AWSS3StorageService {
                 bucket: self.bucket,
                 key: serviceKey
             ))
+        } catch is AWSS3.NotFound {
+            throw StorageError.keyNotFound(
+                serviceKey,
+                "Unable to generate URL for non-existent key: \(serviceKey)",
+                "Please ensure the key is valid or the object has been uploaded",
+                nil
+            )
         } catch let error as StorageErrorConvertible {
             throw error.storageError
         } catch {
