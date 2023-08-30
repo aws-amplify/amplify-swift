@@ -306,6 +306,54 @@ class MFAPreferenceTests: AWSAuthBaseTest {
                 return
             }
         }
+
+    }
+
+    /// Test successful call to fetchMFAPreference and updateMFAPreference API for SMS and TOTP for already preferred MFA method
+    ///
+    /// - Given: A newly signed up user in Cognito user pool
+    /// - When:
+    ///    - I invoke fetchMFAPreference and updateMFAPreference API under various conditions
+    /// - Then:
+    ///    - I should get valid fetchMFAPreference results corresponding to the updateMFAPreference
+    ///
+    func testFetchAndUpdateMFAPreferenceForAlreadyPreferredMethod() async throws {
+        do {
+            try await signUpAndSignIn(phoneNumber: "+16135550116") // Fake number for testing
+
+            let authCognitoPlugin = try Amplify.Auth.getPlugin(
+                for: "awsCognitoAuthPlugin") as! AWSCognitoAuthPlugin
+
+            var fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+            XCTAssertNil(fetchMFAResult.enabled)
+            XCTAssertNil(fetchMFAResult.preferred)
+
+            let totpSetupDetails = try await Amplify.Auth.setUpTOTP()
+            let totpCode = TOTPHelper.generateTOTPCode(sharedSecret: totpSetupDetails.sharedSecret)
+            try await Amplify.Auth.verifyTOTPSetup(code: totpCode)
+
+            // Test SMS as preferred, TOTP as enabled
+            try await authCognitoPlugin.updateMFAPreference(
+                sms: .preferred,
+                totp: .enabled)
+
+            fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+            XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
+            XCTAssertEqual(fetchMFAResult.preferred, .sms)
+
+            // Verify marking enabled does not change preference
+            try await authCognitoPlugin.updateMFAPreference(
+                sms: .enabled,
+                totp: .enabled
+            )
+
+            fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+            XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
+            XCTAssertEqual(fetchMFAResult.preferred, .sms)
+
+        } catch {
+            XCTFail("API should succeed without any errors instead failed with \(error)")
+        }
     }
 
 }

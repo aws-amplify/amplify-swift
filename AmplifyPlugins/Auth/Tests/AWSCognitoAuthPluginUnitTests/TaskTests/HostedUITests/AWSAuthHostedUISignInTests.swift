@@ -258,15 +258,22 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     }
 
     @MainActor
-    func testTokenErrorResponse() async {
+    /// Given: A HostedUI response with `error` and `error_description` query parameters.
+    /// When: Invoking `signInWithWebUI`
+    /// Then: The caller should receive an `AuthError.service` where the `errorDescription`
+    /// is `"\(error) \(error_description)"`
+    func testTokenErrorResponse() async throws {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
+
+        let (errorMessage, errorDescription) = ("invalid_grant", "Some error")
         mockTokenResult = [
-            "error": "invalid_grant",
-            "error_description": "Some error"] as [String: Any]
-        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+            "error": errorMessage,
+            "error_description": errorDescription
+        ]
+        mockJson = try JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
         }
@@ -276,13 +283,15 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service = error else {
+            guard case AuthError.service(let message, _, _) = error else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
+            let expectedErrorDescription = "\(errorMessage) \(errorDescription)"
+            XCTAssertEqual(expectedErrorDescription, message)
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: networkTimeout)
+        await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
 
