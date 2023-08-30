@@ -317,11 +317,6 @@ extension UsernameExistsException: AuthErrorConvertible {
     }
 }
 
-
-
-
-
-
 extension AWSClientRuntime.UnknownAWSHTTPServiceError: AuthErrorConvertible {
     var fallbackDescription: String { "" }
 

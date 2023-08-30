@@ -10,7 +10,7 @@ import ClientRuntime
 import AWSClientRuntime
 
 extension UploadPartInput {
-     func customPresignURL(config: S3ClientConfigurationProtocol, expiration: TimeInterval) async throws -> ClientRuntime.URL? {
+    func customPresignURL(config: S3Client.S3ClientConfiguration, expiration: TimeInterval) async throws -> ClientRuntime.URL? {
          let serviceName = "S3"
          let input = self
          let encoder = ClientRuntime.XMLEncoder()
@@ -34,10 +34,10 @@ extension UploadPartInput {
          var operation = ClientRuntime.OperationStack<UploadPartInput, UploadPartOutputResponse, UploadPartOutputError>(id: "uploadPart")
          operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLPathMiddleware<UploadPartInput, UploadPartOutputResponse, UploadPartOutputError>())
          operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLHostMiddleware<UploadPartInput, UploadPartOutputResponse>())
-         operation.buildStep.intercept(position: .before, middleware: EndpointResolverMiddleware<UploadPartOutputResponse, UploadPartOutputError>(endpointResolver: config.endpointResolver, endpointParams: config.endpointParams(withBucket: input.bucket)))
+        operation.buildStep.intercept(position: .before, middleware: EndpointResolverMiddleware<UploadPartOutputResponse, UploadPartOutputError>(endpointResolver: config.serviceSpecific.endpointResolver, endpointParams: config.endpointParams(withBucket: input.bucket)))
          operation.serializeStep.intercept(position: .after, middleware: UploadPartInputBodyMiddleware())
          operation.serializeStep.intercept(position: .after, middleware: QueryItemMiddleware())
-         operation.finalizeStep.intercept(position: .after, middleware: RetryerMiddleware<UploadPartOutputResponse, UploadPartOutputError>(retryer: config.retryer))
+        operation.finalizeStep.intercept(position: .after, middleware: ClientRuntime.RetryMiddleware<DefaultRetryStrategy, AWSRetryErrorInfoProvider, UploadPartOutputResponse, UploadPartOutputError>(options: config.retryStrategyOptions))
          let sigv4Config = AWSClientRuntime.SigV4Config(
             signatureType: .requestQueryParams,
             useDoubleURIEncode: false,
