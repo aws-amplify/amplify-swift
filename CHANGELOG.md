@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.16.1 (2023-08-30)
+
+### Bug Fixes
+
+- **auth**: hostedui extract error_description query pararm (#3183)
+- **Auth**: Adding the ability to keep old preferred methods (#3189)
+
 ## 2.16.0 (2023-08-28)
 
 ### Features
