@@ -7,10 +7,10 @@ on:
         type: string
 
   workflow_dispatch:
-  push:
-    branches-ignore:
-      - main
-      - release
+  # push:
+  #   branches-ignore:
+  #     - main
+  #     - release
 
 permissions:
     contents: read

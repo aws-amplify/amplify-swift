@@ -52,7 +52,13 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the build cache
+      - name: Attempt to restore the Amplify build cache
+        id: restore-amplify-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-iOS-latest-build-main
+      - name: Attempt to restore the scheme build cache
         id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
@@ -70,7 +76,7 @@ jobs:
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
-          test_without_building: ${{ steps.restore-build.outputs.cache-hit }}
+          test_without_building: ${{ steps.restore-amplify-build.outputs.cache-hit || steps.restore-build.outputs.cache-hit }}
           other_flags: ${{ inputs.other_flags }}
       - name: Retry iOS Test Suite if needed
         if: inputs.retry_on_error == true && steps.run-tests.outcome=='failure'
