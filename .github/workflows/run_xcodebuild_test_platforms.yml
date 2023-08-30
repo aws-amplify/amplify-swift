@@ -52,18 +52,19 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the Amplify build cache
-        id: restore-amplify-build
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-        with:
-          path: ${{ github.workspace }}/Build
-          key: amplify-iOS-latest-build-main
       - name: Attempt to restore the scheme build cache
         id: restore-build
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+      - name: Attempt to restore the Amplify build cache
+        if: steps.restore-build.outputs.cache-hit != true
+        id: restore-amplify-build
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-iOS-latest-build-main
       - name: Run iOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}

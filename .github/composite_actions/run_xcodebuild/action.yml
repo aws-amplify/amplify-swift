@@ -60,5 +60,5 @@ runs:
         fi
 
         xcodebuild -version
-        xcodebuild build -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
