@@ -41,7 +41,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
                                            environment: userPoolEnvironment)
             _ = try await client.confirmSignUp(input: input)
             log.verbose("Received success")
-            return AuthSignUpResult(.done, userID: nil)
+            return AuthSignUpResult(.done)
         } catch let error as AuthError {
             throw error
         } catch let error as AuthErrorConvertible {

@@ -41,7 +41,7 @@ class AWSAuthSignUpTaskTests: XCTestCase {
         let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         let signUpResult = try await task.value
         print("Sign Up Result: \(signUpResult)")
-        await fulfillment(of: [functionExpectation], timeout: 1)
+        wait(for: [functionExpectation], timeout: 1)
     }
 
     /// Given: Configured AuthState machine

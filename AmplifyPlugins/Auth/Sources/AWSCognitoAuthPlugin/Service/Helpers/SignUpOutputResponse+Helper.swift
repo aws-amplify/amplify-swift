@@ -13,15 +13,14 @@ extension SignUpOutputResponse {
 
     var authResponse: AuthSignUpResult {
         if self.userConfirmed {
-            return .init(.done, userID: userSub)
+            return .init(.done)
         }
         return AuthSignUpResult(
             .confirmUser(
                 codeDeliveryDetails?.toAuthCodeDeliveryDetails(),
                 nil,
                 userSub
-            ),
-            userID: userSub
+            )
         )
     }
 }

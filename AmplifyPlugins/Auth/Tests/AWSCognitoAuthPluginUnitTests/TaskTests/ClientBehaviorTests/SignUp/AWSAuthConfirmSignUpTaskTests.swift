@@ -45,7 +45,7 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
         let confirmSignUpResult = try await task.value
         print("Confirm Sign Up Result: \(confirmSignUpResult)")
-        await fulfillment(of: [functionExpectation], timeout: 1)
+        wait(for: [functionExpectation], timeout: 1)
     }
 
     func testConfirmSignUpOperationFailure() async throws {
