@@ -36,11 +36,11 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the build cache
+      - name: Restore the build cache
         id: cache-build
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache/@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: amplify-iOS-latest-build-main
@@ -53,11 +53,10 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
-      - name: Save the build cache
-        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-        with:
-          path: ${{ github.workspace }}/Build
-          key: amplify-iOS-latest-build-main
+      - name: Enforce a cache update
+        run: |
+          CACHE_KEY="amplify-iOS-latest-build-$GITHUB_SHA"
+          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
 
   build-for-testing-amplify-swift-macOS:
     runs-on: macos-13
@@ -76,6 +75,14 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
+      - name: Restore the build cache
+        id: cache-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-macOS-latest-build-main
       - name: Build Amplify Swift for macOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -86,12 +93,10 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
-      - name: Save the dependencies cache if necessary
-        if: steps.cache-packages.outputs.cache-hit != 'true' && github.ref_name == 'main'
-        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData/Amplify
-          key: ${{ steps.cache-packages.outputs.cache-primary-key }}
+      - name: Enforce a cache update
+        run: |
+          CACHE_KEY="amplify-macOS-latest-build-$GITHUB_SHA"
+          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
 
   build-for-testing-amplify-swift-tvOS:
     runs-on: macos-13
@@ -110,6 +115,14 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
+      - name: Restore the build cache
+        id: cache-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-tvOS-latest-build-main
       - name: Build Amplify Swift for tvOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -120,6 +133,10 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
+      - name: Enforce a cache update
+        run: |
+          CACHE_KEY="amplify-tvOS-latest-build-$GITHUB_SHA"
+          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
 
   build-for-testing-amplify-swift-watchOS:
     runs-on: macos-13
@@ -132,12 +149,20 @@ jobs:
         id: cache-packages
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
+      - name: Restore the build cache
+        id: cache-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: amplify-watchOS-latest-build-main
       - name: Build Amplify Swift for watchOS
         uses: ./.github/composite_actions/run_xcodebuild
         with:
@@ -148,3 +173,7 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
           build_for_testing: true
           other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
+      - name: Enforce a cache update
+        run: |
+          CACHE_KEY="amplify-watchOS-latest-build-$GITHUB_SHA"
+          echo "STATE_CACHE_RESULT=${CACHE_KEY}" >> $GITHUB_ENV
