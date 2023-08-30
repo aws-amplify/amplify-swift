@@ -54,6 +54,8 @@ jobs:
             amplify-packages-
       - name: Attempt to restore the scheme build cache
         id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -61,6 +63,8 @@ jobs:
       - name: Attempt to restore the Amplify build cache
         if: steps.restore-build.outputs.cache-hit != true
         id: restore-amplify-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -129,6 +133,8 @@ jobs:
             amplify-packages-
       - name: Attempt to restore the scheme build cache
         id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -136,6 +142,8 @@ jobs:
       - name: Attempt to restore the Amplify build cache
         if: steps.restore-build.outputs.cache-hit != true
         id: restore-amplify-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -195,6 +203,8 @@ jobs:
             amplify-packages-
       - name: Attempt to restore the scheme build cache
         id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -202,6 +212,8 @@ jobs:
       - name: Attempt to restore the Amplify build cache
         if: steps.restore-build.outputs.cache-hit != true
         id: restore-amplify-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -261,6 +273,8 @@ jobs:
             amplify-packages-
       - name: Attempt to restore the scheme build cache
         id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -268,6 +282,8 @@ jobs:
       - name: Attempt to restore the Amplify build cache
         if: steps.restore-build.outputs.cache-hit != true
         id: restore-amplify-build
+        timeout-minutes: 4
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
