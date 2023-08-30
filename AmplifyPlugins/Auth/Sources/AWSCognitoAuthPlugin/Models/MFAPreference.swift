@@ -40,10 +40,10 @@ extension MFAPreference {
         }
     }
 
-    func softwareTokenSetting(isCurrentlyPreferred: Bool? = nil) -> CognitoIdentityProviderClientTypes.SoftwareTokenMfaSettingsType {
+    func softwareTokenSetting(isCurrentlyPreferred: Bool = false) -> CognitoIdentityProviderClientTypes.SoftwareTokenMfaSettingsType {
         switch self {
         case .enabled:
-            return .init(enabled: true, preferredMfa: isCurrentlyPreferred ?? false)
+            return .init(enabled: true, preferredMfa: isCurrentlyPreferred)
         case .preferred:
             return .init(enabled: true, preferredMfa: true)
         case .notPreferred:
