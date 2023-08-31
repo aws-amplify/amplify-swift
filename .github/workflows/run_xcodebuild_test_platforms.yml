@@ -61,6 +61,8 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-iOS-build-
       - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-main-build
@@ -105,12 +107,12 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Delete the SHA build cache on re-run success
-        if: steps.restore-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-matched-key
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
-          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+          gh cache delete ${{ steps.restore-build.outputs.cache-matched-key }}
         shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
@@ -162,6 +164,8 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-macOS-build-
       - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-main-build
@@ -206,12 +210,12 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
       - name: Delete the SHA build cache on re-run success
-        if: steps.restore-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-matched-key
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
-          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+          gh cache delete ${{ steps.restore-build.outputs.cache-matched-key }}
         shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
@@ -254,6 +258,8 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-tvOS-build-
       - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-main-build
@@ -298,12 +304,12 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
       - name: Delete the SHA build cache on re-run success
-        if: steps.restore-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-matched-key
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
-          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+          gh cache delete ${{ steps.restore-build.outputs.cache-matched-key }}
         shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
@@ -346,6 +352,8 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-watchOS-build-
       - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-main-build
@@ -390,12 +398,12 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
       - name: Delete the SHA build cache on re-run success
-        if: steps.restore-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-matched-key
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
-          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+          gh cache delete ${{ steps.restore-build.outputs.cache-matched-key }}
         shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
