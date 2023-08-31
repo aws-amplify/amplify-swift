@@ -1,21 +1,16 @@
 name: Build for Testing | Amplify Swift
 on:
-  workflow_call:
-    inputs:
-      identifier:
-        required: true
-        type: string
   workflow_dispatch:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
 
 permissions:
   contents: read
   actions: write
 
 concurrency:
-  group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -59,7 +54,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
-          gh cache delete ${{ steps.cache-build.outputs.cache-primary-key }} --confirm
+          gh cache delete ${{ steps.cache-build.outputs.cache-primary-key }}
         shell: bash
       - name: Save the build cache
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -108,7 +103,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
-          gh cache delete ${{ steps.cache-build.outputs.cache-primary-key }} --confirm
+          gh cache delete ${{ steps.cache-build.outputs.cache-primary-key }}
         shell: bash
       - name: Save the build cache
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -157,7 +152,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
-          gh cache delete ${{ steps.cache-build.outputs.cache-primary-key }} --confirm
+          gh cache delete ${{ steps.cache-build.outputs.cache-primary-key }}
         shell: bash
       - name: Save the build cache
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -176,7 +171,7 @@ jobs:
         id: cache-packages
         timeout-minutes: 4
         continue-on-error: true
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: amplify-packages-${{ hashFiles('Package.resolved') }}

@@ -61,7 +61,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
       - name: Attempt to restore the Amplify build cache
-        if: steps.restore-build.outputs.cache-hit != true
+        if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-amplify-build
         timeout-minutes: 4
         continue-on-error: true
@@ -140,7 +140,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
       - name: Attempt to restore the Amplify build cache
-        if: steps.restore-build.outputs.cache-hit != true
+        if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-amplify-build
         timeout-minutes: 4
         continue-on-error: true
@@ -210,7 +210,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
       - name: Attempt to restore the Amplify build cache
-        if: steps.restore-build.outputs.cache-hit != true
+        if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-amplify-build
         timeout-minutes: 4
         continue-on-error: true
@@ -280,7 +280,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
       - name: Attempt to restore the Amplify build cache
-        if: steps.restore-build.outputs.cache-hit != true
+        if: steps.restore-build.outputs.cache-hit != 'true'
         id: restore-amplify-build
         timeout-minutes: 4
         continue-on-error: true
