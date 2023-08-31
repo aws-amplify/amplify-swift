@@ -23,9 +23,10 @@ struct AuthTestHarnessInput {
 
 extension AuthTestHarnessInput {
 
-    static func createInput(from specification: FeatureSpecification) -> AuthTestHarnessInput {
-
-        return AuthTestHarnessInput(
+    static func createInput(
+        from specification: FeatureSpecification
+    ) async -> AuthTestHarnessInput {
+        return await AuthTestHarnessInput(
             initialAuthState: specification.preConditions.initialAuthState,
             expectedAuthState: getExpectedAuthState(from: specification),
             amplifyAPI: getAmplifyAPIUnderTest(from: specification),
@@ -39,8 +40,9 @@ extension AuthTestHarnessInput {
     }
 
     private static func getCognitoAPI(
-        from specification: FeatureSpecification) -> [API.APIName: CognitoAPI] {
-            return CognitoAPIDecodingHelper.decode(with: specification)
+        from specification: FeatureSpecification
+    ) async-> [API.APIName: CognitoAPI] {
+        return await CognitoAPIDecodingHelper.decode(with: specification)
     }
 
     private static func getExpectedAuthState(from specification: FeatureSpecification) -> AuthState? {
@@ -93,9 +95,10 @@ enum CognitoAPI {
     case globalSignOut(CognitoAPIData<GlobalSignOutInput, GlobalSignOutOutputResponse, GlobalSignOutOutputError>)
 }
 
-struct CognitoAPIData<Input: Decodable, Output: Decodable, E: Swift.Error & ClientRuntime.HttpResponseBinding> {
+struct CognitoAPIData<Input: Decodable, Output: Decodable, E: ClientRuntime.HttpResponseErrorBinding> {
 
     let expectedInput: Input?
-    let output: Result<Output, E>
+    let errorBinding: E.Type
+    let output: Result<Output, Error>
 
 }
