@@ -98,12 +98,20 @@ jobs:
           disable_package_resolution: true
           test_without_building: true
           other_flags: ${{ inputs.other_flags }}
-      - name: Save the build cache for re-runs
+      - name: Save the SHA build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+      - name: Delete the SHA build cache on re-run success
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+        shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
         env:
@@ -191,12 +199,20 @@ jobs:
           disable_package_resolution: true
           test_without_building: true
           other_flags: ${{ inputs.other_flags }}
-      - name: Save the build cache for re-runs
+      - name: Save the SHA build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
+      - name: Delete the SHA build cache on re-run success
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+        shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
         env:
@@ -275,12 +291,20 @@ jobs:
           disable_package_resolution: true
           test_without_building: true
           other_flags: ${{ inputs.other_flags }}
-      - name: Save the build cache for re-runs
+      - name: Save the SHA build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
+      - name: Delete the SHA build cache on re-run success
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+        shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
         env:
@@ -359,12 +383,20 @@ jobs:
           disable_package_resolution: true
           test_without_building: true
           other_flags: ${{ inputs.other_flags }}
-      - name: Save the build cache for re-runs
+      - name: Save the SHA build cache for re-runs
         if: failure() && steps.retry-tests.outcome=='failure'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
+      - name: Delete the SHA build cache on re-run success
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-build.outputs.cache-primary-key }}
+        shell: bash
       - name: Delete the old build cache on main
         if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
         env:

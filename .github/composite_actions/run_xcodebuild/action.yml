@@ -23,10 +23,6 @@ inputs:
     required: false
     type: boolean
     default: false
-  build_for_testing:
-    required: false
-    type: boolean
-    default: false
   other_flags:
     required: false
     type: string
@@ -52,13 +48,6 @@ runs:
         if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
           otherFlags+=" -disableAutomaticPackageResolution"
         fi
-
-        action="build"
-        if [ "${{ inputs.build_for_testing }}" == "true" ]; then
-          echo "Building for testing..."
-          action+="-for-testing"
-        fi
-
         xcodebuild -version
-        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild build -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
