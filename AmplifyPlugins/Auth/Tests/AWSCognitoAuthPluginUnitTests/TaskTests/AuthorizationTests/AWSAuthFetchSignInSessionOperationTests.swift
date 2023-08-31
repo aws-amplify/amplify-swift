@@ -132,7 +132,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         XCTAssertNotNil(tokens?.idToken)
         XCTAssertNotNil(tokens?.refreshToken)
 
-        wait(for: [resultExpectation], timeout: apiTimeout)
+        await fulfillment(of: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test signedIn session with a user signed In to  identityPool
@@ -209,8 +209,9 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testDataWithExpiredTokens))
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            throw try InitiateAuthOutputError.notAuthorizedException(
-                NotAuthorizedException.init(httpResponse: MockHttpResponse.ok))
+            throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
+                httpResponse: MockHttpResponse.ok
+            )
         }
 
         let plugin = configurePluginWith(userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) }, initialState: initialState)
@@ -265,8 +266,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         }
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            throw try GetCredentialsForIdentityOutputError.notAuthorizedException(
-                NotAuthorizedException.init(httpResponse: MockHttpResponse.ok)
+            throw try await AWSCognitoIdentity.NotAuthorizedException(
+                httpResponse: MockHttpResponse.ok
             )
         }
 
@@ -655,10 +656,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testDataWithExpiredTokens))
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            let notAuthorized = InitiateAuthOutputError.notAuthorizedException(.init(message: "NotAuthorized"))
-            let serviceError = SdkError<InitiateAuthOutputError>.service(notAuthorized, .init(body: .none, statusCode: .accepted))
-            let clientError = ClientError.retryError(serviceError)
-            throw SdkError<InitiateAuthOutputError>.client(clientError, nil)
+            throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "NotAuthorized")
         }
 
         let plugin = configurePluginWith(

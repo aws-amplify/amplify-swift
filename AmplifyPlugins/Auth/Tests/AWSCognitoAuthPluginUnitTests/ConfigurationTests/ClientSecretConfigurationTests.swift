@@ -104,7 +104,7 @@ class ClientSecretConfigurationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { request in
                 XCTAssertNotNil(request.secretHash)
-                return try ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
+                return try await ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
             }
         )
         try await plugin.confirmResetPassword(

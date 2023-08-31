@@ -335,12 +335,12 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }, mockGlobalSignOutResponse: { _ in
-                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockDeleteUserOutputResponse: { _ in
-                try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
 
@@ -357,10 +357,10 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockGlobalSignOutResponse: { _ in
-                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
 
@@ -395,9 +395,11 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
-                throw try InitiateAuthOutputError.notAuthorizedException(
-                    NotAuthorizedException.init(httpResponse: .init(body: .empty, statusCode: .ok)))
-            })
+                throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
+                    httpResponse: .init(body: .empty, statusCode: .ok)
+                )
+            }
+        )
 
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
