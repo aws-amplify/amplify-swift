@@ -32,6 +32,7 @@ env:
 
 permissions:
     contents: read
+    actions: write
 
 jobs:
   test-iOS:
@@ -52,7 +53,7 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the scheme build cache
+      - name: Attempt to restore the build cache for this SHA
         id: restore-build
         timeout-minutes: 4
         continue-on-error: true
@@ -60,15 +61,15 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
-      - name: Attempt to restore the Amplify build cache
+      - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
-        id: restore-amplify-build
+        id: restore-main-build
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: amplify-iOS-latest-build-main
+          key: ${{ env.SCHEME }}-iOS-latest-build-main
       - name: Run iOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
@@ -103,6 +104,21 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+      - name: Delete the old build cache on main
+        # if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-main-build.outputs.cache-primary-key }}
+        shell: bash
+      - name: Save the new build cache on main
+        # if: github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.restore-main-build.outputs.cache-primary-key }}
       - name: Upload Report File
         if: ${{ inputs.generate_coverage_report == true }}
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
@@ -131,7 +147,7 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the scheme build cache
+      - name: Attempt to restore the build cache for this SHA
         id: restore-build
         timeout-minutes: 4
         continue-on-error: true
@@ -139,15 +155,15 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
-      - name: Attempt to restore the Amplify build cache
+      - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
-        id: restore-amplify-build
+        id: restore-main-build
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: amplify-macOS-latest-build-main
+          key: ${{ env.SCHEME }}-macOS-latest-build-main
       - name: Run macOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
@@ -182,6 +198,21 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
+      - name: Delete the old build cache on main
+        # if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-main-build.outputs.cache-primary-key }}
+        shell: bash
+      - name: Save the new build cache on main
+        # if: github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.restore-main-build.outputs.cache-primary-key }}
 
   test-tvOS:
     name: ${{ inputs.scheme }} tvOS Tests
@@ -201,7 +232,7 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the scheme build cache
+      - name: Attempt to restore the build cache for this SHA
         id: restore-build
         timeout-minutes: 4
         continue-on-error: true
@@ -209,15 +240,15 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
-      - name: Attempt to restore the Amplify build cache
+      - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
-        id: restore-amplify-build
+        id: restore-main-build
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: amplify-tvOS-latest-build-main
+          key: ${{ env.SCHEME }}-tvOS-latest-build-main
       - name: Run tvOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
@@ -252,6 +283,21 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
+      - name: Delete the old build cache on main
+        # if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-main-build.outputs.cache-primary-key }}
+        shell: bash
+      - name: Save the new build cache on main
+        # if: github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.restore-main-build.outputs.cache-primary-key }}
 
   test-watchOS:
     name: ${{ inputs.scheme }} watchOS Tests
@@ -271,7 +317,7 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the scheme build cache
+      - name: Attempt to restore the build cache for this SHA
         id: restore-build
         timeout-minutes: 4
         continue-on-error: true
@@ -279,15 +325,15 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
-      - name: Attempt to restore the Amplify build cache
+      - name: Attempt to restore the build cache from main
         if: steps.restore-build.outputs.cache-hit != 'true'
-        id: restore-amplify-build
+        id: restore-main-build
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: amplify-watchOS-latest-build-main
+          key: ${{ env.SCHEME }}-watchOS-latest-build-main
       - name: Run watchOS Test Suite
         id: run-tests
         continue-on-error: ${{ env.RETRY_ON_ERROR == 'true' }}
@@ -322,3 +368,18 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
+      - name: Delete the old build cache on main
+        # if: github.ref_name == 'main' && steps.restore-main-build.outputs.cache-hit
+        if: steps.restore-build.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-main-build.outputs.cache-primary-key }}
+        shell: bash
+      - name: Save the new build cache on main
+        # if: github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.restore-main-build.outputs.cache-primary-key }}
