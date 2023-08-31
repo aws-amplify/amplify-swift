@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.17.0 (2023-08-31)
+
+### Features
+
+- **auth**: add userID property to AuthSignUpResult (#3192)
+
 ## 2.16.1 (2023-08-30)
 
 ### Bug Fixes
