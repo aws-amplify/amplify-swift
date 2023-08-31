@@ -215,8 +215,8 @@ extension AliasExistsException: AuthErrorConvertible {
     var authError: AuthError {
         .service(
             properties.message ?? fallbackDescription,
-            AuthPluginErrorConstants.lambdaError,
-            AWSCognitoAuthError.lambda
+            AuthPluginErrorConstants.aliasExistsError,
+            AWSCognitoAuthError.aliasExists
         )
     }
 }
