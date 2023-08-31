@@ -60,10 +60,15 @@ final public class AWSRESTOperation: AmplifyOperation<
 
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
-        let requestInterceptors: [URLRequestInterceptor]
+        let amplifyInterceptors: [URLRequestInterceptor]
+        let customerInterceptors: [URLRequestInterceptor]
+        let checksumInterceptors: [URLRequestInterceptor]
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest)
-            requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            let interceptorConfig = pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            amplifyInterceptors = interceptorConfig?.amplifyInterceptors ?? []
+            customerInterceptors = interceptorConfig?.interceptors ?? []
+            checksumInterceptors = interceptorConfig?.checksumInterceptors ?? []
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()
@@ -94,41 +99,76 @@ final public class AWSRESTOperation: AmplifyOperation<
         }
 
         // Construct URL Request with url and request body
-        let urlRequest = RESTOperationRequestUtils.constructURLRequest(with: url,
-                                                                       operationType: request.operationType,
-                                                                       headers: request.headers,
-                                                                       requestPayload: request.body)
+        let urlRequest = RESTOperationRequestUtils.constructURLRequest(
+            with: url,
+            operationType: request.operationType,
+            requestPayload: request.body
+        )
 
         Task {
-            // Intercept request
-            var finalRequest = urlRequest
-            for interceptor in requestInterceptors {
-                do {
-                    finalRequest = try await interceptor.intercept(finalRequest)
-                } catch let error as APIError {
-                    dispatch(result: .failure(error))
-                    cancel()
-                } catch {
-                    dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
-                                                                      "Something wrong with the interceptor",
-                                                                      error)))
-                    cancel()
+            var finalResult: Result<URLRequest, APIError> = .success(urlRequest)
+            // apply amplify interceptors
+            for interceptor in amplifyInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
                 }
             }
 
-            // The headers from the request object should override any of the same header modifications done by the intercepters above
-            finalRequest = RESTOperationRequestUtils.applyCustomizeRequestHeaders(request.headers, on: finalRequest)
-
-            if isCancelled {
-                finish()
-                return
+            // apply customer headers
+            finalResult = finalResult.map { urlRequest in
+                var mutableRequest = urlRequest
+                for (key, value) in request.headers ?? [:] {
+                    mutableRequest.setValue(value, forHTTPHeaderField: key)
+                }
+                return mutableRequest
             }
 
-            // Begin network task
-            Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
-            let task = session.dataTaskBehavior(with: finalRequest)
-            mapper.addPair(operation: self, task: task)
-            task.resume()
+            // apply customer interceptors
+            for interceptor in customerInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
+            }
+
+            // apply checksum interceptor
+            for interceptor in checksumInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
+            }
+
+            switch finalResult {
+            case .success(let finalRequest):
+                if isCancelled {
+                    finish()
+                    return
+                }
+
+                // Begin network task
+                Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
+                let task = session.dataTaskBehavior(with: finalRequest)
+                mapper.addPair(operation: self, task: task)
+                task.resume()
+            case .failure(let error):
+                dispatch(result: .failure(error))
+                cancel()
+            }
+        }
+    }
+
+    private func applyInterceptor(_ interceptor: URLRequestInterceptor, request: URLRequest) async -> Result<URLRequest, APIError> {
+        do {
+            return .success(try await interceptor.intercept(request))
+        } catch let error as APIError {
+            return .failure(error)
+        } catch {
+            return .failure(
+                APIError.operationError(
+                    "Failed to intercept request fully.",
+                    "Something wrong with the interceptor",
+                    error
+                )
+            )
         }
     }
 }

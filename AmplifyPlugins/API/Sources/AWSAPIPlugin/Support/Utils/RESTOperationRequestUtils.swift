@@ -52,34 +52,16 @@ final class RESTOperationRequestUtils {
     }
 
     // Construct a request specific to the `RESTOperationType`
-    static func constructURLRequest(with url: URL,
-                                    operationType: RESTOperationType,
-                                    headers: [String: String]?,
-                                    requestPayload: Data?) -> URLRequest {
-
-        let baseHeaders = ["content-type": "application/json"]
+    static func constructURLRequest(
+        with url: URL,
+        operationType: RESTOperationType,
+        requestPayload: Data?
+    ) -> URLRequest {
         var baseRequest = URLRequest(url: url)
-        baseRequest = applyCustomizeRequestHeaders(
-            baseHeaders.merging(headers ?? [:], uniquingKeysWith: { _, new in new }),
-            on: baseRequest
-        )
+        baseRequest.setValue("application/json", forHTTPHeaderField: "content-type")
         baseRequest.httpMethod = operationType.rawValue
         baseRequest.httpBody = requestPayload
         return baseRequest
-    }
-
-    static func applyCustomizeRequestHeaders(_ headers: [String: String]?, on request: URLRequest) -> URLRequest {
-        guard let headers = headers,
-              let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest
-        else {
-            return request
-        }
-
-        for (key, value) in headers {
-            mutableRequest.setValue(value, forHTTPHeaderField: key)
-        }
-
-        return mutableRequest as URLRequest
     }
 
     private static let permittedQueryParamCharacters = CharacterSet.alphanumerics

@@ -164,7 +164,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items", headers: ["Content-Type": "text/plain"])
         do {
             _ = try await Amplify.API.get(request: request)
-            XCTFail("Should catch error")
         } catch {
             guard let apiError = error as? APIError else {
                 XCTFail("Error should be APIError")

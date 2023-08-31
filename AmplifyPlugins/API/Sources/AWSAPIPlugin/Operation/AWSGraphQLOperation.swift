@@ -56,7 +56,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
-        let requestInterceptors: [URLRequestInterceptor]
+        let requestInterceptors: AWSAPIEndpointInterceptors?
 
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
@@ -66,7 +66,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                 requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig,
                                                                                authType: authType)
             } else {
-                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+                requestInterceptors = pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
             }
         } catch let error as APIError {
             dispatch(result: .failure(error))
@@ -101,34 +101,67 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Create request
         let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                                        requestPayload: requestPayload)
-
+        let amplifyInterceptors = requestInterceptors?.amplifyInterceptors ?? []
+        let customerInterceptors = requestInterceptors?.interceptors ?? []
+        let checksumInterceptors = requestInterceptors?.checksumInterceptors ?? []
         Task {
-            // Intercept request
-            var finalRequest = urlRequest
-            for interceptor in requestInterceptors {
-                do {
-                    finalRequest = try await interceptor.intercept(finalRequest)
-                } catch let error as APIError {
-                    dispatch(result: .failure(error))
-                    cancel()
-                } catch {
-                    dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
-                                                                      "Something wrong with the interceptor",
-                                                                      error)))
-                    cancel()
+            var finalResult: Result<URLRequest, APIError> = .success(urlRequest)
+            // apply amplify interceptors
+            for interceptor in amplifyInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
                 }
             }
 
-            if isCancelled {
-                finish()
-                return
+            // there is no customer headers for GraphQLOperationRequest
+
+            // apply customer interceptors
+            for interceptor in customerInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
             }
 
-            // Begin network task
-            Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
-            let task = session.dataTaskBehavior(with: finalRequest)
-            mapper.addPair(operation: self, task: task)
-            task.resume()
+            // apply checksum interceptor
+            for interceptor in checksumInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
+            }
+
+            switch finalResult {
+            case .success(let finalRequest):
+                if isCancelled {
+                    finish()
+                    return
+                }
+
+                // Begin network task
+                Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
+                let task = session.dataTaskBehavior(with: finalRequest)
+                mapper.addPair(operation: self, task: task)
+                task.resume()
+            case .failure(let error):
+                dispatch(result: .failure(error))
+                cancel()
+            }
         }
     }
+
+    private func applyInterceptor(_ interceptor: URLRequestInterceptor, request: URLRequest) async -> Result<URLRequest, APIError> {
+        do {
+            return .success(try await interceptor.intercept(request))
+        } catch let error as APIError {
+            return .failure(error)
+        } catch {
+            return .failure(
+                APIError.operationError(
+                    "Failed to intercept request fully.",
+                    "Something wrong with the interceptor",
+                    error
+                )
+            )
+        }
+    }
+
 }

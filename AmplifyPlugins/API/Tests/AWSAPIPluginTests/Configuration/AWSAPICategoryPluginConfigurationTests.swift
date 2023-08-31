@@ -58,18 +58,22 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
     func testAddInterceptors() {
         let apiKeyInterceptor = APIKeyURLRequestInterceptor(apiKeyProvider: BasicAPIKeyProvider(apiKey: apiKey))
         config?.addInterceptor(apiKeyInterceptor, toEndpoint: graphQLAPI)
-        XCTAssertEqual(config?.interceptorsForEndpoint(named: graphQLAPI).count, 1)
+        XCTAssertEqual(config?.interceptorsForEndpoint(named: graphQLAPI)?.amplifyInterceptors.count, 0)
+        XCTAssertEqual(config?.interceptorsForEndpoint(named: graphQLAPI)?.interceptors.count, 1)
+        XCTAssertEqual(config?.interceptorsForEndpoint(named: graphQLAPI)?.checksumInterceptors.count, 0)
     }
 
     /// Given: multiple interceptors conforming to URLRequestInterceptor and an EndpointConfig
     /// When: interceptorsForEndpoint is called with the given EndpointConfig
     /// Then: the registered interceptors are returned
-    func testInterceptorsForEndpointWithConfig() throws {
+    func testInterceptorsForEndpointWithConfig() {
         let apiKeyInterceptor = APIKeyURLRequestInterceptor(apiKeyProvider: BasicAPIKeyProvider(apiKey: apiKey))
         config?.addInterceptor(apiKeyInterceptor, toEndpoint: graphQLAPI)
         config?.addInterceptor(CustomURLInterceptor(), toEndpoint: graphQLAPI)
-        let interceptors = try config?.interceptorsForEndpoint(withConfig: endpointConfig!)
-        XCTAssertEqual(interceptors!.count, 2)
+        let interceptors = config?.interceptorsForEndpoint(withConfig: endpointConfig!)
+        XCTAssertEqual(interceptors!.amplifyInterceptors.count, 0)
+        XCTAssertEqual(interceptors!.interceptors.count, 2)
+        XCTAssertEqual(interceptors!.checksumInterceptors.count, 0)
     }
 
     /// Given: multiple interceptors conforming to URLRequestInterceptor
@@ -84,9 +88,9 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
         let interceptors = try config?.interceptorsForEndpoint(withConfig: endpointConfig!,
                                                                authType: .amazonCognitoUserPools)
 
-        XCTAssertEqual(interceptors!.count, 2)
-        XCTAssertNotNil(interceptors![0] as? AuthTokenURLRequestInterceptor)
-        XCTAssertNotNil(interceptors![1] as? CustomURLInterceptor)
+        XCTAssertEqual(interceptors!.amplifyInterceptors.count, 1)
+        XCTAssertNotNil(interceptors!.amplifyInterceptors[0] as? AuthTokenURLRequestInterceptor)
+        XCTAssertNotNil(interceptors!.interceptors[1] as? CustomURLInterceptor)
     }
 
     /// Given: an auth interceptor conforming to URLRequestInterceptor
@@ -99,8 +103,8 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
 
         let interceptors = try config?.interceptorsForEndpoint(withConfig: endpointConfig!, authType: .apiKey)
 
-        XCTAssertEqual(interceptors!.count, 1)
-        XCTAssertNotNil(interceptors![0] as? APIKeyURLRequestInterceptor)
+        XCTAssertEqual(interceptors!.amplifyInterceptors.count, 1)
+        XCTAssertNotNil(interceptors!.amplifyInterceptors[0] as? APIKeyURLRequestInterceptor)
     }
 
     // MARK: - Helpers

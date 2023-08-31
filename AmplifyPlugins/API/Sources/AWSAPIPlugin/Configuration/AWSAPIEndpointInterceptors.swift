@@ -16,6 +16,10 @@ struct AWSAPIEndpointInterceptors {
     let apiAuthProviderFactory: APIAuthProviderFactory
     let authService: AWSAuthServiceBehavior?
 
+    var amplifyInterceptors: [URLRequestInterceptor] = []
+
+    var checksumInterceptors: [URLRequestInterceptor] = []
+
     var interceptors: [URLRequestInterceptor] = []
 
     init(endpointName: APIEndpointName,
@@ -42,7 +46,7 @@ struct AWSAPIEndpointInterceptors {
         case .apiKey(let apiKeyConfig):
             let provider = BasicAPIKeyProvider(apiKey: apiKeyConfig.apiKey)
             let interceptor = APIKeyURLRequestInterceptor(apiKeyProvider: provider)
-            addInterceptor(interceptor)
+            amplifyInterceptors.append(interceptor)
         case .awsIAM(let iamConfig):
             guard let authService = authService else {
                 throw PluginError.pluginConfigurationError("AuthService is not set for IAM",
@@ -52,7 +56,7 @@ struct AWSAPIEndpointInterceptors {
             let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider,
                                                        region: iamConfig.region,
                                                        endpointType: endpointType)
-            addInterceptor(interceptor)
+            checksumInterceptors.append(interceptor)
         case .amazonCognitoUserPools:
             guard let authService = authService else {
                 throw PluginError.pluginConfigurationError("AuthService not set for cognito user pools",
@@ -60,7 +64,7 @@ struct AWSAPIEndpointInterceptors {
             }
             let provider = BasicUserPoolTokenProvider(authService: authService)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider)
-            addInterceptor(interceptor)
+            amplifyInterceptors.append(interceptor)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw PluginError.pluginConfigurationError("AuthService not set for OIDC",
@@ -68,7 +72,7 @@ struct AWSAPIEndpointInterceptors {
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: oidcAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
-            addInterceptor(interceptor)
+            amplifyInterceptors.append(interceptor)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw PluginError.pluginConfigurationError("AuthService not set for function auth",
@@ -76,7 +80,7 @@ struct AWSAPIEndpointInterceptors {
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: functionAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
-            addInterceptor(interceptor)
+            amplifyInterceptors.append(interceptor)
         }
     }
 }
