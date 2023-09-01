@@ -29,8 +29,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
        completion: @escaping DataStoreCallback<M>
     ) {
         log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
-        let prepareSaveResult = initStorageEngineAndStartSync().flatMap { storageEngineBehavior in
-            mutationTypeOfModel(model, storageEngine: storageEngineBehavior)
+        let prepareSaveResult = initStorageEngineAndTryStartSync().flatMap { storageEngineBehavior in
+            mutationTypeOfModel(model, modelSchema: modelSchema, storageEngine: storageEngineBehavior)
                 .map { (storageEngineBehavior, $0) }
         }
 
@@ -197,7 +197,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         paginate paginationInput: QueryPaginationInput? = nil,
         completion: DataStoreCallback<[M]>
     ) {
-        switch initStorageEngineAndStartSync() {
+        switch initStorageEngineAndTryStartSync() {
         case .success(let storageEngineBehavior):
             storageEngineBehavior.query(
                 modelType,
@@ -240,7 +240,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  withId id: String,
                                  where predicate: QueryPredicate? = nil) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            switch initStorageEngineAndStartSync() {
+            switch initStorageEngineAndTryStartSync() {
             case .success(let storageEngineBehavior):
                 storageEngineBehavior.delete(modelType, modelSchema: modelSchema, withId: id, condition: predicate) { result in
                     self.onDeleteCompletion(result: result, modelSchema: modelSchema) { result in
@@ -300,7 +300,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                               identifier: ModelIdentifierProtocol,
                                               where predicate: QueryPredicate?,
                                               completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
-        switch initStorageEngineAndStartSync() {
+        switch initStorageEngineAndTryStartSync() {
         case .success(let storageEngineBehavior):
             storageEngineBehavior.delete(
                 modelType,
@@ -346,7 +346,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
-        switch initStorageEngineAndStartSync() {
+        switch initStorageEngineAndTryStartSync() {
         case .success(let storageEngineBehavior):
             storageEngineBehavior.delete(
                 type(of: model),
@@ -387,7 +387,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate,
                                  completion: @escaping DataStoreCallback<Void>) {
-        switch initStorageEngineAndStartSync() {
+        switch initStorageEngineAndTryStartSync() {
         case .success(let storageEngineBehavior):
             storageEngineBehavior.delete(
                 modelType,
@@ -515,6 +515,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     private func mutationTypeOfModel<M: Model>(
         _ model: M,
+        modelSchema: ModelSchema,
         storageEngine: StorageEngineBehavior
     ) -> Result<MutationEvent.MutationType, DataStoreError> {
         let modelExists: Bool
@@ -522,8 +523,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             guard let engine = storageEngine as? StorageEngine else {
                 throw DataStoreError.configuration("Unable to get storage adapter", "")
             }
-            modelExists = try engine.storageAdapter.exists(model.schema,
-                                                           withIdentifier: model.identifier(schema: model.schema),
+            modelExists = try engine.storageAdapter.exists(modelSchema,
+                                                           withIdentifier: model.identifier(schema: modelSchema),
                                                            predicate: nil)
         } catch {
             if let dataStoreError = error as? DataStoreError {

@@ -29,7 +29,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        where predicate: QueryPredicate?,
                                        sort sortInput: QuerySortInput?) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
-        switch initStorageEngineAndStartSync() {
+        switch initStorageEngineAndTryStartSync() {
         case .success(let storageEngineBehavior):
             let modelSchema = modelType.schema
             guard let dataStorePublisher = dataStorePublisher else {
