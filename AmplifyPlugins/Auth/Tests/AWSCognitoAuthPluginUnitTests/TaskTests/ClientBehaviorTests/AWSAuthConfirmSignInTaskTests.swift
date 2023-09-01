@@ -175,10 +175,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
-                XCTFail("Underlying error should be aliasExists \(error)")
-                return
-            }
+            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, .aliasExists)
         }
     }
     

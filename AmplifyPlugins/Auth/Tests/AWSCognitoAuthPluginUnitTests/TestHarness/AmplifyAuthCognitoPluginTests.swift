@@ -34,10 +34,10 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                     subdirectory: "\(AuthTestHarnessConstants.testSuitesPath)/\(directory)"
                 )
                 let authTestHarness = await AuthTestHarness(featureSpecification: specification)
-                XCTContext.runActivity(named: testSuiteFile) { activity in
-                    beginTest(for: authTestHarness.plugin,
-                              with: authTestHarness)
-                }
+                beginTest(
+                    for: authTestHarness.plugin,
+                    with: authTestHarness
+                )
             }
         }
     }

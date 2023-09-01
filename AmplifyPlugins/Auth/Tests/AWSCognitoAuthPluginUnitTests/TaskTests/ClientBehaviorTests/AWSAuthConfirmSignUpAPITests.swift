@@ -126,7 +126,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             (AWSCognitoIdentityProvider.UserLambdaValidationException(), .lambda),
             (AWSCognitoIdentityProvider.UserNotFoundException(), .userNotFound),
             (AWSCognitoIdentityProvider.LimitExceededException(), .limitExceeded),
-            (AWSCognitoIdentityProvider.TooManyFailedAttemptsException(), .requestLimitExceeded),
+            (AWSCognitoIdentityProvider.TooManyFailedAttemptsException(), .failedAttemptsLimitExceeded),
         ]
 
         for errorToTest in errorsToTest {
@@ -234,6 +234,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     func validateConfirmSignUpServiceErrors(
         confirmSignUpOutputError: Error,
         expectedCognitoError: AWSCognitoAuthError) async {
+            print(confirmSignUpOutputError, expectedCognitoError)
             self.mockIdentityProvider = MockIdentityProvider(
                 mockConfirmSignUpResponse: { _ in
                     throw confirmSignUpOutputError
