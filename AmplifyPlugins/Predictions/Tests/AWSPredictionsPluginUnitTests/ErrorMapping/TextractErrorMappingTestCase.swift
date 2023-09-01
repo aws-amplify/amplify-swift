@@ -12,24 +12,23 @@ import Amplify
 
 final class TextractErrorMappingTestCase: XCTestCase {
     private func assertCatchVariations(
-        for sdkError: AnalyzeDocumentOutputError,
+        for sdkError: Error,
         expecting expectedServiceError: PredictionsError.ServiceError,
         label: String
     ) {
-        let predictionsError = ServiceErrorMapping.analyzeDocument.map(sdkError)
         let unexpected: (Error) -> String = {
             "Expected PredictionsError.service(.\(label), received \($0)"
         }
 
         // catch variation 1.
-        do { throw predictionsError }
+        do { throw sdkError }
         catch PredictionsError.service(expectedServiceError) {}
         catch {
             XCTFail(unexpected(error))
         }
 
         // catch variation 2.
-        do { throw predictionsError }
+        do { throw sdkError }
         catch let error as PredictionsError {
             guard case .service(expectedServiceError) = error else {
                 return XCTFail(unexpected(error))
@@ -39,7 +38,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
         }
 
         // catch variation 3.
-        do { throw predictionsError }
+        do { throw sdkError }
         catch {
             guard let error = error as? PredictionsError,
                   case .service(expectedServiceError) = error
@@ -51,7 +50,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
 
     func testAnalyzeDocument_internalServerError() throws {
         assertCatchVariations(
-            for: .internalServerError(.init()),
+            for: InternalServerError(),
             expecting: .internalServerError,
             label: "internalServerError"
         )
@@ -59,7 +58,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
 
     func testAnalyzeDocument_accessDeniedException() throws {
         assertCatchVariations(
-            for: .accessDeniedException(.init()),
+            for: AccessDeniedException(),
             expecting: .accessDenied,
             label: "accessDenied"
         )
@@ -67,7 +66,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
 
     func testAnalyzeDocument_throttlingException() throws {
         assertCatchVariations(
-            for: .throttlingException(.init()),
+            for: ThrottlingException(),
             expecting: .throttling,
             label: "throttling"
         )

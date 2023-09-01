@@ -41,4 +41,5 @@ extension MockTranslateBehavior {
     func tagResource(input: AWSTranslate.TagResourceInput) async throws -> AWSTranslate.TagResourceOutputResponse { fatalError() }
     func untagResource(input: AWSTranslate.UntagResourceInput) async throws -> AWSTranslate.UntagResourceOutputResponse { fatalError() }
     func updateParallelData(input: AWSTranslate.UpdateParallelDataInput) async throws -> AWSTranslate.UpdateParallelDataOutputResponse { fatalError() }
+    func translateDocument(input: AWSTranslate.TranslateDocumentInput) async throws -> AWSTranslate.TranslateDocumentOutputResponse { fatalError() }
 }

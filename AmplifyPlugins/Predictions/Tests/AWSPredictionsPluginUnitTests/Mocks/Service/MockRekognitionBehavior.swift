@@ -112,4 +112,21 @@ extension MockRekognitionBehavior {
     func untagResource(input: AWSRekognition.UntagResourceInput) async throws -> AWSRekognition.UntagResourceOutputResponse { fatalError() }
     func updateDatasetEntries(input: AWSRekognition.UpdateDatasetEntriesInput) async throws -> AWSRekognition.UpdateDatasetEntriesOutputResponse { fatalError() }
     func updateStreamProcessor(input: AWSRekognition.UpdateStreamProcessorInput) async throws -> AWSRekognition.UpdateStreamProcessorOutputResponse { fatalError() }
+    func associateFaces(input: AWSRekognition.AssociateFacesInput) async throws -> AWSRekognition.AssociateFacesOutputResponse { fatalError() }
+
+    func createFaceLivenessSession(input: AWSRekognition.CreateFaceLivenessSessionInput) async throws -> AWSRekognition.CreateFaceLivenessSessionOutputResponse { fatalError() }
+
+    func createUser(input: AWSRekognition.CreateUserInput) async throws -> AWSRekognition.CreateUserOutputResponse { fatalError() }
+
+    func deleteUser(input: AWSRekognition.DeleteUserInput) async throws -> AWSRekognition.DeleteUserOutputResponse { fatalError() }
+
+    func disassociateFaces(input: AWSRekognition.DisassociateFacesInput) async throws -> AWSRekognition.DisassociateFacesOutputResponse { fatalError() }
+
+    func getFaceLivenessSessionResults(input: AWSRekognition.GetFaceLivenessSessionResultsInput) async throws -> AWSRekognition.GetFaceLivenessSessionResultsOutputResponse { fatalError() }
+
+    func listUsers(input: AWSRekognition.ListUsersInput) async throws -> AWSRekognition.ListUsersOutputResponse { fatalError() }
+
+    func searchUsers(input: AWSRekognition.SearchUsersInput) async throws -> AWSRekognition.SearchUsersOutputResponse { fatalError() }
+
+    func searchUsersByImage(input: AWSRekognition.SearchUsersByImageInput) async throws -> AWSRekognition.SearchUsersByImageOutputResponse { fatalError() }
 }

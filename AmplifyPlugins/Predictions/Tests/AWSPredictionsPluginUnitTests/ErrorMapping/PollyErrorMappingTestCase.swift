@@ -12,24 +12,24 @@ import Amplify
 
 final class PollyErrorMappingTestCase: XCTestCase {
     private func assertCatchVariations(
-        for sdkError: SynthesizeSpeechOutputError,
+        for sdkError: Error,
         expecting expectedServiceError: PredictionsError.ServiceError,
         label: String
     ) {
-        let predictionsError = ServiceErrorMapping.synthesizeSpeech.map(sdkError)
         let unexpected: (Error) -> String = {
             "Expected PredictionsError.service(.\(label), received \($0)"
         }
 
+
         // catch variation 1.
-        do { throw predictionsError }
+        do { throw sdkError }
         catch PredictionsError.service(expectedServiceError) {}
         catch {
             XCTFail(unexpected(error))
         }
 
         // catch variation 2.
-        do { throw predictionsError }
+        do { throw sdkError }
         catch let error as PredictionsError {
             guard case .service(expectedServiceError) = error else {
                 return XCTFail(unexpected(error))
@@ -39,7 +39,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
         }
 
         // catch variation 3.
-        do { throw predictionsError }
+        do { throw sdkError }
         catch {
             guard let error = error as? PredictionsError,
                   case .service(expectedServiceError) = error
@@ -51,7 +51,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_invalidSampleRateException() throws {
         assertCatchVariations(
-            for: .invalidSampleRateException(.init()),
+            for: InvalidSampleRateException(),
             expecting: .invalidSampleRate,
             label: "invalidSampleRate"
         )
@@ -59,7 +59,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_languageNotSupportedException() throws {
         assertCatchVariations(
-            for: .languageNotSupportedException(.init()),
+            for: LanguageNotSupportedException(),
             expecting: .unsupportedLanguage,
             label: "unsupportedLanguage"
         )
@@ -67,7 +67,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_serviceFailureException() throws {
         assertCatchVariations(
-            for: .serviceFailureException(.init()),
+            for: ServiceFailureException(),
             expecting: .internalServerError,
             label: "internalServerError"
         )
@@ -75,7 +75,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_textLengthExceededException() throws {
         assertCatchVariations(
-            for: .textLengthExceededException(.init()),
+            for: TextLengthExceededException(),
             expecting: .textSizeLimitExceeded,
             label: "textSizeLimitExceeded"
         )
