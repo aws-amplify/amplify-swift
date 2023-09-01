@@ -30,11 +30,11 @@ enum AuthPluginErrorConstants {
 
     static let hostedUIUserCancelledError: AuthPluginErrorString = (
         "User cancelled the signIn flow and could not be completed.",
-        "Present the signIn UI again for the user to sign in.")
+        "Present the signIn UI again for the user to sign in")
 
     static let hostedUIUserCancelledSignOutError: AuthPluginErrorString = (
         "User cancelled the signOut flow and could not be completed.",
-        "Present the signOut UI again for the user to sign out.")
+        "Present the signOut UI again for the user to sign out")
 
     static let hostedUIInvalidPresentation: AuthPluginErrorString = (
         "Presentation context provided is invalid or not present",
@@ -169,13 +169,13 @@ extension AuthPluginErrorConstants {
     static let signInUsernameError: AuthPluginValidationErrorString = (
         "username",
         "Username is required to signIn",
-        "Make sure that a valid username is passed during sigIn"
+        "Make sure that a valid username is passed during signIn"
     )
 
     static let signInPasswordError: AuthPluginValidationErrorString = (
         "password",
         "Password is required to signIn",
-        "Make sure that a valid password is passed during sigIn"
+        "Make sure that a valid password is passed during signIn"
     )
 
     static let signUpUsernameError: AuthPluginValidationErrorString = (
@@ -214,6 +214,12 @@ extension AuthPluginErrorConstants {
         "Make sure that a valid challenge response is passed for confirmSignIn"
     )
 
+    static let confirmSignInMFASelectionResponseError: AuthPluginValidationErrorString = (
+        "challengeResponse",
+        "challengeResponse for MFA selection can only have SMS_MFA or SOFTWARE_TOKEN_MFA.",
+        "Make sure that a valid challenge response is passed for confirmSignIn. Try using `MFAType.totp.challengeResponse` or `MFAType.sms.challengeResponse` as the challenge response"
+    )
+
     static let confirmResetPasswordUsernameError: AuthPluginValidationErrorString = (
         "username",
         "username is required to confirmResetPassword",
@@ -246,7 +252,7 @@ extension AuthPluginErrorConstants {
 
     static let aliasExistsError: RecoverySuggestion = "Try with a different alias for the user"
 
-    static let codeDeliveryError: RecoverySuggestion = "Make sure that the delivery destination is valid."
+    static let codeDeliveryError: RecoverySuggestion = "Make sure that the delivery destination is valid"
 
     static let codeMismatchError: RecoverySuggestion = "Retry with a valid code"
 
@@ -293,7 +299,7 @@ extension AuthPluginErrorConstants {
     """
 
     static let notAuthorizedError: RecoverySuggestion = """
-    Check whether the given values are correct and the user is authorized to perform the operation.
+    Check whether the given values are correct and the user is authorized to perform the operation
     """
 
     static let hostedUIBadRequestError: RecoverySuggestion = "Retry the webUi signIn"
@@ -301,7 +307,7 @@ extension AuthPluginErrorConstants {
     static let configurationMissingError: RecoverySuggestion = """
     Could not read Cognito Service configuration from the auth configuration. Make sure that auth category
     is properly configured and auth information are present in the configuration. You can use Amplify CLI to
-    configure the auth category.
+    configure the auth category
     """
 
     static let externalServiceException: RecoverySuggestion = """
@@ -309,11 +315,11 @@ extension AuthPluginErrorConstants {
     """
 
     static let limitExceededException: RecoverySuggestion = """
-    The total number of user pools has exceeded a preset limit.
+    The total number of user pools has exceeded a preset limit
     """
 
     static let resourceConflictException: RecoverySuggestion = """
-    Check if the login is already linked to another account.
+    Check if the login is already linked to another account
     """
 
     static let invalidEmailRoleError: RecoverySuggestion = """
@@ -329,7 +335,11 @@ extension AuthPluginErrorConstants {
     """
 
     static let forbiddenError: RecoverySuggestion = """
-    Check if you are allowed to make this request based on the web ACL thats associated with your user pool. 
+    Check if you are allowed to make this request based on the web ACL thats associated with your user pool 
+    """
+
+    static let concurrentModificationException: RecoverySuggestion = """
+    Make sure the requests sent are controlled and concurrent operations are handled properly
     """
 
 }

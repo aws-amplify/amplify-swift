@@ -52,6 +52,7 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
-        geoPlugin.reset()
+        let resettable = geoPlugin as Resettable
+        await resettable.reset()
     }
 }

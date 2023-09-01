@@ -8,7 +8,9 @@
 import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 /*
 (HasMany) A Post that can have many comments (Implicit)
@@ -68,7 +70,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(comment)
         
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [syncedPostReceived, syncCommentReceived], timeout: TestCommonConstants.networkTimeout)
         
         let queriedComment = try await Amplify.DataStore.query(Comment3aV2.self, byId: comment.id)
         XCTAssertEqual(queriedComment, comment)
@@ -174,7 +176,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
         }
         
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let queriedPost = try await Amplify.DataStore.query(Post3aV2.self, byId: post.id)
         XCTAssertEqual(queriedPost, post)
@@ -207,7 +209,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
         }
         
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let updateReceived = expectation(description: "received updated post from sync event")
         let updatedTitle = "updatedTitle"
@@ -235,7 +237,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
         
         post.title = updatedTitle
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeletePostWithSync() async throws {
@@ -265,7 +267,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted post from sync event")
         hubListener = Amplify.Hub.listen(to: .dataStore,
@@ -290,7 +292,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
         }
         
         _ = try await Amplify.DataStore.delete(post)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
     
 
@@ -330,7 +332,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
         }
         _ = try await Amplify.DataStore.save(post)
         _ = try await Amplify.DataStore.save(comment)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteReceived = expectation(description: "received deleted from sync event")
         deleteReceived.expectedFulfillmentCount = 2 // 1 post and 1 comment
@@ -363,7 +365,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.delete(post)
         // TODO: Deleting the comment should not be necessary. Cascade delete is not working
         _ = try await Amplify.DataStore.delete(comment)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 }
 

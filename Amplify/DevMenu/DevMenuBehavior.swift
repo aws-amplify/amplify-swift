@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
+#if os(iOS)
 import Foundation
 
 /// A protocol describing the behaviors of a Developer Menu

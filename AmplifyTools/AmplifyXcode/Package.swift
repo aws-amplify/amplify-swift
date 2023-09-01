@@ -13,8 +13,8 @@ let package = Package(
         .executable(name: "amplify-xcode", targets: ["AmplifyXcode"])
     ],
     dependencies: [
-        .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .upToNextMajor(from: "7.13.0")),
-        .package(url: "https://github.com/yonaskolb/XcodeGen", from: "2.18.0"),
+        .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj", .upToNextMinor(from: "8.10.0")),
+        .package(url: "https://github.com/yonaskolb/XcodeGen", from: "2.35.0"),
         .package(url: "https://github.com/kylef/PathKit", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.3.0")
     ],

@@ -34,9 +34,7 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogg
         do {
             
             try await confirmResetPassword()
-        } catch let error as ConfirmForgotPasswordOutputError {
-            throw error.authError
-        } catch let error as SdkError<ConfirmForgotPasswordOutputError> {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error as AuthError {
             throw error
@@ -91,5 +89,12 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogg
             username: request.username)
 
         _ = try await userPoolService.confirmForgotPassword(input: input)
+    }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
     }
 }

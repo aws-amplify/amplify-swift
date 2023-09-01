@@ -45,7 +45,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
         let authflowType = authFlowType(userPoolConfiguration: userPoolConfiguration)
         do {
             log.verbose("Signing with \(authflowType)")
-           let result = try await doSignIn(authflowType: authflowType)
+            let result = try await doSignIn(authflowType: authflowType)
             log.verbose("Received result")
             return result
         } catch {
@@ -95,8 +95,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
                     return AuthSignInResult(nextStep: .done)
                 } else if case .error(let error) = authZState {
                     log.verbose("Authorization reached an error state \(error)")
-                    let error = AuthError.unknown("Sign in reached an error state", error)
-                    throw error
+                    throw error.authError
                 }
             case .error(let error):
                 throw error.authError
@@ -159,10 +158,24 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
 
         // Since InitiateAuth API explicitly doesn't accept validationData,
         // we can pass this data to the Lambda function by using the ClientMetadata parameter
-        var clientMetadata = pluginOptions?.metadata ?? [:]
-        for (key, value) in pluginOptions?.validationData ?? [:] {
-            clientMetadata[key] = value
-        }
+
+        let clientMetadata = (pluginOptions?.metadata ?? [:]).merging(
+            // we're adding `validationData` to the `clientMetadata` here
+            // to prevent breaking behavioral changes.
+            // in vNext, the `validationData` property will be removed
+            // and we'll use only the `metadata` property.
+            pluginOptions?.validationData ?? [:],
+            uniquingKeysWith: { _, new in new }
+        )
+
         return clientMetadata
+    }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
     }
 }

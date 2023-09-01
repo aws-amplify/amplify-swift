@@ -7,19 +7,33 @@
 
 import Amplify
 import AWSRekognition
+import Foundation
 
 protocol AWSRekognitionServiceBehavior {
+    func detectLabels(
+        image: URL,
+        type: Predictions.LabelType
+    ) async throws -> Predictions.Identify.Labels.Result
 
-    typealias RekognitionServiceEventHandler = (RekognitionServiceEvent) -> Void
-    typealias RekognitionServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
+    func detectCelebrities(
+        image: URL
+    ) async throws -> Predictions.Identify.Celebrities.Result
 
-    func detectLabels(image: URL,
-                      type: LabelType,
-                      onEvent: @escaping RekognitionServiceEventHandler)
+    func detectDocumentText(
+        image: URL,
+        format: Predictions.TextFormatType
+    ) async throws -> Predictions.Identify.DocumentText.Result
 
-    func detectCelebrities(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
+    func detectPlainText(
+        image: URL
+    ) async throws -> Predictions.Identify.Text.Result
 
-    func detectText(image: URL, format: TextFormatType, onEvent: @escaping RekognitionServiceEventHandler)
+    func detectEntities(
+        image: URL
+    ) async throws -> Predictions.Identify.Entities.Result
 
-    func detectEntities(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
+    func detectEntitiesCollection(
+        image: URL,
+        collectionID: String
+    ) async throws -> Predictions.Identify.EntityMatches.Result
 }

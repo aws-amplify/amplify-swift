@@ -29,7 +29,7 @@ extension AuthCategory: AuthCategoryBehavior {
         return try await plugin.signIn(username: username, password: password, options: options)
     }
 
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
     public func signInWithWebUI(
         presentationAnchor: AuthUIPresentationAnchor? = nil,
         options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
@@ -74,4 +74,16 @@ extension AuthCategory: AuthCategoryBehavior {
     ) async throws {
         try await plugin.confirmResetPassword(for: username, with: newPassword, confirmationCode: confirmationCode, options: options)
     }
+
+    public func setUpTOTP() async throws -> TOTPSetupDetails {
+        try await plugin.setUpTOTP()
+    }
+
+    public func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options? = nil
+    ) async throws {
+        try await plugin.verifyTOTPSetup(code: code, options: options)
+    }
+
 }

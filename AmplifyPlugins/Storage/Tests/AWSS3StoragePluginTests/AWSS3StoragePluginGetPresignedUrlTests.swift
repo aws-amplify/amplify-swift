@@ -65,7 +65,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         ])
         let expectedServiceKey = "public/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject 18000"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject 18000"
         ])
     }
     
@@ -120,7 +120,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
         ])
     }
 
@@ -152,7 +152,7 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
         ])
     }
 
@@ -173,7 +173,44 @@ final class AWSS3StoragePluginGetPresignedUrlTests: XCTestCase {
         let expectedExpires = 18000
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         XCTAssertEqual(storageService.interactions, [
-            "getPreSignedURL(serviceKey:signingOperation:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
+            "getPreSignedURL(serviceKey:signingOperation:accelerate:expires:) \(expectedServiceKey) getObject \(expectedExpires)"
         ])
+    }
+
+    /// - Given: A key to a non-existent S3 object
+    /// - When: An attempt to generate a pre-signed URL is performed using the `validateObjectExistence` option
+    /// - Then: The plugin throws an AmplifyStorageError.notFound error
+    func testGetURLNonExistentKeyWithValidateObjectExistenceOption() async throws {
+        storageService.validateObjectExistenceHandler = { key in
+            throw StorageError.keyNotFound(key, "", "")
+        }
+        let nonExistentKey = UUID().uuidString
+        let options = StorageGetURLRequest.Options(
+            pluginOptions: AWSStorageGetURLOptions(
+                validateObjectExistence: true
+            )
+        )
+        do {
+            let url = try await systemUnderTest.getURL(key: nonExistentKey, options: options)
+            XCTFail("Expecting error but got url: \(url)")
+        } catch StorageError.keyNotFound(let key, _, _, _) {
+            XCTAssertTrue(key.contains(nonExistentKey), "nonExistentKey: \(nonExistentKey), key: \(key)")
+        }
+    }
+
+    /// - Given: A key to a non-existent S3 object
+    /// - When: An attempt to generate a pre-signed URL is performed without using the `validateObjectExistence` option
+    /// - Then: The plugin returns without an error
+    func testGetURLNonExistentKeyWithoutValidateObjectExistenceOption() async throws {
+        storageService.validateObjectExistenceHandler = { key in
+            throw StorageError.keyNotFound(key, "", "")
+        }
+        let nonExistentKey = UUID().uuidString
+        let options = StorageGetURLRequest.Options(
+            pluginOptions: AWSStorageGetURLOptions(
+                validateObjectExistence: false
+            )
+        )
+        _ = try await systemUnderTest.getURL(key: nonExistentKey, options: options)
     }
 }

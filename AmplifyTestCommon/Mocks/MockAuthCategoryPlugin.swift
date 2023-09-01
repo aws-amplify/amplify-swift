@@ -40,7 +40,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
@@ -49,7 +49,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
-            fatalError()
+        fatalError()
     }
 #endif
 
@@ -97,6 +97,17 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         async throws -> AuthCodeDeliveryDetails {
             fatalError()
 
+    }
+
+    public func setUpTOTP() async throws -> TOTPSetupDetails {
+        fatalError()
+    }
+
+    public func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options?
+    ) async throws {
+        fatalError()
     }
 
     public func confirm(userAttribute: AuthUserAttributeKey,

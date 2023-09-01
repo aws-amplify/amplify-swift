@@ -6,11 +6,14 @@
 //
 
 import XCTest
+import Combine
 import AWSAPIPlugin
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
@@ -39,7 +42,7 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     override func tearDown() async throws {
         try await super.tearDown()
-        try await stopDataStore()
+        try await clearDataStore()
         await Amplify.reset()
         try await Task.sleep(seconds: 1)
     }
@@ -52,7 +55,10 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         Amplify.Logging.logLevel = logLevel
 
         do {
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSAPIPlugin(
+                modelRegistration: models,
+                sessionFactory: AmplifyURLSessionFactory()
+            ))
             try Amplify.add(
                 plugin: AWSDataStorePlugin(
                     modelRegistration: models,
@@ -96,28 +102,19 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     }
 
     private func startAmplifyAndWait(for eventName: String) async throws {
+        var cancellables = Set<AnyCancellable>()
         try startAmplify()
 
         let eventReceived = expectation(description: "DataStore \(eventName) event")
-        var token: UnsubscribeToken!
-        token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: eventName) { _ in
-            eventReceived.fulfill()
-            Amplify.Hub.removeListener(token)
-        }
-
-        guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
-            XCTFail("Hub Listener not registered")
-            return
-        }
+        Amplify.Hub.publisher(for: .dataStore)
+            .filter { $0.eventName == eventName }
+            .sink { _ in
+                eventReceived.fulfill()
+            }.store(in: &cancellables)
 
         try await Amplify.DataStore.start()
-        await waitForExpectations(timeout: 10.0)
 
-        try await deleteMutationEvents()
+        await fulfillment(of: [eventReceived], timeout: 10)
     }
     
-    func deleteMutationEvents() async throws {
-        try await Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all)
-    }
 }

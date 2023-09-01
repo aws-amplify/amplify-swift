@@ -12,6 +12,7 @@ import AWSCognitoIdentityProvider
 import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
 
 class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
@@ -26,7 +27,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
     /// Test a successful forgetDevice call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successull response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke forgetDevice
     /// - Then:
@@ -38,7 +39,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
     /// Test a successful forgetDevice call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke forgetDevice with an AWSAuthDevice
     /// - Then:
@@ -134,7 +135,10 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw ForgetDeviceOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
+                throw SdkError.service(
+                    ForgetDeviceOutputError.invalidParameterException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

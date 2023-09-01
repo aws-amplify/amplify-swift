@@ -14,6 +14,7 @@ extension AWSS3StorageService {
                 uploadSource: UploadSource,
                 contentType: String?,
                 metadata: [String: String]?,
+                accelerate: Bool?,
                 onEvent: @escaping StorageServiceUploadEventHandler) {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
@@ -35,6 +36,7 @@ extension AWSS3StorageService {
             do {
                 let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
                                                                                  signingOperation: .putObject,
+                                                                                 accelerate: accelerate,
                                                                                  expires: nil)
                 startUpload(preSignedURL: preSignedURL,
                             fileURL: uploadFileURL,
@@ -57,17 +59,16 @@ extension AWSS3StorageService {
         var request = URLRequest(url: preSignedURL)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpMethod = "PUT"
+        request.networkServiceType = .responsiveData
 
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
-
-        /*
-        let userAgent = AWSServiceConfiguration.baseUserAgent()
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-         */
 
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
+        urlRequestDelegate?.willSend(request: request)
         let uploadTask = urlSession.uploadTask(with: request, fromFile: fileURL)
+        urlRequestDelegate?.didSend(request: request)
         transferTask.sessionTask = uploadTask
 
         // log task identifier?

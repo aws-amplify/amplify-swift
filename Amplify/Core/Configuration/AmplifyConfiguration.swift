@@ -7,7 +7,11 @@
 
 import Foundation
 
-/// Configures the Amplify system with sub-configurations for each supported category
+/// Represents Amplify's configuration for all categories intended to be used in an application.
+///
+/// See: [Amplify.configure](x-source-tag://Amplify.configure)
+///
+/// - Tag: AmplifyConfiguration
 public struct AmplifyConfiguration: Codable {
     enum CodingKeys: String, CodingKey {
         case analytics
@@ -52,6 +56,7 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify Storage category
     let storage: StorageCategoryConfiguration?
 
+    /// - Tag: Amplify.init
     public init(analytics: AnalyticsCategoryConfiguration? = nil,
                 api: APICategoryConfiguration? = nil,
                 auth: AuthCategoryConfiguration? = nil,
@@ -75,6 +80,8 @@ public struct AmplifyConfiguration: Codable {
     }
 
     /// Initialize `AmplifyConfiguration` by loading it from a URL representing the configuration file.
+    ///
+    /// - Tag: Amplify.configureWithConfigurationFile
     public init(configurationFile url: URL) throws {
         self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url)
     }
@@ -100,6 +107,8 @@ extension Amplify {
     /// event to each Amplify Hub channel. After this point, plugins may invoke calls on other Amplify categories.
     ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
+    ///
+    /// - Tag: Amplify.configure
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
         log.info("Configuring")
         log.debug("Configuration: \(String(describing: configuration))")
@@ -126,9 +135,12 @@ extension Amplify {
             }
         }
 
-        // Always configure Logging, Hub and Auth first, so they are available to other categories.
+        // Always configure logging first since Auth dependings on logging
+        try configure(CategoryType.logging.category, using: resolvedConfiguration)
+
+        // Always configure Hub and Auth next, so they are available to other categories.
         // Auth is a special case for other plugins which depend on using Auth when being configured themselves.
-        let manuallyConfiguredCategories = [CategoryType.logging, .hub, .auth]
+        let manuallyConfiguredCategories = [CategoryType.hub, .auth]
         for categoryType in manuallyConfiguredCategories {
             try configure(categoryType.category, using: resolvedConfiguration)
         }

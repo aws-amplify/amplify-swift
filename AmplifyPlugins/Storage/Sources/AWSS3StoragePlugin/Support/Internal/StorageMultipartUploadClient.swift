@@ -100,13 +100,19 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             var request = URLRequest(url: preSignedURL)
             request.cachePolicy = .reloadIgnoringLocalCacheData
             request.httpMethod = "PUT"
+            request.networkServiceType = .responsiveData
 
-            /*
-            let userAgent = AWSServiceConfiguration.baseUserAgent().appending(" MultiPart")
+            // Because this request represents an
+            // [UploadPart](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html)
+            // operation, the "MultiPart/UploadPart" suffix is added to the
+            // user agent.
+            let userAgent = serviceProxy.userAgent.appending(" MultiPart/UploadPart")
             request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-             */
 
+            self.serviceProxy?.urlRequestDelegate?.willSend(request: request)
             let uploadTask = serviceProxy.urlSession.uploadTask(with: request, fromFile: partialFileURL)
+            self.serviceProxy?.urlRequestDelegate?.didSend(request: request)
+
             subTask.sessionTask = uploadTask
             subTask.uploadPart = multipartUpload.part(for: partNumber)
 
@@ -129,6 +135,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                     let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
                         key: self.key,
                         signingOperation: operation,
+                        accelerate: nil,
                         expires: nil
                     )
                     startUploadPart(partialFileURL, preSignedURL)

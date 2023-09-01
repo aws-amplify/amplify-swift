@@ -29,9 +29,9 @@ protocol StorageTransferDatabase {
 
     func recover(urlSession: StorageURLSession, completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
 
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler?,
-                             onDownload: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler?,
-                             onMultipartUpload: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler?)
+    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?,
+                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?,
+                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler?)
 }
 
 extension StorageTransferDatabase {
@@ -39,9 +39,9 @@ extension StorageTransferDatabase {
         prepareForBackground(completion: nil)
     }
 
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler? = nil,
-                             onDownload: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler? = nil,
-                             onMultipartUpload: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler? = nil ) {
+    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
+                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
+                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil ) {
         attachEventHandlers(onUpload: onUpload, onDownload: onDownload, onMultipartUpload: onMultipartUpload)
     }
 

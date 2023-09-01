@@ -26,7 +26,18 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AWSCognitoAuthPlugin"
+            BuildableName = "AWSCognitoAuthPlugin"
+            BlueprintName = "AWSCognitoAuthPlugin"
+            ReferencedContainer = "container:../../../..">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -37,27 +48,13 @@
                BlueprintName = "AuthIntegrationTests"
                ReferencedContainer = "container:AuthHostApp.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "AuthCustomSignInTests/testRuntimeAuthFlowSwitch()">
-               </Test>
-               <Test
-                  Identifier = "AuthCustomSignInTests/testSuccessfulSignInWithCustomAuth()">
-               </Test>
-               <Test
-                  Identifier = "AuthCustomSignInTests/testSuccessfulSignInWithCustomAuthSRP()">
-               </Test>
-               <Test
-                  Identifier = "AuthSRPSignInTests/testNewPasswordRequired()">
-               </Test>
-            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "97914AD42954FE0A002000EA"
+               BlueprintIdentifier = "97914B2629550988002000EA"
                BuildableName = "AuthStressTests.xctest"
                BlueprintName = "AuthStressTests"
                ReferencedContainer = "container:AuthHostApp.xcodeproj">

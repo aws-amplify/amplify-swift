@@ -12,6 +12,7 @@ import AWSCognitoIdentityProvider
 import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
 
 class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
@@ -51,7 +52,7 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
     /// Test a successful rememberDevice call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke rememberDevice
     /// - Then:
@@ -136,7 +137,10 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.invalidUserPoolConfigurationException(InvalidUserPoolConfigurationException(message: "invalid user pool configuration"))
+                throw SdkError.service(
+                    UpdateDeviceStatusOutputError.invalidUserPoolConfigurationException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

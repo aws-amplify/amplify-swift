@@ -81,13 +81,12 @@ struct FetchHostedUISignInToken: Action {
 
         } else if let idToken = json["id_token"] as? String,
                   let accessToken = json["access_token"] as? String,
-                  let refreshToken = json["refresh_token"] as? String,
-                  let expiresIn = json["expires_in"] as? Int {
+                  let refreshToken = json["refresh_token"] as? String {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
                 refreshToken: refreshToken,
-                expiresIn: expiresIn)
+                expiresIn: json["expires_in"] as? Int)
             let signedInData = SignedInData(
                 signedInDate: Date(),
                 signInMethod: .hostedUI(result.options),

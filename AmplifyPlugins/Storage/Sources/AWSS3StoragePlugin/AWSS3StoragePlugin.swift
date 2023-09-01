@@ -9,11 +9,14 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
-// The AWSS3StoragePlugin which conforms to the Amplify plugin protocols and implements the Storage Plugin APIs for S3.
+/// The AWSS3StoragePlugin which conforms to the Amplify plugin protocols and implements the Storage
+/// Plugin APIs for AWS S3.
+///
+/// - Tag: AWSS3StoragePlugin
 final public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     /// An instance of the S3 storage service.
-    var storageService: AWSS3StorageServiceBehaviour!
+    var storageService: AWSS3StorageServiceBehavior!
 
     /// An instance of the authentication service.
     var authService: AWSAuthServiceBehavior!
@@ -25,6 +28,8 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     var defaultAccessLevel: StorageAccessLevel!
 
     /// The unique key of the plugin within the storage category.
+    ///
+    /// - Tag: AWSS3StoragePlugin.key
     public var key: PluginKey {
         return PluginConstants.awsS3StoragePluginKey
     }
@@ -32,7 +37,15 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     /// The storage plugin configuration
     let storageConfiguration: AWSS3StoragePluginConfiguration
 
+    /// See [HttpClientEngineProxy](x-source-tag://HttpClientEngineProxy)
+    internal var httpClientEngineProxy: HttpClientEngineProxy?
+
+    /// See [URLRequestDelegate](x-source-tag://URLRequestDelegate)
+    internal weak var urlRequestDelegate: URLRequestDelegate?
+
     /// Instantiates an instance of the AWSS3StoragePlugin.
+    ///
+    /// - Tag: AWSS3StoragePlugin.init
     public init(configuration
                     storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
         self.storageConfiguration = storageConfiguration

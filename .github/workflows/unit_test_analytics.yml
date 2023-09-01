@@ -1,0 +1,12 @@
+name: Unit Tests | Analytics
+on:
+  workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+  analytics-unit-tests:
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: AWSPinpointAnalyticsPlugin

@@ -1,0 +1,56 @@
+name: Canary Test
+
+on:
+  schedule:
+    - cron: '0 16 * * *' # Everyday 16:00 UTC
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  canary-test:
+    strategy:
+      matrix:
+        include:
+          - os: macos-13
+            xcode-version: 14.3.1
+            device: iPhone 14 Pro
+            version: 16.4
+          - os: macos-12
+            xcode-version: 14.1
+            device: iPhone 13 Pro
+            version: 16.1
+    name: Canary Test - Xcode ${{ matrix.xcode-version }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        with:
+          persist-credentials: false
+
+      - name: Install amplify-cli
+        run: npm install -g @aws-amplify/cli@12.2.0
+
+      - name: Create Sample Amplify App
+        working-directory: ${{ github.workspace }}/canaries/example
+        run: amplify init --quickstart --frontend ios
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939 # v1.152.0
+        with:
+          ruby-version: '3.2.1'
+          bundler-cache: true
+          working-directory: ${{ github.workspace }}/canaries/example
+
+      - name: Set Default Xcode Version to ${{ matrix.xcode-version }}
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_${{ matrix.xcode-version }}.app"
+          xcodebuild -version
+
+      - name: Run Tests - ${{ matrix.device }} with iOS ${{ matrix.version }}
+        working-directory: ${{ github.workspace }}/canaries/example
+        run: bundle exec fastlane scan --device "${{ matrix.device }}" --deployment_target_version "${{ matrix.version }}"
+

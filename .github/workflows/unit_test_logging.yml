@@ -1,0 +1,12 @@
+name: Unit Tests | Logging
+on:
+  workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+  logging-unit-tests:
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: AWSCloudWatchLoggingPlugin

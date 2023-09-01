@@ -12,7 +12,8 @@ extension AWSS3StorageService {
 
     func download(serviceKey: String,
                   fileURL: URL?,
-                  onEvent: @escaping StorageServiceDownloadEventHandler) {
+                  accelerate: Bool?,
+              onEvent: @escaping StorageServiceDownloadEventHandler) {
         let fail: (Error) -> Void = { error in
             let storageError = StorageError(error: error)
             onEvent(.failed(storageError))
@@ -27,7 +28,10 @@ extension AWSS3StorageService {
 
         Task {
             do {
-                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey, signingOperation: .getObject, expires: nil)
+                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
+                                                                                 signingOperation: .getObject,
+                                                                                 accelerate: accelerate,
+                                                                                 expires: nil)
                 startDownload(preSignedURL: preSignedURL, transferTask: transferTask)
             } catch {
                 onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
@@ -44,15 +48,12 @@ extension AWSS3StorageService {
         var request = URLRequest(url: preSignedURL)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpMethod = "GET"
-
-        /*
-         let userAgent = AWSServiceConfiguration.baseUserAgent()
-         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-         */
-
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
+        urlRequestDelegate?.willSend(request: request)
         let downloadTask = urlSession.downloadTask(with: request)
+        urlRequestDelegate?.didSend(request: request)
         transferTask.sessionTask = downloadTask
 
         // log task identifier?

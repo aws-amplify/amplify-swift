@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
+#if os(iOS)
 import Foundation
 
 /// Helper class to fetch log entry related information
@@ -25,7 +25,7 @@ struct LogEntryHelper {
 
     /// Helper function to fetch logs from `PersistentLoggingPlugin`
     static func getLogHistory() -> [LogEntryItem] {
-        if let loggingPlugin: PersistentLoggingPlugin =  Amplify.Logging.plugin as? PersistentLoggingPlugin {
+        if let loggingPlugin: PersistentLoggingPlugin =  Amplify.Logging.plugins.first(where: { $0.key == DevMenuStringConstants.persistentLoggingPluginKey})?.value as? PersistentLoggingPlugin {
             if let logger: PersistentLogWrapper = loggingPlugin.default as? PersistentLogWrapper {
                 return logger.getLogHistory()
             }

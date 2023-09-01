@@ -8,22 +8,14 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
-import AWSCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
-
     let awsPredictionsPluginKey = "awsPredictionsPlugin"
-
-    /// A queue that regulates the execution of operations.
-    var queue: OperationQueue!
 
     /// An instance of the predictions  service
     var predictionsService: AWSPredictionsService!
-
-    var coreMLService: CoreMLPredictionBehavior!
-
+    var coreMLService: CoreMLPredictionBehavior?
     var authService: AWSAuthServiceBehavior!
-
     var config: PredictionsPluginConfiguration!
 
     /// public limit rekognition has on number of faces it can detect.
@@ -34,12 +26,11 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
         return awsPredictionsPluginKey
     }
 
-    public func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
-        return predictionsService.getEscapeHatch(key: key)
+    public func getEscapeHatch<T>(key: PredictionsAWSService<T>) -> T {
+        predictionsService.getEscapeHatch(client: key)
     }
 
-    public init() {
-    }
+    public init() {}
 }
 
 extension AWSPredictionsPlugin: AmplifyVersionable { }

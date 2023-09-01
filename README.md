@@ -5,13 +5,12 @@ AWS Amplify provides a declarative and easy-to-use interface across different ca
 
 The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
 
-We deeply appreciate your feedback on this Developer Preview as we work towards our General Availability launch: [GitHub Discussion](https://github.com/aws-amplify/amplify-swift/discussions/categories/developer-preview) or [File a Bug Report](https://github.com/aws-amplify/amplify-swift/issues/new/choose).
-
 [**API Documentation**](https://aws-amplify.github.io/amplify-swift/docs/)
 
 [**Getting Started Guide**](https://docs.amplify.aws/start/q/integration/ios)
 
-[![CircleCI](https://circleci.com/gh/aws-amplify/amplify-swift.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-swift)
+[![CI/CD](https://img.shields.io/github/actions/workflow/status/aws-amplify/amplify-swift/deploy_unstable.yml?logo=github&label=CI%2FCD)](https://github.com/aws-amplify/amplify-swift/actions/workflows/deploy_unstable.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/aws-amplify/amplify-swift?logo=codecov&label=codecov)](https://app.codecov.io/gh/aws-amplify/amplify-swift)
 [![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC)
 
 ## Features/APIs
@@ -22,31 +21,33 @@ We deeply appreciate your feedback on this Developer Preview as we work towards 
 - [Authentication](https://docs.amplify.aws/lib/auth/getting-started/q/platform/ios) - for managing your users.
 - [DataStore](https://docs.amplify.aws/lib/datastore/getting-started/q/platform/ios) - for making it easier to program for a distributed data store for offline and online scenarios.
 - [Geo](https://docs.amplify.aws/lib/geo/getting-started/q/platform/ios) - for adding location-based capabilities to your app.
+- [Predictions](https://docs.amplify.aws/lib/predictions/getting-started/q/platform/ios/) - for connecting your app with machine learning services.
+- [Push Notifications](https://docs.amplify.aws/lib/push-notifications/getting-started/q/platform/ios/) - for integrating push notifications in your app.
 - [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
-
-All services and features not listed above are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
-
-```swift
-guard let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
-    print("Unable to to cast to AWSS3StoragePlugin")
-    return
-}
-
-let awsS3 = plugin.getEscapeHatch()
-let input: HeadBucketInput = HeadBucketInput()
-let task = awsS3.headBucket(input: input) { result in
-    switch result {
-    case .success(let response):
-        print(response)
-    case .failure(let error):
-        print(error)
-    }
-}
-```
 
 ## Platform Support
 
-Amplify supports iOS 13+ and macOS 10.15+. Support for watchOS and tvOS is coming in future releases.
+| Platform  | Versions  | Support Level |
+| ---------: | -------:  | :-----------: |
+| iOS       | 13+       | GA            |
+| macOS     | 10.15+    | GA            |
+| tvOS      | 13+       | GA            |
+| watchOS   | 7+        | GA            |
+| visionOS  | 1+        | Preview*      |
+
+> To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
+> For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
+
+## Semantic versioning
+
+We follow [semantic versioning](https://semver.org/) for our releases.
+
+### Semantic versioning and enumeration cases
+
+When Amplify adds a new enumeration value, we will publish a new **minor** version
+of the library.
+
+Applications that evaluate all members of an enumeration using a `switch` statement can add a `default` case to prevent new cases from causing compile warnings or errors.
 
 ## License
 
@@ -54,7 +55,7 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires Xcode 13.4 or higher to build.
+Amplify requires Xcode 14.1 or higher to build for iOS and macOS. Building for watchOS and tvOS requires Xcode 14.3 or higher.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|
@@ -90,14 +91,17 @@ Amplify requires Xcode 13.4 or higher to build.
 
     ```swift
     import Amplify
+    import AWSCongitoAuthPlugin
     import AWSAPIPlugin
     import AWSDataStorePlugin
 
-    // ... later
+    // ...
 
     func initializeAmplify() {
         do {
+            try Amplify.add(AWSCognitoAuthPlugin())
             try Amplify.add(AWSAPIPlugin())
+            try Amplify.add(AWSDataStorePlugin())
             // and so on ...
             try Amplify.configure()
         } catch {
@@ -111,12 +115,42 @@ Amplify requires Xcode 13.4 or higher to build.
     ```swift
     import Amplify
 
-    // ... later
+    // ...
 
-    func doUpload() {
-        Amplify.Storage.uploadFile(...)
+    func signIn() async throws {
+        let signInResult = try await Amplify.Auth.signIn(...)
+        // ...
     }
     ```
+
+## Escape Hatch
+
+All services and features not listed in the [**Features/API sectios**](#featuresapis) are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
+
+```swift
+import Amplify
+import AWSS3StoragePlugin
+import AWSS3
+
+// ...
+
+guard let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
+    print("Unable to to cast to AWSS3StoragePlugin")
+    return
+}
+
+let awsS3 = plugin.getEscapeHatch()
+
+let accelerateConfigInput = PutBucketAccelerateConfigurationInput()
+do {
+    let accelerateConfigOutput = try await awsS3.putBucketAccelerateConfiguration(
+        input: accelerateConfigInput
+    )
+    print("putBucketAccelerateConfiguration output: \(accelerateConfigOutput)")
+} catch {
+    print("putBucketAccelerateConfiguration error: \(error)")
+}
+```
 
 ## Reporting Bugs/Feature Requests
 

@@ -40,11 +40,18 @@ final class AWSMutationDatabaseAdapter {
 
 }
 
-extension AWSMutationDatabaseAdapter: DefaultLogger { }
+extension AWSMutationDatabaseAdapter: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension AWSMutationDatabaseAdapter: Resettable {
 
-    func reset() {
+    func reset() async {
         log.verbose("Resetting AWSMutationDatabaseAdapter")
         storageAdapter = nil
         nextEventPromise.set(nil)

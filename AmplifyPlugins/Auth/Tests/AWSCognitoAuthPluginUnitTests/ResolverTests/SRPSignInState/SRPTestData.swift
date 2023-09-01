@@ -107,13 +107,32 @@ extension RespondToAuthChallengeOutputResponse {
             challengeParameters: [:],
             session: "session")
     }
+
+    static func testData(
+        challenge: CognitoIdentityProviderClientTypes.ChallengeNameType = .smsMfa,
+        challengeParameters: [String: String] = [:]) -> RespondToAuthChallengeOutputResponse {
+            return RespondToAuthChallengeOutputResponse(
+                authenticationResult: nil,
+                challengeName: challenge,
+                challengeParameters: challengeParameters,
+                session: "session")
+        }
+
 }
 
 extension RespondToAuthChallenge {
-    static let testData = RespondToAuthChallenge(challenge: .smsMfa,
-                                                 username: "username",
-                                                 session: "session",
-                                                 parameters: [:])
+
+    static func testData(
+        challenge: CognitoIdentityProviderClientTypes.ChallengeNameType = .smsMfa,
+        username: String = "username",
+        session: String = "session",
+        parameters: [String: String] = [:]) -> RespondToAuthChallenge {
+            RespondToAuthChallenge(
+                challenge: challenge,
+                username: username,
+                session: session,
+                parameters: parameters)
+        }
 }
 
 extension SignInEvent {
@@ -134,7 +153,7 @@ extension SignInEvent {
 
     static let respondPasswordVerifierEvent = SignInEvent(
         id: "respondPasswordVerifierEvent",
-        eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData)
+        eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData, [:])
     )
 
     static func finalizeSRPSignInEvent(signedInData: SignedInData) -> SignInEvent {

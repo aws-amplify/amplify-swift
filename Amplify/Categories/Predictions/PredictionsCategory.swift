@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+public enum Predictions {}
+
 final public class PredictionsCategory: Category {
 
     public let categoryType = CategoryType.predictions
@@ -51,18 +53,24 @@ final public class PredictionsCategory: Category {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = PredictionsError.configuration("Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
-            throw error
+            throw PredictionsError.client(
+                .init(
+                    description: "Plugin \(pluginDescription) has an empty `key`.",
+                    recoverySuggestion: "Set the `key` property for \(pluginDescription)",
+                    underlyingError: nil
+                )
+            )
         }
 
         guard !isConfigured else {
             let pluginDescription = String(describing: plugin)
-            let error = ConfigurationError.amplifyAlreadyConfigured(
-                "\(pluginDescription) cannot be added after `Amplify.configure()`.",
-                "Do not add plugins after calling `Amplify.configure()`."
+            throw PredictionsError.client(
+                .init(
+                    description: "\(pluginDescription) cannot be added after `Amplify.configure()`.",
+                    recoverySuggestion: "Do not add plugins after calling `Amplify.configure()`.",
+                    underlyingError: nil
+                )
             )
-            throw error
         }
 
         plugins[plugin.key] = plugin
@@ -75,9 +83,13 @@ final public class PredictionsCategory: Category {
     public func getPlugin(for key: PluginKey) throws -> PredictionsCategoryPlugin {
         guard let plugin = plugins[key] else {
             let keys = plugins.keys.joined(separator: ", ")
-            let error = PredictionsError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
-            throw error
+            throw PredictionsError.client(
+                .init(
+                    description: "No plugin has been added for '\(key)'.",
+                    recoverySuggestion: "Either add a plugin for '\(key)', or use one of the known keys: \(keys)",
+                    underlyingError: nil
+                )
+            )
         }
         return plugin
     }
@@ -90,4 +102,13 @@ final public class PredictionsCategory: Category {
         plugins.removeValue(forKey: key)
     }
 
+}
+
+extension PredictionsCategory: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.predictions.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
 }

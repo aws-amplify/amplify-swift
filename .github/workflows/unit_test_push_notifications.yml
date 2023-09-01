@@ -1,0 +1,12 @@
+name: Unit Tests | Push Notifications
+on:
+  workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+  push-notifications-unit-tests:
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: AWSPinpointPushNotificationsPlugin

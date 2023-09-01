@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 
 typealias Username = String
 typealias Password = String
+typealias ClientMetadata = [String: String]
 
 struct SignInEvent: StateMachineEvent {
 
@@ -27,15 +28,17 @@ struct SignInEvent: StateMachineEvent {
 
         case initiateMigrateAuth(SignInEventData, DeviceMetadata)
 
-        case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
+        case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse, ClientMetadata)
 
-        case retryRespondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
+        case retryRespondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse, ClientMetadata)
 
         case initiateDeviceSRP(Username, SignInResponseBehavior)
 
         case respondDeviceSRPChallenge(Username, SignInResponseBehavior)
 
         case respondDevicePasswordVerifier(SRPStateData, SignInResponseBehavior)
+
+        case initiateTOTPSetup(Username, SignInResponseBehavior)
 
         case throwPasswordVerifierError(SignInError)
 
@@ -75,6 +78,7 @@ struct SignInEvent: StateMachineEvent {
         case .receivedChallenge: return "SignInEvent.receivedChallenge"
         case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
         case .retryRespondPasswordVerifier: return "SignInEvent.retryRespondPasswordVerifier"
+        case .initiateTOTPSetup: return "SignInEvent.initiateTOTPSetup"
         }
     }
 
@@ -108,7 +112,8 @@ extension SignInEvent.EventType: Equatable {
             (.throwAuthError, .throwAuthError),
             (.receivedChallenge, .receivedChallenge),
             (.verifySMSChallenge, .verifySMSChallenge),
-            (.retryRespondPasswordVerifier, .retryRespondPasswordVerifier):
+            (.retryRespondPasswordVerifier, .retryRespondPasswordVerifier),
+            (.initiateTOTPSetup, .initiateTOTPSetup):
             return true
         default: return false
         }

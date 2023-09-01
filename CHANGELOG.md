@@ -1,5 +1,180 @@
 # Changelog
 
+## 2.17.0 (2023-08-31)
+
+### Features
+
+- **auth**: add userID property to AuthSignUpResult (#3192)
+
+## 2.16.1 (2023-08-30)
+
+### Bug Fixes
+
+- **auth**: hostedui extract error_description query pararm (#3183)
+- **Auth**: Adding the ability to keep old preferred methods (#3189)
+
+## 2.16.0 (2023-08-28)
+
+### Features
+
+- **Auth**: Added TOTP support in Auth plugin (#3072)
+
+## 2.15.5 (2023-08-28)
+
+### Bug Fixes
+
+- update user agent values to be consistent across plugins (#3178)
+
+## 2.15.4 (2023-08-25)
+
+### Bug Fixes
+
+- **core**: update keychain setter for macOS (#3174)
+
+## 2.15.3 (2023-08-24)
+
+## 2.15.2 (2023-08-03)
+
+### Bug Fixes
+
+- **Auth**: Refactor the expires in logic of the authentication result (#3114)
+- **logging**: update flushlog to be blocking end to end (#3113)
+- **logging**: delete logs when user identifier changes (#3110)
+
+## 2.15.1 (2023-07-24)
+
+## 2.15.0 (2023-07-18)
+
+### Features
+
+- **logging**: add CloudWatch Logging plugin (#3095)
+
+## 2.14.1 (2023-07-13)
+
+### Bug Fixes
+
+- **predictions**: add method to send socket close frame (#3081)
+
+## 2.14.0 (2023-07-13)
+
+### Features
+
+- **auth**: Add OIDC support types & docs (#3064) (#3082)
+
+## 2.13.0 (2023-07-13)
+
+### Features
+
+- Add default reset implementation for Plugins (#3080)
+
+### Bug Fixes
+
+- encoded key ordering (#3057)
+
+## 2.12.0 (2023-06-26)
+
+### Features
+
+- Adding support for tvOS and watchOS (#3051)
+
+## 2.11.7 (2023-06-20)
+
+### Bug Fixes
+
+- **datastore**: support CPK sort key with AWS date types (#3020)
+- **datastore**: support CPK with sortKey for GraphQL scalar types (#3012)
+
+## 2.11.6 (2023-06-07)
+
+### Bug Fixes
+
+- predictions plugin public init (#3011)
+
+## 2.11.5 (2023-05-25)
+
+### Bug Fixes
+
+- **Auth**: Pass client metadata to password verifier during SRP sign in (#2986)
+- **datastore**: fix failed test cases for PR#2979 (#2988)
+- **datastore**: wrap URLSession with validation state for test cases (#2979)
+- **datastore**: fix sync with lazy references (#2907)
+
+## 2.11.4 (2023-05-24)
+
+### Bug Fixes
+
+- **Auth**: Fixing keychain migration issue (#2978)
+
+## 2.11.3 (2023-05-19)
+
+### Bug Fixes
+
+- **datastore**: extract mutation events handling out of periodic snapshot generate logic (#2971)
+
+## 2.11.2 (2023-05-18)
+
+### Bug Fixes
+
+- **Auth**:  Revert - fix(Auth): Use correct queries when getting and setting keychain items (#2975)
+
+## DEPRECATED - 2.11.1 (2023-05-17)
+
+### Bug Fixes
+
+- **Auth**: Use correct queries when getting and setting keychain items (#2965)
+
+## 2.11.0 (2023-05-16)
+
+### Features
+
+- **auth**: deprecate AWSAuthSignInOptions.validationData (#2955)
+- **storage**: Added support for AWSStorageGetURLOptions.validateObjectExistence
+
+### Bug Fixes
+
+- **datastore**: stop datastore plugin only stops syncEngine (#2942)
+- liveness service error reporting (#2937)
+
+## 2.10.0 (2023-05-04)
+
+### Features
+
+- upgrade to aws-sdk-swift version 0.13.0 (#2783)
+
+## 2.9.1 (2023-05-02)
+
+### Bug Fixes
+
+- **Auth**: Fixing throwing of AuthError when Authorization fails during signIn (#2905)
+- **storage**: foreground upload speed (#2925)
+
+## 2.9.0 (2023-04-28)
+
+### Features
+
+- **predictions**: add predictions v2 (#2902)
+
+## 2.8.1 (2023-04-17)
+
+### Bug Fixes
+
+- **Auth**: Fixing handling of service SdkError in Auth tasks (#2859)
+- **predictions**: make predictions plugin init internal (#2855)
+
+## 2.8.0 (2023-04-05)
+
+### Features
+
+- **liveness**: add session + websocket client (#134)
+- **liveness**: add spi models (#132)
+- **predictions**: add support for sigv4 signing (#130)
+- **predictions**: EventStream Encoding and Decoding Support (#129)
+
+### Bug Fixes
+
+- **liveness**: misc minor changes (#135)
+- **storage**: Ensure progress from Amplify.Storage.uploadFile completes
+
 ## 2.7.1 (2023-03-28)
 
 ## 2.7.0 (2023-03-28)

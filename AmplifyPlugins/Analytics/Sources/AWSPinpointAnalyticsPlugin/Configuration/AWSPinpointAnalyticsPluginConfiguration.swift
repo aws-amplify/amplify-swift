@@ -36,7 +36,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     let trackAppSessions: Bool
     let autoSessionTrackingInterval: Int
     
-    private static let logger = Amplify.Logging.logger(forCategory: String(describing: Self.self))
+    private static let logger = Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: Self.self))
 
     init(_ configuration: JSONValue) throws {
         guard case let .object(configObject) = configuration else {

@@ -9,21 +9,18 @@ import Foundation
 import Amplify
 
 extension AWSPredictionsPlugin {
-
-    public func reset(onComplete: @escaping BasicClosure) {
+    public func reset() async {
         if predictionsService != nil {
-            predictionsService.reset()
+            let resettable = predictionsService as Resettable
+            await resettable.reset()
             predictionsService = nil
         }
 
         if authService != nil {
+            if let resettable = authService as? Resettable {
+                await resettable.reset()
+            }
             authService = nil
         }
-
-        if queue != nil {
-            queue = nil
-        }
-
-        onComplete()
     }
 }

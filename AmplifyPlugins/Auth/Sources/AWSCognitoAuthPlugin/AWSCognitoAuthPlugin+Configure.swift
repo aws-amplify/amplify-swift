@@ -11,7 +11,6 @@ import Amplify
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
-
 import ClientRuntime
 
 extension AWSCognitoAuthPlugin {
@@ -28,6 +27,8 @@ extension AWSCognitoAuthPlugin {
                 AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
                 AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
+
+        jsonConfiguration = jsonValueConfiguration
 
         let authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
 
@@ -92,6 +93,13 @@ extension AWSCognitoAuthPlugin {
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: userPoolConfig.region
             )
+
+            if var httpClientEngineProxy = httpClientEngineProxy {
+                let sdkEngine = configuration.httpClientEngine
+                httpClientEngineProxy.target = sdkEngine
+                configuration.httpClientEngine = httpClientEngineProxy
+            }
+
             return CognitoIdentityProviderClient(config: configuration)
         default:
             fatalError()

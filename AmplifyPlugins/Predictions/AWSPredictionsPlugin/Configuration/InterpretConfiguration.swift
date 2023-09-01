@@ -5,18 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCore
+import Foundation
 
 public struct InterpretConfiguration {
-    public var region: AWSRegionType
+    public var region: String
 
-    public init(_ region: AWSRegionType) {
+    public init(_ region: String) {
         self.region = region
     }
 }
 
 extension InterpretConfiguration: Decodable {
-
     enum CodingKeys: String, CodingKey {
         case interpretText
     }
@@ -27,8 +26,14 @@ extension InterpretConfiguration: Decodable {
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let additionalInfo = try values.nestedContainer(keyedBy: InterpretTextKeys.self, forKey: .interpretText)
-        let regionString = try additionalInfo.decode(String.self, forKey: .region) as NSString
-        self.region = regionString.aws_regionTypeValue()
+        let additionalInfo = try values.nestedContainer(
+            keyedBy: InterpretTextKeys.self,
+            forKey: .interpretText
+        )
+        let regionString = try additionalInfo.decode(
+            String.self,
+            forKey: .region
+        )
+        self.region = regionString
     }
 }

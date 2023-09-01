@@ -47,7 +47,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! AuthCodeDeliveryDetails
     }
 
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
@@ -162,6 +162,33 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let task = AWSAuthDeleteUserTask(
             authStateMachine: self.authStateMachine,
             authConfiguraiton: authConfiguration)
+        _ = try await taskQueue.sync {
+            return try await task.value
+        }
+    }
+
+    public func setUpTOTP() async throws -> TOTPSetupDetails {
+        let task = SetUpTOTPTask(
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! TOTPSetupDetails
+    }
+
+
+    public func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options?
+    ) async throws {
+        let options = options ?? VerifyTOTPSetupRequest.Options()
+        let request = VerifyTOTPSetupRequest(
+            code: code,
+            options: options)
+        let task = VerifyTOTPSetupTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         _ = try await taskQueue.sync {
             return try await task.value
         }

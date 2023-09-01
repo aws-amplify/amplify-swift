@@ -43,6 +43,15 @@ struct UserPoolSignInHelper: DefaultLogger {
         } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
                   case .waitingForAnswer(let challenge, _) = challengeState {
             return try validateResult(for: challengeType, with: challenge)
+
+        } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
+                  case .error(_, let signInError) = totpSetupState {
+            return try validateError(signInError: signInError)
+
+        } else if case .resolvingTOTPSetup(let totpSetupState, _) = signInState,
+                  case .waitingForAnswer(let totpSetupData) = totpSetupState {
+            return .init(nextStep: .continueSignInWithTOTPSetup(
+                .init(sharedSecret: totpSetupData.secretCode, username: totpSetupData.username)))
         }
         return nil
     }
@@ -54,12 +63,18 @@ struct UserPoolSignInHelper: DefaultLogger {
         case .smsMfa:
             let delivery = challenge.codeDeliveryDetails
             return .init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters))
+        case .totpMFA:
+            return .init(nextStep: .confirmSignInWithTOTPCode)
         case .customChallenge:
             return .init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters))
         case .newPasswordRequired:
             return .init(nextStep: .confirmSignInWithNewPassword(challenge.parameters))
-        case .unknown:
-            throw AuthError.unknown("Challenge not supported", nil)
+        case .selectMFAType:
+            return .init(nextStep: .continueSignInWithMFASelection(challenge.getAllowedMFATypesForSelection))
+        case .setUpMFA:
+            throw AuthError.unknown("Invalid state flow. setUpMFA is handled internally in `SignInState.resolvingTOTPSetup` state.")
+        case .unknown(let cognitoChallengeType):
+            throw AuthError.unknown("Challenge not supported\(cognitoChallengeType)", nil)
         }
     }
 
@@ -81,7 +96,7 @@ struct UserPoolSignInHelper: DefaultLogger {
 
             let client = try environment.cognitoUserPoolFactory()
             let response = try await client.respondToAuthChallenge(input: request)
-            let event = try self.parseResponse(response, for: username, signInMethod: signInMethod)
+            let event = self.parseResponse(response, for: username, signInMethod: signInMethod)
             return event
         }
 
@@ -90,7 +105,7 @@ struct UserPoolSignInHelper: DefaultLogger {
     static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
-        signInMethod: SignInMethod) throws -> StateMachineEvent {
+        signInMethod: SignInMethod) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
@@ -123,12 +138,21 @@ struct UserPoolSignInHelper: DefaultLogger {
                     parameters: parameters)
 
                 switch challengeName {
-                case .smsMfa, .customChallenge, .newPasswordRequired:
+                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa, .selectMfaType:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(username, response))
+                case .mfaSetup:
+                    let allowedMFATypesForSetup = respondToAuthChallenge.getAllowedMFATypesForSetup
+                    if allowedMFATypesForSetup.contains(.totp) {
+                        return SignInEvent(eventType: .initiateTOTPSetup(username, response))
+                    } else {
+                        let message = "Cannot initiate MFA setup from available Types: \(allowedMFATypesForSetup)"
+                        let error = SignInError.invalidServiceResponse(message: message)
+                        return SignInEvent(eventType: .throwAuthError(error))
+                    }
                 default:
-                    let message = "UnSupported challenge response \(challengeName)"
+                    let message = "Unsupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)
                     return SignInEvent(eventType: .throwAuthError(error))
                 }
@@ -138,4 +162,12 @@ struct UserPoolSignInHelper: DefaultLogger {
                 return SignInEvent(eventType: .throwAuthError(error))
             }
         }
+    
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
 }

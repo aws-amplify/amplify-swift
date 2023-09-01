@@ -16,9 +16,9 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
                                       target: .global())
     private var tasks: [TransferID: StorageTransferTask] = [:]
 
-    private var uploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler?
-    private var downloadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler?
-    private var multipartUploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler?
+    private var uploadEventHandler: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler?
+    private var downloadEventHandler: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler?
+    private var multipartUploadEventHandler: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler?
 
     func insertTransferRequest(task: StorageTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
@@ -79,9 +79,9 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
     }
 
     // swiftlint:disable line_length
-    func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler? = nil,
-                             onDownload: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler? = nil,
-                             onMultipartUpload: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler? = nil) {
+    func attachEventHandlers(onUpload: AWSS3StorageServiceBehavior.StorageServiceUploadEventHandler? = nil,
+                             onDownload: AWSS3StorageServiceBehavior.StorageServiceDownloadEventHandler? = nil,
+                             onMultipartUpload: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEventHandler? = nil) {
         queue.async { [weak self] in
             guard let self = self else { fatalError("self cannot be weak") }
             self.uploadEventHandler = onUpload
@@ -91,15 +91,15 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
     }
     // swiftlint:enable line_length
 
-    private func handleUploadEvent(event: AWSS3StorageServiceBehaviour.StorageServiceUploadEvent) {
+    private func handleUploadEvent(event: AWSS3StorageServiceBehavior.StorageServiceUploadEvent) {
         uploadEventHandler?(event)
     }
 
-    private func handleDownloadEvent(event: AWSS3StorageServiceBehaviour.StorageServiceDownloadEvent) {
+    private func handleDownloadEvent(event: AWSS3StorageServiceBehavior.StorageServiceDownloadEvent) {
         downloadEventHandler?(event)
     }
 
-    private func handleMultipartUploadEvent(event: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEvent) {
+    private func handleMultipartUploadEvent(event: AWSS3StorageServiceBehavior.StorageServiceMultiPartUploadEvent) {
         multipartUploadEventHandler?(event)
     }
 

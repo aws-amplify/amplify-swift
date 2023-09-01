@@ -22,7 +22,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
 >, StorageUploadDataOperation {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
-    let storageService: AWSS3StorageServiceBehaviour
+    let storageService: AWSS3StorageServiceBehavior
     let authService: AWSAuthServiceBehavior
 
     var storageTaskReference: StorageTaskReference?
@@ -32,7 +32,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
 
     init(_ request: StorageUploadDataRequest,
          storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehaviour,
+         storageService: AWSS3StorageServiceBehavior,
          authService: AWSAuthServiceBehavior,
          progressListener: InProcessListener? = nil,
          resultListener: ResultListener? = nil) {
@@ -92,18 +92,21 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
                 let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
                 let serviceKey = prefix + request.key
                 let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.options.metadata)
+                let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
                 if request.data.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold {
                     storageService.multiPartUpload(serviceKey: serviceKey,
                                                         uploadSource: .data(request.data),
                                                         contentType: request.options.contentType,
-                                                        metadata: serviceMetadata) { [weak self] event in
+                                                        metadata: serviceMetadata,
+                                                        accelerate: accelerate) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
                 } else {
                     storageService.upload(serviceKey: serviceKey,
                                                uploadSource: .data(request.data),
                                                contentType: request.options.contentType,
-                                               metadata: serviceMetadata) { [weak self] event in
+                                               metadata: serviceMetadata,
+                                               accelerate: accelerate) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
                 }

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
+#if os(iOS)
 import Foundation
 
 /// Helper class to fetch Amplify plugin information
@@ -34,12 +34,9 @@ struct PluginInfoHelper {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
         
-        pluginList.append(
-            makePluginInfoItem(
-                for: Amplify.Logging.plugin.key,
-                versionable: Amplify.Logging.plugin as? AmplifyVersionable
-            )
-        )
+        pluginList.append(contentsOf: Amplify.Logging.plugins.map {
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
         
         pluginList.append(contentsOf: Amplify.Predictions.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)

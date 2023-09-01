@@ -6,9 +6,8 @@
 //
 
 import Foundation
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
 import AuthenticationServices
-
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #endif
 
@@ -50,7 +49,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// SignIn to the authentication provider
     ///
     /// Username and password are optional values, check the plugin documentation to decide on what all values need to
-    /// passed. For example in a passwordless flow you just need to pass the username and the passwordcould be nil.
+    /// passed. For example in a passwordless flow you just need to pass the username and the password could be nil.
     ///
     /// - Parameters:
     ///   - username: Username to signIn the user
@@ -60,7 +59,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 password: String?,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
-#if canImport(AuthenticationServices)
+#if os(iOS) || os(macOS)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface
@@ -124,5 +123,26 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - confirmationCode: Received confirmation code
     ///   - options: Parameters specific to plugin behavior
     func confirmResetPassword(for username: String, with newPassword: String, confirmationCode: String, options: AuthConfirmResetPasswordRequest.Options?) async throws
+
+    /// Initiates TOTP Setup
+    /// 
+    /// Invoke this operation to setup TOTP for the user while signed in.
+    /// Calling this method will initiate TOTP setup process and returns a shared secret that can be used to generate QR code. 
+    /// The setup details also contains a URI generator helper that can be used to retireve a TOTP Setup URI.
+    ///
+    func setUpTOTP() async throws -> TOTPSetupDetails
+
+    /// Verifies TOTP Setup
+    ///
+    /// Invoke this operation to verify TOTP setup for the user while signed in.
+    /// Calling this method with the verification code from the associated Authenticator app will complete the TOTP setup process.
+    ///
+    /// - Parameters:
+    ///   - code: verification code from the associated Authenticator app
+    ///   - options: Parameters specific to plugin behavior
+    func verifyTOTPSetup(
+        code: String,
+        options: VerifyTOTPSetupRequest.Options?
+    ) async throws
 
 }

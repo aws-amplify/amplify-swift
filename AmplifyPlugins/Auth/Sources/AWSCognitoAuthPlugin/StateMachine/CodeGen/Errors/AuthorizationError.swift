@@ -26,14 +26,13 @@ extension AuthorizationError: AuthErrorConvertible {
         case .configuration(let message):
             return .configuration(message, "")
         case .service(let error):
-            if let getIdOutputError = error as? SdkError<GetIdOutputError> {
-                return getIdOutputError.authError
-            } else if let getCredentialForIdentityError = error as? SdkError<GetCredentialsForIdentityOutputError> {
-                return getCredentialForIdentityError.authError
-            } else if let authError = error as? AuthError {
-                return authError
+            if let convertibleError = error as? AuthErrorConvertible {
+                return convertibleError.authError
             } else {
-                return AuthError.unknown("", error)
+                return .service(
+                    "Service error occurred",
+                    AmplifyErrorMessages.reportBugToAWS(),
+                    error)
             }
         case .invalidState(let message):
             return .invalidState(message, AuthPluginErrorConstants.invalidStateError, nil)

@@ -1,0 +1,12 @@
+name: Unit Tests | Auth
+on:
+  workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+  auth-unit-tests:
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: AWSCognitoAuthPlugin

@@ -1,4 +1,4 @@
-# Creates a PR to push main to release branch to kick-off the CircleCI release workflow
+# Creates a PR to push main to release branch to kick-off the release workflow
 name: Release Amplify iOS 
 
 on:

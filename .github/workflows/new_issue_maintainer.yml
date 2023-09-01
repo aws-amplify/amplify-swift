@@ -10,7 +10,7 @@ permissions:
 jobs:
   maintainer-opened:
     runs-on: ubuntu-latest
-    if: ${{ !github.event.issue.pull_request && contains(fromJSON('["palpatim", "brennanMKE", "diegocstn", "lawmicha", "harsh62", "thisisabhash", "ameter", "royjit", "atierian", "ukhan-amazon", "ruisebas", "phantumcode"]'), github.event.issue.user.login) }}
+    if: ${{ !github.event.issue.pull_request && contains(fromJSON('["palpatim", "5d", "jcjimenez", "lawmicha", "harsh62", "thisisabhash", "royjit", "atierian", "ukhan-amazon", "ruisebas", "phantumcode"]'), github.event.issue.user.login) }}
     steps:
       - name: add message if maintainer opened
         shell: bash

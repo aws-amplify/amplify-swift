@@ -97,13 +97,12 @@ struct RefreshHostedUITokens: Action {
             throw FetchSessionError.service(error)
 
         } else if let idToken = json["id_token"] as? String,
-                  let accessToken = json["access_token"] as? String,
-                  let expiresIn = json["expires_in"] as? Int {
+                  let accessToken = json["access_token"] as? String {
             let userPoolTokens = AWSCognitoUserPoolTokens(
                 idToken: idToken,
                 accessToken: accessToken,
                 refreshToken: existingSignedIndata.cognitoUserPoolTokens.refreshToken,
-                expiresIn: expiresIn)
+                expiresIn: json["expires_in"] as? Int)
             return SignedInData(
                 signedInDate: existingSignedIndata.signedInDate,
                 signInMethod: existingSignedIndata.signInMethod,
@@ -114,7 +113,15 @@ struct RefreshHostedUITokens: Action {
     }
 }
 
-extension RefreshHostedUITokens: DefaultLogger { }
+extension RefreshHostedUITokens: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension RefreshHostedUITokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

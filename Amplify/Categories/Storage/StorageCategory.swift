@@ -7,6 +7,8 @@
 
 /// AWS Amplify Storage module provides a simple mechanism for managing user content for your app in public, protected
 /// or private storage buckets.
+/// 
+/// - Tag: StorageCategory
 final public class StorageCategory: Category {
     public let categoryType = CategoryType.storage
 
@@ -91,4 +93,13 @@ final public class StorageCategory: Category {
         plugins.removeValue(forKey: key)
     }
 
+}
+
+extension StorageCategory: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.storage.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
 }

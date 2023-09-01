@@ -51,7 +51,15 @@ struct InformSessionError: Action {
     }
 }
 
-extension InformSessionError: DefaultLogger { }
+extension InformSessionError: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension InformSessionError: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

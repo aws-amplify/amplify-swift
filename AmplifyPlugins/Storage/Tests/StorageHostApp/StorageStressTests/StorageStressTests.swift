@@ -13,8 +13,7 @@ import AWSCognitoAuthPlugin
 final class StorageStressTests: XCTestCase {
 
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
-    static let amplifyConfiguration = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
-    
+
     let smallDataObjectForStressTest = Data(repeating: 0xff, count: 1_024 * 1_024) // 1MB
     let largeDataObjectForStressTest = Data(repeating: 0xff, count: 1_024 * 1_024 * 100) // 100MB
     let concurrencyLimit = 10
@@ -34,8 +33,7 @@ final class StorageStressTests: XCTestCase {
             await Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
-            try Amplify.configure(amplifyConfig)
+            try Amplify.configure()
             if (try? await Amplify.Auth.getCurrentUser()) != nil {
                 await signOut()
             }

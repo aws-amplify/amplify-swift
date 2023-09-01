@@ -12,7 +12,9 @@ import Combine
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
@@ -36,7 +38,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     
     func testCreate() async throws {
         await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let date = Temporal.DateTime.now()
         let newPost = Post(
@@ -55,20 +57,25 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let syncReceived = expectation(description: "SyncReceived(MutationEvent(version: 1))")
         let localEventReceived = expectation(description: "received mutation event with version nil")
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
+
         Amplify.Hub.publisher(for: .dataStore)
             .sink { payload in
                 let event = DataStoreHubEvent(payload: payload)
                 switch event {
-                case .outboxMutationEnqueued:
-                    outboxMutationEnqueued.fulfill()
+                case .outboxMutationEnqueued(let event):
+                    if event.element.model.identifier == newPost.identifier {
+                        outboxMutationEnqueued.fulfill()
+                    }
                 case .outboxStatus(let status):
                     if !status.isEmpty {
                         outboxIsNotEmptyReceived.fulfill()
                     } else {
                         outboxIsEmptyReceived.fulfill()
                     }
-                case .outboxMutationProcessed:
-                    outboxMutationProcessed.fulfill()
+                case .outboxMutationProcessed(let event):
+                    if event.element.model.identifier == newPost.identifier {
+                        outboxMutationProcessed.fulfill()
+                    }
                 case .syncReceived(let mutationEvent):
                     guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
                         return
@@ -77,14 +84,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                         XCTAssertEqual(post.content, newPost.content)
                         XCTAssertEqual(mutationEvent.version, 1)
                         syncReceived.fulfill()
-                        return
                     }
                 default:
                     break
                 }
             }.store(in: &cancellables)
 
-        let task = Task {
+        Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
@@ -101,7 +107,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         let savedPost = try await Amplify.DataStore.save(newPost)
         XCTAssertEqual(savedPost.content, newPost.content)
-        await waitForExpectations(timeout: 10.0)
+        await fulfillment(of: [
+            outboxMutationEnqueued,
+            outboxIsNotEmptyReceived,
+            outboxIsEmptyReceived,
+            outboxMutationProcessed,
+            syncReceived,
+            localEventReceived,
+            remoteEventReceived
+        ], timeout: 30)
     }
 
     func testCreateMutateDelete() async throws {
@@ -147,7 +161,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
@@ -177,7 +191,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(updatedPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
         
         let deleteReceived = expectation(description: "Delete notification received")
         hubListener = Amplify.Hub.listen(
@@ -207,7 +221,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         try await Amplify.DataStore.delete(updatedPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
@@ -256,7 +270,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
         
         let updateReceived = expectation(description: "Update notification received")
         hubListener = Amplify.Hub.listen(
@@ -286,7 +300,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(updatedPost, where: post.title == title)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
@@ -343,7 +357,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
         
         let updateLocalSuccess = expectation(description: "Update local successful")
         storageAdapter.save(updatedPost) { result in
@@ -355,7 +369,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed to save post directly to local store \(error)")
             }
         }
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateLocalSuccess], timeout: networkTimeout)
 
         let conditionalReceived = expectation(description: "Conditional save failed received")
         hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
@@ -386,7 +400,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         
         _ = try await Amplify.DataStore.save(updatedPost, where: post.content == updatedPost.content)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [conditionalReceived], timeout: networkTimeout)
     }
 
     /// Ensure DataStore.stop followed by DataStore.start is successful
@@ -442,7 +456,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         // We expect the query to complete, but not to return a value. Thus, we'll ignore the error
         _ = try await Amplify.DataStore.query(Post.self, byId: "123")
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [dataStoreStarted], timeout: networkTimeout)
         sink.cancel()
     }
 
@@ -522,8 +536,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
 
         let parallelSize = 100
-        let initExpectation = asyncExpectation(description: "expect MutationEventPublisher works fine")
-        let parallelExpectation = asyncExpectation(description: "expect parallel processing no data loss")
+        let initExpectation = expectation(description: "expect MutationEventPublisher works fine")
+        let parallelExpectation = expectation(description: "expect parallel processing no data loss")
 
         let newPost = Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
 
@@ -545,7 +559,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             .compactMap(extractPost)
             .sink { post in
                 if post.title == newPost.title {
-                    Task { await initExpectation.fulfill() }
+                    initExpectation.fulfill()
                 }
 
                 if post.title.hasPrefix(titlePrefix) {
@@ -553,11 +567,11 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
 
                 if expectedResult.count == parallelSize {
-                    Task { await parallelExpectation.fulfill() }
+                    parallelExpectation.fulfill()
                 }
             }
         try await Amplify.DataStore.save(newPost)
-        await AsyncTesting.waitForExpectations([initExpectation], timeout: 10)
+        await fulfillment(of: [initExpectation], timeout: 10)
         try await Task.sleep(seconds: 1)
 
         for post in posts {
@@ -565,12 +579,75 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 try? await Amplify.DataStore.save(post)
             }
         }
-        await AsyncTesting.waitForExpectations([parallelExpectation], timeout: Double(parallelSize))
+        await fulfillment(of: [parallelExpectation], timeout: Double(parallelSize))
         cancellable.cancel()
         XCTAssertEqual(expectedResult, Set(posts.map(\.title)))
     }
 
+    func testStop_whenSavingInProgress() async throws {
+        let startTime = Temporal.DateTime.now()
+        let syncExpression = DataStoreSyncExpression(modelSchema: Post.schema) {
+            Post.keys.createdAt >= startTime
+        }
+        await setUp(
+            withModels: TestModelRegistration(),
+            dataStoreConfiguration: .custom(syncExpressions: [syncExpression])
+        )
+        try await startAmplifyAndWaitForSync()
+
+        let postCount = 1_000
+        let posts = (0 ..< postCount).map { _ in
+            Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
+        }
+
+        let saveFinished = expectation(description: "Posts are saved")
+        saveFinished.expectedFulfillmentCount = postCount
+        let stopped = expectation(description: "DataStore plugin stopped")
+
+        let queryLocalFinished = expectation(description: "Query local finished")
+        queryLocalFinished.expectedFulfillmentCount = postCount
+
+        for post in posts {
+            Task {
+                try await sleepMill(UInt64.random(in: 50 ..< 150))
+                do {
+                    let savedPost = try await Amplify.DataStore.save(post)
+                    XCTAssertEqual(post, savedPost)
+                } catch {
+                    log.info("Failed to save post \(post)")
+                }
+                saveFinished.fulfill()
+            }
+        }
+
+        Task {
+            try await sleepMill(100)
+            try await Amplify.DataStore.stop()
+            stopped.fulfill()
+        }
+
+        await fulfillment(of: [saveFinished, stopped], timeout: 30)
+
+        var localSuccess = 0
+        for post in posts {
+            do {
+                let queriedPost = try await Amplify.DataStore.query(Post.self, byId: post.id)
+                XCTAssertEqual(post, queriedPost)
+                localSuccess += 1
+            } catch {
+                log.info("Failed to query post \(post)")
+            }
+            queryLocalFinished.fulfill()
+        }
+        await fulfillment(of: [queryLocalFinished], timeout: 30)
+        XCTAssertEqual(localSuccess, postCount)
+    }
+
     // MARK: - Helpers
+
+    private func sleepMill(_ milliseconds: UInt64) async throws {
+        try await Task.sleep(nanoseconds: milliseconds * NSEC_PER_MSEC)
+    }
 
     func validateSavePost() async throws {
         let date = Temporal.DateTime.now()

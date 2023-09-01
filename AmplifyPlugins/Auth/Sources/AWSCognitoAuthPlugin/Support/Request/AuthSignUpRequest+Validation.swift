@@ -17,14 +17,5 @@ extension AuthSignUpRequest {
                 AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil)
             throw error
         }
-
-        guard let password = password,
-              SignUpPasswordValidator.validate(password: password) == nil else {
-            let error = AuthError.validation(
-                AuthPluginErrorConstants.signUpPasswordError.field,
-                AuthPluginErrorConstants.signUpPasswordError.errorDescription,
-                AuthPluginErrorConstants.signUpPasswordError.recoverySuggestion, nil)
-            throw error
-        }
     }
 }

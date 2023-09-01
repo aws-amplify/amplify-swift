@@ -1,0 +1,17 @@
+name: Build, Test and Release | Stable version
+on:
+  push:
+    branches:
+      release
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  release-stable:
+    uses: ./.github/workflows/deploy_package.yml
+    with:
+      type: release
+    secrets: inherit
+

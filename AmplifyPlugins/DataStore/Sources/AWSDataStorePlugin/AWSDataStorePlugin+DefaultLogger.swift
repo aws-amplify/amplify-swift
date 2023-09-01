@@ -8,6 +8,10 @@
 import Amplify
 
 extension AWSDataStorePlugin: DefaultLogger {
-    // This is intentionally blank (if left out, it will crash swiftformat
-    // with an Illegal instruction: 4 error)
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
 }

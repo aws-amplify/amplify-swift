@@ -1,3 +1,4 @@
+#if !os(watchOS)
 // swiftformat:disable fileHeader
 /*
 Copyright (c) 2014, Ashley Mills
@@ -406,3 +407,4 @@ private class AmplifyReachabilityWeakifier {
         self.reachability = reachability
     }
 }
+#endif

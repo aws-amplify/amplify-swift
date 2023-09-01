@@ -104,11 +104,19 @@ struct InitiateAuthSRP: Action {
                 parameters: parameters)
             return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
         }
-        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
+        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response, clientMetadata))
     }
 }
 
-extension InitiateAuthSRP: DefaultLogger { }
+extension InitiateAuthSRP: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
+    }
+    
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension InitiateAuthSRP: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

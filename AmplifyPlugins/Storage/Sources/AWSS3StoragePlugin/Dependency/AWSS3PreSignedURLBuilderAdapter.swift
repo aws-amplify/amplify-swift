@@ -34,9 +34,13 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     /// - Returns: Pre-Signed URL
     func getPreSignedURL(key: String,
                          signingOperation: AWSS3SigningOperation,
+                         accelerate: Bool? = nil,
                          expires: Int64? = nil) async throws -> URL {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
-        let expiration = Int64(expiresDate.timeIntervalSinceNow)
+        let expiration = expiresDate.timeIntervalSinceNow
+        let config = (accelerate == nil) ? self.config : S3ClientConfigurationProxy(
+            target: self.config,
+            accelerateOverride: accelerate)
         let preSignedUrl: URL?
         switch signingOperation {
         case .getObject:

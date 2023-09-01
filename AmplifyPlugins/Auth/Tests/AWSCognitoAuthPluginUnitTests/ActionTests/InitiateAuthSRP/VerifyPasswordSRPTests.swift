@@ -39,7 +39,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -71,7 +72,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -118,7 +120,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.invalidChallenge
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -165,7 +168,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSalt
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -212,7 +216,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSecretBlock
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -259,7 +264,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSRPB
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -306,7 +312,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.invalidTestDataForException
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -352,7 +359,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierCompletion = expectation(
             description: "passwordVerifierCompletion")
@@ -394,7 +402,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(
             description: "passwordVerifierError")
@@ -443,7 +452,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierError = expectation(description: "passwordVerifierError")
 
@@ -487,7 +497,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierCompletion = expectation(
             description: "passwordVerifierCompletion")
@@ -529,7 +540,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-                                       authResponse: data)
+                                       authResponse: data,
+                                       clientMetadata: [:])
 
         let passwordVerifierCompletion = expectation(
             description: "passwordVerifierCompletion")

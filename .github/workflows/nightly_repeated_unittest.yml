@@ -12,35 +12,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  unit_test_ios:
-    runs-on: macos-12
+  unit_tests:
+    name: ${{ matrix.scheme }} Repeated Unit Tests
     strategy:
+      fail-fast: false
       matrix:
-        scheme: [Amplify, AWSPluginsCore, AWSPinpointAnalyticsPlugin, AWSAPIPlugin, AWSCognitoAuthPlugin, AWSDataStorePlugin, AWSLocationGeoPlugin, AWSS3StoragePlugin]
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-
-      - name: Run repeated unit test iOS
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: .
-          scheme: ${{ matrix.scheme }}
-          other_flags: -test-iterations 100 -run-tests-until-failure
-
-  unit_test_macos:
-    runs-on: macos-12
-    strategy:
-      matrix:
-        scheme: [Amplify, AWSPluginsCore, AWSPinpointAnalyticsPlugin, AWSAPIPlugin, AWSCognitoAuthPlugin, AWSDataStorePlugin, AWSLocationGeoPlugin, AWSS3StoragePlugin]
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-
-      - name: Run repeated unit test macOS
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: .
-          scheme: ${{ matrix.scheme }}
-          sdk: macosx
-          destination: platform=macOS,arch=x86_64
-          other_flags: -test-iterations 100 -run-tests-until-failure
-      
+        scheme: [
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin,
+          InternalAWSPinpointUnitTests
+        ]
+    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    with:
+      scheme: ${{ matrix.scheme }}
+      timeout-minutes: 50
+      generate_coverage_report: false
+      retry_on_error: false
+      other_flags: -test-iterations 100 -run-tests-until-failure

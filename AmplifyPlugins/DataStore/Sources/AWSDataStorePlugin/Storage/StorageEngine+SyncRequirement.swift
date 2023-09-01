@@ -12,36 +12,66 @@ import AWSPluginsCore
 
 extension StorageEngine {
 
-    func startSync(completion: @escaping DataStoreCallback<Void>) {
-        guard let api = tryGetAPIPlugin() else {
-            log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
-            completion(.failure(.configuration("Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
-                                               "Ensure the API category has been setup and configured for your project", nil)))
-            return
-        }
-        guard let apiGraphQL = api as? APICategoryGraphQLBehaviorExtended else {
-            log.info("Unable to find GraphQL API plugin for syncEngine. syncEngine will not be started")
-            completion(.failure(.configuration("Unable to find suitable GraphQL API plugin for syncEngine. syncEngine will not be started",
-                                               "Ensure the API category has been setup and configured for your project", nil)))
-            return
-        }
-        
-        let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
+    func startSync() -> Result<SyncEngineInitResult, DataStoreError> {
+        let (result, syncEngine) = initalizeSyncEngine()
 
-        guard authPluginRequired else {
-            syncEngine?.start(api: apiGraphQL, auth: nil)
-            completion(.successfulVoid)
-            return
+        if let syncEngine = syncEngine, !syncEngine.isSyncing() {
+            guard let api = tryGetAPIPlugin() else {
+               log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
+               return .failure(.configuration(
+                   "Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
+                   "Ensure the API category has been setup and configured for your project",
+                   nil
+               ))
+            }
+
+            guard let apiGraphQL = api as? APICategoryGraphQLBehaviorExtended else {
+                log.info("Unable to find GraphQL API plugin for syncEngine. syncEngine will not be started")
+                return .failure(.configuration(
+                    "Unable to find suitable GraphQL API plugin for syncEngine. syncEngine will not be started",
+                    "Ensure the API category has been setup and configured for your project",
+                    nil
+                ))
+            }
+
+            let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
+            guard authPluginRequired else {
+                syncEngine.start(api: apiGraphQL, auth: nil)
+                return .success(.successfullyInitialized)
+            }
+
+            guard let auth = tryGetAuthPlugin() else {
+                log.warn("Unable to find suitable Auth plugin for syncEngine. Models require auth")
+                return .failure(.configuration(
+                    "Unable to find suitable Auth plugin for syncEngine. Models require auth",
+                    "Ensure the Auth category has been setup and configured for your project",
+                    nil
+                ))
+            }
+
+            syncEngine.start(api: apiGraphQL, auth: auth)
         }
 
-        guard let auth = tryGetAuthPlugin() else {
-            log.warn("Unable to find suitable Auth plugin for syncEngine. Models require auth")
-            completion(.failure(.configuration("Unable to find suitable Auth plugin for syncEngine. Models require auth",
-                                               "Ensure the Auth category has been setup and configured for your project", nil)))
-            return
+        return .success(result)
+    }
+
+    private func initalizeSyncEngine() -> (SyncEngineInitResult, RemoteSyncEngineBehavior?) {
+        if let syncEngine = syncEngine {
+            return (.alreadyInitialized, syncEngine)
+        } else {
+            if isSyncEnabled, syncEngine == nil {
+                self.syncEngine = try? RemoteSyncEngine(
+                    storageAdapter: storageAdapter,
+                    dataStoreConfiguration: dataStoreConfiguration
+                )
+
+                self.syncEngineSink = syncEngine?.publisher.sink(
+                    receiveCompletion: onReceiveCompletion(receiveCompletion:),
+                    receiveValue: onReceive(receiveValue:)
+                )
+            }
+            return (.successfullyInitialized, syncEngine)
         }
-        syncEngine?.start(api: apiGraphQL, auth: auth)
-        completion(.successfulVoid)
     }
 
     private func tryGetAPIPlugin() -> APICategoryPlugin? {

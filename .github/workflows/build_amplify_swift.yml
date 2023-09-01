@@ -1,0 +1,166 @@
+name: Build | Amplify Swift
+on:
+  workflow_call:
+    inputs:
+      identifier:
+        required: true
+        type: string
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+      - release
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main'}}
+
+jobs:
+  build-amplify-swift-iOS:
+    runs-on: macos-13
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Build Amplify Swift for iOS
+        uses: ./.github/composite_actions/run_xcodebuild
+        with:
+          scheme: Amplify-Package
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
+      - name: Save the dependencies cache if necessary
+        if: steps.cache-packages.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: ${{ steps.cache-packages.outputs.cache-primary-key }}
+
+  build-amplify-swift-macOS:
+    runs-on: macos-13
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Build Amplify Swift for macOS
+        uses: ./.github/composite_actions/run_xcodebuild
+        with:
+          scheme: Amplify-Package
+          destination: platform=macOS,arch=x86_64
+          sdk: macosx
+          xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
+      - name: Save the dependencies cache if necessary
+        if: steps.cache-packages.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: ${{ steps.cache-packages.outputs.cache-primary-key }}
+
+  build-amplify-swift-tvOS:
+    runs-on: macos-13
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        timeout-minutes: 4
+        id: cache-packages
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Build Amplify Swift for tvOS
+        uses: ./.github/composite_actions/run_xcodebuild
+        with:
+          scheme: Amplify-Package
+          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
+          sdk: appletvsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
+      - name: Save the dependencies cache if necessary
+        if: steps.cache-packages.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: ${{ steps.cache-packages.outputs.cache-primary-key }}
+
+  build-amplify-swift-watchOS:
+    runs-on: macos-13
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Build Amplify Swift for watchOS
+        uses: ./.github/composite_actions/run_xcodebuild
+        with:
+          scheme: Amplify-Package
+          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
+          sdk: watchsimulator
+          xcode_path: '/Applications/Xcode_14.3.app'
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+          other_flags: '-derivedDataPath Build -clonedSourcePackagesDirPath ~/Library/Developer/Xcode/DerivedData/Amplify'
+      - name: Save the dependencies cache if necessary
+        if: steps.cache-packages.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: ${{ steps.cache-packages.outputs.cache-primary-key }}
+
+  confirm-pass:
+    runs-on: ubuntu-latest
+    name: Confirm Passing Build Steps
+    if: ${{ !cancelled() }}
+    needs: [
+      build-amplify-swift-iOS,
+      build-amplify-swift-macOS,
+      build-amplify-swift-tvOS,
+      build-amplify-swift-watchOS
+    ]
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
+    steps:
+      - run: exit $EXIT_CODE

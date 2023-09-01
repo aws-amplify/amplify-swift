@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if os(iOS) || os(macOS)
+
 import Foundation
 
 import XCTest
@@ -78,6 +80,60 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
     @MainActor
     func testSuccessfulSignIn() async throws {
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+        XCTAssertTrue(result.isSignedIn)
+    }
+
+    @MainActor
+    func testSuccessfulSignIn_missingExpiresIn() async throws {
+        mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
+                           "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken] as [String: Any]
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { _ in
+            return (HTTPURLResponse(), self.mockJson)
+        }
+
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+        XCTAssertTrue(result.isSignedIn)
+    }
+
+    @MainActor
+    func testSuccessfulSignIn_missingExpiresIn_testTokenMissingExp() async throws {
+        mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testDataWithoutExp.idToken,
+                           "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken] as [String: Any]
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { _ in
+            return (HTTPURLResponse(), self.mockJson)
+        }
+
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+        XCTAssertTrue(result.isSignedIn)
+    }
+
+    @MainActor
+    func testSuccessfulSignIn_missingExpiresIn_testBothTokenMissingExp() async throws {
+        mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testDataWithoutExp.idToken,
+                           "access_token": AWSCognitoUserPoolTokens.testDataWithoutExp.accessToken,
+                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken] as [String: Any]
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { _ in
+            return (HTTPURLResponse(), self.mockJson)
+        }
+
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
@@ -202,15 +258,22 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     }
 
     @MainActor
-    func testTokenErrorResponse() async {
+    /// Given: A HostedUI response with `error` and `error_description` query parameters.
+    /// When: Invoking `signInWithWebUI`
+    /// Then: The caller should receive an `AuthError.service` where the `errorDescription`
+    /// is `"\(error) \(error_description)"`
+    func testTokenErrorResponse() async throws {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
+
+        let (errorMessage, errorDescription) = ("invalid_grant", "Some error")
         mockTokenResult = [
-            "error": "invalid_grant",
-            "error_description": "Some error"] as [String: Any]
-        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+            "error": errorMessage,
+            "error_description": errorDescription
+        ]
+        mockJson = try JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
         }
@@ -220,13 +283,15 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service = error else {
+            guard case AuthError.service(let message, _, _) = error else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
+            let expectedErrorDescription = "\(errorMessage) \(errorDescription)"
+            XCTAssertEqual(expectedErrorDescription, message)
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: networkTimeout)
+        await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
 
@@ -257,8 +322,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         do {
@@ -279,3 +343,5 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
     }
 }
+
+#endif

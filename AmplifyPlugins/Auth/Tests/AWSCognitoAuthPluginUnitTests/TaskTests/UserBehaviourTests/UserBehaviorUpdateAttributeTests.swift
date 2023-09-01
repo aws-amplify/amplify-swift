@@ -9,12 +9,13 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
     /// Test a successful updateUserAttributes call with .done as next step
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
@@ -66,7 +67,10 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithAliasExistsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.aliasExistsException(.init())
+            throw SdkError.service(
+                UpdateUserAttributesOutputError.aliasExistsException(
+                    .init()),
+                    .init(body: .empty, statusCode: .accepted))
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -201,7 +205,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .emailRole as underlyingError
     ///
     func testUpdateUserAttributesWithInvalidEmailRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
@@ -287,7 +291,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testUpdateUserAttributesWithinvalidSmsRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
@@ -315,7 +319,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get a --
+    ///    - I should get a .service error with  .smsRole as underlyingError
     ///
     func testUpdateUserAttributesCodeWithInvalidSmsRoleTrustRelationshipException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in

@@ -29,8 +29,7 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         configurePluginForSignInEvent()
 
-        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
-                                                 metadata: ["somekey": "somevalue"])
+        let pluginOptions = AWSAuthSignInOptions(metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         let hubEventExpectation = expectation(description: "Should receive the hub event")
@@ -165,6 +164,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         await waitForExpectations(timeout: networkTimeout)
     }
 
+#if os(iOS) || os(macOS)
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
     /// - Given: A listener to hub events
@@ -229,6 +229,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
         wait(for: [hubEventExpectation], timeout: 10)
     }
+#endif
 
     /// Test whether HubEvent emits a federatedToIdentityPool event for mocked federated operation
     ///
@@ -313,7 +314,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForConfirmSignInEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signingIn(.resolvingChallenge(
-                .waitingForAnswer(.testData, .apiBased(.userSRP)),
+                .waitingForAnswer(.testData(), .apiBased(.userSRP)),
                 .smsMfa,
                 .apiBased(.userSRP))),
             AuthorizationState.sessionEstablished(.testData))

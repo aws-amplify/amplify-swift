@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - Tag: StorageUploadFileOperation
 public protocol StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     StorageUploadFileRequest,
     Progress,
@@ -19,6 +20,7 @@ public extension HubPayload.EventName.Storage {
     static let uploadFile = "Storage.uploadFile"
 }
 
+/// - Tag: StorageUploadFileTask
 public typealias StorageUploadFileTask = AmplifyInProcessReportingOperationTaskAdapter<StorageUploadFileRequest,
                                                                                        Progress,
                                                                                        String,

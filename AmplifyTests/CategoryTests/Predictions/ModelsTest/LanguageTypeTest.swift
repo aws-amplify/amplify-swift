@@ -11,19 +11,19 @@ import Amplify
 class LanguageTypeTest: XCTestCase {
 
     func testInitialization() {
-        let enLanguage = LanguageType(rawValue: "en")
-        XCTAssertEqual(enLanguage, LanguageType.english)
+        let language = Predictions.Language(code: "en")
+        XCTAssertEqual(language, .english)
     }
 
     func testInitWithLocale() {
         let currentLocale = Locale.current
-        let languageType = LanguageType(locale: currentLocale)
-        XCTAssertNotEqual(languageType, LanguageType.undetermined)
+        let languageType = Predictions.Language(locale: currentLocale)
+        XCTAssertNotEqual(languageType, .undetermined)
     }
 
-    func testConvertEnglishToLocale() {
-        let enLangauage = LanguageType.afrikaans
-        let locale = Locale(identifier: enLangauage.rawValue)
+    func testConverToLocale() {
+        let language = Predictions.Language.afrikaans
+        let locale = Locale(identifier: language.code)
         XCTAssertEqual(locale.languageCode, "af")
     }
 }

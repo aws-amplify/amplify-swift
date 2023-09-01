@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - Tag: StorageCategoryConfiguration
 public struct StorageCategoryConfiguration: CategoryConfiguration {
     public let plugins: [String: JSONValue]
 

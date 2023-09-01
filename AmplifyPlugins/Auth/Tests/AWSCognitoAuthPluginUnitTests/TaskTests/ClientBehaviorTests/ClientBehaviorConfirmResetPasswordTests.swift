@@ -13,6 +13,7 @@ import AWSCognitoIdentityProvider
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
+import ClientRuntime
 
 class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
@@ -53,7 +54,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
 
     /// Test a successful confirmResetPassword call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke confirmSignup with a valid username, a new password and a confirmation code
     /// - Then:
@@ -70,7 +71,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
 
     /// Test a confirmResetPassword call with empty username
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke confirmResetPassword with an empty username, a new password and a confirmation code
     /// - Then:
@@ -96,7 +97,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
 
     /// Test a confirmResetPassword call with plugin options
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke confirmResetPassword with an empty username, a new password and a confirmation code
     /// - Then:
@@ -120,7 +121,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
 
     /// Test a confirmResetPassword call with empty new password
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
     /// - When:
     ///    - I invoke confirmResetPassword with a valid username, an empty new password and a confirmation code
     /// - Then:
@@ -244,7 +245,10 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     func testConfirmResetPasswordWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
-                throw ConfirmForgotPasswordOutputError.invalidLambdaResponseException(InvalidLambdaResponseException(message: "invalid lambda"))
+                throw SdkError.service(
+                    ConfirmForgotPasswordOutputError.invalidLambdaResponseException(
+                        .init()),
+                    .init(body: .empty, statusCode: .accepted))
             }
         )
         do {

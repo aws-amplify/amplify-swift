@@ -9,12 +9,13 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class UserBehaviorConfirmAttributeTests: BasePluginTest {
 
     /// Test a successful confirmUpdateUserAttributes call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
     ///    - I invoke confirmUpdateUserAttributes with confirmation code
     /// - Then:
@@ -97,7 +98,10 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     func testcConfirmUpdateUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
-            throw VerifyUserAttributeOutputError.internalErrorException(.init())
+            throw SdkError.service(
+                VerifyUserAttributeOutputError.internalErrorException(
+                    .init()),
+                .init(body: .empty, statusCode: .accepted))
         })
         do {
             try await plugin.confirm(userAttribute: .email, confirmationCode: "code")

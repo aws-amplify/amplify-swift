@@ -10,48 +10,38 @@ import Amplify
 import AWSPolly
 
 extension AWSPredictionsService: AWSPollyServiceBehavior {
+    func synthesizeText(
+        text: String,
+        voiceId: PollyClientTypes.VoiceId
+    ) async throws -> Predictions.Convert.TextToSpeech.Result {
+        let input = SynthesizeSpeechInput(
+            outputFormat: .mp3,
+            sampleRate: "24000",
+            text: text,
+            textType: .text,
+            voiceId: voiceId
+        )
 
-    func synthesizeText(text: String,
-                        voiceId: AWSPollyVoiceId,
-                        onEvent: @escaping AWSPredictionsService.TextToSpeechServiceEventHandler) {
-
-        let request: AWSPollySynthesizeSpeechInput = AWSPollySynthesizeSpeechInput()
-        request.text = text
-        request.voiceId = voiceId
-        request.outputFormat = .mp3
-        request.textType = .text
-        request.sampleRate = "24000"
-
-        awsPolly.synthesizeSpeech(request: request).continueWith { (task) -> Any? in
-
-            guard task.error == nil else {
-                let error = task.error! as NSError
-
-                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-
-                onEvent(.failed(
-                    .network(predictionsErrorString.errorDescription,
-                             predictionsErrorString.recoverySuggestion)))
-                return nil
+        do {
+            let synthesizedSpeechResult = try await awsPolly.synthesizeSpeech(input: input)
+            guard let speech = synthesizedSpeechResult.audioStream
+            else {
+                throw PredictionsError.service(
+                    .init(
+                        description: "No result was found.",
+                        recoverySuggestion: "Please make sure a text string was sent over to synthesize."
+                    )
+                )
             }
 
-            guard let result = task.result else {
-                onEvent(.failed(.unknown("No result was found. An unknown error occurred.", "Please try again.")))
-                return nil
-            }
-
-            guard let speech = result.audioStream else {
-                onEvent(.failed(
-                    .network("No result was found.",
-                             "Please make sure a text string was sent over to synthesize.")))
-                return nil
-            }
-
-            let textToSpeechResult = TextToSpeechResult(audioData: speech)
-
-            onEvent(.completed(textToSpeechResult))
-            return nil
+            let textToSpeechResult = Predictions.Convert.TextToSpeech.Result(
+                audioData: speech.toBytes().getData()
+            )
+            return textToSpeechResult
+        } catch let error as SynthesizeSpeechOutputError {
+            throw ServiceErrorMapping.synthesizeSpeech.map(error)
+        } catch {
+            throw PredictionsError.unexpectedServiceErrorType(error)
         }
-
     }
 }

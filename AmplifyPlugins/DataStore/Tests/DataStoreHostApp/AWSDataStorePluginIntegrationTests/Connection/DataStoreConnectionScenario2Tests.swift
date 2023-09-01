@@ -9,7 +9,9 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+#if !os(watchOS)
 @testable import DataStoreHostApp
+#endif
 
 /*
  A one-to-one connection where a project has one team,
@@ -46,8 +48,8 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let team = Team2(name: "name1")
         let project = Project2(teamID: team.id, team: team)
-        let syncedTeamReceived = asyncExpectation(description: "received team from sync event")
-        let syncProjectReceived = asyncExpectation(description: "received project from sync event")
+        let syncedTeamReceived = expectation(description: "received team from sync event")
+        let syncProjectReceived = expectation(description: "received project from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -57,16 +59,10 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
 
             if let syncedTeam = try? mutationEvent.decodeModel() as? Team2,
                syncedTeam == team {
-                Task {
-                    await syncedTeamReceived.fulfill()
-                }
-                
+                syncedTeamReceived.fulfill()
             } else if let syncedProject = try? mutationEvent.decodeModel() as? Project2,
                       syncedProject == project {
-                Task {
-                    await syncProjectReceived.fulfill()
-                }
-                
+                syncProjectReceived.fulfill()
             }
         }
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
@@ -75,11 +71,11 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         }
 
         _ = try await Amplify.DataStore.save(team)
-        await waitForExpectations([syncedTeamReceived], timeout: networkTimeout)
+        await fulfillment(of: [syncedTeamReceived], timeout: networkTimeout)
         
         _ = try await Amplify.DataStore.save(project)
 
-        await waitForExpectations([syncProjectReceived], timeout: networkTimeout)
+        await fulfillment(of: [syncProjectReceived], timeout: networkTimeout)
 
         let queriedProject = try await Amplify.DataStore.query(Project2.self, byId: project.id)
         XCTAssertEqual(queriedProject, project)
@@ -131,13 +127,13 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        let team = try await saveTeam(name: "name")
-        let project = try await saveProject(teamID: team.id, team: team)
+        let team = Team2(id: UUID().uuidString, name: UUID().uuidString)
+        let project = Project2(id: UUID().uuidString, name: UUID().uuidString, teamID: team.id, team: team)
 
-        let createReceived = asyncExpectation(description: "received created items from cloud",
-                                              expectedFulfillmentCount: 2) // 1 project and 1 team
-        let deleteReceived = asyncExpectation(description: "Delete notification received",
-                                              expectedFulfillmentCount: 2) // 1 project and 1 team
+        let createReceived = expectation(description: "received created items from cloud")
+        createReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
+        let deleteReceived = expectation(description: "Delete notification received")
+        deleteReceived.expectedFulfillmentCount = 2 // 1 project and 1 team
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -149,17 +145,17 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
                projectEvent.id == project.id {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
-                    Task { await createReceived.fulfill() }
+                    createReceived.fulfill()
                 } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    Task { await deleteReceived.fulfill() }
+                    deleteReceived.fulfill()
                 }
 
             } else if let teamEvent = try? mutationEvent.decodeModel() as? Team2, teamEvent.id == team.id {
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                     XCTAssertEqual(mutationEvent.version, 1)
-                    Task { await createReceived.fulfill() }
+                    createReceived.fulfill()
                 } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    Task { await deleteReceived.fulfill() }
+                    deleteReceived.fulfill()
                 }
             }
 
@@ -168,14 +164,16 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        await waitForExpectations([createReceived], timeout: TestCommonConstants.networkTimeout)
+        try await Amplify.DataStore.save(team)
+        try await Amplify.DataStore.save(project)
+        await fulfillment(of: [createReceived], timeout: TestCommonConstants.networkTimeout)
 
         try await Amplify.DataStore.delete(project)
 
         // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
         // Once cascade works for hasOne, the following code can be removed.
         try await Amplify.DataStore.delete(team)
-        await waitForExpectations([deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: TestCommonConstants.networkTimeout)
         let project2 = try await Amplify.DataStore.query(Project2.self, byId: project.id)
         XCTAssertNil(project2)
     }

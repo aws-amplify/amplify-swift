@@ -12,91 +12,84 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
+import Foundation
+import ClientRuntime
+import AWSClientRuntime
 import AWSTranscribeStreaming
 
 class AWSPredictionsService {
-
     var identifier: String!
-    var awsTranslate: AWSTranslateBehavior!
-    var awsRekognition: AWSRekognitionBehavior!
-    var awsPolly: AWSPollyBehavior!
+    var awsTranslate: TranslateClientProtocol!
+    var awsRekognition: RekognitionClientProtocol!
+    var awsPolly: PollyClientProtocol!
+    var awsComprehend: ComprehendClientProtocol!
+    var awsTextract: TextractClientProtocol!
     var awsTranscribeStreaming: AWSTranscribeStreamingBehavior!
-    var awsComprehend: AWSComprehendBehavior!
-    var awsTextract: AWSTextractBehavior!
     var predictionsConfig: PredictionsPluginConfiguration!
     let rekognitionWordLimit = 50
-    let nativeWebSocketProvider: NativeWebSocketProvider!
-    let transcribeClientDelegate: NativeWSTranscribeStreamingClientDelegate!
 
-    convenience init(configuration: PredictionsPluginConfiguration,
-                     credentialsProvider: AWSCredentialsProvider,
-                     identifier: String) throws {
+    convenience init(
+        configuration: PredictionsPluginConfiguration,
+        credentialsProvider: CredentialsProvider,
+        identifier: String
+    ) throws {
+        let translateClientConfiguration = try TranslateClient.TranslateClientConfiguration(
+            credentialsProvider: credentialsProvider,
+            region: configuration.convert.region
+        )
+        let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
-        let interpretServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.interpret.region,
-                                                                           credentialsProvider: credentialsProvider)
-        let identifyServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.identify.region,
-                                                                          credentialsProvider: credentialsProvider)
-        let convertServiceConfiguration =  AmplifyAWSServiceConfiguration(region: configuration.convert.region,
-                                                                          credentialsProvider: credentialsProvider)
+        let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
+            credentialsProvider: credentialsProvider,
+            region: configuration.convert.region
+        )
+        let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
-        let awsTranslateAdapter = AWSPredictionsService.makeAWSTranslate(
-            serviceConfiguration: convertServiceConfiguration,
-            identifier: identifier)
+        let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
+            credentialsProvider: credentialsProvider,
+            region: configuration.convert.region
+        )
+        let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
-        let awsRekognitionAdapter = AWSPredictionsService.makeRekognition(
-            serviceConfiguration: identifyServiceConfiguration,
-            identifier: identifier)
+        let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
+            credentialsProvider: credentialsProvider,
+            region: configuration.identify.region
+        )
+        let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
-        let awsTextractAdapter = AWSPredictionsService.makeTextract(
-            serviceConfiguration: identifyServiceConfiguration,
-            identifier: identifier)
+        let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
+            credentialsProvider: credentialsProvider,
+            region: configuration.identify.region
+        )
+        let awsTextractClient = TextractClient(config: textractClientConfiguration)
 
-        let awsComprehendAdapter = AWSPredictionsService.makeComprehend(
-            serviceConfiguration: interpretServiceConfiguration,
-            identifier: identifier)
-
-        let awsPollyAdapter = AWSPredictionsService.makePolly(
-            serviceConfiguration: convertServiceConfiguration,
-            identifier: identifier)
-
-        let transcribeCallbackQueue = DispatchQueue(label: "TranscribeStreamingQueue")
-
-        let transcribeClientDelegate = NativeWSTranscribeStreamingClientDelegate()
-
-        let nativeWebSocketProvider = NativeWebSocketProvider(
-            clientDelegate: transcribeClientDelegate,
-            callbackQueue: transcribeCallbackQueue
+        let awsTranscribeStreamingAdapter = AWSTranscribeStreamingAdapter(
+            credentialsProvider: credentialsProvider,
+            region: configuration.convert.region
         )
 
-        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(
-            nativeWebSocketProvider: nativeWebSocketProvider,
-            serviceConfiguration: convertServiceConfiguration,
-            identifier: identifier
+        self.init(
+            identifier: identifier,
+            awsTranslate: awsTranslateClient,
+            awsRekognition: awsRekognitionClient,
+            awsTextract: awsTextractClient,
+            awsComprehend: awsComprehendClient,
+            awsPolly: awsPollyClient,
+            awsTranscribeStreaming: awsTranscribeStreamingAdapter,
+            configuration: configuration
         )
-
-        self.init(identifier: identifier,
-                  awsTranslate: awsTranslateAdapter,
-                  awsRekognition: awsRekognitionAdapter,
-                  awsTextract: awsTextractAdapter,
-                  awsComprehend: awsComprehendAdapter,
-                  awsPolly: awsPollyAdapter,
-                  awsTranscribeStreaming: awsTranscribeStreamingAdapter,
-                  nativeWebSocketProvider: nativeWebSocketProvider,
-                  transcribeClientDelegate: transcribeClientDelegate,
-                  configuration: configuration)
-
     }
 
-    init(identifier: String,
-         awsTranslate: AWSTranslateBehavior,
-         awsRekognition: AWSRekognitionBehavior,
-         awsTextract: AWSTextractBehavior,
-         awsComprehend: AWSComprehendBehavior,
-         awsPolly: AWSPollyBehavior,
-         awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
-         nativeWebSocketProvider: NativeWebSocketProvider,
-         transcribeClientDelegate: NativeWSTranscribeStreamingClientDelegate,
-         configuration: PredictionsPluginConfiguration) {
+    init(
+        identifier: String,
+        awsTranslate: TranslateClientProtocol,
+        awsRekognition: RekognitionClientProtocol,
+        awsTextract: TextractClientProtocol,
+        awsComprehend: ComprehendClientProtocol,
+        awsPolly: PollyClientProtocol,
+        awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
+        configuration: PredictionsPluginConfiguration
+    ) {
 
         self.identifier = identifier
         self.awsTranslate = awsTranslate
@@ -105,93 +98,19 @@ class AWSPredictionsService {
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
         self.awsTranscribeStreaming = awsTranscribeStreaming
-        self.nativeWebSocketProvider = nativeWebSocketProvider
-        self.transcribeClientDelegate = transcribeClientDelegate
         self.predictionsConfig = configuration
-
     }
 
-    func reset() {
-
-        AWSTranslate.remove(forKey: identifier)
-        awsTranslate = nil
-
-        AWSRekognition.remove(forKey: identifier)
-        awsRekognition = nil
-
-        AWSTextract.remove(forKey: identifier)
-        awsTextract = nil
-
-        AWSComprehend.remove(forKey: identifier)
-        awsComprehend = nil
-
-        AWSPolly.remove(forKey: identifier)
-        awsPolly = nil
-
-        AWSTranscribeStreaming.remove(forKey: identifier)
-        awsTranscribeStreaming = nil
-
-        identifier = nil
-    }
-
-    func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
-        switch key {
-        case .rekognition:
-            return awsRekognition.getRekognition()
-        case .translate:
-            return awsTranslate.getTranslate()
-        case .polly:
-            return awsPolly.getPolly()
-        case .transcribe:
-            return awsTranscribeStreaming.getTranscribeStreaming()
-        case .comprehend:
-            return awsComprehend.getComprehend()
-        case .textract:
-            return awsTextract.getTextract()
-        }
-    }
-    private static func makeAWSTranslate(serviceConfiguration: AmplifyAWSServiceConfiguration,
-                                         identifier: String) -> AWSTranslateAdapter {
-        AWSTranslate.register(with: serviceConfiguration, forKey: identifier)
-        let awsTranslate = AWSTranslate(forKey: identifier)
-        return AWSTranslateAdapter(awsTranslate)
-    }
-
-    private static func makeRekognition(serviceConfiguration: AmplifyAWSServiceConfiguration,
-                                        identifier: String) -> AWSRekognitionAdapter {
-        AWSRekognition.register(with: serviceConfiguration, forKey: identifier)
-        let awsRekognition = AWSRekognition(forKey: identifier)
-        return AWSRekognitionAdapter(awsRekognition)
-    }
-    private static func makeTextract(serviceConfiguration: AmplifyAWSServiceConfiguration,
-                                     identifier: String) -> AWSTextractAdapter {
-        AWSTextract.register(with: serviceConfiguration, forKey: identifier)
-        let awsTextract = AWSTextract(forKey: identifier)
-        return AWSTextractAdapter(awsTextract)
-    }
-    private static func makePolly(serviceConfiguration: AmplifyAWSServiceConfiguration,
-                                  identifier: String) -> AWSPollyAdapter {
-        AWSPolly.register(with: serviceConfiguration, forKey: identifier)
-        let awsPolly = AWSPolly(forKey: identifier)
-        return AWSPollyAdapter(awsPolly)
-    }
-    private static func makeComprehend(serviceConfiguration: AmplifyAWSServiceConfiguration,
-                                       identifier: String) -> AWSComprehendAdapter {
-        AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
-        let awsComprehend = AWSComprehend(forKey: identifier)
-        return AWSComprehendAdapter(awsComprehend)
-    }
-
-    private static func makeTranscribeStreaming(nativeWebSocketProvider: NativeWebSocketProvider,
-                                                serviceConfiguration: AmplifyAWSServiceConfiguration,
-                                                identifier: String) -> AWSTranscribeStreamingAdapter {
-
-        AWSTranscribeStreaming.register(with: serviceConfiguration,
-                                        forKey: identifier,
-                                        webSocketProvider: nativeWebSocketProvider)
-        let awsTranscribeStreaming = AWSTranscribeStreaming(forKey: identifier)
-        return AWSTranscribeStreamingAdapter(awsTranscribeStreaming)
+    func getEscapeHatch<T>(client: PredictionsAWSService<T>) -> T {
+        client.fetch(self)
     }
 }
 
-extension AWSPredictionsService: DefaultLogger { }
+extension AWSPredictionsService: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.predictions.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}

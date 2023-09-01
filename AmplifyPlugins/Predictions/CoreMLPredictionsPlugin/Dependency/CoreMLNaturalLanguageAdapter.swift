@@ -10,58 +10,68 @@ import Amplify
 import NaturalLanguage
 
 class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
-
-    func detectDominantLanguage(for text: String) -> LanguageType? {
+    func detectDominantLanguage(for text: String) -> Predictions.Language? {
         let languageRecognizer = NLLanguageRecognizer()
         languageRecognizer.processString(text)
         return languageRecognizer.dominantLanguage?.getLanguageType()
     }
 
-    func getSyntaxTokens(for text: String) -> [SyntaxToken] {
-        var syntaxList: [SyntaxToken] = []
+    func getSyntaxTokens(for text: String) -> [Predictions.SyntaxToken] {
+        var syntaxList: [Predictions.SyntaxToken] = []
         var tokenId = 0
         let tagger = NLTagger(tagSchemes: [.lexicalClass])
         tagger.string = text
         let options: NLTagger.Options = [NLTagger.Options.omitPunctuation, .omitWhitespace]
-        tagger.enumerateTags(in: text.startIndex ..< text.endIndex,
-                             unit: .word,
-                             scheme: .lexicalClass,
-                             options: options) { tag, tokenRange in
 
-                                if let tag = tag {
-                                    let partOfSpeech = PartOfSpeech(tag: tag.getSpeechType(), score: nil)
-                                    let stringPart = String(text[tokenRange])
-                                    let syntaxToken = SyntaxToken(tokenId: tokenId,
-                                                                  text: stringPart,
-                                                                  range: tokenRange,
-                                                                  partOfSpeech: partOfSpeech)
-                                    syntaxList.append(syntaxToken)
-                                    tokenId += 1
-                                }
-                                return true
+        tagger.enumerateTags(
+            in: text.startIndex ..< text.endIndex,
+            unit: .word,
+            scheme: .lexicalClass,
+            options: options
+        ) { tag, tokenRange in
+
+            if let tag = tag {
+                let partOfSpeech = Predictions.PartOfSpeech.DetectionResult(
+                    partOfSpeech: tag.getSpeechType(),
+                    score: nil
+                )
+                let stringPart = String(text[tokenRange])
+                let syntaxToken = Predictions.SyntaxToken(
+                    tokenId: tokenId,
+                    text: stringPart,
+                    range: tokenRange,
+                    detectedPartOfSpeech: partOfSpeech
+                )
+                syntaxList.append(syntaxToken)
+                tokenId += 1
+            }
+            return true
         }
         return syntaxList
     }
 
-    func getEntities(for text: String) -> [EntityDetectionResult] {
-        var result = [EntityDetectionResult]()
+    func getEntities(for text: String) -> [Predictions.Entity.DetectionResult] {
+        var result = [Predictions.Entity.DetectionResult]()
         let tagger = NLTagger(tagSchemes: [.nameType])
         tagger.string = text
         let options: NLTagger.Options = [NLTagger.Options.omitPunctuation, .omitWhitespace, .joinNames]
         let tags = [NLTag.personalName, .placeName, .organizationName]
-        tagger.enumerateTags(in: text.startIndex ..< text.endIndex,
-                             unit: .word,
-                             scheme: .nameType,
-                             options: options) { tag, tokenRange in
-
-                                if let tag = tag, tags.contains(tag) {
-                                    let entity = EntityDetectionResult(type: tag.getEntityType(),
-                                                                       targetText: String(text[tokenRange]),
-                                                                       score: nil,
-                                                                       range: tokenRange)
-                                    result.append(entity)
-                                }
-                                return true
+        tagger.enumerateTags(
+            in: text.startIndex ..< text.endIndex,
+            unit: .word,
+            scheme: .nameType,
+            options: options
+        ) { tag, tokenRange in
+            if let tag = tag, tags.contains(tag) {
+                let entity = Predictions.Entity.DetectionResult(
+                    type: tag.getEntityType(),
+                    targetText: String(text[tokenRange]),
+                    score: nil,
+                    range: tokenRange
+                )
+                result.append(entity)
+            }
+            return true
         }
         return result
     }
@@ -80,7 +90,7 @@ extension NLTag {
 
     // swiftlint:disable cyclomatic_complexity
     /// Convert the CoreML NLTag to SpeechType
-    func getSpeechType() -> SpeechType {
+    func getSpeechType() -> Predictions.PartOfSpeech {
         switch self {
         case .noun:
             return .noun
@@ -105,7 +115,7 @@ extension NLTag {
         case .interjection:
             return .interjection
         case .openQuote, .closeQuote, .openParenthesis,
-             .closeParenthesis, .dash, .otherPunctuation:
+                .closeParenthesis, .dash, .otherPunctuation:
             return .symbol
         default:
             return .other
@@ -114,7 +124,7 @@ extension NLTag {
     }
     // swiftlint:enable cyclomatic_complexity
 
-    func getEntityType() -> EntityType {
+    func getEntityType() -> Predictions.Entity.Kind {
         switch self {
         case .placeName:
             return .location
@@ -131,7 +141,7 @@ extension NLTag {
 extension NLLanguage {
 
     // swiftlint:disable:next function_body_length cyclomatic_complexity
-    func getLanguageType() -> LanguageType {
+    func getLanguageType() -> Predictions.Language {
         switch self {
         case .amharic:
             return .amharic

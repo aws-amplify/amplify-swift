@@ -91,10 +91,17 @@ extension AWSMutationEventPublisher: MutationEventPublisher {
     }
 }
 
-extension AWSMutationEventPublisher: DefaultLogger { }
+extension AWSMutationEventPublisher: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName, forNamespace: String(describing: self))
+    }
+    public var log: Logger {
+        Self.log
+    }
+}
 
 extension AWSMutationEventPublisher: Resettable {
-    func reset() {
+    func reset() async {
         eventSource = nil
     }
 }

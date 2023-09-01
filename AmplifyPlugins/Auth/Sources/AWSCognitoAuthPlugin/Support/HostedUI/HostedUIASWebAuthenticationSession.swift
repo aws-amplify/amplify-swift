@@ -7,7 +7,9 @@
 
 import Foundation
 import Amplify
+#if os(iOS) || os(macOS)
 import AuthenticationServices
+#endif
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
@@ -18,7 +20,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                       inPrivate: Bool,
                       presentationAnchor: AuthUIPresentationAnchor?,
                       callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
-
+    #if os(iOS) || os(macOS)
         self.webPresentation = presentationAnchor
         let aswebAuthenticationSession = ASWebAuthenticationSession(
             url: url,
@@ -29,7 +31,11 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                     let queryItems = urlComponents?.queryItems ?? []
 
                     if let error = queryItems.first(where: { $0.name == "error" })?.value {
-                        callback(.failure(.serviceMessage(error)))
+                        let errorDescription = queryItems.first(
+                            where: { $0.name == "error_description" }
+                        )?.value?.trim() ?? ""
+                        let message = "\(error) \(errorDescription)"
+                        callback(.failure(.serviceMessage(message)))
                         return
                     }
                     callback(.success(queryItems))
@@ -46,8 +52,12 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         DispatchQueue.main.async {
             aswebAuthenticationSession.start()
         }
+    #else
+        callback(.failure(.serviceMessage("HostedUI is only available in iOS and macOS")))
+    #endif
     }
 
+#if os(iOS) || os(macOS)
     private func convertHostedUIError(_ error: Error) -> HostedUIError {
         if let asWebAuthError = error as? ASWebAuthenticationSessionError {
             switch asWebAuthError.code {
@@ -63,11 +73,14 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         }
         return .unknown
     }
+#endif
 }
 
+#if os(iOS) || os(macOS)
 extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationContextProviding {
 
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return webPresentation ?? ASPresentationAnchor()
     }
 }
+#endif

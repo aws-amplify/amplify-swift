@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Represents a object listing request initiated by an implementation of the
+/// [StorageCategoryPlugin](x-source-tag://StorageCategoryPlugin) protocol.
+///
 /// - Tag: StorageListRequest
 public struct StorageListRequest: AmplifyOperationRequest {
 

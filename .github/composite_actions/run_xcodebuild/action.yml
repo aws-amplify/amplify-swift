@@ -1,0 +1,53 @@
+name: 'Run xcodebuild'
+description: 'Action runs `xcodebuild build` for the scheme specified'
+
+inputs:
+  scheme:
+    required: true
+    type: string
+  project_path:
+    required: false
+    type: string
+  xcode_path:
+    required: false
+    type: string
+  destination:
+    required: false
+    type: string
+    default: 'platform=iOS Simulator,name=iPhone 13,OS=latest'
+  sdk:
+    required: false
+    type: string
+    default: 'iphonesimulator'
+  disable_package_resolution:
+    required: false
+    type: boolean
+    default: false
+  other_flags:
+    required: false
+    type: string
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: Test ${{ inputs.scheme }}
+      env:
+        SCHEME: ${{ inputs.scheme }}
+        PROJECT_PATH: ${{ inputs.project_path }}
+        XCODE_PATH: ${{ inputs.xcode_path }}
+      run: |
+        if [ ! -z "$PROJECT_PATH" ]; then
+          cd $PROJECT_PATH
+        fi
+        if [ ! -z "$XCODE_PATH" ]; then
+          sudo xcode-select -s $XCODE_PATH
+        fi
+
+        otherFlags="${{ inputs.other_flags }}"
+        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
+          otherFlags+=" -disableAutomaticPackageResolution"
+        fi
+        xcodebuild -version
+        xcodebuild build -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+      shell: bash

@@ -9,6 +9,7 @@ import AWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import StoreKit
 import XCTest
+import AmplifyAsyncTesting
 
 actor MockAnalyticsClient: AnalyticsClientBehaviour {
     let pinpointClient: PinpointClientProtocol = MockPinpointClient()
@@ -72,10 +73,10 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
 
     }
 
-    private var recordExpectation: XCTestExpectation?
-    func setRecordExpectation(_ expectation: XCTestExpectation, count: Int = 1) {
+    private var recordExpectation: AsyncExpectation?
+    func setRecordExpectation(_ expectation: AsyncExpectation, count: Int = 1) async {
         recordExpectation = expectation
-        recordExpectation?.expectedFulfillmentCount = count
+        await recordExpectation?.setExpectedFulfillmentCount(count)
     }
 
     var recordCount = 0
@@ -85,19 +86,23 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         recordCount += 1
         lastRecordedEvent = event
         recordedEvents.append(event)
-        recordExpectation?.fulfill()
+        Task {
+            await recordExpectation?.fulfill()
+        }
     }
 
-    private var submitEventsExpectation: XCTestExpectation?
-    func setSubmitEventsExpectation(_ expectation: XCTestExpectation, count: Int = 1) {
+    private var submitEventsExpectation: AsyncExpectation?
+    func setSubmitEventsExpectation(_ expectation: AsyncExpectation, count: Int = 1) async {
         submitEventsExpectation = expectation
-        submitEventsExpectation?.expectedFulfillmentCount = count
+        await submitEventsExpectation?.setExpectedFulfillmentCount(count)
     }
 
     var submitEventsCount = 0
     func submitEvents() async throws -> [PinpointEvent] {
         submitEventsCount += 1
-        submitEventsExpectation?.fulfill()
+        Task {
+            await submitEventsExpectation?.fulfill()
+        }
         return []
     }
 

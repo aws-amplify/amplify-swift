@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(Speech) && canImport(Vision)
 import Foundation
 import Amplify
 
@@ -32,3 +33,4 @@ final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
 }
 
 extension CoreMLPredictionsPlugin: AmplifyVersionable { }
+#endif
