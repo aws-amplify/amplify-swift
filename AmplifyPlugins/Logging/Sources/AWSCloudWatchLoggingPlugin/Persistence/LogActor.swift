@@ -29,6 +29,7 @@ actor LogActor {
     }
     
     private func write(_ data: Data) throws {
+        try rotation.ensureFileExists()
         if rotation.currentLogFile.hasSpace(for: data) {
             try rotation.currentLogFile.write(data: data)
         } else {

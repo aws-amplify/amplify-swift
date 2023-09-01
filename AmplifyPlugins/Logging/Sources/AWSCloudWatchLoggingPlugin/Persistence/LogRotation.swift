@@ -98,6 +98,12 @@ final class LogRotation {
                                  index: 0,
                                  fileSizeLimitInBytes: fileSizeLimitInBytes)
     }
+    
+    func ensureFileExists() throws {
+        if !FileManager.default.fileExists(atPath: currentLogFile.fileURL.relativePath) {
+            try rotate()
+        }
+    }
 
     /// - Returns: A UInt representing the best guess to which index to use
     ///            next when the number of log files is less that the limit
