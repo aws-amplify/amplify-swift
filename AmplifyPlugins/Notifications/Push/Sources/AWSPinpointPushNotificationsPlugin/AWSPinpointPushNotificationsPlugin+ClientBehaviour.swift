@@ -32,8 +32,12 @@ extension AWSPinpointPushNotificationsPlugin {
         do {
             try await pinpoint.updateEndpoint(with: currentEndpointProfile,
                                               source: .pushNotifications)
-        } catch {
+        } catch let error as PushNotificationsErrorConvertible {
             throw error.pushNotificationsError
+        } catch {
+            throw PushNotificationsError.unknown(
+                "An unknown error has ocurred", error
+            )
         }
     }
 

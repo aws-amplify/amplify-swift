@@ -12,9 +12,9 @@ import Foundation
 
 class AnalyticsErrorHelper {
     static func getDefaultError(_ error: Error) -> AnalyticsError {
-        if let sdkError = error as? SdkError<PutEventsOutputError>{
-            return sdkError.analyticsError
-        }
+//        if let sdkError = error as? SdkError<PutEventsOutputError>{
+//            return sdkError.analyticsError
+//        }
 
         if let analyticsError = error as? AnalyticsError {
             return analyticsError

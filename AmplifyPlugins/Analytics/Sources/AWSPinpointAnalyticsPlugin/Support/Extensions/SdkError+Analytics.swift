@@ -10,11 +10,21 @@ import ClientRuntime
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
-extension SdkError {
+//extension SdkError {
+//    var analyticsError: AnalyticsError {
+//        return .unknown(
+//            isConnectivityError ? AWSPinpointErrorConstants.deviceOffline.errorDescription : errorDescription,
+//            rootError ?? self
+//        )
+//    }
+//}
+
+extension ModeledError where Self: Error {
     var analyticsError: AnalyticsError {
-        return .unknown(
-            isConnectivityError ? AWSPinpointErrorConstants.deviceOffline.errorDescription : errorDescription,
-            rootError ?? self
-        )
+        let description = /* isConnectivityError
+                           ? AWSPinpointErrorConstants.deviceOffline.errorDescription
+                           : errorDescription
+                           */ ""
+        return .unknown(description, self)
     }
 }
