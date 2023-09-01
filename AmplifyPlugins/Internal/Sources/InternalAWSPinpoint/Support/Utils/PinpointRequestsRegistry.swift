@@ -65,6 +65,23 @@ private struct CustomPinpointHttpClientEngine: HttpClientEngine {
             return try await httpClientEngine.execute(request: request)
         }
         #warning("mutating request with headers???")
+
+        var headers = request.headers
+        let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
+        headers.update(
+            name: userAgentHeader,
+            value: "\(currentUserAgent)\(userAgentSuffix)"
+        )
+        let request = try SdkHttpRequest(
+            method: request.method,
+            endpoint: .init(
+                url: request.endpoint.url!,
+                headers: headers,
+                properties: request.endpoint.properties
+            ),
+            body: request.body
+        )
+
 //        var headers = request.headers
 //        let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
 //        headers.update(name: userAgentHeader,

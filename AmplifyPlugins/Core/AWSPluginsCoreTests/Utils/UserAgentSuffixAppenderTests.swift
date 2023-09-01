@@ -30,8 +30,7 @@ class UserAgentSuffixAppenderTests: XCTestCase {
     /// When: A request is invoked with an existing User-Agent
     /// Then: The user agent suffix is appended
     func testExecute_withExistingUserAgentHeader_shouldAppendSuffix() async throws {
-        var request = createRequest(headers: .init([userAgentKey: "existingUserAgent"]))
-//        request.endpoint.headers.add(name: userAgentKey, value: "existingUserAgent")
+        let request = createRequest(headers: .init([userAgentKey: "existingUserAgent"]))
 
         _ = try await appender.execute(request: request)
         XCTAssertEqual(httpClientEngine.executeCount, 1)

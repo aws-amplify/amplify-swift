@@ -25,14 +25,24 @@ extension UserAgentSuffixAppender: HttpClientEngine {
         guard let target = target  else {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
-        #warning("need to mutate headers... maybe")
-//        var headers = request.headers
-//        let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
-//        headers.update(
-//            name: userAgentHeader,
-//            value: "\(currentUserAgent) \(suffix)"
-//        )
-//        request.headers = headers
+
+        #error("wtf")
+        var headers = request.headers
+        let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
+        headers.update(
+            name: userAgentHeader,
+            value: "\(currentUserAgent) \(suffix)"
+        )
+        let request = try SdkHttpRequest(
+            method: request.method,
+            endpoint: .init(
+                url: request.endpoint.url!,
+                headers: headers,
+                properties: request.endpoint.properties
+            ),
+            body: request.body
+        )
+
         return try await target.execute(request: request)
     }
 }
