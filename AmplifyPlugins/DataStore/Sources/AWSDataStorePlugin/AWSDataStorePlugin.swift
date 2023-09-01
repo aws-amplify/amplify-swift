@@ -145,23 +145,20 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// Initializes the underlying storage engine and starts the syncing process
-    /// - Parameter completion: completion handler called with a success if the sync process started
-    ///                         or with a DataStoreError in case of failure
-    func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
+    /// - Return:
+    func initStorageEngineAndStartSync() -> Result<StorageEngineBehavior, DataStoreError> {
         storageEngineInitQueue.sync {
-            completion(
-                initStorageEngine().flatMap { $0.startSync() }.flatMap { result in
-                    switch result {
-                    case .alreadyInitialized:
-                        return .successfulVoid
-                    case .successfullyInitialized:
-                        self.dataStoreStateSubject.send(.start(storageEngine: self.storageEngine))
-                        return .successfulVoid
-                    case .failure(let error):
-                        return .failure(error)
-                    }
+            initStorageEngine().flatMap { $0.startSync() }.flatMap { result in
+                switch result {
+                case .alreadyInitialized:
+                    return .success(storageEngine)
+                case .successfullyInitialized:
+                    self.dataStoreStateSubject.send(.start(storageEngine: self.storageEngine))
+                    return .success(storageEngine)
+                case .failure(let error):
+                    return .failure(error)
                 }
-            )
+            }
         }
     }
 

@@ -11,7 +11,7 @@ import Combine
 extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
-        initStorageEngineAndStartSync()
+        _ = initStorageEngineAndStartSync()
         // Force-unwrapping: The optional 'dataStorePublisher' is expected
         // to exist for deployment targets >=iOS13.0
         return dataStorePublisher!.publisher
@@ -29,27 +29,32 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        where predicate: QueryPredicate?,
                                        sort sortInput: QuerySortInput?) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
-        initStorageEngineAndStartSync()
+        switch initStorageEngineAndStartSync() {
+        case .success(let storageEngineBehavior):
+            let modelSchema = modelType.schema
+            guard let dataStorePublisher = dataStorePublisher else {
+                return Fatal.preconditionFailure("`dataStorePublisher` is expected to exist for deployment targets >=iOS13.0")
+            }
+            guard let dispatchedModelSyncedEvent = dispatchedModelSyncedEvents[modelSchema.name] else {
+                return Fatal.preconditionFailure("`dispatchedModelSyncedEvent` is expected to exist for \(modelSchema.name)")
+            }
+            let request = ObserveQueryRequest(options: [])
+            let taskRunner = ObserveQueryTaskRunner(request: request,
+                                                    modelType: modelType,
+                                                    modelSchema: modelType.schema,
+                                                    predicate: predicate,
+                                                    sortInput: sortInput?.asSortDescriptors(),
+                                                    storageEngine: storageEngineBehavior,
+                                                    dataStorePublisher: dataStorePublisher,
+                                                    dataStoreConfiguration: configuration.pluginConfiguration,
+                                                    dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
+                                                    dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+            return taskRunner.sequence
+        case .failure(let error):
+            return Fatal.preconditionFailure("Unable to get storage adapter \(error.localizedDescription)")
+        }
         
-        let modelSchema = modelType.schema
-        guard let dataStorePublisher = dataStorePublisher else {
-            return Fatal.preconditionFailure("`dataStorePublisher` is expected to exist for deployment targets >=iOS13.0")
-        }
-        guard let dispatchedModelSyncedEvent = dispatchedModelSyncedEvents[modelSchema.name] else {
-            return Fatal.preconditionFailure("`dispatchedModelSyncedEvent` is expected to exist for \(modelSchema.name)")
-        }
-        let request = ObserveQueryRequest(options: [])
-        let taskRunner = ObserveQueryTaskRunner(request: request,
-                                                modelType: modelType,
-                                                modelSchema: modelType.schema,
-                                                predicate: predicate,
-                                                sortInput: sortInput?.asSortDescriptors(),
-                                                storageEngine: storageEngine,
-                                                dataStorePublisher: dataStorePublisher,
-                                                dataStoreConfiguration: configuration.pluginConfiguration,
-                                                dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
-                                                dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
-        return taskRunner.sequence
+
     }
 
 }
