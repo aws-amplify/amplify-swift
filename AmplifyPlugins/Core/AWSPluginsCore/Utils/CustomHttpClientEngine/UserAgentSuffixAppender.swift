@@ -26,7 +26,7 @@ extension UserAgentSuffixAppender: HttpClientEngine {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
 
-        #error("wtf")
+        #warning("wtf")
         var headers = request.headers
         let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
         headers.update(

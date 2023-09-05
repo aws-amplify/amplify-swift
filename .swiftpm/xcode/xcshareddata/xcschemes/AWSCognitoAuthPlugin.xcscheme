@@ -39,9 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AmplifyAuthCognitoPluginTests">
-               </Test>
-               <Test
                   Identifier = "EscapeHatchTests">
                </Test>
             </SkippedTests>

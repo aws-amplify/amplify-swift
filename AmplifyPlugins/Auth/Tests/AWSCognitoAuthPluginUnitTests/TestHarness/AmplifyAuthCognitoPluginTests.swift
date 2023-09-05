@@ -14,6 +14,7 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
 
     let apiTimeout = 1.0
 
+    @MainActor
     func testAuthCognitoPlugin() async {
 
         // Load the json configs
@@ -34,10 +35,12 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                     subdirectory: "\(AuthTestHarnessConstants.testSuitesPath)/\(directory)"
                 )
                 let authTestHarness = await AuthTestHarness(featureSpecification: specification)
-                beginTest(
-                    for: authTestHarness.plugin,
-                    with: authTestHarness
-                )
+                XCTContext.runActivity(named: testSuiteFile) { activity in
+                    beginTest(
+                        for: authTestHarness.plugin,
+                        with: authTestHarness
+                    )
+                }
             }
         }
     }
