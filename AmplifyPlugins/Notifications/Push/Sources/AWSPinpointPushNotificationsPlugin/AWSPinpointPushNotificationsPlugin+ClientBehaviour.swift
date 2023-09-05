@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPinpoint
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 import UserNotifications
@@ -58,6 +59,13 @@ extension AWSPinpointPushNotificationsPlugin {
         )
     }
 #endif
+
+    /// Retrieves the escape hatch to perform actions directly on PinpointClient.
+    ///
+    /// - Returns: PinpointClientProtocol instance
+    public func getEscapeHatch() -> PinpointClientProtocol {
+        pinpoint.pinpointClient
+    }
 
     private func recordNotification(_ userInfo: [String: Any],
                                     applicationState: ApplicationState,
