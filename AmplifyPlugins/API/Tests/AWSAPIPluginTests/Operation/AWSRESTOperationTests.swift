@@ -96,4 +96,40 @@ class AWSRESTOperationTests: OperationTestBase {
         wait(for: [callbackInvoked], timeout: 1.0)
     }
 
+    func testRESTOperation_withCustomHeader_shouldOverrideDefaultAmplifyHeaders() throws {
+        let expectedHeaderValue = "text/plain"
+        let sentData = Data([0x00, 0x01, 0x02, 0x03])
+        try setUpPluginForSingleResponse(sending: sentData, for: .rest)
+
+        let validated = expectation(description: "Header override is validated")
+        try apiPlugin.add(interceptor: TestURLRequestInterceptor(validate: { request in
+            defer { validated.fulfill() }
+            return request.allHTTPHeaderFields?["Content-Type"] == expectedHeaderValue
+        }), for: "Valid")
+
+        let callbackInvoked = expectation(description: "Callback was invoked")
+        let request = RESTRequest(apiName: "Valid", path: "/path", headers: ["Content-Type": expectedHeaderValue])
+        _ = apiPlugin.get(request: request) { event in
+            switch event {
+            case .success(let data):
+                XCTAssertEqual(data, sentData)
+            case .failure(let error):
+                XCTFail("Unexpected failure: \(error)")
+            }
+            callbackInvoked.fulfill()
+        }
+        wait(for: [callbackInvoked, validated], timeout: 1.0)
+    }
+
+}
+
+fileprivate struct TestURLRequestInterceptor: URLRequestInterceptor {
+    let validate: (URLRequest) -> Bool
+
+    func intercept(_ request: URLRequest) async throws -> URLRequest {
+        XCTAssertTrue(validate(request))
+        return request
+    }
+
+
 }
