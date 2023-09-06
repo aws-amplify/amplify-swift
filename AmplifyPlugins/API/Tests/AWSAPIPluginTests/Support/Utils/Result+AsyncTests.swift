@@ -46,6 +46,7 @@ class ResultAsyncTests: XCTestCase {
             XCTFail("Should fail")
         case .failure(let error):
             XCTAssertTrue(error is TestError)
+            XCTAssertEqual(ObjectIdentifier(expectedError), ObjectIdentifier(error as! TestError))
         }
     }
 }

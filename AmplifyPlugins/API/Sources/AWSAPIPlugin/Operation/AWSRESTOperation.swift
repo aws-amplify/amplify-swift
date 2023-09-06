@@ -45,99 +45,48 @@ final public class AWSRESTOperation: AmplifyOperation<
             return
         }
 
-        // Validate the request
-        do {
-            try request.validate()
-        } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
-        } catch {
-            dispatch(result: .failure(APIError.unknown("Could not validate request", "", nil)))
-            finish()
-            return
-        }
-
-        // Retrieve endpoint configuration
-        let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
-        let amplifyInterceptors: [URLRequestInterceptor]
-        let customerInterceptors: [URLRequestInterceptor]
-        let checksumInterceptors: [URLRequestInterceptor]
-        do {
-            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest)
-            let interceptorConfig = pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
-            amplifyInterceptors = interceptorConfig?.amplifyInterceptors ?? []
-            customerInterceptors = interceptorConfig?.interceptors ?? []
-            checksumInterceptors = interceptorConfig?.checksumInterceptors ?? []
-        } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
-        } catch {
-            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
-            finish()
-            return
-        }
-
-        // Construct URL with path
-        let url: URL
-        do {
-            url = try RESTOperationRequestUtils.constructURL(
-                for: endpointConfig.baseURL,
-                withPath: request.path,
-                withParams: request.queryParameters
-            )
-        } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
-        } catch {
-            let apiError = APIError.operationError("Failed to construct URL", "", error)
-            dispatch(result: .failure(apiError))
-            finish()
-            return
-        }
-
-        // Construct URL Request with url and request body
-        let urlRequest = RESTOperationRequestUtils.constructURLRequest(
-            with: url,
-            operationType: request.operationType,
-            requestPayload: request.body
-        )
-
         Task {
-            var finalResult: Result<URLRequest, APIError> = .success(urlRequest)
-            // apply amplify interceptors
-            for interceptor in amplifyInterceptors {
-                finalResult = await finalResult.flatMapAsync { request in
-                    await applyInterceptor(interceptor, request: request)
+            let urlRequest = validateRequest(request).flatMap(buildURLRequest(from:))
+            let finalRequest = await getEndpointConfig(from: request).flatMapAsync { endpointConfig in
+                let interceptorConfig = pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+                let amplifyInterceptors = interceptorConfig?.amplifyInterceptors ?? []
+                let customerInterceptors = interceptorConfig?.interceptors ?? []
+                let checksumInterceptors = interceptorConfig?.checksumInterceptors ?? []
+
+                var finalResult = urlRequest
+                // apply amplify interceptors
+                for interceptor in amplifyInterceptors {
+                    finalResult = await finalResult.flatMapAsync { request in
+                        await applyInterceptor(interceptor, request: request)
+                    }
                 }
+
+                // apply customer headers
+                finalResult = finalResult.map { urlRequest in
+                    var mutableRequest = urlRequest
+                    for (key, value) in request.headers ?? [:] {
+                        mutableRequest.setValue(value, forHTTPHeaderField: key)
+                    }
+                    return mutableRequest
+                }
+
+                // apply customer interceptors
+                for interceptor in customerInterceptors {
+                    finalResult = await finalResult.flatMapAsync { request in
+                        await applyInterceptor(interceptor, request: request)
+                    }
+                }
+
+                // apply checksum interceptor
+                for interceptor in checksumInterceptors {
+                    finalResult = await finalResult.flatMapAsync { request in
+                        await applyInterceptor(interceptor, request: request)
+                    }
+                }
+                return finalResult
             }
 
-            // apply customer headers
-            finalResult = finalResult.map { urlRequest in
-                var mutableRequest = urlRequest
-                for (key, value) in request.headers ?? [:] {
-                    mutableRequest.setValue(value, forHTTPHeaderField: key)
-                }
-                return mutableRequest
-            }
-
-            // apply customer interceptors
-            for interceptor in customerInterceptors {
-                finalResult = await finalResult.flatMapAsync { request in
-                    await applyInterceptor(interceptor, request: request)
-                }
-            }
-
-            // apply checksum interceptor
-            for interceptor in checksumInterceptors {
-                finalResult = await finalResult.flatMapAsync { request in
-                    await applyInterceptor(interceptor, request: request)
-                }
-            }
-
-            switch finalResult {
+            switch finalRequest {
             case .success(let finalRequest):
                 if isCancelled {
                     finish()
@@ -150,8 +99,53 @@ final public class AWSRESTOperation: AmplifyOperation<
                 mapper.addPair(operation: self, task: task)
                 task.resume()
             case .failure(let error):
+                Amplify.API.log.debug("Dispatching error \(error)")
                 dispatch(result: .failure(error))
-                cancel()
+                finish()
+            }
+        }
+    }
+
+    private func validateRequest(_ request: RESTOperationRequest) -> Result<RESTOperationRequest, APIError> {
+        do {
+            try request.validate()
+            return .success(request)
+        } catch let error as APIError {
+            return .failure(error)
+        } catch {
+            return .failure(APIError.unknown("Could not validate request", "", nil))
+        }
+    }
+
+    private func getEndpointConfig(
+        from request: RESTOperationRequest
+    ) -> Result<AWSAPICategoryPluginConfiguration.EndpointConfig, APIError> {
+        do {
+            return .success(try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest))
+        } catch let error as APIError {
+            return .failure(error)
+        } catch {
+            return .failure(APIError.unknown("Could not get endpoint configuration", "", nil))
+        }
+    }
+
+    private func buildURLRequest(from request: RESTOperationRequest) -> Result<URLRequest, APIError> {
+        getEndpointConfig(from: request).flatMap { endpointConfig in
+            do {
+                let url = try RESTOperationRequestUtils.constructURL(
+                    for: endpointConfig.baseURL,
+                    withPath: request.path,
+                    withParams: request.queryParameters
+                )
+                return .success(RESTOperationRequestUtils.constructURLRequest(
+                    with: url,
+                    operationType: request.operationType,
+                    requestPayload: request.body
+                ))
+            } catch let error as APIError {
+                return .failure(error)
+            } catch {
+                return .failure(APIError.operationError("Failed to construct URL", "", error))
             }
         }
     }

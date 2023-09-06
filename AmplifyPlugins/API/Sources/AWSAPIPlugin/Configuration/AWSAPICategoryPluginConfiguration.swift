@@ -72,7 +72,7 @@ public struct AWSAPICategoryPluginConfiguration {
         self.authService = authService
     }
 
-    /// Registers an interceptor for the provided API endpoint
+    /// Registers an customer interceptor for the provided API endpoint
     /// - Parameter interceptor: operation interceptor used to decorate API requests
     /// - Parameter toEndpoint: API endpoint name
     mutating func addInterceptor(_ interceptor: URLRequestInterceptor,
@@ -84,18 +84,17 @@ public struct AWSAPICategoryPluginConfiguration {
         interceptors[apiName]?.addInterceptor(interceptor)
     }
 
-    /// Returns all the customer defined interceptors registered for `apiName` API endpoint
+    /// Returns all the interceptors registered for `apiName` API endpoint
     /// - Parameter apiName: API endpoint name
-    /// - Returns: request interceptors
+    /// - Returns: Optional AWSAPIEndpointInterceptors for the apiName
     internal func interceptorsForEndpoint(named apiName: APIEndpointName) -> AWSAPIEndpointInterceptors? {
         return interceptors[apiName]
     }
 
-    /// Returns customer defined interceptors for the provided endpointConfig
+    /// Returns the interceptors for the provided endpointConfig
     /// - Parameters:
     ///   - endpointConfig: endpoint configuration
-    /// - Throws: PluginConfigurationError in case of failure building an instance of AWSAuthorizationConfiguration
-    /// - Returns: An array of URLRequestInterceptor
+    /// - Returns: Optional AWSAPIEndpointInterceptors for the endpointConfig
     internal func interceptorsForEndpoint(withConfig endpointConfig: EndpointConfig) -> AWSAPIEndpointInterceptors? {
         return interceptorsForEndpoint(named: endpointConfig.name)
     }
@@ -105,7 +104,7 @@ public struct AWSAPICategoryPluginConfiguration {
     ///   - endpointConfig: endpoint configuration
     ///   - authType: overrides the registered auth interceptor
     /// - Throws: PluginConfigurationError in case of failure building an instance of AWSAuthorizationConfiguration
-    /// - Returns: An array of URLRequestInterceptor
+    /// - Returns: Optional AWSAPIEndpointInterceptors for the endpointConfig and authType
     internal func interceptorsForEndpoint(
         withConfig endpointConfig: EndpointConfig,
         authType: AWSAuthorizationType

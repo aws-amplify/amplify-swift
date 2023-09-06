@@ -87,7 +87,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                 task.resume()
             case .failure(let error):
                 dispatch(result: .failure(error))
-                cancel()
+                finish()
             }
         }
 
