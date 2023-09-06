@@ -1,0 +1,584 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		73C4693C2AA902D10057A8A9 /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 73C4693B2AA902D10057A8A9 /* AWSCloudWatchLoggingPlugin */; };
+		978B1D6429515FFB0079E55A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5E29515DEF0079E55A /* AsyncTesting.swift */; };
+		978B1D6529515FFB0079E55A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */; };
+		978B1D6629515FFB0079E55A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */; };
+		97AD223228230B98001AFCC1 /* CloudWatchLoggingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223128230B98001AFCC1 /* CloudWatchLoggingApp.swift */; };
+		97AD223428230B98001AFCC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223328230B98001AFCC1 /* ContentView.swift */; };
+		97AD223628230B9A001AFCC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97AD223528230B9A001AFCC1 /* Assets.xcassets */; };
+		97AD223928230B9A001AFCC1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97AD223828230B9A001AFCC1 /* Preview Assets.xcassets */; };
+		97DB8245282339D200FC2228 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97DB8244282339D200FC2228 /* README.md */; };
+		97DB824728233A1D00FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB824628233A1D00FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.swift */; };
+		97DB82552823466800FC2228 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB82542823466800FC2228 /* TestConfigHelper.swift */; };
+		B44DCFA328F48EDD007FEC7C /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B44DCFA228F48EDD007FEC7C /* Amplify */; };
+		B44DCFA528F48EDD007FEC7C /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B44DCFA428F48EDD007FEC7C /* AWSCognitoAuthPlugin */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		97DB823F282339B700FC2228 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97AD222628230B98001AFCC1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97AD222D28230B98001AFCC1;
+			remoteInfo = GeoHostApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		978B1D5E29515DEF0079E55A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
+		978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
+		978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
+		97AD222E28230B98001AFCC1 /* CloudWatchLoggingHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CloudWatchLoggingHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		97AD223128230B98001AFCC1 /* CloudWatchLoggingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudWatchLoggingApp.swift; sourceTree = "<group>"; };
+		97AD223328230B98001AFCC1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		97AD223528230B9A001AFCC1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		97AD223828230B9A001AFCC1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		97DB823B282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSCloudWatchLoggingPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		97DB8244282339D200FC2228 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		97DB824628233A1D00FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSCloudWatchLoggingPluginIntegrationTests.swift; sourceTree = "<group>"; };
+		97DB82542823466800FC2228 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		B44DCFA828F49E60007FEC7C /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		97AD222B28230B98001AFCC1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B44DCFA328F48EDD007FEC7C /* Amplify in Frameworks */,
+				B44DCFA528F48EDD007FEC7C /* AWSCognitoAuthPlugin in Frameworks */,
+				73C4693C2AA902D10057A8A9 /* AWSCloudWatchLoggingPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97DB8238282339B700FC2228 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		978B1D5D29515DEF0079E55A /* AsyncTesting */ = {
+			isa = PBXGroup;
+			children = (
+				978B1D5E29515DEF0079E55A /* AsyncTesting.swift */,
+				978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */,
+				978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */,
+			);
+			name = AsyncTesting;
+			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
+			sourceTree = "<group>";
+		};
+		97AD222528230B98001AFCC1 = {
+			isa = PBXGroup;
+			children = (
+				97DB824C28233F2B00FC2228 /* Packages */,
+				97AD223028230B98001AFCC1 /* CloudWatchLoggingHostApp */,
+				97DB823C282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests */,
+				97AD222F28230B98001AFCC1 /* Products */,
+				97DB824E2823417000FC2228 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		97AD222F28230B98001AFCC1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				97AD222E28230B98001AFCC1 /* CloudWatchLoggingHostApp.app */,
+				97DB823B282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		97AD223028230B98001AFCC1 /* CloudWatchLoggingHostApp */ = {
+			isa = PBXGroup;
+			children = (
+				978B1D5D29515DEF0079E55A /* AsyncTesting */,
+				97AD223128230B98001AFCC1 /* CloudWatchLoggingApp.swift */,
+				97AD223328230B98001AFCC1 /* ContentView.swift */,
+				97AD223528230B9A001AFCC1 /* Assets.xcassets */,
+				97AD223728230B9A001AFCC1 /* Preview Content */,
+			);
+			path = CloudWatchLoggingHostApp;
+			sourceTree = "<group>";
+		};
+		97AD223728230B9A001AFCC1 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				97AD223828230B9A001AFCC1 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		97DB823C282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				97DB824628233A1D00FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.swift */,
+				97DB82542823466800FC2228 /* TestConfigHelper.swift */,
+				97DB8244282339D200FC2228 /* README.md */,
+			);
+			path = AWSCloudWatchLoggingPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
+		97DB824C28233F2B00FC2228 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				B44DCFA828F49E60007FEC7C /* amplify-ios */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		97DB824E2823417000FC2228 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		97AD222D28230B98001AFCC1 /* CloudWatchLoggingHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97AD223C28230B9A001AFCC1 /* Build configuration list for PBXNativeTarget "CloudWatchLoggingHostApp" */;
+			buildPhases = (
+				97AD222A28230B98001AFCC1 /* Sources */,
+				97AD222B28230B98001AFCC1 /* Frameworks */,
+				97AD222C28230B98001AFCC1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CloudWatchLoggingHostApp;
+			packageProductDependencies = (
+				B44DCFA228F48EDD007FEC7C /* Amplify */,
+				B44DCFA428F48EDD007FEC7C /* AWSCognitoAuthPlugin */,
+				73C4693B2AA902D10057A8A9 /* AWSCloudWatchLoggingPlugin */,
+			);
+			productName = GeoHostApp;
+			productReference = 97AD222E28230B98001AFCC1 /* CloudWatchLoggingHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		97DB823A282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97DB8243282339B700FC2228 /* Build configuration list for PBXNativeTarget "AWSCloudWatchLoggingPluginIntegrationTests" */;
+			buildPhases = (
+				97DB8237282339B700FC2228 /* Sources */,
+				97DB8238282339B700FC2228 /* Frameworks */,
+				97DB8239282339B700FC2228 /* Resources */,
+				97DB82512823429C00FC2228 /* Copy Configuration Folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97DB8240282339B700FC2228 /* PBXTargetDependency */,
+			);
+			name = AWSCloudWatchLoggingPluginIntegrationTests;
+			productName = AWSLocationGeoPluginIntegrationTests;
+			productReference = 97DB823B282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		97AD222628230B98001AFCC1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1320;
+				TargetAttributes = {
+					97AD222D28230B98001AFCC1 = {
+						CreatedOnToolsVersion = 13.2.1;
+					};
+					97DB823A282339B700FC2228 = {
+						CreatedOnToolsVersion = 13.2.1;
+						LastSwiftMigration = 1320;
+						TestTargetID = 97AD222D28230B98001AFCC1;
+					};
+				};
+			};
+			buildConfigurationList = 97AD222928230B98001AFCC1 /* Build configuration list for PBXProject "CloudWatchLoggingHostApp" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 97AD222528230B98001AFCC1;
+			productRefGroup = 97AD222F28230B98001AFCC1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				97AD222D28230B98001AFCC1 /* CloudWatchLoggingHostApp */,
+				97DB823A282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		97AD222C28230B98001AFCC1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97AD223928230B9A001AFCC1 /* Preview Assets.xcassets in Resources */,
+				97AD223628230B9A001AFCC1 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97DB8239282339B700FC2228 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97DB8245282339D200FC2228 /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		97DB82512823429C00FC2228 /* Copy Configuration Folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		97AD222A28230B98001AFCC1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97AD223428230B98001AFCC1 /* ContentView.swift in Sources */,
+				97AD223228230B98001AFCC1 /* CloudWatchLoggingApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97DB8237282339B700FC2228 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				978B1D6429515FFB0079E55A /* AsyncTesting.swift in Sources */,
+				978B1D6529515FFB0079E55A /* AsyncExpectation.swift in Sources */,
+				978B1D6629515FFB0079E55A /* XCTestCase+AsyncTesting.swift in Sources */,
+				97DB824728233A1D00FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.swift in Sources */,
+				97DB82552823466800FC2228 /* TestConfigHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		97DB8240282339B700FC2228 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97AD222D28230B98001AFCC1 /* CloudWatchLoggingHostApp */;
+			targetProxy = 97DB823F282339B700FC2228 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		97AD223A28230B9A001AFCC1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		97AD223B28230B9A001AFCC1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		97AD223D28230B9A001AFCC1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"CloudWatchLoggingHostApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.logging.CloudWatchLoggingHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+			};
+			name = Debug;
+		};
+		97AD223E28230B9A001AFCC1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"CloudWatchLoggingHostApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.logging.CloudWatchLoggingHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+			};
+			name = Release;
+		};
+		97DB8241282339B700FC2228 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.com.AWSCloudWatchLoggingPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CloudWatchLoggingHostApp.app/CloudWatchLoggingHostApp";
+			};
+			name = Debug;
+		};
+		97DB8242282339B700FC2228 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.com.AWSCloudWatchLoggingPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CloudWatchLoggingHostApp.app/CloudWatchLoggingHostApp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		97AD222928230B98001AFCC1 /* Build configuration list for PBXProject "CloudWatchLoggingHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97AD223A28230B9A001AFCC1 /* Debug */,
+				97AD223B28230B9A001AFCC1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		97AD223C28230B9A001AFCC1 /* Build configuration list for PBXNativeTarget "CloudWatchLoggingHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97AD223D28230B9A001AFCC1 /* Debug */,
+				97AD223E28230B9A001AFCC1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		97DB8243282339B700FC2228 /* Build configuration list for PBXNativeTarget "AWSCloudWatchLoggingPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97DB8241282339B700FC2228 /* Debug */,
+				97DB8242282339B700FC2228 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		73C4693B2AA902D10057A8A9 /* AWSCloudWatchLoggingPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCloudWatchLoggingPlugin;
+		};
+		B44DCFA228F48EDD007FEC7C /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		B44DCFA428F48EDD007FEC7C /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 97AD222628230B98001AFCC1 /* Project object */;
+}
