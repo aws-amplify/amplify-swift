@@ -26,8 +26,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         let error = AuthError.unknown("", nil)
         let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                               accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              refreshToken: "refreshToken",
-                                              expiresIn: 121)
+                                              refreshToken: "refreshToken")
 
         let session = AWSAuthCognitoSession(isSignedIn: true,
                                             identityIdResult: .failure(error),
@@ -53,8 +52,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         let error = AuthError.unknown("", nil)
         let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                               accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              refreshToken: "refreshToken",
-                                              expiresIn: 121)
+                                              refreshToken: "refreshToken")
 
         let session = AWSAuthCognitoSession(isSignedIn: true,
                                             identityIdResult: .failure(error),
@@ -65,4 +63,161 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         XCTAssertFalse(cognitoTokens.doesExpire())
     }
 
+    func testGetUserSub_shouldReturnResult() {
+        let tokenData = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
+        ]
+
+        let error = AuthError.unknown("", nil)
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
+
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
+
+        guard case .success(let userSub) = session.getUserSub() else {
+            XCTFail("Unable to retrieve userSub")
+            return
+        }
+        XCTAssertEqual(userSub, "1234567890")
+    }
+
+    func testGetUserSub_withoutSub_shouldReturnError() {
+        let tokenData = [
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
+        ]
+
+        let error = AuthError.unknown("", nil)
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken"
+        )
+
+        let session = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .success(tokens)
+        )
+
+        guard case .failure(let error) = session.getUserSub(),
+              case .unknown(let errorDescription, _) = error else {
+            XCTFail("Expected AuthError.unknown")
+            return
+        }
+
+        XCTAssertEqual(errorDescription, "Could not retreive user sub from the fetched Cognito tokens.")
+    }
+    
+    func testGetUserSub_signedOut_shouldReturnError() {
+        let error = AuthError.signedOut("", "", nil)
+        let session = AWSAuthCognitoSession(
+            isSignedIn: false,
+            identityIdResult: .failure(error),
+            awsCredentialsResult: .failure(error),
+            cognitoTokensResult: .failure(error)
+        )
+
+        guard case .failure(let error) = session.getUserSub(),
+              case .signedOut(let errorDescription, let recoverySuggestion, _) = error else {
+            XCTFail("Expected AuthError.signedOut")
+            return
+        }
+
+        XCTAssertEqual(errorDescription, AuthPluginErrorConstants.userSubSignOutError.errorDescription)
+        XCTAssertEqual(recoverySuggestion, AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion)
+    }
+    
+    func testGetUserSub_serviceError_shouldReturnError() {
+        let serviceError = AuthError.service("Something went wrong", "Try again", nil)
+        let session = AWSAuthCognitoSession(
+            isSignedIn: false,
+            identityIdResult: .failure(serviceError),
+            awsCredentialsResult: .failure(serviceError),
+            cognitoTokensResult: .failure(serviceError)
+        )
+
+        guard case .failure(let error) = session.getUserSub() else {
+            XCTFail("Expected AuthError.signedOut")
+            return
+        }
+
+        XCTAssertEqual(error, serviceError)
+    }
+    
+    func testSessionsAreEqual() {
+        let expiration = Date(timeIntervalSinceNow: 121)
+        let tokenData1 = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(expiration.timeIntervalSince1970)
+        ]
+
+        let credentials1 = AuthAWSCognitoCredentials(
+            accessKeyId: "accessKeyId",
+            secretAccessKey: "secretAccessKey",
+            sessionToken: "sessionToken",
+            expiration: expiration
+        )
+
+        let tokens1 = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData1),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData1),
+            refreshToken: "refreshToken"
+        )
+
+        let session1 = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .success("identityId"),
+            awsCredentialsResult: .success(credentials1),
+            cognitoTokensResult: .success(tokens1)
+        )
+        
+        let tokenData2 = [
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": "1516239022",
+            "exp": String(expiration.timeIntervalSince1970)
+        ]
+        
+        let credentials2 = AuthAWSCognitoCredentials(
+            accessKeyId: "accessKeyId",
+            secretAccessKey: "secretAccessKey",
+            sessionToken: "sessionToken",
+            expiration: expiration
+        )
+
+        let tokens2 = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData2),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData2),
+            refreshToken: "refreshToken"
+        )
+
+        let session2 = AWSAuthCognitoSession(
+            isSignedIn: true,
+            identityIdResult: .success("identityId"),
+            awsCredentialsResult: .success(credentials2),
+            cognitoTokensResult: .success(tokens2)
+        )
+
+        XCTAssertEqual(session1, session2)
+        XCTAssertEqual(session1.debugDictionary.count, session2.debugDictionary.count)
+        for key in session1.debugDictionary.keys where key != "AWS Credentials" {
+            XCTAssertEqual(session1.debugDictionary[key] as? String, session2.debugDictionary[key] as? String)
+        }
+    }
 }

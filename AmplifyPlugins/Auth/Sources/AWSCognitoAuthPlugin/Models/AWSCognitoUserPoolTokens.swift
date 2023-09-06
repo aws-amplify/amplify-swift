@@ -65,10 +65,10 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
             case (.some(let idTokenValue), .none):
                 expirationDoubleValue = idTokenValue
             case (.none, .none):
-                expirationDoubleValue = 0
+                expirationDoubleValue = Date().timeIntervalSince1970
             }
 
-            self.expiration = Date().addingTimeInterval(TimeInterval((expirationDoubleValue ?? 0)))
+            self.expiration = Date(timeIntervalSince1970: TimeInterval(expirationDoubleValue))
         }
     }
     
