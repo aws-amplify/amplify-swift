@@ -31,9 +31,9 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
 
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL, authConfiguration: config!)
 
-        XCTAssertEqual(interceptorConfig.amplifyInterceptors.count, 1)
+        XCTAssertEqual(interceptorConfig.preludeInterceptors.count, 1)
         XCTAssertEqual(interceptorConfig.interceptors.count, 0)
-        XCTAssertEqual(interceptorConfig.checksumInterceptors.count, 0)
+        XCTAssertEqual(interceptorConfig.postludeInterceptors.count, 0)
     }
 
     /// Given: an AWSAPIEndpointInterceptors
@@ -45,9 +45,9 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL, authConfiguration: config!)
         interceptorConfig.addInterceptor(CustomInterceptor())
 
-        XCTAssertEqual(interceptorConfig.amplifyInterceptors.count, 1)
+        XCTAssertEqual(interceptorConfig.preludeInterceptors.count, 1)
         XCTAssertEqual(interceptorConfig.interceptors.count, 1)
-        XCTAssertEqual(interceptorConfig.checksumInterceptors.count, 0)
+        XCTAssertEqual(interceptorConfig.postludeInterceptors.count, 0)
     }
 
     func testaddMultipleAuthInterceptors() throws {
@@ -72,12 +72,12 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,
                                                             authConfiguration: userPoolConfig)
 
-        XCTAssertEqual(interceptorConfig.amplifyInterceptors.count, 2)
+        XCTAssertEqual(interceptorConfig.preludeInterceptors.count, 2)
         XCTAssertEqual(interceptorConfig.interceptors.count, 0)
-        XCTAssertEqual(interceptorConfig.checksumInterceptors.count, 1)
-        XCTAssertNotNil(interceptorConfig.amplifyInterceptors[0] as? APIKeyURLRequestInterceptor)
-        XCTAssertNotNil(interceptorConfig.amplifyInterceptors[1] as? AuthTokenURLRequestInterceptor)
-        XCTAssertNotNil(interceptorConfig.checksumInterceptors[0] as? IAMURLRequestInterceptor)
+        XCTAssertEqual(interceptorConfig.postludeInterceptors.count, 1)
+        XCTAssertNotNil(interceptorConfig.preludeInterceptors[0] as? APIKeyURLRequestInterceptor)
+        XCTAssertNotNil(interceptorConfig.preludeInterceptors[1] as? AuthTokenURLRequestInterceptor)
+        XCTAssertNotNil(interceptorConfig.postludeInterceptors[0] as? IAMURLRequestInterceptor)
     }
 
     // MARK: - Test Helpers

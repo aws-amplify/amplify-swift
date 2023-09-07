@@ -40,69 +40,71 @@ final public class AWSRESTOperation: AmplifyOperation<
 
     /// The work to execute for this operation
     override public func main() {
+        Task { await mainAsync() }
+    }
+
+    private func mainAsync() async {
         if isCancelled {
             finish()
             return
         }
 
-        Task {
-            let urlRequest = validateRequest(request).flatMap(buildURLRequest(from:))
-            let finalRequest = await getEndpointConfig(from: request).flatMapAsync { endpointConfig in
-                let interceptorConfig = pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
-                let amplifyInterceptors = interceptorConfig?.amplifyInterceptors ?? []
-                let customerInterceptors = interceptorConfig?.interceptors ?? []
-                let checksumInterceptors = interceptorConfig?.checksumInterceptors ?? []
+        let urlRequest = validateRequest(request).flatMap(buildURLRequest(from:))
+        let finalRequest = await getEndpointConfig(from: request).flatMapAsync { endpointConfig in
+            let interceptorConfig = pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            let preludeInterceptors = interceptorConfig?.preludeInterceptors ?? []
+            let customerInterceptors = interceptorConfig?.interceptors ?? []
+            let postludeInterceptors = interceptorConfig?.postludeInterceptors ?? []
 
-                var finalResult = urlRequest
-                // apply amplify interceptors
-                for interceptor in amplifyInterceptors {
-                    finalResult = await finalResult.flatMapAsync { request in
-                        await applyInterceptor(interceptor, request: request)
-                    }
+            var finalResult = urlRequest
+            // apply prelude interceptors
+            for interceptor in preludeInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
                 }
-
-                // apply customer headers
-                finalResult = finalResult.map { urlRequest in
-                    var mutableRequest = urlRequest
-                    for (key, value) in request.headers ?? [:] {
-                        mutableRequest.setValue(value, forHTTPHeaderField: key)
-                    }
-                    return mutableRequest
-                }
-
-                // apply customer interceptors
-                for interceptor in customerInterceptors {
-                    finalResult = await finalResult.flatMapAsync { request in
-                        await applyInterceptor(interceptor, request: request)
-                    }
-                }
-
-                // apply checksum interceptor
-                for interceptor in checksumInterceptors {
-                    finalResult = await finalResult.flatMapAsync { request in
-                        await applyInterceptor(interceptor, request: request)
-                    }
-                }
-                return finalResult
             }
 
-            switch finalRequest {
-            case .success(let finalRequest):
-                if isCancelled {
-                    finish()
-                    return
+            // apply customize headers
+            finalResult = finalResult.map { urlRequest in
+                var mutableRequest = urlRequest
+                for (key, value) in request.headers ?? [:] {
+                    mutableRequest.setValue(value, forHTTPHeaderField: key)
                 }
+                return mutableRequest
+            }
 
-                // Begin network task
-                Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
-                let task = session.dataTaskBehavior(with: finalRequest)
-                mapper.addPair(operation: self, task: task)
-                task.resume()
-            case .failure(let error):
-                Amplify.API.log.debug("Dispatching error \(error)")
-                dispatch(result: .failure(error))
+            // apply customer interceptors
+            for interceptor in customerInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
+            }
+
+            // apply postlude interceptor
+            for interceptor in postludeInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
+            }
+            return finalResult
+        }
+
+        switch finalRequest {
+        case .success(let finalRequest):
+            if isCancelled {
                 finish()
+                return
             }
+
+            // Begin network task
+            Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
+            let task = session.dataTaskBehavior(with: finalRequest)
+            mapper.addPair(operation: self, task: task)
+            task.resume()
+        case .failure(let error):
+            Amplify.API.log.debug("Dispatching error \(error)")
+            dispatch(result: .failure(error))
+            finish()
         }
     }
 
