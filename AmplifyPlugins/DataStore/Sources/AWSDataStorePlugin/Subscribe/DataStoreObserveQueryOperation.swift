@@ -239,7 +239,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                     .byTimeOrCount(
                         self.serialQueue,
                         self.itemsChangedPeriodicPublishTimeInSeconds,
-                        shouldBatchDuringSync ? self.itemsChangedMaxSize : 1
+                        self.shouldBatchDuringSync ? self.itemsChangedMaxSize : 1
                     )
                 )
                 .sink(receiveCompletion: self.onReceiveCompletion(completed:),
