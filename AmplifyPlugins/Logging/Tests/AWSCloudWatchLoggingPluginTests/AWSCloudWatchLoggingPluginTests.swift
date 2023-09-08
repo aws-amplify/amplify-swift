@@ -43,6 +43,21 @@ final class AWSCloudWatchLoggingPluginTests: XCTestCase {
 
         let defaultLogger = plugin.logger(forNamespace: "test")
         XCTAssertEqual(defaultLogger.logLevel.rawValue, 0)
-
+    }
+    
+    /// Given: a AWSCloudWatchLoggingPlugin
+    /// When: a logger is requested with a namespace
+    /// Then: the namespace is set in the logger session controller
+    func testPluginLoggerNamespace() throws {
+        let configuration = AWSCloudWatchLoggingPluginConfiguration(logGroupName: "testLogGroup", region: "us-east-1")
+        let plugin = AWSCloudWatchLoggingPlugin(loggingPluginConfiguration: configuration)
+        _ = plugin.logger(forCategory: "Test")
+        var sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Test", logLevel: .error)
+        XCTAssertEqual(sessionController?.namespace, nil)
+        
+        _ = plugin.logger(forCategory: "Test2", forNamespace: "test2")
+        sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Test2", logLevel: .error)
+        XCTAssertEqual(sessionController?.namespace, "test2")
+        
     }
 }
