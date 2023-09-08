@@ -211,6 +211,13 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             })
     }
 
+    /// If the `storageEngine` does sync from remote, the initial batch should
+    /// collect snapshots based on time / snapshots received.
+    /// If it doesn't, it should publish each snapshot without waiting.
+    private var shouldBatchDuringSync: Bool {
+        (storageEngine as? StorageEngine)?.syncsFromRemote ?? true
+    }
+
     // MARK: Observe item changes
 
     /// Subscribe to item changes with two subscribers (During Sync and After Sync). During Sync, the items are filtered
@@ -222,12 +229,19 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     func subscribeToItemChanges() {
         serialQueue.async { [weak self] in
             guard let self = self else { return }
+
             self.batchItemsChangedSink = self.dataStorePublisher.publisher
                 .filter { _ in !self.dispatchedModelSyncedEvent.get() }
                 .filter(self.filterByModelName(mutationEvent:))
                 .filter(self.filterByPredicateMatch(mutationEvent:))
                 .handleEvents(receiveOutput: self.onItemChangeDuringSync(mutationEvent:) )
-                .collect(.byTimeOrCount(self.serialQueue, self.itemsChangedPeriodicPublishTimeInSeconds, self.itemsChangedMaxSize))
+                .collect(
+                    .byTimeOrCount(
+                        self.serialQueue,
+                        self.itemsChangedPeriodicPublishTimeInSeconds,
+                        shouldBatchDuringSync ? self.itemsChangedMaxSize : 1
+                    )
+                )
                 .sink(receiveCompletion: self.onReceiveCompletion(completed:),
                       receiveValue: self.onItemsChangeDuringSync(mutationEvents:))
             
