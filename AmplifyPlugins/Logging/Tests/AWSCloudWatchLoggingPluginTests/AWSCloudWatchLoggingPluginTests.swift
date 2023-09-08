@@ -51,13 +51,13 @@ final class AWSCloudWatchLoggingPluginTests: XCTestCase {
     func testPluginLoggerNamespace() throws {
         let configuration = AWSCloudWatchLoggingPluginConfiguration(logGroupName: "testLogGroup", region: "us-east-1")
         let plugin = AWSCloudWatchLoggingPlugin(loggingPluginConfiguration: configuration)
-        _ = plugin.logger(forCategory: "Test")
-        var sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Test", logLevel: .error)
+        _ = plugin.logger(forCategory: "Category1")
+        var sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Category1", logLevel: .error)
         XCTAssertEqual(sessionController?.namespace, nil)
         
-        _ = plugin.logger(forCategory: "Test2", forNamespace: "test2")
-        sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Test2", logLevel: .error)
-        XCTAssertEqual(sessionController?.namespace, "test2")
+        _ = plugin.logger(forCategory: "Category2", forNamespace: "testNamespace")
+        sessionController = plugin.loggingClient.getLoggerSessionController(forCategory: "Category2", logLevel: .error)
+        XCTAssertEqual(sessionController?.namespace, "testNamespace")
         
     }
 }
