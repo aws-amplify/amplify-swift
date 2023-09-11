@@ -105,6 +105,14 @@ final class AWSCloudWatchLoggingCategoryClient {
             loggersByKey = [:]
         }
     }
+    
+    func getLoggerSessionController(forCategory category: String,  logLevel: LogLevel) -> AWSCloudWatchLoggingSessionController? {
+        let key = LoggerKey(category: category, logLevel: logLevel)
+        if let existing = loggersByKey[key] {
+            return existing
+        }
+        return nil
+    }
 }
 
 extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {

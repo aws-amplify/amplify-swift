@@ -20,13 +20,13 @@ import Network
 final class AWSCloudWatchLoggingSessionController {
     
     var client: CloudWatchLogsClientProtocol?
+    let namespace: String?
     private let logGroupName: String
     private let region: String
     private let localStoreMaxSizeInMB: Int
     private let credentialsProvider: CredentialsProvider
     private let authentication: AuthCategoryUserBehavior
     private let category: String
-    private let namespace: String?
     private var session: AWSCloudWatchLoggingSession?
     private var consumer: LogBatchConsumer?
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
