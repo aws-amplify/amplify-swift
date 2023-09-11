@@ -24,7 +24,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         await uploadData(key: key, dataString: key)
 
     #if os(iOS)
-        let expires = 10
+        let expires = 20
     #else
         let expires = 1
     #endif
@@ -69,7 +69,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         task.resume()
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
-        try await Task.sleep(seconds: 15)
+        try await Task.sleep(seconds: 30)
     #else
         try await Task.sleep(seconds: 2)
     #endif

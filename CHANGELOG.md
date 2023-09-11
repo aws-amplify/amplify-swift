@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.17.1 (2023-09-05)
+
+### Bug Fixes
+
+- **logging**: create log file if it doesn't exist (#3202)
+- **PushNotifications**: Adding missing escape hatch to the plugin (#3201)
+
 ## 2.17.0 (2023-08-31)
 
 ### Features
