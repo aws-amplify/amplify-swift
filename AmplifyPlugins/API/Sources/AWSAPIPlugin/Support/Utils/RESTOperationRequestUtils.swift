@@ -52,19 +52,13 @@ final class RESTOperationRequestUtils {
     }
 
     // Construct a request specific to the `RESTOperationType`
-    static func constructURLRequest(with url: URL,
-                                    operationType: RESTOperationType,
-                                    headers: [String: String]?,
-                                    requestPayload: Data?) -> URLRequest {
-
+    static func constructURLRequest(
+        with url: URL,
+        operationType: RESTOperationType,
+        requestPayload: Data?
+    ) -> URLRequest {
         var baseRequest = URLRequest(url: url)
-        var requestHeaders = ["content-type": "application/json"]
-        if let headers = headers {
-            for (key, value) in headers {
-                requestHeaders[key] = value
-            }
-        }
-        baseRequest.allHTTPHeaderFields = requestHeaders
+        baseRequest.setValue("application/json", forHTTPHeaderField: "content-type")
         baseRequest.httpMethod = operationType.rawValue
         baseRequest.httpBody = requestPayload
         return baseRequest

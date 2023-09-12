@@ -22,8 +22,8 @@ class GraphQLOperationRequestUtils {
     // Construct a graphQL specific HTTP POST request with the request payload
     static func constructRequest(with baseUrl: URL, requestPayload: Data) -> URLRequest {
         var baseRequest = URLRequest(url: baseUrl)
-        let headers = ["content-type": "application/json", "Cache-Control": "no-store"]
-        baseRequest.allHTTPHeaderFields = headers
+        baseRequest.setValue("application/json", forHTTPHeaderField: "content-type")
+        baseRequest.setValue("no-store", forHTTPHeaderField: "cache-control")
         baseRequest.httpMethod = "POST"
         baseRequest.httpBody = requestPayload
 

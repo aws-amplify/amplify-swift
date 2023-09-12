@@ -36,7 +36,6 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
             throw APIError.unknown("Could not get host from mutable request", "")
         }
 
-        request.setValue(URLRequestConstants.ContentType.applicationJson, forHTTPHeaderField: URLRequestConstants.Header.contentType)
         request.setValue(host, forHTTPHeaderField: "host")
         request.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 

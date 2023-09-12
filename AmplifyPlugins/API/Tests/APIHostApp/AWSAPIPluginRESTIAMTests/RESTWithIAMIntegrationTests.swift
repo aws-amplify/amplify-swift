@@ -159,6 +159,24 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             XCTAssertEqual(statusCode, 404)
         }
     }
+
+    func testRestRequest_withCustomizeHeaders_succefullyOverride() async throws {
+        let request = RESTRequest(path: "/items", headers: ["Content-Type": "text/plain"])
+        do {
+            _ = try await Amplify.API.get(request: request)
+        } catch {
+            guard let apiError = error as? APIError else {
+                XCTFail("Error should be APIError")
+                return
+            }
+            guard case let .httpStatusError(statusCode, _) = apiError else {
+                XCTFail("Error should be httpStatusError")
+                return
+            }
+
+            XCTAssertEqual(statusCode, 403)
+        }
+    }
 }
 
 extension RESTWithIAMIntegrationTests: DefaultLogger { }
