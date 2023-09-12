@@ -54,6 +54,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                      httpClientEngineProxy: HttpClientEngineProxy? = nil,
                      storageConfiguration: StorageConfiguration = .default,
                      storageTransferDatabase: StorageTransferDatabase = .default,
+                     fileSystem: FileSystem = .default,
                      sessionConfiguration: URLSessionConfiguration? = nil,
                      delegateQueue: OperationQueue? = nil,
                      logger: Logger = storageLogger) throws {
@@ -97,7 +98,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.init(authService: authService,
                   storageConfiguration: storageConfiguration,
                   storageTransferDatabase: storageTransferDatabase,
+                  fileSystem: fileSystem,
                   sessionConfiguration: _sessionConfiguration,
+                  logger: logger,
                   s3Client: s3Client,
                   preSignedURLBuilder: preSignedURLBuilder,
                   awsS3: awsS3,
