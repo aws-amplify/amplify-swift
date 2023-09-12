@@ -160,8 +160,8 @@ final public class AWSRESTOperation: AmplifyOperation<
         } catch {
             return .failure(
                 APIError.operationError(
-                    "Failed to intercept request fully.",
-                    "Something wrong with the interceptor",
+                    "Failed to intercept request with \(type(of: interceptor)). Error message: \(error.localizedDescription).",
+                    "See underlying error for more details",
                     error
                 )
             )

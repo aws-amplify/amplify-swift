@@ -9,6 +9,14 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
+/// The order of interceptor decoration is as follows:
+/// 1. **prelude interceptors**
+/// 2. **cutomize headers**
+/// 3. **customer interceptors**
+/// 4. **postlude interceptors**
+///
+/// **Prelude** and **postlude** interceptors are used by library maintainers to
+/// integrate essential functionality for a variety of authentication types.
 struct AWSAPIEndpointInterceptors {
     // API name
     let apiEndpointName: APIEndpointName
@@ -16,11 +24,6 @@ struct AWSAPIEndpointInterceptors {
     let apiAuthProviderFactory: APIAuthProviderFactory
     let authService: AWSAuthServiceBehavior?
 
-    /// The order of interceptor decoration is as follows:
-    /// 1. **prelude interceptors**: append default auth info
-    /// 2. **cutomize headers**: headers provided when constructing the request
-    /// 3. **customer interceptors**: customer defined interceptors
-    /// 4. **postlude interceptors**: calculate checksums, signatures
     var preludeInterceptors: [URLRequestInterceptor] = []
 
     var interceptors: [URLRequestInterceptor] = []
