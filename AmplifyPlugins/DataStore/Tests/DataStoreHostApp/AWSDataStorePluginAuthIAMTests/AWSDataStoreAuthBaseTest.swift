@@ -23,46 +23,77 @@ struct TestUser {
     let password: String
 }
 
-class AuthRecorderInterceptor: URLRequestInterceptor {
-    let awsAuthService: AWSAuthService = AWSAuthService()
-    var consumedAuthTypes: Set<AWSAuthorizationType> = []
-    private let accessQueue = DispatchQueue(label: "com.amazon.AuthRecorderInterceptor.consumedAuthTypes")
+class DataStoreAuthBaseTestURLSessionFactory: URLSessionBehaviorFactory {
+    static let testIdHeaderKey = "x-amplify-test"
 
-    private func recordAuthType(_ authType: AWSAuthorizationType) {
-        accessQueue.async {
-            self.consumedAuthTypes.insert(authType)
+    static let subject = PassthroughSubject<(String, Set<AWSAuthorizationType>), Never>()
+
+    class Sniffer: URLProtocol {
+
+        override class func canInit(with request: URLRequest) -> Bool {
+            guard let headers = request.allHTTPHeaderFields else {
+                fatalError("No headers found in request \(request)")
+            }
+
+            guard let testId = headers[DataStoreAuthBaseTestURLSessionFactory.testIdHeaderKey] else {
+                return false
+            }
+
+            var result: Set<AWSAuthorizationType> = []
+            let authHeaderValue = headers["Authorization"]
+            let apiKeyHeaderValue = headers["x-api-key"]
+
+            if apiKeyHeaderValue != nil {
+                result.insert(.apiKey)
+            }
+
+            if let authHeaderValue = authHeaderValue,
+               case let .success(claims) = AWSAuthService().getTokenClaims(tokenString: authHeaderValue),
+               let cognitoIss = claims["iss"] as? String, cognitoIss.contains("cognito") {
+                result.insert(.amazonCognitoUserPools)
+            }
+
+            if let authHeaderValue = authHeaderValue,
+               authHeaderValue.starts(with: "AWS4-HMAC-SHA256") {
+                result.insert(.awsIAM)
+            }
+
+            DataStoreAuthBaseTestURLSessionFactory.subject.send((testId, result))
+            return false
+        }
+
+    }
+
+    class Interceptor: URLRequestInterceptor {
+        let testId: String?
+
+        init(testId: String?) {
+            self.testId = testId
+        }
+
+        func intercept(_ request: URLRequest) async throws -> URLRequest {
+            if let testId {
+                var mutableRequest = request
+                mutableRequest.setValue(testId, forHTTPHeaderField: DataStoreAuthBaseTestURLSessionFactory.testIdHeaderKey)
+                return mutableRequest
+            }
+            return request
         }
     }
 
-    func intercept(_ request: URLRequest) throws -> URLRequest {
-        guard let headers = request.allHTTPHeaderFields else {
-            fatalError("No headers found in request \(request)")
-        }
+    func makeSession(withDelegate delegate: URLSessionBehaviorDelegate?) -> URLSessionBehavior {
+        let urlSessionDelegate = delegate?.asURLSessionDelegate
+        let configuration = URLSessionConfiguration.default
+        configuration.tlsMinimumSupportedProtocolVersion = .TLSv12
+        configuration.tlsMaximumSupportedProtocolVersion = .TLSv13
+        configuration.protocolClasses?.insert(Sniffer.self, at: 0)
 
-        let authHeaderValue = headers["Authorization"]
-        let apiKeyHeaderValue = headers["x-api-key"]
-
-        if apiKeyHeaderValue != nil {
-            recordAuthType(.apiKey)
-        }
-
-        if let authHeaderValue = authHeaderValue,
-           case let .success(claims) = awsAuthService.getTokenClaims(tokenString: authHeaderValue),
-           let cognitoIss = claims["iss"] as? String, cognitoIss.contains("cognito") {
-            recordAuthType(.amazonCognitoUserPools)
-        }
-
-        if let authHeaderValue = authHeaderValue,
-           authHeaderValue.starts(with: "AWS4-HMAC-SHA256") {
-            recordAuthType(.awsIAM)
-        }
-
-        return request
+        let session = URLSession(configuration: configuration,
+                                 delegate: urlSessionDelegate,
+                                 delegateQueue: nil)
+        return AmplifyURLSession(session: session)
     }
 
-    func reset() {
-        consumedAuthTypes = []
-    }
 }
 
 class AWSDataStoreAuthBaseTest: XCTestCase {
@@ -71,7 +102,6 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     var amplifyConfig: AmplifyConfiguration!
     var user1: TestUser?
     var user2: TestUser?
-    var authRecorderInterceptor: AuthRecorderInterceptor!
 
     override func setUp() {
         continueAfterFailure = false
@@ -138,8 +168,6 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             self.user1 = TestUser(username: user1, password: passwordUser1)
             self.user2 = TestUser(username: user2, password: passwordUser2)
 
-            authRecorderInterceptor = AuthRecorderInterceptor()
-
             amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFile)
 
         } catch {
@@ -161,7 +189,8 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     func setup(
         withModels models: AmplifyModelRegistration,
         testType: DataStoreAuthTestType,
-        apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()) }
+        testId: String? = nil,
+        apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin(sessionFactory: DataStoreAuthBaseTestURLSessionFactory()) }
     ) async {
         do {
             setupCredentials(forAuthStrategy: testType)
@@ -182,7 +211,10 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
             // register auth recorder interceptor
             let apiName = try apiEndpointName()
-            try apiPlugin.add(interceptor: authRecorderInterceptor, for: apiName)
+            try apiPlugin.add(
+                interceptor: DataStoreAuthBaseTestURLSessionFactory.Interceptor(testId: testId),
+                for: apiName
+            )
 
             await signOut()
         } catch {
@@ -486,13 +518,27 @@ extension AWSDataStoreAuthBaseTest {
         await waitForExpectations([expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
     }
 
-    func assertUsedAuthTypes(_ authTypes: [AWSAuthorizationType],
-                             file: StaticString = #file,
-                             line: UInt = #line) {
-        XCTAssertEqual(authRecorderInterceptor.consumedAuthTypes,
-                       Set(authTypes),
-                       file: file,
-                       line: line)
+    func assertUsedAuthTypes(
+        testId: String,
+        authTypes: [AWSAuthorizationType],
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> XCTestExpectation {
+        let expectation = expectation(description: "Should have expected auth types")
+        expectation.assertForOverFulfill = false
+        DataStoreAuthBaseTestURLSessionFactory.subject
+        .filter { $0.0 == testId }
+        .map { $0.1 }
+        .collect(.byTime(DispatchQueue.global(), .milliseconds(3500)))
+        .sink {
+            let result = $0.reduce(Set<AWSAuthorizationType>()) { partialResult, data in
+                partialResult.union(data)
+            }
+            XCTAssertEqual(result, Set(authTypes), file: file, line: line)
+            expectation.fulfill()
+        }
+        .store(in: &requests)
+        return expectation
     }
 }
 
