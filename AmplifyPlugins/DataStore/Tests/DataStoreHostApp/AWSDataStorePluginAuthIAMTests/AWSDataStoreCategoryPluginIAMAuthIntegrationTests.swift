@@ -16,7 +16,7 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
     func testIAMAllowPrivate() async {
-        let testId = UUID().uuidString;
+        let testId = UUID().uuidString
         await setup(withModels: IAMPrivateModelRegistration(),
                     testType: .defaultAuthIAM,
                     testId: testId)
@@ -50,7 +50,7 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for unauthenticated users
     func testIAMAllowPublic() async {
-        let testId = UUID().uuidString;
+        let testId = UUID().uuidString
         await setup(withModels: IAMPublicModelRegistration(),
                     testType: .defaultAuthIAM,
                     testId: testId)
