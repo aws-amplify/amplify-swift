@@ -16,14 +16,18 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
     func testIAMAllowPrivate() async {
+        let testId = UUID().uuidString;
         await setup(withModels: IAMPrivateModelRegistration(),
-              testType: .defaultAuthIAM)
+                    testType: .defaultAuthIAM,
+                    testId: testId)
 
         await signIn(user: user1)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpectation = assertUsedAuthTypes(testId: testId, authTypes: [.awsIAM])
 
         // Query
         await assertQuerySuccess(modelType: TodoIAMPrivate.self,
@@ -38,20 +42,24 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.awsIAM])
+        await fulfillment(of: [authTypeExpectation], timeout: 5)
     }
 
     /// Given: a guest user,  a model with `allow public` auth rule with IAM as provider
     /// When: DataStore query/mutation operations are sent with IAM
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for unauthenticated users
-    func testIAMAllowPublic() async{
+    func testIAMAllowPublic() async {
+        let testId = UUID().uuidString;
         await setup(withModels: IAMPublicModelRegistration(),
-              testType: .defaultAuthIAM)
+                    testType: .defaultAuthIAM,
+                    testId: testId)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpectation = assertUsedAuthTypes(testId: testId, authTypes: [.awsIAM])
 
         // Query
         await assertQuerySuccess(modelType: TodoIAMPublic.self,
@@ -66,7 +74,7 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.awsIAM])
+        await fulfillment(of: [authTypeExpectation], timeout: 5)
     }
 }
 
