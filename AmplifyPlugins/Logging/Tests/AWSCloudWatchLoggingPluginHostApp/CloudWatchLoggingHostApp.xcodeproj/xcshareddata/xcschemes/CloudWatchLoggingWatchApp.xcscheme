@@ -34,7 +34,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "733390F12AAB8AF0006E3625"
+               BlueprintIdentifier = "73578A312AAB94D100505FB3"
                BuildableName = "AWSCloudWatchLoggingPluginIntegrationTestsWatch.xctest"
                BlueprintName = "AWSCloudWatchLoggingPluginIntegrationTestsWatch"
                ReferencedContainer = "container:CloudWatchLoggingHostApp.xcodeproj">
