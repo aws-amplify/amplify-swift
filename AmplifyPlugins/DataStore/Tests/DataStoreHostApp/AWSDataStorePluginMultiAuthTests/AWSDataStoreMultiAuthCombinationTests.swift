@@ -18,7 +18,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// Then: DataStore is successfully initialized.
     func testDataStoreReadyState() async {
         await setup(withModels: PrivatePublicComboModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -58,14 +58,17 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests f
     ///   or PrivatePublicComboUPPost are sent with IAM auth for authenticated users.
     func testOperationsForPrivatePublicComboUPPost() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePublicComboModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
 
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.amazonCognitoUserPools])
         // Query
         await assertQuerySuccess(modelType: PrivatePublicComboUPPost.self,
                            expectations, onFailure: { error in
@@ -78,7 +81,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.apiKey, .amazonCognitoUserPools])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 
     /// Given: a user signed in with API key
@@ -87,8 +90,12 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests
     ///   for PrivatePublicComboAPIPost are sent with API key auth for authenticated users.
     func testOperationsForPrivatePublicComboAPIPostAuthenticatedUser() async {
+        let testId = UUID().uuidString
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.apiKey, .amazonCognitoUserPools])
+
         await setup(withModels: PrivatePublicComboModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
@@ -101,12 +108,14 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
             XCTFail("Error query \(error)")
         })
 
+
         // Mutation
         await assertMutations(model: PrivatePublicComboAPIPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
-        assertUsedAuthTypes([.amazonCognitoUserPools, .apiKey])
+
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 
     /// Given: an unauthenticated user
@@ -118,14 +127,17 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     ///   PrivatePublicComboUPPost does not sync for unauthenticated users, but it does not block the other models
     ///   from syncing and DataStore getting to a “ready” state.
     func testOperationsForPrivatePublicComboAPIPost() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePublicComboModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
 
         let expectations = makeExpectations()
 
         // PrivatePublicComboUPPost won't sync for unauthenticated users
         await assertDataStoreReady(expectations, expectedModelSynced: 1)
 
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.apiKey])
         // Query
         await assertQuerySuccess(modelType: PrivatePublicComboAPIPost.self,
                            expectations, onFailure: { error in
@@ -137,7 +149,8 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
-        assertUsedAuthTypes([.apiKey])
+
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 }
 
