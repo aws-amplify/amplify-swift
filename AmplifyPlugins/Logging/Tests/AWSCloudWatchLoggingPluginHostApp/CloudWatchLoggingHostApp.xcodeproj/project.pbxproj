@@ -19,6 +19,9 @@
 		73607C792AA93466005105E6 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 73607C782AA93466005105E6 /* Amplify */; };
 		73607C7B2AA93469005105E6 /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 73607C7A2AA93469005105E6 /* AWSCloudWatchLoggingPlugin */; };
 		73607C7D2AA9346D005105E6 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 73607C7C2AA9346D005105E6 /* AWSCognitoAuthPlugin */; };
+		73C43A2E2AB4ED800010F1B3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 73C43A2D2AB4ED800010F1B3 /* Amplify */; };
+		73C43A302AB4ED850010F1B3 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 73C43A2F2AB4ED850010F1B3 /* AWSCognitoAuthPlugin */; };
+		73C43A322AB4ED8A0010F1B3 /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 73C43A312AB4ED8A0010F1B3 /* AWSCloudWatchLoggingPlugin */; };
 		97AD223228230B98001AFCC1 /* CloudWatchLoggingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223128230B98001AFCC1 /* CloudWatchLoggingApp.swift */; };
 		97AD223428230B98001AFCC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223328230B98001AFCC1 /* ContentView.swift */; };
 		97AD223628230B9A001AFCC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97AD223528230B9A001AFCC1 /* Assets.xcassets */; };
@@ -29,6 +32,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		734DE8972AB4E8260009198C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97AD222628230B98001AFCC1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97AD222D28230B98001AFCC1;
+			remoteInfo = CloudWatchLoggingHostApp;
+		};
 		73578A362AAB94D100505FB3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97AD222628230B98001AFCC1 /* Project object */;
@@ -76,6 +86,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73C43A2E2AB4ED800010F1B3 /* Amplify in Frameworks */,
+				73C43A302AB4ED850010F1B3 /* AWSCognitoAuthPlugin in Frameworks */,
+				73C43A322AB4ED8A0010F1B3 /* AWSCloudWatchLoggingPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,8 +216,14 @@
 			);
 			dependencies = (
 				73578A372AAB94D100505FB3 /* PBXTargetDependency */,
+				734DE8982AB4E8260009198C /* PBXTargetDependency */,
 			);
 			name = AWSCloudWatchLoggingPluginIntegrationTestsWatch;
+			packageProductDependencies = (
+				73C43A2D2AB4ED800010F1B3 /* Amplify */,
+				73C43A2F2AB4ED850010F1B3 /* AWSCognitoAuthPlugin */,
+				73C43A312AB4ED8A0010F1B3 /* AWSCloudWatchLoggingPlugin */,
+			);
 			productName = AWSCloudWatchLoggingPluginIntegrationTestsWatch;
 			productReference = 73578A322AAB94D100505FB3 /* AWSCloudWatchLoggingPluginIntegrationTestsWatch.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -395,6 +414,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		734DE8982AB4E8260009198C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97AD222D28230B98001AFCC1 /* CloudWatchLoggingHostApp */;
+			targetProxy = 734DE8972AB4E8260009198C /* PBXContainerItemProxy */;
+		};
 		73578A372AAB94D100505FB3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 733390D22AAB8A3B006E3625 /* CloudWatchLoggingWatchApp */;
@@ -411,12 +435,13 @@
 		733390E42AAB8A3C006E3625 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"CloudWatchLoggingWatchApp Watch App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CloudWatchLoggingWatchApp;
@@ -441,12 +466,13 @@
 		733390E52AAB8A3C006E3625 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"CloudWatchLoggingWatchApp Watch App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = CloudWatchLoggingWatchApp;
@@ -813,6 +839,18 @@
 		73607C7C2AA9346D005105E6 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
+		};
+		73C43A2D2AB4ED800010F1B3 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		73C43A2F2AB4ED850010F1B3 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		73C43A312AB4ED8A0010F1B3 /* AWSCloudWatchLoggingPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCloudWatchLoggingPlugin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
