@@ -32,6 +32,8 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var httpClientEngineProxy: HttpClientEngineProxy?
 
+    // var authRuntimeHandlers: AuthRuntimeBehavior
+    
     @_spi(InternalAmplifyConfiguration)
     internal(set) public var jsonConfiguration: JSONValue?
 
@@ -39,8 +41,17 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"
     }
+        
+    /// Closure to retrieve client metadata used during credentials refresh.
+    let clientMetadataOnCredentialsRefresh: ((SignedInDataOnRefresh) async -> [String: String])?
 
     /// Instantiates an instance of the AWSCognitoAuthPlugin.
-    public init() {
+    public init(clientMetadataOnCredentialsRefresh: ((SignedInDataOnRefresh) async -> [String: String])? = nil) {
+        self.clientMetadataOnCredentialsRefresh = clientMetadataOnCredentialsRefresh
     }
+}
+
+public struct SignedInDataOnRefresh {
+    let userId: String
+    let username: String
 }
