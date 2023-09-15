@@ -164,7 +164,16 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             allMessages.joined(separator: "\n"),
             underlyingError
         )
-        return .failure(syncError)
+        
+        // send success if atleast one model succeeded
+        let syncableModelsCount = ModelRegistry.modelSchemas.filter { $0.isSyncable }.count
+        if syncableModelsCount == syncErrors.count {
+            return .failure(syncError)
+        } else {
+            self.log.verbose("\(#function) Atleast one model sync succeeded. Sending completion result as .success with error: \(syncError)")
+            return .successfulVoid
+        }
+        
     }
 
     private func dispatchSyncQueriesStarted(for modelNames: [String]) {
