@@ -72,7 +72,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     }
     
     public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
-        return loggingClient.logger(forCategory: category)
+        return loggingClient.logger(forCategory: category, forNamespace: namespace)
     }
     
     /// enable plugin

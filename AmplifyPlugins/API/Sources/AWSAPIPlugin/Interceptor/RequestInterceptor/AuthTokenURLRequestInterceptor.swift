@@ -32,9 +32,7 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
 
         mutableRequest.setValue(amzDate,
                                 forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
-        mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson,
-                                forHTTPHeaderField: URLRequestConstants.Header.contentType)
-        mutableRequest.setValue(userAgent,
+        mutableRequest.addValue(userAgent,
                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
         
         let token: String

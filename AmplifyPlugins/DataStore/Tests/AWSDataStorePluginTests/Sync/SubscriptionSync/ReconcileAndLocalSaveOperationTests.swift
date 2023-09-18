@@ -832,11 +832,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testApplyRemoteModels_saveFail() throws {
-        if skipBrokenTests {
-            throw XCTSkip("TODO: fix this test")
-        }
-        
+    func testApplyRemoteModels_skipFailedOperations() throws {
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
@@ -846,7 +842,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
                                                                 .delete(anyPostMutationSync)]
-        let expect = expectation(description: "should fail")
+        let expect = expectation(description: "should complete")
         let expectedDeleteSuccess = expectation(description: "delete should be successful")
         expectedDeleteSuccess.expectedFulfillmentCount = 3 // 3 delete depositions
         let expectedDropped = expectation(description: "mutationEventDropped received")
@@ -881,12 +877,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
-                    expect.fulfill()
+                    XCTFail("Unexpected failure completion")
                 case .finished:
-                    XCTFail("Unexpected successfully completion")
+                    expect.fulfill()
                 }
             }, receiveValue: { _ in
-                XCTFail("Unexpected value received")
+
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
     }
@@ -949,20 +945,18 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_deleteFail() throws {
-        if skipBrokenTests {
-            throw XCTSkip("TODO: fix this test")
-        }
-        
-        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync)]
-        let expect = expectation(description: "should fail")
+        let dispositions: [RemoteSyncReconciler.Disposition] = [
+            .create(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync)
+        ]
+        let expect = expectation(description: "should success")
         let expectedCreateAndUpdateSuccess = expectation(description: "create and updates should be successful")
         expectedCreateAndUpdateSuccess.expectedFulfillmentCount = 6 // 3 creates and 3 updates
         let expectedDropped = expectation(description: "mutationEventDropped received")
@@ -997,31 +991,29 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
-                    expect.fulfill()
+                    XCTFail("Unexpected failure completion")
                 case .finished:
-                    XCTFail("Unexpected successfully completion")
+                    expect.fulfill()
                 }
             }, receiveValue: { _ in
-                XCTFail("Unexpected value received")
+
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
     }
 
     func testApplyRemoteModels_saveMetadataFail() throws {
-        if skipBrokenTests {
-            throw XCTSkip("TODO: fix this test")
-        }
-        
-        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync)]
-        let expect = expectation(description: "should fail")
+        let dispositions: [RemoteSyncReconciler.Disposition] = [
+            .create(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync)
+        ]
+        let expect = expectation(description: "should success")
         let expectedDropped = expectation(description: "mutationEventDropped received")
         expectedDropped.expectedFulfillmentCount = 9 // 1 for each of the 9 dispositions
         let saveResponder = SaveUntypedModelResponder { _, completion in
@@ -1053,12 +1045,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
-                    expect.fulfill()
+                    XCTFail("Unexpected failure completion")
                 case .finished:
-                    XCTFail("Unexpected successfully completion")
+                    expect.fulfill()
                 }
             }, receiveValue: { _ in
-                XCTFail("Unexpected value received")
+
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
     }
