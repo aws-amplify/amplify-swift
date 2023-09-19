@@ -12,6 +12,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
+@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -92,9 +93,18 @@ extension AWSCognitoAuthPlugin {
             )
 
             if var httpClientEngineProxy = httpClientEngineProxy {
-                let sdkEngine = configuration.httpClientEngine
-                httpClientEngineProxy.target = sdkEngine
+                let httpClientEngine: HttpClientEngine
+                #if os(watchOS) || os(tvOS)
+                httpClientEngine = FoundationHTTPClient()
+                #else
+                httpClientEngine = configuration.httpClientEngine
+                #endif
+                httpClientEngineProxy.target = httpClientEngine
                 configuration.httpClientEngine = httpClientEngineProxy
+            } else {
+                #if os(watchOS) || os(tvOS)
+                configuration.httpClientEngine = FoundationHTTPClient()
+                #endif
             }
 
             return CognitoIdentityProviderClient(config: configuration)
@@ -110,6 +120,11 @@ extension AWSCognitoAuthPlugin {
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: identityPoolConfig.region
             )
+
+            #if os(watchOS) || os(tvOS)
+            configuration.httpClientEngine = FoundationHTTPClient()
+            #endif
+
             return CognitoIdentityClient(config: configuration)
         default:
             fatalError()
