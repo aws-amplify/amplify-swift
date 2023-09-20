@@ -6,6 +6,7 @@
 //
 
 import AWSPluginsCore
+@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
 import Amplify
 import Combine
 import Foundation
@@ -107,6 +108,12 @@ final class AWSCloudWatchLoggingSessionController {
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: region
             )
+
+            #if os(watchOS) || os(tvOS)
+            // Use Foundation instead of CRT for networking on watchOS and tvOS
+            configuration.httpClientEngine = FoundationHTTPClient()
+            #endif
+
             self.client = CloudWatchLogsClient(config: configuration)
         }
 
