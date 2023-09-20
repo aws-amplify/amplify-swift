@@ -22,7 +22,7 @@ public struct FoundationClientEngine: HttpClientEngine {
             throw FoundationClientEngineError.invalidURLResponse(urlRequest: response)
         }
 
-        let httpResponse = HttpResponse(
+        let httpResponse = try HttpResponse(
             httpURLResponse: httpURLResponse,
             data: data
         )
