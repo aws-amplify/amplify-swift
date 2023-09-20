@@ -10,6 +10,8 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSPluginsCore
+@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
+import ClientRuntime
 
 /// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
@@ -61,9 +63,20 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             credentialsProvider: credentialsProvider,
             region: region,
             signingRegion: region)
+
         if var proxy = httpClientEngineProxy {
-            proxy.target = clientConfig.httpClientEngine
+            let httpClientEngine: HttpClientEngine
+            #if os(watchOS) || os(tvOS)
+            httpClientEngine = FoundationHTTPClient()
+            #else
+            httpClientEngine = clientConfig.httpClientEngine
+            #endif
+            proxy.target = httpClientEngine
             clientConfig.httpClientEngine = proxy
+        } else {
+            #if os(watchOS) || os(tvOS)
+            clientConfig.httpClientEngine = FoundationHTTPClient()
+            #endif
         }
 
         let s3Client = S3Client(config: clientConfig)
