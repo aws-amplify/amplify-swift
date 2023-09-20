@@ -12,6 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
+@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
 import Foundation
 import ClientRuntime
 import AWSClientRuntime
@@ -37,30 +38,50 @@ class AWSPredictionsService {
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
+        #if os(watchOS) || os(tvOS)
+        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        translateClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        #endif
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
         let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
+        #if os(watchOS) || os(tvOS)
+        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        pollyClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        #endif
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
         let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
+        #if os(watchOS) || os(tvOS)
+        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        comprehendClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        #endif
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
         let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.identify.region
         )
+        #if os(watchOS) || os(tvOS)
+        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        rekognitionClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        #endif
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
         let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.identify.region
         )
+        #if os(watchOS) || os(tvOS)
+        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        textractClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        #endif
         let awsTextractClient = TextractClient(config: textractClientConfiguration)
 
         let awsTranscribeStreamingAdapter = AWSTranscribeStreamingAdapter(
