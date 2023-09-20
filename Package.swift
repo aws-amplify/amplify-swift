@@ -378,7 +378,6 @@ let loggingTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSCloudWatch", package: "aws-sdk-swift"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin"
