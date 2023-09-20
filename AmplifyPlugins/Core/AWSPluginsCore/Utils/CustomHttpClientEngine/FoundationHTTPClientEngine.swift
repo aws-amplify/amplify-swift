@@ -49,7 +49,7 @@ extension ClientRuntime.HttpResponse {
 
     convenience init(httpURLResponse: HTTPURLResponse, data: Data) {
         let headers = Self.headers(from: httpURLResponse.allHeaderFields)
-        let body = HttpBody.data(data)
+        let body = HttpBody.stream(ByteStream.from(data: data))
         // fix force unwrap
         let statusCode = HttpStatusCode(rawValue: httpURLResponse.statusCode)!
         self.init(headers: headers, body: body, statusCode: statusCode)
@@ -74,6 +74,8 @@ public struct FoundationHTTPClient: HttpClientEngine {
 
         return httpResponse
     }
+
+    public init() {}
 
     /// no-op
     func close() async {}
