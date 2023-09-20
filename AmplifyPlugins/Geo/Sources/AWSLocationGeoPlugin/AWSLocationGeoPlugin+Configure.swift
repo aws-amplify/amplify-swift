@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 import Amplify
 import AWSPluginsCore
-import Foundation
-
+@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
 import AWSLocation
 import AWSClientRuntime
 
@@ -34,6 +34,11 @@ extension AWSLocationGeoPlugin {
             credentialsProvider: credentialsProvider,
             frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
             region: region)
+
+        #if os(watchOS) || os(tvOS)
+        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        serviceConfiguration.httpClientEngine = FoundationHTTPClient()
+        #endif
 
         let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
