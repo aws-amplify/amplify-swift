@@ -8,7 +8,7 @@
 import AWSClientRuntime
 import AWSPluginsCore
 import AWSPinpoint
-@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
+@_spi(FoundationClientEngine) import AWSPluginsCore
 
 extension PinpointClient {
     convenience init(region: String, credentialsProvider: CredentialsProvider) throws {
@@ -19,7 +19,7 @@ extension PinpointClient {
         )
         #if os(watchOS) || os(tvOS)
         // Use Foundation instead of CRT for networking on watchOS and tvOS
-        configuration.httpClientEngine = FoundationHTTPClient()
+        configuration.httpClientEngine = FoundationClientEngine()
         #endif
         PinpointRequestsRegistry.shared.setCustomHttpEngine(on: configuration)
         self.init(config: configuration)

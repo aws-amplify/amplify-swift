@@ -9,8 +9,8 @@ import Foundation
 import ClientRuntime
 import Amplify
 
-@_spi(FoundationHTTPClientEngine)
-public struct FoundationHTTPClient: HttpClientEngine {
+@_spi(FoundationClientEngine)
+public struct FoundationClientEngine: HttpClientEngine {
     public func execute(request: ClientRuntime.SdkHttpRequest) async throws -> ClientRuntime.HttpResponse {
         let urlRequest = try URLRequest(sdkRequest: request)
 
@@ -19,7 +19,7 @@ public struct FoundationHTTPClient: HttpClientEngine {
             // This shouldn't be necessary because we're only making HTTP requests.
             // `URLResponse` should always be a `HTTPURLResponse`.
             // But to refrain from crashing consuming applications, we're throwing here.
-            throw FoundationHTTPClientError.invalidURLResponse(urlRequest: response)
+            throw FoundationClientEngineError.invalidURLResponse(urlRequest: response)
         }
 
         let httpResponse = HttpResponse(

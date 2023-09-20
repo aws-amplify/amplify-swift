@@ -12,7 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
-@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
+@_spi(FoundationClientEngine) import AWSPluginsCore
 import Foundation
 import ClientRuntime
 import AWSClientRuntime
@@ -40,7 +40,7 @@ class AWSPredictionsService {
         )
         #if os(watchOS) || os(tvOS)
         // Use Foundation instead of CRT for networking on watchOS and tvOS
-        translateClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        translateClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
@@ -50,7 +50,7 @@ class AWSPredictionsService {
         )
         #if os(watchOS) || os(tvOS)
         // Use Foundation instead of CRT for networking on watchOS and tvOS
-        pollyClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        pollyClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
@@ -60,7 +60,7 @@ class AWSPredictionsService {
         )
         #if os(watchOS) || os(tvOS)
         // Use Foundation instead of CRT for networking on watchOS and tvOS
-        comprehendClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        comprehendClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
@@ -70,7 +70,7 @@ class AWSPredictionsService {
         )
         #if os(watchOS) || os(tvOS)
         // Use Foundation instead of CRT for networking on watchOS and tvOS
-        rekognitionClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        rekognitionClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
@@ -80,7 +80,7 @@ class AWSPredictionsService {
         )
         #if os(watchOS) || os(tvOS)
         // Use Foundation instead of CRT for networking on watchOS and tvOS
-        textractClientConfiguration.httpClientEngine = FoundationHTTPClient()
+        textractClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsTextractClient = TextractClient(config: textractClientConfiguration)
 

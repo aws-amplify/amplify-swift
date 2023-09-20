@@ -11,7 +11,7 @@ import ClientRuntime
 extension Foundation.URLRequest {
     init(sdkRequest: ClientRuntime.SdkHttpRequest) throws {
         guard let url = sdkRequest.endpoint.url else {
-            throw FoundationHTTPClientError.invalidRequestURL(sdkRequest: sdkRequest)
+            throw FoundationClientEngineError.invalidRequestURL(sdkRequest: sdkRequest)
         }
         self.init(url: url)
         httpMethod = sdkRequest.method.rawValue
@@ -55,7 +55,7 @@ extension ClientRuntime.HttpResponse {
             // This shouldn't happen, but `HttpStatusCode` only exposes a failable
             // `init`. The alternative here is force unwrapping, but we can't
             // make the decision to crash here on behalf on consuming applications.
-            throw FoundationHTTPClientError.unexpectedStatusCode(
+            throw FoundationClientEngineError.unexpectedStatusCode(
                 statusCode: httpURLResponse.statusCode
             )
         }

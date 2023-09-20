@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import ClientRuntime
 
-struct FoundationHTTPClientError: AmplifyError {
+struct FoundationClientEngineError: AmplifyError {
     let errorDescription: ErrorDescription
     let recoverySuggestion: RecoverySuggestion
     let underlyingError: Error?
@@ -26,7 +26,7 @@ struct FoundationHTTPClientError: AmplifyError {
     }
 }
 
-extension FoundationHTTPClientError {
+extension FoundationClientEngineError {
     init(
         errorDescription: ErrorDescription,
         recoverySuggestion: RecoverySuggestion,

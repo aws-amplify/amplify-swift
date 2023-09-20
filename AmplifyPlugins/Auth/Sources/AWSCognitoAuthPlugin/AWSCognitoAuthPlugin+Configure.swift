@@ -12,7 +12,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
+@_spi(FoundationClientEngine) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -95,7 +95,7 @@ extension AWSCognitoAuthPlugin {
             if var httpClientEngineProxy = httpClientEngineProxy {
                 let httpClientEngine: HttpClientEngine
                 #if os(watchOS) || os(tvOS)
-                httpClientEngine = FoundationHTTPClient()
+                httpClientEngine = FoundationClientEngine()
                 #else
                 httpClientEngine = configuration.httpClientEngine
                 #endif
@@ -103,7 +103,7 @@ extension AWSCognitoAuthPlugin {
                 configuration.httpClientEngine = httpClientEngineProxy
             } else {
                 #if os(watchOS) || os(tvOS)
-                configuration.httpClientEngine = FoundationHTTPClient()
+                configuration.httpClientEngine = FoundationClientEngine()
                 #endif
             }
 
@@ -122,7 +122,7 @@ extension AWSCognitoAuthPlugin {
             )
 
             #if os(watchOS) || os(tvOS)
-            configuration.httpClientEngine = FoundationHTTPClient()
+            configuration.httpClientEngine = FoundationClientEngine()
             #endif
 
             return CognitoIdentityClient(config: configuration)

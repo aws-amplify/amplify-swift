@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
+@_spi(FoundationClientEngine) import AWSPluginsCore
 import AWSLocation
 import AWSClientRuntime
 
@@ -37,7 +37,7 @@ extension AWSLocationGeoPlugin {
 
         #if os(watchOS) || os(tvOS)
         // Use Foundation instead of CRT for networking on watchOS and tvOS
-        serviceConfiguration.httpClientEngine = FoundationHTTPClient()
+        serviceConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
 
         let location = LocationClient(config: serviceConfiguration)
