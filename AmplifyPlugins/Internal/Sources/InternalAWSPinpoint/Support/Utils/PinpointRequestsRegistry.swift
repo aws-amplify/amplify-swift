@@ -8,7 +8,6 @@
 import Foundation
 import AWSPinpoint
 import ClientRuntime
-@_spi(FoundationHTTPClientEngine) import AWSPluginsCore
 
 @globalActor actor PinpointRequestsRegistry {
     static let shared = PinpointRequestsRegistry()
@@ -21,13 +20,7 @@ import ClientRuntime
     }
 
     nonisolated func setCustomHttpEngine(on configuration: PinpointClient.PinpointClientConfiguration) {
-        let baseHTTPClientEngine: HttpClientEngine
-        #if os(watchOS) || os(tvOS)
-        // Use Foundation instead of CRT for networking on watchOS and tvOS
-        baseHTTPClientEngine = FoundationHTTPClient()
-        #else
-        baseHTTPClientEngine = configuration.httpClientEngine
-        #endif
+        let baseHTTPClientEngine = configuration.httpClientEngine
 
         configuration.httpClientEngine = CustomPinpointHttpClientEngine(
             httpClientEngine: baseHTTPClientEngine
