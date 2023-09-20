@@ -22,10 +22,10 @@ extension Foundation.URLRequest {
             }
         }
 
-        httpBody = switch sdkRequest.body {
-        case .data(let data): data
-        case .stream(let stream): stream.toBytes().getData()
-        case .none: nil
+        switch sdkRequest.body {
+        case .data(let data): httpBody = data
+        case .stream(let stream): httpBody = stream.toBytes().getData()
+        case .none: break
         }
     }
 }
