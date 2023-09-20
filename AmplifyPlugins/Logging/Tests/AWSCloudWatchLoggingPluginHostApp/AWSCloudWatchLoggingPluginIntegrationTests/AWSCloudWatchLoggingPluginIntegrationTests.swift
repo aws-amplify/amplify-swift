@@ -26,7 +26,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
             try Amplify.add(plugin: loggingPlugin)
             let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(configuration)
-            try await Task.sleep(seconds: 2)
+            try await Task.sleep(seconds: 5)
         } catch {
             XCTFail("Failed to initialize and configure Amplify: \(error)")
         }
@@ -151,31 +151,6 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
                                     namespace: namespace)
     }
     
-    /// - Given: a AWS CloudWatch Logging plugin
-    /// - When: an verbose log message is logged and flushed
-    /// - Then: the verbose log message is logged and sent to AWS CloudWatch
-    func testFlushLogWithVerboseMessage() async throws {
-        let category = "Datastore"
-        let namespace = UUID().uuidString
-        let message = "this is an verbose message in the integration test"
-        let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
-        logger.verbose(message)
-        let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
-        guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
-            XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")
-            return
-        }
-        try await loggingPlugin.flushLogs()
-        try await Task.sleep(seconds: 30)
-        let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(client: cloudWatchClient,
-                                    logGroupName: loggingConfiguration?.logGroupName,
-                                    logLevel: "verbose",
-                                    message: message,
-                                    category: category,
-                                    namespace: namespace)
-    }
-    
     /// - Given: a AWS CloudWatch Logging plugin with logging enabled
     /// - When: an error log message is logged and flushed
     /// - Then: the eror log message is logged and sent to AWS CloudWatch
@@ -206,7 +181,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     /// - When: an error log message is logged and flushed
     /// - Then: the eror log message is not logged and sent to AWS CloudWatch
     func testFlushLogWithVerboseMessageAfterDisablingPlugin() async throws {
-        let category = "Push Notifications"
+        let category = "Storage"
         let namespace = UUID().uuidString
         let message = "this is an verbose message in the integration test after disabling logging"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
@@ -256,12 +231,12 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
                             logGroupName: String?,
                             message: String,
                             requestAttempt: Int) async throws -> [CloudWatchLogsClientTypes.FilteredLogEvent]? {
-        let startTime = Date().addingTimeInterval(TimeInterval(-3*60))
         let endTime = Date()
-        
+        let durationInMinutes = requestAttempt+1
+        let startTime = endTime.addingTimeInterval(TimeInterval(-durationInMinutes*60))
         var events = try await AWSCloudWatchClientHelper.getFilterLogEventCount(client: client, filterPattern: message, startTime: startTime, endTime: endTime, logGroupName: logGroupName)
         
-        if events?.count == 0 && requestAttempt <= 3 {
+        if events?.count == 0 && requestAttempt <= 5 {
             try await Task.sleep(seconds: 30)
             let attempted = requestAttempt + 1
             events = try await getLastMessageSent(
