@@ -15,6 +15,10 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQL
         return "awsAPIPlugin"
     }
 
+    /// In-memory configuration passed to `AWSAPIPlugin`'s initializer.
+    /// Overriding the configuration passed in from `Amplify`, during `Amplify.configure()`
+    var awsAPIPluginConfiguration: AWSAPIPluginConfiguration?
+    
     /// A holder for API configurations. This will be populated during the
     /// configuration phase, and is clearable by `reset()`.
     var pluginConfig: AWSAPICategoryPluginConfiguration!
@@ -46,10 +50,12 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQL
     let reachabilityMapLock: NSLock
 
     public init(
+        configuration: AWSAPIPluginConfiguration? = nil,
         modelRegistration: AmplifyModelRegistration? = nil,
         sessionFactory: URLSessionBehaviorFactory? = nil,
         apiAuthProviderFactory: APIAuthProviderFactory? = nil
     ) {
+        self.awsAPIPluginConfiguration = configuration
         self.mapper = OperationTaskMapper()
         self.queue = OperationQueue()
         self.authProviderFactory = apiAuthProviderFactory ?? APIAuthProviderFactory()

@@ -9,6 +9,7 @@ import Amplify
 import AWSPluginsCore
 import AppSyncRealTimeClient
 import AwsCommonRuntimeKit
+import Foundation
 
 public extension AWSAPIPlugin {
 
@@ -21,19 +22,33 @@ public extension AWSAPIPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
     func configure(using configuration: Any?) throws {
 
-        guard let jsonValue = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(
-                "Could not cast incoming configuration to JSONValue",
+        let configurationJSONValue: JSONValue
+        if let awsAPIPluginConfiguration = awsAPIPluginConfiguration {
+            do {
+                let encodedConfiguration = try JSONEncoder().encode(awsAPIPluginConfiguration)
+                configurationJSONValue = try JSONDecoder().decode(JSONValue.self, from: encodedConfiguration)
+            } catch {
+                throw PluginError.unknown(
+                    "Could not process in-memory configuration",
+                    "The configuration could not be converted \(String(describing: awsAPIPluginConfiguration))",
+                    error)
+            }
+        } else {
+            guard let jsonValue = configuration as? JSONValue else {
+                throw PluginError.pluginConfigurationError(
+                    "Could not cast incoming configuration to JSONValue",
                 """
                 The specified configuration is either nil, or not convertible to a JSONValue. Review the configuration \
                 and ensure it contains the expected values, and does not use any types that aren't convertible to a \
                 corresponding JSONValue:
                 \(String(describing: configuration))
                 """
-            )
+                )
+            }
+            configurationJSONValue = jsonValue
         }
 
-        let dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
+        let dependencies = try ConfigurationDependencies(configurationValues: configurationJSONValue,
                                                          apiAuthProviderFactory: authProviderFactory)
         configure(using: dependencies)
 

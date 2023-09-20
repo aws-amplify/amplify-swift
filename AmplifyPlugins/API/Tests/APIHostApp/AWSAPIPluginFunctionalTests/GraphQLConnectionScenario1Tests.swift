@@ -38,6 +38,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
             
+          
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: GraphQLModelBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
