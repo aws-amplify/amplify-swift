@@ -8,7 +8,7 @@ permissions:
     contents: read
 
 jobs:
-  analytics-integration-test-iOS:
+  logging-integration-test-iOS:
     runs-on: macos-12
     environment: IntegrationTest
     steps:
@@ -33,7 +33,7 @@ jobs:
           project_path: ./AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginHostApp
           scheme: AWSCloudWatchLoggingPluginIntegrationTests
 
-  analytics-integration-test-tvOS:
+  logging-integration-test-tvOS:
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -61,7 +61,7 @@ jobs:
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
 
-  analytics-integration-test-watchOS:
+  logging-integration-test-watchOS:
     runs-on: macos-13
     environment: IntegrationTest
     steps:
