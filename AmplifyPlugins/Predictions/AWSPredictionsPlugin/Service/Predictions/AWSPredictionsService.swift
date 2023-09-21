@@ -12,6 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
+@_spi(FoundationClientEngine) import AWSPluginsCore
 import Foundation
 import ClientRuntime
 import AWSClientRuntime
@@ -37,30 +38,60 @@ class AWSPredictionsService {
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
+        translateClientConfiguration.httpClientEngine = FoundationClientEngine()
+        #endif
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
         let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
+        pollyClientConfiguration.httpClientEngine = FoundationClientEngine()
+        #endif
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
         let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
+        comprehendClientConfiguration.httpClientEngine = FoundationClientEngine()
+        #endif
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
         let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.identify.region
         )
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
+        rekognitionClientConfiguration.httpClientEngine = FoundationClientEngine()
+        #endif
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
         let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
             credentialsProvider: credentialsProvider,
             region: configuration.identify.region
         )
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
+        textractClientConfiguration.httpClientEngine = FoundationClientEngine()
+        #endif
         let awsTextractClient = TextractClient(config: textractClientConfiguration)
 
         let awsTranscribeStreamingAdapter = AWSTranscribeStreamingAdapter(
