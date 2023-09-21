@@ -8,7 +8,7 @@ on:
         type: string
 
   push:
-    branches: [test/log_integration]
+    branches: [main]
 
 permissions:
     id-token: write
@@ -34,6 +34,36 @@ jobs:
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
+
+  analytics-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_analytics.yml
+    secrets: inherit
+
+  push-notifications-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_push_notifications.yml
+    secrets: inherit
+
+  predictions-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_predictions.yml
+    secrets: inherit
+
+  auth-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_auth.yml
+    secrets: inherit
+
+  geo-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_geo.yml
+    secrets: inherit
+
+  storage-test:
+    needs: prepare-for-test
+    uses: ./.github/workflows/integ_test_storage.yml
+    secrets: inherit
 
   logging-test:
     needs: prepare-for-test
