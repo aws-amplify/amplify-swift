@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.18.0 (2023-09-21)
+
+### Features
+
+- Setting mininum watchOS version to 9 (#3229)
+
 ## 2.17.2 (2023-09-18)
 
 ### Bug Fixes
