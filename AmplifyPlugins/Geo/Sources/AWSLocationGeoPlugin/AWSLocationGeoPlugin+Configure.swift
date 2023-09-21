@@ -35,8 +35,10 @@ extension AWSLocationGeoPlugin {
             frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
             region: region)
 
-        #if os(watchOS) || os(tvOS)
-        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
         serviceConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
 

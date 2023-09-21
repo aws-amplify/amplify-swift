@@ -38,8 +38,10 @@ class AWSPredictionsService {
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
-        #if os(watchOS) || os(tvOS)
-        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
         translateClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
@@ -48,8 +50,10 @@ class AWSPredictionsService {
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
-        #if os(watchOS) || os(tvOS)
-        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
         pollyClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
@@ -58,8 +62,10 @@ class AWSPredictionsService {
             credentialsProvider: credentialsProvider,
             region: configuration.convert.region
         )
-        #if os(watchOS) || os(tvOS)
-        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
         comprehendClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
@@ -68,8 +74,10 @@ class AWSPredictionsService {
             credentialsProvider: credentialsProvider,
             region: configuration.identify.region
         )
-        #if os(watchOS) || os(tvOS)
-        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
         rekognitionClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
@@ -78,8 +86,10 @@ class AWSPredictionsService {
             credentialsProvider: credentialsProvider,
             region: configuration.identify.region
         )
-        #if os(watchOS) || os(tvOS)
-        // Use Foundation instead of CRT for networking on watchOS and tvOS
+        #if os(iOS) || os(macOS) // no-op
+        #else
+        // For any platform except iOS or macOS
+        // Use Foundation instead of CRT for networking.
         textractClientConfiguration.httpClientEngine = FoundationClientEngine()
         #endif
         let awsTextractClient = TextractClient(config: textractClientConfiguration)

@@ -94,15 +94,20 @@ extension AWSCognitoAuthPlugin {
 
             if var httpClientEngineProxy = httpClientEngineProxy {
                 let httpClientEngine: HttpClientEngine
-                #if os(watchOS) || os(tvOS)
-                httpClientEngine = FoundationClientEngine()
-                #else
+                #if os(iOS) || os(macOS)
+                // networking goes through CRT
                 httpClientEngine = configuration.httpClientEngine
+                #else
+                // networking goes through Foundation
+                httpClientEngine = FoundationClientEngine()
                 #endif
                 httpClientEngineProxy.target = httpClientEngine
                 configuration.httpClientEngine = httpClientEngineProxy
             } else {
-                #if os(watchOS) || os(tvOS)
+                #if os(iOS) || os(macOS) // no-op
+                #else
+                // For any platform except iOS or macOS
+                // Use Foundation instead of CRT for networking.
                 configuration.httpClientEngine = FoundationClientEngine()
                 #endif
             }
@@ -121,7 +126,10 @@ extension AWSCognitoAuthPlugin {
                 region: identityPoolConfig.region
             )
 
-            #if os(watchOS) || os(tvOS)
+            #if os(iOS) || os(macOS) // no-op
+            #else
+            // For any platform except iOS or macOS
+            // Use Foundation instead of CRT for networking.
             configuration.httpClientEngine = FoundationClientEngine()
             #endif
 

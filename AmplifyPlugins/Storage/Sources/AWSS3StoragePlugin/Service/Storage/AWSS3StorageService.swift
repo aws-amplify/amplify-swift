@@ -66,15 +66,20 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
         if var proxy = httpClientEngineProxy {
             let httpClientEngine: HttpClientEngine
-            #if os(watchOS) || os(tvOS)
-            httpClientEngine = FoundationClientEngine()
-            #else
+            #if os(iOS) || os(macOS)
             httpClientEngine = clientConfig.httpClientEngine
+            #else
+            // For any platform except iOS or macOS
+            // Use Foundation instead of CRT for networking.
+            httpClientEngine = FoundationClientEngine()
             #endif
             proxy.target = httpClientEngine
             clientConfig.httpClientEngine = proxy
         } else {
-            #if os(watchOS) || os(tvOS)
+            #if os(iOS) || os(macOS) // no-op
+            #else
+            // For any platform except iOS or macOS
+            // Use Foundation instead of CRT for networking.
             clientConfig.httpClientEngine = FoundationClientEngine()
             #endif
         }
