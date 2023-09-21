@@ -57,7 +57,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     func testFlushLogWithErrorMessage() async throws {
         let category = "Analytics"
         let namespace = UUID().uuidString
-        let message = "this is an error message in the integration test"
+        let message = "this is an error message in the integration test \(Date().epochMilliseconds)"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         logger.error(message)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
@@ -82,7 +82,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     func testFlushLogWithWarnMessage() async throws {
         let category = "API"
         let namespace = UUID().uuidString
-        let message = "this is an warn message in the integration test"
+        let message = "this is an warn message in the integration test \(Date().epochMilliseconds)"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         logger.warn(message)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
@@ -107,7 +107,10 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     func testFlushLogWithDebugMessage() async throws {
         let category = "Geo"
         let namespace = UUID().uuidString
-        let message = "this is an debug message in the integration test"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .long
+        let message = "this is an debug message in the integration test \(Date().epochMilliseconds)"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         logger.debug(message)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
@@ -132,7 +135,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     func testFlushLogWithInfoMessage() async throws {
         let category = "Auth"
         let namespace = UUID().uuidString
-        let message = "this is an info message in the integration test"
+        let message = "this is an info message in the integration test \(Date().epochMilliseconds)"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         logger.info(message)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
@@ -157,7 +160,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     func testFlushLogWithVerboseMessageAfterEnablingPlugin() async throws {
         let category = "Storage"
         let namespace = UUID().uuidString
-        let message = "this is an verbose message in the integration test after enabling logging"
+        let message = "this is an verbose message in the integration test after enabling logging \(Date().epochMilliseconds)"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         Amplify.Logging.enable()
         logger.verbose(message)
@@ -183,7 +186,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     func testFlushLogWithVerboseMessageAfterDisablingPlugin() async throws {
         let category = "Storage"
         let namespace = UUID().uuidString
-        let message = "this is an verbose message in the integration test after disabling logging"
+        let message = "this is an verbose message in the integration test after disabling logging \(Date().epochMilliseconds)"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         Amplify.Logging.disable()
         logger.verbose(message)
