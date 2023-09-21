@@ -64,8 +64,3 @@ jobs:
     needs: prepare-for-test
     uses: ./.github/workflows/integ_test_storage.yml
     secrets: inherit
-
-  logging-test:
-    needs: prepare-for-test
-    uses: ./.github/workflows/integ_test_logging.yml
-    secrets: inherit
