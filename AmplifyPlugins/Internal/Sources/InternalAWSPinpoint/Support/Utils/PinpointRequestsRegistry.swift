@@ -20,9 +20,10 @@ import ClientRuntime
     }
 
     nonisolated func setCustomHttpEngine(on configuration: PinpointClient.PinpointClientConfiguration) {
-        let oldHttpClientEngine = configuration.httpClientEngine
+        let baseHTTPClientEngine = configuration.httpClientEngine
+
         configuration.httpClientEngine = CustomPinpointHttpClientEngine(
-            httpClientEngine: oldHttpClientEngine
+            httpClientEngine: baseHTTPClientEngine
         )
     }
 

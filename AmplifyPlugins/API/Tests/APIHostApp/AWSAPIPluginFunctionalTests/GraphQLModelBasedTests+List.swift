@@ -39,7 +39,7 @@ extension GraphQLModelBasedTests {
         let post = Post.keys
         let predicate = post.id == uuid1 || post.id == uuid2
         var results: List<Post>?
-        let response = try await Amplify.API.query(request: .list(Post.self, where: predicate, limit: 1))
+        let response = try await Amplify.API.query(request: .list(Post.self, where: predicate, limit: 3000))
         
         guard case .success(let graphQLresponse) = response else {
             XCTFail("Missing successful response")
