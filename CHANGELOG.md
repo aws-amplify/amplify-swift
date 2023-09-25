@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.18.1 (2023-09-25)
+
+### Bug Fixes
+
+- **core**: add Foundation HTTP client for watchOS / tvOS (#3230)
+
 ## 2.18.0 (2023-09-21)
 
 ### Features
