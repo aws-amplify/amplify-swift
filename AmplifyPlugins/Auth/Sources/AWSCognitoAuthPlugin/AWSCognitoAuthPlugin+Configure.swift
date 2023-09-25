@@ -12,6 +12,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
+@_spi(FoundationClientEngine) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -92,9 +93,23 @@ extension AWSCognitoAuthPlugin {
             )
 
             if var httpClientEngineProxy = httpClientEngineProxy {
-                let sdkEngine = configuration.httpClientEngine
-                httpClientEngineProxy.target = sdkEngine
+                let httpClientEngine: HttpClientEngine
+                #if os(iOS) || os(macOS)
+                // networking goes through CRT
+                httpClientEngine = configuration.httpClientEngine
+                #else
+                // networking goes through Foundation
+                httpClientEngine = FoundationClientEngine()
+                #endif
+                httpClientEngineProxy.target = httpClientEngine
                 configuration.httpClientEngine = httpClientEngineProxy
+            } else {
+                #if os(iOS) || os(macOS) // no-op
+                #else
+                // For any platform except iOS or macOS
+                // Use Foundation instead of CRT for networking.
+                configuration.httpClientEngine = FoundationClientEngine()
+                #endif
             }
 
             return CognitoIdentityProviderClient(config: configuration)
@@ -110,6 +125,14 @@ extension AWSCognitoAuthPlugin {
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: identityPoolConfig.region
             )
+
+            #if os(iOS) || os(macOS) // no-op
+            #else
+            // For any platform except iOS or macOS
+            // Use Foundation instead of CRT for networking.
+            configuration.httpClientEngine = FoundationClientEngine()
+            #endif
+
             return CognitoIdentityClient(config: configuration)
         default:
             fatalError()
