@@ -134,6 +134,88 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
+    
+    func testRecordsAreFlushedWhenPluginEnabled() {
+        let onlineExpectation = expectation(description: "Device is online")
+        let networkMonitor = NWPathMonitor()
+        networkMonitor.pathUpdateHandler = { newPath in
+            if newPath.status == .satisfied {
+                onlineExpectation.fulfill()
+            }
+        }
+        networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
+        
+        let flushEventsInvoked = expectation(description: "Flush events invoked")
+        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
+                guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
+                    XCTFail("Missing data")
+                    flushEventsInvoked.fulfill()
+                    return
+                }
+                XCTAssertFalse(pinpointEvents.isEmpty)
+                flushEventsInvoked.fulfill()
+            }
+        }
+        
+        Amplify.Analytics.disable()
+        Amplify.Analytics.enable()
+
+        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
+                                "globalPropertyIntKey": 123,
+                                "globalPropertyDoubleKey": 12.34,
+                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        Amplify.Analytics.registerGlobalProperties(globalProperties)
+        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
+                          "eventPropertyIntKey": 123,
+                          "eventPropertyDoubleKey": 12.34,
+                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
+        Amplify.Analytics.record(event: event)
+       
+        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+
+        Amplify.Analytics.flushEvents()
+
+        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+    
+    func testRecordsAreNotFlushedWhenPluginDisabled() async throws {
+        let onlineExpectation = expectation(description: "Device is online")
+        let networkMonitor = NWPathMonitor()
+        networkMonitor.pathUpdateHandler = { newPath in
+            if newPath.status == .satisfied {
+                onlineExpectation.fulfill()
+            }
+        }
+        networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
+        
+        let flushEventsInvoked = expectation(description: "Flush events invoked")
+        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
+               XCTFail("Flush event not expected")
+            }
+        }
+        
+        Amplify.Analytics.disable()
+        
+        let globalProperties = ["globalPropertyStringKey": "eventProperyStringValue",
+                                "globalPropertyIntKey": 123,
+                                "globalPropertyDoubleKey": 12.34,
+                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        Amplify.Analytics.registerGlobalProperties(globalProperties)
+        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
+                          "eventPropertyIntKey": 123,
+                          "eventPropertyDoubleKey": 12.34,
+                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
+        Amplify.Analytics.record(event: event)
+       
+        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+
+        Amplify.Analytics.flushEvents()
+        try await Task.sleep(seconds: 5)
+    }
 
     func testGetEscapeHatch() throws {
         let plugin = try Amplify.Analytics.getPlugin(
