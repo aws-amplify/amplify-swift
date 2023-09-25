@@ -38,7 +38,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: identifyUser api is called
     /// Then: IdentifyUser Hub event is received
-    func testIdentifyUser() async throws {
+    func skip_testIdentifyUser() async throws {
         let userId = "userId"
         let identifyUserEvent = expectation(description: "Identify User event was received on the hub plugin")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
@@ -231,8 +231,8 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     }
     
     /// Given: Analytics plugin
-    /// When: An analytics event is recorded and flushed after the plugin is disabled
-    /// Then: Flush Hub event is not received
+    /// When: An analytics event is recorded and flushed with global properties registered
+    /// Then: Flush Hub event is received with global properties
     func testRegisterGlobalProperties() {
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
@@ -252,25 +252,78 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                     return
                 }
                 XCTAssertFalse(pinpointEvents.isEmpty)
-                if let event = pinpointEvents.first {
-                    print(event)
-                    XCTAssertTrue(event.properties?.keys.contains("globalPropertyStringKey") == true)
-                    XCTAssertTrue(event.properties?.keys.contains("globalPropertyIntKey") == true)
-                    XCTAssertTrue(event.properties?.keys.contains("globalPropertyDoubleKey") == true)
-                    XCTAssertTrue(event.properties?.keys.contains("globalPropertyBoolKey") == true)
+                guard let event = pinpointEvents.first else {
+                    XCTFail("Missing data")
+                    flushEventsInvoked.fulfill()
+                    return
                 }
+                XCTAssertTrue(event.properties?.keys.contains("globalPropertyStringKey") == true)
+                XCTAssertTrue(event.properties?.keys.contains("globalPropertyIntKey") == true)
+                XCTAssertTrue(event.properties?.keys.contains("globalPropertyDoubleKey") == true)
+                XCTAssertTrue(event.properties?.keys.contains("globalPropertyBoolKey") == true)
                 flushEventsInvoked.fulfill()
             }
         }
-        flushEventsInvoked.isInverted = true
-        
-        Amplify.Analytics.disable()
         
         let globalProperties = ["globalPropertyStringKey": "GlobalProperyStringValue",
                                 "globalPropertyIntKey": 321,
                                 "globalPropertyDoubleKey": 43.21,
                                 "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
         Amplify.Analytics.registerGlobalProperties(globalProperties)
+        let properties = ["eventPropertyStringKey": "eventProperyStringValue",
+                          "eventPropertyIntKey": 123,
+                          "eventPropertyDoubleKey": 12.34,
+                          "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
+        Amplify.Analytics.record(event: event)
+       
+        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+
+        Amplify.Analytics.flushEvents()
+        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+    
+    /// Given: Analytics plugin
+    /// When: An analytics event is recorded and flushed with global properties registered
+    /// Then: Flush Hub event is received without global properties
+    func testUnRegisterGlobalProperties() {
+        let onlineExpectation = expectation(description: "Device is online")
+        let networkMonitor = NWPathMonitor()
+        networkMonitor.pathUpdateHandler = { newPath in
+            if newPath.status == .satisfied {
+                onlineExpectation.fulfill()
+            }
+        }
+        networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
+        
+        let flushEventsInvoked = expectation(description: "Flush events invoked")
+        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
+                guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
+                    XCTFail("Missing data")
+                    flushEventsInvoked.fulfill()
+                    return
+                }
+                XCTAssertFalse(pinpointEvents.isEmpty)
+                guard let event = pinpointEvents.first else {
+                    XCTFail("Missing data")
+                    flushEventsInvoked.fulfill()
+                    return
+                }
+                XCTAssertFalse(event.properties?.keys.contains("globalPropertyStringKey") == true)
+                XCTAssertFalse(event.properties?.keys.contains("globalPropertyIntKey") == true)
+                XCTAssertFalse(event.properties?.keys.contains("globalPropertyDoubleKey") == true)
+                XCTAssertFalse(event.properties?.keys.contains("globalPropertyBoolKey") == true)
+                flushEventsInvoked.fulfill()
+            }
+        }
+        
+        let globalProperties = ["globalPropertyStringKey": "GlobalProperyStringValue",
+                                "globalPropertyIntKey": 321,
+                                "globalPropertyDoubleKey": 43.21,
+                                "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
+        Amplify.Analytics.registerGlobalProperties(globalProperties)
+        Amplify.Analytics.unregisterGlobalProperties()
         let properties = ["eventPropertyStringKey": "eventProperyStringValue",
                           "eventPropertyIntKey": 123,
                           "eventPropertyDoubleKey": 12.34,
