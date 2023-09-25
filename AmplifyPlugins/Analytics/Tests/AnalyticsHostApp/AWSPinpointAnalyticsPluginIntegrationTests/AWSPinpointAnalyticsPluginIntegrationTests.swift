@@ -180,7 +180,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
-    func testRecordsAreNotFlushedWhenPluginDisabled() async throws {
+    func testRecordsAreNotFlushedWhenPluginDisabled() {
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -193,9 +193,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
-               XCTFail("Flush event not expected")
+                flushEventsInvoked.fulfill()
             }
         }
+        flushEventsInvoked.isInverted = true
         
         Amplify.Analytics.disable()
         
@@ -214,7 +215,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
-        try await Task.sleep(seconds: 5)
+        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testGetEscapeHatch() throws {
