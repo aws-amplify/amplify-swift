@@ -145,23 +145,36 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// Initializes the underlying storage engine and starts the syncing process
-    /// - Parameter completion: completion handler called with a success if the sync process started
-    ///                         or with a DataStoreError in case of failure
-    func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
+    /// - Returns: The StorageEngineBehavior instance just get initialized
+    func initStorageEngineAndStartSync() -> Result<StorageEngineBehavior, DataStoreError> {
         storageEngineInitQueue.sync {
-            completion(
-                initStorageEngine().flatMap { $0.startSync() }.flatMap { result in
+            initStorageEngine().flatMap { storageEngine in
+                storageEngine.startSync().flatMap { result in
                     switch result {
                     case .alreadyInitialized:
-                        return .successfulVoid
+                        return .success(storageEngine)
                     case .successfullyInitialized:
-                        self.dataStoreStateSubject.send(.start(storageEngine: self.storageEngine))
-                        return .successfulVoid
+                        self.dataStoreStateSubject.send(.start(storageEngine: storageEngine))
+                        return .success(storageEngine)
                     case .failure(let error):
                         return .failure(error)
                     }
                 }
-            )
+            }
+        }
+    }
+
+    /// Initializes the underlying storage engine and try starts the syncing process
+    /// If the start sync process failed due to missing other plugin configurations, we recover from failure for local only operations.
+    /// - Returns: The StorageEngineBehavior instance just get initialized
+    func initStorageEngineAndTryStartSync() -> Result<StorageEngineBehavior, DataStoreError> {
+        initStorageEngineAndStartSync().flatMapError { error in
+            switch error {
+            case .configuration:
+                return .success(storageEngine)
+            default:
+                return .failure(error)
+            }
         }
     }
 

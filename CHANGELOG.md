@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.18.1 (2023-09-25)
+
+### Bug Fixes
+
+- **core**: add Foundation HTTP client for watchOS / tvOS (#3230)
+
+## 2.18.0 (2023-09-21)
+
+### Features
+
+- Setting mininum watchOS version to 9 (#3229)
+- change swift-tools-version to 5.7 (#3193)
+
+## 2.17.2 (2023-09-18)
+
+### Bug Fixes
+
+- **datastore**: use unwrapped storageEngine to perform datastore operations (#3204)
+- **datastore**: using URLProtocol monitor auth request headers (#3221)
+- **api**: change request interceptors applying logic (#3190)
+- **logging**: fix issue with logger namespace not being set (#3213)
+- **datastore**: wrap failures to result when applying remote update events (#3187)
+
 ## 2.17.1 (2023-09-05)
 
 ### Bug Fixes

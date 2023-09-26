@@ -10,6 +10,8 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSPluginsCore
+@_spi(FoundationClientEngine) import AWSPluginsCore
+import ClientRuntime
 
 /// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
@@ -61,9 +63,25 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             credentialsProvider: credentialsProvider,
             region: region,
             signingRegion: region)
+
         if var proxy = httpClientEngineProxy {
-            proxy.target = clientConfig.httpClientEngine
+            let httpClientEngine: HttpClientEngine
+            #if os(iOS) || os(macOS)
+            httpClientEngine = clientConfig.httpClientEngine
+            #else
+            // For any platform except iOS or macOS
+            // Use Foundation instead of CRT for networking.
+            httpClientEngine = FoundationClientEngine()
+            #endif
+            proxy.target = httpClientEngine
             clientConfig.httpClientEngine = proxy
+        } else {
+            #if os(iOS) || os(macOS) // no-op
+            #else
+            // For any platform except iOS or macOS
+            // Use Foundation instead of CRT for networking.
+            clientConfig.httpClientEngine = FoundationClientEngine()
+            #endif
         }
 
         let s3Client = S3Client(config: clientConfig)
