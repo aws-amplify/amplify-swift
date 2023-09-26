@@ -1,10 +1,17 @@
 # Changelog
 
+## 2.18.1 (2023-09-25)
+
+### Bug Fixes
+
+- **core**: add Foundation HTTP client for watchOS / tvOS (#3230)
+
 ## 2.18.0 (2023-09-21)
 
 ### Features
 
 - Setting mininum watchOS version to 9 (#3229)
+- change swift-tools-version to 5.7 (#3193)
 
 ## 2.17.2 (2023-09-18)
 
