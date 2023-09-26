@@ -38,7 +38,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: identifyUser api is called
     /// Then: IdentifyUser Hub event is received
-    func skip_testIdentifyUser() async throws {
+    func testIdentifyUser() async throws {
         let userId = "userId"
         let identifyUserEvent = expectation(description: "Identify User event was received on the hub plugin")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
@@ -284,7 +284,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     }
     
     /// Given: Analytics plugin
-    /// When: An analytics event is recorded and flushed with global properties registered
+    /// When: An analytics event is recorded and flushed with global properties registered and then unregistered
     /// Then: Flush Hub event is received without global properties
     func testUnRegisterGlobalProperties() {
         let onlineExpectation = expectation(description: "Device is online")
