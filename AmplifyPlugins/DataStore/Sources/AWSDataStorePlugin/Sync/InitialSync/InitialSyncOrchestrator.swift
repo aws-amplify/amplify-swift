@@ -209,7 +209,7 @@ extension AWSInitialSyncOrchestrator {
         return errorTypeValue
     }
 
-    private func isUnauthorizedError(_ error: DataStoreError) -> Bool {
+    func isUnauthorizedError(_ error: DataStoreError) -> Bool {
         guard case let .sync(_, _, underlyingError) = error,
               let datastoreError = underlyingError as? DataStoreError
               else {
