@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B41080E1291ACF7E00297354 /* AuthHostedUIAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080E0291ACF7E00297354 /* AuthHostedUIAppUITests.swift */; };
-		B41080E3291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080E2291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift */; };
 		B41080ED291AD02500297354 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B41080EC291AD02500297354 /* Amplify */; };
 		B41080EF291AD02500297354 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B41080EE291AD02500297354 /* AWSCognitoAuthPlugin */; };
 		B41080F5291AD10700297354 /* ConfigurationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080F4291AD10700297354 /* ConfigurationHelper.swift */; };
@@ -39,8 +37,6 @@
 
 /* Begin PBXFileReference section */
 		B41080DE291ACF7E00297354 /* AuthHostedUIAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthHostedUIAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B41080E0291ACF7E00297354 /* AuthHostedUIAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHostedUIAppUITests.swift; sourceTree = "<group>"; };
-		B41080E2291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHostedUIAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		B41080EA291ACFDB00297354 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 		B41080F4291AD10700297354 /* ConfigurationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationHelper.swift; sourceTree = "<group>"; };
 		B41080F7291AD4D600297354 /* HostedUISignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostedUISignInTests.swift; sourceTree = "<group>"; };
@@ -86,8 +82,6 @@
 				B4B978CB291C9C07005B465D /* UITestCase.swift */,
 				B4B978CA291C9BE5005B465D /* Screen */,
 				B41080F6291AD4C200297354 /* AuthenticationTest */,
-				B41080E0291ACF7E00297354 /* AuthHostedUIAppUITests.swift */,
-				B41080E2291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift */,
 			);
 			path = AuthHostedUIAppUITests;
 			sourceTree = "<group>";
@@ -312,11 +306,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B41080E1291ACF7E00297354 /* AuthHostedUIAppUITests.swift in Sources */,
 				B4B978CE291C9C35005B465D /* SignInScreen.swift in Sources */,
 				B4B978CC291C9C07005B465D /* UITestCase.swift in Sources */,
 				B41080F8291AD4D600297354 /* HostedUISignInTests.swift in Sources */,
-				B41080E3291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift in Sources */,
 				B4B978D0291CA085005B465D /* SignUpScreen.swift in Sources */,
 				B4B978D4291DB1D1005B465D /* AuthenticatedScreen.swift in Sources */,
 			);
