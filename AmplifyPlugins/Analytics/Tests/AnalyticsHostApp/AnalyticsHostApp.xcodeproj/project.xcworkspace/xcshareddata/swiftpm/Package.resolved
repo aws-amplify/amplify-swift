@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/amplify-swift-utils-notifications.git",
       "state" : {
-        "revision" : "c47cafce7c456b3f1f2cf6ef4863bf5e2340d9eb",
-        "version" : "0.0.1"
+        "revision" : "f970384ad1035732f99259255cd2f97564807e41",
+        "version" : "1.1.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
       "state" : {
-        "revision" : "da88cf1cab82e281e7277cd9feb9efc87a057041",
-        "version" : "2.1.1"
+        "revision" : "c7ec93dcbbcd8abc90c74203937f207a7fcaa611",
+        "version" : "3.1.1"
       }
     },
     {
@@ -23,17 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-crt-swift",
       "state" : {
-        "revision" : "afe23a2a2f6cf78e6d8803d7c9e0c8e6f50b6915",
-        "version" : "0.4.0"
-      }
-    },
-    {
-      "identity" : "aws-sdk-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awslabs/aws-sdk-swift.git",
-      "state" : {
-        "revision" : "c54c028cfc3ee70fde8c077547a1a1f6ef1137d9",
-        "version" : "0.6.0"
+        "revision" : "838deb5de707f157986e4baa95439cbcac9f3fcf",
+        "version" : "0.12.0"
       }
     },
     {
@@ -52,15 +43,6 @@
       "state" : {
         "revision" : "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
         "version" : "2.1.0"
-      }
-    },
-    {
-      "identity" : "smithy-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awslabs/smithy-swift",
-      "state" : {
-        "revision" : "f59ed07c29d4e03f91ea8324edf7a2486bd86a9c",
-        "version" : "0.6.0"
       }
     },
     {
@@ -104,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
       "state" : {
-        "revision" : "ca932442d7481700f5434a7b138c47dd42d9902b",
-        "version" : "0.14.0"
+        "revision" : "80b4a1646399b8e4e0ce80711653476a85bd5e37",
+        "version" : "0.17.0"
       }
     }
   ],

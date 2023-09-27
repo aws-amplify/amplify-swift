@@ -23,17 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-crt-swift.git",
       "state" : {
-        "revision" : "6feec6c3787877807aa9a00fad09591b96752376",
-        "version" : "0.6.1"
-      }
-    },
-    {
-      "identity" : "aws-sdk-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awslabs/aws-sdk-swift.git",
-      "state" : {
-        "revision" : "24bae88a2391fe75da8a940a544d1ef6441f5321",
-        "version" : "0.13.0"
+        "revision" : "838deb5de707f157986e4baa95439cbcac9f3fcf",
+        "version" : "0.12.0"
       }
     },
     {
@@ -52,15 +43,6 @@
       "state" : {
         "revision" : "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
         "version" : "2.1.0"
-      }
-    },
-    {
-      "identity" : "smithy-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awslabs/smithy-swift.git",
-      "state" : {
-        "revision" : "7b28da158d92cd06a3549140d43b8fbcf64a94a6",
-        "version" : "0.15.0"
       }
     },
     {
@@ -104,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
       "state" : {
-        "revision" : "c438dad94f6a243b411b70a4b4bac54595064808",
-        "version" : "0.15.0"
+        "revision" : "80b4a1646399b8e4e0ce80711653476a85bd5e37",
+        "version" : "0.17.0"
       }
     }
   ],
