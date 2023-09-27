@@ -8,7 +8,7 @@ on:
         type: string
 
   push:
-    branches: [main]
+    branches: [phantum/auth_integration_tests]
 
 permissions:
     id-token: write
