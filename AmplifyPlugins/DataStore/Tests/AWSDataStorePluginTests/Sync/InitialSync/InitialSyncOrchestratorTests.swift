@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Foundation
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -101,7 +102,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()
     }
-
+    
     /// - Given: An InitialSyncOrchestrator with a model dependency graph, API is expected to return an error for certain models
     /// - When:
     ///    - The orchestrator starts up
@@ -200,7 +201,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()
     }
-
+    
     /// - Given: An InitialSyncOrchestrator with a model dependency graph containing no associations
     /// - When:
     ///    - The orchestrator starts up
@@ -409,4 +410,47 @@ class InitialSyncOrchestratorTests: XCTestCase {
         sink.cancel()
     }
 
+    /// - Given:
+    ///     An InitialSyncOrchestrator with a model dependency graph
+    /// - When:
+    ///     isUnauthorized() is called with an API Error with status code 401, 403 or "Unauthorized" description
+    ///     and return false for other cases
+    /// - Then:
+    ///    - It should return true for unauthorized cases and false for other cases
+    func testIsUnauthorized() {
+        let apiPlugin = MockAPICategoryPlugin()
+        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let reconciliationQueue = MockReconciliationQueue()
+        
+        let orchestrator =
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                   authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                   api: apiPlugin,
+                                   reconciliationQueue: reconciliationQueue,
+                                   storageAdapter: storageAdapter)
+        
+        let error1 = DataStoreError.api(APIError.httpStatusError(401, HTTPURLResponse(url: URL(string: "https://aws.amazon.com")!,
+                                                                   statusCode: 401,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)!))
+        XCTAssertTrue(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error1)))
+        
+        let error2 = DataStoreError.api(APIError.httpStatusError(403, HTTPURLResponse(url: URL(string: "https://aws.amazon.com")!,
+                                                                   statusCode: 403,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)!))
+        XCTAssertTrue(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error2)))
+        
+        let error3 = DataStoreError.api(APIError.httpStatusError(404, HTTPURLResponse(url: URL(string: "https://aws.amazon.com")!,
+                                                                   statusCode: 404,
+                                                                   httpVersion: nil,
+                                                                   headerFields: nil)!))
+        XCTAssertFalse(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error3)))
+        
+        let error4 = DataStoreError.api(APIError.operationError("Unauthorized error", "", nil))
+        XCTAssertTrue(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error4)))
+        
+        let error5 = DataStoreError.api(APIError.operationError("An error occurred", "", nil))
+        XCTAssertFalse(orchestrator.isUnauthorizedError(DataStoreError.sync("", "", error5)))
+    }
 }
