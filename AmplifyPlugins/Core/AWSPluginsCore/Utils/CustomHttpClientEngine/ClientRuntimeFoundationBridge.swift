@@ -9,7 +9,7 @@ import Foundation
 import ClientRuntime
 
 extension Foundation.URLRequest {
-    init(sdkRequest: ClientRuntime.SdkHttpRequest) throws {
+    init(sdkRequest: ClientRuntime.SdkHttpRequest) async throws {
         guard let url = sdkRequest.endpoint.url else {
             throw FoundationClientEngineError.invalidRequestURL(sdkRequest: sdkRequest)
         }
@@ -22,11 +22,7 @@ extension Foundation.URLRequest {
             }
         }
 
-        switch sdkRequest.body {
-        case .data(let data): httpBody = data
-        case .stream(let stream): httpBody = stream.toBytes().getData()
-        case .none: break
-        }
+        httpBody = try await sdkRequest.body.readData()
     }
 }
 
@@ -49,7 +45,9 @@ extension ClientRuntime.HttpResponse {
 
     convenience init(httpURLResponse: HTTPURLResponse, data: Data) throws {
         let headers = Self.headers(from: httpURLResponse.allHeaderFields)
-        let body = HttpBody.stream(ByteStream.from(data: data))
+        // TODO: double check if this works as expected
+        // Previously this needed to be `HttpBody.stream()`
+        let body = HttpBody.data(data)
 
         guard let statusCode = HttpStatusCode(rawValue: httpURLResponse.statusCode) else {
             // This shouldn't happen, but `HttpStatusCode` only exposes a failable
