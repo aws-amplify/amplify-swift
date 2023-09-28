@@ -125,12 +125,13 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
             return []
         }
         var results = [M]()
+        results.append(contentsOf: list.elements)
         while list.hasNextPage() {
             let nextList = try await list.getNextPage()
             list = nextList
             results.append(contentsOf: nextList.elements)
         }
-        return list.elements
+        return results
     }
 
     func createBlog(id: String = UUID().uuidString, name: String) async throws -> Blog6? {
