@@ -28,7 +28,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         interactions.append(#function)
     }
 
-    public func getCredentialsProvider() -> CredentialsProvider {
+    public func getCredentialsProvider() -> CredentialsProviding {
         interactions.append(#function)
         let cognitoCredentialsProvider = MyCustomCredentialsProvider()
         return cognitoCredentialsProvider
@@ -61,7 +61,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     }
 }
 
-struct MyCustomCredentialsProvider: CredentialsProvider {
+struct MyCustomCredentialsProvider: CredentialsProviding {
     func getCredentials() async throws -> AWSClientRuntime.AWSCredentials {
         AWSCredentials(
             accessKey: "AKIDEXAMPLE",
