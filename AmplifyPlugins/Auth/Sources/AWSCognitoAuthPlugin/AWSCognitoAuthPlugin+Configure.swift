@@ -86,10 +86,10 @@ extension AWSCognitoAuthPlugin {
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
+            // TODO: FrameworkMetadata Replacement
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                endpointResolver: userPoolConfig.endpoint?.resolver,
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: userPoolConfig.region
+                region: userPoolConfig.region,
+                serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
             )
 
             if var httpClientEngineProxy = httpClientEngineProxy {
@@ -121,8 +121,8 @@ extension AWSCognitoAuthPlugin {
     private func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
+            // TODO: FrameworkMetadata Replacement
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: identityPoolConfig.region
             )
 

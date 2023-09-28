@@ -42,16 +42,14 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             _ = try await client.confirmSignUp(input: input)
             log.verbose("Received success")
             return AuthSignUpResult(.done, userID: nil)
-        } catch let error as AuthError {
-            throw error
-        } catch let error as AuthErrorConvertible {
+        }  catch let error as AuthErrorConvertible {
             throw error.authError
-        } catch let error {
-            let error = AuthError.configuration(
+        } catch {
+            throw AuthError.configuration(
                 "Unable to create a Swift SDK user pool service",
                 AuthPluginErrorConstants.configurationError,
-                error)
-            throw error
+                error
+            )
         }
     }
     
