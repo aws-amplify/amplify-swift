@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.18.2 (2023-09-28)
+
+### Bug Fixes
+
+- **datastore**: Continue initial sync if atleast one model syncs successfully and other models fail due to Unauthorized API error (#3224)
+- **datastore**: call errorHandler in Sync operation when failure
+
 ## 2.18.1 (2023-09-25)
 
 ### Bug Fixes
