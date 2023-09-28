@@ -71,31 +71,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
     override func tearDown() {
         ModelRegistry.reset()
     }
-    // This is a test case to demostrate if we attempt to use a model with multiple auth rules
-    // with a read operation, we effectively create a subscription without decorating it with auth.
-    // We should delete this use case when the AppSync service supports this use case.
-    func testUnsupportedModelMultipleOwner_CreateMutation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelMultipleOwner.self,
-                                                               operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
-        let document = documentBuilder.build()
-        let expectedQueryDocument = """
-        mutation CreateModelMultipleOwner {
-          createModelMultipleOwner {
-            id
-            content
-            editors
-            __typename
-          }
-        }
-        """
-        XCTAssertEqual(document.name, "createModelMultipleOwner")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertTrue(document.variables.isEmpty)
-    }
-
-/*
+    
     // Ensure that the `owner` field is added to the model fields
     func testModelMultipleOwner_CreateMutation() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: ModelMultipleOwner.schema,
@@ -219,7 +195,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -243,7 +219,7 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         XCTAssertEqual(document.name, "syncModelMultipleOwners")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
     }
-
+    
     // Only the 'owner' inherently has `.create` operation, requiring the subscription operation to contain the input
     func testModelMultipleOwner_OnCreateSubscription() {
         let claims = ["username": "user1",
@@ -254,8 +230,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
-        subscription OnCreateModelMultipleOwner($editors: String!, $owner: String!) {
-          onCreateModelMultipleOwner(editors: $editors, owner: $owner) {
+        subscription OnCreateModelMultipleOwner($owner: String!) {
+          onCreateModelMultipleOwner(owner: $owner) {
             id
             content
             editors
@@ -283,8 +259,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
-        subscription OnUpdateModelMultipleOwner($editors: String!, $owner: String!) {
-          onUpdateModelMultipleOwner(editors: $editors, owner: $owner) {
+        subscription OnUpdateModelMultipleOwner($owner: String!) {
+          onUpdateModelMultipleOwner(owner: $owner) {
             id
             content
             editors
@@ -300,7 +276,6 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
             return
         }
         XCTAssertEqual(variables["owner"] as? String, "user1")
-        XCTAssertEqual(variables["editors"] as? String, "user1")
     }
 
     // Only the 'owner' inherently has `.delete` operation, requiring the subscription operation to contain the input
@@ -313,8 +288,8 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
-        subscription OnDeleteModelMultipleOwner($editors: String!, $owner: String!) {
-          onDeleteModelMultipleOwner(editors: $editors, owner: $owner) {
+        subscription OnDeleteModelMultipleOwner($owner: String!) {
+          onDeleteModelMultipleOwner(owner: $owner) {
             id
             content
             editors
@@ -331,5 +306,5 @@ class ModelMultipleOwnerAuthRuleTests: XCTestCase {
         }
         XCTAssertEqual(variables["owner"] as? String, "user1")
     }
-*/
+
 }

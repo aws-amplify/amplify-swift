@@ -50,19 +50,13 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
-        let authRules = modelSchema.authRules.filterBy(authType: authType)
+        let authRules = modelSchema.authRules
+                    .filterBy(authType: authType)
+                    .filterBy(ownerFieldType: .string, modelSchema: modelSchema)
         guard !authRules.isEmpty else {
             return document
         }
         var decorateDocument = document
-        if authRules.readRestrictingOwnerRules().count > 1 {
-            log.error("""
-            Detected multiple owner type auth rules \
-            with a READ operation. We currently do not support this use case. Please \
-            limit your type to just one owner auth rule with a READ operation restriction.
-            """)
-            return decorateDocument
-        }
 
         let readRestrictingStaticGroups = authRules.groupClaimsToReadRestrictingStaticGroups()
         authRules.forEach { authRule in
@@ -179,6 +173,15 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 }
 
+private extension AuthRule {
+    func ownerField(inSchema schema: ModelSchema) -> ModelField? {
+        guard let fieldName = self.ownerField else {
+            return nil
+        }
+        return schema.field(withName: fieldName)
+    }
+}
+
 private extension AuthRules {
     func filterBy(authType: AWSAuthorizationType?) -> AuthRules {
         guard let authType = authType else {
@@ -193,6 +196,21 @@ private extension AuthRules {
                 return true
             }
             return authType == provider.toAWSAuthorizationType()
+        }
+    }
+    
+    func filterBy(ownerFieldType: ModelFieldType,
+                  modelSchema: ModelSchema) -> AuthRules {
+        return filter {
+            guard let modelField = $0.ownerField(inSchema: modelSchema) else {
+                // if we couldn't find the owner field means it has been implicitly
+                // declared in the model schema, therefore has the correct type "string"
+                return true
+            }
+            if case .string = modelField.type {
+                return true
+            }
+            return false
         }
     }
 }

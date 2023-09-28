@@ -92,15 +92,47 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
         }
 
         let todo = TodoExplicitOwnerField(content: "content")
-
+        
         // Mutations
         try await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
-
+        
+        assertUsedAuthTypes([.amazonCognitoUserPools])
+    }
+    
+    /// Given: a user signed in with CognitoUserPools, a model with multiple rules with
+    ///      explicit owner field
+    /// When: DataStore query/mutation operations are sent with CognitoUserPools
+    /// Then: DataStore is successfully initialized, query returns a result,
+    ///      mutation is processed for an authenticated users
+    func testExplicitMultipleOwner() async throws {
+        try await setup(withModels: ExplicitMultipleOwnerModelRegistration(),
+              testType: .defaultAuthCognito)
+        
+        try await signIn(user: user1)
+        
+        let expectations = makeExpectations()
+        
+        try await assertDataStoreReady(expectations)
+        
+        // Query
+        try await assertQuerySuccess(modelType: TodoCognitoMultiOwner.self,
+                                     expectations) { error in
+            XCTFail("Error query \(error)")
+        }
+        
+        let post = TodoCognitoMultiOwner(title: "title")
+        
+        // Mutations
+        try await assertMutations(model: post, expectations) { error in
+            XCTFail("Error mutation \(error)")
+        }
+        
         assertUsedAuthTypes([.amazonCognitoUserPools])
     }
 
+    
     /// Given: a user signed in with CognitoUserPools, a model with an implicit owner field
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
@@ -187,6 +219,13 @@ extension AWSDataStoreCategoryPluginAuthOwnerIntegrationTests {
         }
     }
 
+    struct ExplicitMultipleOwnerModelRegistration: AmplifyModelRegistration {
+        public let version: String = "version"
+        func registerModels(registry: ModelRegistry.Type) {
+            ModelRegistry.register(modelType: TodoCognitoMultiOwner.self)
+        }
+    }
+    
     struct ImplicitOwnerModelRegistration: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
