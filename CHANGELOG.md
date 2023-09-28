@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.19.0 (2023-09-28)
+
+### Features
+
+- **datastore**: filter authrules with invalid ownerfield (#3223)
+
 ## 2.18.2 (2023-09-28)
 
 ### Bug Fixes
