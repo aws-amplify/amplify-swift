@@ -11,6 +11,7 @@
 ### Features
 
 - Setting mininum watchOS version to 9 (#3229)
+- change swift-tools-version to 5.7 (#3193)
 
 ## 2.17.2 (2023-09-18)
 
