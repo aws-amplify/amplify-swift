@@ -9,6 +9,54 @@ import Foundation
 import AWSClientRuntime
 import Amplify
 
+// TODO: FrameworkMetadata Replacement
+private let tokenNoHashCharacterSet = Set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!$%'*+-.^_`|~")
+private let tokenCharacterSet = tokenNoHashCharacterSet.union(Set("#"))
+private let substituteCharacter = Character("-")
+
+extension String {
+
+    var userAgentToken: String {
+        String(map { tokenCharacterSet.contains($0) ? $0 : substituteCharacter })
+    }
+
+    var userAgentTokenNoHash: String {
+        String(map { tokenNoHashCharacterSet.contains($0) ? $0 : substituteCharacter })
+    }
+}
+
+
+public struct FrameworkMetadata {
+    let name: String
+    let version: String
+    let extras: [String: String]
+
+    var sanitizedName: String {
+        name.userAgentToken
+    }
+    var sanitizedVersion: String {
+        version.userAgentToken
+    }
+
+    public init(name: String, version: String, extras: [String: String] = [String: String]()) {
+        self.name = name
+        self.version = version
+        self.extras = extras
+    }
+ }
+
+extension FrameworkMetadata: CustomStringConvertible {
+    public var description: String {
+        let extrasMetaData = !extras.isEmpty
+            ? extras.map {
+                " md/\($0.key.userAgentToken)/\($0.value.userAgentToken)"
+            }.joined()
+            : ""
+        return "lib/\(sanitizedName)/\(sanitizedVersion)\(extrasMetaData)"
+    }
+}
+// MARK: - End TODO: FrameworkMetadata Replacement
+
 /// Convenience class that is used by Amplify to include metadata such as values for a "User-Agent" during
 /// server interactions.
 ///
