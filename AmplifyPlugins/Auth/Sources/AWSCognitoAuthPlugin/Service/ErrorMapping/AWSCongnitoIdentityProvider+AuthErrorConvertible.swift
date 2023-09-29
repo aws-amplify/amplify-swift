@@ -125,7 +125,7 @@ extension UserNotConfirmedException: AuthErrorConvertible {
 }
 
 extension UserNotFoundException: AuthErrorConvertible {
-    var fallbackDescription: String { "User not confirmed error." }
+    var fallbackDescription: String { "User not found error." }
 
     var authError: AuthError {
         .service(
@@ -313,6 +313,30 @@ extension UsernameExistsException: AuthErrorConvertible {
             properties.message ?? fallbackDescription,
             AuthPluginErrorConstants.userNameExistsError,
             AWSCognitoAuthError.usernameExists
+        )
+    }
+}
+
+extension AWSCognitoIdentityProvider.ConcurrentModificationException: AuthErrorConvertible {
+    var fallbackDescription: String { "Concurrent modification error" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.concurrentModificationException
+        )
+    }
+}
+
+
+extension AWSCognitoIdentityProvider.EnableSoftwareTokenMFAException: AuthErrorConvertible {
+    var fallbackDescription: String { "Unable to enable software token MFA" }
+
+    var authError: AuthError {
+        .service(
+            message ?? fallbackDescription,
+            AuthPluginErrorConstants.softwareTokenNotFoundError,
+            AWSCognitoAuthError.softwareTokenMFANotEnabled
         )
     }
 }
