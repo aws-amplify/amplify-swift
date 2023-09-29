@@ -65,12 +65,7 @@ struct FetchAuthIdentityId: Action {
     }
 
     func isNotAuthorizedError(_ error: Error) -> Bool {
-
-        if let getIdError: GetIdOutputError = error.internalAWSServiceError(),
-           case .notAuthorizedException = getIdError {
-            return true
-        }
-        return false
+        error is AWSCognitoIdentity.NotAuthorizedException
     }
 }
 

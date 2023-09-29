@@ -52,9 +52,7 @@ class UpdateMFAPreferenceTask: AuthUpdateMFAPreferenceTask, DefaultLogger {
             return try await updateMFAPreference(with: accessToken)
         } catch let error as AuthErrorConvertible {
             throw error.authError
-        } catch let error as AuthError {
-            throw error
-        } catch let error {
+        } catch {
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
