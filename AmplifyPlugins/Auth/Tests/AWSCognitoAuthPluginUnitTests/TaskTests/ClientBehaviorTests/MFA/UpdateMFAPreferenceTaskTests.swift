@@ -11,6 +11,7 @@ import XCTest
 import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import AWSClientRuntime
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -80,7 +81,13 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
+                throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                    httpResponse: .init(body: .empty, statusCode: .ok),
+                    message: nil,
+                    requestID: nil,
+                    requestID2: nil,
+                    typeName: nil
+                )
             }
         )
 
@@ -113,7 +120,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.invalidParameterException(.init())
+                throw AWSCognitoIdentityProvider.InvalidParameterException()
             }
         )
 
@@ -150,7 +157,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.notAuthorizedException(.init(message: "message"))
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "message")
             }
         )
 
@@ -185,7 +192,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.passwordResetRequiredException(.init())
+                throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
             }
         )
 
@@ -224,7 +231,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.resourceNotFoundException(.init())
+                throw AWSCognitoIdentityProvider.ResourceNotFoundException()
             }
         )
 
@@ -263,7 +270,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.forbiddenException(.init())
+                throw AWSCognitoIdentityProvider.ForbiddenException()
             }
         )
 
@@ -298,7 +305,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.userNotConfirmedException(.init())
+                throw AWSCognitoIdentityProvider.UserNotConfirmedException()
             }
         )
         do {
@@ -336,7 +343,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw SetUserMFAPreferenceOutputError.userNotFoundException(.init())
+                throw AWSCognitoIdentityProvider.UserNotFoundException()
             }
         )
         do {

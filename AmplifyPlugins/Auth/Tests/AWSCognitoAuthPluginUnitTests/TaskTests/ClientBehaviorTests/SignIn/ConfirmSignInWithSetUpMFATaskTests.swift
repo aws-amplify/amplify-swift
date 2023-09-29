@@ -152,8 +152,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.codeMismatchException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.CodeMismatchException(
+                    message: "Exception"
+                )
             }
         )
 
@@ -186,8 +187,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     func testConfirmSignInRetryWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.codeMismatchException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.CodeMismatchException(
+                    message: "Exception"
+                )
             }
         )
 
@@ -237,8 +239,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.internalErrorException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InternalErrorException(
+                    message: "Exception"
+                )
             }
         )
 
@@ -267,8 +270,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.invalidParameterException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InvalidParameterException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -346,8 +350,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.notAuthorizedException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -375,8 +380,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.passwordResetRequiredException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -405,8 +411,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.softwareTokenMFANotFoundException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -417,7 +424,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
                 return
             }
@@ -438,8 +445,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.tooManyRequestsException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.TooManyRequestsException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -471,8 +479,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.userNotConfirmedException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -500,8 +509,9 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw VerifySoftwareTokenOutputError.userNotFoundException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.UserNotFoundException(
+                    message: "Exception"
+                )
             })
 
         do {

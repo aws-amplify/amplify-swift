@@ -10,6 +10,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import AWSClientRuntime
 
 class UserBehaviorFetchAttributesTests: BasePluginTest {
 
@@ -75,7 +76,13 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: .init(body: .empty, statusCode: .ok),
+                message: nil,
+                requestID: nil,
+                requestID2: nil,
+                typeName: nil
+            )
         })
 
         do {
@@ -100,7 +107,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.invalidParameterException(.init())
+            throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
 
         do {
@@ -129,10 +136,12 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw SdkError.service(
-                GetUserOutputError.notAuthorizedException(
-                    .init()),
-                .init(body: .empty, statusCode: .accepted))
+            throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
+                httpResponse: .init(body: .empty, statusCode: .accepted),
+                decoder: nil,
+                message: nil,
+                requestID: nil
+            )
         })
 
         do {
@@ -159,7 +168,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.passwordResetRequiredException(.init())
+            throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
         })
 
         do {
@@ -190,7 +199,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.resourceNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
 
         do {
@@ -221,7 +230,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.tooManyRequestsException(.init())
+            throw AWSCognitoIdentityProvider.TooManyRequestsException()
         })
 
         do {
@@ -252,7 +261,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.userNotConfirmedException(.init())
+            throw AWSCognitoIdentityProvider.UserNotConfirmedException()
         })
         do {
             _ = try await plugin.fetchUserAttributes()
@@ -282,7 +291,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.userNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.UserNotFoundException()
         })
         do {
             _ = try await plugin.fetchUserAttributes()

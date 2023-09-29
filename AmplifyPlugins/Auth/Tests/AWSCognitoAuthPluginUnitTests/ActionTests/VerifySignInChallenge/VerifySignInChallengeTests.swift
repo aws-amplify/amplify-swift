@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSCognitoIdentityProvider
+import AWSClientRuntime
 @testable import AWSPluginsTestCommon
 @testable import AWSCognitoAuthPlugin
 
@@ -158,7 +159,13 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    throw try RespondToAuthChallengeOutputError(httpResponse: MockHttpResponse.ok)
+                    throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                        httpResponse: MockHttpResponse.ok,
+                        message: nil,
+                        requestID: nil,
+                        requestID2: nil,
+                        typeName: nil
+                    )
                 })
         }
 
@@ -205,9 +212,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    throw RespondToAuthChallengeOutputError.resourceNotFoundException(
-                        ResourceNotFoundException()
-                    )
+                    throw AWSCognitoIdentityProvider.ResourceNotFoundException()
                 })
         }
 
