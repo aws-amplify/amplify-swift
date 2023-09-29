@@ -394,7 +394,7 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    throw try AWSClientRuntime.UnknownAWSHTTPServiceError(
+                    throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                         httpResponse: MockHttpResponse.ok,
                         message: nil,
                         requestID: nil,

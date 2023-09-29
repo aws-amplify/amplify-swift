@@ -53,7 +53,7 @@ class AWSAuthSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
-            throw try await AWSClientRuntime.UnknownAWSHTTPServiceError(
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                 httpResponse: MockHttpResponse.ok, message: nil, requestID: nil, typeName: nil
             )
         }

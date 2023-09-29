@@ -76,7 +76,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw try await AWSClientRuntime.UnknownAWSHTTPServiceError(
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                 httpResponse: .init(body: .empty, statusCode: .ok),
                 message: nil,
                 requestID: nil,

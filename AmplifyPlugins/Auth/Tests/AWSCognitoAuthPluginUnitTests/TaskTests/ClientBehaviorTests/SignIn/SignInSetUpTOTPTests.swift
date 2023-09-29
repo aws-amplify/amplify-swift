@@ -523,7 +523,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw try await AWSClientRuntime.UnknownAWSHTTPServiceError(
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                 httpResponse: .init(body: .empty, statusCode: .ok),
                 message: nil,
                 requestID: nil,

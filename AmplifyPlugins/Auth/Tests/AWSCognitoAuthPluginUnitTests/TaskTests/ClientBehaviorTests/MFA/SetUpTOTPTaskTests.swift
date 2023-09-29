@@ -280,7 +280,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw try await AWSClientRuntime.UnknownAWSHTTPServiceError(
+                throw AWSClientRuntime.UnknownAWSHTTPServiceError(
                     httpResponse: .init(body: .empty, statusCode: .ok),
                     message: nil,
                     requestID: nil,
