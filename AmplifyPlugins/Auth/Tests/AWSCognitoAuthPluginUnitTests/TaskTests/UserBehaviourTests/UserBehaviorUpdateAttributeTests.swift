@@ -10,6 +10,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 import ClientRuntime
+import AWSClientRuntime
 
 class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
@@ -67,10 +68,12 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithAliasExistsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw SdkError.service(
-                UpdateUserAttributesOutputError.aliasExistsException(
-                    .init()),
-                    .init(body: .empty, statusCode: .accepted))
+            throw try await AWSCognitoIdentityProvider.AliasExistsException(
+                httpResponse: .init(body: .empty, statusCode: .accepted),
+                decoder: nil,
+                message: nil,
+                requestID: nil
+            )
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -99,7 +102,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithCodeDeliveryFailureException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.codeDeliveryFailureException(.init())
+            throw AWSCognitoIdentityProvider.CodeDeliveryFailureException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -128,7 +131,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithCodeMismatchException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.codeMismatchException(.init())
+            throw AWSCognitoIdentityProvider.CodeMismatchException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -157,7 +160,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithExpiredCodeException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.expiredCodeException(.init())
+            throw AWSCognitoIdentityProvider.ExpiredCodeException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -185,7 +188,13 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: .init(body: .empty, statusCode: .ok),
+                message: nil,
+                requestID: nil,
+                requestID2: nil,
+                typeName: nil
+            )
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -209,7 +218,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     ///
     func testUpdateUserAttributesWithInvalidEmailRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.invalidEmailRoleAccessPolicyException(.init())
+            throw AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -237,7 +246,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     ///
     func testUpdateUserAttributesWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.invalidLambdaResponseException(.init())
+            throw AWSCognitoIdentityProvider.InvalidLambdaResponseException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -267,7 +276,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.invalidParameterException(.init())
+            throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -295,7 +304,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     ///
     func testUpdateUserAttributesWithinvalidSmsRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.invalidSmsRoleAccessPolicyException(.init())
+            throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -323,7 +332,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     ///
     func testUpdateUserAttributesCodeWithInvalidSmsRoleTrustRelationshipException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.invalidSmsRoleTrustRelationshipException(.init())
+            throw AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -353,7 +362,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.notAuthorizedException(.init())
+            throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -379,7 +388,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.passwordResetRequiredException(.init())
+            throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -409,7 +418,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.resourceNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -439,7 +448,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.tooManyRequestsException(.init())
+            throw AWSCognitoIdentityProvider.TooManyRequestsException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -469,7 +478,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithUnexpectedLambdaException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.unexpectedLambdaException(.init())
+            throw AWSCognitoIdentityProvider.UnexpectedLambdaException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -499,7 +508,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithUserLambdaValidationException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.userLambdaValidationException(.init())
+            throw AWSCognitoIdentityProvider.UserLambdaValidationException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -529,7 +538,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.userNotConfirmedException(.init())
+            throw AWSCognitoIdentityProvider.UserNotConfirmedException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
@@ -559,7 +568,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            throw UpdateUserAttributesOutputError.userNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.UserNotFoundException()
         })
         do {
             _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))

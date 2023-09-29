@@ -20,7 +20,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                try ListDevicesOutputResponse(httpResponse: MockHttpResponse.ok)
+                try await ListDevicesOutputResponse(httpResponse: MockHttpResponse.ok)
             }
         )
     }
@@ -124,10 +124,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw SdkError.service(
-                    ListDevicesOutputError.internalErrorException(
-                        .init()),
-                    .init(body: .empty, statusCode: .accepted))
+                throw try await AWSCognitoIdentityProvider.InternalErrorException(
+                    httpResponse: .init(body: .empty, statusCode: .accepted)
+                )
             }
         )
         do {
@@ -155,7 +154,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
+                throw AWSCognitoIdentityProvider.InvalidParameterException(
+                    message: "invalid parameter"
+                )
             }
         )
         do {
@@ -187,7 +188,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.invalidUserPoolConfigurationException(InvalidUserPoolConfigurationException(message: "invalid user pool configuration"))
+                throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
+                    message: "invalid user poo configuration"
+                )
             }
         )
         do {
@@ -215,7 +218,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                    message: "not authorized"
+                )
             }
         )
         do {
@@ -243,7 +248,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.passwordResetRequiredException(PasswordResetRequiredException(message: "password reset required"))
+                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
+                    message: "password reset required"
+                )
             }
         )
         do {
@@ -275,7 +282,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
+                throw AWSCognitoIdentityProvider.ResourceNotFoundException(
+                    message: "resource not found"
+                )
             }
         )
         do {
@@ -307,7 +316,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
+                throw AWSCognitoIdentityProvider.TooManyRequestsException(
+                    message: "too many requests"
+                )
             }
         )
         do {
@@ -339,7 +350,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.userNotConfirmedException(UserNotConfirmedException(message: "user not confirmed"))
+                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
+                    message: "user not confirmed"
+                )
             }
         )
         do {
@@ -371,7 +384,9 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                throw ListDevicesOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
+                throw AWSCognitoIdentityProvider.UserNotFoundException(
+                    message: "user not found"
+                )
             }
         )
         do {
