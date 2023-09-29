@@ -27,7 +27,8 @@ public class MockAWSLocation: AWSLocationBehavior {
 
     public init(pluginConfig: AWSLocationGeoPluginConfiguration) throws {
         self.locationClient = try LocationClient(
-            config: MockAWSClientConfiguration(config: pluginConfig))
+            config: .mock(region: pluginConfig.regionName)
+        )
     }
 
     public func getEscapeHatch() -> LocationClient {
