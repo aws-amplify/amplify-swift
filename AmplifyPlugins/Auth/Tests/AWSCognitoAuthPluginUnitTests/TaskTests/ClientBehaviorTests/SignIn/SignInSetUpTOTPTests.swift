@@ -10,7 +10,7 @@ import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
-import ClientRuntime
+import AWSClientRuntime
 
 class SignInSetUpTOTPTests: BasePluginTest {
 
@@ -254,7 +254,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.internalErrorException(.init())
+            throw AWSCognitoIdentityProvider.InternalErrorException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -292,7 +292,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.invalidParameterException(.init())
+            throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -331,7 +331,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.notAuthorizedException(.init())
+            throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -369,7 +369,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.resourceNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -408,7 +408,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.concurrentModificationException(.init())
+            throw AWSCognitoIdentityProvider.ConcurrentModificationException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -446,7 +446,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.forbiddenException(.init())
+            throw AWSCognitoIdentityProvider.ForbiddenException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -484,7 +484,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.softwareTokenMFANotFoundException(.init())
+            throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -493,7 +493,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
             XCTFail("Should not produce result - \(result)")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                  case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce resourceNotFound error but instead produced \(error)")
                 return
             }
@@ -523,7 +523,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AssociateSoftwareTokenOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .accepted)))
+            throw try await AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: .init(body: .empty, statusCode: .ok),
+                message: nil,
+                requestID: nil,
+                requestID2: nil,
+                typeName: nil
+            )
         })
 
         let options = AuthSignInRequest.Options()

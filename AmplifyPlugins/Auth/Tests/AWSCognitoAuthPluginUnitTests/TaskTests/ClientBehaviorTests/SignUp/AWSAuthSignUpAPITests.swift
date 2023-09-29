@@ -187,19 +187,19 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
     func testSignUpServiceError() async {
 
-        let errorsToTest: [(signUpOutputError: SignUpOutputError, cognitoError: AWSCognitoAuthError)] = [
-            (.codeDeliveryFailureException(.init()), .codeDelivery),
-            (.invalidEmailRoleAccessPolicyException(.init()), .emailRole),
-            (.invalidLambdaResponseException(.init()), .lambda),
-            (.invalidParameterException(.init()), .invalidParameter),
-            (.invalidPasswordException(.init()), .invalidPassword),
-            (.invalidSmsRoleAccessPolicyException(.init()), .smsRole),
-            (.invalidSmsRoleTrustRelationshipException(.init()), .smsRole),
-            (.resourceNotFoundException(.init()), .resourceNotFound),
-            (.tooManyRequestsException(.init()), .requestLimitExceeded),
-            (.unexpectedLambdaException(.init()), .lambda),
-            (.userLambdaValidationException(.init()), .lambda),
-            (.usernameExistsException(.init()), .usernameExists),
+        let errorsToTest: [(signUpOutputError: Error, cognitoError: AWSCognitoAuthError)] = [
+            (AWSCognitoIdentityProvider.CodeDeliveryFailureException(), .codeDelivery),
+            (AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException(), .emailRole),
+            (AWSCognitoIdentityProvider.InvalidLambdaResponseException(), .lambda),
+            (AWSCognitoIdentityProvider.InvalidParameterException(), .invalidParameter),
+            (AWSCognitoIdentityProvider.InvalidPasswordException(), .invalidPassword),
+            (AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(), .smsRole),
+            (AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(), .smsRole),
+            (AWSCognitoIdentityProvider.ResourceNotFoundException(), .resourceNotFound),
+            (AWSCognitoIdentityProvider.TooManyRequestsException(), .requestLimitExceeded),
+            (AWSCognitoIdentityProvider.UnexpectedLambdaException(), .lambda),
+            (AWSCognitoIdentityProvider.UserLambdaValidationException(), .lambda),
+            (AWSCognitoIdentityProvider.UsernameExistsException(), .usernameExists),
         ]
 
         for errorToTest in errorsToTest {
@@ -213,7 +213,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
-                throw SignUpOutputError.notAuthorizedException(.init())
+                throw AWSCognitoIdentityProvider.NotAuthorizedException()
             }
         )
 
@@ -245,10 +245,9 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
-                throw SdkError.service(
-                    SignUpOutputError.internalErrorException(
-                        .init()),
-                    .init(body: .empty, statusCode: .accepted))
+                throw try await AWSCognitoIdentityProvider.InternalErrorException(
+                    httpResponse: .init(body: .empty, statusCode: .accepted)
+                )
             }
         )
 
@@ -273,7 +272,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     }
 
     func validateSignUpServiceErrors(
-        signUpOutputError: SignUpOutputError,
+        signUpOutputError: Error,
         expectedCognitoError: AWSCognitoAuthError) async {
             self.mockIdentityProvider = MockIdentityProvider(
                 mockSignUpResponse: { _ in

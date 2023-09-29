@@ -783,7 +783,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithInternalErrorException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.internalErrorException(.init())
+            throw AWSCognitoIdentityProvider.InternalErrorException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -811,7 +811,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithInvalidLambdaResponseException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.invalidLambdaResponseException(.init())
+            throw AWSCognitoIdentityProvider.InvalidLambdaResponseException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -840,7 +840,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithInvalidParameterException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.invalidParameterException(.init())
+            throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -869,7 +869,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithInvalidUserPoolConfigurationException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.invalidUserPoolConfigurationException(.init())
+            throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -897,7 +897,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithNotAuthorizedException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.notAuthorizedException(.init())
+            throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -925,7 +925,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithPasswordResetRequiredException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.passwordResetRequiredException(.init())
+            throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -954,10 +954,12 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithPasswordResetRequiredException2() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            let serviceError = SdkError<InitiateAuthOutputError>
-                .service(.passwordResetRequiredException(PasswordResetRequiredException()),
-                         .init(body: .none, statusCode: .badRequest))
-            throw SdkError<InitiateAuthOutputError>.client(.retryError(serviceError), nil)
+            throw try await AWSCognitoIdentityProvider.PasswordResetRequiredException(
+                httpResponse: .init(body: .none, statusCode: .badRequest),
+                decoder: nil,
+                message: nil,
+                requestID: nil
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -986,7 +988,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithResourceNotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.resourceNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1015,7 +1017,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithTooManyRequestsException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.tooManyRequestsException(.init())
+            throw AWSCognitoIdentityProvider.TooManyRequestsException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1044,7 +1046,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithUnexpectedLambdaException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.unexpectedLambdaException(.init())
+            throw AWSCognitoIdentityProvider.UnexpectedLambdaException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1073,7 +1075,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithUserLambdaValidationException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.userLambdaValidationException(.init())
+            throw AWSCognitoIdentityProvider.UserLambdaValidationException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1101,7 +1103,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     ///
     func testSignInWithUserNotConfirmedException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.userNotConfirmedException(.init())
+            throw AWSCognitoIdentityProvider.UserNotConfirmedException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1130,10 +1132,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithUserNotConfirmedException2() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            let serviceError = SdkError<InitiateAuthOutputError>
-                .service(.userNotConfirmedException(UserNotConfirmedException()),
-                         .init(body: .none, statusCode: .badRequest))
-            throw SdkError<InitiateAuthOutputError>.client(.retryError(serviceError), nil)
+            throw try await AWSCognitoIdentityProvider.UserNotConfirmedException(
+                httpResponse: .init(body: .none, statusCode: .badRequest)
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -1162,7 +1163,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithUserNotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            throw InitiateAuthOutputError.userNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.UserNotFoundException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1199,7 +1200,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { _ in
-            throw RespondToAuthChallengeOutputError.aliasExistsException(.init())
+            throw AWSCognitoIdentityProvider.AliasExistsException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1234,7 +1235,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { _ in
-            throw RespondToAuthChallengeOutputError.invalidPasswordException(.init())
+            throw AWSCognitoIdentityProvider.InvalidPasswordException()
         })
 
         let options = AuthSignInRequest.Options()
@@ -1330,7 +1331,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         self.mockIdentity = MockIdentity(
             mockGetIdResponse: { _ in
-                throw GetIdOutputError.invalidParameterException(.init(message: "Invalid parameter passed"))
+                throw AWSCognitoIdentity.InvalidParameterException(
+                    message: "Invalid parameter passed"
+                )
             },
             mockGetCredentialsResponse: getCredentials)
 

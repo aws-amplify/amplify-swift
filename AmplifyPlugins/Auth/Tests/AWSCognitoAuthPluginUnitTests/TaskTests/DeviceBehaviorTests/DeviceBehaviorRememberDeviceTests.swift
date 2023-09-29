@@ -20,7 +20,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                try UpdateDeviceStatusOutputResponse(httpResponse: MockHttpResponse.ok)
+                try await UpdateDeviceStatusOutputResponse(
+                    httpResponse: MockHttpResponse.ok
+                )
             }
         )
     }
@@ -77,7 +79,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.internalErrorException(InternalErrorException(message: "internal error"))
+                throw AWSCognitoIdentityProvider.InternalErrorException(
+                    message: "internal error"
+                )
             }
         )
         do {
@@ -105,7 +109,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
+                throw AWSCognitoIdentityProvider.InvalidParameterException(
+                    message: "invalid parameter"
+                )
             }
         )
         do {
@@ -137,10 +143,12 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw SdkError.service(
-                    UpdateDeviceStatusOutputError.invalidUserPoolConfigurationException(
-                        .init()),
-                    .init(body: .empty, statusCode: .accepted))
+                throw try await AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
+                    httpResponse: .init(body: .empty, statusCode: .accepted),
+                    decoder: nil,
+                    message: nil,
+                    requestID: nil
+                )
             }
         )
         do {
@@ -168,7 +176,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                    message: "not authorized"
+                )
             }
         )
         do {
@@ -196,7 +206,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.passwordResetRequiredException(PasswordResetRequiredException(message: "password reset required"))
+                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
+                    message: "password reset required"
+                )
             }
         )
         do {
@@ -228,7 +240,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
+                throw AWSCognitoIdentityProvider.ResourceNotFoundException(
+                    message: "resource not found"
+                )
             }
         )
         do {
@@ -260,7 +274,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
+                throw AWSCognitoIdentityProvider.TooManyRequestsException(
+                    message: "too many requests"
+                )
             }
         )
         do {
@@ -292,7 +308,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.userNotConfirmedException(UserNotConfirmedException(message: "user not confirmed"))
+                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
+                    message: "user not confirmed"
+                )
             }
         )
         do {
@@ -324,7 +342,9 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                throw UpdateDeviceStatusOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
+                throw AWSCognitoIdentityProvider.UserNotFoundException(
+                    message: "user not found"
+                )
             }
         )
         do {

@@ -41,7 +41,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
             mockRevokeTokenResponse: { _ in
                 return .testData
             }, mockGlobalSignOutResponse: { _ in
-                throw GlobalSignOutOutputError.internalErrorException(.init())
+                throw AWSCognitoIdentityProvider.InternalErrorException()
             })
         guard let result = await plugin.signOut(options: .init(globalSignOut: true)) as? AWSCognitoSignOutResult,
               case .partial(revokeTokenError: let revokeTokenError,
@@ -59,7 +59,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
     func testRevokeSignOutFailed() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                throw RevokeTokenOutputError.internalErrorException(.init())
+                throw AWSCognitoIdentityProvider.InternalErrorException()
             }, mockGlobalSignOutResponse: { _ in
                 return .testData
             })
