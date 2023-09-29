@@ -42,11 +42,10 @@ extension AWSS3StorageService {
                 try StorageListResult.Item(s3Object: $0, prefix: prefix)
             }
             return StorageListResult(items: items, nextToken: response.nextContinuationToken)
-        } catch let error as SdkError<ListObjectsV2OutputError> {
+        } catch let error as StorageErrorConvertible {
             throw error.storageError
         } catch {
             throw StorageError(error: error)
         }
     }
-
 }

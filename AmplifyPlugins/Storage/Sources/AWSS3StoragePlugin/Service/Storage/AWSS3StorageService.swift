@@ -60,9 +60,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                      logger: Logger = storageLogger) throws {
         let credentialsProvider = authService.getCredentialsProvider()
         let clientConfig = try S3Client.S3ClientConfiguration(
-            credentialsProvider: credentialsProvider,
             region: region,
-            signingRegion: region)
+            credentialsProvider: credentialsProvider,
+            signingRegion: region
+        )
 
         if var proxy = httpClientEngineProxy {
             let httpClientEngine: HttpClientEngine
