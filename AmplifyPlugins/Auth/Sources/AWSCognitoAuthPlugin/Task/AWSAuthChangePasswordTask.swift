@@ -41,10 +41,12 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
             log.verbose("Received success")
         } catch let error as AuthErrorConvertible {
             throw error.authError
-        } catch let error as AuthError {
-            throw error
-        } catch let error {
-            throw AuthError.configuration("Unable to execute auth task", AuthPluginErrorConstants.configurationError, error)
+        } catch {
+            throw AuthError.configuration(
+                "Unable to execute auth task",
+                AuthPluginErrorConstants.configurationError,
+                error
+            )
         }
     }
 
