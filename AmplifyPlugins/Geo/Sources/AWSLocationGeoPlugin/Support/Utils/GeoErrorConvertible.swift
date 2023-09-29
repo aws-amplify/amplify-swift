@@ -25,8 +25,6 @@ extension AWSLocation.AccessDeniedException: GeoErrorConvertible {
 }
 
 extension AWSLocation.InternalServerException: GeoErrorConvertible {
-    var fallbackDescription: String { "" }
-
     var geoError: Geo.Error {
         .serviceError(
             message ?? "",
@@ -37,8 +35,6 @@ extension AWSLocation.InternalServerException: GeoErrorConvertible {
 }
 
 extension AWSLocation.ResourceNotFoundException: GeoErrorConvertible {
-    var fallbackDescription: String { "" }
-
     var geoError: Geo.Error {
         .serviceError(
             message ?? "",
@@ -49,8 +45,6 @@ extension AWSLocation.ResourceNotFoundException: GeoErrorConvertible {
 }
 
 extension AWSLocation.ThrottlingException: GeoErrorConvertible {
-    var fallbackDescription: String { "" }
-
     var geoError: Geo.Error {
         .serviceError(
             message ?? "",
@@ -61,8 +55,6 @@ extension AWSLocation.ThrottlingException: GeoErrorConvertible {
 }
 
 extension AWSLocation.ValidationException: GeoErrorConvertible {
-    var fallbackDescription: String { "" }
-
     var geoError: Geo.Error {
         .serviceError(
             message ?? "",
