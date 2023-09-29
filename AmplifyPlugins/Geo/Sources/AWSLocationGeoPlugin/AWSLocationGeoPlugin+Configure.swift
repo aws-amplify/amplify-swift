@@ -30,10 +30,11 @@ extension AWSLocationGeoPlugin {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
         let region = configuration.regionName
+        // TODO: FrameworkMetadata Replacement
         let serviceConfiguration = try LocationClient.LocationClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-            region: region)
+            region: region,
+            credentialsProvider: credentialsProvider
+        )
 
         #if os(iOS) || os(macOS) // no-op
         #else
