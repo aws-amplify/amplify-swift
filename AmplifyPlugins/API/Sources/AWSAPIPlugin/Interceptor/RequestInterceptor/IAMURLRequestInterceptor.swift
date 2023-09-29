@@ -42,7 +42,8 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         let httpMethod = (request.httpMethod?.uppercased())
             .flatMap(HttpMethodType.init(rawValue:)) ?? .get
 
-        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?
+            .map { ClientRuntime.URLQueryItem(name: $0.name, value: $0.value)} ?? []
 
         let requestBuilder = SdkHttpRequestBuilder()
             .withHost(host)
