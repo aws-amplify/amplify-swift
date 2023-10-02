@@ -5,22 +5,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-import AWSPinpoint
-import ClientRuntime
 import Foundation
+import Amplify
+import AwsCommonRuntimeKit
 
-class AnalyticsErrorHelper {
+enum AnalyticsErrorHelper {
     static func getDefaultError(_ error: Error) -> AnalyticsError {
-        if let sdkError = error as? SdkError<PutEventsOutputError>{
-            return sdkError.analyticsError
+        switch error {
+        case let error as AnalyticsErrorConvertible:
+            return error.analyticsError
+        default:
+            return getDefaultError(error as NSError)
         }
-
-        if let analyticsError = error as? AnalyticsError {
-            return analyticsError
-        }
-
-        return getDefaultError(error as NSError)
     }
 
     static func getDefaultError(_ error: NSError) -> AnalyticsError {

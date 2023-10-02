@@ -8,6 +8,7 @@
 import Amplify
 import AWSPinpoint
 import ClientRuntime
+import enum AwsCommonRuntimeKit.CommonRunTimeError
 import Foundation
 
 /// AnalyticsEventRecording saves and submits pinpoint events
@@ -206,26 +207,21 @@ class EventRecorder: AnalyticsEventRecording {
     }
 
     private func isErrorRetryable(_ error: Error) -> Bool {
-        switch error {
-        case let clientError as ClientError:
-            return clientError.isRetryable
-        case let putEventsOutputError as PutEventsOutputError:
-            return putEventsOutputError.isRetryable
-        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
-            return sdkPutEventsOutputError.isRetryable
-        case let sdkError as SdkError<Error>:
-            return sdkError.isRetryable
-        default:
+        guard case let modeledError as ModeledError = error else {
             return false
         }
+        return type(of: modeledError).isRetryable
     }
     
     private func errorDescription(_ error: Error) -> String {
         switch error {
-        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
-            return sdkPutEventsOutputError.errorDescription
-        case let sdkError as SdkError<Error>:
-            return sdkError.errorDescription
+        case let error as ModeledErrorDescribable:
+            return error.errorDescription
+        case let error as CommonRunTimeError:
+            switch error {
+            case .crtError(let crtError):
+                return crtError.message
+            }
         default:
             return error.localizedDescription
         }
@@ -233,15 +229,8 @@ class EventRecorder: AnalyticsEventRecording {
     
     private func isConnectivityError(_ error: Error) -> Bool {
         switch error {
-        case let clientError as ClientError:
-            if case .networkError(_) = clientError {
-                return true
-            }
-            return false
-        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
-            return sdkPutEventsOutputError.isConnectivityError
-        case let sdkError as SdkError<Error>:
-            return sdkError.isConnectivityError
+        case let error as CommonRunTimeError:
+            return error.isConnectivityError
         case let error as NSError:
             let networkErrorCodes = [
                 NSURLErrorCannotFindHost,
