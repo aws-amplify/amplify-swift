@@ -13,67 +13,77 @@ import XCTest
 
 @testable import AWSS3StoragePlugin
 
-final class S3ClientConfigurationProxyTests: XCTestCase {
+final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
 
-    /// Given: A client configuration that has a value for a property such as `accelerate`.
-    /// When: An override is set on its proxy configuration.
-    /// Then: The proxy returns the value from the override.
+    /// Given: A base configuration that has a value for a property such as `accelerate`.
+    /// When: An override is set through `withAccelerate(_:)`
+    /// Then: The base configuration is not mutated.
     func testPropertyOverrides() async throws {
-        let target = try await S3Client.S3ClientConfiguration()
-        target.accelerate = true
-        
-        let sut = S3ClientConfigurationProxy(target: target, accelerateOverride: false)
-        XCTAssertEqual(sut.accelerate, false)
-        XCTAssertEqual(target.accelerate, true)
+        let baseConfiguration = try await S3Client.S3ClientConfiguration()
+        baseConfiguration.serviceSpecific.accelerate = true
+
+        let sut = try baseConfiguration.withAccelerate(false)
+        XCTAssertEqual(sut.serviceSpecific.accelerate, false)
+        XCTAssertEqual(baseConfiguration.serviceSpecific.accelerate, true)
     }
 
-    /// Given: A client configuration with random values.
-    /// When: A proxy configuration around it is created **without overrides**.
-    /// Then: The values returned by the proxy are equal to those from the **client configuration**.
-    func testPropertyBypass() async throws {
-        let target = try await S3Client.S3ClientConfiguration(
-            accelerate: Bool.random(),
+    /// Given: A client configuration.
+    /// When: Calling `withAccelerate` with a `nil` value.
+    /// Then: The existing and new configurations should share a reference.
+    func test_copySemantics_nilAccelerate() async throws {
+        let baseAccelerate = Bool.random()
+        let baseConfiguration = try await configuration(accelerate: baseAccelerate)
+
+        let nilAccelerate = try baseConfiguration.withAccelerate(nil)
+        XCTAssertIdentical(baseConfiguration, nilAccelerate)
+    }
+
+    /// Given: A client configuration.
+    /// When: Calling `withAccelerate` with a non-nil value equal to that of the existing config's.
+    /// Then: The existing and new configurations should share a reference.
+    func test_copySemantics_equalAccelerate() async throws {
+        let baseAccelerate = Bool.random()
+        let baseConfiguration = try await configuration(accelerate: baseAccelerate)
+
+        let equalAccelerate = try baseConfiguration.withAccelerate(baseAccelerate)
+        XCTAssertIdentical(baseConfiguration, equalAccelerate)
+    }
+
+    /// Given: A client configuration.
+    /// When: Calling `withAccelerate` with a non-nil value **not** equal to that of the existing config's.
+    /// Then: The existing and new configurations should not share a reference.
+    func test_copySemantics_nonEqualAccelerate() async throws {
+        let baseAccelerate = Bool.random()
+        let baseConfiguration = try await configuration(accelerate: baseAccelerate)
+
+        let nonEqualAccelerate = try baseConfiguration.withAccelerate(!baseAccelerate)
+        XCTAssertNotIdentical(baseConfiguration, nonEqualAccelerate)
+    }
+
+
+    // Helper configuration method
+    private func configuration(accelerate: Bool) async throws -> S3Client.S3ClientConfiguration {
+        var serviceSpecific = try S3Client.ServiceSpecificConfiguration()
+        serviceSpecific.accelerate = accelerate
+        serviceSpecific.useArnRegion = .random()
+        serviceSpecific.useGlobalEndpoint = .random()
+        serviceSpecific.disableMultiRegionAccessPoints = .random()
+        serviceSpecific.forcePathStyle = .random()
+
+        let baseConfiguration = try await S3Client.S3ClientConfiguration(
             credentialsProvider: nil,
-            disableMultiRegionAccessPoints: Bool.random(),
             endpoint: UUID().uuidString,
-            endpointResolver: nil,
-            forcePathStyle: Bool.random(),
-            frameworkMetadata: nil,
+            serviceSpecific: serviceSpecific,
+            region: nil,
             regionResolver: nil,
             signingRegion: UUID().uuidString,
-            useArnRegion: Bool.random(),
-            useDualStack: Bool.random(),
-            useFIPS: Bool.random(),
-            useGlobalEndpoint: Bool.random()
+            useDualStack: .random(),
+            useFIPS: .random(),
+            retryMode: .adaptive,
+            appID: UUID().uuidString,
+            connectTimeoutMs: .random(in: UInt32.min...UInt32.max)
         )
-        
-        var sut = S3ClientConfigurationProxy(target: target, accelerateOverride: nil)
-        XCTAssertEqual(sut.accelerate, target.accelerate)
-        XCTAssertEqual(sut.disableMultiRegionAccessPoints, target.disableMultiRegionAccessPoints)
-        XCTAssertEqual(sut.forcePathStyle, target.forcePathStyle)
-        XCTAssertEqual(sut.useArnRegion, target.useArnRegion)
-        XCTAssertEqual(sut.useDualStack, target.useDualStack)
-        XCTAssertEqual(sut.region, target.region)
-        XCTAssertEqual(sut.signingRegion, target.signingRegion)
-        XCTAssertEqual(sut.useFIPS, target.useFIPS)
-        XCTAssertEqual(sut.useGlobalEndpoint, target.useGlobalEndpoint)
-        XCTAssertEqual(sut.endpoint, target.endpoint)
 
-        sut.region = UUID().uuidString
-        sut.signingRegion = UUID().uuidString
-        sut.useFIPS = !(sut.useFIPS ?? false)
-        sut.useDualStack = !(sut.useDualStack ?? false)
-        sut.endpoint = UUID().uuidString
-
-        XCTAssertEqual(sut.accelerate, target.accelerate)
-        XCTAssertEqual(sut.disableMultiRegionAccessPoints, target.disableMultiRegionAccessPoints)
-        XCTAssertEqual(sut.forcePathStyle, target.forcePathStyle)
-        XCTAssertEqual(sut.useArnRegion, target.useArnRegion)
-        XCTAssertEqual(sut.useDualStack, target.useDualStack)
-        XCTAssertEqual(sut.region, target.region)
-        XCTAssertEqual(sut.signingRegion, target.signingRegion)
-        XCTAssertEqual(sut.useFIPS, target.useFIPS)
-        XCTAssertEqual(sut.useGlobalEndpoint, target.useGlobalEndpoint)
-        XCTAssertEqual(sut.endpoint, target.endpoint)
+        return baseConfiguration
     }
 }

@@ -110,7 +110,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     /// - Then: A StorageError.keyNotFound is thrown
     func testvalidateObjectExistenceForNonExistentKey() async throws {
         client.headObjectHandler = { _ in
-            throw HeadObjectOutputError.notFound(.init())
+            throw AWSS3.NotFound()
         }
         let nonExistentKey = UUID().uuidString
         do {
@@ -126,8 +126,9 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     /// - Then: An SdkError.service is thrown
     func testvalidateObjectExistenceForNonExistentKeyWithSdkServiceError() async throws {
         client.headObjectHandler = { _ in
-            let headObjectError = HeadObjectOutputError.notFound(.init())
-            throw SdkError<HeadObjectOutputError>.service(headObjectError, HttpResponse(body: .none, statusCode: .notFound))
+            throw try await AWSS3.NotFound(
+                httpResponse: HttpResponse(body: .none, statusCode: .notFound)
+            )
         }
         let nonExistentKey = UUID().uuidString
         do {
@@ -143,8 +144,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     /// - Then: An SdkError.client is thrown
     func testvalidateObjectExistenceForNonExistentKeyWithSdkClientError() async throws {
         client.headObjectHandler = { _ in
-            let headObjectError = HeadObjectOutputError.notFound(.init())
-            throw SdkError<HeadObjectOutputError>.client(ClientError.retryError(headObjectError))
+            throw AWSS3.NotFound()
         }
         let nonExistentKey = UUID().uuidString
         do {
