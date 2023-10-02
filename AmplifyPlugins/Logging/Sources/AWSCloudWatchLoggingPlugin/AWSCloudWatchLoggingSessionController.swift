@@ -25,7 +25,7 @@ final class AWSCloudWatchLoggingSessionController {
     private let logGroupName: String
     private let region: String
     private let localStoreMaxSizeInMB: Int
-    private let credentialsProvider: CredentialsProvider
+    private let credentialsProvider: CredentialsProviding
     private let authentication: AuthCategoryUserBehavior
     private let category: String
     private var session: AWSCloudWatchLoggingSession?
@@ -59,7 +59,7 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     /// - Tag: CloudWatchLogSessionController.init
-    init(credentialsProvider: CredentialsProvider,
+    init(credentialsProvider: CredentialsProviding,
          authentication: AuthCategoryUserBehavior,
          logFilter: AWSCloudWatchLoggingFilterBehavior,
          category: String,
@@ -103,10 +103,10 @@ final class AWSCloudWatchLoggingSessionController {
 
     private func createConsumer() throws -> LogBatchConsumer? {
         if self.client == nil {
+            // TODO: FrameworkMetadata Replacement
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
-                credentialsProvider: credentialsProvider,
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: region
+                region: region,
+                credentialsProvider: credentialsProvider
             )
 
             #if os(iOS) || os(macOS) // no-op

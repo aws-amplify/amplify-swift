@@ -14,7 +14,7 @@ import ClientRuntime
 public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {    
     public let refreshIntervalInSeconds: Int
     private let endpoint: URL
-    private let credentialProvider: CredentialsProvider?
+    private let credentialProvider: CredentialsProviding?
     private let region: String
     private let loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard
     
@@ -31,7 +31,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     public init(
          endpoint: URL,
          region: String,
-         credentialProvider: CredentialsProvider? = nil,
+         credentialProvider: CredentialsProviding? = nil,
          refreshIntervalInSeconds: Int = 1200
     ) {
         self.endpoint = endpoint
@@ -79,7 +79,9 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         let httpMethod = (request.httpMethod?.uppercased())
             .flatMap(HttpMethodType.init(rawValue:)) ?? .get
 
-        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?
+            .map { ClientRuntime.URLQueryItem(name: $0.name, value: $0.value) } ?? []
 
         let requestBuilder = SdkHttpRequestBuilder()
             .withHost(host)
