@@ -22,13 +22,31 @@ extension AWSS3.NoSuchBucket: StorageErrorConvertible {
 
 extension AWSClientRuntime.UnknownAWSHTTPServiceError: StorageErrorConvertible {
     var storageError: StorageError {
-        .unknown(
-            """
-            Unknown service error occured with:
-            - status: \(httpResponse.statusCode)
-            - message: \(message ?? "")
-            """,
-            self
-        )
+        let error: StorageError
+        switch httpResponse.statusCode {
+        case .unauthorized, .forbidden:
+            error = .accessDenied(
+                StorageErrorConstants.accessDenied.errorDescription,
+                StorageErrorConstants.accessDenied.recoverySuggestion,
+                self
+            )
+        case .notFound:
+            error = .keyNotFound(
+                StorageError.serviceKey,
+                "Received HTTP Response status code 404 NotFound",
+                "Make sure the key exists before trying to download it.",
+                self
+            )
+        default:
+            error = .unknown(
+                """
+                Unknown service error occured with:
+                - status: \(httpResponse.statusCode)
+                - message: \(message ?? "")
+                """,
+                self
+            )
+        }
+        return error
     }
 }
