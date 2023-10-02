@@ -7,9 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSS3
-import ClientRuntime
-import AWSClientRuntime
 
 extension StorageError {
     static var serviceKey: String {
