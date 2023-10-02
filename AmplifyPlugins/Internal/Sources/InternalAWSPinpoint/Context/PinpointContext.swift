@@ -76,14 +76,14 @@ struct PinpointContextConfiguration {
     /// The Pinpoint region
     let region: String
     /// Used to retrieve the proper AWSCredentials when creating the PinpointCLient
-    let credentialsProvider: CredentialsProvider
+    let credentialsProvider: CredentialsProviding
     /// Indicates if the App is in Debug or Release build. Defaults to `false`
     /// Setting this flag to true will set the Endpoint Profile to have a channel type of "APNS_SANDBOX".
     let isDebug: Bool
 
     init(appId: String,
          region: String,
-         credentialsProvider: CredentialsProvider,
+         credentialsProvider: CredentialsProviding,
          isDebug: Bool = false) {
         self.appId = appId
         self.region = region

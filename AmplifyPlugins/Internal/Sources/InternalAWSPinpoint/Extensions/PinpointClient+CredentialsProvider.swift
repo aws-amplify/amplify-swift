@@ -11,11 +11,11 @@ import AWSPinpoint
 @_spi(FoundationClientEngine) import AWSPluginsCore
 
 extension PinpointClient {
-    convenience init(region: String, credentialsProvider: CredentialsProvider) throws {
+    convenience init(region: String, credentialsProvider: CredentialsProviding) throws {
+        // TODO: FrameworkMetadata Replacement
         let configuration = try PinpointClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-            region: region
+            region: region,
+            credentialsProvider: credentialsProvider
         )
         #if os(iOS) || os(macOS) // no-op
         #else
