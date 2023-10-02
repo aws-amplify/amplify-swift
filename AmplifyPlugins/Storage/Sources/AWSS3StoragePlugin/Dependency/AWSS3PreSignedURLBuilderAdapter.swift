@@ -19,7 +19,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     let defaultExpiration: Int64 = 50 * 60 // 50 minutes
 
     let bucket: String
-    let config: S3ClientConfigurationProtocol
+    let config: S3Client.S3ClientConfiguration
     let logger: Logger
 
     /// Creates a pre-signed URL builder.
@@ -38,9 +38,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
                          expires: Int64? = nil) async throws -> URL {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = expiresDate.timeIntervalSinceNow
-        let config = (accelerate == nil) ? self.config : S3ClientConfigurationProxy(
-            target: self.config,
-            accelerateOverride: accelerate)
+        let config = try config.withAccelerate(accelerate)
         let preSignedUrl: URL?
         switch signingOperation {
         case .getObject:
