@@ -66,15 +66,11 @@ private struct CustomPinpointHttpClientEngine: HttpClientEngine {
             return try await httpClientEngine.execute(request: request)
         }
 
-        var headers = request.headers
         let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
-        headers.update(name: userAgentHeader,
-                       value: "\(currentUserAgent)\(userAgentSuffix)")
-        for header in headers.headers {
-            for value in header.value {
-                request.withHeader(name: header.name, value: value)
-            }
-        }
+        request.withHeader(
+            name: userAgentHeader,
+            value: "\(currentUserAgent)\(userAgentSuffix)"
+        )
 
         await PinpointRequestsRegistry.shared.unregisterSources(for: pinpointApi)
         return try await httpClientEngine.execute(request: request)
