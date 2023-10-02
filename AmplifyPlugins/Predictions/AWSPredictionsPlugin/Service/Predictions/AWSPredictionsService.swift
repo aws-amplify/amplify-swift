@@ -31,12 +31,12 @@ class AWSPredictionsService {
 
     convenience init(
         configuration: PredictionsPluginConfiguration,
-        credentialsProvider: CredentialsProvider,
+        credentialsProvider: CredentialsProviding,
         identifier: String
     ) throws {
         let translateClientConfiguration = try TranslateClient.TranslateClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
         #if os(iOS) || os(macOS) // no-op
         #else
@@ -47,8 +47,8 @@ class AWSPredictionsService {
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
         let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
         #if os(iOS) || os(macOS) // no-op
         #else
@@ -59,8 +59,8 @@ class AWSPredictionsService {
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
         let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
         #if os(iOS) || os(macOS) // no-op
         #else
@@ -71,8 +71,8 @@ class AWSPredictionsService {
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
         let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.identify.region
+            region: configuration.identify.region,
+            credentialsProvider: credentialsProvider
         )
         #if os(iOS) || os(macOS) // no-op
         #else
@@ -83,8 +83,8 @@ class AWSPredictionsService {
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
         let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.identify.region
+            region: configuration.identify.region,
+            credentialsProvider: credentialsProvider
         )
         #if os(iOS) || os(macOS) // no-op
         #else
