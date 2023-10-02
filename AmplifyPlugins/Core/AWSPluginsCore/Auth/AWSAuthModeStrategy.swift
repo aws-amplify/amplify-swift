@@ -42,6 +42,8 @@ public protocol AuthModeStrategy: AnyObject {
     init()
 
     func authTypesFor(schema: ModelSchema, operation: ModelOperation) async -> AWSAuthorizationTypeIterator
+    
+    func authTypesFor(schema: ModelSchema, operations: [ModelOperation]) async -> AWSAuthorizationTypeIterator
 }
 
 /// AuthorizationType iterator with an extra `count` property used
@@ -91,6 +93,11 @@ public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
 
     public func authTypesFor(schema: ModelSchema,
                              operation: ModelOperation) -> AWSAuthorizationTypeIterator {
+        return AWSAuthorizationTypeIterator(withValues: [])
+    }
+    
+    public func authTypesFor(schema: ModelSchema,
+                             operations: [ModelOperation]) -> AWSAuthorizationTypeIterator {
         return AWSAuthorizationTypeIterator(withValues: [])
     }
 }
@@ -188,19 +195,37 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     /// - Returns: an iterator for the applicable auth rules
     public func authTypesFor(schema: ModelSchema,
                              operation: ModelOperation) async -> AWSAuthorizationTypeIterator {
-        var applicableAuthRules = schema.authRules
-            .filter(modelOperation: operation)
-            .sorted(by: AWSMultiAuthModeStrategy.comparator)
-
+        await authTypesFor(schema: schema, operations: [operation])
+    }
+    /// Returns the union of authorization types for the provided schema for the given list of operations
+    /// - Parameters:
+    ///   - schema: model schema
+    ///   - operations: model operations
+    /// - Returns: an iterator for the applicable auth rules
+    public func authTypesFor(
+        schema: ModelSchema,
+        operations: [ModelOperation]
+    ) async -> AWSAuthorizationTypeIterator {
+        
+        var applicableAuthRules = Set<AuthRule>()
+        
+        for operation in operations {
+            let rules = schema.authRules.filter(modelOperation: operation)
+            applicableAuthRules = applicableAuthRules.union(Set(rules))
+        }
+        
+        var sortedRules = applicableAuthRules.sorted(by: AWSMultiAuthModeStrategy.comparator)
+        
         // if there isn't a user signed in, returns only public or custom rules
         if let authDelegate = authDelegate, await !authDelegate.isUserLoggedIn() {
-            applicableAuthRules = applicableAuthRules.filter { rule in
+            sortedRules = sortedRules.filter { rule in
                 return rule.allow == .public || rule.allow == .custom
             }
         }
-        let applicableAuthTypes = applicableAuthRules.map {
+        let applicableAuthTypes = sortedRules.map {
             AWSMultiAuthModeStrategy.authTypeFor(authRule: $0)
         }
         return AWSAuthorizationTypeIterator(withValues: applicableAuthTypes)
     }
+    
 }
