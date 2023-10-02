@@ -14,8 +14,8 @@ extension AWSTextract.HumanLoopQuotaExceededException: PredictionsErrorConvertib
     var predictionsError: PredictionsError {
         .service(
             .init(
-                description: "",
-                recoverySuggestion: "",
+                description: "The number of in-progress human reviews you have has exceeded the number allowed.",
+                recoverySuggestion: "Try again later.",
                 httpStatusCode: httpResponse.statusCode.rawValue,
                 underlyingError: self
             )
