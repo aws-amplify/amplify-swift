@@ -35,7 +35,9 @@ extension CommonRunTimeError {
     public var isConnectivityError: Bool {
         switch self {
         case .crtError(let error):
-            Self.connectivityErrorCodes.contains(UInt32(error.code))
+            return Self.connectivityErrorCodes.contains(
+                UInt32(error.code)
+            )
         }
     }
 }
