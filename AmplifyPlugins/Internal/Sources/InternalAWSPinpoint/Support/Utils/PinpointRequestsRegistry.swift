@@ -66,6 +66,7 @@ private struct CustomPinpointHttpClientEngine: HttpClientEngine {
             return try await httpClientEngine.execute(request: request)
         }
 
+        let headers = request.headers
         let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
         request.withHeader(
             name: userAgentHeader,
