@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Exclude issues opened by maintainers
-    if: ${{ !contains(fromJSON('["CONTRIBUTOR", "MEMBER", "OWNER"]'), github.event.issue.author_association) }}
+    if: ${{ !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.issue.author_association) }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:

@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Exclude comments in PRs and comments made from maintainers
-    if: ${{ !github.event.issue.pull_request && !contains(fromJSON('["CONTRIBUTOR", "MEMBER", "OWNER"]'), github.event.comment.author_association) }}
+    if: ${{ !github.event.issue.pull_request && !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
