@@ -21,8 +21,8 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
     var apiAuthProviderFactory: APIAuthProviderFactory
-    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
-    
+    private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
+
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
     private var running = false
@@ -203,7 +203,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
-    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
+    private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
     
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?

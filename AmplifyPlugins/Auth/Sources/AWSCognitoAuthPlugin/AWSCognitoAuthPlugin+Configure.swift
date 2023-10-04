@@ -12,7 +12,9 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
-@_spi(FoundationClientEngine) import AWSPluginsCore
+import AWSClientRuntime
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(InternalHttpEngineProxy) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -86,30 +88,18 @@ extension AWSCognitoAuthPlugin {
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-            // TODO: FrameworkMetadata Replacement
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
                 region: userPoolConfig.region,
                 serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
             )
 
             if var httpClientEngineProxy = httpClientEngineProxy {
-                let httpClientEngine: HttpClientEngine
-                #if os(iOS) || os(macOS)
-                // networking goes through CRT
-                httpClientEngine = configuration.httpClientEngine
-                #else
-                // networking goes through Foundation
-                httpClientEngine = FoundationClientEngine()
-                #endif
-                httpClientEngineProxy.target = httpClientEngine
-                configuration.httpClientEngine = httpClientEngineProxy
+                httpClientEngineProxy.target = baseClientEngine(for: configuration)
+                configuration.httpClientEngine = UserAgentSettingClientEngine(
+                    target: httpClientEngineProxy
+                )
             } else {
-                #if os(iOS) || os(macOS) // no-op
-                #else
-                // For any platform except iOS or macOS
-                // Use Foundation instead of CRT for networking.
-                configuration.httpClientEngine = FoundationClientEngine()
-                #endif
+                configuration.httpClientEngine = .userAgentEngine(for: configuration)
             }
 
             return CognitoIdentityProviderClient(config: configuration)
@@ -121,17 +111,10 @@ extension AWSCognitoAuthPlugin {
     private func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
-            // TODO: FrameworkMetadata Replacement
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
                 region: identityPoolConfig.region
             )
-
-            #if os(iOS) || os(macOS) // no-op
-            #else
-            // For any platform except iOS or macOS
-            // Use Foundation instead of CRT for networking.
-            configuration.httpClientEngine = FoundationClientEngine()
-            #endif
+            configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
             return CognitoIdentityClient(config: configuration)
         default:
