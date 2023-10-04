@@ -8,8 +8,9 @@
 import Foundation
 import ClientRuntime
 
+@_spi(PluginHTTPClientEngine)
 extension SdkHttpRequest {
-    func updatingUserAgent(with value: String) -> SdkHttpRequest {
+    public func updatingUserAgent(with value: String) -> SdkHttpRequest {
         let userAgentKey = "User-Agent"
         var headers = headers
         headers.remove(name: userAgentKey)

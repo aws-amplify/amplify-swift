@@ -8,6 +8,8 @@
 import Foundation
 import AWSPinpoint
 import ClientRuntime
+@_spi(PluginHTTPClientEngine)
+import AWSPluginsCore
 
 @globalActor actor PinpointRequestsRegistry {
     static let shared = PinpointRequestsRegistry()
@@ -66,15 +68,11 @@ private struct CustomPinpointHttpClientEngine: HttpClientEngine {
             return try await httpClientEngine.execute(request: request)
         }
 
-        let headers = request.headers
-        let currentUserAgent = headers.value(for: userAgentHeader) ?? ""
-        request.withHeader(
-            name: userAgentHeader,
-            value: "\(currentUserAgent)\(userAgentSuffix)"
-        )
+        let currentUserAgent = request.headers.value(for: userAgentHeader) ?? ""
+        let updatedRequest = request.updatingUserAgent(with: "\(currentUserAgent) \(userAgentSuffix)")
 
         await PinpointRequestsRegistry.shared.unregisterSources(for: pinpointApi)
-        return try await httpClientEngine.execute(request: request)
+        return try await httpClientEngine.execute(request: updatedRequest)
     }
 
     private func userAgent(for api: PinpointRequestsRegistry.API) async -> String? {
