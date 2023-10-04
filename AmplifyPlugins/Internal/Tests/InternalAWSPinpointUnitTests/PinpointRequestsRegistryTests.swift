@@ -35,12 +35,12 @@ class PinpointRequestsRegistryTests: XCTestCase {
         await PinpointRequestsRegistry.shared.registerSource(.pushNotifications, for: .recordEvent)
         let sdkRequest = try createSdkRequest(for: .recordEvent)
         _ = try await httpClientEngine.execute(request: sdkRequest)
+        let executedRequest = mockedHttpSdkClient.request
 
         XCTAssertEqual(mockedHttpSdkClient.executeCount, 1)
-        guard let userAgent = sdkRequest.headers.value(for: "User-Agent") else {
-            XCTFail("Expected User-Agent")
-            return
-        }
+        let userAgent = try XCTUnwrap(
+            executedRequest?.headers.value(for: "User-Agent")
+        )
         XCTAssertTrue(userAgent.contains(AWSPinpointSource.analytics.rawValue))
         XCTAssertTrue(userAgent.contains(AWSPinpointSource.pushNotifications.rawValue))
     }
@@ -54,12 +54,12 @@ class PinpointRequestsRegistryTests: XCTestCase {
         let oldUserAgent = sdkRequest.headers.value(for: "User-Agent")
 
         _ = try await httpClientEngine.execute(request: sdkRequest)
+        let executedRequest = mockedHttpSdkClient.request
 
         XCTAssertEqual(mockedHttpSdkClient.executeCount, 1)
-        guard let newUserAgent = sdkRequest.headers.value(for: "User-Agent") else {
-            XCTFail("Expected User-Agent")
-            return
-        }
+        let newUserAgent = try XCTUnwrap(
+            executedRequest?.headers.value(for: "User-Agent")
+        )
 
         XCTAssertEqual(newUserAgent, oldUserAgent)
         XCTAssertFalse(newUserAgent.contains(AWSPinpointSource.analytics.rawValue))
@@ -91,8 +91,11 @@ private extension HttpClientEngine {
 
 private class MockHttpClientEngine: HttpClientEngine {
     var executeCount = 0
+    var request: SdkHttpRequest?
+
     func execute(request: SdkHttpRequest) async throws -> HttpResponse {
         executeCount += 1
+        self.request = request
         return .init(body: .none, statusCode: .accepted)
     }
 
