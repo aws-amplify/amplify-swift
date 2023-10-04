@@ -13,7 +13,7 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
     
     static let AWSDateISO8601DateFormat2 = "yyyyMMdd'T'HHmmss'Z'"
     
-    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
+    private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
     let authTokenProvider: AuthTokenProvider
 
     init(authTokenProvider: AuthTokenProvider) {

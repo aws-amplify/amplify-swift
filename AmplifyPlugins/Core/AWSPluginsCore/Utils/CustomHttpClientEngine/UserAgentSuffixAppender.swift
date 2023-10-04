@@ -12,7 +12,7 @@ public class UserAgentSuffixAppender: AWSPluginExtension {
     @_spi(InternalHttpEngineProxy)
     public var target: HttpClientEngine? = nil
     public let suffix: String
-    private let userAgentHeader = "User-Agent"
+    private let userAgentKey = "User-Agent"
 
     public init(suffix: String) {
         self.suffix = suffix
@@ -26,8 +26,9 @@ extension UserAgentSuffixAppender: HttpClientEngine {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
 
-        let currentUserAgent = request.headers.value(for: userAgentHeader) ?? ""
-        request.withHeader(name: userAgentHeader, value: "\(currentUserAgent) \(suffix)")
+        let existingUserAgent = request.headers.value(for: userAgentKey) ?? ""
+        let userAgent = "\(existingUserAgent) \(suffix)"
+        let request = request.updatingUserAgent(with: userAgent)
 
         return try await target.execute(request: request)
     }

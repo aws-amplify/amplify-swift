@@ -6,11 +6,10 @@
 //
 
 import Foundation
-
 import AWSS3
 import Amplify
 import AWSPluginsCore
-@_spi(FoundationClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import ClientRuntime
 
 /// - Tag: AWSS3StorageService
@@ -65,24 +64,13 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             signingRegion: region
         )
 
-        if var proxy = httpClientEngineProxy {
-            let httpClientEngine: HttpClientEngine
-            #if os(iOS) || os(macOS)
-            httpClientEngine = clientConfig.httpClientEngine
-            #else
-            // For any platform except iOS or macOS
-            // Use Foundation instead of CRT for networking.
-            httpClientEngine = FoundationClientEngine()
-            #endif
-            proxy.target = httpClientEngine
-            clientConfig.httpClientEngine = proxy
+        if var httpClientEngineProxy = httpClientEngineProxy {
+            httpClientEngineProxy.target = baseClientEngine(for: clientConfig)
+            clientConfig.httpClientEngine = UserAgentSettingClientEngine(
+                target: httpClientEngineProxy
+            )
         } else {
-            #if os(iOS) || os(macOS) // no-op
-            #else
-            // For any platform except iOS or macOS
-            // Use Foundation instead of CRT for networking.
-            clientConfig.httpClientEngine = FoundationClientEngine()
-            #endif
+            clientConfig.httpClientEngine = .userAgentEngine(for: clientConfig)
         }
 
         let s3Client = S3Client(config: clientConfig)
@@ -142,7 +130,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
-        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData(includeOS: true).description
+        self.userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
