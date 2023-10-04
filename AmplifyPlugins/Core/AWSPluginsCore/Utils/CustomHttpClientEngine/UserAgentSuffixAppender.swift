@@ -33,5 +33,3 @@ extension UserAgentSuffixAppender: HttpClientEngine {
         return try await target.execute(request: request)
     }
 }
-
-
