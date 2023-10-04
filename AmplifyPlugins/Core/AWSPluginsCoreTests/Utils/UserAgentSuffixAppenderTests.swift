@@ -36,7 +36,9 @@ class UserAgentSuffixAppenderTests: XCTestCase {
         _ = try await appender.execute(request: request)
         XCTAssertEqual(httpClientEngine.executeCount, 1)
         XCTAssertNotNil(httpClientEngine.executeRequest)
-        let userAgent = try XCTUnwrap(request.headers.value(for: userAgentKey))
+        let userAgent = try XCTUnwrap(
+            httpClientEngine.executeRequest?.headers.value(for: userAgentKey)
+        )
         XCTAssertTrue(userAgent.hasSuffix(customSuffix))
     }
 
@@ -49,7 +51,9 @@ class UserAgentSuffixAppenderTests: XCTestCase {
         _ = try await appender.execute(request: request)
         XCTAssertEqual(httpClientEngine.executeCount, 1)
         XCTAssertNotNil(httpClientEngine.executeRequest)
-        let userAgent = try XCTUnwrap(request.headers.value(for: userAgentKey))
+        let userAgent = try XCTUnwrap(
+            httpClientEngine.executeRequest?.headers.value(for: userAgentKey)
+        )
         XCTAssertTrue(userAgent.hasSuffix(customSuffix))
     }
 

@@ -6,7 +6,7 @@
 //
 
 import AWSPluginsCore
-@_spi(FoundationClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import Amplify
 import Combine
 import Foundation
@@ -109,12 +109,7 @@ final class AWSCloudWatchLoggingSessionController {
                 credentialsProvider: credentialsProvider
             )
 
-            #if os(iOS) || os(macOS) // no-op
-            #else
-            // For any platform except iOS or macOS
-            // Use Foundation instead of CRT for networking.
-            configuration.httpClientEngine = FoundationClientEngine()
-            #endif
+            configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
             self.client = CloudWatchLogsClient(config: configuration)
         }

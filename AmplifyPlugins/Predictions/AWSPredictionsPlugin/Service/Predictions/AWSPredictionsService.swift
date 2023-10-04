@@ -12,7 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
-@_spi(FoundationClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import Foundation
 import ClientRuntime
 import AWSClientRuntime
@@ -38,60 +38,47 @@ class AWSPredictionsService {
             region: configuration.convert.region,
             credentialsProvider: credentialsProvider
         )
-        #if os(iOS) || os(macOS) // no-op
-        #else
-        // For any platform except iOS or macOS
-        // Use Foundation instead of CRT for networking.
-        translateClientConfiguration.httpClientEngine = FoundationClientEngine()
-        #endif
+        translateClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: translateClientConfiguration
+        )
+
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
         let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
             region: configuration.convert.region,
             credentialsProvider: credentialsProvider
         )
-        #if os(iOS) || os(macOS) // no-op
-        #else
-        // For any platform except iOS or macOS
-        // Use Foundation instead of CRT for networking.
-        pollyClientConfiguration.httpClientEngine = FoundationClientEngine()
-        #endif
+        pollyClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: pollyClientConfiguration
+        )
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
         let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
             region: configuration.convert.region,
             credentialsProvider: credentialsProvider
         )
-        #if os(iOS) || os(macOS) // no-op
-        #else
-        // For any platform except iOS or macOS
-        // Use Foundation instead of CRT for networking.
-        comprehendClientConfiguration.httpClientEngine = FoundationClientEngine()
-        #endif
+        comprehendClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: comprehendClientConfiguration
+        )
+
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
         let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
             region: configuration.identify.region,
             credentialsProvider: credentialsProvider
         )
-        #if os(iOS) || os(macOS) // no-op
-        #else
-        // For any platform except iOS or macOS
-        // Use Foundation instead of CRT for networking.
-        rekognitionClientConfiguration.httpClientEngine = FoundationClientEngine()
-        #endif
+        rekognitionClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: rekognitionClientConfiguration
+        )
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
         let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
             region: configuration.identify.region,
             credentialsProvider: credentialsProvider
         )
-        #if os(iOS) || os(macOS) // no-op
-        #else
-        // For any platform except iOS or macOS
-        // Use Foundation instead of CRT for networking.
-        textractClientConfiguration.httpClientEngine = FoundationClientEngine()
-        #endif
+        textractClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: textractClientConfiguration
+        )
         let awsTextractClient = TextractClient(config: textractClientConfiguration)
 
         let awsTranscribeStreamingAdapter = AWSTranscribeStreamingAdapter(
