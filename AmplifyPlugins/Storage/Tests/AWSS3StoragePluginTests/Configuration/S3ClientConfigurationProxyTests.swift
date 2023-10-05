@@ -35,7 +35,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
         let baseConfiguration = try await configuration(accelerate: baseAccelerate)
 
         let nilAccelerate = try baseConfiguration.withAccelerate(nil)
-        XCTAssertIdentical(baseConfiguration, nilAccelerate)
+        XCTAssert(baseConfiguration === nilAccelerate)
     }
 
     /// Given: A client configuration.
@@ -46,7 +46,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
         let baseConfiguration = try await configuration(accelerate: baseAccelerate)
 
         let equalAccelerate = try baseConfiguration.withAccelerate(baseAccelerate)
-        XCTAssertIdentical(baseConfiguration, equalAccelerate)
+        XCTAssert(baseConfiguration === equalAccelerate)
     }
 
     /// Given: A client configuration.
@@ -57,7 +57,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
         let baseConfiguration = try await configuration(accelerate: baseAccelerate)
 
         let nonEqualAccelerate = try baseConfiguration.withAccelerate(!baseAccelerate)
-        XCTAssertNotIdentical(baseConfiguration, nonEqualAccelerate)
+        XCTAssert(baseConfiguration !== nonEqualAccelerate)
     }
 
 
