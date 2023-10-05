@@ -19,9 +19,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
     /// When: An override is set through `withAccelerate(_:)`
     /// Then: The base configuration is not mutated.
     func testPropertyOverrides() async throws {
-        let baseConfiguration = try await S3Client.S3ClientConfiguration()
-        baseConfiguration.serviceSpecific.accelerate = true
-
+        let baseConfiguration = try await configuration(accelerate: true)
         let sut = try baseConfiguration.withAccelerate(false)
         XCTAssertEqual(sut.serviceSpecific.accelerate, false)
         XCTAssertEqual(baseConfiguration.serviceSpecific.accelerate, true)
@@ -74,7 +72,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
             credentialsProvider: nil,
             endpoint: UUID().uuidString,
             serviceSpecific: serviceSpecific,
-            region: nil,
+            region: "us-east-1",
             regionResolver: nil,
             signingRegion: UUID().uuidString,
             useDualStack: .random(),
