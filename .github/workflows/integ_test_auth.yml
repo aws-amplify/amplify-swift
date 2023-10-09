@@ -32,6 +32,8 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
           scheme: AuthIntegrationTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   auth-integration-test-tvOS:
     runs-on: macos-13
@@ -113,3 +115,5 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Auth/Tests/AuthHostedUIApp/
           scheme: AuthHostedUIApp
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          xcode_path: '/Applications/Xcode_14.3.app'
