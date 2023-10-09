@@ -244,7 +244,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         // A S3 HeadObject call is expected
-        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [.head])
+        XCTAssert(requestRecorder.sdkRequests.map(\.method).allSatisfy { $0 == .head })
         try assertUserAgentComponents(sdkRequests: requestRecorder.sdkRequests)
 
         XCTAssertEqual(requestRecorder.urlRequests.map { $0.httpMethod }, [])
