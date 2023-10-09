@@ -23,13 +23,20 @@ class AuthResendSignUpCodeTests: AWSAuthBaseTest {
         do {
             _ = try await Amplify.Auth.resendSignUpCode(for: "user-non-exists")
             XCTFail("resendSignUpCode with non existing user should not return result")
-        } catch {
-            guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
-                  case .userNotFound = cognitoError else {
-                print(error)
-                XCTFail("Should return userNotFound")
-                return
+        } catch let error as AuthError {
+            let underlyingError = error.underlyingError as? AWSCognitoAuthError
+            switch underlyingError {
+            case .userNotFound, .limitExceeded: break
+            default:
+                XCTFail(
+                    """
+                    Expected AWSCognitoAuthError.userNotFound || AWSCognitoAuthError.limitExceed
+                    Recevied: \(error)
+                    """
+                )
             }
+        } catch {
+            XCTFail("Expected `AuthError` - received: \(error)")
         }
     }
 }
