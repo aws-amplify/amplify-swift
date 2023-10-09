@@ -54,7 +54,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
                 signUpExpectation.fulfill()
             }
         }
-        await fulfillment(of: signUpExpectation, timeout: 5, enforceOrder: false)
+        await fulfillment(of: [signUpExpectation], timeout: 5, enforceOrder: false)
     }
 
     //    /// Test if user registration is successful.
