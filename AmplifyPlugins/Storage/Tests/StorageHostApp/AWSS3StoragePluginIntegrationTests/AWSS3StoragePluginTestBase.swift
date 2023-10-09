@@ -12,6 +12,7 @@ import XCTest
 
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 
 class AWSS3StoragePluginTestBase: XCTestCase {
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)

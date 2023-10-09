@@ -21,4 +21,6 @@ public class AmplifyAWSServiceConfiguration {
     public static let platformName = "amplify-swift"
 
     public static let userAgentLib: String = "lib/\(platformName)#\(amplifyVersion)"
+
+    public static let userAgentOS: String = "os/\(DeviceInfo.current.operatingSystem.name)#\(DeviceInfo.current.operatingSystem.version)"
 }
