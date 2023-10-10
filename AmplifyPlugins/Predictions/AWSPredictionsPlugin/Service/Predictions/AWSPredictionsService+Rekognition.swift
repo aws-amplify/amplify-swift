@@ -24,8 +24,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 let labelsResult = try await detectLabels(image: imageData)
                 let newLabels = IdentifyLabelsResultTransformers.processLabels(labelsResult.labels ?? [])
                 return Predictions.Identify.Labels.Result(labels: newLabels, unsafeContent: nil)
-            } catch let error as DetectLabelsOutputError {
-                throw ServiceErrorMapping.detectLabels.map(error)
+            } catch let error as PredictionsErrorConvertible {
+                throw error.predictionsError
             } catch {
                 throw PredictionsError.unexpectedServiceErrorType(error)
             }
@@ -35,8 +35,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 let unsafeContent = !moderationLabels.isEmpty
                 let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationLabels)
                 return Predictions.Identify.Labels.Result(labels: labels, unsafeContent: unsafeContent)
-            } catch let error as DetectModerationLabelsOutputError {
-                throw ServiceErrorMapping.detectModerationLabels.map(error)
+            } catch let error as PredictionsErrorConvertible {
+                throw error.predictionsError
             }
             catch {
                 throw PredictionsError.unexpectedServiceErrorType(error)
@@ -67,8 +67,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
             let newCelebs = IdentifyCelebritiesResultTransformers.processCelebs(celebrities)
             return Predictions.Identify.Celebrities.Result(celebrities: newCelebs)
-        } catch let error as RecognizeCelebritiesOutputError {
-            throw ServiceErrorMapping.detectCelebrities.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }
@@ -94,8 +94,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 .searchFacesByImage(input: input).faceMatches ?? []
             let faceMatches = IdentifyEntitiesResultTransformers.processCollectionFaces(faces)
             return Predictions.Identify.EntityMatches.Result(entities: faceMatches)
-        } catch let error as SearchFacesByImageOutputError {
-            throw ServiceErrorMapping.searchFacesByImage.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }
@@ -112,8 +112,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             let faces = try await awsRekognition.detectFaces(input: input).faceDetails ?? []
             let newFaces = IdentifyEntitiesResultTransformers.processFaces(faces)
             return Predictions.Identify.Entities.Result(entities: newFaces)
-        } catch let error as DetectFacesOutputError {
-            throw ServiceErrorMapping.detectFaces.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unknownServiceError(error)
         }
@@ -128,8 +128,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         do {
             textResult = try await awsRekognition.detectText(input: request)
-        } catch let error as DetectTextOutputError {
-            throw ServiceErrorMapping.detectText.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }
@@ -147,8 +147,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             let documentTextResult: DetectDocumentTextOutputResponse
             do {
                 documentTextResult = try await detectDocumentText(image: imageData)
-            } catch let error as DetectDocumentTextOutputError {
-                throw ServiceErrorMapping.detectDocumentText.map(error)
+            } catch let error as PredictionsErrorConvertible {
+                throw error.predictionsError
             } catch {
                 throw PredictionsError.unexpectedServiceErrorType(error)
             }
@@ -200,8 +200,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let textResult: DetectTextOutputResponse
         do {
             textResult = try await awsRekognition.detectText(input: request)
-        } catch let error as DetectTextOutputError {
-            throw ServiceErrorMapping.detectText.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }
@@ -220,8 +220,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             let documentTextResult: DetectDocumentTextOutputResponse
             do {
                 documentTextResult = try await detectDocumentText(image: imageData)
-            } catch let error as DetectDocumentTextOutputError {
-                throw ServiceErrorMapping.detectDocumentText.map(error)
+            } catch let error as PredictionsErrorConvertible {
+                throw error.predictionsError
             } catch {
                 throw PredictionsError.unexpectedServiceErrorType(error)
             }
@@ -275,10 +275,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             let moderationLabels = moderationLabelsOutput.moderationLabels ?? []
             let unsafeContent = !moderationLabels.isEmpty
             return Predictions.Identify.Labels.Result(labels: allLabels, unsafeContent: unsafeContent)
-        } catch let error as DetectLabelsOutputError {
-            throw ServiceErrorMapping.detectLabels.map(error)
-        } catch let error as DetectModerationLabelsOutputError {
-            throw ServiceErrorMapping.detectModerationLabels.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }

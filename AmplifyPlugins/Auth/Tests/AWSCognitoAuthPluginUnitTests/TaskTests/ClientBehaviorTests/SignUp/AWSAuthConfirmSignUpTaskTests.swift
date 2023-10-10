@@ -16,7 +16,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 import ClientRuntime
-
+import AWSClientRuntime
 import AWSCognitoIdentityProvider
 
 class AWSAuthConfirmSignUpTaskTests: XCTestCase {
@@ -33,7 +33,7 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
-            return try .init(httpResponse: MockHttpResponse.ok)
+            return try await .init(httpResponse: MockHttpResponse.ok)
         }
 
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
@@ -52,7 +52,12 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
-            throw try ConfirmSignUpOutputError(httpResponse: MockHttpResponse.ok)
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: MockHttpResponse.ok,
+                message: nil,
+                requestID: nil,
+                typeName: nil
+            )
         }
 
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(

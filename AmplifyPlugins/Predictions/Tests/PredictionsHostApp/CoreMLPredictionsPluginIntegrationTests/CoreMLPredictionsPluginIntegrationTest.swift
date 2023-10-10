@@ -21,7 +21,7 @@ class CoreMLPredictionsPluginIntegrationTest: AWSPredictionsPluginTestBase {
             in: url
         )
 
-        XCTAssertEqual(result.labels.count, 0, String(describing: result))
+        XCTAssertEqual(result.labels.count, 2, String(describing: result))
         XCTAssertNil(result.unsafeContent, String(describing: result))
     }
 

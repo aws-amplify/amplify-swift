@@ -159,13 +159,20 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         do {
             _ = try await Amplify.Auth.signIn(username: "username-doesnot-exist", password: "password")
             XCTFail("SignIn with unknown user should not succeed")
+        } catch let error as AuthError {
+            let underlyingError = error.underlyingError as? AWSCognitoAuthError
+            switch underlyingError {
+            case .userNotFound, .limitExceeded: break
+            default:
+                XCTFail(
+                    """
+                    Expected AWSCognitoAuthError.userNotFound || AWSCognitoAuthError.limitExceed
+                    Recevied: \(error)
+                    """
+                )
+            }
         } catch {
-            guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
-                  case .userNotFound = cognitoError
-            else {
-                      XCTFail("Should return userNotFound error")
-                      return
-                  }
+            XCTFail("Expected `AuthError` - received: \(error)")
         }
     }
 

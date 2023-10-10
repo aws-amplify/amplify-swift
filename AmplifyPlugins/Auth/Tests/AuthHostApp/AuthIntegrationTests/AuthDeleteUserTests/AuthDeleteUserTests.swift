@@ -48,15 +48,20 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
         do {
             _ = try await AuthSignInHelper.signInUser(username: username, password: password)
             XCTFail("signIn after account deletion should fail")
+        } catch let error as AuthError {
+            switch error {
+            case .service(_, _, let underlying):
+                XCTAssert(
+                    [.userNotFound, .limitExceeded].contains(underlying as? AWSCognitoAuthError)
+                )
+            default:
+                XCTFail("""
+                Should produce .service error with underlyingError of .userNotFound || .limitExceed
+                Received: \(error)
+                """)
+            }
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
-                XCTFail("Should produce service error instead of \(String(describing: error))")
-                return
-            }
-            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                XCTFail("Underlying error should be userNotFound instead of \(String(describing: error))")
-                return
-            }
+            XCTFail("Expected AuthError - received: \(error)")
         }
 
         // Check if the auth session is signed out

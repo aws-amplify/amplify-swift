@@ -29,7 +29,7 @@ class AuthTestHarness {
         mockedCognitoHelper.createPlugin()
     }
 
-    init(featureSpecification: FeatureSpecification) {
+    init(featureSpecification: FeatureSpecification) async {
 
         let awsCognitoAuthConfig = featureSpecification.preConditions.amplifyConfiguration.auth?.plugins["awsCognitoAuthPlugin"]
 
@@ -42,7 +42,7 @@ class AuthTestHarness {
             fatalError("Unable to create auth configuarion")
         }
 
-        testHarnessInput = AuthTestHarnessInput.createInput(
+        testHarnessInput = await AuthTestHarnessInput.createInput(
             from: featureSpecification)
 
         mockedCognitoHelper = MockedAuthCognitoPluginHelper(

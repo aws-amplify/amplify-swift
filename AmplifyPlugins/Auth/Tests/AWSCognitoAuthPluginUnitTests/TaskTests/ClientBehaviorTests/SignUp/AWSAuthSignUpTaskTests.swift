@@ -10,6 +10,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 import ClientRuntime
+import AWSClientRuntime
 
 import AWSCognitoIdentityProvider
 
@@ -52,7 +53,9 @@ class AWSAuthSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
-            throw try SignUpOutputError(httpResponse: MockHttpResponse.ok)
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: MockHttpResponse.ok, message: nil, requestID: nil, typeName: nil
+            )
         }
 
         let request = AuthSignUpRequest(username: "jeffb",
