@@ -77,8 +77,6 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     ///    - I should get a .service error with .network as underlying error
     ///
     func testOfflineDeleteUser() async throws {
-        // TODO: How are client side retry errors now modeled?
-        throw XCTSkip()
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -113,8 +111,6 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     ///    - I should get a valid response for the second call
     ///
     func testOfflineDeleteUserAndRetry() async throws {
-        // TODO: How are client side retry errors now modeled?
-        throw XCTSkip()
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
