@@ -45,8 +45,6 @@ extension ClientRuntime.HttpResponse {
 
     convenience init(httpURLResponse: HTTPURLResponse, data: Data) throws {
         let headers = Self.headers(from: httpURLResponse.allHeaderFields)
-        // TODO: double check if this works as expected
-        // Previously this needed to be `HttpBody.stream()`
         let body = HttpBody.data(data)
 
         guard let statusCode = HttpStatusCode(rawValue: httpURLResponse.statusCode) else {

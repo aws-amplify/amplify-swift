@@ -59,7 +59,6 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
                 Should produce .service error with underlyingError of .userNotFound || .limitExceed
                 Received: \(error)
                 """)
-
             }
         } catch {
             XCTFail("Expected AuthError - received: \(error)")
