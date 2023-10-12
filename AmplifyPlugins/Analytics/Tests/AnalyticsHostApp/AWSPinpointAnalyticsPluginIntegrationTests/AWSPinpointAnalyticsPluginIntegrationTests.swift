@@ -99,7 +99,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed
     /// Then: Flush Hub event is received
-    func testRecordEventsAreFlushed() {
+    func testRecordEventsAreFlushed() async {
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -144,7 +144,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed after the plugin is enabled
     /// Then: Flush Hub event is received
-    func testRecordsAreFlushedWhenPluginEnabled() {
+    func testRecordsAreFlushedWhenPluginEnabled() async {
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -192,7 +192,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed after the plugin is disabled
     /// Then: Flush Hub event is not received
-    func testRecordsAreNotFlushedWhenPluginDisabled() {
+    func testRecordsAreNotFlushedWhenPluginDisabled() async {
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -233,7 +233,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed with global properties registered
     /// Then: Flush Hub event is received with global properties
-    func testRegisterGlobalProperties() {
+    func testRegisterGlobalProperties() async {
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -286,7 +286,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed with global properties registered and then unregistered
     /// Then: Flush Hub event is received without global properties
-    func testUnRegisterGlobalProperties() {
+    func testUnRegisterGlobalProperties() async {
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
