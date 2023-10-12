@@ -32,7 +32,7 @@ class StorageEngineTestsBase: XCTestCase {
             result = sResult
             saveFinished.fulfill()
         }
-        await fulfillment(of: [saveFinished], timeout: defaultTimeout)
+        wait(for: [saveFinished], timeout: defaultTimeout)
         guard let saveResult = result else {
             return .failure(causedBy: "Save operation timed out")
         }

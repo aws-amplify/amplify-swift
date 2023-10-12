@@ -30,7 +30,11 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                 expectation.fulfill()
             }
         }, environment: MockInvalidEnvironment())
-        await waitForExpectations(timeout: 0.1)
+
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
     func testInvalidIdentitySuccessfullResponse() async {
@@ -60,7 +64,10 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             }
         }, environment: authEnvironment)
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
     func testInvalidAWSCredentialSuccessfulResponse() async {
@@ -93,7 +100,10 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             environment: authEnvironment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
     func testValidSuccessfulResponse() async {
@@ -134,7 +144,11 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             },
             environment: authEnvironment
         )
-        await waitForExpectations(timeout: 0.1)
+
+        await fulfillment(
+            of: [credentialValidExpectation],
+            timeout: 0.1
+        )
     }
 
     func testFailureResponse() async {
@@ -166,7 +180,11 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             },
             environment: authEnvironment
         )
-        await waitForExpectations(timeout: 0.1)
+
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
 }

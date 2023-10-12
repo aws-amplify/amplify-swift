@@ -67,7 +67,10 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [loadCredentialHandlerInvoked],
+            timeout: 0.1
+        )
     }
 
     /// Test is responsible to check if configuration error is correctly caught by the action
@@ -99,7 +102,10 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
     /// Test is responsible to check if the load credentials handle a known error
@@ -153,7 +159,10 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
     /// Test is responsible to check if the load credentials handle an unknown error
@@ -210,7 +219,10 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
 }

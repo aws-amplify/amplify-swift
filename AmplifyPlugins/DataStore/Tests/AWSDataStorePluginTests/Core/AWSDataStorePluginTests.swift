@@ -82,13 +82,17 @@ class AWSDataStorePluginTests: XCTestCase {
             let queryCompleted = expectation(description: "query completed")
             Task {
                 _ = try await plugin.query(ExampleWithEveryType.self)
-                await queryCompleted.fulfill()
+                queryCompleted.fulfill()
             }
             await fulfillment(of: [queryCompleted], timeout: 1.0)
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
         }
-        await waitForExpectations(timeout: 1.0)
+
+        await fulfillment(
+            of: [startExpectation],
+            timeout: 1
+        )
     }
     
     func testStorageEngineStartsOnPluginStopStart() throws {
@@ -212,7 +216,7 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 startCompleted.fulfill()
             })
-            await fulfillment(of: [startCompleted], timeout: 1.0)
+            wait(for: [startCompleted], timeout: 1.0)
 
             let stopCompleted = expectation(description: "stop completed")
             plugin.stop(completion: { _ in
@@ -220,7 +224,7 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 stopCompleted.fulfill()
             })
-            await fulfillment(of: [stopCompleted], timeout: 1.0)
+            wait(for: [stopCompleted], timeout: 1.0)
 
             storageEngine.responders[.startSync] = StartSyncResponder { _ in
                 startExpectationOnSecondStart.fulfill()
@@ -230,8 +234,12 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
             })
-            await fulfillment(of: [startExpectation, stopExpectation, startExpectationOnSecondStart], timeout: 1, enforceOrder: true)
-            await fulfillment(of: [finishNotReceived], timeout: 1)
+            wait(
+                for: [startExpectation, stopExpectation, startExpectationOnSecondStart],
+                timeout: 1,
+                enforceOrder: true
+            )
+            wait(for: [finishNotReceived], timeout: 1)
             sink.cancel()
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
@@ -283,7 +291,7 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 startCompleted.fulfill()
             })
-            await fulfillment(of: [startCompleted], timeout: 1.0)
+            wait(for: [startCompleted], timeout: 1.0)
 
             let clearCompleted = expectation(description: "clear completed")
             plugin.clear(completion: { _ in
@@ -291,7 +299,7 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 clearCompleted.fulfill()
             })
-            await fulfillment(of: [clearCompleted], timeout: 1.0)
+            wait(for: [clearCompleted], timeout: 1.0)
 
             storageEngine.responders[.startSync] = StartSyncResponder {_ in
                 startExpectationOnSecondStart.fulfill()
@@ -301,8 +309,13 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
             })
-            await fulfillment(of: [startExpectation, clearExpectation, startExpectationOnSecondStart], timeout: 1, enforceOrder: true)
-            await fulfillment(of: [finishNotReceived], timeout: 1)
+            
+            wait(
+                for: [startExpectation, clearExpectation, startExpectationOnSecondStart],
+                timeout: 1,
+                enforceOrder: true
+            )
+            wait(for: [finishNotReceived], timeout: 1)
             sink.cancel()
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
@@ -356,7 +369,7 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 queryCompleted.fulfill()
             })
-            await fulfillment(of: [queryCompleted], timeout: 1.0)
+            wait(for: [queryCompleted], timeout: 1.0)
 
             let clearCompleted = expectation(description: "clear completed")
             plugin.clear(completion: { _ in
@@ -364,7 +377,7 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 clearCompleted.fulfill()
             })
-            await fulfillment(of: [clearCompleted], timeout: 1.0)
+            wait(for: [clearCompleted], timeout: 1.0)
             storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> {_ in
                 count = self.expect(startExpectationOnQuery, count, 3)
                 return .success([])
@@ -448,15 +461,15 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 startCompleted.fulfill()
             })
-            await fulfillment(of: [startCompleted], timeout: 1.0)
-            
+            wait(for: [startCompleted], timeout: 1.0)
+
             let clearCompleted = expectation(description: "clear completed")
             plugin.clear(completion: { _ in
                 XCTAssertNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 clearCompleted.fulfill()
             })
-            await fulfillment(of: [clearCompleted], timeout: 1.0)
+            wait(for: [clearCompleted], timeout: 1.0)
 
             let mockModel = MockSynced(id: "12345")
             try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
@@ -527,23 +540,27 @@ class AWSDataStorePluginTests: XCTestCase {
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 startCompleted.fulfill()
             })
-            await fulfillment(of: [startCompleted], timeout: 1.0)
-            
+            wait(for: [startCompleted], timeout: 1.0)
+
             let stopCompleted = expectation(description: "stop completed")
             plugin.stop(completion: { _ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
                 stopCompleted.fulfill()
             })
-            await fulfillment(of: [stopCompleted], timeout: 1.0)
+            wait(for: [stopCompleted], timeout: 1.0)
 
-            await fulfillment(of: [startExpectation, stopExpectation], timeout: 1, enforceOrder: true)
+            wait(
+                for: [startExpectation, stopExpectation],
+                timeout: 1,
+                enforceOrder: true
+            )
             let mockModel = MockSynced(id: "12345")
             try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
                                                                      modelSchema: mockModel.schema,
                                                                      mutationType: .create))
 
-            await fulfillment(of: [publisherReceivedValue, finishNotReceived], timeout: 1)
+            wait(for: [publisherReceivedValue, finishNotReceived], timeout: 1)
             sink.cancel()
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
@@ -602,11 +619,11 @@ class AWSDataStorePluginTests: XCTestCase {
             XCTAssertNotNil(plugin.dataStorePublisher)
             startCompleted.fulfill()
         })
-        await fulfillment(of: [startCompleted], timeout: 1.0)
+        wait(for: [startCompleted], timeout: 1.0)
 
         storageEngine.mockSyncEnginePublisher.send(completion: .finished)
 
-        await fulfillment(of: [stopExpectation], timeout: 1)
+        wait(for: [stopExpectation], timeout: 1)
     }
 
     func testStopStorageEngineOnTerminalFailureEvent() {
@@ -632,7 +649,7 @@ class AWSDataStorePluginTests: XCTestCase {
             XCTAssertNotNil(plugin.dataStorePublisher)
             startCompleted.fulfill()
         })
-        await fulfillment(of: [startCompleted], timeout: 1.0)
+        wait(for: [startCompleted], timeout: 1.0)
 
         storageEngine.mockSyncEnginePublisher.send(completion: .failure(.internalOperation("", "", nil)))
 

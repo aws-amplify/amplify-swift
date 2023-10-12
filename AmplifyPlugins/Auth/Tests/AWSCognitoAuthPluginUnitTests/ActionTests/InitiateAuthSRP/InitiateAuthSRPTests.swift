@@ -32,7 +32,10 @@ class InitiateAuthSRPTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [initiateAuthInvoked],
+            timeout: 0.1
+        )
     }
 
     func testFailedInitiateAuthPropagatesError() async {
@@ -70,7 +73,10 @@ class InitiateAuthSRPTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [errorEventSent],
+            timeout: 0.1
+        )
     }
 
     func testSuccessfulInitiateAuthPropagatesSuccess() async {
@@ -106,7 +112,9 @@ class InitiateAuthSRPTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [successEventSent],
+            timeout: 0.1
+        )
     }
-
 }
