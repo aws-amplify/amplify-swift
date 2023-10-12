@@ -105,9 +105,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
             if message == "downloadData" {
-                Task {
-                    await methodInvokedOnDefaultPlugin.fulfill()
-                }
+                methodInvokedOnDefaultPlugin.fulfill()
             }
         }
         try Amplify.add(plugin: plugin)

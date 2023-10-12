@@ -105,7 +105,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             let completeInvoked = expectation(description: "Download is completed")
             let downloadTask = Task {
                 let result = try await task.value
-                await completeInvoked.fulfill()
+                completeInvoked.fulfill()
                 return result
             }
 
