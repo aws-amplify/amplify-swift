@@ -134,11 +134,11 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
        
-        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
 
-        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// Given: Analytics plugin
@@ -182,11 +182,11 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
        
-        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
 
-        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// Given: Analytics plugin
@@ -224,10 +224,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
        
-        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
-        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// Given: Analytics plugin
@@ -277,10 +277,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
        
-        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
-        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// Given: Analytics plugin
@@ -331,10 +331,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
        
-        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
 
         Amplify.Analytics.flushEvents()
-        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testGetEscapeHatch() throws {
