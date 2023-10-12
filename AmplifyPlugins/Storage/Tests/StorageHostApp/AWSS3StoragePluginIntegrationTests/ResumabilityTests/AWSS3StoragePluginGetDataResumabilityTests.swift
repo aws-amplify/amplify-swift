@@ -27,8 +27,9 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             Self.logger.debug("Downloading data")
             let task = Amplify.Storage.downloadData(key: key)
 
-            let didPause = asyncExpectation(description: "did pause")
-            let didContinue = asyncExpectation(description: "did continue", isInverted: true)
+            let didPause = expectation(description: "did pause")
+            let didContinue = expectation(description: "did continue")
+            didContinue.isInverted = true
             Task {
                 var paused = false
                 var progressAfterPause = 0
@@ -37,28 +38,29 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
                     if !paused {
                         paused = true
                         task.pause()
-                        await didPause.fulfill()
+                        didPause.fulfill()
                     } else {
                         progressAfterPause += 1
                         if progressAfterPause > 1 {
-                            await didContinue.fulfill()
+                            didContinue.fulfill()
                         }
                     }
                 }
             }
-            await waitForExpectations([didPause], timeout: TestCommonConstants.networkTimeout)
-            await waitForExpectations([didContinue], timeout: 5)
+            await fulfillment(of: [didPause], timeout: TestCommonConstants.networkTimeout)
+            await fulfillment(of: [didContinue], timeout: 5)
 
-            let completeInvoked = asyncExpectation(description: "Download is completed", isInverted: true)
+            let completeInvoked = expectation(description: "Download is completed")
+            completeInvoked.isInverted = true
             let downloadTask = Task {
                 let result = try await task.value
-                await completeInvoked.fulfill()
+                completeInvoked.fulfill()
                 return result
             }
 
             Self.logger.debug("Cancelling download task")
             task.cancel()
-            await waitForExpectations([completeInvoked])
+            await fulfillment(of: [completeInvoked])
 
             let downloadData = try? await downloadTask.value
             XCTAssertNil(downloadData)
@@ -81,18 +83,18 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
 
             let task = Amplify.Storage.downloadData(key: key)
 
-            let progressInvoked = asyncExpectation(description: "Progress invoked")
+            let progressInvoked = expectation(description: "Progress invoked")
             Task {
                 var progressInvokedCalled = false
                 for await progress in await task.progress {
                     Self.logger.debug("Download progress: \(progress.fractionCompleted)")
                     if !progressInvokedCalled, progress.fractionCompleted > 0.1 {
                         progressInvokedCalled = true
-                        await progressInvoked.fulfill()
+                        progressInvoked.fulfill()
                     }
                 }
             }
-            await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+            await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
 
             Self.logger.debug("Pausing download task")
             task.pause()
@@ -100,7 +102,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             Self.logger.debug("Sleeping")
             try await Task.sleep(seconds: 0.25)
 
-            let completeInvoked = asyncExpectation(description: "Download is completed")
+            let completeInvoked = expectation(description: "Download is completed")
             let downloadTask = Task {
                 let result = try await task.value
                 await completeInvoked.fulfill()
@@ -110,7 +112,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             Self.logger.debug("Resuming download task")
             task.resume()
 
-            await waitForExpectations([completeInvoked], timeout: TestCommonConstants.networkTimeout)
+            await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
             Self.logger.debug("Waiting to finish download task")
             let downloadData = try await downloadTask.value
@@ -135,8 +137,9 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             Self.logger.debug("Downloading data")
             let task = Amplify.Storage.downloadData(key: key)
 
-            let didCancel = asyncExpectation(description: "did cancel")
-            let didContinue = asyncExpectation(description: "did continue", isInverted: true)
+            let didCancel = expectation(description: "did cancel")
+            let didContinue = expectation(description: "did continue")
+            didContinue.isInverted = true
             Task {
                 var cancelled = false
                 var continued = false
@@ -144,24 +147,25 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
                     if !cancelled, progress.fractionCompleted > 0.1 {
                         cancelled = true
                         task.cancel()
-                        await didCancel.fulfill()
+                        didCancel.fulfill()
                     } else if cancelled, !continued, progress.fractionCompleted > 0.5 {
                         continued = true
-                        await didContinue.fulfill()
+                        didContinue.fulfill()
                     }
                 }
             }
-            await waitForExpectations([didCancel], timeout: TestCommonConstants.networkTimeout)
-            await waitForExpectations([didContinue], timeout: 5)
+            await fulfillment(of: [didCancel], timeout: TestCommonConstants.networkTimeout)
+            await fulfillment(of: [didContinue], timeout: 5)
 
-            let completeInvoked = asyncExpectation(description: "Download is completed", isInverted: true)
+            let completeInvoked = expectation(description: "Download is completed")
+            completeInvoked.isInverted = true
             let downloadTask = Task {
                 let result = try await task.value
-                await completeInvoked.fulfill()
+                completeInvoked.fulfill()
                 return result
             }
 
-            await waitForExpectations([completeInvoked])
+            await fulfillment(of: [completeInvoked])
 
             Self.logger.debug("Waiting for download to complete")
             let downloadData = try? await downloadTask.value

@@ -222,7 +222,7 @@ class FileSystemTests: XCTestCase {
 
         step?(0)
 
-        wait(for: [exp], timeout: 5.0)
+        await fulfillment(of: [exp], timeout: 5.0)
 
         XCTAssertGreaterThan(parts.count, 0)
         XCTAssertGreaterThan(rebuild.count, 0)

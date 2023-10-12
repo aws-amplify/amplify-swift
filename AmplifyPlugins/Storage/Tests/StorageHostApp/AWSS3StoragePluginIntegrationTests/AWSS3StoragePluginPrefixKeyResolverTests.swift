@@ -46,37 +46,28 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
     /// - Then:
     ///    - Download is successful
     ///
-    func testUploadListDownload() async {
+    func testUploadListDownload() async throws {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-        let uploadCompleted = asyncExpectation(description: "upload completed")
-        await wait(with: uploadCompleted) {
-            _ = try await Amplify.Storage.uploadData(key: key, data: data).value
+        let uploadCompleted = expectation(description: "upload completed")
+        Task {
+            do {
+                _ = try await Amplify.Storage.uploadData(key: key, data: data).value
+                uploadCompleted.fulfill()
+            } catch {
+                XCTFail("Failed with \(error)")
+            }
         }
+        await fulfillment(of: [uploadCompleted])
 
-        let listCompleted = asyncExpectation(description: "list completed")
         let listOptions = StorageListRequest.Options(path: key)
-        let result = await wait(with: listCompleted) {
-            return try await Amplify.Storage.list(options: listOptions)
-        }
+        let listResult = try await Amplify.Storage.list(options: listOptions)
+        XCTAssertEqual(listResult.items.count, 1)
+        let itemKey = try XCTUnwrap(listResult.items.first?.key)
+        XCTAssertEqual(itemKey, key)
 
-        guard let items = result?.items else {
-            XCTFail("Failed to list items")
-            return
-        }
-        XCTAssertEqual(items.count, 1)
-
-        guard let item = items.first else {
-            XCTFail("Failed to retrieve key from List API")
-            return
-        }
-        XCTAssertEqual(item.key, key)
-
-        let downloadCompleted = asyncExpectation(description: "download completed")
-        let downloadedData = await wait(with: downloadCompleted) {
-            return try await Amplify.Storage.downloadData(key: item.key).value
-        }
-
+        let downloadCompleted = expectation(description: "download completed")
+        let downloadedData = try await Amplify.Storage.downloadData(key: itemKey).value
         XCTAssertNotNil(downloadedData)
         
         // Remove the key
@@ -94,8 +85,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
     func testUploadRemoveDownload() async {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
 
         Task {
             do {
@@ -103,27 +93,28 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
                 XCTAssertEqual(uploadResult, key)
                 let removeResult = try await Amplify.Storage.remove(key: key)
                 XCTAssertEqual(removeResult, key)
-                let notDone = asyncExpectation(description: "not done", isInverted: true)
-                let caughtError = asyncExpectation(description: "caught error")
+                let notDone = expectation(description: "not done")
+                notDone.isInverted = true
+                let caughtError = expectation(description: "caught error")
                 do {
                     _ = try await Amplify.Storage.downloadData(key: key).value
-                    await notDone.fulfill()
+                    notDone.fulfill()
                 } catch {
                     guard case .keyNotFound = error as? StorageError else {
                         XCTFail("Should have failed with .keyNotFound, got \(error)")
                         return
                     }
-                    await caughtError.fulfill()
+                    caughtError.fulfill()
                 }
 
-                await waitForExpectations([notDone], timeout: 0.25)
-                await waitForExpectations([caughtError])
+                await fulfillment(of: [notDone], timeout: 0.25)
+                await fulfillment(of: [caughtError])
             } catch {
                 XCTFail("Error: \(error)")
             }
-            await done.fulfill()
+            done.fulfill()
         }
 
-        await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [done], timeout: TestCommonConstants.networkTimeout)
     }
 }

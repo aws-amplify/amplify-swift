@@ -68,7 +68,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
 
         session.startUpload()
 
-        wait(for: [initiatedExp, completedExp], timeout: 300.0)
+        await fulfillment(of: [initiatedExp, completedExp], timeout: 300.0)
 
         XCTAssertEqual(session.inProgressCount, 0)
         XCTAssertTrue(session.isCompleted)
@@ -115,7 +115,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
 
         session.startUpload()
 
-        wait(for: [initiatedExp, completedExp], timeout: 300.0)
+        await fulfillment(of: [initiatedExp, completedExp], timeout: 300.0)
 
         XCTAssertEqual(session.inProgressCount, 0)
         XCTAssertTrue(session.isAborted)
@@ -169,7 +169,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
 
         session.startUpload()
 
-        wait(for: [initiatedExp, completedExp], timeout: 300.0)
+        await fulfillment(of: [initiatedExp, completedExp], timeout: 300.0)
 
         XCTAssertEqual(session.inProgressCount, 0)
         XCTAssertTrue(session.isCompleted)
@@ -219,7 +219,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
 
         session.startUpload()
 
-        wait(for: [initiatedExp, completedExp], timeout: 300.0)
+        await fulfillment(of: [initiatedExp, completedExp], timeout: 300.0)
 
         XCTAssertEqual(session.inProgressCount, 0)
         XCTAssertTrue(session.isCompleted)
@@ -269,7 +269,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
 
         session.startUpload()
 
-        wait(for: [initiatedExp, completedExp], timeout: 300.0)
+        await fulfillment(of: [initiatedExp, completedExp], timeout: 300.0)
 
         XCTAssertEqual(session.inProgressCount, 0)
         XCTAssertTrue(session.isAborted)
