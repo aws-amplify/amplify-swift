@@ -102,7 +102,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
     func testCanUseDefaultPluginIfOnlyOnePlugin() async throws {
         let plugin = MockStorageCategoryPlugin()
-        let methodInvokedOnDefaultPlugin = asyncExpectation(description: "test method invoked on default plugin")
+        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
             if message == "downloadData" {
                 Task {
@@ -122,11 +122,12 @@ class StorageCategoryConfigurationTests: XCTestCase {
     func testCanUseSpecifiedPlugin() async throws {
         let plugin1 = MockStorageCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
-            asyncExpectation(description: "test method should not be invoked on default plugin", isInverted: true)
+            expectation(description: "test method should not be invoked on default plugin")
+        methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
         plugin1.listeners.append { message in
             if message == "downloadData" {
                 Task {
-                    await methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
+                    methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
                 }
             }
         }
@@ -134,11 +135,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         let plugin2 = MockSecondStorageCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
-            asyncExpectation(description: "test method should be invoked on second plugin")
+            expectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
             if message == "downloadData" {
                 Task {
-                    await methodShouldBeInvokedOnSecondPlugin.fulfill()
+                    methodShouldBeInvokedOnSecondPlugin.fulfill()
                 }
             }
         }
@@ -158,7 +159,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         _ = try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
             .downloadData(key: "", options: nil)
 
-        await waitForExpectations([methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin])
+        await fulfillment(of: [methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin])
     }
 
     func testPreconditionFailureInvokingWithMultiplePlugins() async throws {
@@ -192,17 +193,17 @@ class StorageCategoryConfigurationTests: XCTestCase {
     func testCanConfigurePluginDirectly() async throws {
         let plugin = MockStorageCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
-            asyncExpectation(description: "Configure should be invoked by Amplify.configure()")
+            expectation(description: "Configure should be invoked by Amplify.configure()")
         let configureShouldBeInvokedDirectly =
-        asyncExpectation(description: "Configure should be invoked by getPlugin().configure()")
+        expectation(description: "Configure should be invoked by getPlugin().configure()")
 
         var invocationCount = 0
         plugin.listeners.append { message in
             if message == "configure(using:)" {
                 invocationCount += 1
                 switch invocationCount {
-                case 1: Task { await configureShouldBeInvokedFromCategory.fulfill() }
-                case 2: Task { await configureShouldBeInvokedDirectly.fulfill() }
+                case 1: configureShouldBeInvokedFromCategory.fulfill()
+                case 2: configureShouldBeInvokedDirectly.fulfill()
                 default: XCTFail("Expected configure() to be called only two times, but got \(invocationCount)")
                 }
             }
@@ -218,7 +219,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin").configure(using: true)
 
-        await waitForExpectations([configureShouldBeInvokedFromCategory, configureShouldBeInvokedDirectly])
+        await fulfillment(of: [configureShouldBeInvokedFromCategory, configureShouldBeInvokedDirectly])
     }
 
     func testPreconditionFailureInvokingBeforeConfig() async throws {

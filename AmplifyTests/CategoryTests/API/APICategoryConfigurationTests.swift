@@ -115,12 +115,12 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let getCompleted = asyncExpectation(description: "get completed")
+        let getCompleted = expectation(description: "get completed")
         Task {
             _ = try await Amplify.API.get(request: RESTRequest())
             await getCompleted.fulfill()
         }
-        await waitForExpectations([getCompleted], timeout: 0.5)
+        await fulfillment(of: [getCompleted], timeout: 0.5)
 
         await waitForExpectations(timeout: 1.0)
     }
@@ -184,13 +184,13 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         
-        let getCompleted = asyncExpectation(description: "get completed")
+        let getCompleted = expectation(description: "get completed")
         Task {
             let plugin = try Amplify.API.getPlugin(for: "MockSecondAPICategoryPlugin")
             _ = try await plugin.get(request: RESTRequest())
             await getCompleted.fulfill()
         }
-        await waitForExpectations([getCompleted], timeout: 0.5)
+        await fulfillment(of: [getCompleted], timeout: 0.5)
 
         await waitForExpectations(timeout: 1.0)
     }

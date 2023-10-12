@@ -131,12 +131,12 @@ class ListTests: XCTestCase {
 
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
-        let fetchSuccess = asyncExpectation(description: "fetch successful")
+        let fetchSuccess = expectation(description: "fetch successful")
         Task {
             try await list.fetch()
             await fetchSuccess.fulfill()
         }
-        await waitForExpectations([fetchSuccess], timeout: 1.0)
+        await fulfillment(of: [fetchSuccess], timeout: 1.0)
         
         XCTAssertEqual(list.count, 2)
         XCTAssertEqual(list.startIndex, 0)
@@ -148,7 +148,7 @@ class ListTests: XCTestCase {
         list.makeIterator().forEach { _ in
             iterateSuccess.fulfill()
         }
-        wait(for: [iterateSuccess], timeout: 1)
+        await fulfillment(of: [iterateSuccess], timeout: 1)
         let json = try? ListTests.toJSON(list: list)
         XCTAssertEqual(json, """
             [{\"id\":\"1\"},{\"id\":\"2\"}]
@@ -165,12 +165,12 @@ class ListTests: XCTestCase {
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
         XCTAssertNotNil(list)
-        let fetchSuccess = asyncExpectation(description: "fetch successful")
+        let fetchSuccess = expectation(description: "fetch successful")
         Task {
             try await list.fetch()
             await fetchSuccess.fulfill()
         }
-        await waitForExpectations([fetchSuccess], timeout: 1.0)
+        await fulfillment(of: [fetchSuccess], timeout: 1.0)
         XCTAssertEqual(list.count, 2)
         XCTAssertEqual(list.startIndex, 0)
         XCTAssertEqual(list.endIndex, 2)
@@ -197,12 +197,12 @@ class ListTests: XCTestCase {
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
         XCTAssertNotNil(list)
-        let fetchSuccess = asyncExpectation(description: "fetch successful")
+        let fetchSuccess = expectation(description: "fetch successful")
         Task {
             try await list.fetch()
             await fetchSuccess.fulfill()
         }
-        await waitForExpectations([fetchSuccess], timeout: 1.0)
+        await fulfillment(of: [fetchSuccess], timeout: 1.0)
         XCTAssertEqual(list.count, 0)
         let json = try? ListTests.toJSON(list: list)
         XCTAssertEqual(json, "[]")
@@ -217,7 +217,7 @@ class ListTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let fetchCompleted = asyncExpectation(description: "fetch completed")
+        let fetchCompleted = expectation(description: "fetch completed")
         Task {
             do {
                 _ = try await list.fetch()
@@ -227,7 +227,7 @@ class ListTests: XCTestCase {
             }
             await fetchCompleted.fulfill()
         }
-        await waitForExpectations([fetchCompleted], timeout: 1.0)
+        await fulfillment(of: [fetchCompleted], timeout: 1.0)
     }
 
     // MARK: - Helpers

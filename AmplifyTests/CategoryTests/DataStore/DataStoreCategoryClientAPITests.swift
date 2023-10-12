@@ -36,12 +36,12 @@ class DataStoreCategoryClientAPITests: XCTestCase {
             }
         }
 
-        let saveSuccess = asyncExpectation(description: "saved successful")
+        let saveSuccess = expectation(description: "saved successful")
         Task {
             _ = try await Amplify.DataStore.save(TestModel.make())
             await saveSuccess.fulfill()
         }
-        await waitForExpectations([saveSuccess], timeout: 0.5)
+        await fulfillment(of: [saveSuccess], timeout: 0.5)
         
 
         await waitForExpectations(timeout: 0.5)

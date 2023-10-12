@@ -18,8 +18,9 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromTaskSuccess() async throws {
-        let notDone = asyncExpectation(description: "notDone", isInverted: true)
-        let done = asyncExpectation(description: "done")
+        let notDone = expectation(description: "notDone")
+        notDone.isInverted = true
+        let done = expectation(description: "done")
         let input = 7
         var output: Int = 0
         var success = false
@@ -34,19 +35,15 @@ class AmplifyPublisherTests: XCTestCase {
                     success = true
                 case .failure(let error):
                     thrown = error
-                    Task {
-                        await notDone.fulfill()
-                    }
+                    notDone.fulfill()
                 }
-                Task {
-                    await done.fulfill()
-                }
+                done.fulfill()
             } receiveValue: { value in
                 output = value
             }
         
-        await waitForExpectations([notDone], timeout: 0.01)
-        await waitForExpectations([done])
+        await fulfillment(of: [notDone], timeout: 0.01)
+        await fulfillment(of: [done])
         
         XCTAssertEqual(input, output)
         XCTAssertTrue(success)
@@ -56,8 +53,8 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromTaskFail() async throws {
-        let failed = asyncExpectation(description: "failed")
-        let done = asyncExpectation(description: "done")
+        let failed = expectation(description: "failed")
+        let done = expectation(description: "done")
         let input = 13
         var output: Int = 0
         var success = false
@@ -72,19 +69,15 @@ class AmplifyPublisherTests: XCTestCase {
                     success = true
                 case .failure(let error):
                     thrown = error
-                    Task {
-                        await failed.fulfill()
-                    }
+                    failed.fulfill()
                 }
-                Task {
-                    await done.fulfill()
-                }
+                done.fulfill()
             } receiveValue: { value in
                 output = value
             }
         
-        await waitForExpectations([failed])
-        await waitForExpectations([done])
+        await fulfillment(of: [failed])
+        await fulfillment(of: [done])
 
         XCTAssertNotEqual(input, output)
         XCTAssertFalse(success)
@@ -94,8 +87,10 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromTaskCancellation() async throws {
-        let noCompletion = asyncExpectation(description: "noCompletion", isInverted: true)
-        let noValueReceived = asyncExpectation(description: "noValueReceived", isInverted: true)
+        let noCompletion = expectation(description: "noCompletion")
+        noCompletion.isInverted = true
+        let noValueReceived = expectation(description: "noValueReceived")
+        noValueReceived.isInverted = true
         let input = 7
         var output: Int = 0
         var success = false
@@ -111,20 +106,16 @@ class AmplifyPublisherTests: XCTestCase {
                 case .failure(let error):
                     thrown = error
                 }
-                Task {
-                    await noCompletion.fulfill()
-                }
+                noCompletion.fulfill()
             } receiveValue: { value in
                 output = value
-                Task {
-                    await noValueReceived.fulfill()
-                }
+                noValueReceived.fulfill()
         }
 
         // cancel immediately
         sink.cancel()
 
-        await waitForExpectations([noCompletion, noValueReceived], timeout: 0.01)
+        await fulfillment(of: [noCompletion, noValueReceived], timeout: 0.01)
 
         // completion and value are not expected when sink is cancelled
         XCTAssertNotEqual(input, output)
@@ -136,31 +127,26 @@ class AmplifyPublisherTests: XCTestCase {
         let input = Array(1...100)
         let sequence = AmplifyAsyncSequence<Int>()
         var output = [Int]()
-        let finished = asyncExpectation(description: "completion finished")
-        let received = asyncExpectation(description: "values received")
+        let finished = expectation(description: "completion finished")
+        let received = expectation(description: "values received")
         
         let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
-                case .finished:
-                    Task {
-                        await finished.fulfill()
-                    }
+                case .finished: finished.fulfill()
                 case .failure(let error):
                     XCTFail("Failed with error: \(error)")
                 }
             } receiveValue: { value in
                 output.append(value)
                 if output.count == input.count {
-                    Task {
-                        await received.fulfill()
-                    }
+                    received.fulfill()
                 }
             }
 
         send(input: input, sequence: sequence)
 
-        await waitForExpectations([received, finished])
+        await fulfillment(of: [received, finished])
         XCTAssertEqual(input, output)
         sink.cancel()
     }
@@ -185,7 +171,7 @@ class AmplifyPublisherTests: XCTestCase {
 
         send(input: input, throwingSequence: sequence)
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [finished], timeout: 1)
         XCTAssertEqual(input, output)
         sink.cancel()
     }
@@ -208,7 +194,7 @@ class AmplifyPublisherTests: XCTestCase {
                 output.append(value)
             }
 
-        await waitForExpectations(timeout: 3)
+        await fulfillment(of: [finished], timeout: 3)
         for element in output {
             XCTAssertTrue(expected.contains(element))
         }
@@ -234,7 +220,7 @@ class AmplifyPublisherTests: XCTestCase {
                 output.append(value)
             }
 
-        await waitForExpectations(timeout: 3)
+        await fulfillment(of: [failed], timeout: 3)
         for element in output {
             XCTAssertTrue(expected.contains(element))
         }
@@ -260,7 +246,7 @@ class AmplifyPublisherTests: XCTestCase {
 
         send(input: input, sequence: sequence)
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [completed], timeout: 0.1)
         XCTAssertEqual(expected, output)
     }
     
@@ -268,15 +254,12 @@ class AmplifyPublisherTests: XCTestCase {
         let expected = [Int]()
         let sequence = AmplifyAsyncSequence<Int>()
         var output = [Int]()
-        let finished = asyncExpectation(description: "completion finished")
+        let finished = expectation(description: "completion finished")
 
         let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
-                case .finished:
-                    Task {
-                        await finished.fulfill()
-                    }
+                case .finished: finished.fulfill()
                 case .failure(let error):
                     XCTFail("Failed with error: \(error)")
                 }
@@ -286,7 +269,7 @@ class AmplifyPublisherTests: XCTestCase {
 
         sequence.cancel()
 
-        await waitForExpectations([finished])
+        await fulfillment(of: [finished])
         XCTAssertEqual(expected, output)
         sink.cancel()
     }

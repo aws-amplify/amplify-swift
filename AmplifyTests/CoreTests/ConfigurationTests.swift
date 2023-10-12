@@ -62,7 +62,7 @@ class ConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
-        wait(for: [configureWasInvoked], timeout: 1.0)
+        await fulfillment(of: [configureWasInvoked], timeout: 1.0)
     }
 
     func testMultipleConfigureCallsThrowError() throws {

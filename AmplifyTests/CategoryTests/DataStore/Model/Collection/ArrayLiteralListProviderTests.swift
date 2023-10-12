@@ -40,7 +40,7 @@ class ArrayLiteralListProviderTests: XCTestCase {
             }
         }
 
-        wait(for: [loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 1)
     }
     
     func testLoadAsync() async throws {
@@ -71,7 +71,7 @@ class ArrayLiteralListProviderTests: XCTestCase {
             }
         }
 
-        wait(for: [getNextPageComplete], timeout: 1)
+        await fulfillment(of: [getNextPageComplete], timeout: 1)
     }
     
     func testGetNextPageAsync() async {

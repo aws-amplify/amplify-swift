@@ -36,7 +36,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         XCTAssertNotNil(Amplify.DataStore)
         XCTAssertNotNil(Amplify.DataStore.plugin)
-        wait(for: [methodInvokedOnDefaultPlugin], timeout: 1.0)
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1.0)
     }
 
     func testCanConfigureDataStorePlugin() throws {
@@ -134,12 +134,12 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let saveSuccess = asyncExpectation(description: "save successful")
+        let saveSuccess = expectation(description: "save successful")
         Task {
             _ = try await Amplify.DataStore.save(TestModel.make())
             await saveSuccess.fulfill()
         }
-        await waitForExpectations([saveSuccess], timeout: 1.0)
+        await fulfillment(of: [saveSuccess], timeout: 1.0)
         
 
         await waitForExpectations(timeout: 1.0)
@@ -204,13 +204,13 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         
-        let saveSuccess = asyncExpectation(description: "save success")
+        let saveSuccess = expectation(description: "save success")
         Task {
             _ = try await Amplify.DataStore.getPlugin(for: "MockSecondDataStoreCategoryPlugin")
                 .save(TestModel.make(), where: nil)
             await saveSuccess.fulfill()
         }
-        await waitForExpectations([saveSuccess], timeout: 1.0)
+        await fulfillment(of: [saveSuccess], timeout: 1.0)
         
         await waitForExpectations(timeout: 1.0)
     }

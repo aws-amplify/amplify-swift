@@ -17,7 +17,7 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
-        let fetchComplete = asyncExpectation(description: "fetch completed")
+        let fetchComplete = expectation(description: "fetch completed")
         Task {
             
             try await list.fetch()
@@ -27,14 +27,14 @@ extension ListTests {
             }
             await fetchComplete.fulfill()
         }
-        await waitForExpectations([fetchComplete], timeout: 1)
+        await fulfillment(of: [fetchComplete], timeout: 1)
         
-        let fetchComplete2 = asyncExpectation(description: "fetch completed")
+        let fetchComplete2 = expectation(description: "fetch completed")
         Task {
             try await list.fetch()
             await fetchComplete2.fulfill()
         }
-        await waitForExpectations([fetchComplete2], timeout: 1)
+        await fulfillment(of: [fetchComplete2], timeout: 1)
     }
 
     func testFetchFailure() async throws {
@@ -46,7 +46,7 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
-        let fetchCompleted = asyncExpectation(description: "fetch completed")
+        let fetchCompleted = expectation(description: "fetch completed")
         Task {
             do {
                 try await list.fetch()
@@ -61,7 +61,7 @@ extension ListTests {
             await fetchCompleted.fulfill()
         }
         
-        await waitForExpectations([fetchCompleted], timeout: 1.0)
+        await fulfillment(of: [fetchCompleted], timeout: 1.0)
     }
 
     func testHasNextPageSuccess() async throws {
@@ -72,7 +72,7 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
-        let fetchCompleted = asyncExpectation(description: "fetch completed")
+        let fetchCompleted = expectation(description: "fetch completed")
         Task {
             try await list.fetch()
             guard case .loaded = list.loadedState else {
@@ -82,7 +82,7 @@ extension ListTests {
             XCTAssertTrue(list.hasNextPage())
             await fetchCompleted.fulfill()
         }
-        await waitForExpectations([fetchCompleted], timeout: 1.0)
+        await fulfillment(of: [fetchCompleted], timeout: 1.0)
     }
 
     func testGetNextPageSuccess() async throws {
@@ -94,23 +94,23 @@ extension ListTests {
             return
         }
         try await list.fetch()
-        let getNextPageSuccess = asyncExpectation(description: "getNextPage successful")
+        let getNextPageSuccess = expectation(description: "getNextPage successful")
         Task {
             _ = try await list.getNextPage()
             await getNextPageSuccess.fulfill()
         }
-        await waitForExpectations([getNextPageSuccess], timeout: 1.0)
+        await fulfillment(of: [getNextPageSuccess], timeout: 1.0)
         
         guard case .loaded = list.loadedState else {
             XCTFail("Should be loaded")
             return
         }
-        let getNextPageSuccess2 = asyncExpectation(description: "getNextPage successful")
+        let getNextPageSuccess2 = expectation(description: "getNextPage successful")
         Task {
             _ = try await list.getNextPage()
             await getNextPageSuccess2.fulfill()
         }
-        await waitForExpectations([getNextPageSuccess2], timeout: 1.0)
+        await fulfillment(of: [getNextPageSuccess2], timeout: 1.0)
 
     }
 
@@ -122,14 +122,14 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
-        let fetchCompleted = asyncExpectation(description: "fetch completed")
+        let fetchCompleted = expectation(description: "fetch completed")
         Task {
             try await list.fetch()
             await fetchCompleted.fulfill()
         }
-        await waitForExpectations([fetchCompleted], timeout: 1.0)
+        await fulfillment(of: [fetchCompleted], timeout: 1.0)
         
-        let getNextPageSuccess = asyncExpectation(description: "getNextPage successful")
+        let getNextPageSuccess = expectation(description: "getNextPage successful")
         Task {
             do {
                 _ = try await list.getNextPage()
@@ -139,6 +139,6 @@ extension ListTests {
             }
             await getNextPageSuccess.fulfill()
         }
-        await waitForExpectations([getNextPageSuccess], timeout: 1.0)
+        await fulfillment(of: [getNextPageSuccess], timeout: 1.0)
     }
 }
