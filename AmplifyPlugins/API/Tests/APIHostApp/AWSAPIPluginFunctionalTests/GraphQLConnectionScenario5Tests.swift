@@ -152,7 +152,7 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getPostCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -219,7 +219,7 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
-        wait(for: [getUserCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getUserCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
 
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")

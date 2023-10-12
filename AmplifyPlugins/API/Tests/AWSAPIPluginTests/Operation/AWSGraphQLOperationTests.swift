@@ -32,7 +32,7 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
         } receiveValue: { _ in }
         defer { sink.cancel() }
 
-        wait(for: [receivedCompletion], timeout: 1)
+        await fulfillment(of: [receivedCompletion], timeout: 1)
         let task = operation.mapper.task(for: operation)
         XCTAssertNil(task)
     }

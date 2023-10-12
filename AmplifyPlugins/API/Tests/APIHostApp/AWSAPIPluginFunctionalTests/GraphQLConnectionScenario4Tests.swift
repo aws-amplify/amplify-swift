@@ -118,7 +118,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted, fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getPostCompleted, fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return

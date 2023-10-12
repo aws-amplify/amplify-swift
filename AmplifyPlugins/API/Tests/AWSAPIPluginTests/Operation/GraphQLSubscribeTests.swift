@@ -73,7 +73,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe(expecting: testJSON)
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -103,7 +103,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -131,7 +131,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.failed("Error"), subscriptionItem)
@@ -161,7 +161,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = true
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -183,7 +183,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe(expecting: testJSON)
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -206,7 +206,7 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = true
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)

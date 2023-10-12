@@ -93,7 +93,7 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
             fetchPostCompleted.fulfill()
         case .failure(let response): XCTFail("Failed with: \(response)")
         }
-        wait(for: [getBlogCompleted, fetchPostCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getBlogCompleted, fetchPostCompleted], timeout: TestCommonConstants.networkTimeout)
 
         let allPosts = try await getAll(list: resultPosts)
         XCTAssertEqual(allPosts.count, 2)
@@ -109,7 +109,7 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
         try await comments.fetch()
         resultComments = comments
         fetchCommentsCompleted.fulfill()
-        wait(for: [fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
         let allComments = try await getAll(list: resultComments)
         XCTAssertEqual(allComments.count, 2)
         XCTAssertTrue(allComments.contains(where: { (comment) -> Bool in

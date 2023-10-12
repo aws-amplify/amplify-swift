@@ -192,8 +192,8 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         type: GraphQLSubscriptionType,
         verifyChange: @escaping (M) async throws -> Bool
     ) async throws -> (AsyncExpectation, AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<M>>) {
-        let connected = asyncExpectation(description: "Subscription connected")
-        let eventReceived = asyncExpectation(description: "\(type.rawValue) received")
+        let connected = expectation(description: "Subscription connected")
+        let eventReceived = expectation(description: "\(type.rawValue) received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: modelType, type: type))
 
         Task {
@@ -214,7 +214,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
             }
         }
 
-        await waitForExpectations([connected], timeout: 10)
+        await fulfillment(of: [connected], timeout: 10)
         return (eventReceived, subscription)
     }
 }

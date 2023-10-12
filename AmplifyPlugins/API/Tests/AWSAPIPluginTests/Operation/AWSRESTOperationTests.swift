@@ -93,7 +93,7 @@ class AWSRESTOperationTests: OperationTestBase {
             callbackInvoked.fulfill()
         }
 
-        wait(for: [callbackInvoked], timeout: 1.0)
+        await fulfillment(of: [callbackInvoked], timeout: 1.0)
     }
 
     func testRESTOperation_withCustomHeader_shouldOverrideDefaultAmplifyHeaders() throws {
@@ -118,7 +118,7 @@ class AWSRESTOperationTests: OperationTestBase {
             }
             callbackInvoked.fulfill()
         }
-        wait(for: [callbackInvoked, validated], timeout: 1.0)
+        await fulfillment(of: [callbackInvoked, validated], timeout: 1.0)
     }
 
 }

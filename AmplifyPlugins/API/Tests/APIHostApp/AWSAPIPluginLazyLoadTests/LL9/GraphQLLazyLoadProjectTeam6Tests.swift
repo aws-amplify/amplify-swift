@@ -207,8 +207,8 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
     
     func testSubscribeToTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
-        let connected = asyncExpectation(description: "subscription connected")
-        let onCreatedTeam = asyncExpectation(description: "onCreate received")
+        let connected = expectation(description: "subscription connected")
+        let onCreatedTeam = expectation(description: "onCreate received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Team.self, type: .onCreate))
         Task {
             do {
@@ -234,18 +234,18 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
             }
         }
         
-        await waitForExpectations([connected], timeout: 10)
+        await fulfillment(of: [connected], timeout: 10)
         
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await mutate(.create(team))
-        await waitForExpectations([onCreatedTeam], timeout: 10)
+        await fulfillment(of: [onCreatedTeam], timeout: 10)
         subscription.cancel()
     }
     
     func testSubscribeProject() async throws {
         await setup(withModels: ProjectTeam6Models())
-        let connected = asyncExpectation(description: "subscription connected")
-        let onCreated = asyncExpectation(description: "onCreate received")
+        let connected = expectation(description: "subscription connected")
+        let onCreated = expectation(description: "onCreate received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Project.self, type: .onCreate))
         Task {
             do {
@@ -271,13 +271,13 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
             }
         }
         
-        await waitForExpectations([connected], timeout: 10)
+        await fulfillment(of: [connected], timeout: 10)
         
         let project = Project(projectId: UUID().uuidString,
                               name: "name")
         let savedProject = try await mutate(.create(project))
         
-        await waitForExpectations([onCreated], timeout: 10)
+        await fulfillment(of: [onCreated], timeout: 10)
         subscription.cancel()
     }
 }

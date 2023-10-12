@@ -42,22 +42,22 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
     override func setUp() async throws {
         try await super.setUp()
 
-        onSubscribeInvoked = asyncExpectation(description: "onSubscribeInvoked")
+        onSubscribeInvoked = expectation(description: "onSubscribeInvoked")
 
-        receivedCompletionSuccess = asyncExpectation(description: "receivedStateCompletionSuccess")
-        receivedCompletionFailure = asyncExpectation(description: "receivedStateCompletionFailure")
-        receivedStateValueConnecting = asyncExpectation(description: "receivedStateValueConnecting")
-        receivedStateValueConnected = asyncExpectation(description: "receivedStateValueConnected")
-        receivedStateValueDisconnected = asyncExpectation(description: "receivedStateValueDisconnected")
+        receivedCompletionSuccess = expectation(description: "receivedStateCompletionSuccess")
+        receivedCompletionFailure = expectation(description: "receivedStateCompletionFailure")
+        receivedStateValueConnecting = expectation(description: "receivedStateValueConnecting")
+        receivedStateValueConnected = expectation(description: "receivedStateValueConnected")
+        receivedStateValueDisconnected = expectation(description: "receivedStateValueDisconnected")
 
-        receivedDataValueSuccess = asyncExpectation(description: "receivedDataValueSuccess")
-        receivedDataValueError = asyncExpectation(description: "receivedDataValueError")
+        receivedDataValueSuccess = expectation(description: "receivedDataValueSuccess")
+        receivedDataValueError = expectation(description: "receivedDataValueError")
 
         try setUpMocksAndSubscriptionItems()
     }
 
     func waitForSubscriptionExpectations() async {
-        await waitForExpectations([receivedCompletionSuccess,
+        await fulfillment(of: [receivedCompletionSuccess,
                                    receivedCompletionFailure,
                                    receivedStateValueConnecting,
                                    receivedStateValueConnected,
@@ -80,7 +80,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
 
         try await subscribe(expecting: testJSON)
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -101,7 +101,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -121,7 +121,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.failed(ConnectionProviderError.limitExceeded(nil)), subscriptionItem)
@@ -140,7 +140,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.failed(ConnectionProviderError.subscription("", nil)), subscriptionItem)
@@ -159,7 +159,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.failed(ConnectionProviderError.unauthorized), subscriptionItem)
@@ -178,7 +178,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.failed(ConnectionProviderError.connection), subscriptionItem)
@@ -198,7 +198,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(true)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -222,7 +222,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe(expecting: testJSON)
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -247,7 +247,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await receivedDataValueError.setShouldTrigger(true)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
