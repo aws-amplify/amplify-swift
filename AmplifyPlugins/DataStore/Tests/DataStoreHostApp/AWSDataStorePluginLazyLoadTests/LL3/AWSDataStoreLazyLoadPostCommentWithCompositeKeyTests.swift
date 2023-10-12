@@ -201,7 +201,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                     }
                     XCTAssertEqual(comments.count, 1)
                     
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -232,7 +232,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                    let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
                    receivedComment.id == comment.id {
                     try await assertComment(receivedComment, canLazyLoad: savedPost)
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -270,7 +270,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                     }
                     XCTAssertEqual(comments.count, 1)
                     
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }
@@ -299,7 +299,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
             for try await querySnapshot in querySnapshots {
                 if let receivedComment = querySnapshot.items.first {
                     try await assertComment(receivedComment, canLazyLoad: savedPost)
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }

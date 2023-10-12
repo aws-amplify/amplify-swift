@@ -233,7 +233,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                     }
                     XCTAssertEqual(tags.count, 0)
                     
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -272,7 +272,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                     }
                     XCTAssertEqual(posts.count, 0)
                     
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -294,7 +294,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let tag = Tag(name: "name")
         let savedPost = try await createAndWaitForSync(post)
         let savedTag = try await createAndWaitForSync(tag)
-        
+        _ = savedPost; _ = savedTag
+
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
         
         let mutationEventReceived = expectation(description: "Received mutation event")
@@ -307,7 +308,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                    receivedPostTag.id == postTag.id {
                     
                     try await assertPostTag(receivedPostTag, canLazyLoadTag: tag, canLazyLoadPost: post)
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -343,7 +344,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                     }
                     XCTAssertEqual(tags.count, 0)
                     
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }
@@ -379,7 +380,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
                     }
                     XCTAssertEqual(posts.count, 0)
                     
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }
@@ -410,7 +411,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             for try await querySnapshot in querySnapshots {
                 if let receivedPostTag = querySnapshot.items.first {
                     try await assertPostTag(receivedPostTag, canLazyLoadTag: tag, canLazyLoadPost: post)
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }

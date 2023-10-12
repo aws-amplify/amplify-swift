@@ -164,7 +164,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
                    let receivedChild = try? mutationEvent.decodeModel(as: HasOneChild.self),
                    receivedChild.identifier == child.identifier
                 {
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }

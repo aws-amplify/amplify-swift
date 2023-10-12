@@ -190,7 +190,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                    receivedPost.postId == post.postId {
                     let savedComment = try await createAndWaitForSync(comment)
                     try await assertPost(receivedPost, canLazyLoad: savedComment)
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -224,7 +224,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                    let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
                    receivedComment.commentId == comment.commentId {
                     assertComment(receivedComment, contains: savedPost)
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -255,7 +255,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                 if let receivedPost = querySnapshot.items.first {
                     let savedComment = try await createAndWaitForSync(comment)
                     try await assertPost(receivedPost, canLazyLoad: savedComment)
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }
@@ -287,7 +287,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
             for try await querySnapshot in querySnapshots {
                 if let receivedComment = querySnapshot.items.first {
                     assertComment(receivedComment, contains: savedPost)
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }

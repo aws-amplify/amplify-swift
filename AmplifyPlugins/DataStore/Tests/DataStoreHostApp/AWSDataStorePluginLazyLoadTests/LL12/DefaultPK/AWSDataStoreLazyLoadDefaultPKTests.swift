@@ -252,7 +252,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                     }
                     XCTAssertEqual(children.count, 1)
                     
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -283,7 +283,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                    let receivedChild = try? mutationEvent.decodeModel(as: Child.self),
                    receivedChild.id == child.id {
                     try await assertChild(receivedChild, canLazyLoad: savedParent)
-                    await mutationEventReceived.fulfill()
+                    mutationEventReceived.fulfill()
                 }
             }
         }
@@ -321,7 +321,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
                     }
                     XCTAssertEqual(children.count, 1)
                     
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }
@@ -350,7 +350,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
             for try await querySnapshot in querySnapshots {
                 if let receivedChild = querySnapshot.items.first {
                     try await assertChild(receivedChild, canLazyLoad: savedParent)
-                    await snapshotReceived.fulfill()
+                    snapshotReceived.fulfill()
                 }
             }
         }

@@ -50,7 +50,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 for try await querySnapshot in querySnapshots {
                     snapshots.append(querySnapshot)
                     if querySnapshot.isSynced {
-                        await snapshotWithIsSynced.fulfill()
+                        snapshotWithIsSynced.fulfill()
                     }
                 }
             } catch {
@@ -58,7 +58,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
             XCTAssertTrue(snapshots.count >= 2)
             XCTAssertFalse(snapshots[0].isSynced)
-            await querySnapshotsCancelled.fulfill()
+            querySnapshotsCancelled.fulfill()
         }
         let receivedPost = expectation(description: "received Post")
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
@@ -93,7 +93,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshots.append(querySnapshot)
             if querySnapshot.isSynced {
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
@@ -135,10 +135,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             snapshots.append(querySnapshot)
             if !isObserveQueryReadyForTest && querySnapshot.isSynced {
                 isObserveQueryReadyForTest = true
-                Task { await observeQueryReadyForTest.fulfill() }
+                observeQueryReadyForTest.fulfill()
             }
             if querySnapshot.items.contains(where: { $0.id == post.id }) {
-                Task { await snapshotWithPost.fulfill() }
+                snapshotWithPost.fulfill()
             }
         }.store(in: &cancellables)
         await fulfillment(of: [observeQueryReadyForTest], timeout: 100)
@@ -198,12 +198,12 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             snapshots.append(querySnapshot)
             if !snapshotWithIsSyncedFulfilled && querySnapshot.isSynced {
                 snapshotWithIsSyncedFulfilled = true
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             } else if snapshotWithIsSyncedFulfilled {
                 if querySnapshot.items.count >= 4
                    && querySnapshot.items.allSatisfy({ $0.title.contains(randomTitle)})
                 {
-                    Task { await receivedPostFromObserveQuery.fulfill() }
+                    receivedPostFromObserveQuery.fulfill()
                 }
             }
             
@@ -250,7 +250,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 let actualPost1 = items.removeLast()
                 XCTAssertEqual(actualPost2.id, post2.id)
                 XCTAssertEqual(actualPost1.id, post1.id)
-                Task { await snapshotWithSavedPost.fulfill() }
+                snapshotWithSavedPost.fulfill()
             }
         }.store(in: &cancellables)
 
@@ -288,7 +288,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshots.append(querySnapshot)
             if querySnapshot.isSynced {
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
@@ -330,7 +330,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshots.append(querySnapshot)
             if querySnapshot.isSynced {
-                Task { await snapshotWithIsSynced.fulfill() }
+                snapshotWithIsSynced.fulfill()
             }
         }.store(in: &cancellables)
 
@@ -705,7 +705,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             do {
                 for try await mutationEvent in mutationEvents {
                     if mutationEvent.modelId == post.id {
-                        await deletedPost.fulfill()
+                        deletedPost.fulfill()
                     }
                 }
             } catch {
