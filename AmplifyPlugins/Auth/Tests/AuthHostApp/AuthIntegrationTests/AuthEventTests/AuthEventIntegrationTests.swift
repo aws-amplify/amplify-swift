@@ -37,7 +37,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = asyncExpectation(description: "SignIn event should be fired")
+        let signInExpectation = expectation(description: "SignIn event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -55,7 +55,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             password: password,
             email: defaultTestEmail)
 
-        await waitForExpectations([signInExpectation], timeout: networkTimeout)
+        await fulfillment(of: [signInExpectation], timeout: networkTimeout)
     }
 
     /// Test hub event for successful signOut of a valid user
@@ -71,7 +71,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signOutExpectation = asyncExpectation(description: "SignOut event should be fired")
+        let signOutExpectation = expectation(description: "SignOut event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -89,7 +89,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             password: password,
             email: defaultTestEmail)
         _ = await Amplify.Auth.signOut()
-        await waitForExpectations([signOutExpectation], timeout: networkTimeout)
+        await fulfillment(of: [signOutExpectation], timeout: networkTimeout)
     }
 
     /// Test hub event for session expired of a valid user
@@ -105,8 +105,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = asyncExpectation(description: "SignIn event should be fired")
-        let sessionExpiredExpectation = asyncExpectation(description: "Session expired event should be fired")
+        let signInExpectation = expectation(description: "SignIn event should be fired")
+        let sessionExpiredExpectation = expectation(description: "Session expired event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -150,8 +150,8 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = asyncExpectation(description: "SignIn operation should complete")
-        let deletedUserExpectation = asyncExpectation(description: "UserDeleted event should be fired")
+        let signInExpectation = expectation(description: "SignIn operation should complete")
+        let deletedUserExpectation = expectation(description: "UserDeleted event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {

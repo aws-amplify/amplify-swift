@@ -38,7 +38,7 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = asyncExpectation(description: "SignIn event should be fired")
+        let signInExpectation = expectation(description: "SignIn event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -55,7 +55,7 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
             username: username,
             password: password,
             email: defaultTestEmail)
-        await waitForExpectations([signInExpectation], timeout: networkTimeout)
+        await fulfillment(of: [signInExpectation], timeout: networkTimeout)
 
         _ = try await Amplify.Auth.rememberDevice()
 

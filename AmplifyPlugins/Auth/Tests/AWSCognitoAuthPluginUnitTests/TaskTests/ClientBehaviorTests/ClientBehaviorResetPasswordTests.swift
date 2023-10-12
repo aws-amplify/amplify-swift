@@ -590,7 +590,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        await fulfillment(of: [resultExpectation], timeout: networkTimeout)
     }
     */
 

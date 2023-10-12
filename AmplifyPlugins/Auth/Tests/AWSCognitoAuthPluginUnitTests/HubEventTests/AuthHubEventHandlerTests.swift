@@ -195,7 +195,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [hubEventExpectation], timeout: 10)
+        await fulfillment(of: [hubEventExpectation], timeout: 10)
     }
 
     /// Test whether HubEvent emits a mocked signedIn event for social provider signIn
@@ -227,7 +227,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [hubEventExpectation], timeout: 10)
+        await fulfillment(of: [hubEventExpectation], timeout: 10)
     }
 #endif
 

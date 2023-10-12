@@ -97,7 +97,7 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                         expectation.fulfill()
                     }
                 }
-                wait(for: [expectation], timeout: apiTimeout)
+                await fulfillment(of: [expectation], timeout: apiTimeout)
             case .confirmSignIn(let request, expectedOutput: let expectedOutput):
                 validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.confirmSignIn(
@@ -127,6 +127,6 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                     expectation.fulfill()
                 }
             }
-            wait(for: [expectation], timeout: apiTimeout)
+            await fulfillment(of: [expectation], timeout: apiTimeout)
         }
 }

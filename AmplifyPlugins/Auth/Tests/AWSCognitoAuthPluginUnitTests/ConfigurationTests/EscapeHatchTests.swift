@@ -61,7 +61,7 @@ class EscapeHatchTests: XCTestCase {
         case .userPoolAndIdentityPool:
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
 
     /// Test escape hatch with valid config for only identity pool

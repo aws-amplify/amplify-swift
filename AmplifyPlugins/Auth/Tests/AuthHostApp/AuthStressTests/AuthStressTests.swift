@@ -43,7 +43,7 @@ final class AuthStressTests: AuthStressBaseTest {
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let fetchUserAttributesExpectation = asyncExpectation(description: "Fetch user attributes was successful",
+        let fetchUserAttributesExpectation = expectation(description: "Fetch user attributes was successful",
                                                               expectedFulfillmentCount: concurrencyLimit)
         for _ in 1...concurrencyLimit {
             Task {
@@ -57,7 +57,7 @@ final class AuthStressTests: AuthStressBaseTest {
             }
         }
         
-        await waitForExpectations([fetchUserAttributesExpectation], timeout: 30)
+        await fulfillment(of: [fetchUserAttributesExpectation], timeout: 30)
     }
 
     /// Test if successful session is retreived after a user signin and tried to fetch auth session multiple times
@@ -76,7 +76,7 @@ final class AuthStressTests: AuthStressBaseTest {
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let fetchAuthSessionExpectation = asyncExpectation(description: "Fetch auth session was successful",
+        let fetchAuthSessionExpectation = expectation(description: "Fetch auth session was successful",
                                                            expectedFulfillmentCount: concurrencyLimit)
         for _ in 1...concurrencyLimit {
             Task {
@@ -86,7 +86,7 @@ final class AuthStressTests: AuthStressBaseTest {
             }
         }
         
-        await waitForExpectations([fetchAuthSessionExpectation], timeout: networkTimeout)
+        await fulfillment(of: [fetchAuthSessionExpectation], timeout: networkTimeout)
     }
     
     /// Test if successful session is retrieved with random force refresh operation happening in between
@@ -108,7 +108,7 @@ final class AuthStressTests: AuthStressBaseTest {
         )
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let identityIDExpectation = asyncExpectation(description: "Identity id should be fetched",
+        let identityIDExpectation = expectation(description: "Identity id should be fetched",
                                                      expectedFulfillmentCount: concurrencyLimit)
         for index in 1...concurrencyLimit {
             Task {
@@ -128,7 +128,7 @@ final class AuthStressTests: AuthStressBaseTest {
             }
         }
         
-        await waitForExpectations([identityIDExpectation], timeout: networkTimeout)
+        await fulfillment(of: [identityIDExpectation], timeout: networkTimeout)
     }
     
     /// Test if we can fetch auth session in signedOut state
@@ -140,7 +140,7 @@ final class AuthStressTests: AuthStressBaseTest {
     ///    - Valid response with signedOut state = false
     ///
     func testMultipleFetchAuthSessionWhenSignedOut() async throws {
-        let fetchAuthSessionExpectation = asyncExpectation(description: "Session state should not be signedIn",
+        let fetchAuthSessionExpectation = expectation(description: "Session state should not be signedIn",
                                            expectedFulfillmentCount: concurrencyLimit)
         for _ in 1...concurrencyLimit {
             Task {
@@ -156,7 +156,7 @@ final class AuthStressTests: AuthStressBaseTest {
             }
         }
         
-        await waitForExpectations([fetchAuthSessionExpectation], timeout: networkTimeout)
+        await fulfillment(of: [fetchAuthSessionExpectation], timeout: networkTimeout)
     }
     
     /// Test concurrent invocations of get current user API
@@ -177,7 +177,7 @@ final class AuthStressTests: AuthStressBaseTest {
 
         XCTAssertTrue(didSucceed, "SignIn operation failed")
         
-        let getCurrentUserExpectation = asyncExpectation(description: "getCurrentUser() is successful",
+        let getCurrentUserExpectation = expectation(description: "getCurrentUser() is successful",
                                                          expectedFulfillmentCount: concurrencyLimit)
         for _ in 1...concurrencyLimit {
             Task {
@@ -188,6 +188,6 @@ final class AuthStressTests: AuthStressBaseTest {
             }
         }
         
-        await waitForExpectations([getCurrentUserExpectation], timeout: networkTimeout)
+        await fulfillment(of: [getCurrentUserExpectation], timeout: networkTimeout)
     }
 }

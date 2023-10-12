@@ -258,7 +258,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             XCTFail("SignIn with invalid auth flow should not succeed: \(error)")
         }
 
-        wait(for: [operationExpectation], timeout: networkTimeout)
+        await fulfillment(of: [operationExpectation], timeout: networkTimeout)
 
         let confirmOperationExpectation = expectation(description: "Confirm new password should succeed")
         do {
@@ -277,7 +277,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             XCTFail("Failed to confirm new password with error: \(error)")
         }
 
-        wait(for: [confirmOperationExpectation], timeout: networkTimeout)
+        await fulfillment(of: [confirmOperationExpectation], timeout: networkTimeout)
 
     }
 
@@ -326,7 +326,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             signInExpectation.fulfill()
         }
 
-        wait(for: [signInExpectation, fetchAuthSessionExpectation], timeout: 10)
+        await fulfillment(of: [signInExpectation, fetchAuthSessionExpectation], timeout: 10)
     }
 
 }
