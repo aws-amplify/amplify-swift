@@ -6,6 +6,8 @@
 //
 
 @testable import Amplify
+import AWSClientRuntime
+import AwsCommonRuntimeKit
 import AWSPinpoint
 @testable import AWSPinpointPushNotificationsPlugin
 import ClientRuntime
@@ -24,7 +26,7 @@ class ErrorPushNotificationsTests: XCTestCase {
             XCTFail("Expected error of type .unknown, got \(pushNotificationsError)")
         }
     }
-    
+
     func testPushNotificationsError_withConnectivityError_shouldReturnNetworkError() {
         let error = NSError(domain: "ConnectivityError", code: NSURLErrorNotConnectedToInternet)
         let pushNotificationsError = error.pushNotificationsError
@@ -37,62 +39,52 @@ class ErrorPushNotificationsTests: XCTestCase {
             XCTFail("Expected error of type .network, got \(pushNotificationsError)")
         }
     }
-   
-    func testPushNotificationsError_withNetworkClientSdkError_shouldReturnNetworkError() throws {
-        let error = NSError(domain: "ConnectivityError", code: NSURLErrorNotConnectedToInternet)
-        let sdkError = SdkError<PutEventsOutputError>.client(.networkError(error), nil)
-        let pushNotificationsError = sdkError.pushNotificationsError
-        switch pushNotificationsError {
-        case .network(let errorDescription, let recoverySuggestion, let underlyingError):
-            XCTAssertEqual(errorDescription, PushNotificationsPluginErrorConstants.deviceOffline.errorDescription)
-            XCTAssertEqual(recoverySuggestion, PushNotificationsPluginErrorConstants.deviceOffline.recoverySuggestion)
-            XCTAssertEqual(error.localizedDescription, underlyingError?.localizedDescription)
-        default:
-            XCTFail("Expected error of type .network, got \(pushNotificationsError)")
-        }
-    }
-    
-    func testPushNotificationsError_withNetworkClientError_shouldReturnNetworkError() throws {
-        let error = NSError(domain: "ConnectivityError", code: NSURLErrorNotConnectedToInternet)
-        let clientError: Error = ClientError.networkError(error)
-        let pushNotificationsError = clientError.pushNotificationsError
-        switch pushNotificationsError {
-        case .network(let errorDescription, let recoverySuggestion, let underlyingError):
-            XCTAssertEqual(errorDescription, PushNotificationsPluginErrorConstants.deviceOffline.errorDescription)
-            XCTAssertEqual(recoverySuggestion, PushNotificationsPluginErrorConstants.deviceOffline.recoverySuggestion)
-            XCTAssertEqual(clientError.localizedDescription, underlyingError?.localizedDescription)
-        default:
-            XCTFail("Expected error of type .network, got \(pushNotificationsError)")
+
+    func testPushNotificationError_withServiceError_shouldReturnServiceError() {
+        let errors: [(String, PushNotificationsErrorConvertible & Error)] = [
+            ("BadRequestException", BadRequestException(message: "BadRequestException")),
+            ("InternalServerErrorException", InternalServerErrorException(message: "InternalServerErrorException")),
+            ("ForbiddenException", ForbiddenException(message: "ForbiddenException")),
+            ("MethodNotAllowedException", MethodNotAllowedException(message: "MethodNotAllowedException")),
+            ("NotFoundException", NotFoundException(message: "NotFoundException")),
+            ("PayloadTooLargeException", PayloadTooLargeException(message: "PayloadTooLargeException")),
+            ("TooManyRequestsException", TooManyRequestsException(message: "TooManyRequestsException"))
+        ]
+
+        for (expectedMessage, error) in errors {
+            let pushNotificationsError = error.pushNotificationsError
+            switch pushNotificationsError {
+            case .service(let errorDescription, let recoverySuggestion, let underlyingError):
+                XCTAssertEqual(errorDescription, expectedMessage)
+                XCTAssertEqual(recoverySuggestion, PushNotificationsPluginErrorConstants.nonRetryableServiceError.recoverySuggestion)
+                XCTAssertEqual(error.localizedDescription, underlyingError?.localizedDescription)
+            default:
+                XCTFail("Expected error of type .service, got \(pushNotificationsError)")
+            }
         }
     }
 
-    func testPushNotificationsError_withUpdateEndpointSdkError_shouldReturnServiceError() throws {
-        let httpResponse = ClientRuntime.HttpResponse(body: .none, statusCode: .notFound)
-        let outputError = try UpdateEndpointOutputError(httpResponse: httpResponse)
-        let error: Error = SdkError.service(outputError, httpResponse)
+    func testPushNotificationError_withUnknownAWSHTTPServiceError_shouldReturnUnknownError() {
+        let error = UnknownAWSHTTPServiceError(httpResponse: .init(body: .none, statusCode: .accepted), message: "UnknownAWSHTTPServiceError", requestID: nil, typeName: nil)
         let pushNotificationsError = error.pushNotificationsError
         switch pushNotificationsError {
-        case .service(let errorDescription, let recoverySuggestion, let underlyingError):
-            XCTAssertEqual(errorDescription, error.localizedDescription)
-            XCTAssertEqual(recoverySuggestion, PushNotificationsPluginErrorConstants.nonRetryableServiceError.recoverySuggestion)
+        case .unknown(let errorDescription, let underlyingError):
+            XCTAssertEqual(errorDescription, "UnknownAWSHTTPServiceError")
             XCTAssertEqual(error.localizedDescription, underlyingError?.localizedDescription)
         default:
-            XCTFail("Expected error of type .service, got \(pushNotificationsError)")
+            XCTFail("Expected error of type .unknown, got \(pushNotificationsError)")
         }
     }
-    
-    func testPushNotificationsError_withPutEventsSdkError_shouldReturnServiceError() throws {
-        let httpResponse = ClientRuntime.HttpResponse(body: .none, statusCode: .notFound)
-        let outputError = try PutEventsOutputError(httpResponse: httpResponse)
-        let error: Error = SdkError.service(outputError, httpResponse)
+
+    func testPushNotificationError_withCommonRunTimeError_shouldReturnUnknownError() {
+        let error = CommonRunTimeError.crtError(.init(code: 12345))
         let pushNotificationsError = error.pushNotificationsError
         switch pushNotificationsError {
-        case .service(let errorDescription, let recoverySuggestion, let underlyingError):
-            XCTAssertEqual(errorDescription, error.localizedDescription)
-            XCTAssertEqual(recoverySuggestion, PushNotificationsPluginErrorConstants.nonRetryableServiceError.recoverySuggestion)
+        case .unknown(let errorDescription, let underlyingError):
+            XCTAssertEqual(errorDescription, "Unknown Error Code")
             XCTAssertEqual(error.localizedDescription, underlyingError?.localizedDescription)
         default:
-            XCTFail("Expected error of type .service, got \(pushNotificationsError)")
+            XCTFail("Expected error of type .unknown, got \(pushNotificationsError)")
         }
     }
 }
