@@ -51,7 +51,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
-        wait(for: [eventsNotSaved], timeout: 5.0)
+        await fulfillment(of: [eventsNotSaved], timeout: 5.0)
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events
@@ -437,7 +437,7 @@ extension ModelReconciliationQueueBehaviorTests {
         })
 
         subscriptionEventsSubject.send(completion: completion)
-        wait(for: [eventSentViaPublisher], timeout: 1.0)
+        await fulfillment(of: [eventSentViaPublisher], timeout: 1.0)
         queueSink.cancel()
     }
 
@@ -465,7 +465,7 @@ extension ModelReconciliationQueueBehaviorTests {
         })
 
         subscriptionEventsSubject.send(completion: completion)
-        wait(for: [eventSentViaPublisher], timeout: 1.0)
+        await fulfillment(of: [eventSentViaPublisher], timeout: 1.0)
         queueSink.cancel()
     }
 
@@ -493,7 +493,7 @@ extension ModelReconciliationQueueBehaviorTests {
         })
 
         subscriptionEventsSubject.send(completion: completion)
-        wait(for: [eventSentViaPublisher], timeout: 1.0)
+        await fulfillment(of: [eventSentViaPublisher], timeout: 1.0)
         queueSink.cancel()
     }
 }

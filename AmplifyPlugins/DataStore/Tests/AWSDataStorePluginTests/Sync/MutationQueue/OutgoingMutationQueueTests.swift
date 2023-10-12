@@ -81,12 +81,12 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         try await startAmplifyAndWaitForSync()
 
-        let saveSuccess = asyncExpectation(description: "save success")
+        let saveSuccess = expectation(description: "save success")
         Task {
             _ = try await Amplify.DataStore.save(post)
             await saveSuccess.fulfill()
         }
-        await waitForExpectations([saveSuccess], timeout: 1.0)
+        await fulfillment(of: [saveSuccess], timeout: 1.0)
         
         
         await waitForExpectations(timeout: 5.0, handler: nil)
@@ -142,7 +142,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         }
 
-        wait(for: [mutationEventSaved], timeout: 1.0)
+        await fulfillment(of: [mutationEventSaved], timeout: 1.0)
 
         var outboxStatusReceivedCurrentCount = 0
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")

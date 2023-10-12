@@ -53,7 +53,7 @@ class MutationSyncMetadataMigrationTestBase: XCTestCase {
             case .failure(let error): XCTFail("\(error.errorDescription)")
             }
         }
-        wait(for: [saveSuccess], timeout: 1)
+        await fulfillment(of: [saveSuccess], timeout: 1)
     }
 
     func saveMutationSyncMetadata(_ metadata: MutationSyncMetadata) {
@@ -64,7 +64,7 @@ class MutationSyncMetadataMigrationTestBase: XCTestCase {
             case .failure(let error): XCTFail("\(error.errorDescription)")
             }
         }
-        wait(for: [saveMetadataSuccess], timeout: 1)
+        await fulfillment(of: [saveMetadataSuccess], timeout: 1)
     }
 
     func queryMutationSyncMetadata() -> [MutationSyncMetadata]? {
@@ -78,7 +78,7 @@ class MutationSyncMetadataMigrationTestBase: XCTestCase {
             case .failure(let error): XCTFail("\(error.errorDescription)")
             }
         }
-        wait(for: [firstQueryModelSyncMetadata], timeout: 1)
+        await fulfillment(of: [firstQueryModelSyncMetadata], timeout: 1)
         return result
     }
 
@@ -93,7 +93,7 @@ class MutationSyncMetadataMigrationTestBase: XCTestCase {
             case .failure(let error): XCTFail("\(error.errorDescription)")
             }
         }
-        wait(for: [queryModelSyncMetadata], timeout: 1)
+        await fulfillment(of: [queryModelSyncMetadata], timeout: 1)
         return result
     }
 }

@@ -18,7 +18,7 @@ class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
         
-        let commentSynced = asyncExpectation(description: "DataStore start success")
+        let commentSynced = expectation(description: "DataStore start success")
         let mutationEvents = Amplify.DataStore.observe(Comment4V2.self)
         Task {
             do {
@@ -35,7 +35,7 @@ class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
         try await Amplify.DataStore.save(post)
         try await Amplify.DataStore.save(comment)
         
-        await waitForExpectations([commentSynced], timeout: 10)
+        await fulfillment(of: [commentSynced], timeout: 10)
     }
 }
 

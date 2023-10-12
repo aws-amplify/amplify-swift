@@ -45,7 +45,7 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
 
         dataStorePlugin.onReceiveValue(receiveValue: .modelSyncedEvent(modelSyncedEvent))
         XCTAssertTrue(dispatchedModelSyncedEvent.get())
-        wait(for: [modelSyncedReceivedFromHub], timeout: 1)
+        await fulfillment(of: [modelSyncedReceivedFromHub], timeout: 1)
         listener.cancel()
     }
 
@@ -74,7 +74,7 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [dataStoreStopSuccess], timeout: 1)
+        await fulfillment(of: [dataStoreStopSuccess], timeout: 1)
         XCTAssertFalse(dispatchedModelSyncedEvent.get())
     }
 
@@ -95,7 +95,7 @@ class AWSDataStorePluginBaseBehaviorTests: BaseDataStoreTests {
         dataStorePlugin.onReceiveValue(receiveValue: .syncQueriesReadyEvent)
         dataStorePlugin.onReceiveValue(receiveValue: .readyEvent)
 
-        wait(for: [syncQueriesReadyFromHub, readyReceivedFromHub], timeout: 1)
+        await fulfillment(of: [syncQueriesReadyFromHub, readyReceivedFromHub], timeout: 1)
         listener.cancel()
     }
 }

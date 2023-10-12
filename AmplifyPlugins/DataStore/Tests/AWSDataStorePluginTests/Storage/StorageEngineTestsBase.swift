@@ -32,7 +32,7 @@ class StorageEngineTestsBase: XCTestCase {
             result = sResult
             saveFinished.fulfill()
         }
-        wait(for: [saveFinished], timeout: defaultTimeout)
+        await fulfillment(of: [saveFinished], timeout: defaultTimeout)
         guard let saveResult = result else {
             return .failure(causedBy: "Save operation timed out")
         }
@@ -89,7 +89,7 @@ class StorageEngineTestsBase: XCTestCase {
             queryFinished.fulfill()
         }
 
-        wait(for: [queryFinished], timeout: defaultTimeout)
+        await fulfillment(of: [queryFinished], timeout: defaultTimeout)
         guard let queryResult = result else {
             return .failure(causedBy: "Query operation timed out")
         }
@@ -174,7 +174,7 @@ class StorageEngineTestsBase: XCTestCase {
             deleteFinished.fulfill()
         })
 
-        wait(for: [deleteFinished], timeout: timeout)
+        await fulfillment(of: [deleteFinished], timeout: timeout)
         guard let deleteResult = result else {
             return .failure(causedBy: "Delete operation timed out")
         }

@@ -115,7 +115,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                 expectation.fulfill()
             }
         }
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -163,7 +163,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -224,7 +224,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -270,7 +270,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
     /// - Given: A Post instance
@@ -330,7 +330,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: A Post instance
@@ -366,7 +366,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: A Post instance
@@ -418,7 +418,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     func testInsertSinglePostThenDeleteItByPredicate() {
@@ -461,7 +461,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
     func testInsertionOfManyItemsThenDeleteAllByPredicateConstant() {
@@ -511,7 +511,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
             counter += 1
         }
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 5)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 5)
     }
 
     func checkIfPostIsDeleted(id: String) {

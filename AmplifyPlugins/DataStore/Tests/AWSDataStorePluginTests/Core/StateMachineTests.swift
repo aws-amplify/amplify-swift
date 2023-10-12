@@ -106,7 +106,7 @@ class StateMachineTests: XCTestCase {
             }
         }
 
-        wait(for: [
+        await fulfillment(of: [
             receivedOneOnSubscribe,
             receivedTwoAfterSubscribe,
             receivedThreeAfterSubscribe,

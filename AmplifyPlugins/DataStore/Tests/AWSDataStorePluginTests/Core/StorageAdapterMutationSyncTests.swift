@@ -49,7 +49,7 @@ class StorageAdapterMutationSyncTests: BaseDataStoreTests {
             XCTFail(error.localizedDescription)
             expect.fulfill()
         }
-        wait(for: [expect], timeout: 5)
+        await fulfillment(of: [expect], timeout: 5)
     }
 
 }

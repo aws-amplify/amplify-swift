@@ -99,7 +99,7 @@ class LocalSubscriptionTests: XCTestCase {
     /// - Then:
     ///    - I receive notifications for updates to that model
     func testObserve() async throws {
-        let receivedMutationEvent = asyncExpectation(description: "Received mutation event")
+        let receivedMutationEvent = expectation(description: "Received mutation event")
 
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -122,7 +122,7 @@ class LocalSubscriptionTests: XCTestCase {
                          comments: [])
 
         _ = try await Amplify.DataStore.save(model)
-        await waitForExpectations([receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
         subscription.cancel()
     }
 
@@ -132,7 +132,7 @@ class LocalSubscriptionTests: XCTestCase {
     /// - Then:
     ///    - I am notified of `create` mutations
     func testCreate() async throws {
-        let receivedMutationEvent = asyncExpectation(description: "Received mutation event")
+        let receivedMutationEvent = expectation(description: "Received mutation event")
 
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -157,7 +157,7 @@ class LocalSubscriptionTests: XCTestCase {
                          comments: [])
 
         _ = try await Amplify.DataStore.save(model)
-        await waitForExpectations([receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
     }
@@ -185,7 +185,7 @@ class LocalSubscriptionTests: XCTestCase {
         newModel.content = newContent
         newModel.updatedAt = .now()
 
-        let receivedMutationEvent = asyncExpectation(description: "Received mutation event")
+        let receivedMutationEvent = expectation(description: "Received mutation event")
 
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -200,7 +200,7 @@ class LocalSubscriptionTests: XCTestCase {
         
         _ = try await Amplify.DataStore.save(newModel)
 
-        await waitForExpectations([receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
     }
@@ -211,7 +211,7 @@ class LocalSubscriptionTests: XCTestCase {
     /// - Then:
     ///    - I am notified of `delete` mutations
     func testDelete() async throws {
-        let receivedMutationEvent = asyncExpectation(description: "Received mutation event")
+        let receivedMutationEvent = expectation(description: "Received mutation event")
 
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -232,7 +232,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         _ = try await Amplify.DataStore.save(model)
         _ = try await Amplify.DataStore.delete(model)
-        await waitForExpectations([receivedMutationEvent], timeout: 1.0)
+        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
     }

@@ -76,7 +76,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             receivedSubscription.fulfill()
         }
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
-        wait(for: [receivedSubscription], timeout: 1.0)
+        await fulfillment(of: [receivedSubscription], timeout: 1.0)
 
         let json = "{\"id\":\"1234\",\"title\":\"t\",\"content\":\"c\",\"createdAt\":\"2020-09-03T22:55:13.424Z\"}"
         let futureResult = MutationEvent(modelId: "1",
@@ -102,7 +102,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         stateMachine.state = .requestingEvent
 
-        wait(for: [enqueueEvent, apiMutationReceived], timeout: 1)
+        await fulfillment(of: [enqueueEvent, apiMutationReceived], timeout: 1)
 
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
         stateMachine.pushExpectActionCriteria { action in
@@ -120,7 +120,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         listenerFromRequest(.success(.success(remoteMutationSync)))
 
-        wait(for: [processEvent], timeout: 1)
+        await fulfillment(of: [processEvent], timeout: 1)
     }
 
     func testRequestingEvent_nosubscription() {
@@ -143,7 +143,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             receivedSubscription.fulfill()
         }
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
-        wait(for: [receivedSubscription], timeout: 0.1)
+        await fulfillment(of: [receivedSubscription], timeout: 0.1)
 
         // Mock incoming mutation event
         let post = Post(title: "title",
@@ -169,7 +169,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         apiBehavior.responders[.mutateRequestListener] = responder
 
         stateMachine.state = .requestingEvent
-        wait(for: [enqueueEvent, mutateAPICallExpecation], timeout: 0.1)
+        await fulfillment(of: [enqueueEvent, mutateAPICallExpecation], timeout: 0.1)
 
         // While we are expecting the mutationEvent to be processed by making an API call,
         // stop the mutation queue. Note that we are not testing that the operation
@@ -181,7 +181,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             mutationQueueStopped.fulfill()
         }
         mutationQueue.stopSyncingToCloud { }
-        wait(for: [mutationQueueStopped], timeout: 0.1)
+        await fulfillment(of: [mutationQueueStopped], timeout: 0.1)
 
         // Re-enable syncing
         let startReceivedAgain = expectation(description: "Start received again")
@@ -196,7 +196,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
                                           mutationEventPublisher: publisher,
                                           reconciliationQueue: reconciliationQueue)
 
-        wait(for: [startReceivedAgain], timeout: 1)
+        await fulfillment(of: [startReceivedAgain], timeout: 1)
 
         // After - enabling, mock the callback from API to be completed
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
@@ -215,7 +215,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         listenerFromRequest(.success(.success(remoteMutationSync)))
 
-        wait(for: [processEvent], timeout: 1)
+        await fulfillment(of: [processEvent], timeout: 1)
     }
 }
 

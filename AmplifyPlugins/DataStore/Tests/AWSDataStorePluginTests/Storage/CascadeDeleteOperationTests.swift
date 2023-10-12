@@ -132,7 +132,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        await fulfillment(of: [completed], timeout: 1)
         guard case .success(let queriedModel) = queryModelSynchronous(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -174,7 +174,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        await fulfillment(of: [completed], timeout: 1)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -219,7 +219,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        await fulfillment(of: [completed], timeout: 1)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -261,7 +261,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        await fulfillment(of: [completed], timeout: 1)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -301,7 +301,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed], timeout: 1)
+        await fulfillment(of: [completed], timeout: 1)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -483,7 +483,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -543,7 +543,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
         guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -595,7 +595,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
     }
 
     func testDeleteWithAssociatedModels() async {
@@ -660,7 +660,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
         XCTAssertEqual(submittedEvents.count, 3)
         // The delete mutations should be synced in reverse order (children to parent)
         XCTAssertEqual(submittedEvents[0].modelName, Dish.modelName)

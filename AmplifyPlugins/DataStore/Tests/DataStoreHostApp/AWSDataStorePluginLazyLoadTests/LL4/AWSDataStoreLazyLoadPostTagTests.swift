@@ -213,7 +213,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
-        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
             for try await mutationEvent in mutationEvents {
@@ -244,7 +244,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([mutationEventReceived], timeout: 60)
+        await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
     
@@ -253,7 +253,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         try await startAndWaitForReady()
         let tag = Tag(name: "name")
         
-        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Tag.self)
         Task {
             for try await mutationEvent in mutationEvents {
@@ -283,7 +283,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([mutationEventReceived], timeout: 60)
+        await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
     
@@ -297,7 +297,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
         
-        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(PostTag.self)
         Task {
             for try await mutationEvent in mutationEvents {
@@ -319,7 +319,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([mutationEventReceived], timeout: 60)
+        await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
     
@@ -327,7 +327,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: PostTagModels())
         try await startAndWaitForReady()
         let post = Post(postId: UUID().uuidString, title: "title")
-        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self, where: Post.keys.postId == post.postId)
         Task {
             for try await querySnapshot in querySnapshots {
@@ -354,7 +354,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([snapshotReceived], timeout: 60)
+        await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
     
@@ -363,7 +363,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         try await startAndWaitForReady()
         let tag = Tag(name: "name")
         
-        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: Tag.self, where: Tag.keys.id == tag.id)
         Task {
             for try await querySnapshot in querySnapshots {
@@ -390,7 +390,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([snapshotReceived], timeout: 60)
+        await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
     
@@ -404,7 +404,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
         
-        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let snapshotReceived = expectation(description: "Received query snapshot")
         let querySnapshots = Amplify.DataStore.observeQuery(for: PostTag.self, where: PostTag.keys.id == postTag.id)
         Task {
             for try await querySnapshot in querySnapshots {
@@ -422,7 +422,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
         
-        await waitForExpectations([snapshotReceived], timeout: 60)
+        await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
 }

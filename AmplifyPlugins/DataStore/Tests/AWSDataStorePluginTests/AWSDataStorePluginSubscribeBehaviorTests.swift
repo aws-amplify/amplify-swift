@@ -33,7 +33,7 @@ class AWSDataStorePluginSubscribeBehaviorTests: BaseDataStoreTests {
                 snapshotReceived.fulfill()
             }
 
-        wait(for: [snapshotReceived], timeout: 20)
+        await fulfillment(of: [snapshotReceived], timeout: 20)
         sink.cancel()
     }
 

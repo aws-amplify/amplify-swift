@@ -34,8 +34,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///    - The item observed will be returned in the second snapshot
     ///
     func testItemChangedWillGenerateSnapshot() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshots")
-        let secondSnapshot = asyncExpectation(description: "second query snapshots")
+        let firstSnapshot = expectation(description: "first query snapshots")
+        let secondSnapshot = expectation(description: "second query snapshots")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -65,11 +65,11 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
     
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
 
         let post = try createPost(id: "1")
         dataStorePublisher.send(input: post)
-        await waitForExpectations([secondSnapshot], timeout: 10)
+        await fulfillment(of: [secondSnapshot], timeout: 10)
     }
     
     ///  ObserveQuery will send a single snapshot when the sync state toggles
@@ -83,9 +83,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///    - ObserveQuery will send a second snapshot
     ///
     func testGenerateSnapshotOnObserveQueryWhenModelSynced() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshots")
-        let secondSnapshot = asyncExpectation(description: "second query snapshots")
-        let thirdSnapshot = asyncExpectation(description: "third query snapshot", isInverted: true)
+        let firstSnapshot = expectation(description: "first query snapshots")
+        let secondSnapshot = expectation(description: "second query snapshots")
+        let thirdSnapshot = expectation(description: "third query snapshot", isInverted: true)
         let dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
@@ -121,7 +121,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 5)
+        await fulfillment(of: [firstSnapshot], timeout: 5)
         
         dispatchedModelSyncedEvent.set(true)
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
@@ -129,12 +129,12 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                                                                         isDeltaSync: false, added: 0, updated: 0,
                                                                         deleted: 0))
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
-        await waitForExpectations([secondSnapshot], timeout: 10)
+        await fulfillment(of: [secondSnapshot], timeout: 10)
         
         let modelSyncedEventNotMatch = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                   data: ModelSyncedEvent.Builder().modelName)
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventNotMatch)
-        await waitForExpectations([thirdSnapshot], timeout: 10)
+        await fulfillment(of: [thirdSnapshot], timeout: 10)
     }
     
     /// ObserveQuery will send the first snapshot with 2 items when storage engine
@@ -147,7 +147,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///    - The items queried will return two posts in the first snapshot
     ///
     func testFirstSnapshotFromStorageQueryReturnsTwoPosts() async {
-        let firstSnapshot = asyncExpectation(description: "firstSnapshot received")
+        let firstSnapshot = expectation(description: "firstSnapshot received")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -180,7 +180,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        await waitForExpectations([firstSnapshot], timeout: 10)
+        await fulfillment(of: [firstSnapshot], timeout: 10)
     }
     
     /// Multiple item changed observed will be returned in a single snapshot
@@ -192,8 +192,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///    - The items observed will be returned in the second snapshot
     ///
     func testMultipleItemChangesWillGenerateSecondSnapshot() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshot")
-        let secondSnapshot = asyncExpectation(description: "second query snapshot")
+        let firstSnapshot = expectation(description: "first query snapshot")
+        let secondSnapshot = expectation(description: "second query snapshot")
 
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
@@ -224,7 +224,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
 
         let post1 = try createPost(id: "1")
         let post2 = try createPost(id: "2")
@@ -232,7 +232,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         dataStorePublisher.send(input: post1)
         dataStorePublisher.send(input: post2)
         dataStorePublisher.send(input: post3)
-        await waitForExpectations([secondSnapshot], timeout: 10)
+        await fulfillment(of: [secondSnapshot], timeout: 10)
     }
     
     /// Multiple published objects (more than the `.collect` count of 1000) in a relatively short time window
@@ -247,10 +247,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///     remaining in the third query
     ///
     func testCollectOverMaxItemCountLimit() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshot")
-        let secondSnapshot = asyncExpectation(description: "second query snapshot")
-        let thirdSnapshot = asyncExpectation(description: "third query snapshot")
-        let validateSnapshotsComplete = asyncExpectation(description: "validate snapshots")
+        let firstSnapshot = expectation(description: "first query snapshot")
+        let secondSnapshot = expectation(description: "second query snapshot")
+        let thirdSnapshot = expectation(description: "third query snapshot")
+        let validateSnapshotsComplete = expectation(description: "validate snapshots")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -286,16 +286,16 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
 
         for postId in 1 ... 1_100 {
             let post = try createPost(id: "\(postId)")
             dataStorePublisher.send(input: post)
         }
 
-        await waitForExpectations([secondSnapshot, thirdSnapshot], timeout: 10)
+        await fulfillment(of: [secondSnapshot, thirdSnapshot], timeout: 10)
         snapshots.cancel()
-        await waitForExpectations([validateSnapshotsComplete], timeout: 1.0)
+        await fulfillment(of: [validateSnapshotsComplete], timeout: 1.0)
     }
     
     /// Cancelling the subscription will no longer receive snapshots
@@ -307,8 +307,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///    - no further snapshots are received
     ///
     func testSuccessfulSubscriptionCancel() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshot")
-        let secondSnapshot = asyncExpectation(description: "second query snapshot", isInverted: true)
+        let firstSnapshot = expectation(description: "first query snapshot")
+        let secondSnapshot = expectation(description: "second query snapshot", isInverted: true)
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -337,11 +337,11 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
         snapshots.cancel()
         let post1 = try createPost(id: "1")
         dataStorePublisher.send(input: post1)
-        await waitForExpectations([secondSnapshot], timeout: 1)
+        await fulfillment(of: [secondSnapshot], timeout: 1)
     }
     
     /// Cancelling the underlying operation will emit a completion to the subscribers
@@ -353,9 +353,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///    - the subscriber receives a cancellation
     ///
     func testSuccessfulSequenceCancel() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshot")
-        let secondSnapshot = asyncExpectation(description: "second query snapshot", isInverted: true)
-        let completedEvent = asyncExpectation(description: "should have completed")
+        let firstSnapshot = expectation(description: "first query snapshot")
+        let secondSnapshot = expectation(description: "second query snapshot", isInverted: true)
+        let completedEvent = expectation(description: "should have completed")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -384,18 +384,18 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
         snapshots.cancel()
         let post1 = try createPost(id: "1")
         dataStorePublisher.send(input: post1)
 
-        await waitForExpectations([secondSnapshot, completedEvent], timeout: 1)
+        await fulfillment(of: [secondSnapshot, completedEvent], timeout: 1)
     }
     
     ///  ObserveQuery's state should be able to be reset and initial query able to be started again.
     func testObserveQueryResetStateThenStartObserveQuery() async {
-        let firstSnapshot = asyncExpectation(description: "first query snapshot")
-        let secondSnapshot = asyncExpectation(description: "second query snapshot")
+        let firstSnapshot = expectation(description: "first query snapshot")
+        let secondSnapshot = expectation(description: "second query snapshot")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -423,10 +423,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
         dataStoreStateSubject.send(.stop)
         dataStoreStateSubject.send(.start(storageEngine: storageEngine))
-        await waitForExpectations([secondSnapshot], timeout: 1)
+        await fulfillment(of: [secondSnapshot], timeout: 1)
     }
     
     /// Multiple calls to start the observeQuery should not start again
@@ -437,9 +437,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     /// - Then:
     ///    - Only one query should be performed / only one snapshot should be returned
     func testObserveQueryStaredShouldNotStartAgain() async {
-        let firstSnapshot = asyncExpectation(description: "first query snapshot")
-        let secondSnapshot = asyncExpectation(description: "second query snapshot")
-        let thirdSnapshot = asyncExpectation(description: "third query snapshot", isInverted: true)
+        let firstSnapshot = expectation(description: "first query snapshot")
+        let secondSnapshot = expectation(description: "second query snapshot")
+        let thirdSnapshot = expectation(description: "third query snapshot", isInverted: true)
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -469,18 +469,18 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await fulfillment(of: [firstSnapshot], timeout: 1)
         dataStoreStateSubject.send(.stop)
         dataStoreStateSubject.send(.start(storageEngine: storageEngine))
         dataStoreStateSubject.send(.start(storageEngine: storageEngine))
-        await waitForExpectations([secondSnapshot, thirdSnapshot], timeout: 1)
+        await fulfillment(of: [secondSnapshot, thirdSnapshot], timeout: 1)
         XCTAssertTrue(taskRunner.observeQueryStarted)
     }
     
     /// ObserveQuery operation entry points are `resetState`, `startObserveQuery`, and `onItemChanges(mutationEvents)`.
     /// Ensure concurrent random sequences of these API calls do not cause issues such as data race.
     func testConcurrent() async {
-        let completeReceived = asyncExpectation(description: "complete received", isInverted: true)
+        let completeReceived = expectation(description: "complete received", isInverted: true)
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -529,17 +529,17 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             for await _ in group {
             }
         }
-        await waitForExpectations([completeReceived], timeout: 10)
+        await fulfillment(of: [completeReceived], timeout: 10)
     }
     
     /// When a predicate like `title.beginsWith("title")` is given, the models that matched the predicate
     /// should be added to the snapshots, like `post` and `post2`. When `post2.title` is updated to no longer
     /// match the predicate, it should be removed from the snapshot.
     func testUpdatedModelNoLongerMatchesPredicateRemovedFromSnapshot() async throws {
-        let firstSnapshot = asyncExpectation(description: "first query snapshots")
-        let secondSnapshot = asyncExpectation(description: "second query snapshots")
-        let thirdSnapshot = asyncExpectation(description: "third query snapshots")
-        let fourthSnapshot = asyncExpectation(description: "fourth query snapshots")
+        let firstSnapshot = expectation(description: "first query snapshots")
+        let secondSnapshot = expectation(description: "second query snapshots")
+        let thirdSnapshot = expectation(description: "third query snapshots")
+        let fourthSnapshot = expectation(description: "fourth query snapshots")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -584,7 +584,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTFail("Failed with error \(error)")
             }
         }
-        await waitForExpectations([firstSnapshot], timeout: 5)
+        await fulfillment(of: [firstSnapshot], timeout: 5)
 
         let post = try createPost(id: "1", title: "title 1")
         dataStorePublisher.send(input: post)
@@ -593,7 +593,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         var updatedPost2 = try createPost(id: "2", title: "Does not match predicate")
         updatedPost2.mutationType = MutationEvent.MutationType.update.rawValue
         dataStorePublisher.send(input: updatedPost2)
-        await waitForExpectations([secondSnapshot, thirdSnapshot, fourthSnapshot], timeout: 10)
+        await fulfillment(of: [secondSnapshot, thirdSnapshot, fourthSnapshot], timeout: 10)
     }
     
     

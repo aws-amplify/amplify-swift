@@ -79,7 +79,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                apiError: apiError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: APIError
@@ -122,7 +122,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                apiError: apiError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: GraphQLError with no errors
@@ -165,7 +165,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: GraphQLError with no error
@@ -209,7 +209,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: GraphQLError more than one error to handle
@@ -254,7 +254,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: GraphQLError ConditionalCheck
@@ -305,7 +305,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectHubEvent, expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectHubEvent, expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -345,7 +345,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     func testProcessMutationErrorFromCloudOperationSuccessForOperationDisabled() throws {
@@ -384,7 +384,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     func testProcessMutationErrorFromCloudOperationSuccessForUnknownError() throws {
@@ -423,7 +423,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -455,7 +455,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -491,7 +491,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -521,7 +521,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         queue.addOperation(operation)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -583,8 +583,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -597,7 +597,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
 
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -660,8 +660,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -674,7 +674,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
 
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -739,9 +739,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                completion: completion)
         queue.addOperation(operation)
 
-        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -803,10 +803,10 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         queue.addOperation(operation)
 
-        wait(for: [modelDeletedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [modelDeletedEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -884,11 +884,11 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                completion: completion)
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -954,8 +954,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -967,7 +967,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                    version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -1032,8 +1032,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                completion: completion)
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -1045,7 +1045,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                    version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
         eventListener(.success(.success(mockResponse)))
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -1113,8 +1113,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                completion: completion)
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -1123,8 +1123,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let error = GraphQLError(message: "some other error")
         eventListener(.success(.failure(.error([error]))))
 
-        wait(for: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// Given: GraphQL "OperationDisabled" error
@@ -1159,7 +1159,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             completion: completion)
 
         queue.addOperation(operation)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 }
 

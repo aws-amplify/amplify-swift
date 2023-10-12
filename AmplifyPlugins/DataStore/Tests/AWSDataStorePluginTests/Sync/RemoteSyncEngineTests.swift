@@ -64,7 +64,7 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: MockAPICategoryPlugin(), auth: nil)
 
-        wait(for: [failureOnStorageAdapter], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [failureOnStorageAdapter], timeout: defaultAsyncWaitTimeout)
         remoteSyncEngineSink.cancel()
     }
 
@@ -182,7 +182,7 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        wait(for: [storageAdapterAvailable,
+        await fulfillment(of: [storageAdapterAvailable,
                    subscriptionsPaused,
                    mutationsPaused,
                    stateMutationsCleared,
@@ -253,7 +253,7 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        wait(for: [storageAdapterAvailable,
+        await fulfillment(of: [storageAdapterAvailable,
                    subscriptionsPaused,
                    mutationsPaused,
                    stateMutationsCleared,
@@ -330,7 +330,7 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        wait(for: [storageAdapterAvailable,
+        await fulfillment(of: [storageAdapterAvailable,
                    subscriptionsPaused,
                    mutationsPaused,
                    stateMutationsCleared,

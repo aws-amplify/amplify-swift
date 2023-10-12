@@ -154,7 +154,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: HasOneModels())
         try await startAndWaitForReady()
         let child = HasOneChild()
-        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEventReceived = expectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(HasOneChild.self)
 
         Task {
@@ -176,7 +176,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Failed to send mutation request \(error)")
         }
 
-        await waitForExpectations([mutationEventReceived], timeout: 60)
+        await fulfillment(of: [mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
 

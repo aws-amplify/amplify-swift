@@ -84,7 +84,7 @@ class StorageEnginePublisherTests: StorageEngineTestsBase {
         storageEngine.onReceive(receiveValue: .syncStarted)
         storageEngine.onReceive(receiveValue: .cleanedUp)
         storageEngine.onReceive(receiveValue: .cleanedUpForTermination)
-        wait(for: [receivedMutationEvent,
+        await fulfillment(of: [receivedMutationEvent,
                    receivedModelSyncedEvent,
                    receivedSyncQueriesReadyEvent,
                    receivedReadyEvent],

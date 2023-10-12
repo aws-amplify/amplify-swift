@@ -88,7 +88,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         let anotherTeam = Team2(name: "name1")
         var project = Project2(teamID: team.id, team: team)
         let expectedUpdatedProject = Project2(id: project.id, name: project.name, teamID: anotherTeam.id)
-        let syncUpdatedProjectReceived = asyncExpectation(description: "received updated project from sync path")
+        let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -121,7 +121,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
             XCTAssertEqual(queriedProject, project)
             XCTAssertEqual(queriedProject.teamID, anotherTeam.id)
         }
-        await waitForExpectations([syncUpdatedProjectReceived], timeout: networkTimeout)
+        await fulfillment(of: [syncUpdatedProjectReceived], timeout: networkTimeout)
     }
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {

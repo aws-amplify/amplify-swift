@@ -56,9 +56,9 @@ class ReconcileAndSaveQueueTests: XCTestCase {
                                                        stateMachine: stateMachine)
         queue.addOperation(operation, modelName: Post.modelName)
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
-        wait(for: [operationAdded], timeout: 1)
+        await fulfillment(of: [operationAdded], timeout: 1)
         stateMachine.state = .finished
-        wait(for: [operationRemoved], timeout: 1)
+        await fulfillment(of: [operationRemoved], timeout: 1)
         sink.cancel()
     }
 
@@ -85,10 +85,10 @@ class ReconcileAndSaveQueueTests: XCTestCase {
                                                        stateMachine: stateMachine)
         queue.addOperation(operation, modelName: Post.modelName)
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
-        wait(for: [operationAdded], timeout: 1)
+        await fulfillment(of: [operationAdded], timeout: 1)
 
         queue.cancelOperations(modelName: Post.modelName)
-        wait(for: [cancelledOperations], timeout: 1)
+        await fulfillment(of: [cancelledOperations], timeout: 1)
         sink.cancel()
     }
 
@@ -115,10 +115,10 @@ class ReconcileAndSaveQueueTests: XCTestCase {
                                                        stateMachine: stateMachine)
         queue.addOperation(operation, modelName: Post.modelName)
         XCTAssertEqual(stateMachine.state, ReconcileAndLocalSaveOperation.State.waiting)
-        wait(for: [operationAdded], timeout: 1)
+        await fulfillment(of: [operationAdded], timeout: 1)
 
         queue.cancelAllOperations()
-        wait(for: [cancelledOperations], timeout: 1)
+        await fulfillment(of: [cancelledOperations], timeout: 1)
         sink.cancel()
     }
 }

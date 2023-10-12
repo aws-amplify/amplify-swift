@@ -54,7 +54,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -93,7 +93,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -134,7 +134,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -184,7 +184,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: A Post instance
@@ -234,7 +234,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: A Post instance
@@ -283,7 +283,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: A Post instance
@@ -311,7 +311,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: A Post instance
@@ -348,7 +348,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -384,7 +384,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
     func testInsertPostAndThenDeleteByIdWithPredicate() {
@@ -419,7 +419,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
     func testInsertPostAndThenDeleteByIdWithPredicateThatDoesNotMatch() {
@@ -454,7 +454,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [saveExpectation, deleteCompleteExpectation, queryExpectation], timeout: 2)
+        await fulfillment(of: [saveExpectation, deleteCompleteExpectation, queryExpectation], timeout: 2)
     }
 
     func testInsertSinglePostThenDeleteItByPredicate() {
@@ -486,7 +486,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
     func testInsertionOfManyItemsThenDeleteAllByPredicateConstant() {
@@ -531,7 +531,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
             counter += 1
         }
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 5)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 5)
     }
 
     func checkIfPostIsDeleted(id: String) {
@@ -692,7 +692,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             case .failure(let error): XCTFail("\(error)")
             }
         }
-        wait(for: [querySuccess], timeout: 1)
+        await fulfillment(of: [querySuccess], timeout: 1)
     }
 
     func testQueryMutationSyncMetadataForModelIds() {
@@ -716,7 +716,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
             saveMetadata1.fulfill()
         }
-        wait(for: [saveMetadata1], timeout: 1)
+        await fulfillment(of: [saveMetadata1], timeout: 1)
 
         let saveMetadata2 = expectation(description: "save metadata2 success")
         storageAdapter.save(metadata2) { result in
@@ -726,7 +726,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
             saveMetadata2.fulfill()
         }
-        wait(for: [saveMetadata2], timeout: 1)
+        await fulfillment(of: [saveMetadata2], timeout: 1)
 
         let querySuccess = expectation(description: "query for metadata success")
         var modelIds = [metadata1.modelId]
@@ -740,7 +740,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             XCTFail("\(error)")
         }
 
-        wait(for: [querySuccess], timeout: 1)
+        await fulfillment(of: [querySuccess], timeout: 1)
     }
 
     func testShouldIgnoreConstraintViolationError() {
@@ -796,7 +796,7 @@ extension SQLiteStorageEngineAdapterTests {
             rowSaved.fulfill()
         }
 
-        wait(for: [transactionSaved, groupSaved, rowSaved], timeout: 1)
+        await fulfillment(of: [transactionSaved, groupSaved, rowSaved], timeout: 1)
     }
 
     func testQueryWithReservedWords() {
@@ -829,6 +829,6 @@ extension SQLiteStorageEngineAdapterTests {
             }
             rowQueried.fulfill()
         }
-        wait(for: [transactionQueried, groupQueried, rowQueried], timeout: 1)
+        await fulfillment(of: [transactionQueried, groupQueried, rowQueried], timeout: 1)
     }
 }

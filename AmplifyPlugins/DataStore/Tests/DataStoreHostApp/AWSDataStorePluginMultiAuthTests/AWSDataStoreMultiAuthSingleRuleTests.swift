@@ -109,7 +109,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
         await assertDataStoreReady(expectations, expectedModelSynced: 0)
 
         await fulfillment(of: [authTypeExpecation], timeout: 5)
-        await waitForExpectations([
+        await fulfillment(of: [
                 expectations.query,
                 expectations.mutationSave,
                 expectations.mutationSaveProcessed,

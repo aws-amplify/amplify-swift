@@ -49,7 +49,7 @@ class MutationEventClearStateTests: XCTestCase {
         mutationEventClearState.clearStateOutgoingMutations {
             completionExpectation.fulfill()
         }
-        wait(for: [queryExpectation,
+        await fulfillment(of: [queryExpectation,
                    saveExpectation,
                    completionExpectation], timeout: 1.0)
     }

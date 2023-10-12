@@ -123,7 +123,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
         
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An existing MutationEvent of type .create
@@ -218,7 +218,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An existing MutationEvent of type .update
@@ -268,7 +268,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
         
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An existing MutationEvent of type .update
@@ -310,7 +310,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     // MARK: - Existing == .delete
@@ -358,7 +358,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     // test_<existing>_<candidate>
@@ -408,7 +408,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     // MARK: - Empty queue tests
@@ -454,7 +454,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An empty mutation queue
@@ -499,7 +499,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     /// - Given: An empty mutation queue
@@ -539,7 +539,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await fulfillment(of: [mutationEventVerified], timeout: 1.0)
     }
 
     // MARK: - In-process queue tests

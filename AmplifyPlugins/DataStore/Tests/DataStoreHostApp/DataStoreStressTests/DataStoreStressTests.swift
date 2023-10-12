@@ -48,7 +48,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             posts.append(post)
         }
         
-        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud",
                                                   expectedFulfillmentCount: concurrencyLimit)
 
         let postsCopy = posts
@@ -78,7 +78,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             }
         }
         
-        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+        await fulfillment(of: [postsSyncedToCloud], timeout: networkTimeout)
     }
     
     /// Perform concurrent saves and observe the data successfuly synced from cloud
@@ -96,7 +96,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
         
-        let localQueryForPosts = asyncExpectation(description: "Query for the post is successful",
+        let localQueryForPosts = expectation(description: "Query for the post is successful",
                                                 expectedFulfillmentCount: concurrencyLimit)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -110,7 +110,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             }
         }
         
-        await waitForExpectations([localQueryForPosts], timeout: networkTimeout)
+        await fulfillment(of: [localQueryForPosts], timeout: networkTimeout)
     }
     
     /// Perform concurrent saves and observe the data successfuly synced from cloud
@@ -128,7 +128,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
         
-        let localQueryForPosts = asyncExpectation(description: "Query for the post is successful",
+        let localQueryForPosts = expectation(description: "Query for the post is successful",
                                                   expectedFulfillmentCount: concurrencyLimit)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -144,7 +144,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             }
         }
         
-        await waitForExpectations([localQueryForPosts], timeout: networkTimeout)
+        await fulfillment(of: [localQueryForPosts], timeout: networkTimeout)
     }
     
     /// Perform concurrent saves and observe the data successfuly synced from cloud. Then delete the items afterwards
@@ -164,10 +164,10 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
         
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
         
-        let postsDeletedLocally = asyncExpectation(description: "All posts deleted locally",
+        let postsDeletedLocally = expectation(description: "All posts deleted locally",
                                                    expectedFulfillmentCount: concurrencyLimit)
         
-        let postsDeletedFromCloud = asyncExpectation(description: "All posts deleted and synced to cloud",
+        let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud",
                                                      expectedFulfillmentCount: concurrencyLimit)
         
         let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -197,7 +197,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             }
         }
         
-        await waitForExpectations([postsDeletedLocally, postsDeletedFromCloud], timeout: networkTimeout)
+        await fulfillment(of: [postsDeletedLocally, postsDeletedFromCloud], timeout: networkTimeout)
     }
     
     
@@ -213,7 +213,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             posts.append(post)
         }
         
-        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud",
                                                   expectedFulfillmentCount: concurrencyLimit)
         
         let postsCopy = posts
@@ -242,7 +242,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 _ = try await Amplify.DataStore.save(capturedPosts[index])
             }
         }
-        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+        await fulfillment(of: [postsSyncedToCloud], timeout: networkTimeout)
         
         return capturedPosts
     }
