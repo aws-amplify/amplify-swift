@@ -31,7 +31,7 @@ final class AWSCloudWatchLoggingMonitorTests: XCTestCase {
     /// Then: the delegate is autoamtically invoked
     func testDelegateIsInvokedOnInterval() {
         monitor.setAutomaticFlushIntervals()
-        wait(for: [invokedExpectation], timeout: 3)
+        await fulfillment(of: [invokedExpectation], timeout: 3)
     }
 }
 
