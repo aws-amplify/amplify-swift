@@ -289,8 +289,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get success for both the API's
     ///
-    func testSignInWithFetchAuthSession() {
-
+    func testSignInWithFetchAuthSession() async {
         let fetchAuthSessionExpectation = expectation(description: "Fetch Auth Session completed")
         let signInExpectation = expectation(description: "Sign in completed")
 

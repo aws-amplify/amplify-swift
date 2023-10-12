@@ -33,18 +33,14 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     ///    - I should get a completed signIn flow event.
     ///
     func testSuccessfulSignInEvent() async throws {
-
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-
         let signInExpectation = expectation(description: "SignIn event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                Task {
-                    await signInExpectation.fulfill()
-                }
+                signInExpectation.fulfill()
             default:
                 break
             }
@@ -67,18 +63,14 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     ///    - I should get a completed signOut flow event.
     ///
     func testSuccessfulSignOutEvent() async throws {
-
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-
         let signOutExpectation = expectation(description: "SignOut event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedOut:
-                Task {
-                    await signOutExpectation.fulfill()
-                }
+                signOutExpectation.fulfill()
             default:
                 break
             }
@@ -111,14 +103,9 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                Task {
-                    await signInExpectation.fulfill()
-                }
+                signInExpectation.fulfill()
             case HubPayload.EventName.Auth.sessionExpired:
-                Task {
-                    await sessionExpiredExpectation.fulfill()
-                }
-
+                sessionExpiredExpectation.fulfill()
             default:
                 break
             }
@@ -134,7 +121,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
             _ = try await Amplify.Auth.fetchAuthSession()
         }
-        await waitForExpectations( [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout)
+        await fulfillment(of: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout)
     }
 
     /// Test hub event for successful deletion of a valid user
@@ -156,13 +143,9 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                Task {
-                    await signInExpectation.fulfill()
-                }
+                signInExpectation.fulfill()
             case HubPayload.EventName.Auth.userDeleted:
-                Task {
-                    await deletedUserExpectation.fulfill()
-                }
+                deletedUserExpectation.fulfill()
             default:
                 break
             }
@@ -172,7 +155,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             username: username,
             password: password,
             email: defaultTestEmail)
-        await waitForExpectations( [signInExpectation], timeout: networkTimeout)
+        await fulfillment(of: [signInExpectation], timeout: networkTimeout)
 
         do {
             try await Amplify.Auth.deleteUser()
@@ -180,6 +163,6 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         } catch {
             XCTFail("deleteUser should not fail - \(error)")
         }
-        await waitForExpectations( [deletedUserExpectation], timeout: networkTimeout)
+        await fulfillment(of: [deletedUserExpectation], timeout: networkTimeout)
     }
 }
