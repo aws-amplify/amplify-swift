@@ -7,6 +7,10 @@ permissions:
     id-token: write
     contents: read
 
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   logging-integration-test-iOS:
     runs-on: macos-12
