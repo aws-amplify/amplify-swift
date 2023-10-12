@@ -44,6 +44,7 @@ protocol AWSS3StorageServiceBehavior {
 
     func getPreSignedURL(serviceKey: String,
                          signingOperation: AWSS3SigningOperation,
+                         metadata: [String: String]?,
                          accelerate: Bool?,
                          expires: Int) async throws -> URL
 

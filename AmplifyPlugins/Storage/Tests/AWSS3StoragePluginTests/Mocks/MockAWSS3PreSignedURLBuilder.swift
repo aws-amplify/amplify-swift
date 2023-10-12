@@ -22,9 +22,15 @@ extension MockAWSS3PreSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior {
     func getPreSignedURL(
         key: String,
         signingOperation: AWSS3SigningOperation,
+        metadata: [String : String]?,
         accelerate: Bool?,
         expires: Int64?) async throws -> URL {
-            interactions.append("\(#function) \(key) \(signingOperation) \(String(describing: expires))")
+            if let metadata = metadata {
+                interactions.append("\(#function) \(key) \(signingOperation) \(metadata) \(String(describing: expires))")
+            } else {
+                interactions.append("\(#function) \(key) \(signingOperation) \(String(describing: expires))")
+            }
+            
             return try await getPreSignedURLHandler(key, signingOperation, expires)
         }
 }
