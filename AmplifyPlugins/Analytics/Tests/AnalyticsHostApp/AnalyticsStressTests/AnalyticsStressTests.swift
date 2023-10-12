@@ -109,7 +109,7 @@ final class AnalyticsStressTests: XCTestCase {
                                   "eventPropertyBoolKey5": true] as [String: AnalyticsPropertyValue]
                 let event = BasicAnalyticsEvent(name: "eventName" + String(eventNumber), properties: properties)
                 Amplify.Analytics.record(event: event)
-                await recordExpectation.fulfill()
+                recordExpectation.fulfill()
             }
         }
 
