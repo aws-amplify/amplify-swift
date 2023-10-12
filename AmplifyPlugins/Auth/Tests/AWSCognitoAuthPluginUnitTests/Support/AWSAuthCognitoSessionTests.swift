@@ -160,63 +160,43 @@ class AWSAuthCognitoSessionTests: XCTestCase {
     
     func testSessionsAreEqual() {
         let expiration = Date(timeIntervalSinceNow: 121)
-        let tokenData1 = [
+        let tokenData = [
             "sub": "1234567890",
             "name": "John Doe",
             "iat": "1516239022",
             "exp": String(expiration.timeIntervalSince1970)
         ]
 
-        let credentials1 = AuthAWSCognitoCredentials(
+        let credentials = AuthAWSCognitoCredentials(
             accessKeyId: "accessKeyId",
             secretAccessKey: "secretAccessKey",
             sessionToken: "sessionToken",
             expiration: expiration
         )
 
-        let tokens1 = AWSCognitoUserPoolTokens(
-            idToken: CognitoAuthTestHelper.buildToken(for: tokenData1),
-            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData1),
+        let tokens = AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             refreshToken: "refreshToken"
         )
 
         let session1 = AWSAuthCognitoSession(
             isSignedIn: true,
             identityIdResult: .success("identityId"),
-            awsCredentialsResult: .success(credentials1),
-            cognitoTokensResult: .success(tokens1)
-        )
-        
-        let tokenData2 = [
-            "sub": "1234567890",
-            "name": "John Doe",
-            "iat": "1516239022",
-            "exp": String(expiration.timeIntervalSince1970)
-        ]
-        
-        let credentials2 = AuthAWSCognitoCredentials(
-            accessKeyId: "accessKeyId",
-            secretAccessKey: "secretAccessKey",
-            sessionToken: "sessionToken",
-            expiration: expiration
-        )
-
-        let tokens2 = AWSCognitoUserPoolTokens(
-            idToken: CognitoAuthTestHelper.buildToken(for: tokenData2),
-            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData2),
-            refreshToken: "refreshToken"
+            awsCredentialsResult: .success(credentials),
+            cognitoTokensResult: .success(tokens)
         )
 
         let session2 = AWSAuthCognitoSession(
             isSignedIn: true,
             identityIdResult: .success("identityId"),
-            awsCredentialsResult: .success(credentials2),
-            cognitoTokensResult: .success(tokens2)
+            awsCredentialsResult: .success(credentials),
+            cognitoTokensResult: .success(tokens)
         )
 
         XCTAssertEqual(session1, session2)
         XCTAssertEqual(session1.debugDictionary.count, session2.debugDictionary.count)
-        for key in session1.debugDictionary.keys where key != "AWS Credentials" {
+        for key in session1.debugDictionary.keys {
             XCTAssertEqual(session1.debugDictionary[key] as? String, session2.debugDictionary[key] as? String)
         }
     }
