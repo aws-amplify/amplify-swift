@@ -283,7 +283,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
@@ -291,7 +291,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
                             log.verbose("Successfully got createdComment from subscription: \(createdComment)")
                             assertLazyReference(createdComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id),
                                                                                                   .init(name: "title", value: post.title)]))
-                            await onCreatedComment.fulfill()
+                            onCreatedComment.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -327,14 +327,14 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
                         case .success(let createdComment):
                             log.verbose("Successfully got createdComment from subscription: \(createdComment)")
                             assertLazyReference(createdComment._post, state: .loaded(model: post))
-                            await onCreatedComment.fulfill()
+                            onCreatedComment.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -366,14 +366,14 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")
                             assertList(createdPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id, post.title], associatedFields: ["post"]))
-                            await onCreatedPost.fulfill()
+                            onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -406,14 +406,14 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")
                             assertList(createdPost.comments!, state: .isLoaded(count: 0))
-                            await onCreatedPost.fulfill()
+                            onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }

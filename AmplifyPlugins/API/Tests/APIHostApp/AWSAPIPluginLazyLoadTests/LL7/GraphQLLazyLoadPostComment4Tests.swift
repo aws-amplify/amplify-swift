@@ -181,7 +181,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
@@ -189,7 +189,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                             log.verbose("Successfully got createdComment from subscription: \(createdComment)")
                             XCTAssertEqual(createdComment.post4CommentsPostId, post.postId)
                             XCTAssertEqual(createdComment.post4CommentsTitle, post.title)
-                            await onCreatedComment.fulfill()
+                            onCreatedComment.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -221,7 +221,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
@@ -231,7 +231,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                                                                                                           post.title],
                                                                                   associatedFields: ["post4CommentsPostId",
                                                                                                      "post4CommentsTitle"]))
-                            await onCreatedPost.fulfill()
+                            onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -264,14 +264,14 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")
                             assertList(createdPost.comments!, state: .isLoaded(count: 0))
-                            await onCreatedPost.fulfill()
+                            onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }

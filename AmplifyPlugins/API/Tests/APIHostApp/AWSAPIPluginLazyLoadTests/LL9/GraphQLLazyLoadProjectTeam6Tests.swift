@@ -217,13 +217,13 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
                         case .success(let createdTeam):
                             log.verbose("Successfully got createdTeam from subscription: \(createdTeam)")
-                            await onCreatedTeam.fulfill()
+                            onCreatedTeam.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -254,13 +254,13 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
                         case .success(let created):
                             log.verbose("Successfully got model from subscription: \(created)")
-                            await onCreated.fulfill()
+                            onCreated.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -276,7 +276,8 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
         let project = Project(projectId: UUID().uuidString,
                               name: "name")
         let savedProject = try await mutate(.create(project))
-        
+        _ = savedProject
+
         await fulfillment(of: [onCreated], timeout: 10)
         subscription.cancel()
     }

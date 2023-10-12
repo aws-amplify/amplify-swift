@@ -42,10 +42,7 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                Task {
-                    await signInExpectation.fulfill()
-                }
-
+                signInExpectation.fulfill()
             default:
                 break
             }
