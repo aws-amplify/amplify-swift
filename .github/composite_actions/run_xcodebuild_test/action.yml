@@ -54,6 +54,7 @@ runs:
         XCODE_PATH: ${{ inputs.xcode_path }}
         CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
         DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
+        FASTLANE_EXPLICIT_OPEN_SIMULATOR: "2"
       run: |
         if [ ! -z "$PROJECT_PATH" ]; then
           cd $PROJECT_PATH
