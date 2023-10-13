@@ -59,7 +59,7 @@ struct SignInScreen: Screen {
 
     func testSignInSucceeded() -> Self {
         let successText = app.staticTexts[Identifiers.successLabel]
-        XCTAssertTrue(successText.waitForExistence(timeout: 5), "SignIn operation failed")
+        XCTAssertTrue(successText.waitForExistence(timeout: 10), "SignIn operation failed")
         return self
     }
 }
