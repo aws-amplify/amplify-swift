@@ -232,8 +232,8 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed with global properties registered
     /// Then: Flush Hub event is received with global properties
-    func testRegisterGlobalProperties() async {
-        XCTSkip("Race condition - registerGlobalProperties does async work in a Task")
+    func testRegisterGlobalProperties() async throws {
+        throw XCTSkip("Race condition - registerGlobalProperties does async work in a Task")
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -287,7 +287,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     /// When: An analytics event is recorded and flushed with global properties registered and then unregistered
     /// Then: Flush Hub event is received without global properties
     func testUnRegisterGlobalProperties() async throws {
-        XCTSkip("Race condition - unregisterGlobalProperties does async work in a Task")
+        throw XCTSkip("Race condition - unregisterGlobalProperties does async work in a Task")
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -347,9 +347,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         }
         let awsPinpoint = pinpointAnalyticsPlugin.getEscapeHatch()
         XCTAssertNotNil(awsPinpoint)
-    }
-
-    
+    }    
     
     private func plugin() -> AWSPinpointAnalyticsPlugin {
         guard let plugin = try? Amplify.Analytics.getPlugin(for: "awsPinpointAnalyticsPlugin"),
