@@ -19,13 +19,13 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     public typealias Element = ModelType
 
     /// Represents the data state of the `List`.
-    enum LoadedState {
+    public enum LoadedState {
         case notLoaded
         case loaded([Element])
     }
 
     /// The current state of lazily loaded list
-    var loadedState: LoadedState
+    public internal(set) var loadedState: LoadedState
 
     /// The provider for fulfilling list behaviors
     let listProvider: AnyModelListProvider<Element>
