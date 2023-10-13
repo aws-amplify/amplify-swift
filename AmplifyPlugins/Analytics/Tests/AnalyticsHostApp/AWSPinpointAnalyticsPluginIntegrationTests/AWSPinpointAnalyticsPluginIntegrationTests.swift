@@ -42,7 +42,6 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let userId = "userId"
         let identifyUserEvent = expectation(description: "Identify User event was received on the hub plugin")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
-            print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
                 guard let data = payload.data as? (String, AnalyticsUserProfile?) else {
                     XCTFail("Missing data")
@@ -282,7 +281,8 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         Amplify.Analytics.flushEvents()
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
-    
+
+    #if os(iOS)
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed with global properties registered and then unregistered
     /// Then: Flush Hub event is received without global properties
@@ -336,6 +336,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         Amplify.Analytics.flushEvents()
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
+    #endif
 
     func testGetEscapeHatch() throws {
         let plugin = try Amplify.Analytics.getPlugin(
