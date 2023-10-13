@@ -25,15 +25,9 @@ class ListTests: BaseDataStoreTests {
         let postId = preparePostDataForTest()
 
         func checkComments(_ comments: List<Comment>) async throws {
-            guard case .notLoaded = comments.loadedState else {
-                XCTFail("Should not be loaded")
-                return
-            }
+            XCTAssertFalse(comments.isLoaded)
             try await comments.fetch()
-            guard case .loaded = comments.loadedState else {
-                XCTFail("Should be loaded")
-                return
-            }
+            XCTAssertTrue(comments.isLoaded)
             XCTAssertEqual(comments.count, 2)
             expect.fulfill()
         }
