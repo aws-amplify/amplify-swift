@@ -89,4 +89,4 @@ jobs:
           scheme: AWSCloudWatchLoggingPluginIntegrationTestsWatch
           destination: platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=latest
           sdk: watchsimulator
-          xcode_path: '/Applications/Xcode_14.3.app'
+          xcode_path: '/Applications/Xcode_15.0.app'
