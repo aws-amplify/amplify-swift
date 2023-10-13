@@ -40,13 +40,13 @@ struct SignInScreen: Screen {
 
     func dismissSignInAlert() -> Self {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        XCTAssertTrue(springboard.buttons["Continue"].waitForExistence(timeout: 5))
+        XCTAssertTrue(springboard.buttons["Continue"].waitForExistence(timeout: 10))
         springboard.buttons["Continue"].tap()
         return self
     }
 
     func signIn(username: String, password: String) -> Self {
-        _ = app.webViews.textFields["Username"].waitForExistence(timeout: 5)
+        _ = app.webViews.textFields["Username"].waitForExistence(timeout: 10)
         app.webViews.textFields["Username"].tap()
         app.webViews.textFields["Username"].typeText(username)
 
