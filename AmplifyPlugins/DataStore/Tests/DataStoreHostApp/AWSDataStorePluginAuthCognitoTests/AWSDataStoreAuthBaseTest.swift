@@ -408,15 +408,15 @@ extension AWSDataStoreAuthBaseTest {
 // MARK: - Expectations
 extension AWSDataStoreAuthBaseTest {
     struct AuthTestExpectations {
-        var subscriptionsEstablished: AsyncExpectation
-        var modelsSynced: AsyncExpectation
-        var query: AsyncExpectation
-        var mutationSave: AsyncExpectation
-        var mutationSaveProcessed: AsyncExpectation
-        var mutationDelete: AsyncExpectation
-        var mutationDeleteProcessed: AsyncExpectation
-        var ready: AsyncExpectation
-        var expectations: [AsyncExpectation] {
+        var subscriptionsEstablished: XCTestExpectation
+        var modelsSynced: XCTestExpectation
+        var query: XCTestExpectation
+        var mutationSave: XCTestExpectation
+        var mutationSaveProcessed: XCTestExpectation
+        var mutationDelete: XCTestExpectation
+        var mutationDeleteProcessed: XCTestExpectation
+        var ready: XCTestExpectation
+        var expectations: [XCTestExpectation] {
             return [subscriptionsEstablished,
                     modelsSynced,
                     query,
