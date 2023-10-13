@@ -8,9 +8,9 @@
 import Combine
 import XCTest
 
-@testable import Amplify
-@testable import AmplifyTestCommon
-@testable import AWSDataStorePlugin
+import Amplify
+import AmplifyTestCommon
+import AWSDataStorePlugin
 
 class ListTests: BaseDataStoreTests {
 
