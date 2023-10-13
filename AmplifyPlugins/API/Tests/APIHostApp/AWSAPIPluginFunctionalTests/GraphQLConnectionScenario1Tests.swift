@@ -173,7 +173,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
                 resultsArray.append(contentsOf: subsequentResults)
             }
             XCTAssertEqual(resultsArray.count, 2)
-            await testCompleted.fulfill()
+            testCompleted.fulfill()
         }
         await fulfillment(of: [testCompleted], timeout: TestCommonConstants.networkTimeout)
     }

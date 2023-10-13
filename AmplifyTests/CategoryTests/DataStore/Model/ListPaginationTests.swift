@@ -25,14 +25,14 @@ extension ListTests {
                 XCTFail("Should be loaded")
                 return
             }
-            await fetchComplete.fulfill()
+            fetchComplete.fulfill()
         }
         await fulfillment(of: [fetchComplete], timeout: 1)
         
         let fetchComplete2 = expectation(description: "fetch completed")
         Task {
             try await list.fetch()
-            await fetchComplete2.fulfill()
+            fetchComplete2.fulfill()
         }
         await fulfillment(of: [fetchComplete2], timeout: 1)
     }
@@ -58,7 +58,7 @@ extension ListTests {
                 XCTFail("Should not be loaded")
                 return
             }
-            await fetchCompleted.fulfill()
+            fetchCompleted.fulfill()
         }
         
         await fulfillment(of: [fetchCompleted], timeout: 1.0)
@@ -80,7 +80,7 @@ extension ListTests {
                 return
             }
             XCTAssertTrue(list.hasNextPage())
-            await fetchCompleted.fulfill()
+            fetchCompleted.fulfill()
         }
         await fulfillment(of: [fetchCompleted], timeout: 1.0)
     }
@@ -97,7 +97,7 @@ extension ListTests {
         let getNextPageSuccess = expectation(description: "getNextPage successful")
         Task {
             _ = try await list.getNextPage()
-            await getNextPageSuccess.fulfill()
+            getNextPageSuccess.fulfill()
         }
         await fulfillment(of: [getNextPageSuccess], timeout: 1.0)
         
@@ -108,7 +108,7 @@ extension ListTests {
         let getNextPageSuccess2 = expectation(description: "getNextPage successful")
         Task {
             _ = try await list.getNextPage()
-            await getNextPageSuccess2.fulfill()
+            getNextPageSuccess2.fulfill()
         }
         await fulfillment(of: [getNextPageSuccess2], timeout: 1.0)
 
@@ -125,7 +125,7 @@ extension ListTests {
         let fetchCompleted = expectation(description: "fetch completed")
         Task {
             try await list.fetch()
-            await fetchCompleted.fulfill()
+            fetchCompleted.fulfill()
         }
         await fulfillment(of: [fetchCompleted], timeout: 1.0)
         
@@ -137,7 +137,7 @@ extension ListTests {
             } catch {
                 XCTAssertNotNil(error)
             }
-            await getNextPageSuccess.fulfill()
+            getNextPageSuccess.fulfill()
         }
         await fulfillment(of: [getNextPageSuccess], timeout: 1.0)
     }

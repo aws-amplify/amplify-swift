@@ -19,7 +19,7 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
             do {
                 let savedposts = try await Amplify.DataStore.save(model)
                 print("Local model was saved: \(savedposts)")
-                await localSaveInvoked.fulfill()
+                localSaveInvoked.fulfill()
             } catch {
                 XCTFail("Failed to save model \(error)")
                 throw error

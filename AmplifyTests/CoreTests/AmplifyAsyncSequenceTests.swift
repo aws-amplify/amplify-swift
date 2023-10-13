@@ -128,7 +128,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
 
         let task = Task<Int, Never> {
             let sum = await channel.reduce(0, +)
-            await reduced.fulfill()
+            reduced.fulfill()
             return sum
         }
 
@@ -142,7 +142,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             let output = await task.value
             XCTAssertNotEqual(input, output)
             XCTAssertEqual(0, output)
-            await done.fulfill()
+            done.fulfill()
         }
 
         await fulfillment(of: [done])
@@ -158,7 +158,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
 
         let task = Task<Int, Error> {
             let sum = try await channel.reduce(0, +)
-            await reduced.fulfill()
+            reduced.fulfill()
             return sum
         }
 
@@ -171,7 +171,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             let output = try await task.value
             XCTAssertNotEqual(input, output)
             XCTAssertEqual(0, output)
-            await done.fulfill()
+            done.fulfill()
         }
 
         await fulfillment(of: [done])
@@ -191,9 +191,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             channel.send(value)
             if value.totalUnitCount == value.completedUnitCount {
                 channel.finish()
-                Task {
-                    await sent.fulfill()
-                }
+                sent.fulfill()
             }
         }
         queue.addOperation(operation)
@@ -204,7 +202,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertGreaterThanOrEqual(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
         await fulfillment(of: [sent, received])
@@ -229,9 +227,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             channel.send(value)
             if value.completedUnitCount >= steps/2 {
                 channel.cancel()
-                Task {
-                    await sent.fulfill()
-                }
+                sent.fulfill()
             }
         }
         queue.addOperation(operation)
@@ -242,7 +238,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertLessThan(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
         await fulfillment(of: [sent, received])
@@ -267,9 +263,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             channel.send(value)
             if value.totalUnitCount == value.completedUnitCount {
                 channel.finish()
-                Task {
-                    await sent.fulfill()
-                }
+                sent.fulfill()
             }
         }
         queue.addOperation(operation)
@@ -280,7 +274,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertGreaterThanOrEqual(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
         await fulfillment(of: [sent, received])
@@ -305,9 +299,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             channel.send(value)
             if value.completedUnitCount >= steps/2 {
                 channel.cancel()
-                Task {
-                    await sent.fulfill()
-                }
+                sent.fulfill()
             }
         }
         queue.addOperation(operation)
@@ -318,7 +310,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertLessThan(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
         await fulfillment(of: [sent, received])

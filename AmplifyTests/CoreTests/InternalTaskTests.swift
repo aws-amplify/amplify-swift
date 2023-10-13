@@ -34,16 +34,14 @@ class InternalTaskTests: XCTestCase {
             let token = runner.subscribe { emoji in
                 hubValues.append(emoji)
                 if hubValues.count == total {
-                    Task {
-                        await hubDone.fulfill()
-                    }
+                    hubDone.fulfill()
                 }
             }
             await runner.sequence.forEach { emoji in
                 emojis.append(emoji)
             }
             await fulfillment(of: [hubDone])
-            await done.fulfill()
+            done.fulfill()
             XCTAssertEqual(total, hubValues.count)
             XCTAssertEqual(total, emojis.count)
             runner.unsubscribe(token)
@@ -70,7 +68,7 @@ class InternalTaskTests: XCTestCase {
             await sequence.forEach { emoji in
                 emojis.append(emoji)
             }
-            await done.fulfill()
+            done.fulfill()
             XCTAssertEqual(0, emojis.count)
             return emojis
         }
@@ -97,7 +95,7 @@ class InternalTaskTests: XCTestCase {
             await sequence.forEach { emoji in
                 emojis.append(emoji)
             }
-            await done.fulfill()
+            done.fulfill()
             XCTAssertEqual(0, emojis.count)
             return emojis
         }
@@ -119,7 +117,7 @@ class InternalTaskTests: XCTestCase {
             await plugin.getAnswers(total: total, delay: delay).forEach { emoji in
                 answers.append(emoji)
             }
-            await done.fulfill()
+            done.fulfill()
             XCTAssertEqual(total, answers.count)
             return answers
         }
@@ -146,7 +144,7 @@ class InternalTaskTests: XCTestCase {
                 try await runner.sequence.forEach { emoji in
                     emojis.append(emoji)
                 }
-                await done.fulfill()
+                done.fulfill()
                 XCTAssertEqual(total, emojis.count)
             } catch {
                 thrown = error
@@ -177,7 +175,7 @@ class InternalTaskTests: XCTestCase {
                 try await sequence.forEach { emoji in
                     emojis.append(emoji)
                 }
-                await done.fulfill()
+                done.fulfill()
                 XCTAssertEqual(0, emojis.count)
             } catch {
                 thrown = error
@@ -210,7 +208,7 @@ class InternalTaskTests: XCTestCase {
                 try await sequence.forEach { emoji in
                     emojis.append(emoji)
                 }
-                await done.fulfill()
+                done.fulfill()
                 XCTAssertEqual(0, emojis.count)
             } catch {
                 thrown = error
@@ -236,7 +234,7 @@ class InternalTaskTests: XCTestCase {
             try await plugin.getEmojis(total: total, delay: delay).forEach { emoji in
                 emojis.append(emoji)
             }
-            await done.fulfill()
+            done.fulfill()
             XCTAssertEqual(total, emojis.count)
             return emojis
         }

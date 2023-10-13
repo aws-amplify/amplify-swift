@@ -34,7 +34,7 @@ class LocalStoreIntegrationTestBase: XCTestCase {
         
         Task {
             try await Amplify.DataStore.clear()
-            await clearComplete.fulfill()
+            clearComplete.fulfill()
         }
         await fulfillment(of: [clearComplete], timeout: 5)
         await Amplify.reset()

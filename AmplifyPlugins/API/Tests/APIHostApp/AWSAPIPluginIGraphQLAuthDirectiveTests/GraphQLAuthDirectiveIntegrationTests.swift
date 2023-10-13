@@ -175,7 +175,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             XCTFail("Should not have completed successfully")
         } catch (let error as APIError){
             self.assertNotAuthenticated(error)
-            await failureInvoked.fulfill()
+            failureInvoked.fulfill()
         }
         
         await fulfillment(of: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -198,12 +198,12 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
                     switch subscriptionEvent {
                     case .connection(let state):
                         if case .connected = state {
-                            await connectedInvoked.fulfill()
+                            connectedInvoked.fulfill()
                         }
                     case .data(let graphQLResponse):
                         switch graphQLResponse {
                         case .success:
-                            await progressInvoked.fulfill()
+                            progressInvoked.fulfill()
                         case .failure(let error):
                             XCTFail(error.errorDescription)
                         }
@@ -285,7 +285,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         switch queryResult {
         case .success(let data):
             resultOptional = data
-            await syncQueryInvoked.fulfill()
+            syncQueryInvoked.fulfill()
         case .failure(let error):
             XCTFail("Got failed, error: \(error)")
         }

@@ -116,7 +116,7 @@ extension GraphQLResponseDecoderTests {
             try await result.fetch()
             XCTAssertEqual(result.count, 2)
             XCTAssertFalse(result.hasNextPage())
-            await fetchCompleted.fulfill()
+            fetchCompleted.fulfill()
         }
         await fulfillment(of: [fetchCompleted], timeout: 1.0)
     }

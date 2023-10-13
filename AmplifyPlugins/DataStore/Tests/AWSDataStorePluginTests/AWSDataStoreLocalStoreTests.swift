@@ -302,10 +302,10 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshotCount += 1
             if snapshotCount == 1 {
-                Task { await initialQueryComplete.fulfill() }
+                initialQueryComplete.fulfill()
             }
             if querySnapshot.items.count == 15 {
-                Task { await allSnapshotsReceived.fulfill() }
+                allSnapshotsReceived.fulfill()
             }
         }
         await fulfillment(of: [initialQueryComplete], timeout: 10)

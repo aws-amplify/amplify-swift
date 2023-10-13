@@ -98,9 +98,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
 
             if let syncedUpdatedProject = try? mutationEvent.decodeModel() as? Project2,
                expectedUpdatedProject == syncedUpdatedProject {
-                Task {
-                    await syncUpdatedProjectReceived.fulfill()
-                }
+                syncUpdatedProjectReceived.fulfill()
             }
         }
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {

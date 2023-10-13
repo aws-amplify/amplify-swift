@@ -100,12 +100,12 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I receive notifications for updates to that model
     func testObserve() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
-
+        receivedMutationEvent.assertForOverFulfill = false
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await _ in mutationEvents {
-                    await receivedMutationEvent.fulfill()
+                    receivedMutationEvent.fulfill()
                 }
             } catch {
                 XCTFail("Unexpected error: \(error)")
@@ -133,13 +133,13 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I am notified of `create` mutations
     func testCreate() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
-
+        receivedMutationEvent.assertForOverFulfill = false
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {
-                        await receivedMutationEvent.fulfill()
+                        receivedMutationEvent.fulfill()
                     }
                 }
             } catch {
@@ -186,12 +186,13 @@ class LocalSubscriptionTests: XCTestCase {
         newModel.updatedAt = .now()
 
         let receivedMutationEvent = expectation(description: "Received mutation event")
+        receivedMutationEvent.assertForOverFulfill = false
 
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await _ in mutationEvents {
-                    await receivedMutationEvent.fulfill()
+                    receivedMutationEvent.fulfill()
                 }
             } catch {
                 XCTFail("Unexpected error: \(error)")
@@ -212,13 +213,14 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I am notified of `delete` mutations
     func testDelete() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
+        receivedMutationEvent.assertForOverFulfill = false
 
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
                     if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
-                        await receivedMutationEvent.fulfill()
+                        receivedMutationEvent.fulfill()
                     }
                 }
             } catch {

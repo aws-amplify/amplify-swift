@@ -24,7 +24,7 @@ class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
             do {
                 for try await mutationEvent in mutationEvents {
                     if mutationEvent.version == 1 && mutationEvent.modelId == comment.id {
-                        await commentSynced.fulfill()
+                        commentSynced.fulfill()
                     }
                 }
             } catch {

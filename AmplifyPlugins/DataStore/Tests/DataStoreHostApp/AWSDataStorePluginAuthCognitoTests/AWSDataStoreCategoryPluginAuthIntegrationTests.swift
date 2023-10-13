@@ -50,7 +50,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
             }
             if todo.id == savedLocalTodo.id {
                 remoteTodoOptional = todo
-                Task { await syncReceivedInvoked.fulfill() }
+                syncReceivedInvoked.fulfill()
             }
         }
         guard try await HubListenerTestUtilities.waitForListener(with: syncReceivedListener, timeout: 5.0) else {

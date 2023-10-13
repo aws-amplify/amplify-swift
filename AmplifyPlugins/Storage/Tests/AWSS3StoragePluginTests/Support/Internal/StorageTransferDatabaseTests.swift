@@ -234,9 +234,7 @@ class StorageTransferDatabaseTests: XCTestCase {
                 } catch {
                     XCTFail("Error: \(error)")
                 }
-                Task {
-                    await exp.fulfill()
-                }
+                exp.fulfill()
             }
         }
 

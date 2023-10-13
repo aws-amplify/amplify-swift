@@ -113,7 +113,7 @@ class AppSyncListProviderTests: XCTestCase {
         Task {
             let posts = try await listProvider.load()
             XCTAssertEqual(posts.count, 2)
-            await loadCompleted.fulfill()
+            loadCompleted.fulfill()
         }
         await fulfillment(of: [loadCompleted], timeout: 1)
     }
@@ -148,7 +148,7 @@ class AppSyncListProviderTests: XCTestCase {
         
         Task {
             _ = try await provider.load()
-            await loadCompleted.fulfill()
+            loadCompleted.fulfill()
         }
         await fulfillment(of: [loadCompleted], timeout: 1)
         
@@ -196,7 +196,7 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Should not be loaded")
                     return
                 }
-                await loadCompleted.fulfill()
+                loadCompleted.fulfill()
             }
         }
         await fulfillment(of: [loadCompleted], timeout: 1)
@@ -231,7 +231,7 @@ class AppSyncListProviderTests: XCTestCase {
         let loadComplete = expectation(description: "Load completed")
         Task {
             _ = try await provider.load()
-            await loadComplete.fulfill()
+            loadComplete.fulfill()
         }
         
         await fulfillment(of: [loadComplete], timeout: 1)
@@ -276,7 +276,7 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Unexpected error \(error)")
                     return
                 }
-                await loadComplete.fulfill()
+                loadComplete.fulfill()
             }
         }
         await fulfillment(of: [loadComplete], timeout: 1)
@@ -313,7 +313,7 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Unexpected error \(error)")
                     return
                 }
-                await loadComplete.fulfill()
+                loadComplete.fulfill()
             }
             
         }
@@ -360,7 +360,7 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Unexpected error \(error)")
                     return
                 }
-                await loadComplete.fulfill()
+                loadComplete.fulfill()
                 
             }
         }

@@ -48,8 +48,8 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             posts.append(post)
         }
         
-        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud",
-                                                  expectedFulfillmentCount: concurrencyLimit)
+        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
+        postsSyncedToCloud.expectedFulfillmentCount = concurrencyLimit
 
         let postsCopy = posts
         let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -62,7 +62,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
                        mutationEvent.version == 1 {
-                        await postsSyncedToCloud.fulfill()
+                        postsSyncedToCloud.fulfill()
                     }
                 }
             } catch {
@@ -96,9 +96,9 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
         
-        let localQueryForPosts = expectation(description: "Query for the post is successful",
-                                                expectedFulfillmentCount: concurrencyLimit)
-        
+        let localQueryForPosts = expectation(description: "Query for the post is successful")
+        localQueryForPosts.expectedFulfillmentCount = concurrencyLimit
+
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let queriedPost = try await Amplify.DataStore.query(Post.self, byId: posts[index].id)
@@ -106,7 +106,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTAssertEqual(posts[index].id, queriedPost?.id)
                 XCTAssertEqual(posts[index].title, queriedPost?.title)
                 XCTAssertEqual(posts[index].content, queriedPost?.content)
-                await localQueryForPosts.fulfill()
+                localQueryForPosts.fulfill()
             }
         }
         
@@ -128,9 +128,8 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
         
-        let localQueryForPosts = expectation(description: "Query for the post is successful",
-                                                  expectedFulfillmentCount: concurrencyLimit)
-        
+        let localQueryForPosts = expectation(description: "Query for the post is successful")
+        localQueryForPosts.expectedFulfillmentCount = concurrencyLimit
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let predicate = Post.keys.id.eq(posts[index].id).and(Post.keys.title.eq(posts[index].title))
@@ -140,7 +139,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTAssertEqual(posts[index].id, queriedPosts[0].id)
                 XCTAssertEqual(posts[index].title, queriedPosts[0].title)
                 XCTAssertEqual(posts[index].content, queriedPosts[0].content)
-                await localQueryForPosts.fulfill()
+                localQueryForPosts.fulfill()
             }
         }
         
@@ -164,12 +163,12 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
         
         let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
         
-        let postsDeletedLocally = expectation(description: "All posts deleted locally",
-                                                   expectedFulfillmentCount: concurrencyLimit)
+        let postsDeletedLocally = expectation(description: "All posts deleted locally")
+        postsDeletedLocally.expectedFulfillmentCount = concurrencyLimit
         
-        let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud",
-                                                     expectedFulfillmentCount: concurrencyLimit)
-        
+        let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
+        postsDeletedFromCloud.expectedFulfillmentCount = concurrencyLimit
+
         let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
             do {
@@ -180,10 +179,10 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     
                     if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                        mutationEvent.version == 1 {
-                        await postsDeletedLocally.fulfill()
+                        postsDeletedLocally.fulfill()
                     } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                               mutationEvent.version == 2 {
-                        await postsDeletedFromCloud.fulfill()
+                        postsDeletedFromCloud.fulfill()
                     }
                 }
             } catch {
@@ -213,9 +212,9 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             posts.append(post)
         }
         
-        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud",
-                                                  expectedFulfillmentCount: concurrencyLimit)
-        
+        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
+        postsSyncedToCloud.expectedFulfillmentCount = concurrencyLimit
+
         let postsCopy = posts
         let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
@@ -227,7 +226,7 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
                        mutationEvent.version == 1 {
-                        await postsSyncedToCloud.fulfill()
+                        postsSyncedToCloud.fulfill()
                     }
                 }
             } catch {
