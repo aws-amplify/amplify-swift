@@ -30,13 +30,12 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         }
 
         try Amplify.add(plugin: plugin)
-
         let amplifyConfig = AmplifyConfiguration()
         try Amplify.configure(amplifyConfig)
 
         XCTAssertNotNil(Amplify.DataStore)
         XCTAssertNotNil(Amplify.DataStore.plugin)
-        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1.0)
+        wait(for: [methodInvokedOnDefaultPlugin], timeout: 1.0)
     }
 
     func testCanConfigureDataStorePlugin() throws {
@@ -137,12 +136,13 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         let saveSuccess = expectation(description: "save successful")
         Task {
             _ = try await Amplify.DataStore.save(TestModel.make())
-            await saveSuccess.fulfill()
+            saveSuccess.fulfill()
         }
-        await fulfillment(of: [saveSuccess], timeout: 1.0)
-        
 
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(
+            of: [saveSuccess, methodInvokedOnDefaultPlugin],
+            timeout: 1.0
+        )
     }
 
     // TODO: this test is disabled for now since `catchBadInstruction` only takes in closure
@@ -208,11 +208,17 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         Task {
             _ = try await Amplify.DataStore.getPlugin(for: "MockSecondDataStoreCategoryPlugin")
                 .save(TestModel.make(), where: nil)
-            await saveSuccess.fulfill()
+            saveSuccess.fulfill()
         }
-        await fulfillment(of: [saveSuccess], timeout: 1.0)
-        
-        await waitForExpectations(timeout: 1.0)
+
+        await fulfillment(
+            of: [
+                saveSuccess,
+                methodShouldBeInvokedOnSecondPlugin,
+                methodShouldNotBeInvokedOnDefaultPlugin
+            ],
+            timeout: 1.0
+        )
     }
 
     func testCanConfigurePluginDirectly() throws {

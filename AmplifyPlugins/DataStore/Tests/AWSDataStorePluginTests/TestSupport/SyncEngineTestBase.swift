@@ -241,7 +241,7 @@ class SyncEngineTestBase: XCTestCase {
                 mutationEventSaved.fulfill()
             }
         }
-        await fulfillment(of: [mutationEventSaved], timeout: 1.0)
+        wait(for: [mutationEventSaved], timeout: 1.0)
     }
 
     /// Saves a Post record directly to StorageAdapter. Used for pre-populating database before tests
@@ -255,7 +255,7 @@ class SyncEngineTestBase: XCTestCase {
                 postSaved.fulfill()
             }
         }
-        await fulfillment(of: [postSaved], timeout: 1.0)
+        wait(for: [postSaved], timeout: 1.0)
     }
 
     // MARK: - Helpers

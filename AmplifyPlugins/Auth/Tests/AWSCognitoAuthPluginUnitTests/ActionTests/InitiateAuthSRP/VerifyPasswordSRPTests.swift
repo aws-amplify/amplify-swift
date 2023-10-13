@@ -385,7 +385,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                                        clientMetadata: [:])
 
         let passwordVerifierCompletion = expectation(
-            description: "passwordVerifierCompletion")
+            description: "passwordVerifierCompletion"
+        )
 
         let dispatcher = MockDispatcher { event in
             guard let event = event as? SignInEvent else {
@@ -401,7 +402,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         await action.execute(withDispatcher: dispatcher, environment: environment)
         await fulfillment(
-            of: [passwordVerifierError],
+            of: [passwordVerifierCompletion],
             timeout: 0.1
         )
     }

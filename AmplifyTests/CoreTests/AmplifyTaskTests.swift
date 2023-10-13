@@ -59,7 +59,7 @@ class AmplifyTaskTests: XCTestCase {
             sink.cancel()
         }
 
-        await fulfillment(of: [exp1, exp2], timeout: 5.0)
+        wait(for: [exp1, exp2], timeout: 5.0)
 
         XCTAssertEqual(input.sum(), output)
         XCTAssertNil(thrown)

@@ -54,10 +54,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
                         XCTAssertEqual(querySnapshot.items.count, 0)
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
                         XCTAssertEqual(querySnapshot.items.count, 1)
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -85,7 +85,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     func testGenerateSnapshotOnObserveQueryWhenModelSynced() async throws {
         let firstSnapshot = expectation(description: "first query snapshots")
         let secondSnapshot = expectation(description: "second query snapshots")
-        let thirdSnapshot = expectation(description: "third query snapshot", isInverted: true)
+        let thirdSnapshot = expectation(description: "third query snapshot")
+        thirdSnapshot.isInverted = true
+
         let dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
@@ -106,14 +108,14 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                     if querySnapshots.count == 1 {
                         XCTAssertEqual(querySnapshot.items.count, 0)
                         XCTAssertEqual(querySnapshot.isSynced, false)
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
                         XCTAssertEqual(querySnapshot.items.count, 0)
                         XCTAssertEqual(querySnapshot.isSynced, true)
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     } else if querySnapshots.count == 3 {
                         XCTFail("Should not receive third snapshot for a Model change")
-                        await thirdSnapshot.fulfill()
+                        thirdSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -172,7 +174,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
                         XCTAssertEqual(querySnapshot.items.count, 2)
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     }
                 }
                 
@@ -213,10 +215,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
                         XCTAssertEqual(querySnapshot.items.count, 0)
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
                         XCTAssertEqual(querySnapshot.items.count, 3)
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -268,11 +270,11 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 for try await querySnapshot in snapshots {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     } else if querySnapshots.count == 3 {
-                        await thirdSnapshot.fulfill()
+                        thirdSnapshot.fulfill()
                     }
                 }
                 
@@ -280,7 +282,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 XCTAssertTrue(querySnapshots[0].items.count <= querySnapshots[1].items.count)
                 XCTAssertTrue(querySnapshots[1].items.count <= querySnapshots[2].items.count)
                 XCTAssertTrue(querySnapshots[2].items.count <= 1_100)
-                await validateSnapshotsComplete.fulfill()
+                validateSnapshotsComplete.fulfill()
             } catch {
                 XCTFail("Failed with error \(error)")
             }
@@ -308,7 +310,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///
     func testSuccessfulSubscriptionCancel() async throws {
         let firstSnapshot = expectation(description: "first query snapshot")
-        let secondSnapshot = expectation(description: "second query snapshot", isInverted: true)
+        let secondSnapshot = expectation(description: "second query snapshot")
+        secondSnapshot.isInverted = true
+
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -326,10 +330,10 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 for try await querySnapshot in snapshots {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
                         XCTFail("Should not receive second snapshot after cancelling")
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -354,7 +358,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     ///
     func testSuccessfulSequenceCancel() async throws {
         let firstSnapshot = expectation(description: "first query snapshot")
-        let secondSnapshot = expectation(description: "second query snapshot", isInverted: true)
+        let secondSnapshot = expectation(description: "second query snapshot")
+        secondSnapshot.isInverted = true
+
         let completedEvent = expectation(description: "should have completed")
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
@@ -373,13 +379,13 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 for try await querySnapshot in snapshots {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
                         XCTFail("Should not receive second snapshot after cancelling")
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     }
                 }
-                await completedEvent.fulfill()
+                completedEvent.fulfill()
             } catch {
                 XCTFail("Failed with error \(error)")
             }
@@ -413,9 +419,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 for try await querySnapshot in snapshots {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -439,7 +445,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     func testObserveQueryStaredShouldNotStartAgain() async {
         let firstSnapshot = expectation(description: "first query snapshot")
         let secondSnapshot = expectation(description: "second query snapshot")
-        let thirdSnapshot = expectation(description: "third query snapshot", isInverted: true)
+        let thirdSnapshot = expectation(description: "third query snapshot")
+        thirdSnapshot.isInverted = true
+
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -457,11 +465,11 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                 for try await querySnapshot in snapshots {
                     querySnapshots.append(querySnapshot)
                     if querySnapshots.count == 1 {
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     } else if querySnapshots.count == 3 {
-                        await thirdSnapshot.fulfill()
+                        thirdSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -480,7 +488,8 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
     /// ObserveQuery operation entry points are `resetState`, `startObserveQuery`, and `onItemChanges(mutationEvents)`.
     /// Ensure concurrent random sequences of these API calls do not cause issues such as data race.
     func testConcurrent() async {
-        let completeReceived = expectation(description: "complete received", isInverted: true)
+        let completeReceived = expectation(description: "complete received")
+        completeReceived.isInverted = true
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
             modelSchema: Post.schema,
@@ -502,7 +511,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             do {
                 for try await _ in snapshots {
                 }
-                await completeReceived.fulfill()
+                completeReceived.fulfill()
             } catch {
                 XCTFail("Failed with error \(error)")
             }
@@ -560,24 +569,24 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                     if querySnapshots.count == 1 {
                         // First snapshot is empty from the initial query
                         XCTAssertEqual(querySnapshot.items.count, 0)
-                        await firstSnapshot.fulfill()
+                        firstSnapshot.fulfill()
                     } else if querySnapshots.count == 2 {
                         // Second snapshot contains `post` since it matches the predicate
                         XCTAssertEqual(querySnapshot.items.count, 1)
                         XCTAssertEqual(querySnapshot.items[0].id, "1")
-                        await secondSnapshot.fulfill()
+                        secondSnapshot.fulfill()
                     } else if querySnapshots.count == 3 {
                         // Third snapshot contains both posts since they both match the predicate
                         XCTAssertEqual(querySnapshot.items.count, 2)
                         XCTAssertEqual(querySnapshot.items[0].id, "1")
                         XCTAssertEqual(querySnapshot.items[1].id, "2")
-                        await thirdSnapshot.fulfill()
+                        thirdSnapshot.fulfill()
                     } else if querySnapshots.count == 4 {
                         // Fourth snapshot no longer has the post2 since it was updated to not match the predicate
                         // and deleted at the same time.
                         XCTAssertEqual(querySnapshot.items.count, 1)
                         XCTAssertEqual(querySnapshot.items[0].id, "1")
-                        await fourthSnapshot.fulfill()
+                        fourthSnapshot.fulfill()
                     }
                 }
             } catch {

@@ -322,7 +322,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             result = sResult
             saveFinished.fulfill()
         }
-        await fulfillment(of: [saveFinished], timeout: defaultTimeout)
+        wait(for: [saveFinished], timeout: defaultTimeout)
         guard let saveResult = result else {
             return .failure(causedBy: "Save operation timed out")
         }
@@ -340,7 +340,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             queryFinished.fulfill()
         }
 
-        await fulfillment(of: [queryFinished], timeout: defaultTimeout)
+        wait(for: [queryFinished], timeout: defaultTimeout)
         guard let queryResult = result else {
             return .failure(causedBy: "Query operation timed out")
         }

@@ -231,7 +231,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             completionListener: nil
         )
         await fulfillment(
-            of: [receivedValue],
+            of: [receivedValue, connectionCreation],
             timeout: 5
         )
 

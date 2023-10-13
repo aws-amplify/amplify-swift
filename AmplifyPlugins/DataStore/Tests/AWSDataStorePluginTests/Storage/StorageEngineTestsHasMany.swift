@@ -111,7 +111,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             XCTFail("Failed to delete restaurant")
             return
         }
-        await fulfillment(of: [receivedMutationEvent], timeout: defaultTimeout)
+        wait(for: [receivedMutationEvent], timeout: defaultTimeout)
     }
 
     /*
@@ -204,7 +204,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
                                                                         XCTFail("Failed to delete restaurant")
                                                                         return
         }
-        await fulfillment(of: [receivedMutationEvent], timeout: 100)
+        wait(for: [receivedMutationEvent], timeout: 100)
         // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         // print("Time elapsed time to delete: \(timeElapsed) s.")
     }
@@ -245,7 +245,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
             XCTFail("Deleting should have failed due to our mock")
             return
         }
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
+        wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
         XCTAssertEqual(error.errorDescription, "mockError")
     }
 }

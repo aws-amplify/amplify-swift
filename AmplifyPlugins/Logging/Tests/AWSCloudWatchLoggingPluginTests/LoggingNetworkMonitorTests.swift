@@ -25,7 +25,7 @@ final class LoggingNetworkMonitorTests: XCTestCase {
         
         loggingMonitor.startMonitoring(using: DispatchQueue(label: "AWSCloudWatchingLogging.NetworkMonitor"))
         
-        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
         XCTAssertTrue(loggingMonitor.isOnline)
         loggingMonitor.stopMonitoring()
     }

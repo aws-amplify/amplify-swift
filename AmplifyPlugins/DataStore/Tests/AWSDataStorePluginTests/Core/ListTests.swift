@@ -49,7 +49,6 @@ class ListTests: BaseDataStoreTests {
             XCTFail("\(error)")
         }
 
-
         await fulfillment(of: [expect], timeout: 1)
     }
 

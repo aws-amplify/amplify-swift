@@ -68,7 +68,7 @@ final class AWSS3StorageUploadFileOperationTests2: AWSS3StorageOperationTestBase
                                                         resultListener: resultListener)
         operation.start()
 
-        await fulfillment(of: [progressExpectation, resultExpectation], timeout: 1)
+        wait(for: [progressExpectation, resultExpectation], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 }

@@ -56,7 +56,7 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
             result = sResult
             saveFinished.fulfill()
         }
-        await fulfillment(of: [saveFinished], timeout: defaultTimeout)
+        wait(for: [saveFinished], timeout: defaultTimeout)
 
         guard result != nil else {
             XCTFail("Save operation timed out")
@@ -110,6 +110,6 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
             XCTFail("Failed to delete projectA")
             return
         }
-        await fulfillment(of: [mutationEventOnProject], timeout: defaultTimeout)
+        wait(for: [mutationEventOnProject], timeout: defaultTimeout)
     }
 }

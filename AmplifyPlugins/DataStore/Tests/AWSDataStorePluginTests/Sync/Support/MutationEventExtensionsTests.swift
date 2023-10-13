@@ -59,7 +59,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
+        wait(for: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the updated version
         MutationEvent.pendingMutationEvents(forModel: post,
@@ -77,7 +77,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with two events(update and delete) containing `nil` version,
@@ -130,7 +130,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
+        wait(for: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the updated version
         MutationEvent.pendingMutationEvents(forModel: post,
@@ -149,7 +149,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with event containing version 2, a sent mutation event model
@@ -194,7 +194,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
+        wait(for: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
@@ -212,7 +212,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with event containing version 1, a sent mutation event model
@@ -258,7 +258,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
+        wait(for: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
@@ -276,7 +276,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with event containing version 1, a sent mutation event model
@@ -321,7 +321,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
+        wait(for: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
@@ -339,7 +339,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     private func createMutationEvent(model: Model,
@@ -378,7 +378,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 }
                 mutationEventSaveExpectation.fulfill()
             }
-            await fulfillment(of: [mutationEventSaveExpectation], timeout: 1)
+            wait(for: [mutationEventSaveExpectation], timeout: 1)
         }
 
         // verify the head of queue is expected
@@ -399,6 +399,6 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 headOfQueueExpectation.fulfill()
             }
         }
-        await fulfillment(of: [headOfQueueExpectation], timeout: 1)
+        wait(for: [headOfQueueExpectation], timeout: 1)
     }
 }

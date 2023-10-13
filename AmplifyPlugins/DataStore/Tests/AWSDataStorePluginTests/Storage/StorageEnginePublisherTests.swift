@@ -84,11 +84,15 @@ class StorageEnginePublisherTests: StorageEngineTestsBase {
         storageEngine.onReceive(receiveValue: .syncStarted)
         storageEngine.onReceive(receiveValue: .cleanedUp)
         storageEngine.onReceive(receiveValue: .cleanedUpForTermination)
-        await fulfillment(of: [receivedMutationEvent,
-                   receivedModelSyncedEvent,
-                   receivedSyncQueriesReadyEvent,
-                   receivedReadyEvent],
-                timeout: 1)
+        wait(
+            for: [
+                receivedMutationEvent,
+                receivedModelSyncedEvent,
+                receivedSyncQueriesReadyEvent,
+                receivedReadyEvent
+            ],
+            timeout: 1
+        )
         sink.cancel()
     }
 }

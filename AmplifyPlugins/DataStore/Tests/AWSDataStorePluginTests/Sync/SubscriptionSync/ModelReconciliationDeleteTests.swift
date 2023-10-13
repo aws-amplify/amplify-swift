@@ -38,7 +38,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                                                      version: 2)
         let localMetadataSaved = expectation(description: "Local metadata saved")
         storageAdapter.save(localSyncMetadata) { _ in localMetadataSaved.fulfill() }
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [localMetadataSaved], timeout: 1)
 
         var valueListenerFromRequest: MutationSyncInProcessListener?
         let expectationListener = expectation(description: "listener")
@@ -57,8 +57,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testUpdateAfterDelete()
             try await startAmplifyAndWaitForSync()
         }
-        await waitForExpectations(timeout: 2.0)
 
+        await fulfillment(of: [expectationListener], timeout: 2)
         guard let valueListener = valueListenerFromRequest else {
                 XCTFail("Incoming responder didn't set up listener")
                 return
@@ -149,8 +149,8 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try await startAmplifyAndWaitForSync()
         }
-        await waitForExpectations(timeout: 1)
-
+        
+        await fulfillment(of: [expectationListener], timeout: 1)
         guard let valueListener = valueListenerFromRequest else {
             XCTFail("Incoming responder didn't set up listener")
             return
@@ -176,8 +176,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         valueListener(.data(.success(remoteMutationSync)))
 
-        await waitForExpectations(timeout: 1)
-
+        await fulfillment(of: [syncReceivedNotification], timeout: 1)
         let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
                                                                                  modelName: MockSynced.modelName)
         XCTAssertEqual(finalLocalMetadata?.version, 2)

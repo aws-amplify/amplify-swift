@@ -127,7 +127,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 1.0)
         subscription.cancel()
     }
 
@@ -189,7 +189,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
             }
         }
 
-        await fulfillment(of: [receivedPostMutationEvent, receivedCommentMutationEvent], timeout: 3.0)
+        wait(for: [receivedPostMutationEvent, receivedCommentMutationEvent], timeout: 3.0)
         subscription.cancel()
     }
 
@@ -225,7 +225,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         let model = DynamicModel(values: post)
         let postSchema = ModelRegistry.modelSchema(from: "Post")!
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
     }
@@ -250,7 +250,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
             saveCompleted.fulfill()
         }
 
-        await fulfillment(of: [saveCompleted], timeout: 5.0)
+        wait(for: [saveCompleted], timeout: 5.0)
 
         let newContent = "Updated content as of \(Date())"
         var newModel = model
@@ -275,7 +275,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
 
         dataStorePlugin.save(newModel, modelSchema: postSchema) { _ in }
 
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
     }
@@ -313,7 +313,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
         dataStorePlugin.save(model, modelSchema: postSchema) { _ in }
 
         dataStorePlugin.delete(model, modelSchema: postSchema) { _ in }
-        await fulfillment(of: [receivedMutationEvent], timeout: 1.0)
+        wait(for: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
     }
@@ -359,7 +359,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 savedPost.fulfill()
             }
         }
-        await fulfillment(of: [savedPost], timeout: 1.0)
+        wait(for: [savedPost], timeout: 1.0)
 
         let commentContent = "some content"
         let comment = ["content": .string(commentContent),
@@ -377,7 +377,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 savedComment.fulfill()
             }
         }
-        await fulfillment(of: [savedComment], timeout: 1.0)
+        wait(for: [savedComment], timeout: 1.0)
 
         let queryCommentSuccess = expectation(description: "querying for comment should exist")
         dataStorePlugin.query(DynamicModel.self,
@@ -391,7 +391,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 XCTFail("\(error)")
             }
         }
-        await fulfillment(of: [queryCommentSuccess], timeout: 10.0)
+        wait(for: [queryCommentSuccess], timeout: 10.0)
 
         let deletePostSuccess = expectation(description: "deleted post successfully")
         dataStorePlugin.delete(model, modelSchema: postSchema) { result in
@@ -402,7 +402,7 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 XCTFail("\(error)")
             }
         }
-        await fulfillment(of: [receivedPostMutationEvent, deletePostSuccess], timeout: 10.0)
+        wait(for: [receivedPostMutationEvent, deletePostSuccess], timeout: 10.0)
         subscriptionPost.cancel()
 
         let queryCommentEmpty = expectation(description: "querying for comment should be empty")
@@ -417,6 +417,6 @@ class LocalSubscriptionWithJSONModelTests: XCTestCase {
                 XCTFail("\(error)")
             }
         }
-        await fulfillment(of: [queryCommentEmpty], timeout: 10.0)
+        wait(for: [queryCommentEmpty], timeout: 10.0)
     }
 }

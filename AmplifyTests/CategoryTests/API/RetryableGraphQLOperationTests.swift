@@ -52,7 +52,7 @@ class RetryableGraphQLOperationTests: XCTestCase {
         }
         operation.main()
 
-        await fulfillment(of: [requestFactoryExpectation, resultExpectation], timeout: 10)
+        wait(for: [requestFactoryExpectation, resultExpectation], timeout: 10)
     }
 
     /// Given: a RetryableGraphQLOperation with a maxRetries of 1
@@ -86,7 +86,7 @@ class RetryableGraphQLOperationTests: XCTestCase {
         }
         operation.main()
 
-        await fulfillment(of: [requestFactoryExpectation, resultExpectation], timeout: 10)
+        wait(for: [requestFactoryExpectation, resultExpectation], timeout: 10)
     }
 
     /// Given: a RetryableGraphQLOperation with a maxRetries of 2
@@ -121,7 +121,7 @@ class RetryableGraphQLOperationTests: XCTestCase {
         }
         operation.main()
 
-        await fulfillment(of: [requestFactoryExpectation, resultExpectation], timeout: 10)
+        wait(for: [requestFactoryExpectation, resultExpectation], timeout: 10)
     }
 }
 

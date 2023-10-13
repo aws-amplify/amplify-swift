@@ -42,7 +42,7 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
             XCTAssertEqual(message, "no such table: MutationSyncMetadata")
             shouldCatchFailure.fulfill()
         }
-        await fulfillment(of: [shouldCatchFailure], timeout: 1)
+        wait(for: [shouldCatchFailure], timeout: 1)
     }
 
     /// Set up MutationSyncMetadata records where the id is in the incorrect format. Check that it needs migration.
@@ -90,7 +90,7 @@ class SQLiteMutationSyncMetadataMigrationValidationTests: MutationSyncMetadataMi
             XCTAssertEqual(message, "no such table: Dish")
             shouldCatchFailure.fulfill()
         }
-        await fulfillment(of: [shouldCatchFailure], timeout: 1)
+        wait(for: [shouldCatchFailure], timeout: 1)
     }
 
     func testSelectDuplicateIdAcrossModelsStatement() throws {

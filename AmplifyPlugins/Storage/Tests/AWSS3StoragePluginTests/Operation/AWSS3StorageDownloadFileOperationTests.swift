@@ -68,7 +68,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -177,7 +177,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }

@@ -134,7 +134,7 @@ class ListTests: XCTestCase {
         let fetchSuccess = expectation(description: "fetch successful")
         Task {
             try await list.fetch()
-            await fetchSuccess.fulfill()
+            fetchSuccess.fulfill()
         }
         await fulfillment(of: [fetchSuccess], timeout: 1.0)
         
@@ -168,7 +168,7 @@ class ListTests: XCTestCase {
         let fetchSuccess = expectation(description: "fetch successful")
         Task {
             try await list.fetch()
-            await fetchSuccess.fulfill()
+            fetchSuccess.fulfill()
         }
         await fulfillment(of: [fetchSuccess], timeout: 1.0)
         XCTAssertEqual(list.count, 2)
@@ -181,7 +181,7 @@ class ListTests: XCTestCase {
         list.makeIterator().forEach { _ in
             iterateSuccess.fulfill()
         }
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [iterateSuccess], timeout: 1)
         XCTAssertFalse(list.listProvider.hasNextPage())
         do {
             _ = try await list.listProvider.getNextPage()
@@ -200,7 +200,7 @@ class ListTests: XCTestCase {
         let fetchSuccess = expectation(description: "fetch successful")
         Task {
             try await list.fetch()
-            await fetchSuccess.fulfill()
+            fetchSuccess.fulfill()
         }
         await fulfillment(of: [fetchSuccess], timeout: 1.0)
         XCTAssertEqual(list.count, 0)
@@ -225,7 +225,7 @@ class ListTests: XCTestCase {
             } catch {
                 XCTAssertNotNil(error)
             }
-            await fetchCompleted.fulfill()
+            fetchCompleted.fulfill()
         }
         await fulfillment(of: [fetchCompleted], timeout: 1.0)
     }

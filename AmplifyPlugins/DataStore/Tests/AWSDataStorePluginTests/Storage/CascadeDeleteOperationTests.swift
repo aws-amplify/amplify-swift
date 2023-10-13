@@ -362,7 +362,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
         operation.start()
 
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
         guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -423,7 +423,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
         guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
@@ -730,7 +730,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
 
         XCTAssertEqual(submittedEvents.count, 2)
         // The delete mutations should be synced in reverse order (children to parent)
@@ -799,7 +799,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
+        await fulfillment(of: [receivedMutationEvent, expectedFailures, expectedSuccess, completed], timeout: 1)
 
         XCTAssertEqual(submittedEvents.count, 3)
         // The delete mutations should be synced in reverse order (children to parent)

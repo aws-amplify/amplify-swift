@@ -187,7 +187,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        await fulfillment(of: [syncCompletionReceived, finishedReceived], timeout: 1.0)
+        wait(for: [syncCompletionReceived, finishedReceived], timeout: 1.0)
         sink.cancel()
     }
 
@@ -492,7 +492,7 @@ class InitialSyncOperationTests: XCTestCase {
                 syncMetadataSaved.fulfill()
             }
         }
-        await fulfillment(of: [syncMetadataSaved], timeout: 1.0)
+        wait(for: [syncMetadataSaved], timeout: 1.0)
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
@@ -563,7 +563,7 @@ class InitialSyncOperationTests: XCTestCase {
                 syncMetadataSaved.fulfill()
             }
         }
-        await fulfillment(of: [syncMetadataSaved], timeout: 1.0)
+        wait(for: [syncMetadataSaved], timeout: 1.0)
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in

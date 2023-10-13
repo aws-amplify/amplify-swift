@@ -118,11 +118,11 @@ class APICategoryConfigurationTests: XCTestCase {
         let getCompleted = expectation(description: "get completed")
         Task {
             _ = try await Amplify.API.get(request: RESTRequest())
-            await getCompleted.fulfill()
+            getCompleted.fulfill()
         }
-        await fulfillment(of: [getCompleted], timeout: 0.5)
 
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [getCompleted], timeout: 0.5)
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1)
     }
 
     // TODO: this test is disabled for now since `catchBadInstruction` only takes in closure
@@ -188,11 +188,16 @@ class APICategoryConfigurationTests: XCTestCase {
         Task {
             let plugin = try Amplify.API.getPlugin(for: "MockSecondAPICategoryPlugin")
             _ = try await plugin.get(request: RESTRequest())
-            await getCompleted.fulfill()
+            getCompleted.fulfill()
         }
-        await fulfillment(of: [getCompleted], timeout: 0.5)
-
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(
+            of: [
+                getCompleted,
+                methodShouldBeInvokedOnSecondPlugin,
+                methodShouldNotBeInvokedOnDefaultPlugin
+            ],
+            timeout: 1.0
+        )
     }
 
     func testCanConfigurePluginDirectly() throws {

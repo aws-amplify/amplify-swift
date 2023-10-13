@@ -169,6 +169,6 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
             XCTFail("Failed to delete projectA")
             return
         }
-        await fulfillment(of: [mutationEventOnProject], timeout: defaultTimeout)
+        wait(for: [mutationEventOnProject], timeout: defaultTimeout)
     }
 }

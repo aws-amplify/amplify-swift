@@ -83,7 +83,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = try await queryPost(byId: updatedPost.id)
         XCTAssertEqual(queryResult, updatedPost)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)
@@ -221,12 +221,12 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
             if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
                 XCTAssertEqual(post, newPost)
                 XCTAssertEqual(mutationEvent.version, 1)
-                Task { await saveSyncReceived.fulfill() }
+                saveSyncReceived.fulfill()
             }
 
             if mutationEvent.version == 3 {
                 XCTAssertEqual(post, updatedPost)
-                Task { await deleteSyncReceived.fulfill() }
+                deleteSyncReceived.fulfill()
             }
         }
 
@@ -254,22 +254,22 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
         let queryRequest = GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
         let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
-                switch mutationSyncResult {
-                case .success(let data):
-                    guard let post = data else {
-                        XCTFail("Failed to get data")
-                        return
-                    }
+        switch mutationSyncResult {
+        case .success(let data):
+            guard let post = data else {
+                XCTFail("Failed to get data")
+                return
+            }
 
-                    XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
-                    XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
-                    XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
+            XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
+            XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
+            XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
 
-                    XCTAssertTrue(post.syncMetadata.deleted)
-                    XCTAssertEqual(post.syncMetadata.version, 3)
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
+            XCTAssertTrue(post.syncMetadata.deleted)
+            XCTAssertEqual(post.syncMetadata.version, 3)
+        case .failure(let error):
+            XCTFail("Error: \(error)")
+        }
     }
 
     /// - Given: API has been setup with `Post` model registered

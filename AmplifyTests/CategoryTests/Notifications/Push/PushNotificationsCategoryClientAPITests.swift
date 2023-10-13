@@ -44,7 +44,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         }
 
         try await category.identifyUser(userId: "test")
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvoked], timeout: 1.0)
     }
 
     func testRegisterDeviceToken_shouldSucceed() async throws {
@@ -58,7 +58,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         }
 
         try await category.registerDevice(apnsToken: data)
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvoked], timeout: 1.0)
     }
 
     func testRecordNotificationReceived_shouldSucceed() async throws {
@@ -72,7 +72,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         }
 
         try await category.recordNotificationReceived(userInfo)
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvoked], timeout: 1.0)
     }
 
 #if !os(tvOS)
@@ -87,7 +87,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         }
 
         try await category.recordNotificationOpened(response)
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvoked], timeout: 1.0)
     }
 #endif
 

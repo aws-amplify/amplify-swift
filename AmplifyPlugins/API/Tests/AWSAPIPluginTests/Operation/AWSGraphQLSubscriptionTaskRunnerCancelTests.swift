@@ -112,9 +112,9 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                 receivedFailure.fulfill()
             }
         }
-        await fulfillment(of: [receivedValueConnecting])
+        await fulfillment(of: [receivedValueConnecting], timeout: 1)
         subscriptionEvents.cancel()
-        await fulfillment(of: [receivedValueDisconnected, receivedCompletion, receivedFailure])
+        await fulfillment(of: [receivedValueDisconnected, receivedCompletion, receivedFailure], timeout: 1)
     }
     
     func testFailureOnConnection() async {
@@ -171,8 +171,12 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                                      responseType: JSONValue.self)
         
         let receivedValue = expectation(description: "Received value for connecting")
+        receivedValue.expectedFulfillmentCount = 1
+        receivedValue.assertForOverFulfill = false
+
         let receivedFailure = expectation(description: "Received failure")
         receivedFailure.isInverted = true
+
         let receivedCompletion = expectation(description: "Received completion")
         
         let subscriptionEvents = apiPlugin.subscribe(request: request)

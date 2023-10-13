@@ -102,7 +102,7 @@ class BaseDataStoreTests: XCTestCase {
 
         if let model = models.first {
             save(model: model, index: 0)
-            await fulfillment(of: [saveComplete], timeout: 1.0)
+            wait(for: [saveComplete], timeout: 1.0)
         } else {
             saveComplete.fulfill()
         }

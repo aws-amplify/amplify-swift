@@ -104,12 +104,12 @@ class NetworkReachabilityNotifierTests: XCTestCase {
             defaultValueExpect.fulfill()
         })
 
-        await fulfillment(of: [defaultValueExpect], timeout: 1.0)
+        wait(for: [defaultValueExpect], timeout: 1.0)
         notifier = nil
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        await fulfillment(of: [completeExpect], timeout: 1.0)
+        wait(for: [completeExpect], timeout: 1.0)
         cancellable.cancel()
     }
 }

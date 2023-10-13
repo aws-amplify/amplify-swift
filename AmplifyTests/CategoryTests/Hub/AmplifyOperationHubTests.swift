@@ -48,7 +48,7 @@ class AmplifyOperationHubTests: XCTestCase {
 
         operation.doMockDispatch()
 
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [listenerWasInvoked], timeout: 1.0)
     }
 
     /// Given: A configured system

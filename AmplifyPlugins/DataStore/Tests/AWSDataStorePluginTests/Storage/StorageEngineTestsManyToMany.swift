@@ -103,7 +103,7 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
             XCTFail("Failed to delete post1")
             return
         }
-        await fulfillment(of: [mutationEvents], timeout: defaultTimeout)
+        wait(for: [mutationEvents], timeout: defaultTimeout)
     }
 
     func testDeleteUserAndPostEditor() {
@@ -160,6 +160,6 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
             XCTFail("Failed to delete post1")
             return
         }
-        await fulfillment(of: [mutationEvents], timeout: defaultTimeout)
+        wait(for: [mutationEvents], timeout: defaultTimeout)
     }
 }
