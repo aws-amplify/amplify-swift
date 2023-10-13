@@ -25,12 +25,7 @@ extension MockAWSS3PreSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior {
         metadata: [String : String]?,
         accelerate: Bool?,
         expires: Int64?) async throws -> URL {
-            if let metadata = metadata {
-                interactions.append("\(#function) \(key) \(signingOperation) \(metadata) \(String(describing: expires))")
-            } else {
-                interactions.append("\(#function) \(key) \(signingOperation) \(String(describing: expires))")
-            }
-            
+            interactions.append("\(#function) \(key) \(signingOperation) \(String(describing: metadata)) \(String(describing: expires))")
             return try await getPreSignedURLHandler(key, signingOperation, expires)
         }
 }

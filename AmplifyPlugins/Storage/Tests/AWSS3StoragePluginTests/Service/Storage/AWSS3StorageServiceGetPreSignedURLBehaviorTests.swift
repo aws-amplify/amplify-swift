@@ -73,7 +73,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
                                                             expires: expires)
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
-            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.getObject) \(String(describing: expires))"
+            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.getObject) nil \(String(describing: expires))"
         ])
     }
     
@@ -88,7 +88,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
                                                             expires: expires)
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
-            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) \(String(describing: expires))"
+            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) nil \(String(describing: expires))"
         ])
     }
     
@@ -96,7 +96,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     /// - When: A presigned URL is requested for a **AWSS3SigningOperation.putObject** operation with metadata
     /// - Then: A valid URL is returned
     func testForPutObjectWithMetadata() async throws {
-        let metadata = ["test": "value"]
+        let metadata: [String: String]? = ["test": "value"]
         let url = try await systemUnderTest.getPreSignedURL(serviceKey: serviceKey,
                                                             signingOperation: .putObject,
                                                             metadata: metadata,
@@ -104,7 +104,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
                                                             expires: expires)
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
-            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) \(metadata) \(String(describing: expires))"
+            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(AWSS3SigningOperation.putObject) \(String(describing: metadata)) \(String(describing: expires))"
         ])
     }
     
@@ -120,7 +120,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
                                                             expires: expires)
         XCTAssertEqual(url, presignedURL)
         XCTAssertEqual(builder.interactions, [
-            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(operation) \(String(describing: expires))"
+            "getPreSignedURL(key:signingOperation:metadata:accelerate:expires:) \(serviceKey ?? "") \(operation) nil \(String(describing: expires))"
         ])
     }
 
