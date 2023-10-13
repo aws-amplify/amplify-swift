@@ -30,18 +30,18 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
         Task {
             do {
                 try await Amplify.DataStore.start()
-                await startExpectation.fulfill()
+                startExpectation.fulfill()
             } catch(let error) {
                 XCTFail("DataStore start failure \(error)")
             }
         }
 
         // we're only interested in "ready-state" expectations
-        await expectations.query.fulfill()
-        await expectations.mutationSave.fulfill()
-        await expectations.mutationSaveProcessed.fulfill()
-        await expectations.mutationDelete.fulfill()
-        await expectations.mutationDeleteProcessed.fulfill()
+        expectations.query.fulfill()
+        expectations.mutationSave.fulfill()
+        expectations.mutationSaveProcessed.fulfill()
+        expectations.mutationDelete.fulfill()
+        expectations.mutationDeleteProcessed.fulfill()
 
         await fulfillment(of: [
                 startExpectation,

@@ -67,8 +67,12 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
         XCTAssertEqual(itemKey, key)
 
         let downloadCompleted = expectation(description: "download completed")
-        let downloadedData = try await Amplify.Storage.downloadData(key: itemKey).value
-        XCTAssertNotNil(downloadedData)
+        Task {
+            let downloadedData = try await Amplify.Storage.downloadData(key: itemKey).value
+            XCTAssertNotNil(downloadedData)
+            downloadCompleted.fulfill()
+        }
+        await fulfillment(of: [downloadCompleted])
         
         // Remove the key
         await remove(key: key)

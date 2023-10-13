@@ -122,7 +122,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         let postCopy = post
         Task {
             _ = try await Amplify.DataStore.save(postCopy)
-            await createdNewItem.fulfill()
+            createdNewItem.fulfill()
         }
         await fulfillment(of: [createdNewItem])
         await fulfillment(of: [apiRespondedWithSuccess], timeout: 1.0, enforceOrder: false)

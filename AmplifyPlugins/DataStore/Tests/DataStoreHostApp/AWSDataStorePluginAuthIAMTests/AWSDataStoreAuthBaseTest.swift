@@ -243,14 +243,10 @@ extension AWSDataStoreAuthBaseTest {
             _ = try await Amplify.Auth.signIn(username: user.username,
                                                        password: user.password,
                                                        options: nil)
-            Task {
-                await signInInvoked.fulfill()
-            }
+            signInInvoked.fulfill()
         } catch(let error) {
             XCTFail("Signin failure \(error)", file: file, line: line)
-            Task {
-                await signInInvoked.fulfill() // won't count as pass
-            }
+            signInInvoked.fulfill() // won't count as pass
         }
         await fulfillment(of: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
         
@@ -264,7 +260,7 @@ extension AWSDataStoreAuthBaseTest {
         let signoutInvoked = expectation(description: "sign out completed")
         Task {
             _ = await Amplify.Auth.signOut()
-            await signoutInvoked.fulfill()
+            signoutInvoked.fulfill()
         }
         
         await fulfillment(of: [signoutInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -279,9 +275,7 @@ extension AWSDataStoreAuthBaseTest {
         do {
             let authSession = try await Amplify.Auth.fetchAuthSession()
             resultOptional = authSession.isSignedIn
-            Task {
-                await checkIsSignedInCompleted.fulfill()
-            }
+            checkIsSignedInCompleted.fulfill()
         } catch(let error) {
             fatalError("Failed to get auth session \(error)")
         }
@@ -307,9 +301,7 @@ extension AWSDataStoreAuthBaseTest {
             switch cognitoAuthSession.getUserSub() {
             case .success(let userSub):
                 resultOptional = userSub
-                Task {
-                    await retrieveUserSubCompleted.fulfill()
-                }
+                retrieveUserSubCompleted.fulfill()
             case .failure(let error):
                 XCTFail("Failed to get auth session \(error)")
             }
@@ -338,9 +330,7 @@ extension AWSDataStoreAuthBaseTest {
             switch cognitoAuthSession.getIdentityId() {
             case .success(let identityId):
                 resultOptional = identityId
-                Task {
-                    await retrieveIdentityCompleted.fulfill()
-                }
+                retrieveIdentityCompleted.fulfill()
             case .failure(let error):
                 XCTFail("Failed to get auth session \(error)")
             }
@@ -366,9 +356,7 @@ extension AWSDataStoreAuthBaseTest {
         do {
             let model = try await Amplify.DataStore.query(M.self, byId: id)
             queriedModel = model
-            Task {
-                await queriedInvoked.fulfill()
-            }
+            queriedInvoked.fulfill()
         } catch(let error) {
             XCTFail("Failed to query model \(error)", file: file, line: line)
         }
@@ -397,9 +385,7 @@ extension AWSDataStoreAuthBaseTest {
         }
         receiveValue: { posts in
             XCTAssertNotNil(posts)
-            Task {
-                await expectations.query.fulfill()
-            }
+            expectations.query.fulfill()
         }.store(in: &requests)
         await fulfillment(of: [expectations.query],
              timeout: 60)
@@ -417,25 +403,19 @@ extension AWSDataStoreAuthBaseTest {
             .sink { event in
                 // subscription fulfilled
                 if event.eventName == dataStoreEvents.subscriptionsEstablished {
-                    Task {
-                        await expectations.subscriptionsEstablished.fulfill()
-                    }
+                    expectations.subscriptionsEstablished.fulfill()
                 }
 
                 // modelsSynced fulfilled
                 if event.eventName == dataStoreEvents.modelSynced {
                     modelSyncedCount += 1
                     if modelSyncedCount == expectedModelSynced {
-                        Task {
-                            await expectations.modelsSynced.fulfill()
-                        }
+                        expectations.modelsSynced.fulfill()
                     }
                 }
 
                 if event.eventName == dataStoreEvents.ready {
-                    Task {
-                        await expectations.ready.fulfill()
-                    }
+                    expectations.ready.fulfill()
                 }
             }
             .store(in: &requests)
@@ -470,16 +450,12 @@ extension AWSDataStoreAuthBaseTest {
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    Task {
-                        await expectations.mutationSaveProcessed.fulfill()
-                    }
+                    expectations.mutationSaveProcessed.fulfill()
                     return
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    Task {
-                        await expectations.mutationDeleteProcessed.fulfill()
-                    }
+                    expectations.mutationDeleteProcessed.fulfill()
                     return
                 }
             }
@@ -494,9 +470,7 @@ extension AWSDataStoreAuthBaseTest {
         }
         receiveValue: { posts in
             XCTAssertNotNil(posts)
-            Task {
-                await expectations.mutationSave.fulfill()
-            }
+            expectations.mutationSave.fulfill()
         }.store(in: &requests)
 
         await fulfillment(of: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
@@ -510,9 +484,7 @@ extension AWSDataStoreAuthBaseTest {
         }
         receiveValue: { posts in
             XCTAssertNotNil(posts)
-            Task {
-                await expectations.mutationDelete.fulfill()
-            }
+            expectations.mutationDelete.fulfill()
         }.store(in: &requests)
 
         await fulfillment(of: [expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)

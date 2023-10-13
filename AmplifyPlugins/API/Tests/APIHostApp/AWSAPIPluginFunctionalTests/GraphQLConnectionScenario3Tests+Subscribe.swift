@@ -149,7 +149,6 @@ extension GraphQLConnectionScenario3Tests {
     }
 
     func testOnCreateCommentSubscriptionWithModel() async throws {
-        let connectingInvoked = expectation(description: "Connection connecting")
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Comment3.self, type: .onCreate))
@@ -160,7 +159,7 @@ extension GraphQLConnectionScenario3Tests {
                     case .connection(let state):
                         switch state {
                         case .connecting:
-                            connectingInvoked.fulfill()
+                            break
                         case .connected:
                             connectedInvoked.fulfill()
                         case .disconnected:
