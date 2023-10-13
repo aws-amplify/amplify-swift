@@ -36,6 +36,10 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
+        let directory = documents.appendingPathComponent("amplify")
+                                 .appendingPathComponent("logging")
+        try FileManager.default.removeItem(atPath: directory)
     }
     
     /// - Given: a AWS CloudWatch Logging plugin
@@ -71,12 +75,13 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessagesSent(client: cloudWatchClient,
-                                    logGroupName: loggingConfiguration?.logGroupName,
-                                    messageCount: 4,
-                                    message: message,
-                                    category: category,
-                                    namespace: namespace)
+        try await verifyMessagesSent(plugin: loggingPlugin,
+                                     client: cloudWatchClient,
+                                     logGroupName: loggingConfiguration?.logGroupName,
+                                     messageCount: 4,
+                                     message: message,
+                                     category: category,
+                                     namespace: namespace)
     }
 
     
@@ -98,7 +103,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(client: cloudWatchClient,
+        try await verifyMessageSent(plugin: loggingPlugin,
+                                    client: cloudWatchClient,
                                     logGroupName: loggingConfiguration?.logGroupName,
                                     logLevel: "verbose",
                                     message: message,
@@ -124,12 +130,14 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageNotSent(client: cloudWatchClient,
+        try await verifyMessageNotSent(plugin: loggingPlugin,
+                                       client: cloudWatchClient,
                                        logGroupName: loggingConfiguration?.logGroupName,
                                        message: message)
     }
     
-    func verifyMessagesSent(client: CloudWatchLogsClientProtocol?,
+    func verifyMessagesSent(plugin: AWSCloudWatchLoggingPlugin,
+                            client: CloudWatchLogsClientProtocol?,
                             logGroupName: String?,
                             messageCount: Int,
                             message: String,
@@ -137,6 +145,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
                             namespace: String) async throws {
 
         let events = try await getLastMessageSent(
+            plugin: plugin,
             client: client,
             logGroupName: logGroupName,
             expectedMessageCount: messageCount,
@@ -152,7 +161,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         XCTAssertTrue(sentLogMessage.contains(namespace))
     }
     
-    func verifyMessageSent(client: CloudWatchLogsClientProtocol?,
+    func verifyMessageSent(plugin: AWSCloudWatchLoggingPlugin,
+                           client: CloudWatchLogsClientProtocol?,
                            logGroupName: String?,
                            logLevel: String,
                            message: String,
@@ -160,6 +170,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
                            namespace: String) async throws {
 
         let events = try await getLastMessageSent(
+            plugin: plugin,
             client: client,
             logGroupName: logGroupName,
             expectedMessageCount: 1,
@@ -176,11 +187,13 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         XCTAssertTrue(sentLogMessage.contains(namespace))
     }
     
-    func verifyMessageNotSent(client: CloudWatchLogsClientProtocol?,
+    func verifyMessageNotSent(plugin: AWSCloudWatchLoggingPlugin,
+                              client: CloudWatchLogsClientProtocol?,
                               logGroupName: String?,
                               message: String) async throws {
 
         let events = try await getLastMessageSent(
+            plugin: plugin,
             client: client,
             logGroupName: logGroupName,
             expectedMessageCount: 1,
@@ -189,7 +202,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         XCTAssertEqual(events?.count, 0)
     }
     
-    func getLastMessageSent(client: CloudWatchLogsClientProtocol?,
+    func getLastMessageSent(plugin: AWSCloudWatchLoggingPlugin,
+                            client: CloudWatchLogsClientProtocol?,
                             logGroupName: String?,
                             expectedMessageCount: Int,
                             message: String,
@@ -200,9 +214,11 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         var events = try await AWSCloudWatchClientHelper.getFilterLogEventCount(client: client, filterPattern: message, startTime: startTime, endTime: endTime, logGroupName: logGroupName)
         
         if events?.count != expectedMessageCount && requestAttempt <= 5 {
+            try await plugin.flushLogs()
             try await Task.sleep(seconds: 30)
             let attempted = requestAttempt + 1
             events = try await getLastMessageSent(
+                plugin: plugin,
                 client: client,
                 logGroupName: logGroupName,
                 expectedMessageCount: expectedMessageCount,
