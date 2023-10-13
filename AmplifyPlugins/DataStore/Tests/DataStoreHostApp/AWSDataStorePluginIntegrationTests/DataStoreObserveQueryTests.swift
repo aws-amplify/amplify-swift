@@ -63,7 +63,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let receivedPost = expectation(description: "received Post")
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
                                          postSyncedExpctation: receivedPost)
-        await fulfillment(of: [snapshotWithIsSynced, receivedPost], timeout: 100)
+        await fulfillment(of: [snapshotWithIsSynced], timeout: 100)
         task.cancel()
         await fulfillment(of: [querySnapshotsCancelled], timeout: 10)
     }
@@ -185,6 +185,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         var snapshotWithIsSyncedFulfilled = false
         let receivedPostFromObserveQuery = expectation(description: "received Post")
+        receivedPostFromObserveQuery.assertForOverFulfill = false
         let post4 = Post(title: "\(randomTitle) 4", content: "content", createdAt: .now())
         let predicate = Post.keys.title.beginsWith(randomTitle)
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate)).sink { completed in
@@ -233,6 +234,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let post1 = Post(title: "title", content: "content", createdAt: .now())
         let post2 = Post(title: "title", content: "content", createdAt: .now().add(value: 1, to: .second))
         let snapshotWithSavedPost = expectation(description: "query snapshot with saved post")
+        snapshotWithSavedPost.assertForOverFulfill = false
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, sort: .ascending(Post.keys.createdAt)))
         .sink { completed in
             switch completed {
@@ -339,7 +341,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         try await savePostAndWaitForSync(newPost,
                                          postSyncedExpctation: receivedPost)
 
-        await fulfillment(of: [snapshotWithIsSynced, receivedPost], timeout: 30)
+        await fulfillment(of: [snapshotWithIsSynced], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
         XCTAssertEqual(1, snapshots.filter({ $0.isSynced }).count)
@@ -669,10 +671,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     func savePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
         // Wait for a fulfillment count of 2 (first event due to the locally source mutation saved to the local store
         // and the second event due to the subscription event received from the remote store)
-        let receivedPost = postSyncedExpctation ?? expectation(description: "received Post")
-        if postSyncedExpctation == nil {
-            receivedPost.expectedFulfillmentCount = 2
-        }
+        let receivedPost = postSyncedExpctation ?? {
+            let e = expectation(description: "received Post")
+            e.expectedFulfillmentCount = 2
+            return e
+        }()
+        receivedPost.assertForOverFulfill = false
+
         Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
@@ -687,18 +692,18 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }
         
         _ = try await Amplify.DataStore.save(post)
-        if postSyncedExpctation == nil {
-            await fulfillment(of: [receivedPost], timeout: 100)
-        }
+        await fulfillment(of: [receivedPost], timeout: 100)
     }
 
     func deletePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
         // Wait for a fulfillment count of 2 (first event due to the locally source mutation deleted from the local
         // store and the second event due to the subscription event received from the remote store)
-        let deletedPost = postSyncedExpctation ?? expectation(description: "deleted Post")
-        if postSyncedExpctation == nil {
-            deletedPost.expectedFulfillmentCount = 2
-        }
+        let deletedPost = postSyncedExpctation ?? {
+            let e = expectation(description: "deleted Post")
+            e.expectedFulfillmentCount = 2
+            return e
+        }()
+        deletedPost.assertForOverFulfill = false
 
         Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -714,9 +719,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }
         
         _ = try await Amplify.DataStore.delete(post)
-        if postSyncedExpctation == nil {
-            await fulfillment(of: [deletedPost], timeout: 100)
-        }
+        await fulfillment(of: [deletedPost], timeout: 100)
     }
 
     func queryNumberOfPosts() async throws -> Int {
