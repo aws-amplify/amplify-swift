@@ -115,5 +115,3 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Auth/Tests/AuthHostedUIApp/
           scheme: AuthHostedUIApp
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
-          xcode_path: '/Applications/Xcode_14.3.app'
