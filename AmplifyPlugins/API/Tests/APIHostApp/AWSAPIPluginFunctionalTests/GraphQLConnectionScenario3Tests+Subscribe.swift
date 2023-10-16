@@ -175,7 +175,7 @@ extension GraphQLConnectionScenario3Tests {
                 XCTFail("Unexpected subscription failure")
             }
         }
-        await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: 30)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
@@ -190,6 +190,6 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
 
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 }
