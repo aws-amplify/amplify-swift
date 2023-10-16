@@ -134,11 +134,11 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
                 }
             }
         }
-        await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: 30)
 
         try await createTodo(id: uuid, name: name)
         try await createTodo(id: uuid2, name: name)
-        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 
     // MARK: - Helpers
