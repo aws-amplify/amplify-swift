@@ -92,7 +92,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   auth-ui-integration-test-iOS:
-    runs-on: macos-13
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
