@@ -1,0 +1,41 @@
+# Swaps `pending-response` for `follow up` label on comment from a non owner / member author association.
+
+name: Update labels on external comment
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+jobs:
+  remove-pending-response label:
+    name:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.issue.pull_request && (contains(github.event.issue.labels.*.name, 'pending-response')) }}
+
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: remove pending-response label on external comment
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue edit $ISSUE_NUMBER --remove-label "pending-response"
+
+  add-follow-up-label:
+    name:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.issue.pull_request && !(contains(github.event.issue.labels.*.name, 'follow up')) }}
+
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: add follow up label on external comment
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue edit $ISSUE_NUMBER --add-label "follow up"
