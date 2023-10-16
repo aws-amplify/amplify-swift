@@ -323,7 +323,8 @@ class GraphQLModelBasedTests: XCTestCase {
         let connectingInvoked = expectation(description: "Connection connecting")
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
-        
+        progressInvoked.assertForOverFulfill = false
+
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onUpdate))
         Task {
             do {

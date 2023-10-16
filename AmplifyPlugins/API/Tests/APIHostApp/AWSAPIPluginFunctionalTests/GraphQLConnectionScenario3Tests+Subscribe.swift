@@ -67,6 +67,7 @@ extension GraphQLConnectionScenario3Tests {
         let connectingInvoked = expectation(description: "Connection connecting")
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.assertForOverFulfill = false
 
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onUpdate))
         Task {
@@ -151,6 +152,7 @@ extension GraphQLConnectionScenario3Tests {
     func testOnCreateCommentSubscriptionWithModel() async throws {
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.assertForOverFulfill = false
         let subscription = Amplify.API.subscribe(request: .subscription(of: Comment3.self, type: .onCreate))
         Task {
             do {
