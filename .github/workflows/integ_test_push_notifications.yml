@@ -10,7 +10,7 @@ permissions:
 jobs:
   push-notification-integration-test-iOS:
     runs-on: macos-13
-    timeout-minutes: 20
+    timeout-minutes: 30
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -50,7 +50,7 @@ jobs:
 
   push-notification-integration-test-tvOS:
     runs-on: macos-13
-    timeout-minutes: 20
+    timeout-minutes: 30
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -91,7 +91,7 @@ jobs:
 
   push-notification-integration-test-watchOS:
     runs-on: macos-13
-    timeout-minutes: 20
+    timeout-minutes: 30
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
