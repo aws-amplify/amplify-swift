@@ -46,7 +46,7 @@ extension GraphQLConnectionScenario3Tests {
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
+        let title = testMethodName + "Title".withUUID
         let subscription = Amplify.API.subscribe(request: onCreatePost3APISwiftRequest())
         Task {
             do {

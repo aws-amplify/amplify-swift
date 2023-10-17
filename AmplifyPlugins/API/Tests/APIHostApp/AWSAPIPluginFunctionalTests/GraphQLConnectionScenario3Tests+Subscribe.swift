@@ -23,7 +23,7 @@ extension GraphQLConnectionScenario3Tests {
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
+        let title = testMethodName + "Title".withUUID
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onCreate))
         Task {
             do {
@@ -96,7 +96,7 @@ extension GraphQLConnectionScenario3Tests {
         
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
+        let title = testMethodName + "Title".withUUID
         let post = Post3(id: uuid, title: title)
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .update(post))
@@ -134,7 +134,7 @@ extension GraphQLConnectionScenario3Tests {
         await fulfillment(of: [connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
+        let title = testMethodName + "Title".withUUID
 
         guard let post = try await createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post")
@@ -178,7 +178,7 @@ extension GraphQLConnectionScenario3Tests {
         await fulfillment(of: [connectedInvoked], timeout: 30)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
+        let title = testMethodName + "Title".withUUID
 
         guard let createdPost = try await createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post")
