@@ -55,7 +55,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testCreateAndGetProject() async throws {
-        guard let team = try await createTeam(name: "name"),
+        guard let team = try await createTeam(name: "name".withUUID),
               let project = try await createProject(team: team) else {
             XCTFail("Could not create team and a project")
             return
@@ -76,12 +76,12 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testUpdateProjectWithAnotherTeam() async throws {
-        guard let team = try await createTeam(name: "name"),
+        guard let team = try await createTeam(name: "name".withUUID),
               var project = try await createProject(team: team) else {
             XCTFail("Could not create a Team")
             return
         }
-        let anotherTeam = Team1(name: "name")
+        let anotherTeam = Team1(name: "name".withUUID)
         guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
             XCTFail("Failed to create another team")
             return
@@ -96,7 +96,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testDeleteAndGetProject() async throws {
-        guard let team = try await createTeam(name: "name"),
+        guard let team = try await createTeam(name: "name".withUUID),
               let project = try await createProject(team: team) else {
             XCTFail("Could not create team and a project")
             return
@@ -124,7 +124,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     // The filter we are passing into is the ProjectTeamID, but the API doesn't have the field ProjectTeamID
     //    so we are disabling it
     func testListProjectsByTeamID() async throws {
-        guard let team = try await createTeam(name: "name"),
+        guard let team = try await createTeam(name: "name".withUUID),
               let project = try await createProject(team: team) else {
             XCTFail("Could not create team and a project")
             return
@@ -143,7 +143,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     func testPaginatedListProjects() async throws {
         let testCompleted = asyncExpectation(description: "test completed")
         Task {
-            guard let team = try await createTeam(name: "name"),
+            guard let team = try await createTeam(name: "name".withUUID),
                   let projecta = try await createProject(team: team),
                   let projectb = try await createProject(team: team) else {
                 XCTFail("Could not create team and two projects")

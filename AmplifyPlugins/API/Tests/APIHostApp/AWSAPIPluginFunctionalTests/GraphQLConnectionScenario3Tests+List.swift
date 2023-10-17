@@ -35,9 +35,10 @@ import XCTest
 extension GraphQLConnectionScenario3Tests {
 
     func testGetPostThenIterateComments() async throws {
-        guard let post = try await createPost(title: "title"),
-             try await createComment(postID: post.id, content: "content") != nil,
-             try await createComment(postID: post.id, content: "content") != nil else {
+        let commentContent = "content".withUUID
+        guard let post = try await createPost(title: "title".withUUID),
+             try await createComment(postID: post.id, content: commentContent) != nil,
+             try await createComment(postID: post.id, content: commentContent) != nil else {
             XCTFail("Could not create post and two comments")
             return
         }
@@ -73,9 +74,11 @@ extension GraphQLConnectionScenario3Tests {
     }
 
     func testGetPostThenFetchComments() async throws {
-        guard let post = try await createPost(title: "title"),
-              try await createComment(postID: post.id, content: "content") != nil,
-              try await createComment(postID: post.id, content: "content") != nil else {
+        let commentContent = "content".withUUID
+
+        guard let post = try await createPost(title: "title".withUUID),
+              try await createComment(postID: post.id, content: commentContent) != nil,
+              try await createComment(postID: post.id, content: commentContent) != nil else {
             XCTFail("Could not create post and two comments")
             return
         }
@@ -110,7 +113,7 @@ extension GraphQLConnectionScenario3Tests {
 
     // Create a post and list the posts
     func testListPost() async throws {
-        guard try await createPost(title: "title") != nil else {
+        guard try await createPost(title: "title".withUUID) != nil else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
@@ -155,11 +158,11 @@ extension GraphQLConnectionScenario3Tests {
     // Create a post and a comment with that post
     // list the comments by postId
     func testListCommentsByPostID() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard try await createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: "content".withUUID) != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -187,15 +190,16 @@ extension GraphQLConnectionScenario3Tests {
     /// - Then:
     ///    - the in-memory Array is a populated with exactly two comments.
     func testPaginatedListCommentsByPostID() async throws {
-        guard let post = try await createPost(title: "title") else {
+        let commentContent = "content".withUUID
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard try await createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: commentContent) != nil else {
             XCTFail("Could not create comment")
             return
         }
-        guard try await createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: commentContent) != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -232,7 +236,7 @@ extension GraphQLConnectionScenario3Tests {
     ///    - A validation error is returned
     func testPaginatedListFetchValidationError() async throws {
         let uuid1 = UUID().uuidString
-        guard try await createPost(id: uuid1, title: "title") != nil else {
+        guard try await createPost(id: uuid1, title: "title".withUUID) != nil else {
             XCTFail("Failed to create post")
             return
         }
