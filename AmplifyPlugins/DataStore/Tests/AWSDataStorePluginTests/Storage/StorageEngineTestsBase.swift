@@ -47,7 +47,7 @@ class StorageEngineTestsBase: XCTestCase {
             result = sResult
             saveFinished.fulfill()
         }
-        await waitForExpectations(timeout: defaultTimeout)
+        await fulfillment(of: [saveFinished], timeout: defaultTimeout)
         guard let saveResult = result else {
             return .failure(causedBy: "Save operation timed out")
         }
@@ -105,7 +105,7 @@ class StorageEngineTestsBase: XCTestCase {
             queryFinished.fulfill()
         }
 
-        await waitForExpectations(timeout: defaultTimeout)
+        await fulfillment(of: [queryFinished], timeout: defaultTimeout)
         guard let queryResult = result else {
             return .failure(causedBy: "Query operation timed out")
         }

@@ -73,6 +73,6 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
             XCTFail("Should not produce success response")
         } catch {
         }
-        wait(for: [functionExpectation], timeout: 1)
+        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 }

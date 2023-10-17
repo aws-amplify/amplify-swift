@@ -157,7 +157,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: networkTimeout)
+        await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
     @MainActor
@@ -209,7 +209,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: networkTimeout)
+        await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
     @MainActor
@@ -226,7 +226,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: networkTimeout)
+        await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
     @MainActor
@@ -254,7 +254,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: networkTimeout)
+        await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
     @MainActor

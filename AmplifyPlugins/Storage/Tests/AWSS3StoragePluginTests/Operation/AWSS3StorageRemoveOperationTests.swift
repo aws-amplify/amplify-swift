@@ -64,7 +64,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -89,7 +89,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [completeInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }
@@ -115,7 +115,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }
@@ -142,7 +142,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        wait(for: [completeInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }

@@ -200,7 +200,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         _ = try await Amplify.Auth.getPlugin(for: "MockSecondAuthCategoryPlugin")
             .update(oldPassword: "current", to: "new", options: nil)
-        await waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodShouldBeInvokedOnSecondPlugin], timeout: 1.0)
     }
 
     /// Test if we get error when trying default plugin when multiple plugin added.

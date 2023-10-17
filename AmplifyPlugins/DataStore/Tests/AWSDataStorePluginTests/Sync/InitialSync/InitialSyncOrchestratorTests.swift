@@ -97,7 +97,16 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncCallbackReceived.fulfill()
         }
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(
+            of: [
+                syncCallbackReceived,
+                syncQueriesStartedReceived,
+                syncStartedReceived,
+                finishedReceived,
+                completionFinishedReceived
+            ],
+            timeout: 1
+        )
         XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()
@@ -196,7 +205,16 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncCallbackReceived.fulfill()
         }
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(
+            of: [
+                syncCallbackReceived,
+                syncQueriesStartedReceived,
+                syncStartedReceived,
+                finishedReceived,
+                failureCompletionReceived
+            ],
+            timeout: 1
+        )
         XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()

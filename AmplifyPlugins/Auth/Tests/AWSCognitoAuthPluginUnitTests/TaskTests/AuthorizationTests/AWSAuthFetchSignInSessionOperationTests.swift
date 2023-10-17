@@ -132,7 +132,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         XCTAssertNotNil(tokens?.idToken)
         XCTAssertNotNil(tokens?.refreshToken)
 
-        wait(for: [resultExpectation], timeout: apiTimeout)
+        await fulfillment(of: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test signedIn session with a user signed In to  identityPool
@@ -355,7 +355,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     //                XCTFail("Received failure with error \(error)")
     //            }
     //        }
-    //        wait(for: [resultExpectation], timeout: apiTimeout)
+    //        await fulfillment(of: [resultExpectation], timeout: apiTimeout)
     //    }
     //
     //    /// Test signedIn session with network error for identityId
@@ -413,7 +413,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     //                XCTFail("Received failure with error \(error)")
     //            }
     //        }
-    //        wait(for: [resultExpectation], timeout: apiTimeout)
+    //        await fulfillment(of: [resultExpectation], timeout: apiTimeout)
     //    }
     //
     //    /// Test signedIn session with network error for aws credentials
@@ -471,7 +471,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     //                XCTFail("Received failure with error \(error)")
     //            }
     //        }
-    //        wait(for: [resultExpectation], timeout: apiTimeout)
+    //        await fulfillment(of: [resultExpectation], timeout: apiTimeout)
     //    }
     //
     /// Test signedIn session with invalid response for tokens

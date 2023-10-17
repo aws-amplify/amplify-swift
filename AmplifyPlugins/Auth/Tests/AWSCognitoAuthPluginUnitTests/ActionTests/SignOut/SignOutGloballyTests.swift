@@ -36,7 +36,10 @@ class SignOutGloballyTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [globalSignOutInvoked],
+            timeout: 0.1
+        )
     }
 
     func testFailedGlobalSignOutTriggersBuildRevokeError() async {
@@ -75,7 +78,10 @@ class SignOutGloballyTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [revokeTokenEventSent],
+            timeout: 0.1
+        )
     }
 
     func testSuccessfulGlobalSignOutTriggersRevokeToken() async {
@@ -114,7 +120,9 @@ class SignOutGloballyTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [revokeTokenEventSent],
+            timeout: 0.1
+        )
     }
-
 }

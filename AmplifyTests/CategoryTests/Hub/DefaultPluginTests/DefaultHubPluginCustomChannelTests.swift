@@ -51,7 +51,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
 
         plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(eventName: "TEST_EVENT"))
 
-        await waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [eventReceived], timeout: 0.5)
     }
 
     /// Given: A listener to a custom channel
@@ -72,7 +72,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
 
         plugin.dispatch(to: .custom("CustomChannel2"), payload: HubPayload(eventName: "TEST_EVENT"))
 
-        await waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [eventReceived], timeout: 0.5)
     }
 
     /// Given: Multiple listeners to a custom channel
@@ -102,7 +102,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
 
         plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(eventName: "TEST_EVENT"))
 
-        await waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [listener1Invoked, listener2Invoked], timeout: 0.5)
     }
 
 }

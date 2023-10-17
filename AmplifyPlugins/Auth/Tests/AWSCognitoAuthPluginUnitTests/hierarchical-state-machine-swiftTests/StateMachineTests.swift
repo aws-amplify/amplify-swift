@@ -49,7 +49,11 @@ class StateMachineTests: XCTestCase {
                 taskCompletion.fulfill()
             }
         }
-        await waitForExpectations(timeout: 1)
+
+        await fulfillment(
+            of: [taskCompletion],
+            timeout: 0.1
+        )
         let state = await testMachine.currentState
         XCTAssertEqual(state.value, 0)
     }
@@ -106,7 +110,10 @@ class StateMachineTests: XCTestCase {
         )
 
         await testMachine.send(event)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [action1WasExecuted, action2WasExecuted],
+            timeout: 0.1
+        )
     }
 
     /// Given:
@@ -148,7 +155,11 @@ class StateMachineTests: XCTestCase {
         )
 
         await testMachine.send(event)
-        await waitForExpectations(timeout: 0.1)
+
+        await fulfillment(
+            of: [action1WasExecuted, action2WasExecuted],
+            timeout: 0.1
+        )
         XCTAssertEqual(executionCount.get(), 2)
     }
 

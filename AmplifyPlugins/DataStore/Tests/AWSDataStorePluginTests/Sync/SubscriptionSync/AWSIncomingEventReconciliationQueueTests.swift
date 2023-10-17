@@ -78,8 +78,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        await waitForExpectations(timeout: 2)
 
+        await fulfillment(of: [expectStarted, expectInitialized], timeout: 2)
         // Take action on the sink to prevent compiler warnings about unused variables.
         sink.cancel()
     }
@@ -113,8 +113,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        await waitForExpectations(timeout: 2)
 
+        await fulfillment(of: [expectStarted, expectInitialized], timeout: 2)
         sink.cancel()
     }
 
@@ -152,8 +152,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        await waitForExpectations(timeout: 2)
 
+        await fulfillment(of: [expectStarted, expectInitialized], timeout: 2)
         sink.cancel()
     }
 
@@ -187,8 +187,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        await waitForExpectations(timeout: 2)
 
+        await fulfillment(of: [expectStarted, expectInitialized], timeout: 2)
         sink.cancel()
     }
 
@@ -228,8 +228,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        await waitForExpectations(timeout: 2)
 
+        await fulfillment(of: [expectStarted, expectInitialized], timeout: 2)
         sink.cancel()
 
     }

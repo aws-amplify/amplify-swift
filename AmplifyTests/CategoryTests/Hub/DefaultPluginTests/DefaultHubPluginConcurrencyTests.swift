@@ -79,7 +79,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
             }
         }
 
-        await waitForExpectations(timeout: 5.0)
+        await fulfillment(of: messagesReceived, timeout: 5.0)
     }
 
 }
