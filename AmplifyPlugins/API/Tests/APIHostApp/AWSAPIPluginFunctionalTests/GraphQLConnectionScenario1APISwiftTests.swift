@@ -16,7 +16,7 @@ import Amplify
 extension GraphQLConnectionScenario1Tests {
     
     func createTeamAPISwift() async throws -> APISwift.CreateTeam1Mutation.Data.CreateTeam1? {
-        let input = APISwift.CreateTeam1Input(name: "name")
+        let input = APISwift.CreateTeam1Input(name: "name".withUUID)
         let mutation = APISwift.CreateTeam1Mutation(input: input)
         let request = GraphQLRequest<APISwift.CreateTeam1Mutation.Data>(
             document: APISwift.CreateTeam1Mutation.operationString,

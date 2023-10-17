@@ -41,7 +41,7 @@ class GraphQLScalarTests: GraphQLTestBase {
     }
 
     func testScalarContainer() async throws {
-        let container = ScalarContainer(myString: "myString",
+        let container = ScalarContainer(myString: "myString".withUUID,
                                         myInt: 1,
                                         myDouble: 1.0,
                                         myBool: true,
@@ -114,9 +114,9 @@ class GraphQLScalarTests: GraphQLTestBase {
 
     func testListStringContainer() async throws {
         let container = ListStringContainer(
-            test: "test",
+            test: "test".withUUID,
             nullableString: nil,
-            stringList: ["value1"],
+            stringList: ["value1".withUUID],
             stringNullableList: [],
             nullableStringList: [],
             nullableStringNullableList: nil)
@@ -150,9 +150,9 @@ class GraphQLScalarTests: GraphQLTestBase {
 
     func testListContainerWithNil() async throws {
         let container = ListStringContainer(
-            test: "test",
+            test: "test".withUUID,
             nullableString: nil,
-            stringList: ["value1"],
+            stringList: ["value1".withUUID],
             stringNullableList: nil,
             nullableStringList: [nil],
             nullableStringNullableList: nil)

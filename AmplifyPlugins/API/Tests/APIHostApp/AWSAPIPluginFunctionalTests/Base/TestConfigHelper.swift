@@ -36,3 +36,9 @@ class TestConfigHelper {
         return try Data(contentsOf: url)
     }
 }
+
+extension String {
+    var withUUID: String {
+        "\(self)-\(UUID().uuidString)"
+    }
+}

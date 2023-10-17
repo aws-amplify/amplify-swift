@@ -60,7 +60,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     // 1. `teamID` and `team`
     // 2. With random `teamID` and `team`
     func testCreateAndGetProject() async throws {
-        guard let team = try await createTeam2(name: "name"),
+        guard let team = try await createTeam2(name: "name".withUUID),
               let project2a = try await createProject2(teamID: team.id, team: team),
               let project2b = try await createProject2(teamID: team.id, team: team) else {
             XCTFail("Could not create team and a project")
@@ -93,7 +93,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     }
 
     func testUpdateProjectWithAnotherTeam() async throws {
-        guard let team = try await createTeam2(name: "name"),
+        guard let team = try await createTeam2(name: "name".withUUID),
               var project2 = try await createProject2(teamID: team.id, team: team) else {
             XCTFail("Could not create team and a project")
             return
@@ -115,7 +115,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     }
     
     func testDeleteAndGetProject() async throws {
-        guard let team = try await createTeam2(name: "name"),
+        guard let team = try await createTeam2(name: "name".withUUID),
               let project2 = try await createProject2(teamID: team.id, team: team) else {
             XCTFail("Could not create team and a project")
             return
@@ -141,7 +141,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     }
 
     func testListProjectsByTeamID() async throws {
-        guard let team = try await createTeam2(name: "name"),
+        guard let team = try await createTeam2(name: "name".withUUID),
               try await createProject2(teamID: team.id, team: team) != nil else {
             XCTFail("Could not create team and two projects")
             return
@@ -159,7 +159,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     // Create two projects for the same team, then list the projects by teamID, and expect two projects
     // after exhausting the paginated list via `hasNextPage` and `getNextPage`
     func testPaginatedListProjectsByTeamID() async throws {
-        guard let team = try await createTeam2(name: "name"),
+        guard let team = try await createTeam2(name: "name".withUUID),
               try await createProject2(teamID: team.id, team: team) != nil,
               try await createProject2(teamID: team.id, team: team) != nil else {
             XCTFail("Could not create team and two projects")
