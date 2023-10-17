@@ -13,7 +13,13 @@ import AWSCloudWatchLogs
 
 class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     let amplifyConfigurationFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration"
+    #if os(tvOS)
+    let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_tvOS"
+    #elseif os(watchOS)
+    let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_watchOS"
+    #else
     let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging"
+    #endif
     var loggingConfiguration: AWSCloudWatchLoggingPluginConfiguration?
     
     override func setUp() async throws {

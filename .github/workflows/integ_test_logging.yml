@@ -36,7 +36,6 @@ jobs:
   logging-integration-test-tvOS:
     runs-on: macos-13
     environment: IntegrationTest
-    needs: logging-integration-test-iOS
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
@@ -65,7 +64,6 @@ jobs:
   logging-integration-test-watchOS:
     runs-on: macos-13
     environment: IntegrationTest
-    needs: [logging-integration-test-iOS, logging-integration-test-tvOS]
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
