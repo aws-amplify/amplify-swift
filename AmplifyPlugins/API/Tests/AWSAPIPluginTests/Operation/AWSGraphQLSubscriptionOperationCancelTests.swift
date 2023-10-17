@@ -110,8 +110,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             valueListener: valueListener,
             completionListener: completionListener
         )
-        await waitForExpectations(timeout: 5)
-        
+        await fulfillment(of: [receivedValueConnecting], timeout: 5)
+
         let receivedCompletion = expectation(description: "Received completion")
         let receivedFailure = expectation(description: "Received failure")
         receivedFailure.isInverted = true
@@ -145,7 +145,11 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         
         operation.cancel()
         XCTAssert(operation.isCancelled)
-        await waitForExpectations(timeout: 5)
+
+        await fulfillment(
+            of: [receivedCompletion, receivedFailure, receivedValueDisconnected],
+            timeout: 5
+        )
     }
     
     func testFailureOnConnection() async {
@@ -184,7 +188,12 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             valueListener: valueListener,
             completionListener: completionListener
         )
-        await waitForExpectations(timeout: 0.3)
+
+        await fulfillment(
+            of: [receivedCompletion, receivedFailure, receivedValue],
+            timeout: 0.3
+        )
+
         XCTAssert(operation.isFinished)
     }
 
@@ -221,7 +230,11 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             valueListener: valueListener,
             completionListener: nil
         )
-        await waitForExpectations(timeout: 5)
+        await fulfillment(
+            of: [receivedValue, connectionCreation],
+            timeout: 5
+        )
+
         let receivedFailure = expectation(description: "Received failure")
         receivedFailure.isInverted = true
         let receivedCompletion = expectation(description: "Received completion")
@@ -237,6 +250,9 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         
         operation.cancel()
         XCTAssert(operation.isCancelled)
-        await waitForExpectations(timeout: 5)
+        await fulfillment(
+            of: [receivedCompletion, receivedFailure],
+            timeout: 5
+        )
     }
 }

@@ -145,7 +145,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             self.assertNotAuthenticated(error)
             failureInvoked.fulfill()
         }
-        wait(for: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// - Given: An API backend as per README.md with SocialNote schema
@@ -168,17 +168,17 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     /// - When: An unauthrorized syncQuery request is made
     /// - Then: The request should fail
     func testUnauthorizedSyncQuery() async throws {
-        let failureInvoked = asyncExpectation(description: "failure invoked")
+        let failureInvoked = expectation(description: "failure invoked")
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: SocialNote.self, limit: 1)
         do {
             _ = try await Amplify.API.query(request: request)
             XCTFail("Should not have completed successfully")
         } catch (let error as APIError){
             self.assertNotAuthenticated(error)
-            await failureInvoked.fulfill()
+            failureInvoked.fulfill()
         }
         
-        await waitForExpectations([failureInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// An authorized user should not subscribe to mutation events
@@ -187,8 +187,8 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     /// - Then: The request should succeed and the user should receive mutation events
     func testOnCreateSubscriptionOnlyWhenSignedIntoUserPool() async throws {
         try await signIn(username: user1.username, password: user1.password)
-        let connectedInvoked = asyncExpectation(description: "Connection established")
-        let progressInvoked = asyncExpectation(description: "Progress invoked")
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "Progress invoked")
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: SocialNote.self,
                                                                       subscriptionType: .onCreate)
         let subscription = Amplify.API.subscribe(request: request)
@@ -198,12 +198,12 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
                     switch subscriptionEvent {
                     case .connection(let state):
                         if case .connected = state {
-                            await connectedInvoked.fulfill()
+                            connectedInvoked.fulfill()
                         }
                     case .data(let graphQLResponse):
                         switch graphQLResponse {
                         case .success:
-                            await progressInvoked.fulfill()
+                            progressInvoked.fulfill()
                         case .failure(let error):
                             XCTFail(error.errorDescription)
                         }
@@ -214,7 +214,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         do {
             _ = try await createNote(content: "owner created content")
@@ -222,7 +222,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             XCTFail("Owner should be able to successfully create a note: \(error)")
         }
         
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         subscription.cancel()
     }
     
@@ -278,18 +278,18 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
     
     func syncQuery() async throws -> SyncQueryResult {
-        let syncQueryInvoked = asyncExpectation(description: "note was sync queried")
+        let syncQueryInvoked = expectation(description: "note was sync queried")
         var resultOptional: SyncQueryResult?
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: SocialNote.self, limit: 1)
         let queryResult = try await Amplify.API.query(request: request)
         switch queryResult {
         case .success(let data):
             resultOptional = data
-            await syncQueryInvoked.fulfill()
+            syncQueryInvoked.fulfill()
         case .failure(let error):
             XCTFail("Got failed, error: \(error)")
         }
-        await waitForExpectations([syncQueryInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncQueryInvoked], timeout: TestCommonConstants.networkTimeout)
         guard let result = resultOptional else {
             fatalError("Failed to sync query note")
         }

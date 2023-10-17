@@ -61,7 +61,7 @@ class AnyModelIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [callbackInvoked], timeout: networkTimeout)
+        await fulfillment(of: [callbackInvoked], timeout: networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -106,7 +106,7 @@ class AnyModelIntegrationTests: XCTestCase {
             createCallbackInvoked.fulfill()
         }
 
-        wait(for: [createCallbackInvoked], timeout: networkTimeout)
+        await fulfillment(of: [createCallbackInvoked], timeout: networkTimeout)
 
         let newContent = "Updated post content as of \(Date())"
 
@@ -128,7 +128,7 @@ class AnyModelIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [updateCallbackInvoked], timeout: networkTimeout)
+        await fulfillment(of: [updateCallbackInvoked], timeout: networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -171,7 +171,7 @@ class AnyModelIntegrationTests: XCTestCase {
             createCallbackInvoked.fulfill()
         }
 
-        wait(for: [createCallbackInvoked], timeout: networkTimeout)
+        await fulfillment(of: [createCallbackInvoked], timeout: networkTimeout)
 
         let deleteCallbackInvoked = expectation(description: "Delete callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
@@ -187,7 +187,7 @@ class AnyModelIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [deleteCallbackInvoked], timeout: networkTimeout)
+        await fulfillment(of: [deleteCallbackInvoked], timeout: networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)

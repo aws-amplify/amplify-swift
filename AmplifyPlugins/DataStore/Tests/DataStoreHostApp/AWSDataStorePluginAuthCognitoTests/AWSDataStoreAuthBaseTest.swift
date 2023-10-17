@@ -85,18 +85,18 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     // MARK: - Test Helpers
     func makeExpectations() -> AuthTestExpectations {
         AuthTestExpectations(
-            subscriptionsEstablished: asyncExpectation(description: "Subscriptions established"),
-            modelsSynced: asyncExpectation(description: "Models synced"),
+            subscriptionsEstablished: expectation(description: "Subscriptions established"),
+            modelsSynced: expectation(description: "Models synced"),
 
-            query: asyncExpectation(description: "Query success"),
+            query: expectation(description: "Query success"),
 
-            mutationSave: asyncExpectation(description: "Mutation save success"),
-            mutationSaveProcessed: asyncExpectation(description: "Mutation save processed"),
+            mutationSave: expectation(description: "Mutation save success"),
+            mutationSaveProcessed: expectation(description: "Mutation save processed"),
 
-            mutationDelete: asyncExpectation(description: "Mutation delete success"),
-            mutationDeleteProcessed: asyncExpectation(description: "Mutation delete processed"),
+            mutationDelete: expectation(description: "Mutation delete success"),
+            mutationDeleteProcessed: expectation(description: "Mutation delete processed"),
 
-            ready: asyncExpectation(description: "Ready")
+            ready: expectation(description: "Ready")
         )
     }
 
@@ -292,12 +292,12 @@ extension AWSDataStoreAuthBaseTest {
             do {
                 let posts = try await Amplify.DataStore.query(modelType)
                 XCTAssertNotNil(posts)
-                await expectations.query.fulfill()
+                expectations.query.fulfill()
             } catch {
                 onFailure(error as! DataStoreError)
             }
         }
-        await waitForExpectations([expectations.query], timeout: 60)
+        await fulfillment(of: [expectations.query], timeout: 60)
     }
     
     /// Asserts that DataStore is in a ready state and subscriptions are established
@@ -315,25 +315,25 @@ extension AWSDataStoreAuthBaseTest {
             .sink { event in
                 // subscription fulfilled
                 if event.eventName == dataStoreEvents.subscriptionsEstablished {
-                    Task { await expectations.subscriptionsEstablished.fulfill() }
+                    expectations.subscriptionsEstablished.fulfill()
                 }
                 // modelsSynced fulfilled
                 if event.eventName == dataStoreEvents.modelSynced {
                     modelSyncedCount += 1
                     if modelSyncedCount == expectedModelSynced {
-                        Task { await expectations.modelsSynced.fulfill() }
+                        expectations.modelsSynced.fulfill()
                     }
                 }
                 
                 if event.eventName == dataStoreEvents.ready {
-                    Task { await expectations.ready.fulfill() }
+                    expectations.ready.fulfill()
                 }
             }
             .store(in: &requests)
         
         try await Amplify.DataStore.start()
         
-        await waitForExpectations([expectations.subscriptionsEstablished,
+        await fulfillment(of: [expectations.subscriptionsEstablished,
                                    expectations.modelsSynced,
                                    expectations.ready],
                                   timeout: 60)
@@ -361,12 +361,12 @@ extension AWSDataStoreAuthBaseTest {
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    Task { await expectations.mutationSaveProcessed.fulfill() }
+                    expectations.mutationSaveProcessed.fulfill()
                     return
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    Task { await expectations.mutationDeleteProcessed.fulfill() }
+                    expectations.mutationDeleteProcessed.fulfill()
                     return
                 }
             }
@@ -375,23 +375,23 @@ extension AWSDataStoreAuthBaseTest {
             do {
                 let posts = try await Amplify.DataStore.save(model)
                 XCTAssertNotNil(posts)
-                Task { await expectations.mutationSave.fulfill() }
+                expectations.mutationSave.fulfill()
             } catch let error as DataStoreError {
                 onFailure(error)
             }
         }
-        await waitForExpectations([expectations.mutationSave,
+        await fulfillment(of: [expectations.mutationSave,
                                    expectations.mutationSaveProcessed], timeout: 60)
         Task {
             do {
                 let deletedposts: () = try await Amplify.DataStore.delete(model)
                 XCTAssertNotNil(deletedposts)
-                Task { await expectations.mutationDelete.fulfill() }
+                expectations.mutationDelete.fulfill()
             } catch let error as DataStoreError {
                 onFailure(error)
             }
         }
-        await waitForExpectations([expectations.mutationDelete,
+        await fulfillment(of: [expectations.mutationDelete,
                                    expectations.mutationDeleteProcessed], timeout: 60)
     }
 
@@ -408,15 +408,15 @@ extension AWSDataStoreAuthBaseTest {
 // MARK: - Expectations
 extension AWSDataStoreAuthBaseTest {
     struct AuthTestExpectations {
-        var subscriptionsEstablished: AsyncExpectation
-        var modelsSynced: AsyncExpectation
-        var query: AsyncExpectation
-        var mutationSave: AsyncExpectation
-        var mutationSaveProcessed: AsyncExpectation
-        var mutationDelete: AsyncExpectation
-        var mutationDeleteProcessed: AsyncExpectation
-        var ready: AsyncExpectation
-        var expectations: [AsyncExpectation] {
+        var subscriptionsEstablished: XCTestExpectation
+        var modelsSynced: XCTestExpectation
+        var query: XCTestExpectation
+        var mutationSave: XCTestExpectation
+        var mutationSaveProcessed: XCTestExpectation
+        var mutationDelete: XCTestExpectation
+        var mutationDeleteProcessed: XCTestExpectation
+        var ready: XCTestExpectation
+        var expectations: [XCTestExpectation] {
             return [subscriptionsEstablished,
                     modelsSynced,
                     query,
