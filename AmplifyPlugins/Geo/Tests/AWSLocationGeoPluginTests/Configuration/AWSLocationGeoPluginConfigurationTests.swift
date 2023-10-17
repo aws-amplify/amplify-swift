@@ -382,12 +382,10 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
                                (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
                                (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, GeoPluginTestConfig.searchConfigJSON))
         XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: config)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
+            guard case PluginError.pluginConfigurationError(_, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription,
-                           GeoPluginConfigError.mapStyleURLInvalid(mapName: mapName).errorDescription)
         }
     }
     

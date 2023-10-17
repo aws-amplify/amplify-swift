@@ -84,7 +84,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
             XCTFail("Error should not be returned \(error)")
         }
 
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationInternalError() async throws {
@@ -107,7 +107,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationInvalidLambda() async throws {
@@ -134,7 +134,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationParameterException() async throws {
@@ -161,7 +161,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationSMSRoleAccessException() async throws {
@@ -190,7 +190,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserPoolConfiguration() async throws {
@@ -215,7 +215,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationNotAuthorized() async throws {
@@ -240,7 +240,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperatioResetPassword() async throws {
@@ -264,7 +264,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         } catch {
             XCTFail("Should not produce a error result: \(error)")
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationResourceNotFound() async throws {
@@ -292,7 +292,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationTooManyRequest() async throws {
@@ -320,7 +320,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUnexpectedLambda() async throws {
@@ -348,7 +348,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserLambdaValidation() async throws {
@@ -376,7 +376,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserNotConfirmed() async throws {
@@ -400,7 +400,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         } catch {
             XCTFail("Should not produce an error result - \(error)")
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserNotFound() async throws {
@@ -428,6 +428,6 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 }

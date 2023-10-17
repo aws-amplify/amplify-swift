@@ -70,7 +70,7 @@ class AWSAuthSignUpTaskTests: XCTestCase {
             XCTFail("Should not produce success response")
         } catch {
         }
-        wait(for: [functionExpectation], timeout: 1)
+        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 
     /// Given: Configured AuthState machine with existing signUp flow
@@ -93,6 +93,6 @@ class AWSAuthSignUpTaskTests: XCTestCase {
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
         let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         _ = try await task.value
-        wait(for: [functionExpectation], timeout: 1)
+        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 }

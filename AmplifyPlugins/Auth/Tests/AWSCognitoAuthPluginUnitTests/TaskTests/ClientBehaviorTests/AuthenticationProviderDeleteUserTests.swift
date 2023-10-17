@@ -473,7 +473,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
 //                XCTFail("Received failure with error \(error)")
 //            }
 //        }
-//        wait(for: [resultExpectation], timeout: apiTimeout)
+//        await fulfillment(of: [resultExpectation], timeout: apiTimeout)
 //
 //        let deleteUserResultExpectation = expectation(description: "Should receive a result")
 //        _ = plugin.deleteUser { result in
@@ -493,7 +493,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
 //                }
 //            }
 //        }
-//        wait(for: [deleteUserResultExpectation], timeout: apiTimeout)
+//        await fulfillment(of: [deleteUserResultExpectation], timeout: apiTimeout)
 //    }
 //
 //    var window: UIWindow {

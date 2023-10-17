@@ -32,7 +32,10 @@ class InitializeFetchAuthSessionTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [expectation],
+            timeout: 0.1
+        )
     }
 
 }

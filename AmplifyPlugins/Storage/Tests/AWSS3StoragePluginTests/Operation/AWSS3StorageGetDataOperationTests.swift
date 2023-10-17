@@ -45,26 +45,28 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadDataOperation(request,
-                                                          storageConfiguration: testStorageConfiguration,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService,
-                                                          progressListener: nil) { event in
-                                                            switch event {
-                                                            case .failure(let error):
-                                                                guard case .authError = error else {
-                                                                    XCTFail("Should have failed with authError")
-                                                                    return
-                                                                }
-                                                                failedInvoked.fulfill()
-                                                            default:
-                                                                XCTFail("Should have received failed event")
-                                                            }
+        let operation = AWSS3StorageDownloadDataOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: nil
+        ) { event in
+            switch event {
+            case .failure(let error):
+                guard case .authError = error else {
+                    XCTFail("Should have failed with authError")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
         }
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -96,7 +98,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
@@ -129,7 +131,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [inProcessInvoked, failInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
@@ -164,7 +166,10 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(
+            of: [inProcessInvoked, completeInvoked],
+            timeout: 1
+        )
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
