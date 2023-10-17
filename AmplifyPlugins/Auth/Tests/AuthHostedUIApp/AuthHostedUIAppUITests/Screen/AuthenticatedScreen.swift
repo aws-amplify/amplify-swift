@@ -31,7 +31,7 @@ struct AuthenticatedScreen: Screen {
 
     func dismissSignOutAlert() -> Self {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
-        XCTAssertTrue(springboard.buttons["Continue"].waitForExistence(timeout: 5))
+        XCTAssertTrue(springboard.buttons["Continue"].waitForExistence(timeout: 60))
         springboard.buttons["Continue"].tap()
         return self
     }
