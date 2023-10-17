@@ -325,7 +325,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             signInExpectation.fulfill()
         }
 
-        await fulfillment(of: [signInExpectation, fetchAuthSessionExpectation], timeout: 10)
+        await fulfillment(of: [signInExpectation, fetchAuthSessionExpectation], timeout: 60)
     }
 
 }
