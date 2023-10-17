@@ -141,7 +141,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testPaginatedListProjects() async throws {
-        let testCompleted = asyncExpectation(description: "test completed")
+        let testCompleted = expectation(description: "test completed")
         Task {
             guard let team = try await createTeam(name: "name"),
                   let projecta = try await createProject(team: team),
@@ -173,9 +173,9 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
                 resultsArray.append(contentsOf: subsequentResults)
             }
             XCTAssertEqual(resultsArray.count, 2)
-            await testCompleted.fulfill()
+            testCompleted.fulfill()
         }
-        await waitForExpectations([testCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [testCompleted], timeout: TestCommonConstants.networkTimeout)
     }
     
     func createTeam(id: String = UUID().uuidString, name: String) async throws -> Team1? {

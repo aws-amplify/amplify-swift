@@ -21,7 +21,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
     /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
     func testGetRemoteURLWithExpires() async throws {
         let key = UUID().uuidString
-        await uploadData(key: key, dataString: key)
+        try await uploadData(key: key, dataString: key)
 
     #if os(iOS)
         let expires = 20
@@ -67,7 +67,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             XCTAssertEqual(dataString, key)
         }
         task.resume()
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [dataTaskCompleteInvoked], timeout: TestCommonConstants.networkTimeout)
 
         try await Task.sleep(seconds: 30)
     #else

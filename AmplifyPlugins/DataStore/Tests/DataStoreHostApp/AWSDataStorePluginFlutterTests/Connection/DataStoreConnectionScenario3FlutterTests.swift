@@ -64,7 +64,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [savePostCompleted, syncedPostReceived], timeout: networkTimeout)
+        await fulfillment(of: [savePostCompleted, syncedPostReceived], timeout: networkTimeout)
         let saveCommentCompleted = expectation(description: "save comment completed")
         plugin.save(comment.model, modelSchema: Comment3.schema) { result in
             switch result {
@@ -74,7 +74,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [saveCommentCompleted, syncCommentReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveCommentCompleted, syncCommentReceived], timeout: networkTimeout)
         let queriedCommentCompleted = expectation(description: "query comment completed")
         plugin.query(FlutterSerializedModel.self, modelSchema: Comment3.schema, where: Comment3.keys.id.eq(comment.model.id)) { result in
             switch result {
@@ -86,7 +86,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [queriedCommentCompleted], timeout: networkTimeout)
+        await fulfillment(of: [queriedCommentCompleted], timeout: networkTimeout)
     }
 
     /// TODO:  Include testSaveCommentAndGetPostWithComments test when nested model lazy loading is implemented
@@ -117,7 +117,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteAndGetComment() throws {
@@ -140,7 +140,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getCommentAfterDeleteCompleted = expectation(description: "get comment after deleted complete")
         plugin.query(FlutterSerializedModel.self, modelSchema: Comment3.schema, where: Comment3.keys.id.eq(comment.idString())) { result in
             switch result {
@@ -154,7 +154,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListCommentsByPostID() throws {
@@ -179,7 +179,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post3Wrapper? {
@@ -197,7 +197,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
@@ -214,7 +214,7 @@ class DataStoreConnectionScenario3FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

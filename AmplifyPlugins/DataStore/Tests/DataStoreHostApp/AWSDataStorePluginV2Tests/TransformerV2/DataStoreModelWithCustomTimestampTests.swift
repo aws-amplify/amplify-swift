@@ -93,7 +93,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
             }
         }
 
-        wait(for: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
 
         /*
           This failed with "The variables input contains a field name \'id\' that is not defined for input object
@@ -114,7 +114,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
 //                XCTFail("Failed \(error)")
 //            }
 //        }
-//        wait(for: [updateCompleted, updateReceived], timeout: TestCommonConstants.networkTimeout)
+//        await fulfillment(of: [updateCompleted, updateReceived], timeout: TestCommonConstants.networkTimeout)
 
         let deleteCompleted = expectation(description: "delete completed")
         Amplify.DataStore.delete(TodoCustomTimestampV2.self, withId: todo.id) { event in
@@ -125,7 +125,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [deleteCompleted, deleteReceived], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteCompleted, deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
     func saveTodo(content: String) -> TodoCustomTimestampV2? {
@@ -141,7 +141,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

@@ -135,9 +135,10 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     }
     
     func onCreateTodoTest() async throws {
-        let connectedInvoked = asyncExpectation(description: "Connection established")
-        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
-        let disconnectedInvoked = asyncExpectation(description: "Connection disconnected")
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = 2
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Todo.self, type: .onCreate))
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
@@ -150,15 +151,15 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                     case .connecting:
                         break
                     case .connected:
-                        await connectedInvoked.fulfill()
+                        connectedInvoked.fulfill()
                     case .disconnected:
-                        await disconnectedInvoked.fulfill()
+                        disconnectedInvoked.fulfill()
                     }
                 case .data(let result):
                     switch result {
                     case .success(let todo):
                         if todo.id == uuid || todo.id == uuid2 {
-                            await progressInvoked.fulfill()
+                            progressInvoked.fulfill()
                         }
                     case .failure(let error):
                         XCTFail("\(error)")
@@ -167,12 +168,12 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         _ = try await createTodo(id: uuid, name: name)
         _ = try await createTodo(id: uuid2, name: name)
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         subscription.cancel()
-        await waitForExpectations([disconnectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [disconnectedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: - Helpers

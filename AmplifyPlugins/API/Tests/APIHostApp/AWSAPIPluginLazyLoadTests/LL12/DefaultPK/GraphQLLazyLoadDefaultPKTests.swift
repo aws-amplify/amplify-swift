@@ -118,7 +118,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         }
 
         try await mutate(.create(child))
-        await waitForExpectations([onCreate], timeout: 10)
+        await fulfillment(of: [onCreate], timeout: 10)
         subscription.cancel()
     }
 
@@ -146,7 +146,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
 
         try await mutate(.create(child))
         try await mutate(.create(parent))
-        await waitForExpectations([onCreate], timeout: 10)
+        await fulfillment(of: [onCreate], timeout: 10)
         subscription.cancel()
     }
 
@@ -171,7 +171,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         var updatingChild = child
         updatingChild.content = UUID().uuidString
         try await mutate(.update(updatingChild))
-        await waitForExpectations([onUpdate], timeout: 10)
+        await fulfillment(of: [onUpdate], timeout: 10)
         subscription.cancel()
     }
 
@@ -208,7 +208,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         var updatingParent = parent
         updatingParent.content = UUID().uuidString
         try await mutate(.update(updatingParent))
-        await waitForExpectations([onUpdate], timeout: 10)
+        await fulfillment(of: [onUpdate], timeout: 10)
         subscription.cancel()
     }
 
@@ -230,7 +230,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
 
         try await mutate(.create(child))
         try await mutate(.delete(child))
-        await waitForExpectations([onDelete], timeout: 10)
+        await fulfillment(of: [onDelete], timeout: 10)
         subscription.cancel()
     }
 
@@ -261,7 +261,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         try await mutate(.create(child))
         try await mutate(.create(parent))
         try await mutate(.delete(parent))
-        await waitForExpectations([onDelete], timeout: 10)
+        await fulfillment(of: [onDelete], timeout: 10)
         subscription.cancel()
     }
 }

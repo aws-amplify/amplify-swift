@@ -171,8 +171,8 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
         try await mutate(.create(post))
-        let connected = asyncExpectation(description: "subscription connected")
-        let onCreatedComment = asyncExpectation(description: "onCreatedComment received")
+        let connected = expectation(description: "subscription connected")
+        let onCreatedComment = expectation(description: "onCreatedComment received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
         Task {
             do {
@@ -181,7 +181,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
@@ -189,7 +189,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                             log.verbose("Successfully got createdComment from subscription: \(createdComment)")
                             XCTAssertEqual(createdComment.post4CommentsPostId, post.postId)
                             XCTAssertEqual(createdComment.post4CommentsTitle, post.title)
-                            await onCreatedComment.fulfill()
+                            onCreatedComment.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -200,10 +200,10 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
             }
         }
         
-        await waitForExpectations([connected], timeout: 10)
+        await fulfillment(of: [connected], timeout: 10)
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment))
-        await waitForExpectations([onCreatedComment], timeout: 10)
+        await fulfillment(of: [onCreatedComment], timeout: 10)
         subscription.cancel()
     }
     
@@ -211,8 +211,8 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
         
-        let connected = asyncExpectation(description: "subscription connected")
-        let onCreatedPost = asyncExpectation(description: "onCreatedPost received")
+        let connected = expectation(description: "subscription connected")
+        let onCreatedPost = expectation(description: "onCreatedPost received")
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
         Task {
             do {
@@ -221,7 +221,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
@@ -231,7 +231,7 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                                                                                                           post.title],
                                                                                   associatedFields: ["post4CommentsPostId",
                                                                                                      "post4CommentsTitle"]))
-                            await onCreatedPost.fulfill()
+                            onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -242,9 +242,9 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
             }
         }
         
-        await waitForExpectations([connected], timeout: 10)
+        await fulfillment(of: [connected], timeout: 10)
         try await mutate(.create(post))
-        await waitForExpectations([onCreatedPost], timeout: 10)
+        await fulfillment(of: [onCreatedPost], timeout: 10)
         subscription.cancel()
     }
     
@@ -252,8 +252,8 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4Models())
         let post = Post(title: "title")
         
-        let connected = asyncExpectation(description: "subscription connected")
-        let onCreatedPost = asyncExpectation(description: "onCreatedPost received")
+        let connected = expectation(description: "subscription connected")
+        let onCreatedPost = expectation(description: "onCreatedPost received")
         let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Post.self,
                                                                                 type: .onCreate,
                                                                                 includes: { post in [post.comments]}))
@@ -264,14 +264,14 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
                         if case .connected = subscriptionConnectionState {
-                            await connected.fulfill()
+                            connected.fulfill()
                         }
                     case .data(let result):
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")
                             assertList(createdPost.comments!, state: .isLoaded(count: 0))
-                            await onCreatedPost.fulfill()
+                            onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")
                         }
@@ -282,9 +282,9 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
             }
         }
         
-        await waitForExpectations([connected], timeout: 10)
+        await fulfillment(of: [connected], timeout: 10)
         try await mutate(.create(post, includes: { post in [post.comments]}))
-        await waitForExpectations([onCreatedPost], timeout: 10)
+        await fulfillment(of: [onCreatedPost], timeout: 10)
         subscriptionIncludes.cancel()
     }
 }
