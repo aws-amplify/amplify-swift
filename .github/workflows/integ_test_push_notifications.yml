@@ -47,6 +47,7 @@ jobs:
           scheme: PushNotificationHostApp
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
           xcode_path: '/Applications/Xcode_14.3.app'
+          other_flags: -parallel-testing-enabled NO
 
   push-notification-integration-test-tvOS:
     runs-on: macos-13
@@ -88,6 +89,7 @@ jobs:
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          other_flags: -parallel-testing-enabled NO
 
   push-notification-integration-test-watchOS:
     runs-on: macos-13
@@ -129,3 +131,4 @@ jobs:
           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          other_flags: -parallel-testing-enabled NO
