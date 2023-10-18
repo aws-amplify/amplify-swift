@@ -50,6 +50,3 @@ runs:
         xcodebuild -version
         xcodebuild build-for-testing -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $clonedSourcePackagesPath -derivedDataPath '${{ inputs.derived_data_path }}' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
-
-
-        xcodebuild build-for-testing -scheme AWSAPIPlugin -sdk 'iphonesimulator' -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4' -derivedDataPath 'Build'
