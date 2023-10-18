@@ -57,11 +57,11 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
     }
 
     func testCreateCommentAndGetCommentWithPost() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = try await createComment(content: "content", post: post) else {
+        guard let comment = try await createComment(content: "content".withUUID, post: post) else {
             XCTFail("Could not create comment")
             return
         }
@@ -81,16 +81,18 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
     }
 
     func testGetPostThenFetchComments() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard try await createComment(content: "content", post: post) != nil else {
+
+        let commentContent = "comment".withUUID
+        guard try await createComment(content: commentContent, post: post) != nil else {
             XCTFail("Could not create comment")
             return
         }
 
-        guard try await createComment(content: "content", post: post) != nil else {
+        guard try await createComment(content: commentContent, post: post) != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -118,7 +120,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted, fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getPostCompleted, fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -134,15 +136,16 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
     }
 
     func testUpdateComment() async throws {
-        guard let post = try await createPost(title: "title") else {
+        let postTitle = "title".withUUID
+        guard let post = try await createPost(title: postTitle) else {
             XCTFail("Could not create post")
             return
         }
-        guard var comment = try await createComment(content: "content", post: post) else {
+        guard var comment = try await createComment(content: "content".withUUID, post: post) else {
             XCTFail("Could not create comment")
             return
         }
-        guard let anotherPost = try await createPost(title: "title") else {
+        guard let anotherPost = try await createPost(title: postTitle) else {
             XCTFail("Could not create post")
             return
         }
@@ -157,11 +160,11 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
     }
 
     func testDeleteAndGetComment() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = try await createComment(content: "content", post: post) else {
+        guard let comment = try await createComment(content: "content".withUUID, post: post) else {
             XCTFail("Could not create comment")
             return
         }
@@ -186,11 +189,11 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
     }
 
     func testListCommentsByPostID() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard try await createComment(content: "content", post: post) != nil else {
+        guard try await createComment(content: "content".withUUID, post: post) != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -205,9 +208,10 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
     }
 
     func testPaginatedListCommentsByPostID() async throws {
-        guard let post = try await createPost(title: "title"),
-              try await createComment(content: "content", post: post) != nil,
-              try await createComment(content: "content", post: post) != nil else {
+        let commentContent = "content".withUUID
+        guard let post = try await createPost(title: "title".withUUID),
+              try await createComment(content: commentContent, post: post) != nil,
+              try await createComment(content: commentContent, post: post) != nil else {
             XCTFail("Could not create post and two comments")
             return
         }

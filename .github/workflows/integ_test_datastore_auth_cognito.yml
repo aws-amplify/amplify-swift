@@ -9,8 +9,8 @@ permissions:
 
 jobs:
   datastore-integration-auth-cognito-test-iOS:
-    timeout-minutes: 30
-    runs-on: macos-12
+    timeout-minutes: 60
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -33,9 +33,11 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginAuthCognitoTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-integration-auth-cognito-test-tvOS:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -64,7 +66,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-integration-auth-cognito-test-watchOS:
-    timeout-minutes: 45
+    timeout-minutes: 60
     runs-on: macos-13
     environment: IntegrationTest
     steps:

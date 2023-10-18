@@ -288,8 +288,8 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         setUp(withModels: TestModelRegistration())
         try await Amplify.DataStore.clear()
         var snapshotCount = 0
-        let initialQueryComplete = asyncExpectation(description: "initial snapshot received")
-        let allSnapshotsReceived = asyncExpectation(description: "query snapshots received")
+        let initialQueryComplete = expectation(description: "initial snapshot received")
+        let allSnapshotsReceived = expectation(description: "query snapshots received")
 
         let subscription = Amplify.DataStore.observeQuery(for: Post.self)
         let sink = Amplify.Publisher.create(subscription).sink { completed in
@@ -302,15 +302,15 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         } receiveValue: { querySnapshot in
             snapshotCount += 1
             if snapshotCount == 1 {
-                Task { await initialQueryComplete.fulfill() }
+                initialQueryComplete.fulfill()
             }
             if querySnapshot.items.count == 15 {
-                Task { await allSnapshotsReceived.fulfill() }
+                allSnapshotsReceived.fulfill()
             }
         }
-        await waitForExpectations([initialQueryComplete], timeout: 10)
+        await fulfillment(of: [initialQueryComplete], timeout: 10)
         _ = try await setUpLocalStore(numberOfPosts: 15)
-        await waitForExpectations([allSnapshotsReceived], timeout: 10)
+        await fulfillment(of: [allSnapshotsReceived], timeout: 10)
         XCTAssertTrue(snapshotCount >= 2)
         sink.cancel()
     }

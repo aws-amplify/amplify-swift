@@ -122,7 +122,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
                 print(error)
             }
         })
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
@@ -156,7 +156,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [querySuccess], timeout: TestCommonConstants.networkTimeout)
         return querySyncResult
     }
 
@@ -184,7 +184,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [updateSuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateSuccess], timeout: TestCommonConstants.networkTimeout)
         return updateSyncResult
     }
 
@@ -212,7 +212,7 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [deleteSuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteSuccess], timeout: TestCommonConstants.networkTimeout)
         return deleteSyncResult
     }
 }

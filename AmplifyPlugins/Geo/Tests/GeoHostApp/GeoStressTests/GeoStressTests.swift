@@ -44,21 +44,22 @@ final class GeoStressTests: XCTestCase {
     ///    - Place results are returned.
     ///
     func testMultipleSearchForText() async {
-        let successExpectation = asyncExpectation(description: "searchForText was successful", expectedFulfillmentCount: concurrencyLimit)
+        let successExpectation = expectation(description: "searchForText was successful") 
+        successExpectation.expectedFulfillmentCount = concurrencyLimit
         for _ in 1...concurrencyLimit {
             Task {
                 do {
                     let options = Geo.SearchForTextOptions(area: .near(coordinates))
                     let places = try await Amplify.Geo.search(for: searchText, options: options)
                     XCTAssertFalse(places.isEmpty)
-                    await successExpectation.fulfill()
+                    successExpectation.fulfill()
                 } catch {
                     XCTFail("Failed with error: \(error)")
                 }
             }
         }
         
-        await waitForExpectations([successExpectation], timeout: timeout)
+        await fulfillment(of: [successExpectation], timeout: timeout)
     }
     
     /// Test if concurrent execution of search(for: coordinates) is successful
@@ -69,21 +70,22 @@ final class GeoStressTests: XCTestCase {
     ///    - Place results are returned.
     ///
     func testMultipleSearchForCoordinates() async {
-        let successExpectation = asyncExpectation(description: "searchForCoordinates was successful", expectedFulfillmentCount: concurrencyLimit)
+        let successExpectation = expectation(description: "searchForCoordinates was successful")
+        successExpectation.expectedFulfillmentCount = concurrencyLimit
         for _ in 1...concurrencyLimit {
             Task {
                 do {
                     let places = try await Amplify.Geo.search(for: coordinates, options: nil)
                     XCTAssertFalse(places.isEmpty)
                     XCTAssertNotNil(places.first?.coordinates)
-                    await successExpectation.fulfill()
+                    successExpectation.fulfill()
                 } catch {
                     XCTFail("Failed with error: \(error)")
                 }
             }
         }
         
-        await waitForExpectations([successExpectation], timeout: timeout)
+        await fulfillment(of: [successExpectation], timeout: timeout)
     }
 
 }

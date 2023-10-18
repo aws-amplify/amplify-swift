@@ -63,11 +63,11 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 //        }
 //
 //        operation.doMockDispatch()
-//        wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForCompleted], timeout: 0.1)
 //
 //        operation.doMockProgress()
 //        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
-//        wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
     }
 
     /// - Given: An Amplify operation class
@@ -104,11 +104,11 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 //        }
 //
 //        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
-//        wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForFailed], timeout: 0.1)
 //
 //        operation.doMockProgress()
 //        operation.doMockDispatch()
-//        wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
     }
 
     /// - Given: An Amplify operation class
@@ -162,12 +162,12 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 //        }
 //
 //        operation.doMockProgress()
-//        wait(for: [listenerWasInvokedForInProcess], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForInProcess], timeout: 0.1)
 //        operation.doMockDispatch()
-//        wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForCompleted], timeout: 0.1)
 //
 //        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
-//        wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForFailed], timeout: 0.1)
     }
 
     /// - Given: An Amplify operation class
@@ -222,10 +222,10 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 //
 //        operation.doMockProgress()
 //        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
-//        wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
 //
 //        operation.doMockDispatch()
-//        wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
+//        await fulfillment(of: [listenerWasInvokedForCompleted], timeout: 0.1)
     }
 
 }

@@ -75,7 +75,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                      completion: completion)
         let queue = OperationQueue()
         queue.addOperation(operation)
-        wait(for: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
         guard let listenerFromFirstRequest = listenerFromFirstRequestOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -83,7 +83,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 
         let urlError = URLError(URLError.notConnectedToInternet)
         listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
-        wait(for: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
 
         guard let listenerFromSecondRequest = listenerFromSecondRequestOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
@@ -100,7 +100,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         listenerFromSecondRequest(.success(.success(remoteMutationSync)))
         // waitForExpectations(timeout: 1)
-        wait(for: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     func testRetryOnChangeReachability() async throws {
@@ -148,7 +148,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                      completion: completion)
         let queue = OperationQueue()
         queue.addOperation(operation)
-        wait(for: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
         guard let listenerFromFirstRequest = listenerFromFirstRequestOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -158,7 +158,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
         reachabilityPublisher.send(ReachabilityUpdate(isOnline: true))
 
-        wait(for: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
         guard let listenerFromSecondRequest = listenerFromSecondRequestOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -173,7 +173,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                       version: 2)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         listenerFromSecondRequest(.success(.success(remoteMutationSync)))
-        wait(for: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     func testAbilityToCancel() async throws {
@@ -221,7 +221,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                      completion: completion)
         let queue = OperationQueue()
         queue.addOperation(operation)
-        wait(for: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
         guard let listenerFromFirstRequest = listenerFromFirstRequestOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -232,7 +232,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 
         // At this point, we will be "waiting forever" to retry our request or until the operation is canceled
         operation.cancel()
-        wait(for: [expectMutationRequestFailed], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectMutationRequestFailed], timeout: defaultAsyncWaitTimeout)
     }
 }
 

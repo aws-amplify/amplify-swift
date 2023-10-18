@@ -501,7 +501,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [cognitoAPIExpectation], timeout: apiTimeout)
+        await fulfillment(of: [cognitoAPIExpectation], timeout: apiTimeout)
     }
 
     /// Test fetchAuthSession when federated to identity pool with valid credentials
@@ -671,7 +671,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [cognitoAPIExpectation], timeout: apiTimeout)
+        await fulfillment(of: [cognitoAPIExpectation], timeout: apiTimeout)
     }
 
     /// Test federated to identity pool with developer provided identity Id

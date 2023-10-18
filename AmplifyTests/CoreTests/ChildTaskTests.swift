@@ -85,7 +85,7 @@ class ChildTaskTests: XCTestCase {
             XCTAssertTrue(thrown is CancellationError)
         }
 
-        await waitForExpectations(timeout: 0.01)
+        await fulfillment(of: [cancelExp], timeout: 0.01)
         task.cancel()
 
         // Ensure the channel's AsyncSequence does not block after completion
@@ -115,7 +115,7 @@ class ChildTaskTests: XCTestCase {
             XCTAssertTrue(thrown is CancellationError)
         }
 
-        await waitForExpectations(timeout: 0.01)
+        await fulfillment(of: [cancelExp], timeout: 0.01)
 
         // Ensure the channel's AsyncSequence does not block after completion
         for await _ in progressSequence {

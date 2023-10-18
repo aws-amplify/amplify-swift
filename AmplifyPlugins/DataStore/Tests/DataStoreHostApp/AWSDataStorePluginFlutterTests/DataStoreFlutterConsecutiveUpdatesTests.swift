@@ -79,7 +79,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [saveAndImmediatelyUpdate], timeout: networkTimeout)
+        await fulfillment(of: [saveAndImmediatelyUpdate], timeout: networkTimeout)
 
         // query the updated post immediately
         guard let queryResult = queryPost(id: updatedPost.idString(), plugin: plugin) else {
@@ -88,7 +88,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         }
         XCTAssertEqual(queryResult, updatedPost)
 
-        wait(for: [saveSyncReceived, updateSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveSyncReceived, updateSyncReceived], timeout: networkTimeout)
 
         // query the updated post in eventual consistent state
         guard let queryResultAfterSync = queryPost(id: updatedPost.idString(), plugin: plugin) else {
@@ -126,7 +126,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [apiQuerySuccess], timeout: networkTimeout)
+        await fulfillment(of: [apiQuerySuccess], timeout: networkTimeout)
     }
 
     /// - Given: API has been setup with `Post` model registered
@@ -191,13 +191,13 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [saveAndImmediatelyDelete], timeout: networkTimeout)
+        await fulfillment(of: [saveAndImmediatelyDelete], timeout: networkTimeout)
 
         // query the deleted post immediately
         let queryResult = queryPost(id: newPost.idString(), plugin: plugin)
         XCTAssertNil(queryResult)
 
-        wait(for: [saveSyncReceived, deleteSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveSyncReceived, deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post in eventual consistent state
         let queryResultAfterSync = queryPost(id: newPost.idString(), plugin: plugin)
@@ -231,7 +231,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [apiQuerySuccess], timeout: networkTimeout)
+        await fulfillment(of: [apiQuerySuccess], timeout: networkTimeout)
     }
 
     /// - Given: API has been setup with `Post` model registered
@@ -304,7 +304,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [saveCompleted, saveSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveCompleted, saveSyncReceived], timeout: networkTimeout)
 
         let updateAndImmediatelyDelete =
             expectation(description: "Post is updated and deleted immediately")
@@ -324,13 +324,13 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
             }
         }
 
-        wait(for: [updateAndImmediatelyDelete], timeout: networkTimeout)
+        await fulfillment(of: [updateAndImmediatelyDelete], timeout: networkTimeout)
 
         // query the deleted post immediately
         let queryResult = queryPost(id: newPost.idString(), plugin: plugin)
         XCTAssertNil(queryResult)
 
-        wait(for: [updateSyncReceived, deleteSyncReceived], timeout: networkTimeout)
+        await fulfillment(of: [updateSyncReceived, deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post
         let queryResultAfterSync = queryPost(id: updatedPost.idString(), plugin: plugin)
@@ -364,7 +364,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [apiQuerySuccess], timeout: networkTimeout)
+        await fulfillment(of: [apiQuerySuccess], timeout: networkTimeout)
     }
 
     private func queryPost(id: String, plugin: AWSDataStorePlugin) -> PostWrapper? {
@@ -381,7 +381,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                 XCTFail("Error: \(error)")
             }
         }
-        wait(for: [queryExpectation], timeout: networkTimeout)
+        await fulfillment(of: [queryExpectation], timeout: networkTimeout)
         return queryResult
     }
 

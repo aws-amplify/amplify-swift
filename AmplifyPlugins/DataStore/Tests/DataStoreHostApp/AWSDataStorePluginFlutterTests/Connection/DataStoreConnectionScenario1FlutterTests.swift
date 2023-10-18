@@ -62,7 +62,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [saveTeamCompleted, syncedTeamReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveTeamCompleted, syncedTeamReceived], timeout: networkTimeout)
         let saveProjectCompleted = expectation(description: "save project completed")
         plugin.save(project.model, modelSchema: Project1.schema) { result in
             switch result {
@@ -72,7 +72,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [saveProjectCompleted, syncProjectReceived], timeout: networkTimeout)
+        await fulfillment(of: [saveProjectCompleted, syncProjectReceived], timeout: networkTimeout)
         let queriedProjectCompleted = expectation(description: "query project completed")
         plugin.query(FlutterSerializedModel.self, modelSchema: Project1.schema, where: Project1.keys.id.eq(project.model.id)) { result in
             switch result {
@@ -91,7 +91,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [queriedProjectCompleted], timeout: networkTimeout)
+        await fulfillment(of: [queriedProjectCompleted], timeout: networkTimeout)
     }
 
     func testUpdateProjectWithAnotherTeam() throws {
@@ -127,7 +127,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [saveTeamCompleted], timeout: networkTimeout)
+        await fulfillment(of: [saveTeamCompleted], timeout: networkTimeout)
         let saveAnotherTeamCompleted = expectation(description: "save team completed")
         plugin.save(anotherTeam.model, modelSchema: Team1.schema) { result in
             switch result {
@@ -137,7 +137,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [saveAnotherTeamCompleted], timeout: networkTimeout)
+        await fulfillment(of: [saveAnotherTeamCompleted], timeout: networkTimeout)
         let saveProjectCompleted = expectation(description: "save project completed")
         plugin.save(project.model, modelSchema: Project1.schema) { result in
             switch result {
@@ -147,7 +147,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [saveProjectCompleted], timeout: networkTimeout)
+        await fulfillment(of: [saveProjectCompleted], timeout: networkTimeout)
         let updateProjectCompleted = expectation(description: "save project completed")
         try project.setTeam(team: anotherTeam.model)
         plugin.save(project.model, modelSchema: Project1.schema) { result in
@@ -158,7 +158,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [updateProjectCompleted], timeout: networkTimeout)
+        await fulfillment(of: [updateProjectCompleted], timeout: networkTimeout)
         let queriedProjectCompleted = expectation(description: "query project completed")
         plugin.query(FlutterSerializedModel.self, modelSchema: Project1.schema, where: Project1.keys.id.eq(project.model.id)) { result in
             switch result {
@@ -175,7 +175,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
+        await fulfillment(of: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
     }
 
     func testDeleteAndGetProject() throws {
@@ -195,7 +195,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
         plugin.query(FlutterSerializedModel.self, modelSchema: Project1.schema, where: Project1.keys.id.eq(project.model.id)) { result in
             switch result {
@@ -206,7 +206,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteWithValidCondition() throws {
@@ -225,7 +225,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         if queriedProjectExpect1!.count == 1 {
             queriedProjectExpect1Successful.fulfill()
         }
-        wait(for: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
         let deleteProjectSuccessful = expectation(description: "delete project")
         plugin.delete(project.model, modelSchema: Project1.schema, where: Project1.keys.id.eq(project.idString())) { result in
             switch result {
@@ -235,7 +235,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
         let queriedProjectExpect0 = queryProject(id: project.model.id)
         XCTAssertNotNil(queriedProjectExpect0)
@@ -243,7 +243,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         if queriedProjectExpect0!.count == 0 {
             getProjectAfterDeleteCompleted.fulfill()
         }
-        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteWithInvalidCondition() throws {
@@ -262,7 +262,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         if queriedProjectExpect1!.count == 1 {
             queriedProjectExpect1Successful.fulfill()
         }
-        wait(for: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [queriedProjectExpect1Successful], timeout: TestCommonConstants.networkTimeout)
         let deleteProjectFailed = expectation(description: "delete project")
         plugin.delete(project.model, modelSchema: Project1.schema, where: Project1.keys.id.eq("invalid")) { result in
             switch result {
@@ -276,7 +276,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 deleteProjectFailed.fulfill()
             }
         }
-        wait(for: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteProjectFailed], timeout: TestCommonConstants.networkTimeout)
         let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
         let queriedProjectExpectUnDeleted = queryProject(id: project.model.id)
         XCTAssertNotNil(queriedProjectExpectUnDeleted)
@@ -285,7 +285,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
         if queriedProjectExpectUnDeleted!.count == 1 {
             getProjectAfterDeleteCompleted.fulfill()
         }
-        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListProjectsByTeamID() throws {
@@ -312,7 +312,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func saveTeam(name: String) throws -> TeamWrapper? {
@@ -329,7 +329,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         return TeamWrapper(model: result!)
     }
@@ -349,7 +349,7 @@ class DataStoreConnectionScenario1FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return Project1Wrapper(model: result!)
     }
 

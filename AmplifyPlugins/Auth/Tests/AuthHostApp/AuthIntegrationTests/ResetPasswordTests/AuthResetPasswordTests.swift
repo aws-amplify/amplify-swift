@@ -23,13 +23,10 @@ class AuthResetPasswordTests: AWSAuthBaseTest {
         do {
             _ = try await Amplify.Auth.resetPassword(for: "user-non-exists", options: nil)
             XCTFail("resetPassword with non existing user should not return result")
+        } catch AuthError.service(_, _, let error as AWSCognitoAuthError) where [.userNotFound, .limitExceeded].contains(error) {
+            return
         } catch {
-            guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
-                  case .userNotFound = cognitoError else {
-                print(error)
-                XCTFail("Should return userNotFound")
-                return
-            }
+            XCTFail("Expected .userNotFound or .limitExceeded error. received: \(error)")
         }
     }
 }

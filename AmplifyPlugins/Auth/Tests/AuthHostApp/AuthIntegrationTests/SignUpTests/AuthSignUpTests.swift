@@ -93,7 +93,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
     //            }
     //        }
     //        XCTAssertNotNil(operation, "SignUp operations should not be nil")
-    //        wait(for: [operationExpectation], timeout: networkTimeout)
+    //        await fulfillment(of: [operationExpectation], timeout: networkTimeout)
     //    }
 
     /// Test is signUp return validation error

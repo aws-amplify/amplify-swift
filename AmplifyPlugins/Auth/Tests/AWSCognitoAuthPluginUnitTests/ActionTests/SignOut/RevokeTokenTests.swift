@@ -38,7 +38,10 @@ class RevokeTokenTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [revokeTokenInvoked],
+            timeout: 0.1
+        )
     }
 
     func testFailedRevokeTokenTriggersClearCredentialStore() async {
@@ -79,7 +82,10 @@ class RevokeTokenTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [clearCredentialStoreEventSent],
+            timeout: 0.1
+        )
     }
 
     func testSuccessfulRevokeTokenTriggersClearCredentialStore() async {
@@ -120,7 +126,10 @@ class RevokeTokenTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [clearCredentialStoreEventSent],
+            timeout: 0.1
+        )
     }
 
 }
