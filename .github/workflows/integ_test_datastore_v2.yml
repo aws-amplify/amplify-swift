@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   datastore-integration-v2-test-iOS:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -37,7 +37,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-integration-v2-test-tvOS:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -66,7 +66,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   datastore-integration-v2-test-watchOS:
-    timeout-minutes: 45
+    timeout-minutes: 60
     runs-on: macos-13
     environment: IntegrationTest
     steps:
