@@ -297,7 +297,7 @@ jobs:
       derived_data_path: ${{ github.workspace }}/Build
       generate_coverage: true
 
-  unit-tests-with-coverage-macos:
+  unit-tests-with-coverage-watchos:
     name: ${{ matrix.scheme }} Unit Tests
     needs: build-for-testing-watchos
     strategy:
