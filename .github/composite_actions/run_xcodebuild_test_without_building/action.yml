@@ -1,0 +1,52 @@
+name: 'Run xcodebuild test-without-building'
+description: 'Action tests the specified scheme without building'
+
+inputs:
+  scheme:
+    required: true
+    type: string
+  sdk:
+    required: true
+    type: string
+  destination:
+    required: true
+    type: string
+  derived_data_path:
+    required: true
+    type: string
+  generate_coverage:
+    required: true
+    type: boolean
+
+runs:
+  using: "composite"
+  steps:
+    - name: Test ${{ inputs.scheme }}
+      env:
+        SCHEME: ${{ inputs.scheme }}
+        SDK: ${{ input.sdk }}
+        DESTINATION: ${{ inputs.destination }}
+        DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
+      run: |
+        sudo xcode-select -s /Applications/Xcode_14.3.app
+
+        derivedDataPath=""
+        if [ ! -z "$DERIVED_DATA_PATH" ]; then
+          echo "Using custom DerivedData path"
+          derivedDataPath+="-derivedDataPath $DERIVED_DATA_PATH"
+        fi
+
+        coverageFlags=""
+        if [ "${{ inputs.generate_coverage }}" == "true" ]; then
+          echo "Code Coverage is enabled!"
+          coverageFlags+="-enableCodeCoverage YES"
+
+          if [ -z "$derivedDataPath" ]; then
+            derivedDataPath+="-derivedDataPath Build/"
+          fi
+        fi
+  
+        xcode-select -p
+        xcodebuild -version
+        xcodebuild test-without-building -scheme $SCHEME -sdk $SDK -destination $DESTINATION $derivedDataPath $coverageFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+      shell: bash

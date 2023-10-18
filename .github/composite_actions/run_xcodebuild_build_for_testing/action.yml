@@ -1,0 +1,55 @@
+name: 'Run xcodebuild build-for-testing'
+description: 'Action builds the specified scheme for testing'
+
+inputs:
+  scheme:
+    required: true
+    type: string
+  sdk:
+    required: true
+    type: string
+  destination:
+    required: true
+    type: string
+  cloned_source_packages_path:
+    required: false
+    type: string
+    default: ''
+  derived_data_path:
+    required: true
+    type: string
+  disable_package_resolution:
+    required: false
+    type: boolean
+    default: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Test ${{ inputs.scheme }}
+      env:
+        SCHEME: ${{ inputs.scheme }}
+        PROJECT_PATH: ${{ inputs.project_path }}
+        CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
+        DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
+      run: |
+        sudo xcode-select -s /Applications/Xcode_14.3.app
+
+        clonedSourcePackagesPath=""
+        if [ ! -z "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+          echo "Using custom cloned source packages path"
+          clonedSourcePackagesPath+="-clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
+        fi
+
+        if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
+          echo "Disabling Automatic Package Resolution"
+          clonedSourcePackagesPath+=" -disableAutomaticPackageResolution"
+        fi
+
+        xcode-select -p
+        xcodebuild -version
+        xcodebuild build-for-testing -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $clonedSourcePackagesPath -derivedDataPath '${{ inputs.derived_data_path }}' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+      shell: bash
+
+
+        xcodebuild build-for-testing -scheme AWSAPIPlugin -sdk 'iphonesimulator' -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4' -derivedDataPath 'Build'

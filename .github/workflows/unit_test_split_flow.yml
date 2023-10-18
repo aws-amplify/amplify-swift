@@ -1,0 +1,372 @@
+name: Unit Test - Split Flow | All
+on:
+  workflow_call:
+    inputs:
+      identifier:
+        required: true
+        type: string
+
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+      - release
+
+permissions:
+    contents: read
+    actions: write
+
+concurrency:
+  group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main'}}
+
+jobs:
+  build-for-testing-ios:
+    name: Amplify-Package build for testing - iOS
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache for this SHA
+        id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-iOS-build-
+      - name: Attempt to restore the build cache from main
+        if: steps.restore-build.outputs.cache-hit != 'true'
+        id: restore-main-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-iOS-latest-build-main
+      - name: Build for Testing iOS
+        id: build-for-testing-amplify-package-ios
+        continue-on-error: false
+        uses: ./.github/composite_actions/run_xcodebuild_build_for_testing
+        with:
+          scheme: 'Amplify-Package'
+          sdk: 'iphonesimulator'
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+
+  build-for-testing-macos:
+    name: Amplify-Package build for testing - macOS
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache for this SHA
+        id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-macOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-macOS-build-
+      - name: Attempt to restore the build cache from main
+        if: steps.restore-build.outputs.cache-hit != 'true'
+        id: restore-main-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-macOS-latest-build-main
+      - name: Build for Testing macOS
+        id: build-for-testing-amplify-package-macOS
+        continue-on-error: false
+        uses: ./.github/composite_actions/run_xcodebuild_build_for_testing
+        with:
+          scheme: 'Amplify-Package'
+          sdk: 'macosx'
+          destination: 'platform=macOS,arch=x86_64'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+
+  build-for-testing-tvos:
+    name: Amplify-Package build for testing - tvOS
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache for this SHA
+        id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-tvOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-tvOS-build-
+      - name: Attempt to restore the build cache from main
+        if: steps.restore-build.outputs.cache-hit != 'true'
+        id: restore-main-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-tvOS-latest-build-main
+      - name: Build for Testing tvOS
+        id: build-for-testing-amplify-package-tvOS
+        continue-on-error: false
+        uses: ./.github/composite_actions/run_xcodebuild_build_for_testing
+        with:
+          scheme: 'Amplify-Package'
+          sdk: 'appletvsimulator'
+          destination: 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+
+  build-for-testing-watchos:
+    name: Amplify-Package build for testing - watchOS
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+      - name: Attempt to restore dependencies cache
+        id: cache-packages
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+      - name: Attempt to restore the build cache for this SHA
+        id: restore-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-watchOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-watchOS-build-
+      - name: Attempt to restore the build cache from main
+        if: steps.restore-build.outputs.cache-hit != 'true'
+        id: restore-main-build
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-watchOS-latest-build-main
+      - name: Build for Testing watchOS
+        id: build-for-testing-amplify-package-watchOS
+        continue-on-error: false
+        uses: ./.github/composite_actions/run_xcodebuild_build_for_testing
+        with:
+          scheme: 'Amplify-Package'
+          sdk: 'watchsimulator'
+          destination: 'platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4'
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+
+  unit-tests-with-coverage-ios:
+    name: ${{ matrix.scheme }} Unit Tests
+    needs: build-for-testing-ios
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin
+        ]
+    uses: ./.github/composite_actions/run_xcodebuild_test_without_building
+    with:
+      scheme: ${{ matrix.scheme }}
+      sdk: 'iphonesimulator'
+      destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+      derived_data_path: ${{ github.workspace }}/Build
+      generate_coverage: true
+
+  unit-tests-with-coverage-macos:
+    name: ${{ matrix.scheme }} Unit Tests
+    needs: build-for-testing-macos
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin
+        ]
+    uses: ./.github/composite_actions/run_xcodebuild_test_without_building
+    with:
+      scheme: ${{ matrix.scheme }}
+      sdk: 'macosx'
+      destination: 'platform=macOS,arch=x86_64'
+      derived_data_path: ${{ github.workspace }}/Build
+      generate_coverage: true
+
+  unit-tests-with-coverage-tvos:
+    name: ${{ matrix.scheme }} Unit Tests
+    needs: build-for-testing-tvos
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin
+        ]
+    uses: ./.github/composite_actions/run_xcodebuild_test_without_building
+    with:
+      scheme: ${{ matrix.scheme }}
+      sdk: 'appletvsimulator'
+      destination: 'platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4'
+      derived_data_path: ${{ github.workspace }}/Build
+      generate_coverage: true
+
+  unit-tests-with-coverage-macos:
+    name: ${{ matrix.scheme }} Unit Tests
+    needs: build-for-testing-watchos
+    strategy:
+      fail-fast: false
+      matrix:
+        scheme: [
+          Amplify,
+          AWSPluginsCore,
+          AWSAPIPlugin,
+          AWSCloudWatchLoggingPlugin,
+          AWSCognitoAuthPlugin,
+          AWSDataStorePlugin,
+          AWSLocationGeoPlugin,
+          AWSPredictionsPlugin,
+          AWSPinpointAnalyticsPlugin,
+          AWSPinpointPushNotificationsPlugin,
+          AWSS3StoragePlugin,
+          CoreMLPredictionsPlugin
+        ]
+    uses: ./.github/composite_actions/run_xcodebuild_test_without_building
+    with:
+      scheme: ${{ matrix.scheme }}
+      sdk: 'watchsimulator'
+      destination: 'platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4'
+      derived_data_path: ${{ github.workspace }}/Build
+      generate_coverage: true
+
+  report-coverage:
+    name: ${{ matrix.file.scheme }} Coverage Report
+    needs: [
+      unit-tests-with-coverage-ios,
+      unit-tests-with-coverage-macos,
+      unit-tests-with-coverage-tvos,
+      unit-tests-with-coverage-watchos
+    ]
+    strategy:
+      fail-fast: false
+      matrix:
+        file: [
+          { scheme: Amplify, flags: 'Amplify,unit_tests' },
+          { scheme: AWSPluginsCore, flags: 'AWSPluginsCore,unit_tests' },
+          { scheme: AWSAPIPlugin, flags: 'API_plugin_unit_test,unit_tests' },
+          { scheme: AWSCloudWatchLoggingPlugin, flags: 'Logging_plugin_unit_test,unit_tests' },
+          { scheme: AWSCognitoAuthPlugin, flags: 'Auth_plugin_unit_test,unit_tests' },
+          { scheme: AWSDataStorePlugin, flags: 'DataStore_plugin_unit_test,unit_tests' },
+          { scheme: AWSLocationGeoPlugin, flags: 'Geo_plugin_unit_test,unit_tests' },
+          { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
+          { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
+          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
+          { scheme: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
+        ]
+    uses: ./.github/workflows/upload_coverage_report.yml
+    with:
+      scheme: ${{ matrix.file.scheme }}
+      flags: ${{ matrix.file.flags }}
+
+  unit-test-pass-confirmation:
+    runs-on: ubuntu-latest
+    name: Confirm Passing Unit Tests
+    if: ${{ !cancelled() }}
+    needs: [
+      unit-tests-with-coverage-ios,
+      unit-tests-with-coverage-macos,
+      unit-tests-with-coverage-watchos,
+      unit-tests-with-coverage-tvos,
+      unit-tests-without-coverage
+    ]
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
+    steps:
+      - run: exit $EXIT_CODE
