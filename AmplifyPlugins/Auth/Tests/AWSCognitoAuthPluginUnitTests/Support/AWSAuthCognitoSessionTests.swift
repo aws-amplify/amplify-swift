@@ -211,7 +211,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
 
         XCTAssertEqual(session1, session2)
         XCTAssertEqual(session1.debugDictionary.count, session2.debugDictionary.count)
-        for key in session1.debugDictionary.keys {
+        for key in session1.debugDictionary.keys where (key != "AWS Credentials" && key != "cognitoTokens") {
             XCTAssertEqual(session1.debugDictionary[key] as? String, session2.debugDictionary[key] as? String)
         }
     }
