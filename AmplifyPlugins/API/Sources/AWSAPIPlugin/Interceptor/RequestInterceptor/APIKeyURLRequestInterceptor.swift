@@ -11,7 +11,7 @@ import Foundation
 
 struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
 
-    private let userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData().description
+    private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
     let apiKeyProvider: APIKeyProvider
 
     init(apiKeyProvider: APIKeyProvider) {

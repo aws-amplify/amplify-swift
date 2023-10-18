@@ -164,8 +164,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.aliasExistsException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.AliasExistsException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -176,10 +177,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
-                XCTFail("Underlying error should be aliasExists \(error)")
-                return
-            }
+            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, .aliasExists)
         }
     }
     
@@ -195,8 +193,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     func testConfirmSignInWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.codeMismatchException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.CodeMismatchException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -217,8 +216,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     func testConfirmSignInRetryWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.codeMismatchException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.CodeMismatchException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -261,8 +261,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.expiredCodeException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.ExpiredCodeException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -292,8 +293,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.internalErrorException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InternalErrorException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -319,8 +321,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     func testConfirmSignInWithInvalidLambdaResponseException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.invalidLambdaResponseException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -352,8 +355,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.invalidParameterException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InvalidParameterException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -385,8 +389,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.invalidPasswordException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InvalidPasswordException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -416,8 +421,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.invalidSmsRoleAccessPolicyException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -447,8 +453,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.invalidSmsRoleTrustRelationshipException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -526,8 +533,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.mFAMethodNotFoundException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.MFAMethodNotFoundException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -559,8 +567,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.notAuthorizedException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -588,8 +597,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.passwordResetRequiredException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -618,8 +628,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.softwareTokenMFANotFoundException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -651,8 +662,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.tooManyRequestsException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.TooManyRequestsException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -684,8 +696,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.unexpectedLambdaException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -717,8 +730,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.userLambdaValidationException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.UserLambdaValidationException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -750,8 +764,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.userNotConfirmedException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
+                    message: "Exception"
+                )
             })
         
         do {
@@ -779,8 +794,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-                throw RespondToAuthChallengeOutputError.userNotFoundException(
-                    .init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.UserNotFoundException(
+                     message: "Exception"
+                )
             })
         
         do {

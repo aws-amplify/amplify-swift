@@ -60,7 +60,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("\(apiError)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -118,7 +118,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("\(apiError)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -190,7 +190,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("\(apiError)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -263,7 +263,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("\(apiError)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -296,7 +296,7 @@ class GraphQLSyncBasedTests: XCTestCase {
             }
         }
 
-        wait(for: [conditionalFailedError], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [conditionalFailedError], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Given: A newly created post
@@ -327,7 +327,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("\(apiError)")
             }
         }
-        wait(for: [firstUpdateSuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [firstUpdateSuccess], timeout: TestCommonConstants.networkTimeout)
 
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
         let secondUpdateFailed = expectation(
@@ -344,7 +344,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("\(apiError)")
             }
         }
-        wait(for: [secondUpdateFailed], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [secondUpdateFailed], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -392,7 +392,7 @@ class GraphQLSyncBasedTests: XCTestCase {
             }
         }
 
-        wait(for: [conflictUnhandledError], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [conflictUnhandledError], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Given: Two newly created posts
@@ -432,7 +432,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 print(error)
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -517,16 +517,16 @@ class GraphQLSyncBasedTests: XCTestCase {
         })
 
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
-        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -558,7 +558,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 print(error)
             }
         })
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

@@ -10,7 +10,7 @@ import AWSS3
 import Amplify
 import ClientRuntime
 import XCTest
-
+import AWSClientRuntime
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -98,8 +98,12 @@ final class AWSS3StorageServiceListTests: XCTestCase {
     /// Then: The service throws a `StorageError` error
     func testSdkError() async throws {
         client.listObjectsV2Handler = { _ in
-            let response = HttpResponse(body: .empty, statusCode: .forbidden)
-            throw try SdkError<ListObjectsV2OutputError>.service(ListObjectsV2OutputError(httpResponse: response), response)
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: HttpResponse(body: .empty, statusCode: .forbidden),
+                message: nil,
+                requestID: nil,
+                typeName: nil
+            )
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         do {

@@ -686,7 +686,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         _ = try await Amplify.DataStore.save(newPost)
         
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
     }
 }
 

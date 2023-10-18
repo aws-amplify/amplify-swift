@@ -11,6 +11,7 @@ import XCTest
 import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import AWSClientRuntime
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -54,8 +55,9 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .concurrentModificationException(.init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.ConcurrentModificationException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -85,8 +87,9 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .forbiddenException(.init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.ForbiddenException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -116,8 +119,9 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .internalErrorException(.init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InternalErrorException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -147,8 +151,9 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .invalidParameterException(.init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.InvalidParameterException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -180,8 +185,9 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .notAuthorizedException(.init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -209,8 +215,9 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .softwareTokenMFANotFoundException(.init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -221,7 +228,7 @@ class SetUpTOTPTaskTests: BasePluginTest {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
                 return
             }
@@ -240,8 +247,9 @@ class SetUpTOTPTaskTests: BasePluginTest {
     func testSetUpTOTPInWithResourceNotFoundException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .resourceNotFoundException(.init(message: "Exception"))
+                throw AWSCognitoIdentityProvider.ResourceNotFoundException(
+                    message: "Exception"
+                )
             })
 
         do {
@@ -272,8 +280,13 @@ class SetUpTOTPTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockAssociateSoftwareTokenResponse: { request in
-                throw AssociateSoftwareTokenOutputError
-                    .unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
+                throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                    httpResponse: .init(body: .empty, statusCode: .ok),
+                    message: nil,
+                    requestID: nil,
+                    requestID2: nil,
+                    typeName: nil
+                )
             })
 
         do {

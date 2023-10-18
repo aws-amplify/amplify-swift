@@ -18,14 +18,13 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let otherIdentifier = UUID().uuidString
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
-        let done = asyncExpectation(description: "done", expectedFulfillmentCount: 2)
+        let done = expectation(description: "done")
+        done.expectedFulfillmentCount = 2
 
         Task {
             let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
-                Task {
-                    await done.fulfill()
-                }
+                done.fulfill()
             }
             XCTAssertTrue(handled)
         }
@@ -33,14 +32,12 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         Task {
             let otherHandled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: otherIdentifier, continuation: continuation)
-                Task {
-                    await done.fulfill()
-                }
+                done.fulfill()
             }
             XCTAssertFalse(otherHandled)
         }
 
-        await waitForExpectations([done])
+        await fulfillment(of: [done])
 
         handleEvents(for: identifier)
         handleEvents(for: otherIdentifier)
@@ -51,19 +48,17 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let otherIdentifier = UUID().uuidString
         StorageBackgroundEventsRegistry.register(identifier: otherIdentifier)
 
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
 
         Task {
             let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
-                Task {
-                    await done.fulfill()
-                }
+                done.fulfill()
             }
             XCTAssertFalse(handled)
         }
 
-        await waitForExpectations([done])
+        await fulfillment(of: [done])
     }
 
     // Simulates URLSessionDelegate behavior

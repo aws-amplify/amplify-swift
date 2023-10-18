@@ -65,7 +65,7 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListPostEditorByUser() throws {
@@ -93,7 +93,7 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [listPostEditorByEditorIdCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [listPostEditorByEditorIdCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// TODO: Include testGetPostThenLoadPostEditors when nested model lazy loading is implemented
@@ -110,7 +110,7 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
@@ -127,7 +127,7 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
@@ -144,7 +144,7 @@ class DataStoreConnectionScenario5FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

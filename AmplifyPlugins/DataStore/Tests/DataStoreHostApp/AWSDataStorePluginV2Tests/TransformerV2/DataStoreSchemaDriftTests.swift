@@ -47,7 +47,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
         try startAmplify {
             startSuccess.fulfill()
         }
-        wait(for: [startSuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [startSuccess], timeout: TestCommonConstants.networkTimeout)
         // Save some data with the missing enum case, do this by directly calling API
         // with a custom variables object. Later, decoding will fail.
         let saveSuccessWithTransformationError = expectation(description: "saved success with transformation error")
@@ -87,7 +87,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
             }
         }
 
-        wait(for: [saveSuccessWithTransformationError], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [saveSuccessWithTransformationError], timeout: TestCommonConstants.networkTimeout)
 
         let dataStoreStartSuccess = expectation(description: "DataStore start success")
         Amplify.DataStore.start { result in
@@ -96,7 +96,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
             }
             dataStoreStartSuccess.fulfill()
         }
-        wait(for: [dataStoreStartSuccess], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [dataStoreStartSuccess], timeout: TestCommonConstants.networkTimeout)
 
         // Assert that the sync engine does not retry on schema drift scenario
         guard let remoteSyncEngine = DataStoreInternal.getRemoteSyncEngine() else {
@@ -122,7 +122,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
                 syncEngineRestarting.fulfill()
             }
         }.store(in: &subscriptions)
-        wait(for: [syncEngineCleanedUp, syncEngineFailed], timeout: TestCommonConstants.networkTimeout)
-        wait(for: [syncEngineRestarting], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncEngineCleanedUp, syncEngineFailed], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [syncEngineRestarting], timeout: TestCommonConstants.networkTimeout)
     }
 }

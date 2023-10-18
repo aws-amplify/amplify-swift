@@ -110,11 +110,7 @@ struct VerifyPasswordSRP: Action {
             return false
         }
 
-        if let serviceError: RespondToAuthChallengeOutputError = error.internalAWSServiceError(),
-           case .resourceNotFoundException = serviceError {
-            return true
-        }
-        return false
+        return error is AWSCognitoIdentityProvider.ResourceNotFoundException
     }
 }
 

@@ -233,7 +233,11 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
                 fetchSessionExptectation.fulfill()
             }
         }
-        await waitForExpectations(timeout: networkTimeout)
+
+        await fulfillment(
+            of: [identityIDExpectation, fetchSessionExptectation],
+            timeout: networkTimeout
+        )
     }
 
     /// Test if successful session is retrieved before and after a user sign in

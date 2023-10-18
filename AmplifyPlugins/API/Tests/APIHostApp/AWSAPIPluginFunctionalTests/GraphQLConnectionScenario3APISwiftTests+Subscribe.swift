@@ -40,12 +40,13 @@ extension GraphQLConnectionScenario3Tests {
     }
     
     func testOnCreateSubscriptionAPISwift() async throws {
-        let connectedInvoked = asyncExpectation(description: "Connection established")
-        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = 2
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
+        let title = testMethodName + "Title".withUUID
         let subscription = Amplify.API.subscribe(request: onCreatePost3APISwiftRequest())
         Task {
             do {
@@ -56,7 +57,7 @@ extension GraphQLConnectionScenario3Tests {
                         case .connecting:
                             break
                         case .connected:
-                            await connectedInvoked.fulfill()
+                            connectedInvoked.fulfill()
                         case .disconnected:
                             break
                         }
@@ -64,7 +65,7 @@ extension GraphQLConnectionScenario3Tests {
                         switch result {
                         case .success(let data):
                             if data.onCreatePost3?.id == uuid || data.onCreatePost3?.id == uuid2 {
-                                await progressInvoked.fulfill()
+                                progressInvoked.fulfill()
                             }
                         case .failure(let error):
                             XCTFail("\(error)")
@@ -76,13 +77,13 @@ extension GraphQLConnectionScenario3Tests {
             }
         }
         
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         guard try await createPost3APISwift(uuid, title) != nil,
               try await createPost3APISwift(uuid2, title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 }

@@ -9,6 +9,18 @@ import AWSPinpoint
 import Foundation
 
 class MockPinpointClient: PinpointClientProtocol {
+    func getJourneyRunExecutionActivityMetrics(input: GetJourneyRunExecutionActivityMetricsInput) async throws -> GetJourneyRunExecutionActivityMetricsOutputResponse {
+        fatalError("Not supported")
+    }
+
+    func getJourneyRunExecutionMetrics(input: GetJourneyRunExecutionMetricsInput) async throws -> GetJourneyRunExecutionMetricsOutputResponse {
+        fatalError("Not supported")
+    }
+
+    func getJourneyRuns(input: GetJourneyRunsInput) async throws -> GetJourneyRunsOutputResponse {
+        fatalError("Not supported")
+    }
+
     func createApp(input: CreateAppInput) async throws -> CreateAppOutputResponse {
         fatalError("Not supported")
     }

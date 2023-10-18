@@ -54,7 +54,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testUpdateComment() throws {
@@ -84,7 +84,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteAndGetComment() throws {
@@ -108,7 +108,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
         let getCommentAfterDeleteCompleted = expectation(description: "get comment after deleted complete")
         plugin.query(FlutterSerializedModel.self, modelSchema: Comment4.schema, where: Comment4.keys.id.eq(comment.idString())) { result in
             switch result {
@@ -122,7 +122,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListCommentsByPostID() throws {
@@ -147,7 +147,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("\(error)")
             }
         }
-        wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func savePost(id: String = UUID().uuidString, title: String, plugin: AWSDataStorePlugin) throws -> Post4Wrapper? {
@@ -163,7 +163,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
@@ -180,7 +180,7 @@ class DataStoreConnectionScenario4FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

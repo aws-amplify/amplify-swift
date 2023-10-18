@@ -146,7 +146,7 @@ class AmplifyTaskTests: XCTestCase {
             resultSink.cancel()
         }
 
-        wait(for: [exp1, exp2], timeout: 10.0)
+        await fulfillment(of: [exp1, exp2], timeout: 10.0)
 
         XCTAssertGreaterThanOrEqual(progressCount, 10)
         XCTAssertEqual(lastProgress, 1)

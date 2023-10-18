@@ -130,7 +130,20 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        await waitForExpectations(timeout: defaultAsyncWaitTimeout)
+        await fulfillment(
+            of: [
+                storageAdapterAvailable,
+                subscriptionsPaused,
+                mutationsPaused,
+                stateMutationsCleared,
+                subscriptionsInitialized,
+                subscriptionsEstablishedReceived,
+                cleanedup,
+                failureOnInitialSync,
+                retryAdviceReceivedNetworkError
+            ],
+            timeout: defaultAsyncWaitTimeout
+        )
         remoteSyncEngineSink.cancel()
         Amplify.Hub.removeListener(hubListener)
     }
@@ -182,15 +195,20 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        wait(for: [storageAdapterAvailable,
-                   subscriptionsPaused,
-                   mutationsPaused,
-                   stateMutationsCleared,
-                   subscriptionsInitialized,
-                   performedInitialSync,
-                   subscriptionActivation,
-                   mutationQueueStarted,
-                   syncStarted], timeout: defaultAsyncWaitTimeout)
+        wait(
+            for: [
+                storageAdapterAvailable,
+                subscriptionsPaused,
+                mutationsPaused,
+                stateMutationsCleared,
+                subscriptionsInitialized,
+                performedInitialSync,
+                subscriptionActivation,
+                mutationQueueStarted,
+                syncStarted
+            ],
+            timeout: defaultAsyncWaitTimeout
+        )
         remoteSyncEngineSink.cancel()
     }
 
@@ -253,17 +271,22 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        wait(for: [storageAdapterAvailable,
-                   subscriptionsPaused,
-                   mutationsPaused,
-                   stateMutationsCleared,
-                   subscriptionsInitialized,
-                   performedInitialSync,
-                   subscriptionActivation,
-                   mutationQueueStarted,
-                   syncStarted,
-                   cleanedUp,
-                   forceFailToNotRestartSyncEngine], timeout: defaultAsyncWaitTimeout)
+        wait(
+            for: [
+                storageAdapterAvailable,
+                subscriptionsPaused,
+                mutationsPaused,
+                stateMutationsCleared,
+                subscriptionsInitialized,
+                performedInitialSync,
+                subscriptionActivation,
+                mutationQueueStarted,
+                syncStarted,
+                cleanedUp,
+                forceFailToNotRestartSyncEngine
+            ],
+            timeout: defaultAsyncWaitTimeout
+        )
         remoteSyncEngineSink.cancel()
     }
 
@@ -330,18 +353,23 @@ class RemoteSyncEngineTests: XCTestCase {
 
         remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
-        wait(for: [storageAdapterAvailable,
-                   subscriptionsPaused,
-                   mutationsPaused,
-                   stateMutationsCleared,
-                   subscriptionsInitialized,
-                   performedInitialSync,
-                   subscriptionActivation,
-                   mutationQueueStarted,
-                   syncStarted,
-                   cleanedUpForTermination,
-                   completionBlockCalled,
-                   forceFailToNotRestartSyncEngine], timeout: defaultAsyncWaitTimeout)
+        wait(
+            for: [
+                storageAdapterAvailable,
+                subscriptionsPaused,
+                mutationsPaused,
+                stateMutationsCleared,
+                subscriptionsInitialized,
+                performedInitialSync,
+                subscriptionActivation,
+                mutationQueueStarted,
+                syncStarted,
+                cleanedUpForTermination,
+                completionBlockCalled,
+                forceFailToNotRestartSyncEngine
+            ],
+            timeout: defaultAsyncWaitTimeout
+        )
         remoteSyncEngineSink.cancel()
     }
 

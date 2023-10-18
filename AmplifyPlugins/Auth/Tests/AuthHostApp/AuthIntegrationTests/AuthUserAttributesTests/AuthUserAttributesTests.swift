@@ -124,6 +124,44 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             XCTFail("name attribute not found")
         }
     }
+    
+    /// - Given: A confirmed user
+    /// - When:
+    ///    - I invoke Amplify.Auth.update with email attribute and then confirm the email attribute with an invalid code
+    /// - Then:
+    ///    - The confirmation request should fail with a Auth service error
+    ///
+    func testSuccessfulUserAttributesConfirmation() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+        let updatedEmail = "\(username)@amazon.com"
+
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        let pluginOptions = AWSAuthUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
+        let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
+        let updateResult = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail), options: options)
+
+        switch updateResult.nextStep {
+        case .confirmAttributeWithCode(let deliveryDetails, let info):
+            print("Confirm the attribute with details send to - \(deliveryDetails) \(String(describing: info))")
+        case .done:
+            print("Update completed")
+        }
+        
+        do {
+            try await Amplify.Auth.confirm(userAttribute: .email, confirmationCode: "123")
+            XCTFail("User attribute confirmation unexpectedly succeeded")
+        } catch {
+            guard case AuthError.service(_, _, _) = error else {
+                XCTFail("Should throw service error")
+                return
+            }
+        }
+    }
 
     /// Test resending code for the user's updated email attribute.
     /// Internally, Cognito's `GetUserAttributeVerificationCode` API will be called with metadata as clientMetadata.

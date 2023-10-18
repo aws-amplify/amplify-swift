@@ -11,7 +11,6 @@ import Amplify
 class ConfigurationHelper {
 
     static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-
         let data = try retrieve(forResource: forResource)
         return try Self.decodeAmplifyConfiguration(from: data)
     }

@@ -19,7 +19,7 @@ extension ChangePasswordOutputResponse: Codable {
         guard let httpResponse = try containerValues.decodeIfPresent(HttpResponse.self, forKey: .httpResponse) else {
             fatalError("Unable to decode http response")
         }
-        try self.init(httpResponse: httpResponse)
+        self.init()
     }
 
     public func encode(to encoder: Encoder) throws {

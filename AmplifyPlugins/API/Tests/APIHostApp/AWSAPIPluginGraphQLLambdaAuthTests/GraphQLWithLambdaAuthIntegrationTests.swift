@@ -77,7 +77,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     ///    - The operation completes successfully with no errors and a list of todos in response
     ///
     func testQueryTodos() async {
-        let completeInvoked = asyncExpectation(description: "request completed")
+        let completeInvoked = expectation(description: "request completed")
         let request = GraphQLRequest<Todo>.list(Todo.self)
         let sink = Amplify.Publisher.create {
             try await Amplify.API.query(request: request)
@@ -85,12 +85,12 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
             if case let .failure(error) = $0 {
                 XCTFail("Query failure with error \(error)")
             }
-            Task { await completeInvoked.fulfill() }
+            completeInvoked.fulfill()
         } receiveValue: {
             XCTAssertNotNil($0)
         }
         XCTAssertNotNil(sink)
-        await waitForExpectations([completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
@@ -102,14 +102,15 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     ///    - The subscription should receive mutation events corresponding to the API calls performed.
     ///
     func testOnCreateTodoSubscription() async throws {
-        let connectedInvoked = asyncExpectation(description: "Connection established")
+        let connectedInvoked = expectation(description: "Connection established")
         
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let name = String("\(#function)".dropLast(2))
         let subscriptions = Amplify.API.subscribe(request: .subscription(of: Todo.self, type: .onCreate))
         
-        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = 2
 
         Task {
             for try await event in subscriptions {
@@ -119,13 +120,13 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
                     case .connecting, .disconnected:
                         break
                     case .connected:
-                        await connectedInvoked.fulfill()
+                        connectedInvoked.fulfill()
                     }
                 case .data(let result):
                     switch result {
                     case .success(let todo):
                         if todo.id == uuid || todo.id == uuid2 {
-                            await progressInvoked.fulfill()
+                            progressInvoked.fulfill()
                         }
                     case .failure(let error):
                         XCTFail("\(error)")
@@ -133,11 +134,11 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
                 }
             }
         }
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: 30)
 
         try await createTodo(id: uuid, name: name)
         try await createTodo(id: uuid2, name: name)
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: 30)
     }
 
     // MARK: - Helpers

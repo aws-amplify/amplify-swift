@@ -31,12 +31,14 @@ class UserAgentSuffixAppenderTests: XCTestCase {
     /// Then: The user agent suffix is appended
     func testExecute_withExistingUserAgentHeader_shouldAppendSuffix() async throws {
         let request = createRequest()
-        request.headers.add(name: userAgentKey, value: "existingUserAgent")
+        request.withHeader(name: userAgentKey, value: "existingUserAgent")
 
         _ = try await appender.execute(request: request)
         XCTAssertEqual(httpClientEngine.executeCount, 1)
         XCTAssertNotNil(httpClientEngine.executeRequest)
-        let userAgent = try XCTUnwrap(request.headers.value(for: userAgentKey))
+        let userAgent = try XCTUnwrap(
+            httpClientEngine.executeRequest?.headers.value(for: userAgentKey)
+        )
         XCTAssertTrue(userAgent.hasSuffix(customSuffix))
     }
 
@@ -49,7 +51,9 @@ class UserAgentSuffixAppenderTests: XCTestCase {
         _ = try await appender.execute(request: request)
         XCTAssertEqual(httpClientEngine.executeCount, 1)
         XCTAssertNotNil(httpClientEngine.executeRequest)
-        let userAgent = try XCTUnwrap(request.headers.value(for: userAgentKey))
+        let userAgent = try XCTUnwrap(
+            httpClientEngine.executeRequest?.headers.value(for: userAgentKey)
+        )
         XCTAssertTrue(userAgent.hasSuffix(customSuffix))
     }
 
@@ -72,8 +76,7 @@ class UserAgentSuffixAppenderTests: XCTestCase {
     private func createRequest() -> SdkHttpRequest {
         return SdkHttpRequest(
             method: .get,
-            endpoint: .init(host: "customHost"),
-            headers: .init()
+            endpoint: .init(host: "customHost")
         )
     }
 }

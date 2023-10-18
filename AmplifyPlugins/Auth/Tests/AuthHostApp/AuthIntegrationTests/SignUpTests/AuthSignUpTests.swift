@@ -54,7 +54,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
                 signUpExpectation.fulfill()
             }
         }
-        await waitForExpectations(timeout: 2)
+        await fulfillment(of: [signUpExpectation], timeout: 5, enforceOrder: false)
     }
 
     //    /// Test if user registration is successful.
@@ -93,7 +93,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
     //            }
     //        }
     //        XCTAssertNotNil(operation, "SignUp operations should not be nil")
-    //        wait(for: [operationExpectation], timeout: networkTimeout)
+    //        await fulfillment(of: [operationExpectation], timeout: networkTimeout)
     //    }
 
     /// Test is signUp return validation error

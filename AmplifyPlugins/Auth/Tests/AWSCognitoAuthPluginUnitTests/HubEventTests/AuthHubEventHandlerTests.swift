@@ -48,7 +48,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             XCTFail("Received failure with error \(error)")
         }
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(
+            of: [hubEventExpectation],
+            timeout: networkTimeout
+        )
     }
 
     /// Test whether HubEvent emits a signOut event for mocked signOut operation
@@ -74,7 +77,10 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
 
         _ = await plugin.signOut(options: nil)
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(
+            of: [hubEventExpectation],
+            timeout: networkTimeout
+        )
     }
 
     /// Test whether HubEvent emits a confirmSignedIn event for mocked signIn operation
@@ -105,7 +111,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             XCTFail("Received failure with error \(error)")
         }
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(
+            of: [hubEventExpectation],
+            timeout: networkTimeout
+        )
     }
 
     /// Test whether HubEvent emits a deletedUser event for mocked delete user operation
@@ -136,7 +145,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             XCTFail("Received failure with error \(error)")
         }
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(
+            of: [hubEventExpectation],
+            timeout: networkTimeout
+        )
     }
 
     /// Test whether HubEvent emits a sessionExpired event for mocked fetchSession operation with expired tokens
@@ -161,7 +173,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
         _ = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(
+            of: [hubEventExpectation],
+            timeout: networkTimeout
+        )
     }
 
 #if os(iOS) || os(macOS)
@@ -195,7 +210,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [hubEventExpectation], timeout: 10)
+        await fulfillment(of: [hubEventExpectation], timeout: 10)
     }
 
     /// Test whether HubEvent emits a mocked signedIn event for social provider signIn
@@ -227,7 +242,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [hubEventExpectation], timeout: 10)
+        await fulfillment(of: [hubEventExpectation], timeout: 10)
     }
 #endif
 
@@ -254,7 +269,10 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
         _ = try await  plugin.federateToIdentityPool(withProviderToken: "someToken", for: .facebook)
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(
+            of: [hubEventExpectation],
+            timeout: networkTimeout
+        )
     }
 
     /// Test whether HubEvent emits a federationToIdentityPoolCleared event for mocked federated operation
@@ -282,7 +300,10 @@ class AuthHubEventHandlerTests: XCTestCase {
         _ = try await plugin.federateToIdentityPool(withProviderToken: "something", for: .facebook)
         try await plugin.clearFederationToIdentityPool()
 
-        await waitForExpectations(timeout: networkTimeout)
+        await fulfillment(
+            of: [hubEventExpectation],
+            timeout: networkTimeout
+        )
     }
 
     private func configurePluginForSignInEvent() {
@@ -337,12 +358,12 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }, mockGlobalSignOutResponse: { _ in
-                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockDeleteUserOutputResponse: { _ in
-                try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
 
@@ -359,10 +380,10 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockGlobalSignOutResponse: { _ in
-                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
 
@@ -397,8 +418,9 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
-                throw try InitiateAuthOutputError.notAuthorizedException(
-                    NotAuthorizedException.init(httpResponse: .init(body: .empty, statusCode: .ok)))
+                throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
+                    httpResponse: .init(body: .empty, statusCode: .ok)
+                )
             })
 
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)

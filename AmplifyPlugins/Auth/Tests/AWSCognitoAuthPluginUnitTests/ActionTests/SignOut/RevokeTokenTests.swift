@@ -18,7 +18,7 @@ class RevokeTokenTests: XCTestCase {
             MockIdentityProvider(
                 mockRevokeTokenResponse: { _ in
                     revokeTokenInvoked.fulfill()
-                    return try RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
+                    return try await RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
                 }
             )
         }
@@ -38,7 +38,10 @@ class RevokeTokenTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [revokeTokenInvoked],
+            timeout: 0.1
+        )
     }
 
     func testFailedRevokeTokenTriggersClearCredentialStore() async {
@@ -79,14 +82,17 @@ class RevokeTokenTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [clearCredentialStoreEventSent],
+            timeout: 0.1
+        )
     }
 
     func testSuccessfulRevokeTokenTriggersClearCredentialStore() async {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockRevokeTokenResponse: { _ in
-                    return try RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
+                    return try await RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
                 }
             )
         }
@@ -120,7 +126,10 @@ class RevokeTokenTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [clearCredentialStoreEventSent],
+            timeout: 0.1
+        )
     }
 
 }

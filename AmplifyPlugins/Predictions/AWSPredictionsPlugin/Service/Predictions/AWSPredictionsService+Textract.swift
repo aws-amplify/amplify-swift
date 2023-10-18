@@ -41,8 +41,8 @@ extension AWSPredictionsService: AWSTextractServiceBehavior {
         let documentResult: AnalyzeDocumentOutputResponse
         do {
             documentResult = try await awsTextract.analyzeDocument(input: request)
-        } catch let error as AnalyzeDocumentOutputError {
-            throw ServiceErrorMapping.analyzeDocument.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }

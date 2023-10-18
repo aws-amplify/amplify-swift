@@ -24,7 +24,7 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
 
         do {
             let synthesizedSpeechResult = try await awsPolly.synthesizeSpeech(input: input)
-            guard let speech = synthesizedSpeechResult.audioStream
+            guard let speech = try await synthesizedSpeechResult.audioStream?.readData()
             else {
                 throw PredictionsError.service(
                     .init(
@@ -34,12 +34,9 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
                 )
             }
 
-            let textToSpeechResult = Predictions.Convert.TextToSpeech.Result(
-                audioData: speech.toBytes().getData()
-            )
-            return textToSpeechResult
-        } catch let error as SynthesizeSpeechOutputError {
-            throw ServiceErrorMapping.synthesizeSpeech.map(error)
+            return .init(audioData: speech)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }

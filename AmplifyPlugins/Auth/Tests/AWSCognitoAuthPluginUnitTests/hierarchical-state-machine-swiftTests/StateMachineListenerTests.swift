@@ -41,7 +41,10 @@ class StateMachineListenerTests: XCTestCase {
         }
         let event = Counter.Event(id: "test", eventType: .increment)
         await stateMachine.send(event)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [notified],
+            timeout: 0.1
+        )
     }
 
     func testDoesNotNotifyOnNoStateChange() async {
@@ -58,7 +61,10 @@ class StateMachineListenerTests: XCTestCase {
 
         let event = Counter.Event(id: "test", eventType: .adjustBy(0))
         await stateMachine.send(event)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [notified],
+            timeout: 0.1
+        )
     }
 
     func testDoesNotNotifyAfterUnsubscribe() async {
@@ -77,7 +83,10 @@ class StateMachineListenerTests: XCTestCase {
         seq.cancel()
         let event = Counter.Event(id: "test", eventType: .increment)
         await stateMachine.send(event)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [notified],
+            timeout: 0.1
+        )
     }
 
     func testOrderOfSubsription() async throws {
@@ -109,7 +118,10 @@ class StateMachineListenerTests: XCTestCase {
                 try await Task.sleep(nanoseconds: 1_000_000)
                 await self.stateMachine.send(Counter.Event(id: "set3", eventType: .set(12)))
             }
-            await waitForExpectations(timeout: 2)
+            await fulfillment(
+                of: [notified],
+                timeout: 2
+            )
             seq.cancel()
         }
     }
@@ -143,7 +155,10 @@ class StateMachineListenerTests: XCTestCase {
             }
         }
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(
+            of: [notified],
+            timeout: 1
+        )
         task2.cancel()
     }
 

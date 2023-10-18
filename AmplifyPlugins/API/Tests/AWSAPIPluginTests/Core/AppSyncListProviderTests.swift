@@ -108,14 +108,14 @@ class AppSyncListProviderTests: XCTestCase {
     func testLoadedStateLoadSuccess() async throws {
         let elements = [Post4(title: "title"), Post4(title: "title")]
         let listProvider = AppSyncListProvider(elements: elements)
-        let loadCompleted = asyncExpectation(description: "Load Completed")
+        let loadCompleted = expectation(description: "Load Completed")
         
         Task {
             let posts = try await listProvider.load()
             XCTAssertEqual(posts.count, 2)
-            await loadCompleted.fulfill()
+            loadCompleted.fulfill()
         }
-        await waitForExpectations([loadCompleted], timeout: 1)
+        await fulfillment(of: [loadCompleted], timeout: 1)
     }
 
     func testNotLoadedStateLoadSuccess() async throws {
@@ -144,13 +144,13 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadCompleted = asyncExpectation(description: "Load Completed")
+        let loadCompleted = expectation(description: "Load Completed")
         
         Task {
             _ = try await provider.load()
-            await loadCompleted.fulfill()
+            loadCompleted.fulfill()
         }
-        await waitForExpectations([loadCompleted], timeout: 1)
+        await fulfillment(of: [loadCompleted], timeout: 1)
         
         guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
             XCTFail("Should be loaded")
@@ -181,7 +181,7 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadCompleted = asyncExpectation(description: "Load Completed")
+        let loadCompleted = expectation(description: "Load Completed")
         Task {
             do {
                 _ = try await provider.load()
@@ -196,10 +196,10 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Should not be loaded")
                     return
                 }
-                await loadCompleted.fulfill()
+                loadCompleted.fulfill()
             }
         }
-        await waitForExpectations([loadCompleted], timeout: 1)
+        await fulfillment(of: [loadCompleted], timeout: 1)
     }
     
     func testNotLoadedStateLoadWithCompletionSuccess() async {
@@ -228,13 +228,13 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
+        let loadComplete = expectation(description: "Load completed")
         Task {
             _ = try await provider.load()
-            await loadComplete.fulfill()
+            loadComplete.fulfill()
         }
         
-        await waitForExpectations([loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 1)
         
         guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
             XCTFail("Should be loaded")
@@ -265,7 +265,7 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
+        let loadComplete = expectation(description: "Load completed")
         Task {
             do {
                 _ = try await provider.load()
@@ -276,10 +276,10 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Unexpected error \(error)")
                     return
                 }
-                await loadComplete.fulfill()
+                loadComplete.fulfill()
             }
         }
-        await waitForExpectations([loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 1)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -301,7 +301,7 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
+        let loadComplete = expectation(description: "Load completed")
         Task {
             
             do {
@@ -313,11 +313,11 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Unexpected error \(error)")
                     return
                 }
-                await loadComplete.fulfill()
+                loadComplete.fulfill()
             }
             
         }
-        await waitForExpectations([loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 1)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -350,7 +350,7 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
+        let loadComplete = expectation(description: "Load completed")
         Task {
             do {
                 _ = try await provider.load()
@@ -360,11 +360,11 @@ class AppSyncListProviderTests: XCTestCase {
                     XCTFail("Unexpected error \(error)")
                     return
                 }
-                await loadComplete.fulfill()
+                loadComplete.fulfill()
                 
             }
         }
-        await waitForExpectations([loadComplete], timeout: 1)
+        await fulfillment(of: [loadComplete], timeout: 1)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return

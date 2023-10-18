@@ -84,7 +84,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
             XCTFail("Error should not be returned \(error)")
         }
 
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationInternalError() async throws {
@@ -92,7 +92,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.internalErrorException(.init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.InternalErrorException(message: "Error Occurred")
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -107,7 +107,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationInvalidLambda() async throws {
@@ -115,7 +115,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.invalidLambdaResponseException(.init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(message: "Error Occurred")
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -134,7 +134,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationParameterException() async throws {
@@ -142,7 +142,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.invalidParameterException(.init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.InvalidParameterException(message: "Error Occurred")
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -161,7 +161,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationSMSRoleAccessException() async throws {
@@ -169,8 +169,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.invalidSmsRoleAccessPolicyException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -189,7 +190,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserPoolConfiguration() async throws {
@@ -197,8 +198,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.invalidUserPoolConfigurationException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -213,7 +215,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationNotAuthorized() async throws {
@@ -221,8 +223,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.notAuthorizedException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -237,7 +240,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperatioResetPassword() async throws {
@@ -245,8 +248,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.passwordResetRequiredException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -260,7 +264,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         } catch {
             XCTFail("Should not produce a error result: \(error)")
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationResourceNotFound() async throws {
@@ -268,8 +272,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.resourceNotFoundException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.ResourceNotFoundException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -287,7 +292,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationTooManyRequest() async throws {
@@ -295,8 +300,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.tooManyRequestsException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.TooManyRequestsException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -314,7 +320,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUnexpectedLambda() async throws {
@@ -322,8 +328,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.unexpectedLambdaException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -341,7 +348,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserLambdaValidation() async throws {
@@ -349,8 +356,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.userLambdaValidationException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.UserLambdaValidationException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -368,7 +376,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserNotConfirmed() async throws {
@@ -376,8 +384,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.userNotConfirmedException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.UserNotConfirmedException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -391,7 +400,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         } catch {
             XCTFail("Should not produce an error result - \(error)")
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserNotFound() async throws {
@@ -399,8 +408,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw InitiateAuthOutputError.userNotFoundException(
-                .init(message: "Error Occurred"))
+            throw AWSCognitoIdentityProvider.UserNotFoundException(
+                message: "Error Occurred"
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -418,6 +428,6 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 return
             }
         }
-        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
+        await fulfillment(of: [initiateAuthExpectation], timeout: networkTimeout)
     }
 }

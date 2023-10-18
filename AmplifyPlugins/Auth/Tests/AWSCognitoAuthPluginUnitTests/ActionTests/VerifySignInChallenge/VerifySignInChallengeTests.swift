@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSCognitoIdentityProvider
+import AWSClientRuntime
 @testable import AWSPluginsTestCommon
 @testable import AWSCognitoAuthPlugin
 
@@ -55,7 +56,10 @@ class VerifySignInChallengeTests: XCTestCase {
             environment: environment
         )
 
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [verifyPasswordInvoked],
+            timeout: 0.1
+        )
     }
 
     /// Test empty response is returned by Cognito proper error is thrown
@@ -102,7 +106,10 @@ class VerifySignInChallengeTests: XCTestCase {
         }
 
         await action.execute(withDispatcher: dispatcher, environment: environment)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [passwordVerifierError],
+            timeout: 0.1
+        )
     }
 
     /// Test  successful response from the VerifySignInChallenge
@@ -143,7 +150,10 @@ class VerifySignInChallengeTests: XCTestCase {
         }
 
         await action.execute(withDispatcher: dispatcher, environment: environment)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [verifyChallengeComplete],
+            timeout: 0.1
+        )
     }
 
     /// Test  successful response from the VerifySignInChallenge
@@ -158,7 +168,13 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    throw try RespondToAuthChallengeOutputError(httpResponse: MockHttpResponse.ok)
+                    throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                        httpResponse: MockHttpResponse.ok,
+                        message: nil,
+                        requestID: nil,
+                        requestID2: nil,
+                        typeName: nil
+                    )
                 })
         }
 
@@ -189,7 +205,10 @@ class VerifySignInChallengeTests: XCTestCase {
         }
 
         await action.execute(withDispatcher: dispatcher, environment: environment)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [passwordVerifierError],
+            timeout: 0.1
+        )
     }
 
     /// Test verify password retry on device not found
@@ -205,9 +224,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    throw RespondToAuthChallengeOutputError.resourceNotFoundException(
-                        ResourceNotFoundException()
-                    )
+                    throw AWSCognitoIdentityProvider.ResourceNotFoundException()
                 })
         }
 
@@ -235,7 +252,10 @@ class VerifySignInChallengeTests: XCTestCase {
         }
 
         await action.execute(withDispatcher: dispatcher, environment: environment)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [passwordVerifierError],
+            timeout: 0.1
+        )
     }
 
     /// Test  successful response from the VerifySignInChallenge for confirmDevice
@@ -276,7 +296,10 @@ class VerifySignInChallengeTests: XCTestCase {
         }
 
         await action.execute(withDispatcher: dispatcher, environment: environment)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [verifyChallengeComplete],
+            timeout: 0.1
+        )
     }
 
     /// Test  successful response from the VerifySignInChallenge for verify device
@@ -317,6 +340,9 @@ class VerifySignInChallengeTests: XCTestCase {
         }
 
         await action.execute(withDispatcher: dispatcher, environment: environment)
-        await waitForExpectations(timeout: 0.1)
+        await fulfillment(
+            of: [verifyChallengeComplete],
+            timeout: 0.1
+        )
     }
 }

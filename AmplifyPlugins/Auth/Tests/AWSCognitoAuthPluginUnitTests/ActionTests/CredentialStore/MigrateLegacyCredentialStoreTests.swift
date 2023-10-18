@@ -72,7 +72,11 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
+
+        await fulfillment(
+            of: [saveCredentialHandlerInvoked],
+            timeout: 0.1
+        )
     }
 
     /// Test is responsible for making sure that the legacy credential store clearing up is getting called for user pool and identity pool
@@ -115,8 +119,9 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
-
+        await fulfillment(
+            of: [migrationCompletionInvoked],
+            timeout: 0.1
+        )
     }
-
 }

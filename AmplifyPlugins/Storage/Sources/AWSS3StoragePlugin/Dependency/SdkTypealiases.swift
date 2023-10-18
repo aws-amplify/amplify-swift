@@ -9,8 +9,5 @@ import Foundation
 import AWSClientRuntime
 import ClientRuntime
 
-/// - Tag: SdkResult
-public typealias SdkResult<R, E> = Result<R, SdkError<E>>
-
 /// - Tag: NetworkResult
 public typealias NetworkResult = (Result<HttpResponse, Error>) -> Void

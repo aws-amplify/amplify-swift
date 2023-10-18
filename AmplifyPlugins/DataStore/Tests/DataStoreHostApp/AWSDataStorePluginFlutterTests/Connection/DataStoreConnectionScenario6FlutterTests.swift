@@ -57,7 +57,7 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("Failed with: \(response)")
             }
         }
-        wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let fetchedComment = resultComment else {
             XCTFail("Could not get comment")
             return
@@ -90,7 +90,7 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
@@ -107,7 +107,7 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
@@ -124,7 +124,7 @@ class DataStoreConnectionScenario6FlutterTests: SyncEngineFlutterIntegrationTest
                 XCTFail("Failed \(error)")
             }
         }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

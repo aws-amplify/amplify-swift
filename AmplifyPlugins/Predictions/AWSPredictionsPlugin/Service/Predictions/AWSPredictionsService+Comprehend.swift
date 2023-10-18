@@ -38,8 +38,8 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 .map(Predictions.Language.init(locale:))
             ?? .undetermined
             return (predictionsLanguage, dominantLanguage?.score.map(Double.init))
-        } catch let error as DetectDominantLanguageOutputError {
-            throw ServiceErrorMapping.detectDominantLanguage.map(error)
+        } catch let error as PredictionsErrorConvertible {
+            throw error.predictionsError
         } catch {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }

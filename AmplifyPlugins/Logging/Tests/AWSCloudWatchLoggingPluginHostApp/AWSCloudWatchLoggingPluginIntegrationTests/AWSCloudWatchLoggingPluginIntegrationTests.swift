@@ -13,7 +13,13 @@ import AWSCloudWatchLogs
 
 class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     let amplifyConfigurationFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration"
+    #if os(tvOS)
+    let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_tvOS"
+    #elseif os(watchOS)
+    let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_watchOS"
+    #else
     let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging"
+    #endif
     var loggingConfiguration: AWSCloudWatchLoggingPluginConfiguration?
     
     override func setUp() async throws {
@@ -36,6 +42,10 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
 
     override func tearDown() async throws {
         await Amplify.reset()
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
+        let directory = documents.appendingPathComponent("amplify")
+                                 .appendingPathComponent("logging")
+        try FileManager.default.removeItem(atPath: directory)
     }
     
     /// - Given: a AWS CloudWatch Logging plugin
@@ -52,91 +62,16 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     }
     
     /// - Given: a AWS CloudWatch Logging plugin
-    /// - When: an error log message is logged and flushed
-    /// - Then: the error log message is logged and sent to AWS CloudWatch
-    func testFlushLogWithErrorMessage() async throws {
+    /// - When: log messages is logged and flushed
+    /// - Then: the log messages are logged and sent to AWS CloudWatch
+    func testFlushLogWithMessages() async throws {
         let category = "Analytics"
         let namespace = UUID().uuidString
         let message = "this is an error message in the integration test \(Date().epochMilliseconds)"
         let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         logger.error(message)
-        let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
-        guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
-            XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")
-            return
-        }
-        try await loggingPlugin.flushLogs()
-        try await Task.sleep(seconds: 30)
-        let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(client: cloudWatchClient,
-                                    logGroupName: loggingConfiguration?.logGroupName,
-                                    logLevel: "error",
-                                    message: message,
-                                    category: category,
-                                    namespace: namespace)
-    }
-    
-    /// - Given: a AWS CloudWatch Logging plugin
-    /// - When: an warn log message is logged and flushed
-    /// - Then: the warn log message is logged and sent to AWS CloudWatch
-    func testFlushLogWithWarnMessage() async throws {
-        let category = "API"
-        let namespace = UUID().uuidString
-        let message = "this is an warn message in the integration test \(Date().epochMilliseconds)"
-        let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
-        logger.warn(message)
-        let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
-        guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
-            XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")
-            return
-        }
-        try await loggingPlugin.flushLogs()
-        try await Task.sleep(seconds: 30)
-        let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(client: cloudWatchClient,
-                                    logGroupName: loggingConfiguration?.logGroupName,
-                                    logLevel: "warn",
-                                    message: message,
-                                    category: category,
-                                    namespace: namespace)
-    }
-    
-    /// - Given: a AWS CloudWatch Logging plugin
-    /// - When: an debug log message is logged and flushed
-    /// - Then: the debug log message is logged and sent to AWS CloudWatch
-    func testFlushLogWithDebugMessage() async throws {
-        let category = "Geo"
-        let namespace = UUID().uuidString
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .long
-        dateFormatter.timeStyle = .long
-        let message = "this is an debug message in the integration test \(Date().epochMilliseconds)"
-        let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
         logger.debug(message)
-        let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
-        guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
-            XCTFail("Could not get plugin of type AWSCloudWatchLoggingPlugin")
-            return
-        }
-        try await loggingPlugin.flushLogs()
-        try await Task.sleep(seconds: 30)
-        let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(client: cloudWatchClient,
-                                    logGroupName: loggingConfiguration?.logGroupName,
-                                    logLevel: "debug",
-                                    message: message,
-                                    category: category,
-                                    namespace: namespace)
-    }
-    
-    /// - Given: a AWS CloudWatch Logging plugin
-    /// - When: an info log message is logged and flushed
-    /// - Then: the info log message is logged and sent to AWS CloudWatch
-    func testFlushLogWithInfoMessage() async throws {
-        let category = "Auth"
-        let namespace = UUID().uuidString
-        let message = "this is an info message in the integration test \(Date().epochMilliseconds)"
-        let logger = Amplify.Logging.logger(forCategory: category, forNamespace: namespace)
+        logger.warn(message)
         logger.info(message)
         let plugin = try Amplify.Logging.getPlugin(for: "awsCloudWatchLoggingPlugin")
         guard let loggingPlugin = plugin as? AWSCloudWatchLoggingPlugin else {
@@ -146,13 +81,15 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(client: cloudWatchClient,
-                                    logGroupName: loggingConfiguration?.logGroupName,
-                                    logLevel: "info",
-                                    message: message,
-                                    category: category,
-                                    namespace: namespace)
+        try await verifyMessagesSent(plugin: loggingPlugin,
+                                     client: cloudWatchClient,
+                                     logGroupName: loggingConfiguration?.logGroupName,
+                                     messageCount: 4,
+                                     message: message,
+                                     category: category,
+                                     namespace: namespace)
     }
+
     
     /// - Given: a AWS CloudWatch Logging plugin with logging enabled
     /// - When: an error log message is logged and flushed
@@ -172,7 +109,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageSent(client: cloudWatchClient,
+        try await verifyMessageSent(plugin: loggingPlugin,
+                                    client: cloudWatchClient,
                                     logGroupName: loggingConfiguration?.logGroupName,
                                     logLevel: "verbose",
                                     message: message,
@@ -198,19 +136,52 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         try await loggingPlugin.flushLogs()
         try await Task.sleep(seconds: 30)
         let cloudWatchClient = loggingPlugin.getEscapeHatch()
-        try await verifyMessageNotSent(client: cloudWatchClient,
+        try await verifyMessageNotSent(plugin: loggingPlugin,
+                                       client: cloudWatchClient,
                                        logGroupName: loggingConfiguration?.logGroupName,
                                        message: message)
     }
     
-    func verifyMessageSent(client: CloudWatchLogsClientProtocol?,
+    func verifyMessagesSent(plugin: AWSCloudWatchLoggingPlugin,
+                            client: CloudWatchLogsClientProtocol?,
+                            logGroupName: String?,
+                            messageCount: Int,
+                            message: String,
+                            category: String,
+                            namespace: String) async throws {
+
+        let events = try await getLastMessageSent(
+            plugin: plugin,
+            client: client,
+            logGroupName: logGroupName,
+            expectedMessageCount: messageCount,
+            message: message,
+            requestAttempt: 0)
+        XCTAssertEqual(events?.count, messageCount)
+        guard let sentLogMessage = events?.first?.message else {
+            XCTFail("Unable to verify last log message")
+            return
+        }
+        XCTAssertTrue(sentLogMessage.contains(message))
+        XCTAssertTrue(sentLogMessage.contains(category))
+        XCTAssertTrue(sentLogMessage.contains(namespace))
+    }
+    
+    func verifyMessageSent(plugin: AWSCloudWatchLoggingPlugin,
+                           client: CloudWatchLogsClientProtocol?,
                            logGroupName: String?,
                            logLevel: String,
                            message: String,
                            category: String,
                            namespace: String) async throws {
 
-        let events = try await getLastMessageSent(client: client, logGroupName: logGroupName, message: message, requestAttempt: 0)
+        let events = try await getLastMessageSent(
+            plugin: plugin,
+            client: client,
+            logGroupName: logGroupName,
+            expectedMessageCount: 1,
+            message: message,
+            requestAttempt: 0)
         XCTAssertEqual(events?.count, 1)
         guard let sentLogMessage = events?.first?.message else {
             XCTFail("Unable to verify last log message")
@@ -222,16 +193,25 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         XCTAssertTrue(sentLogMessage.contains(namespace))
     }
     
-    func verifyMessageNotSent(client: CloudWatchLogsClientProtocol?,
+    func verifyMessageNotSent(plugin: AWSCloudWatchLoggingPlugin,
+                              client: CloudWatchLogsClientProtocol?,
                               logGroupName: String?,
                               message: String) async throws {
 
-        let events = try await getLastMessageSent(client: client, logGroupName: logGroupName, message: message, requestAttempt: 0)
+        let events = try await getLastMessageSent(
+            plugin: plugin,
+            client: client,
+            logGroupName: logGroupName,
+            expectedMessageCount: 1,
+            message: message,
+            requestAttempt: 0)
         XCTAssertEqual(events?.count, 0)
     }
     
-    func getLastMessageSent(client: CloudWatchLogsClientProtocol?,
+    func getLastMessageSent(plugin: AWSCloudWatchLoggingPlugin,
+                            client: CloudWatchLogsClientProtocol?,
                             logGroupName: String?,
+                            expectedMessageCount: Int,
                             message: String,
                             requestAttempt: Int) async throws -> [CloudWatchLogsClientTypes.FilteredLogEvent]? {
         let endTime = Date()
@@ -239,12 +219,15 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         let startTime = endTime.addingTimeInterval(TimeInterval(-durationInMinutes*60))
         var events = try await AWSCloudWatchClientHelper.getFilterLogEventCount(client: client, filterPattern: message, startTime: startTime, endTime: endTime, logGroupName: logGroupName)
         
-        if events?.count == 0 && requestAttempt <= 5 {
+        if events?.count != expectedMessageCount && requestAttempt <= 5 {
+            try await plugin.flushLogs()
             try await Task.sleep(seconds: 30)
             let attempted = requestAttempt + 1
             events = try await getLastMessageSent(
+                plugin: plugin,
                 client: client,
                 logGroupName: logGroupName,
+                expectedMessageCount: expectedMessageCount,
                 message: message,
                 requestAttempt: attempted)
         }

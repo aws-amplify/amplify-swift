@@ -10,6 +10,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 import ClientRuntime
+import AWSClientRuntime
 
 import AWSCognitoIdentityProvider
 
@@ -52,7 +53,9 @@ class AWSAuthSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
-            throw try SignUpOutputError(httpResponse: MockHttpResponse.ok)
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: MockHttpResponse.ok, message: nil, requestID: nil, typeName: nil
+            )
         }
 
         let request = AuthSignUpRequest(username: "jeffb",
@@ -67,7 +70,7 @@ class AWSAuthSignUpTaskTests: XCTestCase {
             XCTFail("Should not produce success response")
         } catch {
         }
-        wait(for: [functionExpectation], timeout: 1)
+        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 
     /// Given: Configured AuthState machine with existing signUp flow
@@ -90,6 +93,6 @@ class AWSAuthSignUpTaskTests: XCTestCase {
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
         let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         _ = try await task.value
-        wait(for: [functionExpectation], timeout: 1)
+        await fulfillment(of: [functionExpectation], timeout: 1)
     }
 }
