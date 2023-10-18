@@ -173,7 +173,7 @@ final class StorageStressTests: XCTestCase {
         } catch {
             XCTFail("Error: \(error)")
         }
-        await fulfillment(of: [uploadExpectation, removeExpectation], timeout: 180)
+        await fulfillment(of: [downloadExpectation, uploadExpectation, removeExpectation], timeout: 180)
     }
 
     
