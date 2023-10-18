@@ -214,6 +214,7 @@ jobs:
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
 
   unit-tests-with-coverage-ios:
+    runs-on: macos-13
     name: ${{ matrix.scheme }} Unit Tests
     needs: build-for-testing-ios
     strategy:
@@ -243,6 +244,7 @@ jobs:
           generate_coverage: true
 
   unit-tests-with-coverage-macos:
+    runs-on: macos-13
     name: ${{ matrix.scheme }} Unit Tests
     needs: build-for-testing-macos
     strategy:
@@ -272,6 +274,7 @@ jobs:
           generate_coverage: true
 
   unit-tests-with-coverage-tvos:
+    runs-on: macos-13
     name: ${{ matrix.scheme }} Unit Tests
     needs: build-for-testing-tvos
     strategy:
@@ -301,6 +304,7 @@ jobs:
           generate_coverage: true
 
   unit-tests-with-coverage-watchos:
+    runs-on: macos-13
     name: ${{ matrix.scheme }} Unit Tests
     needs: build-for-testing-watchos
     strategy:
