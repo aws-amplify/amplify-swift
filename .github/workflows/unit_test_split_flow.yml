@@ -235,6 +235,9 @@ jobs:
           CoreMLPredictionsPlugin
         ]
     steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
       - uses: ./.github/composite_actions/run_xcodebuild_test_without_building
         with:
           scheme: ${{ matrix.scheme }}
@@ -265,6 +268,9 @@ jobs:
           CoreMLPredictionsPlugin
         ]
     steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
       - uses: ./.github/composite_actions/run_xcodebuild_test_without_building
         with:
           scheme: ${{ matrix.scheme }}
@@ -295,6 +301,9 @@ jobs:
           CoreMLPredictionsPlugin
         ]
     steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
       - uses: ./.github/composite_actions/run_xcodebuild_test_without_building
         with:
           scheme: ${{ matrix.scheme }}
@@ -325,6 +334,9 @@ jobs:
           CoreMLPredictionsPlugin
         ]
     steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
       - uses: ./.github/composite_actions/run_xcodebuild_test_without_building
         with:
           scheme: ${{ matrix.scheme }}
