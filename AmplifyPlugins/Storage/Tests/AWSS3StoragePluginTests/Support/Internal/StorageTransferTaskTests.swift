@@ -12,6 +12,9 @@ import XCTest
 class StorageTransferTaskTests: XCTestCase {
 
     // MARK: - Resume tests
+    /// Given: A StorageTransferTask with a sessionTask
+    /// When: resume is invoked
+    /// Then: an .initiated event is reported and the task set to .inProgress
     func testResume_withSessionTask_shouldCallResume_andReportInitiatedEvent() {
         let expectation = expectation(description: ".initiated event received on resume with only sessionTask")
         let sessionTask = MockSessionTask()
@@ -35,6 +38,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .inProgress)
     }
 
+    /// Given: A StorageTransferTask with a proxyStorageTask
+    /// When: resume is invoked
+    /// Then: an .initiated event is reported and the task set to .inProgress
     func testResume_withProxyStorageTask_shouldCallResume_andReportInitiatedEvent() {
         let expectation = expectation(description: ".initiated event received on resume with only proxyStorageTask")
         let sessionTask = MockSessionTask()
@@ -47,7 +53,7 @@ class StorageTransferTaskTests: XCTestCase {
                 }
                 expectation.fulfill()
             }),
-            sessionTask: sessionTask, // Set the sessioTask to set task.status = .paused
+            sessionTask: sessionTask, // Set the sessionTask to set task.status = .paused
             proxyStorageTask: storageTask
         )
         task.sessionTask = nil // Remove the session task
@@ -61,6 +67,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .inProgress)
     }
 
+    /// Given: A StorageTransferTask with a sessionTask and a proxyStorageTask
+    /// When: resume is invoked
+    /// Then: an .initiated event is reported and the task set to .inProgress
     func testResume_withSessionTask_andProxyStorageTask_shouldCallResume_andReportInitiatedEvent() {
         let expectation = expectation(description: ".initiated event received on resume with sessionTask and proxyStorageTask")
         let sessionTask = MockSessionTask()
@@ -86,6 +95,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .inProgress)
     }
 
+    /// Given: A StorageTransferTask without a sessionTask and without a proxyStorageTask
+    /// When: resume is invoked
+    /// Then: No event is reported and the task is not to .inProgress
     func testResume_withoutSessionTask_withoutProxyStorateTask_shouldNotCallResume_andNotReportEvent() {
         let expectation = expectation(description: "no event is received on resume when no sessionTask nor proxyStorageTask")
         expectation.isInverted = true
@@ -108,6 +120,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
     }
     
+    /// Given: A StorageTransferTask with status not being paused
+    /// When: resume is invoked
+    /// Then: No event is reported and the task is not set to .inProgress
     func testResume_withTaskNotPaused_shouldNotCallResume_andNotReportEvent() {
         let expectation = expectation(description: "no event is received on resume when the session is not paused")
         expectation.isInverted = true
@@ -128,6 +143,9 @@ class StorageTransferTaskTests: XCTestCase {
     }
 
     // MARK: - Suspend Tests
+    /// Given: A StorageTransferTask with a sessionTask
+    /// When: suspend is invoked
+    /// Then: The task is set to .paused
     func testSuspend_withSessionTask_shouldCallSuspend() {
         let sessionTask = MockSessionTask(state: .running)
         let task = createTask(
@@ -145,6 +163,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
     }
 
+    /// Given: A StorageTransferTask with a proxyStorageTask
+    /// When: suspend is invoked
+    /// Then: The task is set to .paused
     func testSuspend_withProxyStorageTask_shouldCallPause() {
         let storageTask = MockStorageTask()
         let task = createTask(
@@ -162,6 +183,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
     }
 
+    /// Given: A StorageTransferTask with a sessionTask and a proxyStorageTask
+    /// When: suspend is invoked
+    /// Then: The task is set to .paused
     func testSuspend_withSessionTask_andProxyStorageTask_shouldCallSuspend() {
         let sessionTask = MockSessionTask(state: .running)
         let storageTask = MockStorageTask()
@@ -181,6 +205,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
     }
     
+    /// Given: A StorageTransferTask without a sessionTask and without a proxyStorageTask
+    /// When: suspend is invoked
+    /// Then: The task remains .inProgress
     func testSuspend_withoutSessionTask_andWithoutProxyStorageTask_shouldDoNothing() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in }),
@@ -196,6 +223,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .inProgress)
     }
     
+    /// Given: A StorageTransferTask with status completed
+    /// When: suspend is invoked
+    /// Then: The task remains completed
     func testSuspend_withTaskNotInProgress_shouldDoNothing() {
         let sessionTask = MockSessionTask()
         let task = createTask(
@@ -213,6 +243,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .completed)
     }
     
+    /// Given: A StorageTransferTask
+    /// When: pause is invoked
+    /// Then: The task is set to .paused
     func testPause_shouldCallSuspend() {
         let sessionTask = MockSessionTask(state: .running)
         let task = createTask(
@@ -231,6 +264,9 @@ class StorageTransferTaskTests: XCTestCase {
     }
 
     // MARK: - Cancel Tests
+    /// Given: A StorageTransferTask with a sessionTask
+    /// When: cancel is invoked
+    /// Then: The task is set to .cancelled
     func testCancel_withSessionTask_shouldCancel() {
         let sessionTask = MockSessionTask()
         let task = createTask(
@@ -248,7 +284,10 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(sessionTask.cancelCount, 1)
         XCTAssertNil(task.proxyStorageTask)
     }
-
+    
+    /// Given: A StorageTransferTask with a proxyStorageTask
+    /// When: cancel is invoked
+    /// Then: The task is set to .cancelled
     func testCancel_withProxyStorageTask_shouldCancel() {
         let storageTask = MockStorageTask()
         let task = createTask(
@@ -263,6 +302,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertNil(task.proxyStorageTask)
     }
 
+    /// Given: A StorageTransferTask without a sessionTask and without a proxyStorageTask
+    /// When: cancel is invoked
+    /// Then: The task is not set to .cancelled
     func testCancel_withoutSessionTask_withoutProxyStorageTask_shouldDoNothing() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in }),
@@ -274,6 +316,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertNotEqual(task.status, .cancelled)
     }
 
+    /// Given: A StorageTransferTask with status completed
+    /// When: cancel is invoked
+    /// Then: The task is not set to .cancelled
     func testCancel_withTaskCompleted_shouldDoNothing() {
         let sessionTask = MockSessionTask()
         let task = createTask(
@@ -286,11 +331,15 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .completed)
         
         task.cancel()
+        XCTAssertNotEqual(task.status, .cancelled)
         XCTAssertEqual(sessionTask.cancelCount, 0)
         XCTAssertNotNil(task.proxyStorageTask)
     }
 
     // MARK: - Complete Tests
+    /// Given: A StorageTransferTask with sessionTask
+    /// When: complete is invoked
+    /// Then: The task is set to .completed
     func testComplete_withSessionTask_shouldComplete() {
         let sessionTask = MockSessionTask()
         let task = createTask(
@@ -304,6 +353,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertNil(task.proxyStorageTask)
     }
 
+    /// Given: A StorageTransferTask with status cancelled
+    /// When: complete is invoked
+    /// Then: The task is remains .cancelled
     func testComplete_withTaskCancelled_shouldDoNothing() {
         let sessionTask = MockSessionTask()
         let task = createTask(
@@ -318,6 +370,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .cancelled)
     }
     
+    /// Given: A StorageTransferTask with status completed
+    /// When: complete is invoked
+    /// Then: The task is remains .completed
     func testComplete_withTaskCompleted_shouldDoNothing() {
         let sessionTask = MockSessionTask()
         let task = createTask(
@@ -335,6 +390,9 @@ class StorageTransferTaskTests: XCTestCase {
     }
     
     // MARK: - Fail Tests
+    /// Given: A StorageTransferTask
+    /// When: fail is invoked
+    /// Then: A .failed event is reported
     func testFail_shouldReportFailEvent() {
         let expectation = expectation(description: ".failed event received on fail")
         let task = createTask(
@@ -356,6 +414,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertNil(task.proxyStorageTask)
     }
     
+    /// Given: A StorageTransferTask with status .failed
+    /// When: fail is invoked
+    /// Then: No event is reported
     func testFail_withFailedTask_shouldNotReportEvent() {
         let expectation = expectation(description: "event received on fail for failed task")
         expectation.isInverted = true
@@ -378,6 +439,9 @@ class StorageTransferTaskTests: XCTestCase {
     }
     
     // MARK: - Response Tests
+    /// Given: A StorageTransferTask with a valid responseData
+    /// When: responseText is invoked
+    /// Then: A string representing the data is returned
     func testResponseText_withValidData_shouldReturnText() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in}),
@@ -389,6 +453,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.responseText, "Test")
     }
     
+    /// Given: A StorageTransferTask with an invalid responseData
+    /// When: responseText is invoked
+    /// Then: nil is returned
     func testResponseText_withInvalidData_shouldReturnNil() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in}),
@@ -400,6 +467,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertNil(task.responseText)
     }
     
+    /// Given: A StorageTransferTask with a nil responseData
+    /// When: responseText is invoked
+    /// Then: nil is returned
     func testResponseText_withoutData_shouldReturnNil() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in}),
@@ -412,6 +482,9 @@ class StorageTransferTaskTests: XCTestCase {
     }
     
     // MARK: - PartNumber Tests
+    /// Given: A StorageTransferTask of type .multiPartUploadPart
+    /// When: partNumber is invoked
+    /// Then: The corresponding part number is returned
     func testPartNumber_withMultipartUpload_shouldReturnPartNumber() {
         let partNumber: PartNumber = 5
         let task = createTask(
@@ -423,6 +496,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.partNumber, partNumber)
     }
     
+    /// Given: A StorageTransferTask of type .upload
+    /// When: partNumber is invoked
+    /// Then: nil is returned
     func testPartNumber_withOtherTransferType_shouldReturnNil() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in}),
@@ -434,6 +510,9 @@ class StorageTransferTaskTests: XCTestCase {
     }
 
     // MARK: - HTTPRequestHeaders Tests
+    /// Given: A StorageTransferTask with requestHeaders
+    /// When: URLRequest.setHTTPRequestHeaders is invoked with said task
+    /// Then: The request includes the corresponding headers
     func testHTTPRequestHeaders_shouldSetValues() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in}),
@@ -454,6 +533,9 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(request.allHTTPHeaderFields?["header2"], "value2")
     }
     
+    /// Given: A StorageTransferTask with nil requestHeaders
+    /// When: URLRequest.setHTTPRequestHeaders is invoked with said task
+    /// Then: The request does not adds headers
     func testHTTPRequestHeaders_withoutHeaders_shouldDoNothing() {
         let task = createTask(
             transferType: .upload(onEvent: { _ in}),

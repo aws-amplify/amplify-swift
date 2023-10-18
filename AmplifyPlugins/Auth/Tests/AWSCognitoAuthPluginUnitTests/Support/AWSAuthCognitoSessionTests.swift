@@ -63,6 +63,9 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         XCTAssertFalse(cognitoTokens.doesExpire())
     }
 
+    /// Given: An AWSAuthCognitoSession with a valid AWSCognitoUserPoolTokens
+    /// When: getUserSub is invoked
+    /// Then: The "sub" from the token data should be returned
     func testGetUserSub_shouldReturnResult() {
         let tokenData = [
             "sub": "1234567890",
@@ -92,6 +95,9 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         XCTAssertEqual(userSub, "1234567890")
     }
 
+    /// Given: An AWSAuthCognitoSession with a AWSCognitoUserPoolTokens that does not include a "sub" attribute
+    /// When: getUserSub is invoked
+    /// Then: A .failure with AuthError.unknown error is returned
     func testGetUserSub_withoutSub_shouldReturnError() {
         let tokenData = [
             "name": "John Doe",
@@ -122,6 +128,9 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         XCTAssertEqual(errorDescription, "Could not retreive user sub from the fetched Cognito tokens.")
     }
     
+    /// Given: An AWSAuthCognitoSession that is signed out
+    /// When: getUserSub is invoked
+    /// Then: A .failure with AuthError.signedOut error is returned
     func testGetUserSub_signedOut_shouldReturnError() {
         let error = AuthError.signedOut("", "", nil)
         let session = AWSAuthCognitoSession(
@@ -141,6 +150,9 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         XCTAssertEqual(recoverySuggestion, AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion)
     }
     
+    /// Given: An AWSAuthCognitoSession that has a service error
+    /// When: getUserSub is invoked
+    /// Then: A .failure with AuthError.signedOut error is returned
     func testGetUserSub_serviceError_shouldReturnError() {
         let serviceError = AuthError.service("Something went wrong", "Try again", nil)
         let session = AWSAuthCognitoSession(
@@ -158,6 +170,9 @@ class AWSAuthCognitoSessionTests: XCTestCase {
         XCTAssertEqual(error, serviceError)
     }
     
+    /// Given: An AuthAWSCognitoCredentials and an AWSCognitoUserPoolTokens instance
+    /// When: Two AWSAuthCognitoSession are created from the same values
+    /// Then: The two AWSAuthCognitoSession are considered equal
     func testSessionsAreEqual() {
         let expiration = Date(timeIntervalSinceNow: 121)
         let tokenData = [

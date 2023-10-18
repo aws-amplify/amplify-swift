@@ -59,6 +59,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         uploadFile = nil
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: createMultipartUpload is invoked and AWSS3Behavior returns .success
+    /// Then: A .created event is reported to the session and the session is registered
     func testCreateMultipartUpload_withSuccess_shouldSucceed() throws {
         awss3Behavior.createMultipartUploadExpectation = expectation(description: "Create Multipart Upload")
         awss3Behavior.createMultipartUploadResult = .success(.init(
@@ -79,6 +82,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(serviceProxy.registerMultipartUploadSessionCount, 1)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: createMultipartUpload is invoked and AWSS3Behavior returns .failure
+    /// Then: An .unknown error is reported to the session and the session is not registered
     func testCreateMultipartUpload_withError_shouldFail() throws {
         awss3Behavior.createMultipartUploadExpectation = expectation(description: "Create Multipart Upload")
         awss3Behavior.createMultipartUploadResult = .failure(.unknown("Unknown Error", nil))
@@ -94,6 +100,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(serviceProxy.registerMultipartUploadSessionCount, 0)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: serviceProxy is set to nil and createMultipartUpload is invoked
+    /// Then: A fatal error is thrown
     func testCreateMultipartUpload_withoutServiceProxy_shouldThrowFatalError() throws {
         serviceProxy = nil
         try XCTAssertThrowFatalError {
@@ -101,6 +110,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         }
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: uploadPart is invoked with valid parts
+    /// Then: A .started event is reported to the session
     func testUploadPart_withParts_shouldSucceed() throws {
         session.handleUploadPartExpectation = expectation(description: "Upload Part with parts")
 
@@ -130,6 +142,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         }
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: uploadPart is invoked with a non-existing file
+    /// Then: An error is reported to the session
     func testUploadPart_withInvalidFile_shouldFail() throws {
         session.failExpectation = expectation(description: "Upload Part with invalid file")
 
@@ -158,8 +173,12 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(session.handleUploadPartCount, 0)
         XCTAssertEqual(session.failCount, 1)
         XCTAssertNil(session.lastUploadEvent)
+        XCTAssertNotNil(session.lastError)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: serviceProxy is set to nil and uploadPart is invoked
+    /// Then: A fatal error is thrown
     func testUploadPart_withoutServiceProxy_shouldThrowFatalError() throws {
         self.serviceProxy = nil
         try XCTAssertThrowFatalError {
@@ -183,6 +202,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         }
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: uploadPart is invoked without parts
+    /// Then: A fatal error is thrown
     func testUploadPart_withoutParts_shouldThrowFatalError() throws {
         try XCTAssertThrowFatalError {
             try? self.client.uploadPart(
@@ -200,6 +222,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         }
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: completeMultipartUpload is invoked and AWSS3Behaviour returns succees
+    /// Then: A .completed event is reported to the session and the session is unregistered
     func testCompleteMultipartUpload_withSuccess_shouldSucceed() throws {
         awss3Behavior.completeMultipartUploadExpectation = expectation(description: "Complete Multipart Upload")
         awss3Behavior.completeMultipartUploadResult = .success(.init(
@@ -219,6 +244,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(serviceProxy.unregisterMultipartUploadSessionCount, 1)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: completeMultipartUpload is invoked and AWSS3Behaviour returns failure
+    /// Then: A .unknown error is reported to the session and the session is not unregistered
     func testCompleteMultipartUpload_withError_shouldFail() throws {
         awss3Behavior.completeMultipartUploadExpectation = expectation(description: "Complete Multipart Upload")
         awss3Behavior.completeMultipartUploadResult = .failure(.unknown("Unknown Error", nil))
@@ -234,6 +262,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(serviceProxy.unregisterMultipartUploadSessionCount, 1)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: serviceProxy is set to nil and completeMultipartUpload is invoked
+    /// Then: A fatal error is thrown
     func testCompleteMultipartUpload_withoutServiceProxy_shouldThrowFatalError() throws {
         serviceProxy = nil
         try XCTAssertThrowFatalError {
@@ -241,6 +272,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         }
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: abortMultipartUpload is invoked and AWSS3Behaviour returns success
+    /// Then: An .aborted event is reported to the session and the session is unregistered
     func testAbortMultipartUpload_withSuccess_shouldSucceed() throws {
         awss3Behavior.abortMultipartUploadExpectation = expectation(description: "Abort Multipart Upload")
         awss3Behavior.abortMultipartUploadResult = .success(())
@@ -257,6 +291,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(serviceProxy.unregisterMultipartUploadSessionCount, 1)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: abortMultipartUpload is invoked and AWSS3Behaviour returns failure
+    /// Then: A .unknown error is reported to the session and the session is not unregistered
     func testAbortMultipartUpload_withError_shouldFail() throws {
         awss3Behavior.abortMultipartUploadExpectation = expectation(description: "Abort Multipart Upload")
         awss3Behavior.abortMultipartUploadResult = .failure(.unknown("Unknown Error", nil))
@@ -272,6 +309,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(serviceProxy.unregisterMultipartUploadSessionCount, 1)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: serviceProxy is set to nil and abortMultipartUpload is invoked
+    /// Then: A fatal error is thrown
     func testAbortMultipartUpload_withoutServiceProxy_shouldThrowFatalError() throws {
         serviceProxy = nil
         try XCTAssertThrowFatalError {
@@ -279,6 +319,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         }
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: cancelUploadTasks is invoked with identifiers
+    /// Then: The tasks are unregistered
     func testCancelUploadTasks_shouldSucceed() throws {
         let cancelExpectation = expectation(description: "Cancel Upload Tasks")
         client.cancelUploadTasks(taskIdentifiers: [0, 1,2], done: {
@@ -289,6 +332,9 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         XCTAssertEqual(serviceProxy.unregisterTaskIdentifiersCount, 1)
     }
 
+    /// Given: a DefaultStorageMultipartUploadClient
+    /// When: filter is invoked with some disallowed values
+    /// Then: a  dictionary is returned with the disallowed values removed
     func testFilterRequestHeaders_shouldResultFilteredHeaders() {
         let filteredHeaders = defaultClient.filter(
             requestHeaders: [

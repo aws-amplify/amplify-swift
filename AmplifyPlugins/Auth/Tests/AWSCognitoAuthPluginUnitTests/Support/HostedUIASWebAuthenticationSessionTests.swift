@@ -26,6 +26,9 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         factory = nil
     }
 
+    /// Given: A HostedUIASWebAuthenticationSession
+    /// When: showHostedUI is invoked and the session factory returns a URL with query items
+    /// Then: An array of query items should be returned
     func testShowHostedUI_withUrlInCallback_withQueryItems_shouldReturnQueryItems() {
         let expectation = expectation(description: "showHostedUI")
         factory.mockedURL = createURL(queryItems: [.init(name: "name", value: "value")])
@@ -44,6 +47,9 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
+    /// Given: A HostedUIASWebAuthenticationSession
+    /// When: showHostedUI is invoked and the session factory returns a URL without query items
+    /// Then: An empty array should be returned
     func testShowHostedUI_withUrlInCallback_withoutQueryItems_shouldReturnEmptyQueryItems() {
         let expectation = expectation(description: "showHostedUI")
         factory.mockedURL = createURL()
@@ -60,6 +66,9 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
+    /// Given: A HostedUIASWebAuthenticationSession
+    /// When: showHostedUI is invoked and the session factory returns a URL with query items representing errors
+    /// Then: A HostedUIError.serviceMessage should be returned
     func testShowHostedUI_withUrlInCallback_withErrorInQueryItems_shouldReturnServiceMessageError() {
         let expectation = expectation(description: "showHostedUI")
         factory.mockedURL = createURL(
@@ -87,6 +96,9 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
+    /// Given: A HostedUIASWebAuthenticationSession
+    /// When: showHostedUI is invoked and the session factory returns ASWebAuthenticationSessionErrors
+    /// Then: A HostedUIError corresponding to the error code should be returned
     func testShowHostedUI_withASWebAuthenticationSessionErrors_shouldReturnRightError() {
         let errorMap: [ASWebAuthenticationSessionError.Code: HostedUIError] = [
             .canceledLogin: .cancelled,
@@ -120,6 +132,9 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         }
     }
     
+    /// Given: A HostedUIASWebAuthenticationSession
+    /// When: showHostedUI is invoked and the session factory returns an error
+    /// Then: A HostedUIError.unknown should be returned
     func testShowHostedUI_withOtherError_shouldReturnUnknownError() {
         factory.mockedError = CancellationError()
         let expectation = expectation(description: "showHostedUI")

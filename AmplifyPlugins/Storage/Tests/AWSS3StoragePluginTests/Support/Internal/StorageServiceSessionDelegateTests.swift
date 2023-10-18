@@ -33,66 +33,108 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         delegate = nil
     }
     
+    /// Given: A StorageServiceSessionDelegate
+    /// When: logURLSessionActivity is invoked with warning set to true
+    /// Then: A warn message is logged
     func testLogURLSession_withWarningTrue_shouldLogWarning() {
         delegate.logURLSessionActivity("message", warning: true)
         XCTAssertEqual(logger.warnCount, 1)
         XCTAssertEqual(logger.infoCount, 0)
     }
     
+    /// Given: A StorageServiceSessionDelegate
+    /// When: logURLSessionActivity is invoked without setting warning
+    /// Then: An info message is logged
     func testLogURLSession_shouldLogInfo() {
         delegate.logURLSessionActivity("message")
         XCTAssertEqual(logger.warnCount, 0)
         XCTAssertEqual(logger.infoCount, 1)
     }
 
-    func testDidFinishEvents_withMatchingIdentifiers_shouldRemoveContinuation() async {
-        let expectation = self.expectation(description: "Did Finish Events")
+    /// Given: A StorageServiceSessionDelegate and an identifier registered in the registry
+    /// When: the registry's handleBackgroundEvents is invoked with a matching identifier and then urlSessionDidFinishEvents is invoked
+    /// Then: The registry's  continuation is triggered with true
+    func testDidFinishEvents_withMatchingIdentifiers_shouldTriggerContinuationWithTrue() async {
+        let handleEventsExpectation = self.expectation(description: "Handle Background Events")
+        let finishEventsExpectation = self.expectation(description: "Did Finish Events")
         StorageBackgroundEventsRegistry.register(identifier: "identifier")
         Task {
-            _ = await withCheckedContinuation { continuation in
+            let result = await withCheckedContinuation { continuation in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(
                     identifier: "identifier",
                     continuation: continuation
                 )
-                expectation.fulfill()
+                handleEventsExpectation.fulfill()
             }
+            XCTAssertTrue(result)
+            finishEventsExpectation.fulfill()
         }
         
-        await fulfillment(of: [expectation], timeout: 1)
+        await fulfillment(of: [handleEventsExpectation], timeout: 1)
         XCTAssertNotNil(StorageBackgroundEventsRegistry.continuation)
         delegate.urlSessionDidFinishEvents(forBackgroundURLSession: .shared)
+        await fulfillment(of: [finishEventsExpectation], timeout: 1)
         XCTAssertNil(StorageBackgroundEventsRegistry.continuation)
     }
     
-    func testDidFinishEvents_withNonMatchingIdentifiers_shouldRemoveContinuation() async {
-        let expectation = self.expectation(description: "Did Finish Events")
-        StorageBackgroundEventsRegistry.register(identifier: "identifier2")
+    /// Given: A StorageServiceSessionDelegate and an identifier registered in the registry
+    /// When: the registry's handleBackgroundEvents is invoked first with a matching identifier and then with a non-matching one, and after that urlSessionDidFinishEvents is invoked
+    /// Then: The registry's continuation for the non-matching identifier is triggered immediately with false, while the one for the matching identifier is triggered with true only after urlSessionDidFinishEvents is invoked
+    func testDidFinishEvents_withNonMatchingIdentifiers_shouldTriggerContinuationWithFalse() async {
+        let handleEventsMatchingExpectation = self.expectation(description: "Handle Background Events with Matching Identifiers")
+        let finishEventsExpectation = self.expectation(description: "Did Finish Events")
+        StorageBackgroundEventsRegistry.register(identifier: "identifier")
         Task {
-            _ = await withCheckedContinuation { continuation in
+            let result = await withCheckedContinuation { continuation in
+                StorageBackgroundEventsRegistry.handleBackgroundEvents(
+                    identifier: "identifier",
+                    continuation: continuation
+                )
+                handleEventsMatchingExpectation.fulfill()
+            }
+            XCTAssertTrue(result)
+            finishEventsExpectation.fulfill()
+        }
+        
+        await fulfillment(of: [handleEventsMatchingExpectation], timeout: 1)
+        XCTAssertNotNil(StorageBackgroundEventsRegistry.continuation)
+        
+        let handleEventsNonMatchingExpectation = self.expectation(description: "Handle Background Events with Matching Identifiers")
+        Task {
+            let result = await withCheckedContinuation { continuation in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(
                     identifier: "identifier2",
                     continuation: continuation
                 )
-                expectation.fulfill()
             }
+            XCTAssertFalse(result)
+            handleEventsNonMatchingExpectation.fulfill()
         }
-        
-        await fulfillment(of: [expectation], timeout: 1)
-        XCTAssertNotNil(StorageBackgroundEventsRegistry.continuation)
+        await fulfillment(of: [handleEventsNonMatchingExpectation], timeout: 1)
         delegate.urlSessionDidFinishEvents(forBackgroundURLSession: .shared)
-        XCTAssertNotNil(StorageBackgroundEventsRegistry.continuation)
+        await fulfillment(of: [finishEventsExpectation], timeout: 1)
+        XCTAssertNil(StorageBackgroundEventsRegistry.continuation)
     }
     
+    /// Given: A StorageServiceSessionDelegate
+    /// When: didBecomeInvalidWithError is invoked with a StorageError
+    /// Then: The service's resetURLSession is invoked
     func testDidBecomeInvalid_withError_shouldResetURLSession() {
         delegate.urlSession(.shared, didBecomeInvalidWithError: StorageError.accessDenied("", "", nil))
         XCTAssertEqual(service.resetURLSessionCount, 1)
     }
     
+    /// Given: A StorageServiceSessionDelegate
+    /// When: didBecomeInvalidWithError is invoked with a nil error
+    /// Then: The service's resetURLSession is invoked
     func testDidBecomeInvalid_withNilError_shouldResetURLSession() {
         delegate.urlSession(.shared, didBecomeInvalidWithError: nil)
         XCTAssertEqual(service.resetURLSessionCount, 1)
     }
     
+    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with a NSError with a NSURLErrorCancelled reason
+    /// When: didComplete is invoked
+    /// Then: The task is not unregistered
     func testDidComplete_withNSURLErrorCancelled_shouldNotCompleteTask() {
         let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
         let reasons = [
@@ -128,6 +170,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         }
     }
     
+    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with a StorageError
+    /// When: didComplete is invoked
+    /// Then: The task status is set to error and it's unregistered
     func testDidComplete_withError_shouldFailTask() {
         let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Complete With Error")
@@ -146,6 +191,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         XCTAssertEqual(service.unregisterCount, 1)
     }
     
+    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .upload
+    /// When: didSendBodyData is invoked
+    /// Then: An .inProcess event is reported, with the corresponding values
     func testDidSendBodyData_upload_shouldSendInProcessEvent() {
         let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Send Body Data")
@@ -175,6 +223,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
+    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .multiPartUploadPart
+    /// When: didSendBodyData is invoked
+    /// Then: A .progressUpdated event is reported to the session
     func testDidSendBodyData_multiPartUploadPart_shouldSendInProcessEvent() {
         let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
         let storageTask = StorageTransferTask(
@@ -212,6 +263,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         XCTAssertEqual(taskIdentifier, task.taskIdentifier)
     }
     
+    /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .download
+    /// When: didWriteData is invoked
+    /// Then: An .inProcess event is reported, with the corresponding values
     func testDidWriteData_shouldNotifyProgress() {
         let task = URLSession.shared.downloadTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Write Data")
@@ -241,6 +295,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
+    /// Given: A StorageServiceSessionDelegate and a URLSessionDownloadTask without a httpResponse
+    /// When: didFinishDownloadingTo is invoked
+    /// Then: No event is reported and the task is not completed
     func testDiFinishDownloading_withError_shouldNotCompleteDownload() {
         let task = URLSession.shared.downloadTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Finish Downloading")

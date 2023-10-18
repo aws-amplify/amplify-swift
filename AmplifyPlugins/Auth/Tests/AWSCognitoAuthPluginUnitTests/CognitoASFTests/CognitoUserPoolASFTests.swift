@@ -18,7 +18,10 @@ class CognitoUserPoolASFTests: XCTestCase {
     override func tearDown() {
         pool = nil
     }
-    
+       
+    /// Given: A CognitoUserPoolASF
+    /// When: userContextData is invoked
+    /// Then: A non-empty string is returned
     func testUserContextData_shouldReturnData() throws {
         let result = try pool.userContextData(
             for: "TestUser",
@@ -29,11 +32,24 @@ class CognitoUserPoolASFTests: XCTestCase {
         XCTAssertFalse(result.isEmpty)
     }
     
-    func testcalculateSecretHash_withInvalidClientId_shouldThrowHashKeyError() {
+    /// Given: A CognitoUserPoolASF
+    /// When: calculateSecretHash is invoked
+    /// Then: A non-empty string is returned
+    func testCalculateSecretHash_shouldReturnHash() throws {
+        let result = try pool.calculateSecretHash(
+            contextJson: "contextJson",
+            clientId: "clientId"
+        )
+    }
+    
+    /// Given: A CognitoUserPoolASF
+    /// When: calculateSecretHash is invoked with a clientId that cannot be parsed
+    /// Then: A ASFError.hashKey is thrown
+    func testCalculateSecretHash_withInvalidClientId_shouldThrowHashKeyError() {
         do {
             let result = try pool.calculateSecretHash(
                 contextJson: "contextJson",
-                clientId: "🕺🏼"
+                clientId: "🕺🏼" // This string cannot be represented using .ascii, so it will throw an error
             )
             XCTFail("Expected ASFError.hashKey, got \(result)")
         } catch let error as ASFError {

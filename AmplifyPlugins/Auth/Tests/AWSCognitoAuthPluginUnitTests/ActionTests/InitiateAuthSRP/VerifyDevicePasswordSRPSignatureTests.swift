@@ -23,6 +23,9 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
         srpClient = nil
     }
 
+    /// Given: A VerifyDevicePasswordSRP
+    /// When: signature is invoked
+    /// Then: a non-empty string is returned
     func testSignature_withValidValues_shouldReturnSignature() async {
         do {
             let signature = try signature()
@@ -32,6 +35,9 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
         }
     }
     
+    /// Given: A VerifyDevicePasswordSRP
+    /// When: signature is invoked and the srpClient throws an SRPError error when generating a shared secret
+    /// Then: a .calculation error is thrown
     func testSignature_withSRPErrorOnSharedSecret_shouldThrowCalculationError() async {
         srpClient.sharedSecret = .failure(SRPError.numberConversion)
         do {
@@ -47,6 +53,9 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
         }
     }
     
+    /// Given: A VerifyDevicePasswordSRP
+    /// When: signature is invoked and the srpClient throws a non-SRPError error when generating a shared secret
+    /// Then: a .configuration error is thrown
     func testSignature_withOtherErrorOnSharedSecret_shouldThrowCalculationError() async {
         srpClient.sharedSecret = .failure(CancellationError())
         do {
@@ -62,6 +71,9 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
         }
     }
     
+    /// Given: A VerifyDevicePasswordSRP
+    /// When: signature is invoked and the srpClient throws a SRPError error when generating an authentication key
+    /// Then: a .calculation error is thrown
     func testSignature_withSRPErrorOnAuthenticationKey_shouldThrowCalculationError() async {
         MockSRPClientBehavior.authenticationKey = .failure(SRPError.numberConversion)
         do {
@@ -77,6 +89,9 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
         }
     }
     
+    /// Given: A VerifyDevicePasswordSRP
+    /// When: signature is invoked and the srpClient throws a non-SRPError error when generating an authentication key
+    /// Then: a .configuration error is thrown
     func testSignature_withOtherErrorOnAuthenticationKey_shouldThrowCalculationError() async {
         MockSRPClientBehavior.authenticationKey = .failure(CancellationError())
         do {

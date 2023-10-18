@@ -20,6 +20,23 @@ class RefreshHostedUITokensTests: XCTestCase {
         "expires_in": 10
     ]
     
+    private var hostedUIEnvironment: HostedUIEnvironment {
+        BasicHostedUIEnvironment(
+            configuration: .init(
+                clientId: "clientId",
+                oauth: .init(
+                    domain: "cognitodomain",
+                    scopes: ["name"],
+                    signInRedirectURI: "myapp://",
+                    signOutRedirectURI: "myapp://"
+                )
+            ),
+            hostedUISessionFactory: sessionFactory,
+            urlSessionFactory: urlSessionMock,
+            randomStringFactory: mockRandomString
+        )
+    }
+    
     override func setUp() {
         let result = try! JSONSerialization.data(withJSONObject: tokenResult)
         MockURLProtocol.requestHandler = { _ in
@@ -31,7 +48,10 @@ class RefreshHostedUITokensTests: XCTestCase {
         MockURLProtocol.requestHandler = nil
     }
 
-    func testValidSuccessfulResponse() async {
+    /// Given: A RefreshHostedUITokens action
+    /// When: execute is invoked with a valid response
+    /// Then: A RefreshSessionEvent.refreshIdentityInfo is dispatched
+    func testExecute_withValidResponse_shouldDispatchRefreshEvent() async {
         let expectation = expectation(description: "refreshHostedUITokens")
         let action = RefreshHostedUITokens(existingSignedIndata: .testData)
         action.execute(
@@ -57,7 +77,10 @@ class RefreshHostedUITokensTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testServiceError() async {
+    /// Given: A RefreshHostedUITokens action
+    /// When: execute is invoked and throws a HostedUIError
+    /// Then: A RefreshSessionEvent.throwError is dispatched with .service
+    func testExecute_withHostedUIError_shouldDispatchErrorEvent() async {
         let expectedError = HostedUIError.serviceMessage("Something went wrong")
         MockURLProtocol.requestHandler = { _ in
             throw expectedError
@@ -86,7 +109,10 @@ class RefreshHostedUITokensTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testEmptyData() async {
+    /// Given: A RefreshHostedUITokens action
+    /// When: execute is invoked and returns empty data
+    /// Then: A RefreshSessionEvent.throwError is dispatched with .service
+    func testExecute_withEmptyData_shouldDispatchErrorEvent() async {
         MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), Data())
         }
@@ -121,7 +147,10 @@ class RefreshHostedUITokensTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testInvalidTokens() async {
+    /// Given: A RefreshHostedUITokens action
+    /// When: execute is invoked and returns data that is invalid for tokens
+    /// Then: A RefreshSessionEvent.throwError is dispatched with .invalidTokens
+    func testExecute_withInvalidTokens_shouldDispatchErrorEvent() async {
         let result: [String: Any] = [
             "key": "value"
         ]
@@ -153,7 +182,10 @@ class RefreshHostedUITokensTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testErrorResponse() async {
+    /// Given: A RefreshHostedUITokens action
+    /// When: execute is invoked and returns data representing an error
+    /// Then: A RefreshSessionEvent.throwError is dispatched with .service
+    func testExecute_withErrorResponse_shouldDispatchErrorEvent() async {
         let result: [String: Any] = [
             "error": "Error.",
             "error_description": "Something went wrong"
@@ -193,7 +225,10 @@ class RefreshHostedUITokensTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testNoHostedUIEnvironment() async {
+    /// Given: A RefreshHostedUITokens action
+    /// When: execute is invoked without a HostedUIEnvironment
+    /// Then: A RefreshSessionEvent.throwError is dispatched with .noUserPool
+    func testExecute_withoutHostedUIEnvironment_shouldDispatchErrorEvent() async {
         let expectation = expectation(description: "noHostedUIEnvironment")
         let action = RefreshHostedUITokens(existingSignedIndata: .testData)
         action.execute(
@@ -217,7 +252,10 @@ class RefreshHostedUITokensTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testNoUserPoolEnvironment() async {
+    /// Given: A RefreshHostedUITokens action
+    /// When: execute is invoked without a UserPoolEnvironment
+    /// Then: A RefreshSessionEvent.throwError is dispatched with .noUserPool
+    func testExecute_withoutUserPoolEnvironment_shouldDispatchErrorEvent() async {
         let expectation = expectation(description: "noUserPoolEnvironment")
         let action = RefreshHostedUITokens(existingSignedIndata: .testData)
         action.execute(
@@ -237,24 +275,7 @@ class RefreshHostedUITokensTests: XCTestCase {
 
         await fulfillment(of: [expectation], timeout: 1)
     }
-    
-    private var hostedUIEnvironment: HostedUIEnvironment {
-        BasicHostedUIEnvironment(
-            configuration: .init(
-                clientId: "clientId",
-                oauth: .init(
-                    domain: "cognitodomain",
-                    scopes: ["name"],
-                    signInRedirectURI: "myapp://",
-                    signOutRedirectURI: "myapp://"
-                )
-            ),
-            hostedUISessionFactory: sessionFactory,
-            urlSessionFactory: urlSessionMock,
-            randomStringFactory: mockRandomString
-        )
-    }
-    
+
     private func identityProviderFactory() throws -> CognitoUserPoolBehavior {
         return MockIdentityProvider(
             mockInitiateAuthResponse: { _ in

@@ -15,6 +15,9 @@ import Foundation
 import XCTest
 
 class ErrorPushNotificationsTests: XCTestCase {
+    /// Given: A NSError error
+    /// When: pushNotificationsError is invoked
+    /// Then: An .unknown error is returned
     func testPushNotificationsError_withUnknownError_shouldReturnUnknownError() {
         let error = NSError(domain: "MyError", code: 1234)
         let pushNotificationsError = error.pushNotificationsError
@@ -27,6 +30,9 @@ class ErrorPushNotificationsTests: XCTestCase {
         }
     }
 
+    /// Given: A NSError error with a connectivity-related error code
+    /// When: pushNotificationsError is invoked
+    /// Then: A .network error is returned
     func testPushNotificationsError_withConnectivityError_shouldReturnNetworkError() {
         let error = NSError(domain: "ConnectivityError", code: NSURLErrorNotConnectedToInternet)
         let pushNotificationsError = error.pushNotificationsError
@@ -40,6 +46,9 @@ class ErrorPushNotificationsTests: XCTestCase {
         }
     }
 
+    /// Given: An Error defined by the SDK
+    /// When: pushNotificationsError is invoked
+    /// Then: A .service error is returned
     func testPushNotificationError_withServiceError_shouldReturnServiceError() {
         let errors: [(String, PushNotificationsErrorConvertible & Error)] = [
             ("BadRequestException", BadRequestException(message: "BadRequestException")),
@@ -64,6 +73,9 @@ class ErrorPushNotificationsTests: XCTestCase {
         }
     }
 
+    /// Given: An UnknownAWSHTTPServiceError
+    /// When: pushNotificationsError is invoked
+    /// Then: A .unknown error is returned
     func testPushNotificationError_withUnknownAWSHTTPServiceError_shouldReturnUnknownError() {
         let error = UnknownAWSHTTPServiceError(httpResponse: .init(body: .none, statusCode: .accepted), message: "UnknownAWSHTTPServiceError", requestID: nil, typeName: nil)
         let pushNotificationsError = error.pushNotificationsError
@@ -76,6 +88,9 @@ class ErrorPushNotificationsTests: XCTestCase {
         }
     }
 
+    /// Given: A CommonRunTimeError.crtError
+    /// When: pushNotificationsError is invoked
+    /// Then: A .unknown error is returned
     func testPushNotificationError_withCommonRunTimeError_shouldReturnUnknownError() {
         let error = CommonRunTimeError.crtError(.init(code: 12345))
         let pushNotificationsError = error.pushNotificationsError

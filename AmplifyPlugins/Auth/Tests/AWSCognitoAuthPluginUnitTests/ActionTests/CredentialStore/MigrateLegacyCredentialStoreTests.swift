@@ -126,7 +126,10 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         )
     }
 
-    func testInvalidEnvironment() async {
+    /// - Given: A credential store with an invalid environment
+    /// - When: The migration legacy store action is executed
+    /// - Then: An error event of type configuration is dispatched
+    func testExecute_withInvalidEnvironment_shouldDispatchError() async {
         let expectation = expectation(description: "noEnvironment")
         let action = MigrateLegacyCredentialStore()
         await action.execute(
@@ -145,7 +148,12 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testNoUserPoolWithoutLoginsTokens() async {
+    /// - Given: A credential store with an environment that only has identity pool
+    /// - When: The migration legacy store action is executed
+    /// - Then: 
+    ///     - A .loadCredentialStore event with type .amplifyCredentials is dispatched
+    ///     - An .identityPoolOnly credential is saved
+    func testExecute_withoutUserPool_andWithoutLoginsTokens_shouldDispatchLoadEvent() async {
         let expectation = expectation(description: "noUserPoolTokens")
         let action = MigrateLegacyCredentialStore()
         await action.execute(
@@ -183,7 +191,11 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: 1)
     }
     
-    func testNoUserPoolWithLoginsTokens() async {
+    /// - Given: A credential store with an environment that only has identity pool
+    /// - When: The migration legacy store action is executed
+    ///     - A .loadCredentialStore event with type .amplifyCredentials is dispatched
+    ///     - An .identityPoolWithFederation credential is saved
+    func testExecute_withoutUserPool_andWithLoginsTokens_shouldDispatchLoadEvent() async {
         let expectation = expectation(description: "noUserPoolTokens")
         let action = MigrateLegacyCredentialStore()
         await action.execute(

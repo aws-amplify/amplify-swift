@@ -41,6 +41,9 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         XCTAssertFalse(session.partsFailed)
     }
 
+    /// Given: A StorageTransferTask with a valid StorageTransferType
+    /// When: A StorageMultipartUploadSession is created from the task
+    /// Then: Its values are set correctly
     func testSessionCreation_withTransferTask() throws {
         let client = MockMultipartUploadClient()
         let transferType: StorageTransferType = .multiPartUpload(onEvent: {_ in })
@@ -57,6 +60,9 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         XCTAssertFalse(session.partsFailed)
     }
 
+    /// Given: A StorageTransferTask with an invalid StorageTransferType
+    /// When: A StorageMultipartUploadSession is created from the task
+    /// Then: Its values are set correctly
     func testSessionCreation_withTransferTask_andInvalidTransferType_shouldReturnNil() throws {
         let client = MockMultipartUploadClient()
         let transferType: StorageTransferType = .list(onEvent: {_ in })
