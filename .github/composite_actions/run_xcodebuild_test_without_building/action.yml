@@ -24,7 +24,7 @@ runs:
     - name: Test ${{ inputs.scheme }}
       env:
         SCHEME: ${{ inputs.scheme }}
-        SDK: ${{ input.sdk }}
+        SDK: ${{ inputs.sdk }}
         DESTINATION: ${{ inputs.destination }}
         DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
       run: |
