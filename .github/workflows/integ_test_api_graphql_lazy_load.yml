@@ -32,7 +32,7 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/API/Tests/APIHostApp
           scheme: AWSAPIPluginLazyLoadTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
 
   api-lazy-load-test-tvOS:
