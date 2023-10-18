@@ -34,6 +34,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     /// - Returns: Pre-Signed URL
     func getPreSignedURL(key: String,
                          signingOperation: AWSS3SigningOperation,
+                         metadata: [String: String]? = nil,
                          accelerate: Bool? = nil,
                          expires: Int64? = nil) async throws -> URL {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
@@ -47,7 +48,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
                 config: config,
                 expiration: expiration)
         case .putObject:
-            let input = PutObjectInput(bucket: bucket, key: key)
+            let input = PutObjectInput(bucket: bucket, key: key, metadata: metadata)
             preSignedUrl = try await input.presignURL(
                 config: config,
                 expiration: expiration)
