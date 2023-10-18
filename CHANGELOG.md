@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.20.0 (2023-10-18)
+
+### Features
+
+- **core**: update swift sdk dependency version to 0.26.0 (#3248)
+
 ## 2.19.0 (2023-09-28)
 
 ### Features
