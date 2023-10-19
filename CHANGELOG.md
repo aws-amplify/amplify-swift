@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.20.1 (2023-10-19)
+
+### Bug Fixes
+
+- **storage**: add metadata support to uploads (#3295)
+
 ## 2.20.0 (2023-10-18)
 
 ### Features
