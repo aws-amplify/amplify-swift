@@ -37,7 +37,7 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Predictions/Tests/PredictionsHostApp
           scheme: AWSPredictionsPluginIntegrationTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
 
   predictions-integration-test-tvOS:

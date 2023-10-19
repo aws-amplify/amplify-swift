@@ -80,9 +80,10 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
     public func getPreSignedURL(
         serviceKey: String,
         signingOperation: AWSS3SigningOperation,
+        metadata: [String: String]?,
         accelerate: Bool?,
         expires: Int) async throws -> URL {
-            interactions.append("\(#function) \(serviceKey) \(signingOperation) \(expires)")
+            interactions.append("\(#function) \(serviceKey) \(signingOperation) \(String(describing: metadata)) \(expires)")
             return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
         }
 

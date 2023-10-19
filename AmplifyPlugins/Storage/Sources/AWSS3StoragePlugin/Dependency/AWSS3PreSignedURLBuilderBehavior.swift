@@ -41,6 +41,7 @@ protocol AWSS3PreSignedURLBuilderBehavior {
     /// - Tag: AWSS3PreSignedURLBuilderBehavior.getPreSignedURL
     func getPreSignedURL(key: String,
                          signingOperation: AWSS3SigningOperation,
+                         metadata: [String: String]?,
                          accelerate: Bool?,
                          expires: Int64?) async throws -> URL
 

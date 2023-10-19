@@ -32,7 +32,8 @@ extension AWSS3StorageService {
         let client = DefaultStorageMultipartUploadClient(serviceProxy: self,
                                                          bucket: bucket,
                                                          key: serviceKey,
-                                                         uploadFile: uploadFile)
+                                                         uploadFile: uploadFile,
+                                                         metadata: metadata)
         let multipartUploadSession = StorageMultipartUploadSession(client: client,
                                                                    bucket: bucket,
                                                                    key: serviceKey,

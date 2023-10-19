@@ -42,14 +42,17 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     let contentType: String?
     let requestHeaders: RequestHeaders?
     weak var session: StorageMultipartUploadSession?
-
+    let metadata: [String: String]?
+    
     init(serviceProxy: StorageServiceProxy,
          fileSystem: FileSystem = .default,
          bucket: String,
          key: String,
          uploadFile: UploadFile,
          contentType: String? = nil,
-         requestHeaders: RequestHeaders? = nil) {
+         requestHeaders: RequestHeaders? = nil,
+         metadata: [String: String]? = nil
+    ) {
         self.serviceProxy = serviceProxy
         self.fileSystem = fileSystem
         self.bucket = bucket
@@ -57,6 +60,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         self.uploadFile = uploadFile
         self.contentType = contentType
         self.requestHeaders = requestHeaders
+        self.metadata = metadata
     }
 
     func integrate(session: StorageMultipartUploadSession) {
@@ -135,6 +139,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                     let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
                         key: self.key,
                         signingOperation: operation,
+                        metadata: self.metadata,
                         accelerate: nil,
                         expires: nil
                     )

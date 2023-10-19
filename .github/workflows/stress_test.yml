@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   prepare-for-test:
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -31,7 +31,7 @@ jobs:
 
   auth-stress-test:
     needs: prepare-for-test
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -54,10 +54,12 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
           scheme: AuthStressTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   geo-stress-test:
     needs: prepare-for-test
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -80,11 +82,12 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
           scheme: GeoStressTests
-
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   storage-stress-test:
     needs: prepare-for-test
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -107,10 +110,12 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
           scheme: StorageStressTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
   
   datastore-stress-test:
     needs: prepare-for-test
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -133,10 +138,12 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: DatastoreStressTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
 
   graphql-api-stress-test:
     needs: prepare-for-test
-    runs-on: macos-12
+    runs-on: macos-13
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -159,3 +166,5 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/API/Tests/APIHostApp
           scheme: GraphQLAPIStressTests
+          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          xcode_path: '/Applications/Xcode_14.3.app'
