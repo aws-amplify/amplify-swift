@@ -21,8 +21,8 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
-  build-for-testing-ios:
-    name: Amplify-Package build for testing - iOS
+  test-ios:
+    name: Unit Test iOS
     runs-on: macos-13
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
@@ -68,6 +68,11 @@ jobs:
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.cache-packages.outputs.cache-hit }}
+      - name: cache build directory
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
 
   # build-for-testing-macos:
   #   name: Amplify-Package build for testing - macOS
@@ -238,13 +243,29 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
-      - uses: ./.github/composite_actions/run_xcodebuild_test_without_building
+      - name: Restore build for test-without-build
+        id: restore-build
+        timeout-minutes: 2
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+          restore-keys: |
+            ${{ env.SCHEME }}-iOS-build-
+      - name: test-without-building iOS
+        uses: ./.github/composite_actions/run_xcodebuild_test_without_building
         with:
           scheme: ${{ matrix.scheme }}
           sdk: 'iphonesimulator'
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           derived_data_path: ${{ github.workspace }}/Build
           generate_coverage: true
+      - name: Delete the build cache
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.restore-build.outputs.cache-matched-key }}
 
   # unit-tests-with-coverage-macos:
   #   runs-on: macos-13

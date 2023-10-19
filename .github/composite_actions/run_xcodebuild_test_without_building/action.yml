@@ -29,14 +29,7 @@ runs:
         DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
       run: |
         sudo xcode-select -s /Applications/Xcode_14.3.app
-
-        coverageFlags=""
-        if [ "${{ inputs.generate_coverage }}" == "true" ]; then
-          echo "Code Coverage is enabled!"
-          coverageFlags+="-enableCodeCoverage YES"
-        fi
-  
         xcode-select -p
         xcodebuild -version
-        xcodebuild test-without-building -scheme $SCHEME -sdk $SDK -destination $DESTINATION -enableCodeCoverage YES | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild test-without-building -scheme $SCHEME -sdk $SDK -destination $DESTINATION -derivedDataPath $DERIVED_DATA_PATH -enableCodeCoverage YES | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash

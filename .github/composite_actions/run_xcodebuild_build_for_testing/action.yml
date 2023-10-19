@@ -48,5 +48,5 @@ runs:
 
         xcode-select -p
         xcodebuild -version
-        xcodebuild build-for-testing -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $clonedSourcePackagesPath | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild build-for-testing -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' -derivedDataPath $DERIVED_DATA_PATH $clonedSourcePackagesPath | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
