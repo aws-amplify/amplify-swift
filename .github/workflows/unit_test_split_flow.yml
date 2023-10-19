@@ -38,25 +38,25 @@ jobs:
           key: amplify-packages-${{ hashFiles('Package.resolved') }}
           restore-keys: |
             amplify-packages-
-      - name: Attempt to restore the build cache for this SHA
-        id: restore-build
-        timeout-minutes: 4
-        continue-on-error: true
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-        with:
-          path: ${{ github.workspace }}/Build
-          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
-          restore-keys: |
-            ${{ env.SCHEME }}-iOS-build-
-      - name: Attempt to restore the build cache from main
-        if: steps.restore-build.outputs.cache-hit != 'true'
-        id: restore-main-build
-        timeout-minutes: 4
-        continue-on-error: true
-        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-        with:
-          path: ${{ github.workspace }}/Build
-          key: ${{ env.SCHEME }}-iOS-latest-build-main
+      # - name: Attempt to restore the build cache for this SHA
+      #   id: restore-build
+      #   timeout-minutes: 4
+      #   continue-on-error: true
+      #   uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+      #   with:
+      #     path: ${{ github.workspace }}/Build
+      #     key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+      #     restore-keys: |
+      #       ${{ env.SCHEME }}-iOS-build-
+      # - name: Attempt to restore the build cache from main
+      #   if: steps.restore-build.outputs.cache-hit != 'true'
+      #   id: restore-main-build
+      #   timeout-minutes: 4
+      #   continue-on-error: true
+      #   uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+      #   with:
+      #     path: ${{ github.workspace }}/Build
+      #     key: ${{ env.SCHEME }}-iOS-latest-build-main
       - name: Build for Testing iOS
         id: build-for-testing-amplify-package-ios
         continue-on-error: false
@@ -72,7 +72,7 @@ jobs:
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+          key: iOS-build-${{ github.sha }}
 
   # build-for-testing-macos:
   #   name: Amplify-Package build for testing - macOS
@@ -249,9 +249,9 @@ jobs:
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ env.SCHEME }}-iOS-build-${{ github.sha }}
+          key: iOS-build-${{ github.sha }}
           restore-keys: |
-            ${{ env.SCHEME }}-iOS-build-
+            iOS-build-
       - name: test-without-building iOS
         uses: ./.github/composite_actions/run_xcodebuild_test_without_building
         with:
