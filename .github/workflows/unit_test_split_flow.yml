@@ -250,8 +250,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/Build
           key: iOS-build-${{ github.sha }}
-          restore-keys: |
-            iOS-build-
       - name: test-without-building iOS
         uses: ./.github/composite_actions/run_xcodebuild_test_without_building
         with:
