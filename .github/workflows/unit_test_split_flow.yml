@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
-  test-ios:
+  build-for-testing-ios:
     name: Unit Test iOS
     runs-on: macos-13
     steps:
