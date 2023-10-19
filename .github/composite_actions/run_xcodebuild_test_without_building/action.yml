@@ -32,5 +32,5 @@ runs:
 
         xcode-select -p
         xcodebuild -version
-        xcodebuild test-without-building -scheme '$SCHEME' -sdk '$SDK' -destination $DESTINATION -derivedDataPath $DERIVED_DATA_PATH -clonedSourcePackagesDirPath '~/Library/Developer/Xcode/DerivedData/Amplify' -disableAutomaticPackageResolution -enableCodeCoverage YES | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild test-without-building -scheme $SCHEME -sdk $SDK -destination $DESTINATION -derivedDataPath $DERIVED_DATA_PATH -clonedSourcePackagesDirPath '~/Library/Developer/Xcode/DerivedData/Amplify' -disableAutomaticPackageResolution -enableCodeCoverage YES | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
