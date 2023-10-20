@@ -164,6 +164,53 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.remove(key: key)
     }
 
+    /// Given: `StorageUploadDataRequest.Options` with multiple
+    /// `metadata` key-value pairs.
+    /// When: Calling uploading an object via `uploadData`
+    /// Then:  That object's headers (retrieved via `HeadObject`) should contain
+    /// all key-value pairs`metadata`
+    func test_uploadWithMultipleMetadataPairs() async throws {
+        // Include metadata in upload file request
+        let range = (1...11)
+        let metadata = zip(range, range.dropFirst())
+            .map { tuple -> (String, String) in
+                (.init(tuple.0), .init(tuple.0))
+            }
+            .reduce(into: [String: String]()) { dict, pair in
+                let (key, value) = pair
+                dict[key] = value
+            }
+
+        let options = StorageUploadDataRequest.Options(
+            metadata: metadata
+        )
+
+        // upload file
+        let key = UUID().uuidString
+        _ = try await Amplify.Storage.uploadData(
+            key: key,
+            data: data(mb: 1),
+            options: options
+        ).value
+
+        // call `HeadObject` through SDK escape hatch
+        let head = try await headObject(key: "public/\(key)")
+
+        // the `HeadObject` response should contain metadata
+        // with the key-value pair including in the upload
+        XCTAssertEqual(
+            head.metadata,
+            metadata,
+            """
+            Expected `headObject().metadata` to equal
+            user-defined metadata \(metadata).
+            Instead, received metadata: \(head.metadata as Any)
+            """
+        )
+
+        // clean up
+        _ = try await Amplify.Storage.remove(key: key)
+    }
 
     // MARK: - Helper Functions
     private func data(mb: Int) -> Data {
