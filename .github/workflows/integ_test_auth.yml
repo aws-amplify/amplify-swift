@@ -1,6 +1,27 @@
 name: Integration Tests | Auth
 on:
   workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
+      hostedui-ios:
+        description: '🌵 HostedUI iOS'
+        required: true
+        default: true
+        type: boolean
   workflow_call:
 
 permissions:
@@ -9,6 +30,7 @@ permissions:
 
 jobs:
   auth-integration-test-iOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.ios }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -36,6 +58,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   auth-integration-test-tvOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.tvos }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -64,6 +87,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   auth-integration-test-watchOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.watchos }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -92,6 +116,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   auth-ui-integration-test-iOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.hostedui-ios }}
     runs-on: macos-12
     environment: IntegrationTest
     steps:
