@@ -9,21 +9,21 @@
 import XCTest
 
 class CognitoUserPoolASFTests: XCTestCase {
-    private var pool: CognitoUserPoolASF!
+    private var userPool: CognitoUserPoolASF!
    
     override func setUp() {
-        pool = CognitoUserPoolASF()
+        userPool = CognitoUserPoolASF()
     }
     
     override func tearDown() {
-        pool = nil
+        userPool = nil
     }
        
     /// Given: A CognitoUserPoolASF
     /// When: userContextData is invoked
     /// Then: A non-empty string is returned
     func testUserContextData_shouldReturnData() throws {
-        let result = try pool.userContextData(
+        let result = try userPool.userContextData(
             for: "TestUser",
             deviceInfo: ASFDeviceInfo(id: "mockedDevice"),
             appInfo: ASFAppInfo(),
@@ -36,10 +36,11 @@ class CognitoUserPoolASFTests: XCTestCase {
     /// When: calculateSecretHash is invoked
     /// Then: A non-empty string is returned
     func testCalculateSecretHash_shouldReturnHash() throws {
-        let result = try pool.calculateSecretHash(
+        let result = try userPool.calculateSecretHash(
             contextJson: "contextJson",
             clientId: "clientId"
         )
+        XCTAssertFalse(result.isEmpty)
     }
     
     /// Given: A CognitoUserPoolASF
@@ -47,7 +48,7 @@ class CognitoUserPoolASFTests: XCTestCase {
     /// Then: A ASFError.hashKey is thrown
     func testCalculateSecretHash_withInvalidClientId_shouldThrowHashKeyError() {
         do {
-            let result = try pool.calculateSecretHash(
+            let result = try userPool.calculateSecretHash(
                 contextJson: "contextJson",
                 clientId: "🕺🏼" // This string cannot be represented using .ascii, so it will throw an error
             )

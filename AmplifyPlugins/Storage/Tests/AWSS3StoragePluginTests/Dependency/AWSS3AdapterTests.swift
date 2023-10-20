@@ -6,7 +6,6 @@
 //
 
 @testable import Amplify
-//@testable import func AmplifyTestCommon.XCTAssertThrowFatalError
 @testable import AWSS3StoragePlugin
 import AWSS3
 import XCTest
