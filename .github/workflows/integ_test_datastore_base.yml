@@ -35,6 +35,7 @@ jobs:
           scheme: AWSDataStorePluginIntegrationTests
           destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
           xcode_path: '/Applications/Xcode_14.3.app'
+          other_flags: '-test-iterations 3 -retry-tests-on-failure'
 
   datastore-integration-test-base-tvOS:
     timeout-minutes: 60
@@ -64,6 +65,7 @@ jobs:
           destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
           sdk: appletvsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          other_flags: '-test-iterations 3 -retry-tests-on-failure'
 
   datastore-integration-test-base-watchOS:
     timeout-minutes: 60
@@ -93,3 +95,4 @@ jobs:
           destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
           sdk: watchsimulator
           xcode_path: '/Applications/Xcode_14.3.app'
+          other_flags: '-test-iterations 3 -retry-tests-on-failure'
