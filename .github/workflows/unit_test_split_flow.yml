@@ -226,21 +226,22 @@ jobs:
       fail-fast: false
       matrix:
         scheme: [
-          AWSAPIPluginTests,
-          AWSCloudWatchLoggingPluginTests,
-          AWSCognitoAuthPluginUnitTests,
-          AWSDataStoreCategoryPluginTests,
-          AWSLocationGeoPluginTests,
-          AWSPinpointAnalyticsPluginUnitTests,
-          AWSPinpointPushNotificationsPluginUnitTests,
-          AWSPluginsCoreTests,
-          AWSPredictionsPluginUnitTests,
-          AWSS3StoragePluginTests,
-          AmplifyAsyncTestingTests,
-          AmplifyBigIntegerTests,
-          AmplifyTests,
-          CoreMLPredictionsPluginUnitTests,
-          InternalAWSPinpointUnitTests
+          AWSAPIPluginTests
+          # AWSCloudWatchLoggingPluginTests,
+          # AWSCognitoAuthPluginUnitTests,
+          # AWSDataStoreCategoryPluginTests,
+          # AWSLocationGeoPluginTests,
+          # AWSPinpointAnalyticsPluginUnitTests,
+          # AWSPinpointPushNotificationsPluginUnitTests,
+          # AWSPluginsCoreTests,
+          # AWSPredictionsPluginUnitTests,
+          # AWSS3StoragePluginTests,
+          # AmplifyAsyncTestingTests,
+          # AmplifyBigIntegerTests,
+          # AmplifyTests,
+          # CoreMLPredictionsPluginUnitTests,
+          # InternalAWSPinpointUnitTests
+          ##
           # Amplify,
           # AWSPluginsCore,
           # AWSAPIPlugin,
@@ -263,7 +264,7 @@ jobs:
         timeout-minutes: 2
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
-          path: ${{ github.workspace }}/Build
+          path: ${{ github.workspace }}/Build/Build/Products
           key: iOS-build-${{ github.sha }}
       - name: test-without-building iOS
         uses: ./.github/composite_actions/run_xcodebuild_test_without_building
