@@ -31,8 +31,5 @@ runs:
         sudo xcode-select -s /Applications/Xcode_14.3.app
         xcode-select -p
         xcodebuild -version
-        ls Build/
-        ls Build/Build/Products/
-
         xcodebuild test-without-building -xctestrun $(find . type f -name "*.xctestrun") -sdk $SDK -destination $DESTINATION -derivedDataPath $DERIVED_DATA_PATH -clonedSourcePackagesDirPath '~/Library/Developer/Xcode/DerivedData/Amplify' -disableAutomaticPackageResolution  -enableCodeCoverage YES -only-testing:$SCHEME | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
