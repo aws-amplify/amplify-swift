@@ -97,9 +97,16 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
-        try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
-                                         postSyncedExpctation: receivedPost)
-        await fulfillment(of: [snapshotWithIsSynced, receivedPost], timeout: 100)
+        receivedPost.assertForOverFulfill = false
+        try await savePostAndWaitForSync(
+            Post(
+                title: "title",
+                content: "content",
+                createdAt: .now()
+            ),
+            postSyncedExpctation: receivedPost
+        )
+        await fulfillment(of: [snapshotWithIsSynced], timeout: 100)
         
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
@@ -296,7 +303,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let receivedPost = expectation(description: "received Post")
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
                                          postSyncedExpctation: receivedPost)
-        await fulfillment(of: [snapshotWithIsSynced, receivedPost], timeout: 30)
+        await fulfillment(of: [snapshotWithIsSynced], timeout: 30)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
         XCTAssertTrue(snapshots.last!.isSynced)
