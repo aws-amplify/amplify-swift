@@ -67,20 +67,6 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         XCTAssertEqual(result, expected)
     }
 
-    // MARK: GetServiceMetadata tests
-
-    func testGetServiceMetadataConstructsMetadataKeysWithS3Prefix() {
-        let metadata = ["key1": "value1", "key2": "value2"]
-        let results = StorageRequestUtils.getServiceMetadata(metadata)
-        XCTAssertNotNil(results)
-
-        for (key, value) in results! {
-            XCTAssertNotNil(key)
-            XCTAssertNotNil(value)
-            XCTAssertTrue(key.contains(StorageRequestUtils.metadataKeyPrefix))
-        }
-    }
-
     // MARK: GetSize tests
 
     func testGetSizeForFileUploadSourceReturnsSize() throws {
