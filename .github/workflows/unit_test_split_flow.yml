@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build-for-testing-ios:
-    name: Unit Test iOS
+    name: Build for Testing - iOS
     runs-on: macos-13
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
@@ -71,7 +71,7 @@ jobs:
       - name: cache build directory
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
-          path: ${{ github.workspace }}/Build
+          path: ${{ github.workspace }}/Build/Build/Products
           key: iOS-build-${{ github.sha }}
 
   # build-for-testing-macos:
@@ -226,18 +226,33 @@ jobs:
       fail-fast: false
       matrix:
         scheme: [
-          Amplify,
-          AWSPluginsCore,
-          AWSAPIPlugin,
-          AWSCloudWatchLoggingPlugin,
-          AWSCognitoAuthPlugin,
-          AWSDataStorePlugin,
-          AWSLocationGeoPlugin,
-          AWSPredictionsPlugin,
-          AWSPinpointAnalyticsPlugin,
-          AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin,
-          CoreMLPredictionsPlugin
+          AWSAPIPluginTests,
+          AWSCloudWatchLoggingPluginTests,
+          AWSCognitoAuthPluginUnitTests,
+          AWSDataStoreCategoryPluginTests,
+          AWSLocationGeoPluginTests,
+          AWSPinpointAnalyticsPluginUnitTests,
+          AWSPinpointPushNotificationsPluginUnitTests,
+          AWSPluginsCoreTests,
+          AWSPredictionsPluginUnitTests,
+          AWSS3StoragePluginTests,
+          AmplifyAsyncTestingTests,
+          AmplifyBigIntegerTests,
+          AmplifyTests,
+          CoreMLPredictionsPluginUnitTests,
+          InternalAWSPinpointUnitTests
+          # Amplify,
+          # AWSPluginsCore,
+          # AWSAPIPlugin,
+          # AWSCloudWatchLoggingPlugin,
+          # AWSCognitoAuthPlugin,
+          # AWSDataStorePlugin,
+          # AWSLocationGeoPlugin,
+          # AWSPredictionsPlugin,
+          # AWSPinpointAnalyticsPlugin,
+          # AWSPinpointPushNotificationsPlugin,
+          # AWSS3StoragePlugin,
+          # CoreMLPredictionsPlugin
         ]
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
