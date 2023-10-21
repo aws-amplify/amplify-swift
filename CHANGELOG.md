@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.21.0 (2023-10-21)
+
+### Features
+
+- **datastore**: Add `isLoaded` public property in List+Model (#3296)
+
 ## 2.20.1 (2023-10-19)
 
 ### Bug Fixes
