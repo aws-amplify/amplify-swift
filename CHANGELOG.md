@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.21.1 (2023-10-23)
+
+### Bug Fixes
+
+- **storage**: include user-controlled metadata in upload requests (#3315)
+- **PushNotifications**: Fixing .network error not being correctly reported (#3314)
+
 ## 2.21.0 (2023-10-21)
 
 ### Features
