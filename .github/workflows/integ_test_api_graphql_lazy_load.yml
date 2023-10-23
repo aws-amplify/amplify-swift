@@ -1,6 +1,17 @@
 name: Integration Tests | API - GraphQL Lazy Load
 on:
   workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
   workflow_call:
 
 permissions:
@@ -9,6 +20,7 @@ permissions:
 
 jobs:
   api-lazy-load-test-iOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.ios }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -36,6 +48,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   api-lazy-load-test-tvOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.tvos }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:
