@@ -365,8 +365,11 @@ class MockPinpointClient: PinpointClientProtocol {
         fatalError("Not supported")
     }
 
+    var putEventsCount = 0
+    var putEventsResult: Result<PutEventsOutputResponse, Error> = .failure(CancellationError())
     func putEvents(input: PutEventsInput) async throws -> PutEventsOutputResponse {
-        fatalError("Not supported")
+        putEventsCount += 1
+        return try putEventsResult.get()
     }
 
     func putEventStream(input: PutEventStreamInput) async throws -> PutEventStreamOutputResponse {

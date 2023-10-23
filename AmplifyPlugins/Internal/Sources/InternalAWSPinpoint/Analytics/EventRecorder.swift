@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSCognitoAuthPlugin
 import AWSPinpoint
 import ClientRuntime
 import enum AwsCommonRuntimeKit.CommonRunTimeError
@@ -186,23 +187,59 @@ class EventRecorder: AnalyticsEventRecording {
         } catch let analyticsError as AnalyticsError {
             // This is a known error explicitly thrown inside the do/catch block, so just rethrow it so it can be handled by the consumer
             throw analyticsError
-        } catch {
-            // This means all events were rejected
-            if isConnectivityError(error) {
-                // Connectivity errors should be retried indefinitely, so we won't update the database
-                log.error("Unable to submit \(pinpointEvents.count) events. Error: \(AWSPinpointErrorConstants.deviceOffline.errorDescription)")
-            } else if isErrorRetryable(error) {
-                // For retryable errors, increment the events retry count
-                log.error("Unable to submit \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
-                incrementRetryCounter(for: pinpointEvents)
-            } else {
-                // For remaining errors, mark events as dirty
-                log.error("Server rejected the submission of \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
-                markEventsAsDirty(pinpointEvents)
+        } catch let authError as AuthError {
+            // This means all events were rejected due to an Auth error
+            log.error("Unable to submit \(pinpointEvents.count) events. Error: \(authError.errorDescription). \(authError.recoverySuggestion)")
+            switch authError {
+            case .signedOut,
+                 .sessionExpired:
+                // Session Expired and Signed Out errors should be retried indefinitely, so we won't update the database
+                log.verbose("Events will be retried")
+            case .service:
+                if case .invalidAccountTypeException = authError.underlyingError as? AWSCognitoAuthError {
+                    // Unsupported Guest Access errors should be retried indefinitely, so we won't update the database
+                    log.verbose("Events will be retried")
+                } else {
+                    fallthrough
+                }
+            default:
+                if let underlyingError = authError.underlyingError {
+                    // Handle the underlying error accordingly
+                    handleError(underlyingError, for: pinpointEvents)
+                } else {
+                    // Otherwise just mark all events as dirty
+                    log.verbose("Events will be discarded")
+                    markEventsAsDirty(pinpointEvents)
+                }
             }
 
             // Rethrow the original error so it can be handled by the consumer
+            throw authError
+        } catch {
+            // This means all events were rejected
+            log.error("Unable to submit \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
+            handleError(error, for: pinpointEvents)
+
+            // Rethrow the original error so it can be handled by the consumer
             throw error
+        }
+    }
+    
+    private func handleError(_ error: Error, for pinpointEvents: [PinpointEvent]) {
+        if isConnectivityError(error) {
+            // Connectivity errors should be retried indefinitely, so we won't update the database
+            log.verbose("Events will be retried")
+            return
+        }
+
+        if isErrorRetryable(error) {
+            // For retryable errors, increment the events retry count
+            log.verbose("Events' retry count will be increased")
+            incrementRetryCounter(for: pinpointEvents)
+        } else {
+            // For remaining errors, mark events as dirty
+            log.verbose("Events will be discarded")
+            markEventsAsDirty(pinpointEvents)
         }
     }
 
@@ -214,6 +251,9 @@ class EventRecorder: AnalyticsEventRecording {
     }
     
     private func errorDescription(_ error: Error) -> String {
+        if isConnectivityError(error) {
+            return AWSPinpointErrorConstants.deviceOffline.errorDescription
+        }
         switch error {
         case let error as ModeledErrorDescribable:
             return error.errorDescription

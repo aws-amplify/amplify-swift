@@ -9,6 +9,7 @@
 
 class MockAnalyticsEventStorage: AnalyticsEventStorage {
     var deletedEvent: String = ""
+    var deleteEventCallCount = 0
     var deleteDirtyEventCallCount = 0
     var initializeStorageCallCount = 0
     var deleteOldestEventCallCount = 0
@@ -22,6 +23,8 @@ class MockAnalyticsEventStorage: AnalyticsEventStorage {
 
     func deleteEvent(eventId: String) throws {
         deletedEvent = eventId
+        deleteEventCallCount += 1
+        events.removeAll { $0.id == eventId }
     }
 
     func deleteDirtyEvents() throws {

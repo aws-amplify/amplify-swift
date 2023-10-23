@@ -14,6 +14,8 @@ enum AnalyticsErrorHelper {
         switch error {
         case let error as AnalyticsErrorConvertible:
             return error.analyticsError
+        case let error as AuthError:
+            return .configuration(error.errorDescription, error.recoverySuggestion, error)
         default:
             return getDefaultError(error as NSError)
         }
