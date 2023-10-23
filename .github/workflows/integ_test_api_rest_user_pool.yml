@@ -12,11 +12,6 @@ on:
         required: true
         default: true
         type: boolean
-      watchos:
-        description: '⌚️ watchOS'
-        required: true
-        default: true
-        type: boolean
   workflow_call:
 
 permissions:
@@ -53,7 +48,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   api-rest-user-pool-test-tvOS:
-    if: ${{ github.event_name != 'workflow_dispatch' || inputs.ios }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.tvos }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:

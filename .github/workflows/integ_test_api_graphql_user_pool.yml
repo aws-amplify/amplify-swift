@@ -12,11 +12,6 @@ on:
         required: true
         default: true
         type: boolean
-      watchos:
-        description: '⌚️ watchOS'
-        required: true
-        default: true
-        type: boolean
   workflow_call:
 
 permissions:
