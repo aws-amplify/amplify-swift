@@ -12,12 +12,17 @@ import AwsCommonRuntimeKit
 
 extension CommonRunTimeError: PushNotificationsErrorConvertible {
     var pushNotificationsError: PushNotificationsError {
+        if isConnectivityError {
+            return .network(
+                PushNotificationsPluginErrorConstants.deviceOffline.errorDescription,
+                PushNotificationsPluginErrorConstants.deviceOffline.recoverySuggestion,
+                self
+            )
+        }
+
         switch self {
         case .crtError(let crtError):
-            let errorDescription = isConnectivityError
-            ? AWSPinpointErrorConstants.deviceOffline.errorDescription
-            : crtError.message
-            return .unknown(errorDescription, self)
+            return .unknown(crtError.message, self)
         }
     }
 }
