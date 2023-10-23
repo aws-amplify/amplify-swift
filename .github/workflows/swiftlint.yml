@@ -13,7 +13,6 @@ on:
       - release
 
 permissions:
-  id-token: write
   contents: read
 
 concurrency:
@@ -24,7 +23,7 @@ jobs:
   run-swiftlint:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/realm/swiftlint:latest
+      image: ghcr.io/realm/swiftlint:0.53.0
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
