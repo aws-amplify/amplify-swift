@@ -9,9 +9,24 @@ import Foundation
 import Amplify
 import AWSClientRuntime
 
+public protocol CredentialsProvider {
+    func fetchCredentials() async throws -> Credentials
+}
+
+public struct Credentials {
+    public let accessKey: String
+    public let secret: String
+    public let expirationTimeout: Date?
+    public let sessionToken: String?
+}
+
 public class AWSAuthService: AWSAuthServiceBehavior {
 
     public init() {}
+
+    public func _credentialsProvider() -> CredentialsProvider {
+        _AmplifyAWSCredentialsProvider()
+    }
 
     public func getCredentialsProvider() -> CredentialsProviding {
         return AmplifyAWSCredentialsProvider()
