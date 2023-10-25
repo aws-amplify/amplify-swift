@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AWSLocation
+//import AWSLocation
 
 public struct AWSLocationGeoPluginConfiguration {
     let defaultMap: String?

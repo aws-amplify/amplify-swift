@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AWSLocation
 
 /// Behavior that `AWSLocationAdapter` will use.
 /// This protocol allows a way to create a Mock and ensure the plugin implementation is testable.

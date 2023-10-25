@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-import AWSLocation
+//import AWSLocation
 
 extension AWSLocationGeoPlugin {
 
@@ -71,7 +71,7 @@ extension AWSLocationGeoPlugin {
 
         do {
             let response = try await locationService.searchPlaceIndex(forText: request)
-            var results = [LocationClientTypes.Place]()
+            var results = [Place]()
             if let responseResults = response.results {
                 results = responseResults.compactMap {
                     $0.place
@@ -146,7 +146,7 @@ extension AWSLocationGeoPlugin {
 
         do {
             let response = try await locationService.searchPlaceIndex(forPosition: request)
-            var results = [LocationClientTypes.Place]()
+            var results = [Place]()
             if let responseResults = response.results {
                 results = responseResults.compactMap {
                     $0.place

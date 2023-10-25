@@ -9,8 +9,11 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 @_spi(PluginHTTPClientEngine) import AWSPluginsCore
-import AWSLocation
-import AWSClientRuntime
+//import AWSLocation
+//import AWSClientRuntime
+
+
+
 
 extension AWSLocationGeoPlugin {
     /// Configures AWSLocationPlugin with the specified configuration.
@@ -28,22 +31,22 @@ extension AWSLocationGeoPlugin {
     /// Configure AWSLocationPlugin programatically using AWSLocationPluginConfiguration
     public func configure(using configuration: AWSLocationGeoPluginConfiguration) throws {
         let authService = AWSAuthService()
-        let credentialsProvider = authService.getCredentialsProvider()
+        let credentialsProvider = authService._credentialsProvider()
         let region = configuration.regionName
-        // TODO: FrameworkMetadata Replacement
-        let serviceConfiguration = try LocationClient.LocationClientConfiguration(
+
+        let serviceConfiguration = AWSLocationClientConfiguration(
             region: region,
             credentialsProvider: credentialsProvider
         )
 
-        serviceConfiguration.httpClientEngine = .userAgentEngine(for: serviceConfiguration)
-
-        let location = LocationClient(config: serviceConfiguration)
+        let location = LocationClient(configuration: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
 
-        configure(locationService: locationService,
-                  authService: authService,
-                  pluginConfig: configuration)
+        configure(
+            locationService: locationService,
+            authService: authService,
+            pluginConfig: configuration
+        )
     }
 
     // MARK: - Internal

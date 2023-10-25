@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-import AWSLocation
+//import AWSLocation
 
 /// The AWSLocationPlugin implements the Geo APIs for Amazon Location
 public final class AWSLocationGeoPlugin: GeoCategoryPlugin {
@@ -32,9 +32,9 @@ public final class AWSLocationGeoPlugin: GeoCategoryPlugin {
     /// Retrieve the escape hatch to perform actions directly on AWSLocation.
     ///
     /// - Returns: AWSLocation instance
-    public func getEscapeHatch() -> LocationClient {
-        locationService.getEscapeHatch()
-    }
+//    public func getEscapeHatch() -> LocationClient {
+//        locationService.getEscapeHatch()
+//    }
 }
 
 extension AWSLocationGeoPlugin: AmplifyVersionable { }

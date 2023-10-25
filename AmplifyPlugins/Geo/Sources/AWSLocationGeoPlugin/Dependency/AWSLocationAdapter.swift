@@ -9,8 +9,6 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-import AWSLocation
-
 /// Conforms to AWSLocationBehavior which uses an instance of the AWSLocation to perform its methods.
 ///
 /// This class acts as a wrapper to expose AWSLocation functionality through an instance over a singleton,
