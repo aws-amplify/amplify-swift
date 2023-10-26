@@ -46,4 +46,51 @@ extension MockTextractBehavior {
     func startDocumentTextDetection(input: AWSTextract.StartDocumentTextDetectionInput) async throws -> AWSTextract.StartDocumentTextDetectionOutput { fatalError() }
     func startExpenseAnalysis(input: AWSTextract.StartExpenseAnalysisInput) async throws -> AWSTextract.StartExpenseAnalysisOutput { fatalError() }
     func startLendingAnalysis(input: AWSTextract.StartLendingAnalysisInput) async throws -> AWSTextract.StartLendingAnalysisOutput { fatalError() }
+    func createAdapter(input: AWSTextract.CreateAdapterInput) async throws -> AWSTextract.CreateAdapterOutput {
+        fatalError()
+    }
+
+    func createAdapterVersion(input: AWSTextract.CreateAdapterVersionInput) async throws -> AWSTextract.CreateAdapterVersionOutput {
+        fatalError()
+    }
+
+    func deleteAdapter(input: AWSTextract.DeleteAdapterInput) async throws -> AWSTextract.DeleteAdapterOutput {
+        fatalError()
+    }
+
+    func deleteAdapterVersion(input: AWSTextract.DeleteAdapterVersionInput) async throws -> AWSTextract.DeleteAdapterVersionOutput {
+        fatalError()
+    }
+
+    func getAdapter(input: AWSTextract.GetAdapterInput) async throws -> AWSTextract.GetAdapterOutput {
+        fatalError()
+    }
+
+    func getAdapterVersion(input: AWSTextract.GetAdapterVersionInput) async throws -> AWSTextract.GetAdapterVersionOutput {
+        fatalError()
+    }
+
+    func listAdapters(input: AWSTextract.ListAdaptersInput) async throws -> AWSTextract.ListAdaptersOutput {
+        fatalError()
+    }
+
+    func listAdapterVersions(input: AWSTextract.ListAdapterVersionsInput) async throws -> AWSTextract.ListAdapterVersionsOutput {
+        fatalError()
+    }
+
+    func listTagsForResource(input: AWSTextract.ListTagsForResourceInput) async throws -> AWSTextract.ListTagsForResourceOutput {
+        fatalError()
+    }
+
+    func tagResource(input: AWSTextract.TagResourceInput) async throws -> AWSTextract.TagResourceOutput {
+        fatalError()
+    }
+
+    func untagResource(input: AWSTextract.UntagResourceInput) async throws -> AWSTextract.UntagResourceOutput {
+        fatalError()
+    }
+
+    func updateAdapter(input: AWSTextract.UpdateAdapterInput) async throws -> AWSTextract.UpdateAdapterOutput {
+        fatalError()
+    }
 }

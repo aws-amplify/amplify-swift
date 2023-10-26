@@ -121,4 +121,15 @@ extension MockRekognitionBehavior {
     func listUsers(input: AWSRekognition.ListUsersInput) async throws -> AWSRekognition.ListUsersOutput { fatalError() }
     func searchUsers(input: AWSRekognition.SearchUsersInput) async throws -> AWSRekognition.SearchUsersOutput { fatalError() }
     func searchUsersByImage(input: AWSRekognition.SearchUsersByImageInput) async throws -> AWSRekognition.SearchUsersByImageOutput { fatalError() }
+    func getMediaAnalysisJob(input: AWSRekognition.GetMediaAnalysisJobInput) async throws -> AWSRekognition.GetMediaAnalysisJobOutput {
+        fatalError()
+    }
+
+    func listMediaAnalysisJobs(input: AWSRekognition.ListMediaAnalysisJobsInput) async throws -> AWSRekognition.ListMediaAnalysisJobsOutput {
+        fatalError()
+    }
+
+    func startMediaAnalysisJob(input: AWSRekognition.StartMediaAnalysisJobInput) async throws -> AWSRekognition.StartMediaAnalysisJobOutput {
+        fatalError()
+    }
 }
