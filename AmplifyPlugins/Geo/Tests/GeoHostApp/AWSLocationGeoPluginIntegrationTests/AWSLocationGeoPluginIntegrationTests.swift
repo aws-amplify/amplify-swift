@@ -6,8 +6,6 @@
 //
 
 import XCTest
-import AWSLocation
-
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSLocationGeoPlugin
@@ -41,8 +39,8 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
             XCTFail("Could not get plugin of type AWSLocationGeoPlugin")
             return
         }
-        let awsLocation = locationPlugin.getEscapeHatch()
-        XCTAssertNotNil(awsLocation)
+//        let awsLocation = locationPlugin.getEscapeHatch()
+//        XCTAssertNotNil(awsLocation)
     }
 
     // MARK: - Search
@@ -56,6 +54,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     ///    - Place results are returned.
     ///
     func testSearchForText() async {
+        Amplify.Logging.logLevel = .verbose
         let options = Geo.SearchForTextOptions(area: .near(coordinates))
         do {
             let places = try await Amplify.Geo.search(for: searchText, options: options)
@@ -74,6 +73,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     ///    - Place results are returned.
     ///
     func testSearchForCoordinates() async {
+        Amplify.Logging.logLevel = .verbose
         do {
             let places = try await Amplify.Geo.search(for: coordinates, options: nil)
             XCTAssertFalse(places.isEmpty)

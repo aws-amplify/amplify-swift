@@ -85,16 +85,21 @@ extension AWSLocationGeoPlugin {
                     return nil
                 }
 
-                return Geo.Place(coordinates: Geo.Coordinates(latitude: lat, longitude: long),
-                                 label: $0.label,
-                                 addressNumber: $0.addressNumber,
-                                 street: $0.street,
-                                 municipality: $0.municipality,
-                                 neighborhood: $0.neighborhood,
-                                 region: $0.region,
-                                 subRegion: $0.subRegion,
-                                 postalCode: $0.postalCode,
-                                 country: $0.country)
+                return Geo.Place(
+                    coordinates: Geo.Coordinates(
+                        latitude: lat,
+                        longitude: long
+                    ),
+                    label: $0.label,
+                    addressNumber: $0.addressNumber,
+                    street: $0.street,
+                    municipality: $0.municipality,
+                    neighborhood: $0.neighborhood,
+                    region: $0.region,
+                    subRegion: $0.subRegion,
+                    postalCode: $0.postalCode,
+                    country: $0.country
+                )
             }
             return places
         } catch let error as GeoErrorConvertible {

@@ -38,7 +38,7 @@ extension SigV4Signer {
 
         let signingKey = _signingKey(
             region: region,
-            secretKey: credential.secretKey,
+            secretKey: credentials.secret,
             datestamp: datestamp
         )
 

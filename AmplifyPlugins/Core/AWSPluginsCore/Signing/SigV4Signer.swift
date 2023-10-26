@@ -192,18 +192,16 @@ public struct SigV4Signer {
             headersToAdd,
             uniquingKeysWith: { _, new in new }
         )
+            .filter { $0.key != "Authorization" }
 
         let url = url.path.isEmpty
         ? url.appendingPathComponent("/")
         : url
 
         let hashedPayload = _hashedPayload(body)
-        let headersToSign = headers
-            .filter { $0.key != "Authorization" }
-
         let canonicalURI = PercentEncoding.uriWithSlash.encode(url.path)
-        let canonicalHeaders = _canonicalHeaders(headersToSign)
-        let signedHeaders = _signedHeaders(headersToSign)
+        let canonicalHeaders = _canonicalHeaders(headers)
+        let signedHeaders = _signedHeaders(headers)
         let credentialScope = _credentialScope(
             datestamp: datestamp,
             region: region,

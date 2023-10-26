@@ -8,7 +8,7 @@
 import Foundation
 
 public struct HTTPMethod {
-    let verb: String
+    public let verb: String
 
     public static let get = Self(verb: "GET")
     public static let post = Self(verb: "POST")
