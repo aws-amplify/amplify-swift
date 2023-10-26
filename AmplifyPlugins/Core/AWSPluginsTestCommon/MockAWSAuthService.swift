@@ -5,12 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
-import AWSClientRuntime
 import Amplify
 import AWSPluginsCore
 
 public class MockAWSAuthService: AWSAuthServiceBehavior {
+    public func _credentialsProvider() -> CredentialsProvider {
+        interactions.append(#function)
+        let cognitoCredentialsProvider = MyCustomCredentialsProvider()
+        return cognitoCredentialsProvider
+    }
 
     var interactions: [String] = []
     var getIdentityIdError: AuthError?
@@ -26,12 +29,6 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
 
     public func reset() {
         interactions.append(#function)
-    }
-
-    public func getCredentialsProvider() -> CredentialsProviding {
-        interactions.append(#function)
-        let cognitoCredentialsProvider = MyCustomCredentialsProvider()
-        return cognitoCredentialsProvider
     }
 
     public func getIdentityID() async throws -> String {
@@ -61,11 +58,14 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     }
 }
 
-struct MyCustomCredentialsProvider: CredentialsProviding {
-    func getCredentials() async throws -> AWSClientRuntime.AWSCredentials {
-        AWSCredentials(
+
+struct MyCustomCredentialsProvider: CredentialsProvider {
+    func fetchCredentials() async throws -> AWSPluginsCore.Credentials {
+        Credentials(
             accessKey: "AKIDEXAMPLE",
             secret: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
-            expirationTimeout: Date().addingTimeInterval(30))
+            expirationTimeout: Date().addingTimeInterval(30),
+            sessionToken: "session_token"
+        )
     }
 }

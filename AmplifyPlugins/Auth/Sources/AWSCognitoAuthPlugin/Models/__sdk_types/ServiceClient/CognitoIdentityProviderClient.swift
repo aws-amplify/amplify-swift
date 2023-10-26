@@ -20,6 +20,7 @@ public class CognitoIdentityProviderClient {
     }
 }
 
+#error("Write request implementation")
 extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {
     /// Throws InitiateAuthOutputError
     func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse  {
