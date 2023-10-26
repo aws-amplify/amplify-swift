@@ -25,7 +25,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testSuccessfulUpdateUserAttributes() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            UpdateUserAttributesOutputResponse(codeDeliveryDetailsList: [
+            UpdateUserAttributesOutput(codeDeliveryDetailsList: [
                 .init(attributeName: "attributeName",
                       deliveryMedium: .email,
                       destination: "destination")])
@@ -49,7 +49,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     func testUpdateUserAttributesWithEmptyResult() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
-            UpdateUserAttributesOutputResponse()
+            UpdateUserAttributesOutput()
         })
         _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
     }

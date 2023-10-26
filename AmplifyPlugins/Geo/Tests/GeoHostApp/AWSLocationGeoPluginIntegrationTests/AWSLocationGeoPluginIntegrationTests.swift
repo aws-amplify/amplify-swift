@@ -21,6 +21,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
         do {
+            Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSLocationGeoPlugin())
             let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)

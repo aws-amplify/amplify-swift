@@ -23,52 +23,52 @@ extension SRPStateData {
     )
 }
 
-extension InitiateAuthOutputResponse {
-    static let testData = InitiateAuthOutputResponse(
+extension InitiateAuthOutput {
+    static let testData = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: nil,
         session: nil)
 
-    static let validTestData = InitiateAuthOutputResponse(
+    static let validTestData = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
-        challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+        challengeParameters: InitiateAuthOutput.validChalengeParams,
         session: "session")
 
-    static let invalidChallenge = InitiateAuthOutputResponse(
+    static let invalidChallenge = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
         challengeParameters: [:],
         session: nil)
 
-    static let invalidTestDataWithNoSalt = InitiateAuthOutputResponse(
+    static let invalidTestDataWithNoSalt = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
-        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSalt,
+        challengeParameters: InitiateAuthOutput.invalidChalengeParamsNoSalt,
         session: "session")
 
-    static let invalidTestDataWithNoSecretBlock = InitiateAuthOutputResponse(
+    static let invalidTestDataWithNoSecretBlock = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
-        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSecretBlock,
+        challengeParameters: InitiateAuthOutput.invalidChalengeParamsNoSecretBlock,
         session: "session")
 
-    static let invalidTestDataWithNoSRPB = InitiateAuthOutputResponse(
+    static let invalidTestDataWithNoSRPB = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
-        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsNoSRPB,
+        challengeParameters: InitiateAuthOutput.invalidChalengeParamsNoSRPB,
         session: "session")
 
-    static let invalidTestDataForException = InitiateAuthOutputResponse(
+    static let invalidTestDataForException = InitiateAuthOutput(
         authenticationResult: .none,
         challengeName: .passwordVerifier,
-        challengeParameters: InitiateAuthOutputResponse.invalidChalengeParamsForException,
+        challengeParameters: InitiateAuthOutput.invalidChalengeParamsForException,
         session: "session")
 }
 
-extension RespondToAuthChallengeOutputResponse {
-    static func testData() -> RespondToAuthChallengeOutputResponse {
+extension RespondToAuthChallengeOutput {
+    static func testData() -> RespondToAuthChallengeOutput {
         let result = CognitoIdentityProviderClientTypes.AuthenticationResultType(
             accessToken: Defaults.validAccessToken,
             expiresIn: 3_600,
@@ -77,14 +77,14 @@ extension RespondToAuthChallengeOutputResponse {
             refreshToken: "refreshTokenXXX",
             tokenType: "Bearer")
 
-        return RespondToAuthChallengeOutputResponse(
+        return RespondToAuthChallengeOutput(
             authenticationResult: result,
             challengeName: .none,
             challengeParameters: [:],
             session: "session")
     }
 
-    static func testDataWithNewDevice() -> RespondToAuthChallengeOutputResponse {
+    static func testDataWithNewDevice() -> RespondToAuthChallengeOutput {
         let result = CognitoIdentityProviderClientTypes.AuthenticationResultType(
             accessToken: Defaults.validAccessToken,
             expiresIn: 3_600,
@@ -93,15 +93,15 @@ extension RespondToAuthChallengeOutputResponse {
             refreshToken: "refreshTokenXXX",
             tokenType: "Bearer")
 
-        return RespondToAuthChallengeOutputResponse(
+        return RespondToAuthChallengeOutput(
             authenticationResult: result,
             challengeName: .none,
             challengeParameters: [:],
             session: "session")
     }
 
-    static func testDataWithVerifyDevice() -> RespondToAuthChallengeOutputResponse {
-        return RespondToAuthChallengeOutputResponse(
+    static func testDataWithVerifyDevice() -> RespondToAuthChallengeOutput {
+        return RespondToAuthChallengeOutput(
             authenticationResult: nil,
             challengeName: .deviceSrpAuth,
             challengeParameters: [:],
@@ -110,8 +110,8 @@ extension RespondToAuthChallengeOutputResponse {
 
     static func testData(
         challenge: CognitoIdentityProviderClientTypes.ChallengeNameType = .smsMfa,
-        challengeParameters: [String: String] = [:]) -> RespondToAuthChallengeOutputResponse {
-            return RespondToAuthChallengeOutputResponse(
+        challengeParameters: [String: String] = [:]) -> RespondToAuthChallengeOutput {
+            return RespondToAuthChallengeOutput(
                 authenticationResult: nil,
                 challengeName: challenge,
                 challengeParameters: challengeParameters,
@@ -153,7 +153,7 @@ extension SignInEvent {
 
     static let respondPasswordVerifierEvent = SignInEvent(
         id: "respondPasswordVerifierEvent",
-        eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData, [:])
+        eventType: .respondPasswordVerifier(.testData, InitiateAuthOutput.testData, [:])
     )
 
     static func finalizeSRPSignInEvent(signedInData: SignedInData) -> SignInEvent {
@@ -216,7 +216,7 @@ extension SRPStateData {
         clientTimestamp: Date(timeIntervalSinceReferenceDate: 656_187_908.969623)
     )
 }
-extension InitiateAuthOutputResponse {
+extension InitiateAuthOutput {
 
     static let invalidChalengeParamsNoSalt: [String: String] = [
         "SALT": "",

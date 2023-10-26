@@ -42,7 +42,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         let expectation = expectation(description: "fetchAWSCredentials")
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
             MockIdentity(mockGetCredentialsResponse: { _ in
-                return GetCredentialsForIdentityOutputResponse()
+                return GetCredentialsForIdentityOutput()
             })
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
@@ -75,7 +75,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
         let expectation = expectation(description: "fetchAWSCredentials")
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
             MockIdentity(mockGetCredentialsResponse: { _ in
-                return GetCredentialsForIdentityOutputResponse(identityId: "identityId")
+                return GetCredentialsForIdentityOutput(identityId: "identityId")
             })
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(
@@ -117,7 +117,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
             MockIdentity(mockGetCredentialsResponse: { _ in
-                return GetCredentialsForIdentityOutputResponse(
+                return GetCredentialsForIdentityOutput(
                     credentials: CognitoIdentityClientTypes.Credentials(
                         accessKeyId: expectedAccessKey,
                         expiration: Date(),

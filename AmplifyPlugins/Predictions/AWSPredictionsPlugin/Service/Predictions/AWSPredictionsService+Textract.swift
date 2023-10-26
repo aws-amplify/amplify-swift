@@ -12,7 +12,7 @@ import Foundation
 extension AWSPredictionsService: AWSTextractServiceBehavior {
     func detectDocumentText(
         image: Data
-    ) async throws -> DetectDocumentTextOutputResponse {
+    ) async throws -> DetectDocumentTextOutput {
         let document = TextractClientTypes.Document(bytes: image)
         let request = DetectDocumentTextInput(document: document)
        return try await awsTextract.detectDocumentText(input: request)
@@ -38,7 +38,7 @@ extension AWSPredictionsService: AWSTextractServiceBehavior {
             featureTypes: featureTypes
         )
 
-        let documentResult: AnalyzeDocumentOutputResponse
+        let documentResult: AnalyzeDocumentOutput
         do {
             documentResult = try await awsTextract.analyzeDocument(input: request)
         } catch let error as PredictionsErrorConvertible {

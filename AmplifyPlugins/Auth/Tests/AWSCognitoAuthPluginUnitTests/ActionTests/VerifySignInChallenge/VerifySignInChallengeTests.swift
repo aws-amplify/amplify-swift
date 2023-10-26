@@ -41,7 +41,7 @@ class VerifySignInChallengeTests: XCTestCase {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
                     verifyPasswordInvoked.fulfill()
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
@@ -75,7 +75,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
@@ -124,7 +124,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse.testData()
+                    return RespondToAuthChallengeOutput.testData()
                 })
         }
 
@@ -270,7 +270,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse.testDataWithNewDevice()
+                    return RespondToAuthChallengeOutput.testDataWithNewDevice()
                 })
         }
 
@@ -314,7 +314,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse.testDataWithVerifyDevice()
+                    return RespondToAuthChallengeOutput.testDataWithVerifyDevice()
                 })
         }
 

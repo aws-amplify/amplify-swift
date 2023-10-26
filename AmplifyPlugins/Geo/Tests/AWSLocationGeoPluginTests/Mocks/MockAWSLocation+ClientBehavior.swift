@@ -12,35 +12,35 @@ import Foundation
 extension MockAWSLocation {
 
     public func searchPlaceIndex(forText: SearchPlaceIndexForTextInput,
-                                 completionHandler: ((SearchPlaceIndexForTextOutputResponse?,
+                                 completionHandler: ((SearchPlaceIndexForTextOutput?,
                                                       Error?) -> Void)?) {
         searchPlaceIndexForTextCalled += 1
         searchPlaceIndexForTextRequest = forText
         if let completionHandler = completionHandler {
-            completionHandler(SearchPlaceIndexForTextOutputResponse(), nil)
+            completionHandler(SearchPlaceIndexForTextOutput(), nil)
         }
     }
 
     public func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput,
-                                 completionHandler: ((SearchPlaceIndexForPositionOutputResponse?,
+                                 completionHandler: ((SearchPlaceIndexForPositionOutput?,
                                                       Error?) -> Void)?) {
         searchPlaceIndexForPositionCalled += 1
         searchPlaceIndexForPositionRequest = forPosition
         if let completionHandler = completionHandler {
-            completionHandler(SearchPlaceIndexForPositionOutputResponse(), nil)
+            completionHandler(SearchPlaceIndexForPositionOutput(), nil)
         }
     }
 
-    public func searchPlaceIndex(forText: SearchPlaceIndexForTextInput) async throws -> SearchPlaceIndexForTextOutputResponse {
+    public func searchPlaceIndex(forText: SearchPlaceIndexForTextInput) async throws -> SearchPlaceIndexForTextOutput {
         searchPlaceIndexForTextCalled += 1
         searchPlaceIndexForTextRequest = forText
-        return SearchPlaceIndexForTextOutputResponse()
+        return SearchPlaceIndexForTextOutput()
     }
 
-    public func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput) async throws -> SearchPlaceIndexForPositionOutputResponse {
+    public func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput) async throws -> SearchPlaceIndexForPositionOutput {
         searchPlaceIndexForPositionCalled += 1
         searchPlaceIndexForPositionRequest = forPosition
-        return SearchPlaceIndexForPositionOutputResponse()
+        return SearchPlaceIndexForPositionOutput()
 
     }
 }

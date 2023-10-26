@@ -33,11 +33,11 @@ class AWSLocationAdapter: AWSLocationBehavior {
         location
     }
 
-    func searchPlaceIndex(forText: SearchPlaceIndexForTextInput) async throws -> SearchPlaceIndexForTextOutputResponse {
+    func searchPlaceIndex(forText: SearchPlaceIndexForTextInput) async throws -> SearchPlaceIndexForTextOutput {
         return try await location.searchPlaceIndexForText(input: forText)
     }
 
-    func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput) async throws -> SearchPlaceIndexForPositionOutputResponse {
+    func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput) async throws -> SearchPlaceIndexForPositionOutput {
         return try await location.searchPlaceIndexForPosition(input: forPosition)
     }
 }

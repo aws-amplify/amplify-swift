@@ -12,70 +12,70 @@ import ClientRuntime
 struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     typealias MockSignUpResponse = (SignUpInput) async throws
-    -> SignUpOutputResponse
+    -> SignUpOutput
 
     typealias MockRevokeTokenResponse = (RevokeTokenInput) async throws
-    -> RevokeTokenOutputResponse
+    -> RevokeTokenOutput
 
     typealias MockInitiateAuthResponse = (InitiateAuthInput) async throws
-    -> InitiateAuthOutputResponse
+    -> InitiateAuthOutput
 
     typealias MockConfirmSignUpResponse = (ConfirmSignUpInput) async throws
-    -> ConfirmSignUpOutputResponse
+    -> ConfirmSignUpOutput
 
     typealias MockGlobalSignOutResponse = (GlobalSignOutInput) async throws
-    -> GlobalSignOutOutputResponse
+    -> GlobalSignOutOutput
 
     typealias MockRespondToAuthChallengeResponse = (RespondToAuthChallengeInput) async throws
-    -> RespondToAuthChallengeOutputResponse
+    -> RespondToAuthChallengeOutput
 
-    typealias MockGetUserAttributeVerificationCodeOutputResponse = (GetUserAttributeVerificationCodeInput) async throws
-    -> GetUserAttributeVerificationCodeOutputResponse
+    typealias MockGetUserAttributeVerificationCodeOutput = (GetUserAttributeVerificationCodeInput) async throws
+    -> GetUserAttributeVerificationCodeOutput
 
-    typealias MockGetUserAttributesOutputResponse = (GetUserInput) async throws
-    -> GetUserOutputResponse
+    typealias MockGetUserAttributesOutput = (GetUserInput) async throws
+    -> GetUserOutput
 
-    typealias MockUpdateUserAttributesOutputResponse = (UpdateUserAttributesInput) async throws
-    -> UpdateUserAttributesOutputResponse
+    typealias MockUpdateUserAttributesOutput = (UpdateUserAttributesInput) async throws
+    -> UpdateUserAttributesOutput
 
-    typealias MockConfirmUserAttributeOutputResponse = (VerifyUserAttributeInput) async throws
-    -> VerifyUserAttributeOutputResponse
+    typealias MockConfirmUserAttributeOutput = (VerifyUserAttributeInput) async throws
+    -> VerifyUserAttributeOutput
 
-    typealias MockChangePasswordOutputResponse = (ChangePasswordInput) async throws
-    -> ChangePasswordOutputResponse
+    typealias MockChangePasswordOutput = (ChangePasswordInput) async throws
+    -> ChangePasswordOutput
 
-    typealias MockResendConfirmationCodeOutputResponse = (ResendConfirmationCodeInput) async throws
-    -> ResendConfirmationCodeOutputResponse
+    typealias MockResendConfirmationCodeOutput = (ResendConfirmationCodeInput) async throws
+    -> ResendConfirmationCodeOutput
 
-    typealias MockForgotPasswordOutputResponse = (ForgotPasswordInput) async throws
-    -> ForgotPasswordOutputResponse
+    typealias MockForgotPasswordOutput = (ForgotPasswordInput) async throws
+    -> ForgotPasswordOutput
 
-    typealias MockDeleteUserOutputResponse = (DeleteUserInput) async throws
-    -> DeleteUserOutputResponse
+    typealias MockDeleteUserOutput = (DeleteUserInput) async throws
+    -> DeleteUserOutput
 
-    typealias MockConfirmForgotPasswordOutputResponse = (ConfirmForgotPasswordInput) async throws
-    -> ConfirmForgotPasswordOutputResponse
+    typealias MockConfirmForgotPasswordOutput = (ConfirmForgotPasswordInput) async throws
+    -> ConfirmForgotPasswordOutput
 
-    typealias MockListDevicesOutputResponse = (ListDevicesInput) async throws
-    -> ListDevicesOutputResponse
+    typealias MockListDevicesOutput = (ListDevicesInput) async throws
+    -> ListDevicesOutput
 
     typealias MockRememberDeviceResponse = (UpdateDeviceStatusInput) async throws
-    -> UpdateDeviceStatusOutputResponse
+    -> UpdateDeviceStatusOutput
 
     typealias MockForgetDeviceResponse = (ForgetDeviceInput) async throws
-    -> ForgetDeviceOutputResponse
+    -> ForgetDeviceOutput
 
     typealias MockConfirmDeviceResponse = (ConfirmDeviceInput) async throws
-    -> ConfirmDeviceOutputResponse
+    -> ConfirmDeviceOutput
 
     typealias MockSetUserMFAPreferenceResponse = (SetUserMFAPreferenceInput) async throws
-    -> SetUserMFAPreferenceOutputResponse
+    -> SetUserMFAPreferenceOutput
 
     typealias MockAssociateSoftwareTokenResponse = (AssociateSoftwareTokenInput) async throws
-    -> AssociateSoftwareTokenOutputResponse
+    -> AssociateSoftwareTokenOutput
 
     typealias MockVerifySoftwareTokenResponse = (VerifySoftwareTokenInput) async throws
-    -> VerifySoftwareTokenOutputResponse
+    -> VerifySoftwareTokenOutput
 
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
@@ -83,16 +83,16 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockGlobalSignOutResponse: MockGlobalSignOutResponse?
     let mockConfirmSignUpResponse: MockConfirmSignUpResponse?
     let mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse?
-    let mockGetUserAttributeVerificationCodeOutputResponse: MockGetUserAttributeVerificationCodeOutputResponse?
-    let mockGetUserAttributeResponse: MockGetUserAttributesOutputResponse?
-    let mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutputResponse?
-    let mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse?
-    let mockChangePasswordOutputResponse: MockChangePasswordOutputResponse?
-    let mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse?
-    let mockDeleteUserOutputResponse: MockDeleteUserOutputResponse?
-    let mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse?
-    let mockConfirmForgotPasswordOutputResponse: MockConfirmForgotPasswordOutputResponse?
-    let mockListDevicesOutputResponse: MockListDevicesOutputResponse?
+    let mockGetUserAttributeVerificationCodeOutput: MockGetUserAttributeVerificationCodeOutput?
+    let mockGetUserAttributeResponse: MockGetUserAttributesOutput?
+    let mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutput?
+    let mockConfirmUserAttributeOutput: MockConfirmUserAttributeOutput?
+    let mockChangePasswordOutput: MockChangePasswordOutput?
+    let mockResendConfirmationCodeOutput: MockResendConfirmationCodeOutput?
+    let mockDeleteUserOutput: MockDeleteUserOutput?
+    let mockForgotPasswordOutput: MockForgotPasswordOutput?
+    let mockConfirmForgotPasswordOutput: MockConfirmForgotPasswordOutput?
+    let mockListDevicesOutput: MockListDevicesOutput?
     let mockRememberDeviceResponse: MockRememberDeviceResponse?
     let mockForgetDeviceResponse: MockForgetDeviceResponse?
     let mockConfirmDeviceResponse: MockConfirmDeviceResponse?
@@ -107,16 +107,16 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockGlobalSignOutResponse: MockGlobalSignOutResponse? = nil,
         mockConfirmSignUpResponse: MockConfirmSignUpResponse? = nil,
         mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse? = nil,
-        mockGetUserAttributeVerificationCodeOutputResponse: MockGetUserAttributeVerificationCodeOutputResponse? = nil,
-        mockGetUserAttributeResponse: MockGetUserAttributesOutputResponse? = nil,
-        mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutputResponse? = nil,
-        mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse? = nil,
-        mockChangePasswordOutputResponse: MockChangePasswordOutputResponse? = nil,
-        mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse? = nil,
-        mockDeleteUserOutputResponse: MockDeleteUserOutputResponse? = nil,
-        mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse? = nil,
-        mockConfirmForgotPasswordOutputResponse: MockConfirmForgotPasswordOutputResponse? = nil,
-        mockListDevicesOutputResponse: MockListDevicesOutputResponse? = nil,
+        mockGetUserAttributeVerificationCodeOutput: MockGetUserAttributeVerificationCodeOutput? = nil,
+        mockGetUserAttributeResponse: MockGetUserAttributesOutput? = nil,
+        mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutput? = nil,
+        mockConfirmUserAttributeOutput: MockConfirmUserAttributeOutput? = nil,
+        mockChangePasswordOutput: MockChangePasswordOutput? = nil,
+        mockResendConfirmationCodeOutput: MockResendConfirmationCodeOutput? = nil,
+        mockDeleteUserOutput: MockDeleteUserOutput? = nil,
+        mockForgotPasswordOutput: MockForgotPasswordOutput? = nil,
+        mockConfirmForgotPasswordOutput: MockConfirmForgotPasswordOutput? = nil,
+        mockListDevicesOutput: MockListDevicesOutput? = nil,
         mockRememberDeviceResponse: MockRememberDeviceResponse? = nil,
         mockForgetDeviceResponse: MockForgetDeviceResponse? = nil,
         mockConfirmDeviceResponse: MockConfirmDeviceResponse? = nil,
@@ -130,16 +130,16 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockGlobalSignOutResponse = mockGlobalSignOutResponse
         self.mockConfirmSignUpResponse = mockConfirmSignUpResponse
         self.mockRespondToAuthChallengeResponse = mockRespondToAuthChallengeResponse
-        self.mockGetUserAttributeVerificationCodeOutputResponse = mockGetUserAttributeVerificationCodeOutputResponse
+        self.mockGetUserAttributeVerificationCodeOutput = mockGetUserAttributeVerificationCodeOutput
         self.mockGetUserAttributeResponse = mockGetUserAttributeResponse
         self.mockUpdateUserAttributeResponse = mockUpdateUserAttributeResponse
-        self.mockConfirmUserAttributeOutputResponse = mockConfirmUserAttributeOutputResponse
-        self.mockChangePasswordOutputResponse = mockChangePasswordOutputResponse
-        self.mockResendConfirmationCodeOutputResponse = mockResendConfirmationCodeOutputResponse
-        self.mockDeleteUserOutputResponse = mockDeleteUserOutputResponse
-        self.mockForgotPasswordOutputResponse = mockForgotPasswordOutputResponse
-        self.mockConfirmForgotPasswordOutputResponse = mockConfirmForgotPasswordOutputResponse
-        self.mockListDevicesOutputResponse = mockListDevicesOutputResponse
+        self.mockConfirmUserAttributeOutput = mockConfirmUserAttributeOutput
+        self.mockChangePasswordOutput = mockChangePasswordOutput
+        self.mockResendConfirmationCodeOutput = mockResendConfirmationCodeOutput
+        self.mockDeleteUserOutput = mockDeleteUserOutput
+        self.mockForgotPasswordOutput = mockForgotPasswordOutput
+        self.mockConfirmForgotPasswordOutput = mockConfirmForgotPasswordOutput
+        self.mockListDevicesOutput = mockListDevicesOutput
         self.mockRememberDeviceResponse = mockRememberDeviceResponse
         self.mockForgetDeviceResponse = mockForgetDeviceResponse
         self.mockConfirmDeviceResponse = mockConfirmDeviceResponse
@@ -149,98 +149,98 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     }
 
     /// Throws InitiateAuthOutputError
-    func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutputResponse {
+    func initiateAuth(input: InitiateAuthInput) async throws -> InitiateAuthOutput {
         return try await mockInitiateAuthResponse!(input)
     }
 
     /// Throws RespondToAuthChallengeOutputError
     func respondToAuthChallenge(
         input: RespondToAuthChallengeInput
-    ) async throws -> RespondToAuthChallengeOutputResponse {
+    ) async throws -> RespondToAuthChallengeOutput {
         return try await mockRespondToAuthChallengeResponse!(input)
     }
 
     /// Throws SignUpOutputError
-    func signUp(input: SignUpInput) async throws -> SignUpOutputResponse {
+    func signUp(input: SignUpInput) async throws -> SignUpOutput {
         return try await mockSignUpResponse!(input)
     }
 
     /// Throws ConfirmSignUpOutputError
-    func confirmSignUp(input: ConfirmSignUpInput) async throws -> ConfirmSignUpOutputResponse {
+    func confirmSignUp(input: ConfirmSignUpInput) async throws -> ConfirmSignUpOutput {
         return try await mockConfirmSignUpResponse!(input)
     }
 
     /// Throws GlobalSignOutOutputError
-    func globalSignOut(input: GlobalSignOutInput) async throws -> GlobalSignOutOutputResponse {
+    func globalSignOut(input: GlobalSignOutInput) async throws -> GlobalSignOutOutput {
         return try await mockGlobalSignOutResponse!(input)
     }
 
     /// Throws RevokeTokenOutputError
-    func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutputResponse {
+    func revokeToken(input: RevokeTokenInput) async throws -> RevokeTokenOutput {
         return try await mockRevokeTokenResponse!(input)
     }
 
-    func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutputResponse {
-        return try await mockGetUserAttributeVerificationCodeOutputResponse!(input)
+    func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutput {
+        return try await mockGetUserAttributeVerificationCodeOutput!(input)
     }
 
-    func getUser(input: GetUserInput) async throws -> GetUserOutputResponse {
+    func getUser(input: GetUserInput) async throws -> GetUserOutput {
         return try await mockGetUserAttributeResponse!(input)
     }
 
-    func updateUserAttributes(input: UpdateUserAttributesInput) async throws -> UpdateUserAttributesOutputResponse {
+    func updateUserAttributes(input: UpdateUserAttributesInput) async throws -> UpdateUserAttributesOutput {
         return try await mockUpdateUserAttributeResponse!(input)
     }
 
-    func verifyUserAttribute(input: VerifyUserAttributeInput) async throws -> VerifyUserAttributeOutputResponse {
-        return try await mockConfirmUserAttributeOutputResponse!(input)
+    func verifyUserAttribute(input: VerifyUserAttributeInput) async throws -> VerifyUserAttributeOutput {
+        return try await mockConfirmUserAttributeOutput!(input)
     }
 
-    func changePassword(input: ChangePasswordInput) async throws -> ChangePasswordOutputResponse {
-        return try await mockChangePasswordOutputResponse!(input)
+    func changePassword(input: ChangePasswordInput) async throws -> ChangePasswordOutput {
+        return try await mockChangePasswordOutput!(input)
     }
 
-    func resendConfirmationCode(input: ResendConfirmationCodeInput) async throws -> ResendConfirmationCodeOutputResponse {
-        return try await mockResendConfirmationCodeOutputResponse!(input)
+    func resendConfirmationCode(input: ResendConfirmationCodeInput) async throws -> ResendConfirmationCodeOutput {
+        return try await mockResendConfirmationCodeOutput!(input)
     }
 
-    func deleteUser(input: DeleteUserInput) async throws -> DeleteUserOutputResponse {
-        return try await mockDeleteUserOutputResponse!(input)
+    func deleteUser(input: DeleteUserInput) async throws -> DeleteUserOutput {
+        return try await mockDeleteUserOutput!(input)
     }
 
-    func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutputResponse {
-        return try await mockForgotPasswordOutputResponse!(input)
+    func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutput {
+        return try await mockForgotPasswordOutput!(input)
     }
 
-    func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutputResponse {
-        return try await mockConfirmForgotPasswordOutputResponse!(input)
+    func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutput {
+        return try await mockConfirmForgotPasswordOutput!(input)
     }
 
-    func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse {
-        return try await mockListDevicesOutputResponse!(input)
+    func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutput {
+        return try await mockListDevicesOutput!(input)
     }
 
-    func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse {
+    func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutput {
         return try await mockRememberDeviceResponse!(input)
     }
 
-    func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse {
+    func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutput {
         return try await mockForgetDeviceResponse!(input)
     }
 
-    func confirmDevice(input: ConfirmDeviceInput) async throws -> ConfirmDeviceOutputResponse {
+    func confirmDevice(input: ConfirmDeviceInput) async throws -> ConfirmDeviceOutput {
         return try await mockConfirmDeviceResponse!(input)
     }
 
-    func associateSoftwareToken(input: AWSCognitoIdentityProvider.AssociateSoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.AssociateSoftwareTokenOutputResponse {
+    func associateSoftwareToken(input: AWSCognitoIdentityProvider.AssociateSoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.AssociateSoftwareTokenOutput {
         return try await mockAssociateSoftwareTokenResponse!(input)
     }
 
-    func verifySoftwareToken(input: AWSCognitoIdentityProvider.VerifySoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.VerifySoftwareTokenOutputResponse {
+    func verifySoftwareToken(input: AWSCognitoIdentityProvider.VerifySoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.VerifySoftwareTokenOutput {
         return try await mockVerifySoftwareTokenResponse!(input)
     }
 
-    func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutputResponse {
+    func setUserMFAPreference(input: SetUserMFAPreferenceInput) async throws -> SetUserMFAPreferenceOutput {
         return try await mockSetUserMFAPreferenceResponse!(input)
     }
 }

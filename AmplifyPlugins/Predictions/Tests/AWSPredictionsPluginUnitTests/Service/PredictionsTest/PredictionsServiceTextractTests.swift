@@ -66,7 +66,7 @@ class PredictionsServiceTextractTests: XCTestCase {
     ///    - I should get back a result
     ///
     func testIdentifyTablesService() async throws {
-        let mockResponse = AnalyzeDocumentOutputResponse(blocks: [])
+        let mockResponse = AnalyzeDocumentOutput(blocks: [])
         mockTextract.analyzeDocumentResult = { _ in mockResponse }
         let url = try url("testImageText")
 
@@ -110,7 +110,7 @@ class PredictionsServiceTextractTests: XCTestCase {
     ///    - I should get back a result
     ///
     func testIdentifyFormsService() async throws {
-        let mockResponse = AnalyzeDocumentOutputResponse(blocks: [])
+        let mockResponse = AnalyzeDocumentOutput(blocks: [])
         mockTextract.analyzeDocumentResult = { _ in mockResponse }
         let url = try url("testImageText")
 
@@ -154,7 +154,7 @@ class PredictionsServiceTextractTests: XCTestCase {
     ///    - I should get back a result
     ///
     func testIdentifyAllTextService() async throws {
-        let mockResponse = AnalyzeDocumentOutputResponse(blocks: [])
+        let mockResponse = AnalyzeDocumentOutput(blocks: [])
         mockTextract.analyzeDocumentResult = { _ in mockResponse }
         let url = try url("testImageText")
 
