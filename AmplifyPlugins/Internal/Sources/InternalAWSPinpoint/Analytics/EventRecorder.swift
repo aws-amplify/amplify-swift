@@ -41,6 +41,7 @@ class EventRecorder: AnalyticsEventRecording {
     let pinpointClient: PinpointClientProtocol
     let endpointClient: EndpointClientBehaviour
     private var submittedEvents: [PinpointEvent] = []
+    private var submissionTask: Task<[PinpointEvent], Error>?
 
     /// Initializer for Event Recorder
     /// - Parameters:
@@ -77,20 +78,26 @@ class EventRecorder: AnalyticsEventRecording {
                                       setAttributes: attributes)
     }
 
-    /// Submit all locally stored events in batches
-    /// If event submission fails, the event retry count is increment otherwise event is marked dirty and available for deletion in the local storage if retry count exceeds 3
-    /// If event submission succeeds, the event is removed from local storage
+    /// Submit all locally stored events in batches. If a previous submission is in progress, it waits until it's completed before proceeding.
+    /// When the submission for an event is accepted, the event is removed from local storage
+    /// When the submission for an event is rejected, the event retry count is incremented in the local storage. Events that exceed the maximum retry count (3) are purged.
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent] {
-        submittedEvents = []
-        let eventsBatch = try getBatchRecords()
-        if eventsBatch.count > 0 {
-            let endpointProfile = await endpointClient.currentEndpointProfile()
-            try await processBatch(eventsBatch, endpointProfile: endpointProfile)
-        } else {
-            log.verbose("No events to submit")
+        let task = Task { [submissionTask] in
+            // Wait for the previous submission to complete, regardless of its result
+            _ = try? await submissionTask?.value
+            submittedEvents = []
+            let eventsBatch = try getBatchRecords()
+            if eventsBatch.count > 0 {
+                let endpointProfile = await endpointClient.currentEndpointProfile()
+                try await processBatch(eventsBatch, endpointProfile: endpointProfile)
+            } else {
+                log.verbose("No events to submit")
+            }
+            return submittedEvents
         }
-        return submittedEvents
+        submissionTask = task
+        return try await task.value
     }
 
     private func getBatchRecords() throws -> [PinpointEvent] {
