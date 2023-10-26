@@ -28,8 +28,7 @@ let amplifyTargets: [Target] = [
     .target(
         name: "AWSPluginsCore",
         dependencies: [
-            "Amplify",
-            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+            "Amplify"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCore",
         exclude: [
