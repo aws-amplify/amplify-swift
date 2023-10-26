@@ -9,8 +9,8 @@ import  Foundation
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
+
+
 
 class AuthHubEventHandlerTests: XCTestCase {
 

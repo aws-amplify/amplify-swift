@@ -6,11 +6,11 @@
 //
 
 import XCTest
-import AWSCognitoIdentity
+
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import AWSClientRuntime
+
+
 
 class SignInSetUpTOTPTests: BasePluginTest {
 

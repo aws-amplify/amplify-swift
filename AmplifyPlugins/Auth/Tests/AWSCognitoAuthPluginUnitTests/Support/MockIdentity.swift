@@ -6,8 +6,8 @@
 //
 
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentity
-import ClientRuntime
+
+
 
 struct MockIdentity: CognitoIdentityBehavior {
 

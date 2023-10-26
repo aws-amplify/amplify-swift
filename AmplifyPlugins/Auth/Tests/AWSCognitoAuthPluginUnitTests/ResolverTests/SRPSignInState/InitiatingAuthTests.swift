@@ -8,7 +8,7 @@
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-import AWSCognitoIdentityProvider
+
 
 class InitiatingAuthTests: XCTestCase {
     var resolver: AnyResolver<SRPSignInState> {

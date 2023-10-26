@@ -8,11 +8,11 @@
 import Foundation
 
 import XCTest
-import AWSCognitoIdentityProvider
+
 import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
+
 
 class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 

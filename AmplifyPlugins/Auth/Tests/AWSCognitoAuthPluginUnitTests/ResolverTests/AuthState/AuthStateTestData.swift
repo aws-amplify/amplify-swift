@@ -7,7 +7,7 @@
 
 import Foundation
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
+
 
 extension AuthEvent {
 

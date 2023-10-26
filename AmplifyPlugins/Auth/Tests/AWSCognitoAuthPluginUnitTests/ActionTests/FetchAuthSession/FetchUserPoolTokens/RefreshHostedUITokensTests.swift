@@ -8,7 +8,7 @@
 #if os(iOS) || os(macOS)
 
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
+
 import AWSPluginsCore
 import XCTest
 

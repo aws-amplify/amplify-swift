@@ -13,7 +13,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AuthenticationServices
-import AWSCognitoIdentityProvider
+
 
 class AWSAuthHostedUISignInTests: XCTestCase {
 

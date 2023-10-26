@@ -9,10 +9,10 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
 
-import AWSCognitoIdentityProvider
-import AWSCognitoIdentity
+
+
+
 
 class AWSAuthMigrationSignInTaskTests: XCTestCase {
 

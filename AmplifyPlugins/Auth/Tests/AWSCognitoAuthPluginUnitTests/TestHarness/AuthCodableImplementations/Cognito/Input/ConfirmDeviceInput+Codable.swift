@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
-import AWSCognitoIdentity
-import ClientRuntime
+
+
+
 
 extension ConfirmDeviceInput: Decodable {
     enum CodingKeys: String, CodingKey {

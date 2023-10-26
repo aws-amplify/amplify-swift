@@ -10,10 +10,10 @@ import Foundation
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
+
+
 import AwsCommonRuntimeKit
-import AWSClientRuntime
+
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
 

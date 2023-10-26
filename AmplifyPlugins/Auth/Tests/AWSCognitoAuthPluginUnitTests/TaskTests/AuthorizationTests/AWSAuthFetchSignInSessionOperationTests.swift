@@ -10,10 +10,10 @@ import Foundation
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
+
+
 import AWSPluginsCore
-import ClientRuntime
+
 
 @testable import AWSPluginsTestCommon
 

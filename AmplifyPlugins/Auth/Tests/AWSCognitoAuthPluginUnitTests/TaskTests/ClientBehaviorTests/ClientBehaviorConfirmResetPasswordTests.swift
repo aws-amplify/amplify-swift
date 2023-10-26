@@ -8,12 +8,12 @@
 import Foundation
 
 import XCTest
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
+
+
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
+
 
 class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
 

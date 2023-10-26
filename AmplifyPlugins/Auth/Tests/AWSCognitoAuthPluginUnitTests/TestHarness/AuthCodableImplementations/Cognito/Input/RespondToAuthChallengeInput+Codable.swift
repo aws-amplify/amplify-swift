@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
-import ClientRuntime
+
+
 
 extension RespondToAuthChallengeInput: Decodable {
     enum CodingKeys: String, CodingKey {

@@ -15,9 +15,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import ClientRuntime
-import AWSClientRuntime
-import AWSCognitoIdentityProvider
+
+
+
 
 class AWSAuthConfirmSignUpTaskTests: XCTestCase {
 

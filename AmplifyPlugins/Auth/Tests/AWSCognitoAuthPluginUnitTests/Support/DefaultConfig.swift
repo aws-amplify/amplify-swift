@@ -7,9 +7,9 @@
 
 import Foundation
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import AWSCognitoIdentity
-import ClientRuntime
+
+
+
 @testable import Amplify
 import AWSPluginsCore
 

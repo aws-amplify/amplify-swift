@@ -10,8 +10,8 @@ import Foundation
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
+
+
 
 class UserBehaviorResendCodeTests: BasePluginTest {
 

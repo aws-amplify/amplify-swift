@@ -8,9 +8,9 @@
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
-import AWSClientRuntime
+
+
+
 
 class UserBehaviorFetchAttributesTests: BasePluginTest {
 

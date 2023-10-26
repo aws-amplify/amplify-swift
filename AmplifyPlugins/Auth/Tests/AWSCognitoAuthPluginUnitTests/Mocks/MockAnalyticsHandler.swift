@@ -7,7 +7,7 @@
 
 import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
+
 
 struct MockAnalyticsHandler: UserPoolAnalyticsBehavior {
 

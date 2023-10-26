@@ -8,7 +8,7 @@
 import XCTest
 import Amplify
 import AWSPluginsCore
-import AWSCognitoIdentityProvider
+
 
 @testable import AWSCognitoAuthPlugin
 

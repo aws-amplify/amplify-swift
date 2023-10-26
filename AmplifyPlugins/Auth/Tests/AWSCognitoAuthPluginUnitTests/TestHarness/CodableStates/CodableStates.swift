@@ -6,7 +6,7 @@
 //
 
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
+
 import Foundation
 import AWSPluginsCore
 import Amplify

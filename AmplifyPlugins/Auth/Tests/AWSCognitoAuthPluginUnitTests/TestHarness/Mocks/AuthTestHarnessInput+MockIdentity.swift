@@ -7,7 +7,7 @@
 
 import XCTest
 import Foundation
-import AWSCognitoIdentity
+
 
 extension AuthTestHarnessInput {
 

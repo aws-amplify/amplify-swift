@@ -10,7 +10,7 @@ import Foundation
 import XCTest
 import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
+
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length

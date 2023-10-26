@@ -8,10 +8,10 @@
 import Foundation
 
 import XCTest
-import AWSCognitoIdentity
+
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
+
 
 class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     let networkTimeout = TimeInterval(10)

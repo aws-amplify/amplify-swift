@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentity
-import ClientRuntime
+
+
 
 extension GetCredentialsForIdentityOutputResponse: Codable {
     enum CodingKeys: Swift.String, Swift.CodingKey {

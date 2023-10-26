@@ -8,11 +8,11 @@
 import Foundation
 
 import XCTest
-import AWSCognitoIdentity
+
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
-import AWSCognitoIdentityProvider
+
 
 class ClientSecretConfigurationTests: XCTestCase {
 

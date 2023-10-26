@@ -9,7 +9,7 @@ import XCTest
 
 @testable import AWSCognitoAuthPlugin
 
-import AWSCognitoIdentityProvider
+
 
 class SignUpInputTests: XCTestCase {
 

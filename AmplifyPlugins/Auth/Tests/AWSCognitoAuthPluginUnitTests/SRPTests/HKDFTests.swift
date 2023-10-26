@@ -8,7 +8,7 @@
 import Foundation
 import XCTest
 
-import AWSCognitoIdentityProvider
+
 
 @testable import AWSCognitoAuthPlugin
 

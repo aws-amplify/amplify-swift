@@ -8,8 +8,8 @@
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-import AWSCognitoIdentityProvider
-import ClientRuntime
+
+
 
 class UserBehaviorConfirmAttributeTests: BasePluginTest {
 
