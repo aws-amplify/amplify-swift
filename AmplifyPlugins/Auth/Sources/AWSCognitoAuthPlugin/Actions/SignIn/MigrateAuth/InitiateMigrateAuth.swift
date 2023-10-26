@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct InitiateMigrateAuth: Action {
     let identifier = "InitiateMigrateAuth"

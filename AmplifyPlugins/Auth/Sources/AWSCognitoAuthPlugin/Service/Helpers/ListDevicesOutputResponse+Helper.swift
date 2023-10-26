@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 import AWSPluginsCore
 
 extension CognitoIdentityProviderClientTypes.DeviceType {

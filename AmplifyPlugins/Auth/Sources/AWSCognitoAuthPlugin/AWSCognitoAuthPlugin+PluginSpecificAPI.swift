@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
+//import AWSCognitoIdentity
+// import AWSCognitoIdentityProvider
 
 public extension AWSCognitoAuthPlugin {
 

@@ -7,7 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct UpdateAttributesOperationHelper {
 

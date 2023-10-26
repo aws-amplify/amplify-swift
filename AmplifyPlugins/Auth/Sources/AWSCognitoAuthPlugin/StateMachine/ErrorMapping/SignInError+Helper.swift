@@ -7,15 +7,17 @@
 
 import Foundation
 import Amplify
-import ClientRuntime
-import AWSCognitoIdentityProvider
+// import ClientRuntime
+// import AWSCognitoIdentityProvider
 
 extension SignInError {
 
     var isUserNotConfirmed: Bool {
         switch self {
         case .service(error: let serviceError):
-            return serviceError is AWSCognitoIdentityProvider.UserNotConfirmedException
+            return false
+            // TODO: Add back once error mapping is complete
+//            return serviceError is AWSCognitoIdentityProvider.UserNotConfirmedException
         default:
             return false
         }
@@ -24,7 +26,9 @@ extension SignInError {
     var isResetPassword: Bool {
         switch self {
         case .service(error: let serviceError):
-            return serviceError is AWSCognitoIdentityProvider.PasswordResetRequiredException
+            return false
+            // TODO: Add back once error mapping is complete
+//            return serviceError is AWSCognitoIdentityProvider.PasswordResetRequiredException
         default: 
             return false
         }

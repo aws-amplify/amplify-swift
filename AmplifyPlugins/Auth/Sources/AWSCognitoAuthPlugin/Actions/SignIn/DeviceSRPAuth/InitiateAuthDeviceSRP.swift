@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 import CryptoKit
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct InitiateAuthDeviceSRP: Action {
     let identifier = "InitiateAuthDeviceSRP"

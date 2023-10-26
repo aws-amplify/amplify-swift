@@ -6,7 +6,7 @@
 //
 
 import Amplify
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 protocol SignInResponseBehavior {
 

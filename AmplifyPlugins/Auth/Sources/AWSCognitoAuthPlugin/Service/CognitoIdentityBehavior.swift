@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentity
-import ClientRuntime
+//import AWSCognitoIdentity
+// import ClientRuntime
 
 protocol CognitoIdentityBehavior {
 

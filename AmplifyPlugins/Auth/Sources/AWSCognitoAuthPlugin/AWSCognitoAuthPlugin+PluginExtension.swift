@@ -7,13 +7,14 @@
 
 @_spi(InternalAmplifyPluginExtension) import AWSPluginsCore
 import Foundation
-import ClientRuntime
+// import ClientRuntime
 
 extension AWSCognitoAuthPlugin {
     @_spi(InternalAmplifyPluginExtension)
     public func add(pluginExtension: AWSPluginExtension) {
-        if let customHttpEngine = pluginExtension as? HttpClientEngineProxy {
-            self.httpClientEngineProxy = customHttpEngine
-        }
+        // TODO: Fix this / Authenticator relies on it
+//        if let customHttpEngine = pluginExtension as? HttpClientEngineProxy {
+//            self.httpClientEngineProxy = customHttpEngine
+//        }
     }
 }

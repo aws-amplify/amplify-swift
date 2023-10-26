@@ -8,8 +8,8 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import ClientRuntime
-import AWSCognitoIdentityProvider
+// import ClientRuntime
+// import AWSCognitoIdentityProvider
 
 class AWSAuthForgetDeviceTask: AuthForgetDeviceTask {
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 @_spi(KeychainStore) import AWSPluginsCore
 
 struct UserPoolAnalytics: UserPoolAnalyticsBehavior {

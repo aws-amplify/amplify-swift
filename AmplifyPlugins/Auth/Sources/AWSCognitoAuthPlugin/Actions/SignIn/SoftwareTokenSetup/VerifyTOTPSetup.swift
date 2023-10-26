@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct VerifyTOTPSetup: Action {
 

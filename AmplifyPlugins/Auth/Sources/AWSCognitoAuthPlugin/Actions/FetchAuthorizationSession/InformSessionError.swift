@@ -7,8 +7,8 @@
 
 import Amplify
 import Foundation
-import AWSCognitoIdentityProvider
-import AWSCognitoIdentity
+// import AWSCognitoIdentityProvider
+//import AWSCognitoIdentity
 
 struct InformSessionError: Action {
 
@@ -37,8 +37,10 @@ struct InformSessionError: Action {
     }
 
     func isNotAuthorizedError(_ error: Error) -> Bool {
-        error is AWSCognitoIdentity.NotAuthorizedException
-        || error is AWSCognitoIdentityProvider.NotAuthorizedException
+        return false
+        // TODO: Add back once error mapping is complete
+//        error is AWSCognitoIdentity.NotAuthorizedException
+//        || error is AWSCognitoIdentityProvider.NotAuthorizedException
     }
 }
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 typealias Username = String
 typealias Password = String

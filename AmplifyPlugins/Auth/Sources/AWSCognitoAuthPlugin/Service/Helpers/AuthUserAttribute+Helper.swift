@@ -7,7 +7,9 @@
 
 import Amplify
 import Foundation
-import AWSCognitoIdentityProvider
+
+
+
 
 extension AuthUserAttribute {
 

@@ -8,8 +8,8 @@
 import Foundation
 import Amplify
 
-import ClientRuntime
-import AWSCognitoIdentityProvider
+// import ClientRuntime
+// import AWSCognitoIdentityProvider
 
 typealias ConfigureOperation = AmplifyOperation<
     AuthConfigureRequest,

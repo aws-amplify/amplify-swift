@@ -30,7 +30,8 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var taskQueue: TaskQueue<Any>!
 
-    var httpClientEngineProxy: HttpClientEngineProxy?
+    // TODO: Be careful here - Authenticator relies on this
+//    var httpClientEngineProxy: HttpClientEngineProxy?
 
     @_spi(InternalAmplifyConfiguration)
     internal(set) public var jsonConfiguration: JSONValue?

@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct VerifySignInChallenge: Action {
 
@@ -89,7 +89,9 @@ struct VerifySignInChallenge: Action {
             return false
         }
 
-        return error is AWSCognitoIdentityProvider.ResourceNotFoundException
+        // TODO: Add back when error mapping is done
+        return false
+//        return error is AWSCognitoIdentityProvider.ResourceNotFoundException
     }
 
 }

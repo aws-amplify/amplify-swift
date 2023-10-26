@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct InitiateCustomAuth: Action {
     let identifier = "InitiateCustomAuth"

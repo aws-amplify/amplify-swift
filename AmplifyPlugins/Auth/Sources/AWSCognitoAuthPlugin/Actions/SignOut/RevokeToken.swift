@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 import Amplify
 
 struct RevokeToken: Action {

@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 class AWSAuthUpdateUserAttributesTask: AuthUpdateUserAttributesTask {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior

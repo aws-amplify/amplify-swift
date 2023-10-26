@@ -11,6 +11,13 @@ import Amplify
 import AuthenticationServices
 #endif
 
+// TODO: Remove this later
+extension StringProtocol {
+    func trim() -> String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
     weak var webPresentation: AuthUIPresentationAnchor?

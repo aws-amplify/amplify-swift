@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 import Foundation
 
 enum DeviceMetadata {

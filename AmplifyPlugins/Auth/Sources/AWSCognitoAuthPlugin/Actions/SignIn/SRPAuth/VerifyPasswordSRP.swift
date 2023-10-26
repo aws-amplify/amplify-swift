@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct VerifyPasswordSRP: Action {
     let identifier = "VerifyPasswordSRP"
@@ -110,7 +110,9 @@ struct VerifyPasswordSRP: Action {
             return false
         }
 
-        return error is AWSCognitoIdentityProvider.ResourceNotFoundException
+        // TODO: Add back when error mapping is done
+        return false
+//        return error is AWSCognitoIdentityProvider.ResourceNotFoundException
     }
 }
 

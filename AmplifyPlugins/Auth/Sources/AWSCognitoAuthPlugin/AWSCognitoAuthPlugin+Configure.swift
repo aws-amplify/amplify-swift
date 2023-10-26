@@ -7,14 +7,14 @@
 
 import Foundation
 import Amplify
-
-import AWSCognitoIdentity
-import AWSCognitoIdentityProvider
 import AWSPluginsCore
-import ClientRuntime
-import AWSClientRuntime
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
-@_spi(InternalHttpEngineProxy) import AWSPluginsCore
+
+//import AWSCognitoIdentity
+//// import AWSCognitoIdentityProvider
+//// import ClientRuntime
+//// import AWSClientRuntime
+//@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+//@_spi(InternalHttpEngineProxy) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -88,22 +88,28 @@ extension AWSCognitoAuthPlugin {
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-            let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+            let configuration = CognitoIdentityProviderClientConfiguration(
                 region: userPoolConfig.region,
-                serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
+                endpointResolver: userPoolConfig.endpoint?.resolver
             )
 
-            if var httpClientEngineProxy = httpClientEngineProxy {
-                httpClientEngineProxy.target = baseClientEngine(for: configuration)
-                configuration.httpClientEngine = UserAgentSettingClientEngine(
-                    target: httpClientEngineProxy
-                )
-            } else {
-                configuration.httpClientEngine = .userAgentEngine(for: configuration)
-            }
+//            try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+//                region: userPoolConfig.region,
+//                serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
+//            )
 
-            return CognitoIdentityProviderClient(config: configuration)
+//            if var httpClientEngineProxy = httpClientEngineProxy {
+//                httpClientEngineProxy.target = baseClientEngine(for: configuration)
+//                configuration.httpClientEngine = UserAgentSettingClientEngine(
+//                    target: httpClientEngineProxy
+//                )
+//            } else {
+//                configuration.httpClientEngine = .userAgentEngine(for: configuration)
+//            }
+
+            return CognitoIdentityProviderClient(configuration: configuration)
         default:
+            // TODO: Let's not fatalError here
             fatalError()
         }
     }
@@ -111,13 +117,14 @@ extension AWSCognitoAuthPlugin {
     private func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
-            let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
+            let configuration = CognitoIdentityClientConfiguration(
                 region: identityPoolConfig.region
             )
-            configuration.httpClientEngine = .userAgentEngine(for: configuration)
+//            configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
-            return CognitoIdentityClient(config: configuration)
+            return CognitoIdentityClient(configuration: configuration)
         default:
+            // TODO: Let's not fatalError here
             fatalError()
         }
     }
@@ -250,7 +257,3 @@ extension AWSCognitoAuthPlugin {
         self.queue.addOperation(operation)
     }
 }
-
-extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}
-
-extension CognitoIdentityClient: CognitoIdentityBehavior {}

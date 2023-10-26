@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentity
+//import AWSCognitoIdentity
 import Foundation
-import ClientRuntime
+// import ClientRuntime
 
 struct FetchAuthIdentityId: Action {
 
@@ -65,7 +65,9 @@ struct FetchAuthIdentityId: Action {
     }
 
     func isNotAuthorizedError(_ error: Error) -> Bool {
-        error is AWSCognitoIdentity.NotAuthorizedException
+        return false
+        // TODO: Add back once error mapping is complete
+//        error is AWSCognitoIdentity.NotAuthorizedException
     }
 }
 

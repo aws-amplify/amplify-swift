@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 
 struct RespondToAuthChallenge: Equatable {
 

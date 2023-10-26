@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSCognitoIdentityProvider
+// import AWSCognitoIdentityProvider
 #if canImport(WatchKit)
 import WatchKit
 #elseif canImport(UIKit)
