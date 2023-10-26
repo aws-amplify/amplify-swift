@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension RevokeTokenOutputResponse: Codable {
+extension RevokeTokenOutput: Codable {
 
     public init(from decoder: Swift.Decoder) throws {
         self.init()

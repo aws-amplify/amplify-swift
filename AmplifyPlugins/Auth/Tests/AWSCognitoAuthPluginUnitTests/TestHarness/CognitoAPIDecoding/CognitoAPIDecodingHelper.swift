@@ -9,6 +9,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
+import AWSClientRuntime
 
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
@@ -173,13 +174,12 @@ struct CognitoAPIDecodingHelper {
 
     private static func getApiInputAndOutput<
         Input: Decodable,
-        Output: Decodable,
-        ErrorGenerator: ClientRuntime.HttpResponseErrorBinding
+        Output: Decodable
     >(
         request: Data?,
         response: [String: JSONValue],
         responseType: String
-    ) async -> CognitoAPIData<Input, Output, ErrorGenerator> {
+    ) async -> CognitoAPIData<Input, Output> {
         var input: Input? = nil
 
         if let request = request {
@@ -196,17 +196,7 @@ struct CognitoAPIDecodingHelper {
                 fatalError()
             }
 
-            let error = try! await ErrorGenerator.makeError(
-                httpResponse: .init(
-                    headers: Headers(
-                        [
-                            "x-amzn-error-message": errorMessage,
-                            "X-Amzn-Errortype": "#\(errorType):"]),
-                    body: .empty,
-                    statusCode: .ok
-                ),
-                decoder: nil
-            )
+            let error = makeError(type: errorType)
             result = .failure(error)
         case "success":
             let responseData = try! JSONEncoder().encode(response)
@@ -218,8 +208,47 @@ struct CognitoAPIDecodingHelper {
         }
         return CognitoAPIData(
             expectedInput: input,
-            errorBinding: ErrorGenerator.self,
+//            errorBinding: ErrorGenerator.self,
             output: result
         )
+    }
+
+    private static func makeError(type: String) -> Error {
+        switch type {
+        case "CodeDeliveryFailureException":
+            return CodeDeliveryFailureException()
+        case "ForbiddenException":
+            return ForbiddenException()
+        case "InternalErrorException":
+            return AWSCognitoIdentityProvider.InternalErrorException()
+        case "InvalidEmailRoleAccessPolicyException":
+            return InvalidEmailRoleAccessPolicyException()
+        case "InvalidLambdaResponseException":
+            return InvalidLambdaResponseException()
+        case "InvalidParameterException":
+            return AWSCognitoIdentityProvider.InvalidParameterException()
+        case "InvalidSmsRoleAccessPolicyException":
+            return InvalidSmsRoleAccessPolicyException()
+        case "InvalidSmsRoleTrustRelationshipException":
+            return InvalidSmsRoleTrustRelationshipException()
+        case "LimitExceededException":
+            return AWSCognitoIdentityProvider.LimitExceededException()
+        case "NotAuthorizedException":
+            return AWSCognitoIdentityProvider.NotAuthorizedException()
+        case "ResourceNotFoundException":
+            return AWSCognitoIdentityProvider.ResourceNotFoundException()
+        case "TooManyRequestsException":
+            return AWSCognitoIdentityProvider.TooManyRequestsException()
+        case "UnexpectedLambdaException":
+            return UnexpectedLambdaException()
+        case "UserLambdaValidationException":
+            return UserLambdaValidationException()
+        case "UserNotFoundException":
+            return UserNotFoundException()
+        default:
+            return AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: .init(), message: nil, requestID: nil, requestID2: nil, typeName: nil
+            )
+        }
     }
 }

@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension DeleteUserOutputResponse: Codable {
+extension DeleteUserOutput: Codable {
 
     public init(from decoder: Swift.Decoder) throws {
         self.init()
