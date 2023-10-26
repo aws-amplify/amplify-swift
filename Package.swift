@@ -151,10 +151,7 @@ let authTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AmplifySRP"),
-            .target(name: "AWSPluginsCore"),
-            .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
-            .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
-            .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
+            .target(name: "AWSPluginsCore")
         ],
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
     ),
