@@ -156,33 +156,33 @@ class AWSAuthServiceTests: XCTestCase {
     }
 
 
-    /// Given: A credentials that will expire after 100 second
-    /// When: I convert the credentials to AWS SDK ClientRuntime
-    /// Then: I should get a valid CRT credentials
-    func testValidCredentialsToCRTConversion() throws {
-
-        let credentials = MockCredentials(
-            sessionToken: "somesession",
-            accessKeyId: "accessKeyId",
-            secretAccessKey: "secretAccessKey",
-            expiration: Date().addingTimeInterval(100))
-        let sdkCredentials = credentials.toAWSSDKCredentials()
-        XCTAssertNotNil(sdkCredentials)
-    }
-
-    /// Given: A credentials that expired 100 second back
-    /// When: I convert the credentials to AWS SDK ClientRuntime
-    /// Then: I should get a valid CRT credentials
-    func testExpiredCredentialsToCRTConversion() throws {
-
-        let credentials = MockCredentials(
-            sessionToken: "somesession",
-            accessKeyId: "accessKeyId",
-            secretAccessKey: "secretAccessKey",
-            expiration: Date().addingTimeInterval(-100))
-        let sdkCredentials = credentials.toAWSSDKCredentials()
-        XCTAssertNotNil(sdkCredentials)
-    }
+//    /// Given: A credentials that will expire after 100 second
+//    /// When: I convert the credentials to AWS SDK ClientRuntime
+//    /// Then: I should get a valid CRT credentials
+//    func testValidCredentialsToCRTConversion() throws {
+//
+//        let credentials = MockCredentials(
+//            sessionToken: "somesession",
+//            accessKeyId: "accessKeyId",
+//            secretAccessKey: "secretAccessKey",
+//            expiration: Date().addingTimeInterval(100))
+//        let sdkCredentials = credentials.toAWSSDKCredentials()
+//        XCTAssertNotNil(sdkCredentials)
+//    }
+//
+//    /// Given: A credentials that expired 100 second back
+//    /// When: I convert the credentials to AWS SDK ClientRuntime
+//    /// Then: I should get a valid CRT credentials
+//    func testExpiredCredentialsToCRTConversion() throws {
+//
+//        let credentials = MockCredentials(
+//            sessionToken: "somesession",
+//            accessKeyId: "accessKeyId",
+//            secretAccessKey: "secretAccessKey",
+//            expiration: Date().addingTimeInterval(-100))
+//        let sdkCredentials = credentials.toAWSSDKCredentials()
+//        XCTAssertNotNil(sdkCredentials)
+//    }
 }
 
 

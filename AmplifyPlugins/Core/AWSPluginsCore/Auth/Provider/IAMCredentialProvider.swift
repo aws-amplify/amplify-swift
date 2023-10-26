@@ -7,10 +7,10 @@
 
 import Foundation
 import Amplify
-import AWSClientRuntime
+//import AWSClientRuntime
 
 public protocol IAMCredentialsProvider {
-    func getCredentialsProvider() -> CredentialsProviding
+    func _credentialsProvider() -> CredentialsProvider
 }
 
 public struct BasicIAMCredentialsProvider: IAMCredentialsProvider {
@@ -20,7 +20,7 @@ public struct BasicIAMCredentialsProvider: IAMCredentialsProvider {
         self.authService = authService
     }
 
-    public func getCredentialsProvider() -> CredentialsProviding {
-        return authService.getCredentialsProvider()
+    public func _credentialsProvider() -> CredentialsProvider {
+        return authService._credentialsProvider()
     }
 }

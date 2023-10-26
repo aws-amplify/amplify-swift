@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import AWSClientRuntime
+//import AWSClientRuntime
 
 public protocol CredentialsProvider {
     func fetchCredentials() async throws -> Credentials
@@ -28,9 +28,9 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         _AmplifyAWSCredentialsProvider()
     }
 
-    public func getCredentialsProvider() -> CredentialsProviding {
-        return AmplifyAWSCredentialsProvider()
-    }
+//    public func getCredentialsProvider() -> CredentialsProviding {
+//        return AmplifyAWSCredentialsProvider()
+//    }
 
     /// Retrieves the identity identifier for this authentication session from Cognito.
     public func getIdentityID() async throws -> String {

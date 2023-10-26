@@ -66,3 +66,32 @@ public struct RestJSONError {
         self.type = errorType ?? errorPayload.resolvedErrorType
     }
 }
+
+// TODO: Rework these extensions to operate on substring for improved performance.
+// Or probably just remove as it appears they're only being used in one place.
+extension String {
+    /// Returns a substring after the first occurrence of `separator` or original string if `separator` is absent
+    func substringAfter(_ separator: String) -> String {
+        guard let range = self.range(of: separator) else {
+            return self
+        }
+        let substring = self[range.upperBound...]
+        return String(substring)
+    }
+
+    /// Returns a substring before the first occurrence of `separator` or original string if `separator` is absent
+    func substringBefore(_ separator: String) -> String {
+        guard let range = self.range(of: separator) else {
+            return self
+        }
+        let substring = self[..<range.lowerBound]
+        return String(substring)
+    }
+}
+
+/// Trims the String to remove leading and tailing whitespace, newline characters
+extension StringProtocol {
+    func trim() -> String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}

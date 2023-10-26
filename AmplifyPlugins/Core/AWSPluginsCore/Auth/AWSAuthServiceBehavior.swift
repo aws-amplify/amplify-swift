@@ -7,11 +7,12 @@
 
 import Foundation
 import Amplify
-import AWSClientRuntime
+//import AWSClientRuntime
 
 public protocol AWSAuthServiceBehavior: AnyObject {
 
-    func getCredentialsProvider() -> CredentialsProviding
+//    func getCredentialsProvider() -> CredentialsProviding
+    func _credentialsProvider() -> CredentialsProvider
 
     func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError>
 

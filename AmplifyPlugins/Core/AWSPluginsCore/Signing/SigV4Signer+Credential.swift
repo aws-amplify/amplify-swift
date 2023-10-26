@@ -7,10 +7,10 @@
 
 import Foundation
 
-extension SigV4Signer {
-    struct Credential {
-        let accessKey: String
-        let secretKey: String
-        let sessionToken: String?
-    }
-}
+//extension SigV4Signer {
+//    struct Credential {
+//        let accessKey: String
+//        let secretKey: String
+//        let sessionToken: String?
+//    }
+//}
