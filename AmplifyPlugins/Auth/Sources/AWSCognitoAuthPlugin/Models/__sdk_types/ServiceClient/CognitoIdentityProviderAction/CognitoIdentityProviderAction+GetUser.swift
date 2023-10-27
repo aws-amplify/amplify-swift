@@ -43,23 +43,7 @@ Output == GetUserOutputResponse {
             requestURI: "/",
             successCode: 200,
             hostPrefix: "",
-            mapError: { data, response in
-                let error = try RestJSONError(data: data, response: response)
-                switch error.type {
-                case "AccessDeniedException":
-                    return ServiceError(message: error.message, type: error.type, httpURLResponse: response)
-                case "InternalServerException":
-                    return ServiceError(message: error.message, type: error.type, httpURLResponse: response)
-                case "ResourceNotFoundException":
-                    return ServiceError(message: error.message, type: error.type, httpURLResponse: response)
-                case "ThrottlingException":
-                    return ServiceError(message: error.message, type: error.type, httpURLResponse: response)
-                case "ValidationException":
-                    return ServiceError(message: error.message, type: error.type, httpURLResponse: response)
-                default:
-                    return ServiceError(message: error.message, type: error.type, httpURLResponse: response)
-                }
-            }
+            mapError: mapError(data:response:)
         )
     }
 }
