@@ -174,3 +174,23 @@ struct UserNotFoundException: Error {
     let message: String?
     let httpURLResponse: HTTPURLResponse
 }
+
+// Cognito Identity
+
+struct ResourceConflictException: Error {
+    let name: String?
+    let message: String?
+    let httpURLResponse: HTTPURLResponse
+}
+
+struct ExternalServiceException: Error {
+    let name: String?
+    let message: String?
+    let httpURLResponse: HTTPURLResponse
+}
+
+struct InvalidIdentityPoolConfigurationException: Error {
+    let name: String?
+    let message: String?
+    let httpURLResponse: HTTPURLResponse
+}

@@ -36,5 +36,71 @@ struct CognitoIdentityAction<Input: Encodable, Output: Decodable> {
     }
 }
 
-
+extension CognitoIdentityAction {
+    static func mapError(data: Data, response: HTTPURLResponse) throws -> Error {
+        let error = try RestJSONError(data: data, response: response)
+        switch error.type {
+        case "ResourceConflictException": //
+            return ResourceConflictException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "InvalidParameterException": //
+            return InvalidParameterException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "NotAuthorizedException": //
+            return NotAuthorizedException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "ResourceNotFoundException": //
+            return ResourceNotFoundException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "InternalErrorException": //
+            return InternalErrorException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "ExternalServiceException": //
+            return ExternalServiceException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "InvalidIdentityPoolConfigurationException":
+            return InvalidIdentityPoolConfigurationException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "LimitExceededException": //
+            return LimitExceededException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        case "TooManyRequestsException": //
+            return TooManyRequestsException(
+                name: error.type,
+                message: error.message,
+                httpURLResponse: response
+            )
+        default:
+            return ServiceError(
+                message: error.message,
+                type: error.type,
+                httpURLResponse: response
+            )
+        }
+    }
+}
 
