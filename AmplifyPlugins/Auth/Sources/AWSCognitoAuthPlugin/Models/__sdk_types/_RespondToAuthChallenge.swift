@@ -68,7 +68,7 @@ struct RespondToAuthChallengeOutputResponse: Equatable, Decodable {
     /// The challenge name. For more information, see [InitiateAuth](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html).
     var challengeName: CognitoIdentityProviderClientTypes.ChallengeNameType?
     /// The challenge parameters. For more information, see [InitiateAuth](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html).
-    var challengeParameters: [String:String]?
+    var challengeParameters: [String: String]?
     /// The session that should be passed both ways in challenge-response calls to the service. If the caller must pass another challenge, they return a session with other challenge parameters. This session should be passed as it is to the next RespondToAuthChallenge API call.
     var session: String?
 
@@ -77,5 +77,28 @@ struct RespondToAuthChallengeOutputResponse: Equatable, Decodable {
         case challengeName = "ChallengeName"
         case challengeParameters = "ChallengeParameters"
         case session = "Session"
+    }
+
+    init(from decoder: Swift.Decoder) throws {
+        let containerValues = try decoder.container(keyedBy: CodingKeys.self)
+        challengeName = try containerValues.decodeIfPresent(
+            CognitoIdentityProviderClientTypes.ChallengeNameType.self, forKey: .challengeName
+        )
+        session = try containerValues.decodeIfPresent(String.self, forKey: .session)
+
+        let challengeParameters = try containerValues.decodeIfPresent(
+            [String: String?].self,
+            forKey: .challengeParameters
+        )?.reduce(into: [String: String](), { partialResult, pair in
+            let (key, value) = pair
+            if let value {
+                partialResult[key] = value
+            }
+        })
+
+        authenticationResult = try containerValues.decodeIfPresent(
+            CognitoIdentityProviderClientTypes.AuthenticationResultType.self,
+            forKey: .authenticationResult
+        )
     }
 }
