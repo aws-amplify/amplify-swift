@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SetUserMFAPreferenceInput: Equatable {
+struct SetUserMFAPreferenceInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose MFA preference you want to set.
     /// This member is required.
     var accessToken: String?
@@ -23,4 +23,4 @@ struct SetUserMFAPreferenceInput: Equatable {
     }
 }
 
-struct SetUserMFAPreferenceOutputResponse: Equatable {}
+struct SetUserMFAPreferenceOutputResponse: Equatable, Decodable {}

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to resend the confirmation code.
-struct ResendConfirmationCodeInput: Equatable {
+struct ResendConfirmationCodeInput: Equatable, Encodable {
     /// The Amazon Pinpoint analytics metadata that contributes to your metrics for ResendConfirmationCode calls.
     var analyticsMetadata: CognitoIdentityProviderClientTypes.AnalyticsMetadataType?
     /// The ID of the client associated with the user pool.
@@ -42,7 +42,7 @@ struct ResendConfirmationCodeInput: Equatable {
 
 
 /// The response from the server when Amazon Cognito makes the request to resend a confirmation code.
-struct ResendConfirmationCodeOutputResponse: Equatable {
+struct ResendConfirmationCodeOutputResponse: Equatable, Decodable {
     /// The code delivery details returned by the server in response to the request to resend the confirmation code.
     var codeDeliveryDetails: CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType?
 

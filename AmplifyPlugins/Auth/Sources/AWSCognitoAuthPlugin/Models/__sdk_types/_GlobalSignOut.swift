@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to sign out all devices.
-struct GlobalSignOutInput: Equatable {
+struct GlobalSignOutInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user who you want to sign out.
     /// This member is required.
     var accessToken: String?
@@ -19,4 +19,4 @@ struct GlobalSignOutInput: Equatable {
 }
 
 /// The response to the request to sign out all devices.
-struct GlobalSignOutOutputResponse: Equatable {}
+struct GlobalSignOutOutputResponse: Equatable, Decodable {}

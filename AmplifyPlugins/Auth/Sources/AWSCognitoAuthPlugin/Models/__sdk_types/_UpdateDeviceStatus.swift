@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to update the device status.
-struct UpdateDeviceStatusInput: Equatable {
+struct UpdateDeviceStatusInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose device status you want to update.
     /// This member is required.
     var accessToken: String?
@@ -26,4 +26,4 @@ struct UpdateDeviceStatusInput: Equatable {
 }
 
 /// The response to the request to update the device status.
-struct UpdateDeviceStatusOutputResponse: Equatable {}
+struct UpdateDeviceStatusOutputResponse: Equatable, Decodable {}

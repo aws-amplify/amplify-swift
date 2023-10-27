@@ -8,7 +8,7 @@
 import Foundation
 
 /// Input to the GetCredentialsForIdentity action.
-struct GetCredentialsForIdentityInput: Equatable {
+struct GetCredentialsForIdentityInput: Equatable, Encodable {
     /// The Amazon Resource Name (ARN) of the role to be assumed when multiple roles were received in the token from the identity provider. For example, a SAML-based identity provider. This parameter is optional for identity providers that do not support role customization.
     var customRoleArn: String?
     /// A unique identifier in the format REGION:GUID.
@@ -26,7 +26,7 @@ struct GetCredentialsForIdentityInput: Equatable {
 
 
 /// Returned in response to a successful GetCredentialsForIdentity operation.
-struct GetCredentialsForIdentityOutputResponse: Equatable {
+struct GetCredentialsForIdentityOutputResponse: Equatable, Decodable {
     /// Credentials for the provided identity ID.
     var credentials: CognitoIdentityClientTypes.Credentials?
     /// A unique identifier in the format REGION:GUID.

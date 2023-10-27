@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to delete a user.
-struct DeleteUserInput: Equatable {
+struct DeleteUserInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose user profile you want to delete.
     /// This member is required.
     var accessToken: String?
@@ -18,4 +18,4 @@ struct DeleteUserInput: Equatable {
     }
 }
 
-struct DeleteUserOutputResponse: Equatable {}
+struct DeleteUserOutputResponse: Equatable, Decodable {}

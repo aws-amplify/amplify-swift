@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to change a user password.
-struct ChangePasswordInput: Equatable {
+struct ChangePasswordInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose password you want to change.
     /// This member is required.
     var accessToken: String?
@@ -27,4 +27,4 @@ struct ChangePasswordInput: Equatable {
 }
 
 /// The response from the server to the change password request.
-struct ChangePasswordOutputResponse: Equatable {}
+struct ChangePasswordOutputResponse: Equatable, Decodable {}

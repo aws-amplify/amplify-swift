@@ -8,7 +8,7 @@
 import Foundation
 
 /// Confirms the device request.
-struct ConfirmDeviceInput: Equatable {
+struct ConfirmDeviceInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose device you want to confirm.
     /// This member is required.
     var accessToken: String?
@@ -29,7 +29,7 @@ struct ConfirmDeviceInput: Equatable {
 }
 
 /// Confirms the device response.
-struct ConfirmDeviceOutputResponse: Equatable {
+struct ConfirmDeviceOutputResponse: Equatable, Decodable {
     /// Indicates whether the user confirmation must confirm the device response.
     var userConfirmationNecessary: Bool
 

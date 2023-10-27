@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GetUserAttributeVerificationCodeInput: Equatable {
+struct GetUserAttributeVerificationCodeInput: Equatable, Encodable {
     /// A non-expired access token for the user whose attribute verification code you want to generate.
     /// This member is required.
     var accessToken: String?
@@ -31,7 +31,7 @@ struct GetUserAttributeVerificationCodeInput: Equatable {
 }
 
 /// The verification code response returned by the server response to get the user attribute verification code.
-struct GetUserAttributeVerificationCodeOutputResponse: Equatable {
+struct GetUserAttributeVerificationCodeOutputResponse: Equatable, Decodable {
     /// The code delivery details returned by the server in response to the request to get the user attribute verification code.
     var codeDeliveryDetails: CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType?
 

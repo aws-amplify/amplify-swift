@@ -9,7 +9,7 @@ import Foundation
 
 extension CognitoIdentityProviderClientTypes {
     //The delivery details for an email or SMS message that Amazon Cognito sent for authentication or verification.
-    struct CodeDeliveryDetailsType: Equatable {
+    struct CodeDeliveryDetailsType: Equatable, Codable {
         /// The name of the attribute that Amazon Cognito verifies with the code.
         var attributeName: String?
         //The method that Amazon Cognito used to send the code.

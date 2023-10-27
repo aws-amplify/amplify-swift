@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to update user attributes.
-struct UpdateUserAttributesInput: Equatable {
+struct UpdateUserAttributesInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose user attributes you want to update.
     /// This member is required.
     var accessToken: String?
@@ -32,7 +32,7 @@ struct UpdateUserAttributesInput: Equatable {
 }
 
 /// Represents the response from the server for the request to update user attributes.
-struct UpdateUserAttributesOutputResponse: Equatable {
+struct UpdateUserAttributesOutputResponse: Equatable, Decodable {
     /// The code delivery details list from the server for the request to update user attributes.
     var codeDeliveryDetailsList: [CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType]?
 

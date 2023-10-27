@@ -9,7 +9,7 @@ import Foundation
 
 extension CognitoIdentityProviderClientTypes {
     /// The authentication result.
-    struct AuthenticationResultType: Equatable {
+    struct AuthenticationResultType: Equatable, Codable {
         /// A valid access token that Amazon Cognito issued to the user who you want to authenticate.
         var accessToken: String?
         /// The expiration period of the authentication result in seconds.

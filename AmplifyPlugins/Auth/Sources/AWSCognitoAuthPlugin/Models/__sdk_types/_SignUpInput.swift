@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to register a user.
-struct SignUpInput: Equatable {
+struct SignUpInput: Equatable, Encodable {
     /// The Amazon Pinpoint analytics metadata that contributes to your metrics for SignUp calls.
     var analyticsMetadata: CognitoIdentityProviderClientTypes.AnalyticsMetadataType?
     /// The ID of the client associated with the user pool.
@@ -51,7 +51,7 @@ struct SignUpInput: Equatable {
 }
 
 /// The response from the server for a registration request.
-struct SignUpOutputResponse: Equatable {
+struct SignUpOutputResponse: Equatable, Decodable {
     /// The code delivery details returned by the server response to the user registration request.
     var codeDeliveryDetails: CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType?
     /// A response from the server indicating that a user registration has been confirmed.

@@ -8,7 +8,7 @@
 import Foundation
 
 /// The request representing the confirmation for a password reset.
-struct ConfirmForgotPasswordInput: Equatable {
+struct ConfirmForgotPasswordInput: Equatable, Encodable {
     /// The Amazon Pinpoint analytics metadata for collecting metrics for ConfirmForgotPassword calls.
     var analyticsMetadata: CognitoIdentityProviderClientTypes.AnalyticsMetadataType?
     /// The app client ID of the app associated with the user pool.
@@ -50,4 +50,4 @@ struct ConfirmForgotPasswordInput: Equatable {
 }
 
 /// The response from the server that results from a user's request to retrieve a forgotten password.
-struct ConfirmForgotPasswordOutputResponse: Equatable {}
+struct ConfirmForgotPasswordOutputResponse: Equatable, Decodable {}

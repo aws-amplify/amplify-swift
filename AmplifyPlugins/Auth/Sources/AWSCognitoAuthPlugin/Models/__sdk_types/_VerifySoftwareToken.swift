@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct VerifySoftwareTokenInput: Equatable {
+struct VerifySoftwareTokenInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose software token you want to verify.
     var accessToken: String?
     /// The friendly device name.
@@ -26,7 +26,7 @@ struct VerifySoftwareTokenInput: Equatable {
     }
 }
 
-struct VerifySoftwareTokenOutputResponse: Equatable {
+struct VerifySoftwareTokenOutputResponse: Equatable, Decodable {
     /// The session that should be passed both ways in challenge-response calls to the service.
     var session: String?
     /// The status of the verify software token.

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Initiates the authentication request.
-struct InitiateAuthInput: Equatable {
+struct InitiateAuthInput: Equatable, Encodable {
     /// The Amazon Pinpoint analytics metadata that contributes to your metrics for InitiateAuth calls.
     var analyticsMetadata: CognitoIdentityProviderClientTypes.AnalyticsMetadataType?
     /// The authentication flow for this call to run. The API action will depend on this value. For example:
@@ -97,7 +97,7 @@ struct InitiateAuthInput: Equatable {
 
 
 /// Initiates the authentication response.
-struct InitiateAuthOutputResponse: Equatable {
+struct InitiateAuthOutputResponse: Equatable, Decodable {
     /// The result of the authentication response. This result is only returned if the caller doesn't need to pass another challenge. If the caller does need to pass another challenge before it gets tokens, ChallengeName, ChallengeParameters, and Session are returned.
     var authenticationResult: CognitoIdentityProviderClientTypes.AuthenticationResultType?
     /// The name of the challenge that you're responding to with this call. This name is returned in the AdminInitiateAuth response if you must pass another challenge. Valid values include the following: All of the following challenges require USERNAME and SECRET_HASH (if applicable) in the parameters.

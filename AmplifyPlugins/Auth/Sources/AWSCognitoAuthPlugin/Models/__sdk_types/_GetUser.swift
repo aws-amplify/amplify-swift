@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to get information about the user.
-struct GetUserInput: Equatable {
+struct GetUserInput: Equatable, Encodable {
     /// A non-expired access token for the user whose information you want to query.
     /// This member is required.
     var accessToken: String?
@@ -19,7 +19,7 @@ struct GetUserInput: Equatable {
 }
 
 /// Represents the response from the server from the request to get information about the user.
-struct GetUserOutputResponse: Equatable {
+struct GetUserOutputResponse: Equatable, Decodable {
     /// This response parameter is no longer supported. It provides information only about SMS MFA configurations. It doesn't provide information about time-based one-time password (TOTP) software token MFA configurations. To look up information about either type of MFA configuration, use UserMFASettingList instead.
     var mfaOptions: [CognitoIdentityProviderClientTypes.MFAOptionType]?
     /// The user's preferred MFA setting.

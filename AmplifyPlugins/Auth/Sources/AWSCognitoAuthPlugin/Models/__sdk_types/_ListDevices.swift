@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to list the devices.
-struct ListDevicesInput: Equatable {
+struct ListDevicesInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose list of devices you want to view.
     /// This member is required.
     var accessToken: String?
@@ -25,7 +25,7 @@ struct ListDevicesInput: Equatable {
 }
 
 /// Represents the response to list devices.
-struct ListDevicesOutputResponse: Equatable {
+struct ListDevicesOutputResponse: Equatable, Decodable {
     /// The devices returned in the list devices response.
     var devices: [CognitoIdentityProviderClientTypes.DeviceType]?
     /// The pagination token for the list device response.

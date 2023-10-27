@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to forget the device.
-struct ForgetDeviceInput: Equatable {
+struct ForgetDeviceInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose registered device you want to forget.
     var accessToken: String?
     /// The device key.
@@ -22,4 +22,4 @@ struct ForgetDeviceInput: Equatable {
 }
 
 
-struct ForgetDeviceOutputResponse: Equatable {}
+struct ForgetDeviceOutputResponse: Equatable, Decodable {}

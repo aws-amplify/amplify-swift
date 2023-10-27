@@ -8,7 +8,7 @@
 import Foundation
 
 /// The request to respond to an authentication challenge.
-struct RespondToAuthChallengeInput: Equatable {
+struct RespondToAuthChallengeInput: Equatable, Encodable {
     /// The Amazon Pinpoint analytics metadata that contributes to your metrics for RespondToAuthChallenge calls.
     var analyticsMetadata: CognitoIdentityProviderClientTypes.AnalyticsMetadataType?
     /// The challenge name. For more information, see [InitiateAuth](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html). ADMIN_NO_SRP_AUTH isn't a valid value.
@@ -62,7 +62,7 @@ struct RespondToAuthChallengeInput: Equatable {
 
 
 /// The response to respond to the authentication challenge.
-struct RespondToAuthChallengeOutputResponse: Equatable {
+struct RespondToAuthChallengeOutputResponse: Equatable, Decodable {
     /// The result returned by the server in response to the request to respond to the authentication challenge.
     var authenticationResult: CognitoIdentityProviderClientTypes.AuthenticationResultType?
     /// The challenge name. For more information, see [InitiateAuth](https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html).

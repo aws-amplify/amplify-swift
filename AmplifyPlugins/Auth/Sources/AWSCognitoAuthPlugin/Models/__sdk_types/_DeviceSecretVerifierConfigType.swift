@@ -9,7 +9,7 @@ import Foundation
 
 extension CognitoIdentityProviderClientTypes {
     /// The device verifier against which it is authenticated.
-    struct DeviceSecretVerifierConfigType: Equatable {
+    struct DeviceSecretVerifierConfigType: Equatable, Codable {
         /// The password verifier.
         var passwordVerifier: String?
         /// The [salt](https://en.wikipedia.org/wiki/Salt_(cryptography))

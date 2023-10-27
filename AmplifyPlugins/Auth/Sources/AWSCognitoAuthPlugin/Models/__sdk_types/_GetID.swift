@@ -8,7 +8,7 @@
 import Foundation
 
 /// Input to the GetId action.
-struct GetIdInput: Equatable {
+struct GetIdInput: Equatable, Encodable {
     /// A standard AWS account ID (9+ digits).
     var accountId: String?
     /// An identity pool ID in the format REGION:GUID.
@@ -38,7 +38,7 @@ struct GetIdInput: Equatable {
 
 
 /// Returned in response to a GetId request.
-struct GetIdOutputResponse: Equatable {
+struct GetIdOutputResponse: Equatable, Decodable {
     /// A unique identifier in the format REGION:GUID.
     var identityId: String?
 

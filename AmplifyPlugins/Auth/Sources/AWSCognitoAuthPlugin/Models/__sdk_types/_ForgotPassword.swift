@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to reset a user's password.
-struct ForgotPasswordInput: Equatable {
+struct ForgotPasswordInput: Equatable, Encodable {
     /// The Amazon Pinpoint analytics metadata that contributes to your metrics for ForgotPassword calls.
     var analyticsMetadata: CognitoIdentityProviderClientTypes.AnalyticsMetadataType?
     /// The ID of the client associated with the user pool.
@@ -41,7 +41,7 @@ struct ForgotPasswordInput: Equatable {
 }
 
 /// The response from Amazon Cognito to a request to reset a password.
-struct ForgotPasswordOutputResponse: Equatable {
+struct ForgotPasswordOutputResponse: Equatable, Decodable {
     /// The code delivery details returned by the server in response to the request to reset a password.
     var codeDeliveryDetails: CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType?
 

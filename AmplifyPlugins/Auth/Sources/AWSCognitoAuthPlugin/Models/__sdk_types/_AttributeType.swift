@@ -9,7 +9,7 @@ import Foundation
 
 extension CognitoIdentityProviderClientTypes {
     /// Specifies whether the attribute is standard or custom.
-    struct AttributeType: Equatable {
+    struct AttributeType: Equatable, Codable {
         /// The name of the attribute.
         /// This member is required.
         var name: String?

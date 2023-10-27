@@ -9,7 +9,7 @@ import Foundation
 
 extension CognitoIdentityProviderClientTypes {
     /// The device type.
-    public struct DeviceType: Equatable {
+    public struct DeviceType: Equatable, Codable {
         /// The device attributes.
         public var deviceAttributes: [CognitoIdentityProviderClientTypes.AttributeType]?
         /// The creation date of the device.

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RevokeTokenInput: Equatable {
+struct RevokeTokenInput: Equatable, Encodable {
     /// The client ID for the token that you want to revoke.
     /// This member is required.
     var clientId: String?
@@ -25,4 +25,4 @@ struct RevokeTokenInput: Equatable {
 }
 
 
-struct RevokeTokenOutputResponse: Equatable {}
+struct RevokeTokenOutputResponse: Equatable, Decodable {}

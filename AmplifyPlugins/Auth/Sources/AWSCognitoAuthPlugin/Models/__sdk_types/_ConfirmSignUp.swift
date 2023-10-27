@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents the request to confirm registration of a user.
-struct ConfirmSignUpInput: Equatable {
+struct ConfirmSignUpInput: Equatable, Encodable {
     /// The Amazon Pinpoint analytics metadata for collecting metrics for ConfirmSignUp calls.
     var analyticsMetadata: CognitoIdentityProviderClientTypes.AnalyticsMetadataType?
     /// The ID of the app client associated with the user pool.
@@ -48,7 +48,7 @@ struct ConfirmSignUpInput: Equatable {
 }
 
 /// Represents the response from the server for the registration confirmation.
-struct ConfirmSignUpOutputResponse: Equatable {
+struct ConfirmSignUpOutputResponse: Equatable, Decodable {
 
     init() { }
 }

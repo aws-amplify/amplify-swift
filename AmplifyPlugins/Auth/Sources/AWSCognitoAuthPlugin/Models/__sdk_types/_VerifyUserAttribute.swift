@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct VerifyUserAttributeInput: Equatable {
+struct VerifyUserAttributeInput: Equatable, Encodable {
     /// A valid access token that Amazon Cognito issued to the user whose user attributes you want to verify.
     /// This member is required.
     var accessToken: String?
@@ -26,4 +26,4 @@ struct VerifyUserAttributeInput: Equatable {
 }
 
 /// A container representing the response from the server from the request to verify user attributes.
-struct VerifyUserAttributeOutputResponse: Equatable {}
+struct VerifyUserAttributeOutputResponse: Equatable, Decodable {}

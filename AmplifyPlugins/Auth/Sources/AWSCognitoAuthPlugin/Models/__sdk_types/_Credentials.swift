@@ -9,7 +9,7 @@ import Foundation
 
 extension CognitoIdentityClientTypes {
     /// Credentials for the provided identity ID.
-    struct Credentials: Equatable {
+    struct Credentials: Equatable, Decodable {
         /// The Access Key portion of the credentials.
         var accessKeyId: String?
         /// The date at which these credentials will expire.

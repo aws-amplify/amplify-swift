@@ -9,7 +9,7 @@ import Foundation
 
 extension CognitoIdentityProviderClientTypes {
     /// The new device metadata type.
-    struct NewDeviceMetadataType: Equatable {
+    struct NewDeviceMetadataType: Equatable, Codable {
         /// The device group key.
         var deviceGroupKey: String?
         /// The device key.
