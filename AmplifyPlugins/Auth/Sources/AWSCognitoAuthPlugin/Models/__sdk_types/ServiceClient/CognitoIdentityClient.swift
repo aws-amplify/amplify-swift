@@ -168,7 +168,6 @@ extension CognitoIdentityClient: CognitoIdentityBehavior {
         request.setValue("application/x-amz-json-1.1", forHTTPHeaderField: "Content-Type")
         request.setValue(String(requestData.count), forHTTPHeaderField: "Content-Length")
 
-
 //        log.debug("[\(file)] [\(function)] [\(line)] unsigned request url: \(url)")
 //        let credentials = try await configuration.credentialsProvider.fetchCredentials()
 //        let signer = SigV4Signer(

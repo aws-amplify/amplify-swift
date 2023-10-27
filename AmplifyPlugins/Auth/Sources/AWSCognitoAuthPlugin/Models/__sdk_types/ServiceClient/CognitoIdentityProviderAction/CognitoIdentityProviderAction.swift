@@ -2,13 +2,13 @@
 //  File.swift
 //  
 //
-//  Created by Saultz, Ian on 10/26/23.
+//  Created by Saultz, Ian on 10/27/23.
 //
 
 import Foundation
 import AWSPluginsCore
 
-struct CognitoIdentityAction<Input: Encodable, Output: Decodable> {
+struct CognitoIdentityProviderAction<Input: Encodable, Output: Decodable> {
     let name: String
     let method: HTTPMethod
     let xAmzTarget: String
@@ -27,7 +27,7 @@ struct CognitoIdentityAction<Input: Encodable, Output: Decodable> {
 
     func url(region: String) throws -> URL {
         guard let url = URL(
-            string: "https://\(hostPrefix)cognito-identity.\(region).amazonaws.com\(requestURI)"
+            string: "https://\(hostPrefix)cognito-idp.\(region).amazonaws.com\(requestURI)"
         ) else {
             throw PlaceholderError()
         }
@@ -35,6 +35,3 @@ struct CognitoIdentityAction<Input: Encodable, Output: Decodable> {
         return url
     }
 }
-
-
-

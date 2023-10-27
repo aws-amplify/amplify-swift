@@ -90,7 +90,9 @@ extension AWSCognitoAuthPlugin {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = CognitoIdentityProviderClientConfiguration(
                 region: userPoolConfig.region,
-                endpointResolver: userPoolConfig.endpoint?.resolver
+                endpointResolver: userPoolConfig.endpoint?.resolver,
+                encoder: JSONEncoder(),
+                decoder: JSONDecoder()
             )
 
 //            try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
