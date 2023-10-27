@@ -17,10 +17,6 @@ class AuthSignOutTests: AWSAuthBaseTest {
     override func setUp() async throws {
         try await super.setUp()
         AuthSessionHelper.clearSession()
-        if Self.setSDKLogLevelDebug {
-            SDKLoggingSystem.initialize(logLevel: .debug)
-            Self.setSDKLogLevelDebug = false
-        }
     }
 
     override func tearDown() async throws {

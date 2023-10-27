@@ -128,6 +128,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
     ///    - I should get a user exists error
     ///
     func testRegisterExistingUser()  async throws {
+        // TODO: This currently fails because we're not mapping the error correctly yet
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
