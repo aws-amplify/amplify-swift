@@ -178,7 +178,10 @@ extension CognitoIdentityClient: CognitoIdentityBehavior {
         log.debug("[\(file)] [\(function)] [\(line)] HTTPURLResponse in \(#function): \(httpURLResponse)")
         guard (200..<300).contains(httpURLResponse.statusCode) else {
             log.error("Expected a 2xx status code, received: \(httpURLResponse.statusCode)")
-            throw try action.mapError(responseData, httpURLResponse)
+            log.debug("Attempting to create error from headers: \(httpURLResponse.allHeaderFields as Any)")
+            let error = try action.mapError(responseData, httpURLResponse)
+            log.error("Throwing error: \(error)")
+            throw error
         }
 
         log.debug("[\(file)] [\(function)] [\(line)] Attempting to decode response object in \(#function)")

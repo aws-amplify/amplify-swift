@@ -26,7 +26,7 @@ class AuthConfirmSignUpTests: AWSAuthBaseTest {
         } catch {
             guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
                   case .userNotFound = cognitoError else {
-                XCTFail("Should return userNotFound")
+                XCTFail("Expected userNotFound - received: \(error)")
                 return
             }
         }
