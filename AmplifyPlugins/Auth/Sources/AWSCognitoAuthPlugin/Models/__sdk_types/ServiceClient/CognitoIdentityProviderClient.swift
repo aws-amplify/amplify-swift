@@ -368,6 +368,7 @@ extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {
         }
 
         log.debug("[\(file)] [\(function)] [\(line)] Attempting to decode response object in \(#function)")
+        log.debug("[\(file)] [\(function)] [\(line)] Pretty Printed JSON \(responseData.prettyPrintedJSON as Any)")
         let response = try action.decode(responseData, configuration.decoder)
         log.debug("[\(file)] [\(function)] [\(line)] Decoded response in `\(Output.self)`: \(response)")
 
@@ -375,3 +376,14 @@ extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {
     }
 
 }
+
+extension Data {
+    var prettyPrintedJSON: NSString? {
+        guard let object = try? JSONSerialization.jsonObject(with: self, options: []),
+              let data = try? JSONSerialization.data(withJSONObject: object, options: [.prettyPrinted, .withoutEscapingSlashes]),
+              let prettyPrintedString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else { return nil }
+
+        return prettyPrintedString
+    }
+}
+
