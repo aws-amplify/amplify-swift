@@ -23,22 +23,13 @@ extension CognitoIdentityProviderClientTypes {
         /// The token type.
         var tokenType: String?
 
-        init(
-            accessToken: String? = nil,
-            expiresIn: Int = 0,
-            idToken: String? = nil,
-            newDeviceMetadata: CognitoIdentityProviderClientTypes.NewDeviceMetadataType? = nil,
-            refreshToken: String? = nil,
-            tokenType: String? = nil
-        )
-        {
-            self.accessToken = accessToken
-            self.expiresIn = expiresIn
-            self.idToken = idToken
-            self.newDeviceMetadata = newDeviceMetadata
-            self.refreshToken = refreshToken
-            self.tokenType = tokenType
+        enum CodingKeys: String, CodingKey {
+            case accessToken = "AccessToken"
+            case expiresIn = "ExpiresIn"
+            case idToken = "IdToken"
+            case newDeviceMetadata = "NewDeviceMetadata"
+            case refreshToken = "RefreshToken"
+            case tokenType = "TokenType"
         }
     }
-
 }

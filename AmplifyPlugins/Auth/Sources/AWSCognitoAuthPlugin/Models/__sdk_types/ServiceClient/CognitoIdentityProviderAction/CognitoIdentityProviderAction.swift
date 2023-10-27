@@ -21,7 +21,7 @@ struct CognitoIdentityProviderAction<Input: Encodable, Output: Decodable> {
         try encoder.encode(model)
     }
 
-    let decode: (Data, JSONDecoder) throws -> Output = { data, decoder in
+    var decode: (Data, JSONDecoder) throws -> Output = { data, decoder in
         try decoder.decode(Output.self, from: data)
     }
 

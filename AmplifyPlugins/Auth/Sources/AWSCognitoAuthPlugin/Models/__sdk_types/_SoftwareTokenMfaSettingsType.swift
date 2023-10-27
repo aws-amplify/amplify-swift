@@ -15,13 +15,9 @@ extension CognitoIdentityProviderClientTypes {
         /// Specifies whether software token MFA is the preferred MFA method.
         var preferredMfa: Bool
 
-        init(
-            enabled: Bool = false,
-            preferredMfa: Bool = false
-        )
-        {
-            self.enabled = enabled
-            self.preferredMfa = preferredMfa
+        enum CodingKeys: Swift.String, Swift.CodingKey {
+            case enabled = "Enabled"
+            case preferredMfa = "PreferredMfa"
         }
     }
 

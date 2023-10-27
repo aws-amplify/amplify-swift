@@ -42,7 +42,8 @@ Output == DeleteUserOutputResponse {
             requestURI: "/",
             successCode: 200,
             hostPrefix: "",
-            mapError: mapError(data:response:)
+            mapError: mapError(data:response:),
+            decode: { _, _ in .init() }
         )
     }
 }

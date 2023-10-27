@@ -61,9 +61,8 @@ public struct RestJSONError {
             from: data
         )
 
-        self.message = (errorMessage ?? errorPayload.resolvedErrorMessage)
-            .map { $0.substringAfter("#").substringBefore(":").trim() }
-        self.type = errorType ?? errorPayload.resolvedErrorType
+        self.message = errorMessage ?? errorPayload.resolvedErrorMessage
+        self.type = (errorType ?? errorPayload.resolvedErrorType).map { $0.substringAfter("#").substringBefore(":").trim() }
     }
 }
 
