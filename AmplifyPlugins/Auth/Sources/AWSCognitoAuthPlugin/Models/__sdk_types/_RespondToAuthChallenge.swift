@@ -86,7 +86,7 @@ struct RespondToAuthChallengeOutputResponse: Equatable, Decodable {
         )
         session = try containerValues.decodeIfPresent(String.self, forKey: .session)
 
-        let challengeParameters = try containerValues.decodeIfPresent(
+        challengeParameters = try containerValues.decodeIfPresent(
             [String: String?].self,
             forKey: .challengeParameters
         )?.reduce(into: [String: String](), { partialResult, pair in
