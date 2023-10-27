@@ -317,7 +317,8 @@ extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.setValue("application/x-amz-json-1.1", forHTTPHeaderField: "Content-Type")
         request.setValue(String(requestData.count), forHTTPHeaderField: "Content-Length")
-
+        request.httpMethod = action.method.verb
+        request.httpBody = requestData
 
 //        log.debug("[\(file)] [\(function)] [\(line)] unsigned request url: \(url)")
 //        let credentials = try await configuration.credentialsProvider.fetchCredentials()
