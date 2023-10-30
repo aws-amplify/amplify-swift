@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSS3
 
 protocol AWSS3StorageServiceBehavior {
     typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
@@ -35,7 +34,7 @@ protocol AWSS3StorageServiceBehavior {
 
     func reset()
 
-    func getEscapeHatch() -> S3Client
+//    func getEscapeHatch() -> S3Client
 
     func download(serviceKey: String,
                   fileURL: URL?,

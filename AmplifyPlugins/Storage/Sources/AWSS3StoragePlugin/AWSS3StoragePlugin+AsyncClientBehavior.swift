@@ -6,8 +6,7 @@
 //
 
 import Foundation
-
-import AWSS3
+//import AWSS3
 import Amplify
 import AWSPluginsCore
 

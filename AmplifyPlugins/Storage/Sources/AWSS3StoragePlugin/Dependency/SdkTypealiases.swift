@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import AWSClientRuntime
-import ClientRuntime
-
-/// - Tag: NetworkResult
-public typealias NetworkResult = (Result<HttpResponse, Error>) -> Void
+//import AWSClientRuntime
+//import ClientRuntime
+//
+///// - Tag: NetworkResult
+//public typealias NetworkResult = (Result<HttpResponse, Error>) -> Void

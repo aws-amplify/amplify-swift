@@ -40,10 +40,12 @@ extension AWSS3StoragePlugin {
             let bucket = try AWSS3StoragePlugin.getBucket(configObject)
             let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
 
-            let storageService = try AWSS3StorageService(authService: authService,
-                                                         region: region,
-                                                         bucket: bucket,
-                                                         httpClientEngineProxy: self.httpClientEngineProxy)
+            let storageService = try AWSS3StorageService(
+                authService: authService,
+                region: region,
+                bucket: bucket
+//                httpClientEngineProxy: self.httpClientEngineProxy
+            )
             storageService.urlRequestDelegate = self.urlRequestDelegate
 
             configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)

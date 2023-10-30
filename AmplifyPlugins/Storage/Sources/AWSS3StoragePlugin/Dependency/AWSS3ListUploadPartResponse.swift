@@ -8,7 +8,7 @@
 import Foundation
 
 import Amplify
-import AWSS3
+//import AWSS3
 
 struct AWSS3ListUploadPartResponse {
     let bucket: String

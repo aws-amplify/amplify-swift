@@ -88,13 +88,13 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             key: key,
             metadata: metadata
         )
-        serviceProxy.awsS3.createMultipartUpload(request) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
+
+        Task {
+            do {
+                let response = try await serviceProxy.awsS3.createMultipartUpload(request)
                 serviceProxy.register(multipartUploadSession: session)
                 session.handle(multipartUploadEvent: .created(uploadFile: self.uploadFile, uploadId: response.uploadId))
-            case .failure(let error):
+            } catch {
                 session.fail(error: error)
             }
         }
@@ -177,11 +177,11 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         let parts = AWSS3MultipartUploadRequestCompletedParts(completedParts: completedParts)
         let request = AWSS3CompleteMultipartUploadRequest(bucket: bucket, key: key, uploadId: uploadId, parts: parts)
 
-        serviceProxy.awsS3.completeMultipartUpload(request) { result in
-            switch result {
-            case .success:
+        Task {
+            do {
+                let result = try await serviceProxy.awsS3.completeMultipartUpload(request)
                 session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
-            case .failure(let error):
+            } catch {
                 session.fail(error: error)
             }
             serviceProxy.unregister(multipartUploadSession: session)
@@ -193,11 +193,11 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         guard let serviceProxy = serviceProxy,
             let session = session else { fatalError() }
 
-        serviceProxy.awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId)) { result in
-            switch result {
-            case .success:
+        Task {
+            do {
+                try await serviceProxy.awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId))
                 session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error))
-            case .failure(let error):
+            } catch {
                 session.fail(error: error)
             }
             serviceProxy.unregister(multipartUploadSession: session)

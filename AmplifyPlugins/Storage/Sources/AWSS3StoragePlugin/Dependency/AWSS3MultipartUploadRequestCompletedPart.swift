@@ -7,7 +7,7 @@
 
 import Foundation
 
-import AWSS3
+//import AWSS3
 
 struct AWSS3MultipartUploadRequestCompletedPart {
     let partNumber: Int

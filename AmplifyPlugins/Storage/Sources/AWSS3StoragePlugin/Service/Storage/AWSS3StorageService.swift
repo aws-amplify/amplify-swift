@@ -6,14 +6,15 @@
 //
 
 import Foundation
-import AWSS3
 import Amplify
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
-import ClientRuntime
+//@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+//import ClientRuntime
+//import AWSS3
 
 /// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
+
 
     // resettable values
     private var authService: AWSAuthServiceBehavior?
@@ -29,7 +30,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     var s3Client: S3Client!
 
     /// - Tag: AWSS3StorageService.client
-    var client: S3ClientProtocol
+    var client: S3Client
 
     let userAgent: String
     let storageConfiguration: StorageConfiguration
@@ -51,31 +52,39 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     convenience init(authService: AWSAuthServiceBehavior,
                      region: String,
                      bucket: String,
-                     httpClientEngineProxy: HttpClientEngineProxy? = nil,
+//                     httpClientEngineProxy: HttpClientEngineProxy? = nil,
                      storageConfiguration: StorageConfiguration = .default,
                      storageTransferDatabase: StorageTransferDatabase = .default,
                      fileSystem: FileSystem = .default,
                      sessionConfiguration: URLSessionConfiguration? = nil,
                      delegateQueue: OperationQueue? = nil,
                      logger: Logger = storageLogger) throws {
-        let credentialsProvider = authService.getCredentialsProvider()
-        let clientConfig = try S3Client.S3ClientConfiguration(
+        let credentialsProvider = authService._credentialsProvider()
+        let clientConfig = S3ClientConfiguration(
             region: region,
             credentialsProvider: credentialsProvider,
-            signingRegion: region
+            accelerate: false // TODO: pull from config
         )
 
-        if var httpClientEngineProxy = httpClientEngineProxy {
-            httpClientEngineProxy.target = baseClientEngine(for: clientConfig)
-            clientConfig.httpClientEngine = UserAgentSettingClientEngine(
-                target: httpClientEngineProxy
-            )
-        } else {
-            clientConfig.httpClientEngine = .userAgentEngine(for: clientConfig)
-        }
+        
 
-        let s3Client = S3Client(config: clientConfig)
-        let awsS3 = AWSS3Adapter(s3Client, config: clientConfig)
+//        let clientConfig = try S3Client.S3ClientConfiguration(
+//            region: region,
+//            credentialsProvider: credentialsProvider,
+//            signingRegion: region
+//        )
+
+//        if var httpClientEngineProxy = httpClientEngineProxy {
+//            httpClientEngineProxy.target = baseClientEngine(for: clientConfig)
+//            clientConfig.httpClientEngine = UserAgentSettingClientEngine(
+//                target: httpClientEngineProxy
+//            )
+//        } else {
+//            clientConfig.httpClientEngine = .userAgentEngine(for: clientConfig)
+//        }
+
+        let s3Client = S3Client(configuration: clientConfig)
+        let awsS3 = AWSS3Adapter(s3Client)
         let preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(config: clientConfig, bucket: bucket)
 
         var _sessionConfiguration: URLSessionConfiguration

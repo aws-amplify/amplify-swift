@@ -8,10 +8,10 @@
 import Foundation
 
 import Amplify
-import AWSS3
 import AWSPluginsCore
-import ClientRuntime
-import AWSClientRuntime
+//import AWSS3
+//import ClientRuntime
+//import AWSClientRuntime
 
 /// The class confirming to AWSS3PreSignedURLBuilderBehavior which uses GetObjectInput to
 /// create a pre-signed URL.
@@ -19,12 +19,12 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     let defaultExpiration: Int64 = 50 * 60 // 50 minutes
 
     let bucket: String
-    let config: S3Client.S3ClientConfiguration
+    let config: S3ClientConfiguration
     let logger: Logger
 
     /// Creates a pre-signed URL builder.
     /// - Parameter credentialsProvider: Credentials Provider.
-    init(config: S3Client.S3ClientConfiguration, bucket: String, logger: Logger = storageLogger) {
+    init(config: S3ClientConfiguration, bucket: String, logger: Logger = storageLogger) {
         self.bucket = bucket
         self.config = config
         self.logger = logger
@@ -44,17 +44,17 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
         switch signingOperation {
         case .getObject:
             let input = GetObjectInput(bucket: bucket, key: key)
-            preSignedUrl = try await input.presignURL(
+            preSignedUrl = try input.presignURL(
                 config: config,
                 expiration: expiration)
         case .putObject:
             let input = PutObjectInput(bucket: bucket, key: key, metadata: metadata)
-            preSignedUrl = try await input.presignURL(
+            preSignedUrl = try input.presignURL(
                 config: config,
                 expiration: expiration)
         case .uploadPart(let partNumber, let uploadId):
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-            preSignedUrl = try await input.customPresignURL(
+            preSignedUrl = try input.presignURL(
                 config: config,
                 expiration: expiration)
         }

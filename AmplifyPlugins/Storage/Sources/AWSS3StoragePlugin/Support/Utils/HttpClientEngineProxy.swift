@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import ClientRuntime
+//import ClientRuntime
 import Foundation
 
 /// Internal protocol that may be to inspect or decorate
@@ -20,12 +20,12 @@ import Foundation
 /// * [URLRequestDelegate](x-source-tag://URLRequestDelegate)
 /// * [CommonRuntime.HttpClientEngine](x-source-tag://HttpClientEngine)
 ///
-/// - Tag: HttpClientEngineProxy
-protocol HttpClientEngineProxy: HttpClientEngine {
-
-    /// The actual engine performing the requests. This must be set before the receiver gets its first call to
-    /// `execute(request:)`.
-    ///
-    /// - Tag: HttpClientEngineProxy.target
-    var target: HttpClientEngine? { get set }
-}
+///// - Tag: HttpClientEngineProxy
+//protocol HttpClientEngineProxy: HttpClientEngine {
+//
+//    /// The actual engine performing the requests. This must be set before the receiver gets its first call to
+//    /// `execute(request:)`.
+//    ///
+//    /// - Tag: HttpClientEngineProxy.target
+//    var target: HttpClientEngine? { get set }
+//}

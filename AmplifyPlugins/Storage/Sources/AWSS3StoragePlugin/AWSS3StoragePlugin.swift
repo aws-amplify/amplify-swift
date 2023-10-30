@@ -38,7 +38,7 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     let storageConfiguration: AWSS3StoragePluginConfiguration
 
     /// See [HttpClientEngineProxy](x-source-tag://HttpClientEngineProxy)
-    internal var httpClientEngineProxy: HttpClientEngineProxy?
+//    internal var httpClientEngineProxy: HttpClientEngineProxy?
 
     /// See [URLRequestDelegate](x-source-tag://URLRequestDelegate)
     internal weak var urlRequestDelegate: URLRequestDelegate?
@@ -46,8 +46,9 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     /// Instantiates an instance of the AWSS3StoragePlugin.
     ///
     /// - Tag: AWSS3StoragePlugin.init
-    public init(configuration
-                    storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
+    public init(
+        configuration storageConfiguration: AWSS3StoragePluginConfiguration = .init()
+    ) {
         self.storageConfiguration = storageConfiguration
     }
 }

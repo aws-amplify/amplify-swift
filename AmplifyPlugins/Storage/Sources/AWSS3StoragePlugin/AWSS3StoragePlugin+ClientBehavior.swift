@@ -7,7 +7,7 @@
 
 import Foundation
 
-import AWSS3
+//import AWSS3
 import Amplify
 import AWSPluginsCore
 
@@ -18,7 +18,7 @@ extension AWSS3StoragePlugin {
     /// - Returns: S3 client
     ///
     /// - Tag: AWSS3StoragePlugin.getEscapeHatch
-    public func getEscapeHatch() -> S3Client {
-        return storageService.getEscapeHatch()
-    }
+//    public func getEscapeHatch() -> S3Client {
+//        return storageService.getEscapeHatch()
+//    }
 }

@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSS3
-import ClientRuntime
 import Foundation
 import Amplify
+//import AWSS3
+//import ClientRuntime
 
 extension AWSS3StorageService {
 
@@ -32,14 +32,16 @@ extension AWSS3StorageService {
                 bucket: self.bucket,
                 key: serviceKey
             ))
-        } catch is AWSS3.NotFound {
+        } 
+        /* catch is AWSS3.NotFound {
             throw StorageError.keyNotFound(
                 serviceKey,
                 "Unable to generate URL for non-existent key: \(serviceKey)",
                 "Please ensure the key is valid or the object has been uploaded",
                 nil
             )
-        } catch let error as StorageErrorConvertible {
+        } */
+         catch let error as StorageErrorConvertible {
             throw error.storageError
         } catch {
             throw StorageError.unknown(

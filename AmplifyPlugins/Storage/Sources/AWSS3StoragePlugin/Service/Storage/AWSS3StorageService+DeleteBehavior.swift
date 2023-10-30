@@ -13,14 +13,15 @@ extension AWSS3StorageService {
     func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventHandler) {
         let request = AWSS3DeleteObjectRequest(bucket: bucket, key: serviceKey)
 
-        awsS3.deleteObject(request) { result in
-            switch result {
-            case .success:
-                onEvent(StorageEvent.completedVoid)
-            case .failure(let error):
-                onEvent(StorageEvent.failed(error))
+        Task {
+            do {
+                try await awsS3.deleteObject(request)
+                onEvent(.completedVoid)
+            } catch let error as StorageError {
+                onEvent(.failed(error))
+            } catch {
+                onEvent(.failed(StorageError(error: error)))
             }
         }
     }
-
 }
