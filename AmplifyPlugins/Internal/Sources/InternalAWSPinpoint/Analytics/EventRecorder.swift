@@ -13,8 +13,8 @@ import enum AwsCommonRuntimeKit.CommonRunTimeError
 import Foundation
 
 /// AnalyticsEventRecording saves and submits pinpoint events
-protocol AnalyticsEventRecording {
-    var pinpointClient: PinpointClientProtocol { get }
+protocol AnalyticsEventRecording: Actor {
+    nonisolated var pinpointClient: PinpointClientProtocol { get }
 
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
@@ -35,13 +35,13 @@ protocol AnalyticsEventRecording {
 }
 
 /// An AnalyticsEventRecording implementation that stores and submits pinpoint events
-class EventRecorder: AnalyticsEventRecording {
-    let appId: String
-    let storage: AnalyticsEventStorage
-    let pinpointClient: PinpointClientProtocol
-    let endpointClient: EndpointClientBehaviour
+actor EventRecorder: AnalyticsEventRecording {
+    private let appId: String
+    private let storage: AnalyticsEventStorage
     private var submittedEvents: [PinpointEvent] = []
     private var submissionTask: Task<[PinpointEvent], Error>?
+    nonisolated let endpointClient: EndpointClientBehaviour
+    nonisolated let pinpointClient: PinpointClientProtocol
 
     /// Initializer for Event Recorder
     /// - Parameters:
@@ -67,13 +67,13 @@ class EventRecorder: AnalyticsEventRecording {
     func save(_ event: PinpointEvent) throws {
         log.verbose("saveEvent: \(event)")
         try storage.saveEvent(event)
-        try self.storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
+        try storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
     }
 
     func updateAttributesOfEvents(ofType eventType: String,
                                   withSessionId sessionId: PinpointSession.SessionId,
                                   setAttributes attributes: [String: String]) throws {
-        try self.storage.updateEvents(ofType: eventType,
+        try storage.updateEvents(ofType: eventType,
                                       withSessionId: sessionId,
                                       setAttributes: attributes)
     }
@@ -350,7 +350,7 @@ extension EventRecorder: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    nonisolated public var log: Logger {
         Self.log
     }
 }

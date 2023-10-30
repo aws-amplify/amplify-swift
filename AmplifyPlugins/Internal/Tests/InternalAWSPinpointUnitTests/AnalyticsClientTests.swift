@@ -85,8 +85,9 @@ class AnalyticsClientTests: XCTestCase {
 
         do {
             try await analyticsClient.record(event)
-            XCTAssertEqual(eventRecorder.saveCount, 1)
-            guard let savedEvent = eventRecorder.lastSavedEvent else {
+            let saveCount = await eventRecorder.saveCount
+            XCTAssertEqual(saveCount, 1)
+            guard let savedEvent = await eventRecorder.lastSavedEvent else {
                 XCTFail("Expected saved event")
                 return
             }
@@ -118,8 +119,9 @@ class AnalyticsClientTests: XCTestCase {
 
         do {
             try await analyticsClient.record(event)
-            XCTAssertEqual(eventRecorder.saveCount, 1)
-            guard let savedEvent = eventRecorder.lastSavedEvent else {
+            let saveCount = await eventRecorder.saveCount
+            XCTAssertEqual(saveCount, 1)
+            guard let savedEvent = await eventRecorder.lastSavedEvent else {
                 XCTFail("Expected saved event")
                 return
             }
@@ -142,7 +144,8 @@ class AnalyticsClientTests: XCTestCase {
     func testSubmit() async {
         do {
             try await analyticsClient.submitEvents()
-            XCTAssertEqual(eventRecorder.submitCount, 1)
+            let submitCount = await eventRecorder.submitCount
+            XCTAssertEqual(submitCount, 1)
         } catch {
             XCTFail("Unexpected exception while attempting to submit events")
         }
