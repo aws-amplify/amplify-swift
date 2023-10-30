@@ -215,8 +215,8 @@ let storageTargets: [Target] = [
         name: "AWSS3StoragePlugin",
         dependencies: [
             .target(name: "Amplify"),
-            .target(name: "AWSPluginsCore"),
-            .product(name: "AWSS3", package: "aws-sdk-swift")],
+            .target(name: "AWSPluginsCore")
+        ],
         path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
