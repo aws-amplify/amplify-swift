@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.21.2 (2023-10-31)
+
+### Bug Fixes
+
+- **Analytics**: Handling certain auth errors as retryable errors (#3322)
+
 ## 2.21.1 (2023-10-23)
 
 ### Bug Fixes
