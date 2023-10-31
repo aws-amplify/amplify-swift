@@ -35,7 +35,7 @@ protocol AWSS3Behavior {
     func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping (Result<Void, StorageError>) -> Void)
 
     // Gets a client for AWS S3 Service.
-    func getS3() -> S3Client
+    func getS3() -> S3ClientProtocol
 
 }
 

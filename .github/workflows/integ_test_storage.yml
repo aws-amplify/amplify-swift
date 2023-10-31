@@ -1,6 +1,22 @@
 name: Integration Tests | Storage
 on:
   workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
   workflow_call:
 
 permissions:
@@ -9,6 +25,7 @@ permissions:
 
 jobs:
   storage-integration-test-iOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.ios }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -36,6 +53,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   storage-integration-test-tvOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.tvos }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:
@@ -64,6 +82,7 @@ jobs:
           xcode_path: '/Applications/Xcode_14.3.app'
 
   storage-integration-test-watchOS:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.watchos }}
     runs-on: macos-13
     environment: IntegrationTest
     steps:

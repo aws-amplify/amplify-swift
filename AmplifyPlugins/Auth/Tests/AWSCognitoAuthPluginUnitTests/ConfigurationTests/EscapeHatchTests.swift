@@ -6,143 +6,116 @@
 //
 
 import XCTest
-@testable import Amplify
+@testable import func AmplifyTestCommon.XCTAssertThrowFatalError
+import enum Amplify.JSONValue
 @testable import AWSCognitoAuthPlugin
 
+
 class EscapeHatchTests: XCTestCase {
-
-    let skipBrokenTests = true
-
-    override func tearDown() async throws {
-        await Amplify.reset()
-    }
-
     /// Test escape hatch with valid config for user pool and identity pool
     ///
-    /// - Given: Given valid config for user pool and identity pool
+    /// - Given: A AWSCognitoAuthPlugin configured with User Pool and Identity Pool
     /// - When:
-    ///    - I configure auth with the given configuration and call getEscapeHatch
+    ///    - I call getEscapeHatch
     /// - Then:
-    ///    - I should get back user pool and identity pool clients
+    ///    - I should get back both the User Pool and Identity Pool clients
     ///
     func testEscapeHatchWithUserPoolAndIdentityPool() throws {
-        if skipBrokenTests {
-            throw XCTSkip("TODO: fix this test")
-        }
-
-        let plugin = AWSCognitoAuthPlugin()
-        try Amplify.add(plugin: plugin)
-
-        let expectation = expectation(description: "Should get service")
-        let categoryConfig = AuthCategoryConfiguration(plugins: [
-            "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["PoolId": "xx",
-                     "Region": "us-east-1"]
-                    ]],
-                "CognitoUserPool": ["Default": [
+        let configuration: JSONValue = [
+            "CredentialsProvider": [
+                "CognitoIdentity": [
+                    "Default": [
+                        "PoolId": "xx",
+                        "Region": "us-east-1"
+                    ]
+                ]
+            ],
+            "CognitoUserPool": [
+                "Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx"
+                ]
             ]
-        ])
-        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
-        try Amplify.configure(amplifyConfig)
-        let internalPlugin = try Amplify.Auth.getPlugin(
-            for: "awsCognitoAuthPlugin"
-        ) as! AWSCognitoAuthPlugin
-        let service = internalPlugin.getEscapeHatch()
-        switch service {
-        case .userPool:
-            XCTFail("Should return userPoolAndIdentityPool")
-        case .identityPool:
-            XCTFail("Should return userPoolAndIdentityPool")
-        case .userPoolAndIdentityPool:
-            expectation.fulfill()
+        ]
+        let plugin = AWSCognitoAuthPlugin()
+        try plugin.configure(using: configuration)
+        let escapeHatch = plugin.getEscapeHatch()
+        guard case .userPoolAndIdentityPool = escapeHatch else {
+            XCTFail("Expected .userPoolAndIdentityPool, got \(escapeHatch)")
+            return
         }
-        wait(for: [expectation], timeout: 1)
     }
 
     /// Test escape hatch with valid config for only identity pool
     ///
-    /// - Given: Given valid config for only identity pool
+    /// - Given: A AWSCognitoAuthPlugin configured with only Identity Pool
     /// - When:
-    ///    - I configure auth with the given configuration and invoke getEscapeHatch
+    ///    - I call getEscapeHatch
     /// - Then:
-    ///    - I should get back only identity pool client
+    ///    - I should get back only the Identity Pool client
     ///
     func testEscapeHatchWithOnlyIdentityPool() throws {
-        if skipBrokenTests {
-            throw XCTSkip("TODO: fix this test")
-        }
-
-        let plugin = AWSCognitoAuthPlugin()
-        try Amplify.add(plugin: plugin)
-
-        let categoryConfig = AuthCategoryConfiguration(plugins: [
-            "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["PoolId": "cc",
-                     "Region": "us-east-1"]
-                    ]]
+        let configuration: JSONValue = [
+            "CredentialsProvider": [
+                "CognitoIdentity": [
+                    "Default": [
+                        "PoolId": "xx",
+                        "Region": "us-east-1"
+                    ]
+                ]
             ]
-        ])
-        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
-        try Amplify.configure(amplifyConfig)
-        let internalPlugin = try Amplify.Auth.getPlugin(
-            for: "awsCognitoAuthPlugin"
-        ) as! AWSCognitoAuthPlugin
-        let service = internalPlugin.getEscapeHatch()
-        switch service {
-        case .userPool:
-            XCTFail("Should return identityPool")
-        case .userPoolAndIdentityPool:
-            XCTFail("Should return identityPool")
-        case .identityPool:
-            print("")
+        ]
+        let plugin = AWSCognitoAuthPlugin()
+        try plugin.configure(using: configuration)
+        let escapeHatch = plugin.getEscapeHatch()
+        guard case .identityPool = escapeHatch else {
+            XCTFail("Expected .identityPool, got \(escapeHatch)")
+            return
         }
     }
 
     /// Test escape hatch with valid config for only user pool
     ///
-    /// - Given: Given valid config for only user pool
+    /// - Given: A AWSCognitoAuthPlugin configured with only User Pool
     /// - When:
-    ///    - I configure auth with the given configuration and invoke getEscapeHatch
+    ///    - I call getEscapeHatch
     /// - Then:
-    ///    - I should get the Cognito User pool client
+    ///    - I should get only the User Pool client
     ///
     func testEscapeHatchWithOnlyUserPool() throws {
-        if skipBrokenTests {
-            throw XCTSkip("TODO: fix this test")
-        }
-
-        let plugin = AWSCognitoAuthPlugin()
-        try Amplify.add(plugin: plugin)
-
-        let categoryConfig = AuthCategoryConfiguration(plugins: [
-            "awsCognitoAuthPlugin": [
-                "CognitoUserPool": ["Default": [
+        let configuration: JSONValue = [
+            "CognitoUserPool": [
+                "Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
                     "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
+                    "AppClientSecret": "xx"
+                ]
             ]
-        ])
-        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
-        try Amplify.configure(amplifyConfig)
-        let internalPlugin = try Amplify.Auth.getPlugin(
-            for: "awsCognitoAuthPlugin"
-        ) as! AWSCognitoAuthPlugin
-        let service = internalPlugin.getEscapeHatch()
-        switch service {
-        case .userPool:
-            break
-        case .identityPool:
-            XCTFail("Should return userPool")
-        case .userPoolAndIdentityPool:
-            XCTFail("Should return userPool")
+        ]
+        let plugin = AWSCognitoAuthPlugin()
+        try plugin.configure(using: configuration)
+        let escapeHatch = plugin.getEscapeHatch()
+        guard case .userPool = escapeHatch else {
+            XCTFail("Expected .userPool, got \(escapeHatch)")
+            return
         }
     }
-
+    
+    /// Test escape hatch without a valid configuration
+    ///
+    /// - Given: A AWSCognitoAuthPlugin plugin without being configured
+    /// - When:
+    ///    - I call getEscapeHatch
+    /// - Then:
+    ///    - A fatalError is thrown
+    ///
+    func testEscapeHatchWithoutConfiguration() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        try XCTAssertThrowFatalError {
+            _ = plugin.getEscapeHatch()
+        }
+    }
 }

@@ -76,24 +76,6 @@ public struct AWSAuthCognitoSession: AuthSession,
 
 }
 
-/// Internal Helpers for managing session tokens
-internal extension AWSAuthCognitoSession {
-    func areTokensExpiring(in seconds: TimeInterval? = nil) -> Bool {
-
-        guard let tokens = try? userPoolTokensResult.get(),
-              let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
-              let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
-              let idTokenExpiration = idTokenClaims["exp"]?.doubleValue,
-              let accessTokenExpiration = accessTokenClaims["exp"]?.doubleValue else {
-            return true
-        }
-
-        // If the session expires < X minutes return it
-        return (Date(timeIntervalSince1970: idTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending &&
-                Date(timeIntervalSince1970: accessTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending)
-    }
-}
-
 extension AWSAuthCognitoSession: Equatable {
     public static func == (lhs: AWSAuthCognitoSession, rhs: AWSAuthCognitoSession) -> Bool {
         switch (lhs.getCognitoTokens(), rhs.getCognitoTokens()) {

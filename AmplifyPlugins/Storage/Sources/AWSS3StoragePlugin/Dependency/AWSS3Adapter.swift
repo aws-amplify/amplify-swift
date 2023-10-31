@@ -18,10 +18,10 @@ import AWSClientRuntime
 /// and allows for mocking in unit tests. The methods contain no other logic other than calling the
 /// same method using the AWSS3 instance.
 class AWSS3Adapter: AWSS3Behavior {
-    let awsS3: S3Client
+    let awsS3: S3ClientProtocol
     let config: S3Client.S3ClientConfiguration
 
-    init(_ awsS3: S3Client, config: S3Client.S3ClientConfiguration) {
+    init(_ awsS3: S3ClientProtocol, config: S3Client.S3ClientConfiguration) {
         self.awsS3 = awsS3
         self.config = config
     }
@@ -161,7 +161,7 @@ class AWSS3Adapter: AWSS3Behavior {
 
     /// Instance of S3 service.
     /// - Returns: S3 service instance.
-    func getS3() -> S3Client {
+    func getS3() -> S3ClientProtocol {
         return awsS3
     }
 }
