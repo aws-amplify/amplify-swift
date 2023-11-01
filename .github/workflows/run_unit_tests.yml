@@ -1,0 +1,138 @@
+name: Run Unit Tests for the given parameters
+on:
+  workflow_call:
+    inputs:
+      scheme:
+        description: 'The scheme to run the tests'
+        required: true
+        type: string
+      platform:
+        description: 'The platform in which to run these tests'
+        required: true
+        type: string
+      project_path:
+        required: false
+        type: string
+      xcode_version:
+        description: 'The version of Xcode used to run these tests'
+        required: true
+        type: string
+      timeout-minutes:
+        description: 'The timeout for each execution'
+        required: false
+        type: number
+        default: 30
+      generate_coverage_report:
+        description: 'Whether to generate and report code coverage'
+        required: false
+        type: boolean
+        default: false
+      build_cache_key:
+        description: 'The key used to retrieve the build cache'
+        required: false
+        default: ''
+        type: string
+      test_without_building:
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+    contents: read
+    actions: write
+
+jobs:
+  unit-tests:
+    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
+    runs-on: macos-13
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        with:
+          persist-credentials: false
+
+      - name: Get build parameters for ${{ inputs.platform}}
+        id: platform
+        uses: ./.github/composite_actions/get_platform_parameters
+        with:
+          platform: ${{ inputs.platform }}
+          xcode_version: ${{ inputs.xcode_version }}
+
+      - name: Attempt to use the dependencies cache
+        id: dependencies-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+
+      - name: Attempt to restore the build cache
+        id: build-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ inputs.build_cache_key || format('{0}-{1}-latest-build-main', inputs.scheme, inputs.platform) }} 
+
+      - name: Run ${{ inputs.platform }} Unit Tests
+        id: run-tests
+        continue-on-error: true
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ inputs.scheme }}
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
+          generate_coverage: ${{ inputs.generate_coverage_report }}
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+          test_without_building: ${{ inputs.test_without_building && steps.dependencies-cache.outputs.cache-hit }}
+          other_flags: -test-iterations 3 -retry-tests-on-failure
+
+      - name: Retry ${{ inputs.platform }} Unit Tests
+        if: steps.run-tests.outcome=='failure'
+        id: retry-tests
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: ${{ inputs.scheme }}
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
+          project_path: ${{ inputs.project_path }}
+          generate_coverage: ${{ inputs.generate_coverage_report }}
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: true
+          test_without_building: ${{ inputs.test_without_building && steps.dependencies-cache.outputs.cache-hit}}
+          other_flags: -test-iterations 3 -retry-tests-on-failure
+
+      - name: Delete the old build cache on main
+        if: github.ref_name == 'main' && steps.build-cache.outputs.cache-hit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
+        shell: bash
+
+      - name: Save the new build cache on main
+        if: github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.build-cache.outputs.cache-primary-key }}
+
+      - name: Store Coverage Report File
+        if: ${{ inputs.generate_coverage_report == true }}
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
+        with:
+          name: ${{ inputs.scheme }}-Coverage-${{ github.sha }}
+          path: ${{ github.workspace }}/${{ inputs.scheme }}-Coverage.lcov
+          if-no-files-found: error
+          retention-days: 1

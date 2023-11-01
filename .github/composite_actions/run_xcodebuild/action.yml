@@ -19,9 +19,21 @@ inputs:
     required: false
     type: string
     default: 'iphonesimulator'
+  cloned_source_packages_path:
+    required: false
+    type: string
+    default: ''
+  derived_data_path:
+    required: false
+    type: string
+    default: ''
   disable_package_resolution:
     required: false
     type: boolean
+    default: false
+  build_for_testing:
+    type: boolean
+    required: false
     default: false
   other_flags:
     required: false
@@ -36,6 +48,8 @@ runs:
         SCHEME: ${{ inputs.scheme }}
         PROJECT_PATH: ${{ inputs.project_path }}
         XCODE_PATH: ${{ inputs.xcode_path }}
+        CLONED_SOURCE_PACKAGES_PATH: ${{ inputs.cloned_source_packages_path }}
+        DERIVED_DATA_PATH: ${{ inputs.derived_data_path }}
       run: |
         if [ ! -z "$PROJECT_PATH" ]; then
           cd $PROJECT_PATH
@@ -46,8 +60,26 @@ runs:
 
         otherFlags="${{ inputs.other_flags }}"
         if [ "${{ inputs.disable_package_resolution }}" == "true" ]; then
+          echo "Disabling Automatic Package Resolution"
           otherFlags+=" -disableAutomaticPackageResolution"
         fi
+
+        if [ ! -z "$DERIVED_DATA_PATH" ]; then
+          echo "Using custom DerivedData path"
+          otherFlags+=" -derivedDataPath $DERIVED_DATA_PATH"
+        fi
+
+        if [ ! -z "$CLONED_SOURCE_PACKAGES_PATH" ]; then
+          echo "Using custom cloned source packages path"
+          otherFlags+=" -clonedSourcePackagesDirPath $CLONED_SOURCE_PACKAGES_PATH"
+        fi
+
+        action="build"
+        if [ "${{ inputs.build_for_testing }}" == "true" ]; then
+          echo "Building for testing..."
+          action+="-for-testing"
+        fi
+
         xcodebuild -version
-        xcodebuild build -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
+        xcodebuild $action -scheme $SCHEME -sdk '${{ inputs.sdk }}' -destination '${{ inputs.destination }}' $otherFlags | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}
       shell: bash
