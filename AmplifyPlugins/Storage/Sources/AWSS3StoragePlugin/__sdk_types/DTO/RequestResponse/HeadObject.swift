@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct HeadObjectInput: Equatable {
+struct HeadObjectInput: Equatable, Encodable {
     /// This member is required.
     var bucket: String
     /// This member is required.
@@ -32,9 +32,13 @@ struct HeadObjectInput: Equatable {
             "x-amz-checksum-mode": checksumMode?.rawValue,
             "x-amz-expected-bucket-owner": expectedBucketOwner,
             "If-Match": ifMatch,
-//            "If-Modified-Since": ifModifiedSince,
+            "If-Modified-Since": ifModifiedSince.map {
+                DateFormatting().string(from: $0, formatter: .rfc5322WithFractionalSeconds)
+            },
             "If-None-Match": ifNoneMatch,
-//            "If-Unmodified-Since": ifUnmodifiedSince,
+            "If-Unmodified-Since": ifUnmodifiedSince.map {
+                DateFormatting().string(from: $0, formatter: .rfc5322WithFractionalSeconds)
+            },
             "Range": range,
             "x-amz-request-payer": requestPayer?.rawValue,
             "x-amz-server-side-encryption-customer-algorithm": sseCustomerAlgorithm,
@@ -45,21 +49,22 @@ struct HeadObjectInput: Equatable {
 
     var queryItems: [URLQueryItem] {
         [
-            .init(name: "versionId", value: versionId?.urlPercentEncoding()),
+            .init(name: "versionId", value: versionId?.urlQueryEncoded()),
             .init(
                 name: "partNumber",
-                value: partNumber.map(String.init)?.urlPercentEncoding()
+                value: partNumber.map(String.init)?.urlQueryEncoded()
             )
         ]
+            .compactMap { $0.value == nil ? nil : $0 }
     }
 
     var urlPath: String {
-        "\(key)" // urlPercentEncoding(encodeForwardSlash: false)
+        key.urlPathEncoded()
     }
 }
 
 
-struct HeadObjectOutputResponse: Equatable {
+struct HeadObjectOutputResponse: Equatable, Decodable {
     var acceptRanges: String?
     var archiveStatus: S3ClientTypes.ArchiveStatus?
     var bucketKeyEnabled: Bool?
@@ -117,14 +122,19 @@ struct HeadObjectOutputResponse: Equatable {
         copy.eTag = headers["ETag"]
         copy.expiration = headers["x-amz-expiration"]
         copy.expires = headers["Expires"]
-//        copy.lastModified = headers["Last-Modified"]
+        copy.lastModified = headers["Last-Modified"].flatMap {
+            DateFormatting().date(from: $0, formatter: .rfc5322WithFractionalSeconds)
+        }
         copy.missingMeta = headers["x-amz-missing-meta"]
             .flatMap(Int.init)
         copy.objectLockLegalHoldStatus = headers["x-amz-object-lock-legal-hold"]
             .flatMap(S3ClientTypes.ObjectLockLegalHoldStatus.init(rawValue:))
         copy.objectLockMode = headers["x-amz-object-lock-mode"]
             .flatMap(S3ClientTypes.ObjectLockMode.init(rawValue:))
-//        copy.objectLockRetainUntilDate = headers["x-amz-object-lock-retain-until-date"]
+        copy.objectLockRetainUntilDate = headers["x-amz-object-lock-retain-until-date"]
+            .flatMap {
+                DateFormatting().date(from: $0, formatter: .iso8601DateFormatterWithFractionalSeconds)
+            }
         copy.partsCount = headers["x-amz-mp-parts-count"]
             .flatMap(Int.init)
         copy.replicationStatus = headers["x-amz-replication-status"]

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ListPartsInput: Equatable {
+struct ListPartsInput: Equatable, Encodable {
     /// This member is required.
     var bucket: String
     /// This member is required.
@@ -41,27 +41,28 @@ struct ListPartsInput: Equatable {
         [
             .init(name: "x-id", value: "ListParts"),
             .init(
-                name: "part-number-makers".urlPercentEncoding(),
-                value: partNumberMarker?.urlPercentEncoding()
+                name: "part-number-makers".urlQueryEncoded(),
+                value: partNumberMarker?.urlQueryEncoded()
             ),
             .init(
-                name: "max-parts".urlPercentEncoding(),
-                value: maxParts.map(String.init)?.urlPercentEncoding()
+                name: "max-parts".urlQueryEncoded(),
+                value: maxParts.map(String.init)?.urlQueryEncoded()
             ),
             .init(
-                name: "uploadId".urlPercentEncoding(),
-                value: uploadId.urlPercentEncoding()
+                name: "uploadId".urlQueryEncoded(),
+                value: uploadId.urlQueryEncoded()
             ),
         ]
+            .compactMap { $0.value == nil ? nil : $0 }
     }
 
     var urlPath: String {
-        "\(key)" // .urlPercentEncoding(encodeForwardSlash: false)
+        key.urlPathEncoded()
     }
 }
 
 
-struct ListPartsOutputResponse: Equatable {
+struct ListPartsOutputResponse: Equatable, Decodable {
     var abortDate: Date?
     var abortRuleId: String?
     var bucket: String?
@@ -96,7 +97,9 @@ struct ListPartsOutputResponse: Equatable {
     func applying(headers: [String: String]?) -> Self {
         guard let headers else { return self }
         var copy = self
-//        copy.abortDate = headers["x-amz-abort-date"]
+        copy.abortDate = headers["x-amz-abort-date"].flatMap {
+            DateFormatting().date(from: $0, formatter: .rfc5322WithFractionalSeconds)
+        }
         copy.abortRuleId = headers["x-amz-abort-rule-id"]
         copy.requestCharged = headers["x-amz-request-charged"]
             .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))

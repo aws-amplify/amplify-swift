@@ -9,7 +9,7 @@ import Foundation
 
 extension S3ClientTypes {
     /// Container element that identifies who initiated the multipart upload.
-    struct Initiator: Equatable {
+    struct Initiator: Equatable, Decodable {
         /// Name of the Principal.
         var displayName: String?
         /// If the principal is an Amazon Web Services account, it provides the Canonical User ID. If the principal is an IAM User, it provides a user ARN value.

@@ -67,18 +67,19 @@ struct UploadPartInput: Equatable {
         [
             .init(name: "x-id", value: "UploadPart"),
             .init(
-                name: "partNumber".urlPercentEncoding(),
-                value: String(partNumber).urlPercentEncoding()
+                name: "partNumber".urlQueryEncoded(),
+                value: String(partNumber).urlQueryEncoded()
             ),
             .init(
-                name: "uploadId".urlPercentEncoding(),
-                value: uploadId.urlPercentEncoding()
+                name: "uploadId".urlQueryEncoded(),
+                value: uploadId.urlQueryEncoded()
             ),
         ]
+            .compactMap { $0.value == nil ? nil : $0 }
     }
 
     var urlPath: String {
-        "\(key)" //.urlPercentEncoding(encodeForwardSlash: false)
+        key.urlPathEncoded()
     }
 }
 

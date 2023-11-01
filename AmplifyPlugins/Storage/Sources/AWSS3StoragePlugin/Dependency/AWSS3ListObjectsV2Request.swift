@@ -42,7 +42,7 @@ struct AWSS3ListObjectsV2Request {
 protocol S3Object {
     var key: String? { get }
     var eTag: String? { get }
-    var size: Int { get }
+    var size: Int? { get }
     var lastModified: Date? { get }
 }
 

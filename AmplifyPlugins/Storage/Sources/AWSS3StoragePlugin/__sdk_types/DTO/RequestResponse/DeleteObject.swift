@@ -7,6 +7,60 @@
 
 import Foundation
 
+struct DeleteObjectInput: Equatable, Encodable {
+    /// This member is required.
+    var bucket: String
+    /// This member is required.
+    var key: String
+
+    var bypassGovernanceRetention: Bool?
+    var expectedBucketOwner: String?
+    var mfa: String?
+    var requestPayer: S3ClientTypes.RequestPayer?
+    var versionId: String?
+
+    var _headers: [String: String?] {
+        [
+            "x-amz-bypass-governance-retention": bypassGovernanceRetention.map(String.init),
+            "x-amz-expected-bucket-owner": expectedBucketOwner,
+            "x-amz-mfa": mfa,
+            "x-amz-request-payer": requestPayer?.rawValue
+        ]
+    }
+
+    var headers: [String: String] {
+        _headers.compactMapValues { $0 }
+    }
+
+    var queryItems: [URLQueryItem] {
+        [
+            .init(name: "x-id", value: "DeleteObject"),
+            .init(name: "versionId", value: versionId?.urlQueryEncoded())
+        ]
+            .compactMap { $0.value == nil ? nil : $0 }
+    }
+
+    var urlPath: String {
+        key.urlPathEncoded()
+    }
+}
+
+struct DeleteObjectOutputResponse: Equatable, Decodable {
+    var deleteMarker: Bool?
+    var requestCharged: S3ClientTypes.RequestCharged?
+    var versionId: String?
+
+    func applying(headers: [String: String]?) -> Self {
+        guard let headers else { return self }
+        var copy = self
+        copy.deleteMarker = headers["x-amz-delete-marker"].flatMap(Bool.init)
+        copy.requestCharged = headers["x-amz-request-charged"]
+           .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))
+        copy.versionId = headers["x-amz-version-id"]
+        return copy
+    }
+}
+
 /*
  "DeleteObject":{
    "name":"DeleteObject",
@@ -70,44 +124,6 @@ import Foundation
  },
  */
 
-struct DeleteObjectInput: Equatable {
-    /// This member is required.
-    var bucket: String
-    /// This member is required.
-    var key: String
-
-    var bypassGovernanceRetention: Bool?
-    var expectedBucketOwner: String?
-    var mfa: String?
-    var requestPayer: S3ClientTypes.RequestPayer?
-    var versionId: String?
-
-    var _headers: [String: String?] {
-        [
-            "x-amz-bypass-governance-retention": bypassGovernanceRetention.map(String.init),
-            "x-amz-expected-bucket-owner": expectedBucketOwner,
-            "x-amz-mfa": mfa,
-            "x-amz-request-payer": requestPayer?.rawValue
-        ]
-    }
-
-    var headers: [String: String] {
-        _headers.compactMapValues { $0 }
-    }
-
-    var queryItems: [URLQueryItem] {
-        [
-            .init(name: "x-id", value: "DeleteObject")
-            // versionId...
-        ]
-    }
-
-    var urlPath: String {
-        "/\(key)" //urlPercentEncoding(encodeForwardSlash: false))
-    }
-}
-
-
 /*
  "DeleteObjectOutput":{
    "type":"structure",
@@ -130,16 +146,3 @@ struct DeleteObjectInput: Equatable {
    }
  },
  */
-struct DeleteObjectOutputResponse: Equatable {
-    var deleteMarker: Bool?
-    var requestCharged: S3ClientTypes.RequestCharged?
-    var versionId: String?
-
-    /*
-     deleteMarker = headers["x-amz-delete-marker"].flatMap(Bool.init)
-     requestCharged = headers["x-amz-request-charged"]
-        .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))
-
-     versionIdHeaderValue = headers["x-amz-version-id"]
-     */
-}

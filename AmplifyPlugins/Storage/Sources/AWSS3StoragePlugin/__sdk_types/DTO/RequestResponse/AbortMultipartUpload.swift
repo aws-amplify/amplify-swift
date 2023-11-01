@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AbortMultipartUploadInput: Equatable {
+struct AbortMultipartUploadInput: Equatable, Encodable {
     /// This member is required.
     var bucket: String
     /// This member is required.
@@ -28,16 +28,17 @@ struct AbortMultipartUploadInput: Equatable {
     var queryItems: [URLQueryItem] {
         [
             .init(name: "x-id", value: "AbortMultipartUpload"),
-            .init(name: "uploadId", value: uploadId) // urlPercentEncoding
+            .init(name: "uploadId", value: uploadId.urlQueryEncoded())
         ]
+            .compactMap { $0.value == nil ? nil : $0 }
     }
 
     var urlPath: String {
-        "/\(key)" // urlPercentEncoding
+        key.urlPathEncoded()
     }
 }
 
-struct AbortMultipartUploadOutputResponse: Equatable {
+struct AbortMultipartUploadOutputResponse: Equatable, Decodable {
     // pulled from "x-amz-request-charged" header
     var requestCharged: S3ClientTypes.RequestCharged?
 }

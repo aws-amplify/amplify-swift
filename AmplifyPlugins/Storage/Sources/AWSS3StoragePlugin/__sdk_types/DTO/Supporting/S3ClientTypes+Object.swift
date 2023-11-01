@@ -9,7 +9,7 @@ import Foundation
 
 extension S3ClientTypes {
     /// An object consists of data and its descriptive metadata.
-    struct Object: Equatable {
+    struct Object: Equatable, Decodable {
         /// The algorithm that was used to create a checksum of the object.
         var checksumAlgorithm: [S3ClientTypes.ChecksumAlgorithm]?
         /// The entity tag is a hash of the object. The ETag reflects changes only to the contents of an object, not its metadata. The ETag may or may not be an MD5 digest of the object data. Whether or not it is depends on how the object was created and how it is encrypted as described below:
@@ -29,30 +29,9 @@ extension S3ClientTypes {
         /// Specifies the restoration status of an object. Objects in certain storage classes must be restored before they can be retrieved. For more information about these storage classes and how to work with archived objects, see [ Working with archived objects](https://docs.aws.amazon.com/AmazonS3/latest/userguide/archived-objects.html) in the Amazon S3 User Guide.
         var restoreStatus: S3ClientTypes.RestoreStatus?
         /// Size in bytes of the object
-        var size: Int
+        var size: Int?
         /// The class of storage used to store the object.
         var storageClass: S3ClientTypes.ObjectStorageClass?
-
-        init(
-            checksumAlgorithm: [S3ClientTypes.ChecksumAlgorithm]? = nil,
-            eTag: String? = nil,
-            key: String? = nil,
-            lastModified: Date? = nil,
-            owner: S3ClientTypes.Owner? = nil,
-            restoreStatus: S3ClientTypes.RestoreStatus? = nil,
-            size: Int = 0,
-            storageClass: S3ClientTypes.ObjectStorageClass? = nil
-        )
-        {
-            self.checksumAlgorithm = checksumAlgorithm
-            self.eTag = eTag
-            self.key = key
-            self.lastModified = lastModified
-            self.owner = owner
-            self.restoreStatus = restoreStatus
-            self.size = size
-            self.storageClass = storageClass
-        }
 
         enum CodingKeys: String, CodingKey {
             case checksumAlgorithm = "ChecksumAlgorithm"

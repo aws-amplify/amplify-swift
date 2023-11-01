@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct CreateMultipartUploadInput: Equatable {
+struct CreateMultipartUploadInput: Equatable, Encodable {
     /// This member is required.
     var key: String
     /// This member is required.
@@ -54,13 +54,17 @@ struct CreateMultipartUploadInput: Equatable {
             "Content-Language": contentLanguage,
             "Content-Type": contentType,
             "x-amz-expected-bucket-owner": expectedBucketOwner,
-//            "Expires": expires
+            "Expires": expires.map {
+                DateFormatting().string(from: $0, formatter: .rfc5322WithFractionalSeconds)
+            },
             "x-amz-grant-full-control": grantFullControl,
             "x-amz-grant-read-acp": grantReadACP,
             "x-amz-grant-write-acp": grantWriteACP,
             "x-amz-object-lock-legal-hold": objectLockLegalHoldStatus?.rawValue,
             "x-amz-object-lock-mode": objectLockMode?.rawValue,
-//            "x-amz-object-lock-retain-until-date": objectLockRetainUntilDate
+            "x-amz-object-lock-retain-until-date": objectLockRetainUntilDate.map {
+                DateFormatting().string(from: $0, formatter: .rfc5322WithFractionalSeconds)
+            },
             "x-amz-request-payer": requestPayer?.rawValue,
             "x-amz-server-side-encryption-customer-algorithm": sseCustomerAlgorithm,
             "x-amz-server-side-encryption-customer-key": sseCustomerKey,
@@ -86,14 +90,15 @@ struct CreateMultipartUploadInput: Equatable {
             .init(name: "uploads", value: nil),
             .init(name: "x-id", value: "CreateMultipartUpload")
         ]
+            .compactMap { $0.value == nil ? nil : $0 }
     }
 
     var urlPath: String {
-        "/\(key)" //urlPercentEncoding(encodeForwardSlash: false))
+        key.urlPathEncoded()
     }
 }
 
-struct CreateMultipartUploadOutputResponse: Equatable {
+struct CreateMultipartUploadOutputResponse: Equatable, Decodable {
     var abortDate: Date?
     var abortRuleId: String?
     var bucket: String?
@@ -117,27 +122,20 @@ struct CreateMultipartUploadOutputResponse: Equatable {
     func applying(headers: [String: String]?) -> Self {
         guard let headers else { return self }
         var copy = self
-//        copy.abortDate = headers["x-amz-abort-date"]
-
+        copy.abortDate = headers["x-amz-abort-date"].flatMap {
+            DateFormatting().date(from: $0, formatter: .rfc5322WithFractionalSeconds)
+        }
         copy.abortRuleId = headers["x-amz-abort-rule-id"]
-        
         copy.bucketKeyEnabled = headers["x-amz-server-side-encryption-bucket-key-enabled"]
             .flatMap(Bool.init(_:))
-        
         copy.checksumAlgorithm = headers["x-amz-checksum-algorithm"]
             .flatMap(S3ClientTypes.ChecksumAlgorithm.init(rawValue:))
-        
         copy.requestCharged = headers["x-amz-request-charged"]
             .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))
-        
         copy.sseCustomerAlgorithm = headers["x-amz-server-side-encryption-customer-algorithm"]
-
         copy.sseCustomerKeyMD5 = headers["x-amz-server-side-encryption-customer-key-MD5"]
-
         copy.ssekmsEncryptionContext = headers["x-amz-server-side-encryption-context"]
-
         copy.ssekmsKeyId = headers["x-amz-server-side-encryption-aws-kms-key-id"]
-
         copy.serverSideEncryption = headers["x-amz-server-side-encryption"]
             .flatMap(S3ClientTypes.ServerSideEncryption.init(rawValue:))
 

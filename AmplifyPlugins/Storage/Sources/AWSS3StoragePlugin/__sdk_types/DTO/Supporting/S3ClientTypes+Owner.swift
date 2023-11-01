@@ -9,7 +9,7 @@ import Foundation
 
 extension S3ClientTypes {
     /// Container for the owner's display name and ID.
-    struct Owner: Equatable {
+    struct Owner: Equatable, Decodable {
         /// Container for the display name of the owner. This value is only supported in the following Amazon Web Services Regions:
         ///
         /// * US East (N. Virginia)
