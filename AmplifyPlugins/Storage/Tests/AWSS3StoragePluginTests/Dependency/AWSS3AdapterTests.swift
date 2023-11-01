@@ -27,7 +27,6 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: deleteObject is invoked and the s3 client returns success
     /// Then: A .success result is returned
     func testDeleteObject_withSuccess_shouldSucceed() async throws {
-        let deleteExpectation = expectation(description: "Delete Object")
         try await adapter.deleteObject(.init(bucket: "bucket", key: "key"))
         XCTAssertEqual(self.awsS3.deleteObjectCount, 1)
     }
@@ -36,7 +35,6 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: deleteObject is invoked and the s3 client returns an error
     /// Then: A .failure result is returned
     func testDeleteObject_withError_shouldFail() async throws {
-        let deleteExpectation = expectation(description: "Delete Object")
         awsS3.deleteObjectResult = .failure(StorageError.keyNotFound("InvalidKey", "", "", nil))
         do {
             try await adapter.deleteObject(.init(bucket: "bucket", key: "key"))
@@ -55,7 +53,6 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: listObjectsV2 is invoked and the s3 client returns a list of objects
     /// Then: A .success result is returned containing the corresponding list items
     func testListObjectsV2_withSuccess_shouldSucceed() async throws {
-        let listExpectation = expectation(description: "List Objects")
         awsS3.listObjectsV2Result = .success(ListObjectsV2OutputResponse(
             contents: [
                 .init(eTag: "one", key: "prefix/key1", lastModified: .init()),
@@ -78,7 +75,6 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: listObjectsV2 is invoked and the s3 client returns an error
     /// Then: A .failure result is returned
     func testListObjectsV2_withError_shouldFail() async throws {
-        let listExpectation = expectation(description: "List Objects")
         awsS3.listObjectsV2Result = .failure(StorageError.accessDenied("AccessDenied", "", nil))
         
         do {
@@ -103,7 +99,6 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: createMultipartUpload is invoked and the s3 client returns a valid response
     /// Then: A .success result is returned containing the corresponding parsed response
     func testCreateMultipartUpload_withSuccess_shouldSucceed() async throws {
-        let createMultipartUploadExpectation = expectation(description: "Create Multipart Upload")
         awsS3.createMultipartUploadResult = .success(.init(
             bucket: "bucket",
             key: "key",
@@ -120,8 +115,6 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: createMultipartUpload is invoked and the s3 client returns an invalid response
     /// Then: A .failure result is returned with an .uknown error
     func testCreateMultipartUpload_withWrongResponse_shouldFail() async throws {
-        let createMultipartUploadExpectation = expectation(description: "Create Multipart Upload")
-        
         do {
            _ = try await adapter.createMultipartUpload(.init(bucket: "bucket", key: "key"))
         } catch {
@@ -138,9 +131,7 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: createMultipartUpload is invoked and the s3 client returns an error
     /// Then: A .failure result is returned
     func testCreateMultipartUpload_withError_shouldFail() async throws {
-        let createMultipartUploadExpectation = expectation(description: "Create Multipart Upload")
         awsS3.createMultipartUploadResult = .failure(StorageError.accessDenied("AccessDenied", "", nil))
-
         do {
             _ = try await adapter.createMultipartUpload(.init(bucket: "bucket", key: "key"))
         } catch {
@@ -204,7 +195,7 @@ class AWSS3AdapterTests: XCTestCase {
                 XCTFail("Expected StorageError.authError")
                 return
             }
-            XCTAssertEqual(description, "ListParts response is invalid")
+            XCTAssertEqual(description, "AuthError")
         }
     }
     
@@ -270,7 +261,6 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: abortMultipartUpload is invoked and the s3 client returns a valid response
     /// Then: A .success result is returned
     func testAbortMultipartUpload_withSuccess_shouldSucceed() async throws {
-        let abortExpectation = expectation(description: "Abort Multipart Upload")
         _ = try await adapter.abortMultipartUpload(
             .init(bucket: "bucket", key: "key", uploadId: "uploadId")
         )
@@ -281,16 +271,16 @@ class AWSS3AdapterTests: XCTestCase {
     /// When: abortMultipartUpload is invoked and the s3 client returns an error
     /// Then: A .failure result is returned
     func testAbortMultipartUpload_withError_shouldFail() async throws {
-        let abortExpectation = expectation(description: "Abort Multipart Upload")
         awsS3.abortMultipartUploadResult = .failure(StorageError.keyNotFound("InvalidKey", "", "", nil))
-        
         do {
-            _ = try await adapter.completeMultipartUpload(.init(bucket: "bucket", key: "key", uploadId: "uploadId", parts: []))
+            _ = try await adapter.abortMultipartUpload(
+                .init(bucket: "bucket", key: "key", uploadId: "uploadId")
+            )
             XCTFail("...")
         } catch {
-            XCTAssertEqual(self.awsS3.completeMultipartUploadCount, 1)
+            XCTAssertEqual(self.awsS3.abortMultipartUploadCount, 1)
             guard case .keyNotFound(let key, _, _, _) = error as? StorageError else {
-                XCTFail("Expected StorageError.keyNotFound")
+                XCTFail("Expected StorageError.keyNotFound, received: \(error)")
                 return
             }
             XCTAssertEqual(key, "InvalidKey")

@@ -51,7 +51,7 @@ extension MockS3Client: S3ClientProtocol {
     }
 
     func headObject(input: HeadObjectInput) async throws -> HeadObjectOutputResponse {
-        fatalError()
+        try await headObjectHandler(input)
     }
 
 
