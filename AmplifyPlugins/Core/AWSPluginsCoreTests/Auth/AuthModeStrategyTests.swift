@@ -11,7 +11,7 @@ import XCTest
 @testable import AWSPluginsCore
 
 class AuthModeStrategyTests: XCTestCase {
-    
+
     // Given: default strategy and a model schema
     // When: authTypesFor for .create operation is called
     // Then: an empty iterator is returned
@@ -20,7 +20,7 @@ class AuthModeStrategyTests: XCTestCase {
         let authTypesIterator = authMode.authTypesFor(schema: AnyModelTester.schema, operation: .create)
         XCTAssertEqual(authTypesIterator.count, 0)
     }
-    
+
     // Given: multi-auth strategy and a model schema
     // When: authTypesFor for .create operation is called
     // Then: auth types are returned in order according to priority rules
@@ -31,7 +31,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
-    
+
     // Given: multi-auth strategy and a model schema without auth provider
     // When: auth types are requested
     // Then: default values based on the auth strategy should be returned
@@ -42,7 +42,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
-    
+
     // Given: multi-auth strategy and a model schema with 4 auth rules
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types are ordered according to priority rules
@@ -55,7 +55,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
     }
-    
+
     // Given: multi-auth strategy and a model schema multiple public rules
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types are ordered according to priority rules
@@ -68,7 +68,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
-    
+
     // Given: multi-auth strategy and a model schema
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types returned are only the
@@ -80,7 +80,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
     }
-    
+
     // Given: multi-auth strategy a model schema
     // When: authTypesFor for .create operation is called for unauthenticated user
     // Then: applicable auth types returned are only public rules
@@ -94,7 +94,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.count, 1)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
-    
+
     // Given: multi-auth model schema with a custom strategy
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types returned respect the priority rules
@@ -107,7 +107,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
     }
-    
+
     // Given: multi-auth model schema with a custom strategy
     // When: authTypesFor for .create operation is called for unauthenticated user
     // Then: applicable auth types returned are public rules or custom
@@ -115,14 +115,14 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
-        
+
         var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
                                                             operation: .create)
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next(), .function)
         XCTAssertEqual(authTypesIterator.next(), .awsIAM)
     }
-    
+
     // Given: multi-auth strategy and a model schema without auth provider
     // When: auth types are requested with multiple operation
     // Then: default values based on the auth strategy should be returned
@@ -133,7 +133,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
-    
+
     // Given: multi-auth strategy and a model schema with auth provider
     // When: auth types are requested with multiple operation
     // Then: auth rule for public access should be returned
@@ -145,7 +145,7 @@ class AuthModeStrategyTests: XCTestCase {
         XCTAssertEqual(authTypesIterator.count, 1)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
     }
-    
+
 }
 
 // MARK: - Test models
