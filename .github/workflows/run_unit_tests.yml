@@ -36,6 +36,10 @@ on:
         type: boolean
         required: false
         default: false
+      delete_build_cache_on_success:
+        required: false
+        type: boolean
+        default: false
 
 permissions:
     contents: read
@@ -112,21 +116,14 @@ jobs:
           test_without_building: ${{ inputs.test_without_building && steps.dependencies-cache.outputs.cache-hit}}
           other_flags: -test-iterations 3 -retry-tests-on-failure
 
-      - name: Delete the old build cache on main
-        if: github.ref_name == 'main' && steps.build-cache.outputs.cache-hit
+      - name: Delete the build cache
+        if: ${{ inputs.delete_build_cache_on_success && steps.build-cache.outputs.cache-hit }}
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
           gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
         shell: bash
-
-      - name: Save the new build cache on main
-        if: github.ref_name == 'main'
-        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
-        with:
-          path: ${{ github.workspace }}/Build
-          key: ${{ steps.build-cache.outputs.cache-primary-key }}
 
       - name: Store Coverage Report File
         if: ${{ inputs.generate_coverage_report == true }}
