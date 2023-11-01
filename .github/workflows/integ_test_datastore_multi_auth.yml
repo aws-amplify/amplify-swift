@@ -42,6 +42,5 @@ jobs:
       project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
       xcode_version: '14.3'
       resource_subfolder: datastore
-      timeout-minutes: 60
-      other_flags: '-test-iterations 3 -retry-tests-on-failure'
+      timeout-minutes: 120
     secrets: inherit

@@ -27,7 +27,7 @@ jobs:
   push-notification-integration-tests:
     name: ${{ matrix.platform }} Tests | PushNotificationHostApp
     runs-on: macos-13
-    timeout-minutes: 45
+    timeout-minutes: 30
     environment: IntegrationTest
     strategy:
       fail-fast: false

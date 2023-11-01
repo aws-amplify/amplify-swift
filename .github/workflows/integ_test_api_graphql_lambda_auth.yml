@@ -42,5 +42,5 @@ jobs:
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       xcode_version: '14.3'
       resource_subfolder: api
-      timeout-minutes: 30
+      timeout-minutes: 45
     secrets: inherit

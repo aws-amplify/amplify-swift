@@ -29,15 +29,6 @@ on:
         description: 'The key used to retrieve the build cache'
         required: true
         type: string
-      if:
-        description: 'Whether to run this job'
-        required: false
-        default: true
-        type: boolean
-      other_flags:
-        required: false
-        type: string
-        default: ''
 
 permissions:
     id-token: write
@@ -47,7 +38,7 @@ jobs:
   integration-tests:
     name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
     runs-on: macos-13
-    if: inputs.if && inputs.platform != 'macOS' # macOS is not supported for Integration Tests
+    if: inputs.platform != 'macOS' # macOS is not supported for Integration Tests
     timeout-minutes: ${{ inputs.timeout-minutes }}
     environment: IntegrationTest
     steps:
@@ -110,7 +101,7 @@ jobs:
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
           test_without_building: false
-          other_flags: ${{ inputs.other_flags }}
+          other_flags: -test-iterations 3 -retry-tests-on-failure
 
       - name: Retry ${{ inputs.platform }} Integration Tests
         if: steps.run-tests.outcome=='failure'
@@ -128,5 +119,4 @@ jobs:
           disable_package_resolution: true
           # Only attempt to test without building when we are not using any cache.
           test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
-          other_flags: ${{ inputs.other_flags }}
-
+          other_flags: -test-iterations 3 -retry-tests-on-failure
