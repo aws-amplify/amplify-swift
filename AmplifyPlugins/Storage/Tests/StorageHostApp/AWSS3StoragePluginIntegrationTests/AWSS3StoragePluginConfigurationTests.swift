@@ -8,7 +8,7 @@
 import XCTest
 @testable import Amplify
 import AWSS3StoragePlugin
-import AWSS3
+
 class AWSS3StoragePluginConfigurationTests: XCTestCase {
 
     /// Given: awss3StoragePlugin configuration with incorrect DefaultAccessLevel value

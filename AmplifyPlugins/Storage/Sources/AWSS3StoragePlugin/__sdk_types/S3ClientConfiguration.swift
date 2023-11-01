@@ -12,5 +12,8 @@ struct S3ClientConfiguration {
     let region: String
     let credentialsProvider: CredentialsProvider
     let accelerate: Bool
+    let encoder: JSONEncoder
+    let decoder: JSONDecoder
+    let signingName = "s3"
 }
 

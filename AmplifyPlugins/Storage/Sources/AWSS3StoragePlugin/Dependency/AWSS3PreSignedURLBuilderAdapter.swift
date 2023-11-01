@@ -40,40 +40,43 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = expiresDate.timeIntervalSinceNow
         let config = try config.withAccelerate(accelerate)
-        let preSignedUrl: URL?
+        let preSignedUrl: URL
         switch signingOperation {
         case .getObject:
             let input = GetObjectInput(bucket: bucket, key: key)
-            preSignedUrl = try input.presignURL(
+            preSignedUrl = try await input.presignURL(
                 config: config,
-                expiration: expiration)
+                expiration: expiration
+            )
         case .putObject:
             let input = PutObjectInput(bucket: bucket, key: key, metadata: metadata)
-            preSignedUrl = try input.presignURL(
+            preSignedUrl = try await input.presignURL(
                 config: config,
-                expiration: expiration)
+                expiration: expiration
+            )
         case .uploadPart(let partNumber, let uploadId):
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-            preSignedUrl = try input.presignURL(
+            preSignedUrl = try await input.presignURL(
                 config: config,
-                expiration: expiration)
+                expiration: expiration
+            )
         }
-        guard let escapedURL = urlWithEscapedToken(preSignedUrl) else {
-            throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get presigned URL.", error: nil)
-        }
-        return escapedURL
+//        guard let escapedURL = urlWithEscapedToken(preSignedUrl) else {
+//            throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get presigned URL.", error: nil)
+//        }
+        return preSignedUrl
     }
 
-    private func urlWithEscapedToken(_ url: URL?) -> URL? {
-        guard let url = url,
-              var components = URLComponents(string: url.absoluteString),
-              var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {
-                  return nil
-              }
-        token.value = token.value?.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
-        components.port = nil
-        components.percentEncodedQueryItems?.removeAll(where: { $0.name == "X-Amz-Security-Token" })
-        components.percentEncodedQueryItems?.append(token)
-        return components.url
-    }
+//    private func urlWithEscapedToken(_ url: URL?) -> URL? {
+//        guard let url = url,
+//              var components = URLComponents(string: url.absoluteString),
+//              var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {
+//                  return nil
+//              }
+//        token.value = token.value?.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
+//        components.port = nil
+//        components.percentEncodedQueryItems?.removeAll(where: { $0.name == "X-Amz-Security-Token" })
+//        components.percentEncodedQueryItems?.append(token)
+//        return components.url
+//    }
 }

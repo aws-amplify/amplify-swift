@@ -8,8 +8,7 @@
 import XCTest
 import Amplify
 import AWSPluginsCore
-import AWSS3StoragePlugin
-import AWSS3
+@testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
     // MARK: - Tests
@@ -237,7 +236,9 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
             plugin as? AWSS3StoragePlugin,
             "Cast to `AWSS3StoragePlugin` failed"
         )
-        let s3Client = storagePlugin.getEscapeHatch()
+        let s3Client = try XCTUnwrap(
+            (storagePlugin.storageService as? AWSS3StorageService)?.client
+        )
         let bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
             forResource: "amplifyconfiguration"
         )

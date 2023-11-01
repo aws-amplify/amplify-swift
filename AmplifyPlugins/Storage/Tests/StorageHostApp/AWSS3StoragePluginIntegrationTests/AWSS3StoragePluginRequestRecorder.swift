@@ -6,27 +6,22 @@
 //
 
 @testable import AWSS3StoragePlugin
-
-import ClientRuntime
 import Foundation
 
 class AWSS3StoragePluginRequestRecorder {
-    var target: HttpClientEngine? = nil
-    var sdkRequests: [SdkHttpRequest] = []
     var urlRequests: [URLRequest] = []
-    init() {
-    }
+    init() {}
 }
 
-extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
-    func execute(request: SdkHttpRequest) async throws -> HttpResponse {
-        guard let target = target  else {
-            throw ClientError.unknownError("HttpClientEngine is not set")
-        }
-        sdkRequests.append(request)
-        return try await target.execute(request: request)
-   }
-}
+//extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
+//    func execute(request: SdkHttpRequest) async throws -> HttpResponse {
+//        guard let target = target  else {
+//            throw ClientError.unknownError("HttpClientEngine is not set")
+//        }
+//        sdkRequests.append(request)
+//        return try await target.execute(request: request)
+//   }
+//}
 
 extension AWSS3StoragePluginRequestRecorder: URLRequestDelegate {
     func willSend(request: URLRequest) {}

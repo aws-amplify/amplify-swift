@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 /*
  "PutObject":{
@@ -25,8 +26,37 @@ import Foundation
  */
 
 extension PutObjectInput {
-    func presignURL(config: S3ClientConfiguration, expiration: Double) throws -> URL {
-        fatalError()
+    func presignURL(config: S3ClientConfiguration, expiration: Double) async throws -> URL {
+        let credentialsProvider = config.credentialsProvider
+        let credentials = try await credentialsProvider.fetchCredentials()
+
+        let signer = SigV4Signer(
+            credentials: credentials,
+            serviceName: "s3",
+            region: config.region
+        )
+
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "s3.\(config.region).amazonaws.com"
+        components.path = "/\(bucket)/\(key)"
+        components.queryItems = headers
+            .filter { $0.key.starts(with: "x-amz-meta-") }
+            .map { .init(name: $0.key, value: $0.value) }
+
+        guard let url = components.url else {
+            throw PlaceholderError()
+        }
+
+        // TODO: Add user agent header
+        let presignedURL = signer.presign(
+            url: url,
+            method: .put,
+            headers: headers,
+            expires: Int(expiration)
+        )
+
+        return presignedURL
     }
 }
 
@@ -115,7 +145,10 @@ struct PutObjectInput: Equatable {
             "x-amz-storage-class": storageClass?.rawValue,
             "x-amz-tagging": tagging,
             "x-amz-website-redirect-location": websiteRedirectLocation
-        ]
+        ].merging(
+            metadata?.map { ("x-amz-meta-\($0.key)", $0.value) } ?? [],
+            uniquingKeysWith: { current, _ in current }
+        )
     }
 
     var headers: [String: String] {

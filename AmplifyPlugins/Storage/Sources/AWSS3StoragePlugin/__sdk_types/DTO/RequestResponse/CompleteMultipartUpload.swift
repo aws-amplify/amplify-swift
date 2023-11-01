@@ -26,7 +26,7 @@ struct CompleteMultipartUploadInput: Equatable, Encodable {
     var sseCustomerKey: String?
     var sseCustomerKeyMD5: String?
 
-    var headers: [String: String?] {
+    var headers: [String: String] {
         [
             "x-amz-checksum-crc32": checksumCRC32,
             "x-amz-checksum-crc32c": checksumCRC32C,
@@ -37,7 +37,7 @@ struct CompleteMultipartUploadInput: Equatable, Encodable {
             "x-amz-server-side-encryption-customer-algorithm": sseCustomerAlgorithm,
             "x-amz-server-side-encryption-customer-key": sseCustomerKey,
             "x-amz-server-side-encryption-customer-key-MD5": sseCustomerKeyMD5
-        ]
+        ].compactMapValues { $0 }
     }
 
     var queryItems: [URLQueryItem] {

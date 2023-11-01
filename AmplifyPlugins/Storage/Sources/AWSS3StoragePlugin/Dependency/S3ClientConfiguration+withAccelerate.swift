@@ -26,7 +26,9 @@ extension S3ClientConfiguration {
         return .init(
             region: region,
             credentialsProvider: credentialsProvider,
-            accelerate: shouldAccelerate
+            accelerate: shouldAccelerate,
+            encoder: JSONEncoder(),
+            decoder: JSONDecoder()
         )
     }
 }

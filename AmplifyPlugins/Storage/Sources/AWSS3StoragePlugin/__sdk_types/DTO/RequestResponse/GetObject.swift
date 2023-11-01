@@ -9,7 +9,7 @@ import Foundation
 import AWSPluginsCore
 
 extension GetObjectInput {
-    func presignURL(config: S3ClientConfiguration, expiration: Double) async throws -> URLRequest {
+    func presignURL(config: S3ClientConfiguration, expiration: Double) async throws -> URL {
         let credentialsProvider = config.credentialsProvider
         let credentials = try await credentialsProvider.fetchCredentials()
 
@@ -19,155 +19,27 @@ extension GetObjectInput {
             region: config.region
         )
 
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "s3.\(config.region).amazonaws.com"
+        components.path = "/\(bucket)/\(key)"
+        components.queryItems = headers.map {
+            .init(name: $0.key, value: $0.value)
+        }
+
+        guard let url = components.url else {
+            throw PlaceholderError()
+        }
+
         // TODO: Add user agent header
-        let request = signer.sign(
-            url: .init(string: "")!,
+        let presignedURL = signer.presign(
+            url: url,
             method: .get,
-            headers: headers,
+            headers: [:],
             expires: Int(expiration)
         )
 
-        fatalError()
-    }
-
-    func presignURL(config: S3ClientConfiguration, expiration: Double) throws -> URL {
-        fatalError()
-    }
-}
-
-/*
- "GetObjectRequest":{
-   "type":"structure",
-   "required":[
-     "Bucket",
-     "Key"
-   ],
-   "members":{
-     "Bucket":{
-       "shape":"BucketName",
-       "contextParam":{"name":"Bucket"},
-       "location":"uri",
-       "locationName":"Bucket"
-     },
-     "IfMatch":{
-       "shape":"IfMatch",
-       "location":"header",
-       "locationName":"If-Match"
-     },
-     "IfModifiedSince":{
-       "shape":"IfModifiedSince",
-       "location":"header",
-       "locationName":"If-Modified-Since"
-     },
-     "IfNoneMatch":{
-       "shape":"IfNoneMatch",
-       "location":"header",
-       "locationName":"If-None-Match"
-     },
-     "IfUnmodifiedSince":{
-       "shape":"IfUnmodifiedSince",
-       "location":"header",
-       "locationName":"If-Unmodified-Since"
-     },
-     "Key":{
-       "shape":"ObjectKey",
-       "location":"uri",
-       "locationName":"Key"
-     },
-     "Range":{
-       "shape":"Range",
-       "location":"header",
-       "locationName":"Range"
-     },
-     "ResponseCacheControl":{
-       "shape":"ResponseCacheControl",
-       "location":"querystring",
-       "locationName":"response-cache-control"
-     },
-     "ResponseContentDisposition":{
-       "shape":"ResponseContentDisposition",
-       "location":"querystring",
-       "locationName":"response-content-disposition"
-     },
-     "ResponseContentEncoding":{
-       "shape":"ResponseContentEncoding",
-       "location":"querystring",
-       "locationName":"response-content-encoding"
-     },
-     "ResponseContentLanguage":{
-       "shape":"ResponseContentLanguage",
-       "location":"querystring",
-       "locationName":"response-content-language"
-     },
-     "ResponseContentType":{
-       "shape":"ResponseContentType",
-       "location":"querystring",
-       "locationName":"response-content-type"
-     },
-     "ResponseExpires":{
-       "shape":"ResponseExpires",
-       "location":"querystring",
-       "locationName":"response-expires"
-     },
-     "VersionId":{
-       "shape":"ObjectVersionId",
-       "location":"querystring",
-       "locationName":"versionId"
-     },
-     "SSECustomerAlgorithm":{
-       "shape":"SSECustomerAlgorithm",
-       "location":"header",
-       "locationName":"x-amz-server-side-encryption-customer-algorithm"
-     },
-     "SSECustomerKey":{
-       "shape":"SSECustomerKey",
-       "location":"header",
-       "locationName":"x-amz-server-side-encryption-customer-key"
-     },
-     "SSECustomerKeyMD5":{
-       "shape":"SSECustomerKeyMD5",
-       "location":"header",
-       "locationName":"x-amz-server-side-encryption-customer-key-MD5"
-     },
-     "RequestPayer":{
-       "shape":"RequestPayer",
-       "location":"header",
-       "locationName":"x-amz-request-payer"
-     },
-     "PartNumber":{
-       "shape":"PartNumber",
-       "location":"querystring",
-       "locationName":"partNumber"
-     },
-     "ExpectedBucketOwner":{
-       "shape":"AccountId",
-       "location":"header",
-       "locationName":"x-amz-expected-bucket-owner"
-     },
-     "ChecksumMode":{
-       "shape":"ChecksumMode",
-       "location":"header",
-       "locationName":"x-amz-checksum-mode"
-     }
-   }
- },
- */
-
-extension String {
-    static let allowedForQuery = CharacterSet.alphanumerics.union(
-        .init(charactersIn: "_-.~")
-    )
-
-    func urlQueryEncoded() -> String {
-        addingPercentEncoding(withAllowedCharacters: Self.allowedForQuery) ?? self
-    }
-
-    static let allowedForPath = CharacterSet.alphanumerics.union(
-        .init(charactersIn: "/_-.~")
-    )
-
-    func urlPathEncoded() -> String {
-        addingPercentEncoding(withAllowedCharacters: Self.allowedForPath) ?? self
+        return presignedURL
     }
 }
 
@@ -365,6 +237,24 @@ extension String {
     }
 }
 
+extension String {
+    static let allowedForQuery = CharacterSet.alphanumerics.union(
+        .init(charactersIn: "_-.~")
+    )
+
+    func urlQueryEncoded() -> String {
+        addingPercentEncoding(withAllowedCharacters: Self.allowedForQuery) ?? self
+    }
+
+    static let allowedForPath = CharacterSet.alphanumerics.union(
+        .init(charactersIn: "/_-.~")
+    )
+
+    func urlPathEncoded() -> String {
+        addingPercentEncoding(withAllowedCharacters: Self.allowedForPath) ?? self
+    }
+}
+
 
 /*
  "GetObjectOutput":{
@@ -552,4 +442,121 @@ extension String {
     },
     "payload":"Body"
   },
+ */
+/*
+ "GetObjectRequest":{
+   "type":"structure",
+   "required":[
+     "Bucket",
+     "Key"
+   ],
+   "members":{
+     "Bucket":{
+       "shape":"BucketName",
+       "contextParam":{"name":"Bucket"},
+       "location":"uri",
+       "locationName":"Bucket"
+     },
+     "IfMatch":{
+       "shape":"IfMatch",
+       "location":"header",
+       "locationName":"If-Match"
+     },
+     "IfModifiedSince":{
+       "shape":"IfModifiedSince",
+       "location":"header",
+       "locationName":"If-Modified-Since"
+     },
+     "IfNoneMatch":{
+       "shape":"IfNoneMatch",
+       "location":"header",
+       "locationName":"If-None-Match"
+     },
+     "IfUnmodifiedSince":{
+       "shape":"IfUnmodifiedSince",
+       "location":"header",
+       "locationName":"If-Unmodified-Since"
+     },
+     "Key":{
+       "shape":"ObjectKey",
+       "location":"uri",
+       "locationName":"Key"
+     },
+     "Range":{
+       "shape":"Range",
+       "location":"header",
+       "locationName":"Range"
+     },
+     "ResponseCacheControl":{
+       "shape":"ResponseCacheControl",
+       "location":"querystring",
+       "locationName":"response-cache-control"
+     },
+     "ResponseContentDisposition":{
+       "shape":"ResponseContentDisposition",
+       "location":"querystring",
+       "locationName":"response-content-disposition"
+     },
+     "ResponseContentEncoding":{
+       "shape":"ResponseContentEncoding",
+       "location":"querystring",
+       "locationName":"response-content-encoding"
+     },
+     "ResponseContentLanguage":{
+       "shape":"ResponseContentLanguage",
+       "location":"querystring",
+       "locationName":"response-content-language"
+     },
+     "ResponseContentType":{
+       "shape":"ResponseContentType",
+       "location":"querystring",
+       "locationName":"response-content-type"
+     },
+     "ResponseExpires":{
+       "shape":"ResponseExpires",
+       "location":"querystring",
+       "locationName":"response-expires"
+     },
+     "VersionId":{
+       "shape":"ObjectVersionId",
+       "location":"querystring",
+       "locationName":"versionId"
+     },
+     "SSECustomerAlgorithm":{
+       "shape":"SSECustomerAlgorithm",
+       "location":"header",
+       "locationName":"x-amz-server-side-encryption-customer-algorithm"
+     },
+     "SSECustomerKey":{
+       "shape":"SSECustomerKey",
+       "location":"header",
+       "locationName":"x-amz-server-side-encryption-customer-key"
+     },
+     "SSECustomerKeyMD5":{
+       "shape":"SSECustomerKeyMD5",
+       "location":"header",
+       "locationName":"x-amz-server-side-encryption-customer-key-MD5"
+     },
+     "RequestPayer":{
+       "shape":"RequestPayer",
+       "location":"header",
+       "locationName":"x-amz-request-payer"
+     },
+     "PartNumber":{
+       "shape":"PartNumber",
+       "location":"querystring",
+       "locationName":"partNumber"
+     },
+     "ExpectedBucketOwner":{
+       "shape":"AccountId",
+       "location":"header",
+       "locationName":"x-amz-expected-bucket-owner"
+     },
+     "ChecksumMode":{
+       "shape":"ChecksumMode",
+       "location":"header",
+       "locationName":"x-amz-checksum-mode"
+     }
+   }
+ },
  */

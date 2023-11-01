@@ -23,7 +23,7 @@ extension S3ClientTypes {
         /// Date and time at which the part was uploaded.
         var lastModified: Date?
         /// Part number identifying the part. This is a positive integer between 1 and 10,000.
-        var partNumber: Int?
+        var partNumber: Int
         /// Size in bytes of the uploaded part data.
         var size: Int?
 
@@ -37,7 +37,5 @@ extension S3ClientTypes {
             case partNumber = "PartNumber"
             case size = "Size"
         }
-
     }
-
 }

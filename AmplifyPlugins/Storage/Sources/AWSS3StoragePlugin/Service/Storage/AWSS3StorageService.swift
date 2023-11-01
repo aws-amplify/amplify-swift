@@ -63,7 +63,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         let clientConfig = S3ClientConfiguration(
             region: region,
             credentialsProvider: credentialsProvider,
-            accelerate: false // TODO: pull from config
+            accelerate: false, // TODO: pull from config
+            encoder: JSONEncoder(),
+            decoder: JSONDecoder()
         )
 
         

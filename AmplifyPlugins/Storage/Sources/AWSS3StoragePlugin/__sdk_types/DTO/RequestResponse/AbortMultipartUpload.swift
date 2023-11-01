@@ -18,11 +18,11 @@ struct AbortMultipartUploadInput: Equatable, Encodable {
     var expectedBucketOwner: String?
     var requestPayer: S3ClientTypes.RequestPayer?
 
-    var headers: [String: String?] {
+    var headers: [String: String] {
         [
             "x-amz-expected-bucket-owner": expectedBucketOwner,
             "x-amz-request-payer": requestPayer?.rawValue
-        ]
+        ].compactMapValues { $0 }
     }
 
     var queryItems: [URLQueryItem] {

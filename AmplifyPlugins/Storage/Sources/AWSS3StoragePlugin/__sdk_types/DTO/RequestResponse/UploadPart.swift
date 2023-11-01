@@ -10,6 +10,9 @@ import Foundation
 
 extension UploadPartInput {
     func presignURL(config: S3ClientConfiguration, expiration: Double) throws -> URL {
+        
+        
+
         fatalError()
     }
 }
@@ -105,11 +108,13 @@ struct UploadPartOutputResponse: Equatable {
         copy.checksumSHA1 = headers["x-amz-checksum-sha1"]
         copy.checksumSHA256 = headers["x-amz-checksum-sha256"]
         copy.eTag = headers["ETag"]
-        copy.requestCharged = headers["x-amz-request-charged"].flatMap(S3ClientTypes.RequestCharged.init(rawValue:))
+        copy.requestCharged = headers["x-amz-request-charged"]
+            .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))
         copy.sseCustomerAlgorithm = headers["x-amz-server-side-encryption-customer-algorithm"]
         copy.sseCustomerKeyMD5 = headers["x-amz-server-side-encryption-customer-key-MD5"]
         copy.ssekmsKeyId = headers["x-amz-server-side-encryption-aws-kms-key-id"]
-        copy.serverSideEncryption = headers["x-amz-server-side-encryption"].flatMap(S3ClientTypes.ServerSideEncryption.init(rawValue:))
+        copy.serverSideEncryption = headers["x-amz-server-side-encryption"]
+            .flatMap(S3ClientTypes.ServerSideEncryption.init(rawValue:))
         return copy
     }
 }

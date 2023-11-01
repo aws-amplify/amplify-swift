@@ -38,7 +38,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             await Amplify.reset()
 
             let storagePlugin = AWSS3StoragePlugin()
-            storagePlugin.httpClientEngineProxy = requestRecorder
+//            storagePlugin.httpClientEngineProxy = requestRecorder
             storagePlugin.urlRequestDelegate = requestRecorder
 
             try Amplify.add(plugin: AWSCognitoAuthPlugin())

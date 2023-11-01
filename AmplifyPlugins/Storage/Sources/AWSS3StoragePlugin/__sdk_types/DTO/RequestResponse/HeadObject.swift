@@ -27,7 +27,7 @@ struct HeadObjectInput: Equatable, Encodable {
     var sseCustomerKeyMD5: String?
     var versionId: String?
 
-    var _headers: [String: String?] {
+    var headers: [String: String] {
         [
             "x-amz-checksum-mode": checksumMode?.rawValue,
             "x-amz-expected-bucket-owner": expectedBucketOwner,
@@ -44,7 +44,7 @@ struct HeadObjectInput: Equatable, Encodable {
             "x-amz-server-side-encryption-customer-algorithm": sseCustomerAlgorithm,
             "x-amz-server-side-encryption-customer-key": sseCustomerKey,
             "x-amz-server-side-encryption-customer-key-MD5": sseCustomerKeyMD5
-        ]
+        ].compactMapValues { $0 }
     }
 
     var queryItems: [URLQueryItem] {

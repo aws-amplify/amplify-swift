@@ -8,7 +8,6 @@
 import XCTest
 import Amplify
 import AWSS3StoragePlugin
-import AWSS3
 import Combine
 
 // swiftlint:disable:next type_name
