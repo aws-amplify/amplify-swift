@@ -7,7 +7,6 @@
 
 import Foundation
 @testable import AWSS3StoragePlugin
-import AWSS3
 
 final class MockAWSS3PreSignedURLBuilder {
     

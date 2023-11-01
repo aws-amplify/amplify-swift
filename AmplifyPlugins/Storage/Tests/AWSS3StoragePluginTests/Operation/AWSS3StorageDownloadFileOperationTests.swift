@@ -12,8 +12,6 @@ import XCTest
 @testable import AWSPluginsCore
 @testable import AWSPluginsTestCommon
 
-import AWSS3
-
 class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testDownloadFileOperationValidationError() {

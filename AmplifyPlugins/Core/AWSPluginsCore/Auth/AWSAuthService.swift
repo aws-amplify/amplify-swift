@@ -18,6 +18,18 @@ public struct Credentials {
     public let secret: String
     public let expirationTimeout: Date?
     public let sessionToken: String?
+
+    public init(
+        accessKey: String,
+        secret: String,
+        expirationTimeout: Date?,
+        sessionToken: String?
+    ) {
+        self.accessKey = accessKey
+        self.secret = secret
+        self.expirationTimeout = expirationTimeout
+        self.sessionToken = sessionToken
+    }
 }
 
 public class AWSAuthService: AWSAuthServiceBehavior {

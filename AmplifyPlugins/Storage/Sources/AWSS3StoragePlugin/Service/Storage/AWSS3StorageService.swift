@@ -30,7 +30,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     var s3Client: S3Client!
 
     /// - Tag: AWSS3StorageService.client
-    var client: S3Client
+    var client: S3ClientProtocol
 
     let userAgent: String
     let storageConfiguration: StorageConfiguration

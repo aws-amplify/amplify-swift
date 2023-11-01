@@ -11,7 +11,6 @@
 @testable import AWSS3StoragePlugin
 @testable import AWSPluginsCore
 
-import AWSS3
 import XCTest
 
 final class AWSS3StorageUploadFileOperationTests2: AWSS3StorageOperationTestBase {

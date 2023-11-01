@@ -5,12 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
-import AWSS3
 import Amplify
-import ClientRuntime
 import XCTest
-import AWSClientRuntime
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -98,12 +94,7 @@ final class AWSS3StorageServiceListTests: XCTestCase {
     /// Then: The service throws a `StorageError` error
     func testSdkError() async throws {
         client.listObjectsV2Handler = { _ in
-            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: HttpResponse(body: .empty, statusCode: .forbidden),
-                message: nil,
-                requestID: nil,
-                typeName: nil
-            )
+            throw NotFound() // TODO: change to unknown error
         }
         let options = StorageListRequest.Options(accessLevel: .protected, targetIdentityId: targetIdentityId, path: path)
         do {

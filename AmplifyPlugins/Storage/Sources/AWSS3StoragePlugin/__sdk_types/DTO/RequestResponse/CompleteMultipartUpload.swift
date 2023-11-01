@@ -64,7 +64,7 @@ struct CompleteMultipartUploadOutputResponse: Equatable {
     var checksumSHA256: String?
 
     // "x-amz-server-side-encryption-bucket-key-enabled" ?? false
-    var bucketKeyEnabled: Bool
+    var bucketKeyEnabled: Bool?
     // "x-amz-expiration"
     var expiration: String?
     // "x-amz-request-charged"

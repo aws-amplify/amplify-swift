@@ -14,7 +14,17 @@ struct S3ClientConfiguration {
     let accelerate: Bool
 }
 
-class S3Client {
+protocol S3ClientProtocol {
+    func deleteObject(input: DeleteObjectInput) async throws -> DeleteObjectOutputResponse
+    func listObjectsV2(input: ListObjectsV2Input) async throws -> ListObjectsV2OutputResponse
+    func createMultipartUpload(input: CreateMultipartUploadInput) async throws -> CreateMultipartUploadOutputResponse
+    func listParts(input: ListPartsInput) async throws -> ListPartsOutputResponse
+    func completeMultipartUpload(input: CompleteMultipartUploadInput) async throws -> CompleteMultipartUploadOutputResponse
+    func abortMultipartUpload(input: AbortMultipartUploadInput) async throws -> AbortMultipartUploadOutputResponse
+    func headObject(input: HeadObjectInput) async throws -> HeadObjectOutputResponse
+}
+
+class S3Client: S3ClientProtocol {
     let configuration: S3ClientConfiguration
 
     init(configuration: S3ClientConfiguration) {

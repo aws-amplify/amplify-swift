@@ -8,8 +8,6 @@
 @testable import Amplify
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-import ClientRuntime
-import AWSS3
 import XCTest
 
 class StorageServiceSessionDelegateTests: XCTestCase {

@@ -18,10 +18,10 @@ import Amplify
 /// and allows for mocking in unit tests. The methods contain no other logic other than calling the
 /// same method using the AWSS3 instance.
 class AWSS3Adapter: AWSS3Behavior {
-    let awsS3: S3Client
+    let awsS3: S3ClientProtocol
 //    let config: S3Client.S3ClientConfiguration
 
-    init(_ awsS3: S3Client/*, config: S3Client.S3ClientConfiguration*/) {
+    init(_ awsS3: S3ClientProtocol/*, config: S3Client.S3ClientConfiguration*/) {
         self.awsS3 = awsS3
 //        self.config = config
     }
@@ -74,14 +74,13 @@ class AWSS3Adapter: AWSS3Behavior {
     ///   - completion: handler which returns a result with uploadId
     func createMultipartUpload(_ request: CreateMultipartUploadRequest) async throws -> AWSS3CreateMultipartUploadResponse {
         let input = CreateMultipartUploadInput(
-            bucket: request.bucket,
+            key: request.key, bucket: request.bucket,
             cacheControl: request.cacheControl,
             contentDisposition: request.contentDisposition,
             contentEncoding: request.contentEncoding,
             contentLanguage: request.contentLanguage,
             contentType: request.contentType,
             expires: request.expires,
-            key: request.key,
             metadata: request.metadata
         )
 
@@ -125,8 +124,8 @@ class AWSS3Adapter: AWSS3Behavior {
         let input = CompleteMultipartUploadInput(
             bucket: request.bucket,
             key: request.key,
-            multipartUpload: completedMultipartUpload,
-            uploadId: request.uploadId
+            uploadId: request.uploadId, 
+            multipartUpload: completedMultipartUpload
         )
         do {
             let response = try await awsS3.completeMultipartUpload(input: input)
@@ -147,7 +146,7 @@ class AWSS3Adapter: AWSS3Behavior {
     ///   - request: request which includes uploadId
     ///   - completion: handler which indicates when the operation is done
     func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest) async throws {
-        let input = AbortMultipartUploadInput(bucket: request.bucket, key: request.key, uploadId: request.uploadId)
+        let input = AbortMultipartUploadInput(bucket: request.bucket, uploadId: request.uploadId, key: request.key)
         do {
             _ = try await awsS3.abortMultipartUpload(input: input)
         } catch let error as StorageErrorConvertible {

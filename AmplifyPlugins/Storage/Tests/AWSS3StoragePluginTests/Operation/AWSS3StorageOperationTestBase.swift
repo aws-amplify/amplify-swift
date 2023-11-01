@@ -10,7 +10,6 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
 @testable import AWSPluginsTestCommon
-import AWSS3
 
 class AWSS3StorageOperationTestBase: XCTestCase {
     

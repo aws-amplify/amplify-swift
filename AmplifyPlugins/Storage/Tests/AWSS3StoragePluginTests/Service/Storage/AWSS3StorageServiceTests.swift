@@ -8,8 +8,6 @@
 @testable import Amplify
 @testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
-import ClientRuntime
-import AWSS3
 import XCTest
 
 class AWSS3StorageServiceTests: XCTestCase {
@@ -48,7 +46,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             authService: authService,
             region: "region",
             bucket: "bucket",
-            httpClientEngineProxy: MockHttpClientEngineProxy(),
+//            httpClientEngineProxy: MockHttpClientEngineProxy(),
             storageTransferDatabase: database,
             fileSystem: fileSystem,
             logger: MockLogger()
@@ -386,17 +384,17 @@ class AWSS3StorageServiceTests: XCTestCase {
     }
 }
 
-private class MockHttpClientEngineProxy: HttpClientEngineProxy {
-    var target: HttpClientEngine? = nil
-
-    var executeCount = 0
-    var executeRequest: SdkHttpRequest?
-    func execute(request: SdkHttpRequest) async throws -> HttpResponse {
-        executeCount += 1
-        executeRequest = request
-        return .init(body: .empty, statusCode: .accepted)
-    }
-}
+//private class MockHttpClientEngineProxy: HttpClientEngineProxy {
+//    var target: HttpClientEngine? = nil
+//
+//    var executeCount = 0
+//    var executeRequest: SdkHttpRequest?
+//    func execute(request: SdkHttpRequest) async throws -> HttpResponse {
+//        executeCount += 1
+//        executeRequest = request
+//        return .init(body: .empty, statusCode: .accepted)
+//    }
+//}
 
 private class StorageTransferDatabaseMock: StorageTransferDatabase {
     
