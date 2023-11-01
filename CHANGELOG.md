@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.21.3 (2023-11-01)
+
+### Bug Fixes
+
+- bump swift sdk to 0.26.1 (#3333)
+
 ## 2.21.2 (2023-10-31)
 
 ### Bug Fixes
