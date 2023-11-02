@@ -51,4 +51,4 @@ jobs:
       scheme: ${{ inputs.scheme }}
       platform: ${{ matrix.platform }}
       xcode_version: '14.3'
-      generate_coverage_report: ${{ inputs.generate_coverage_report }}
+      generate_coverage_report: ${{ matrix.platform == 'iOS' && inputs.generate_coverage_report }}
