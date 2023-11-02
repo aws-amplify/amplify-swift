@@ -32,7 +32,6 @@ jobs:
     with:
       scheme: AWSAPIPluginGraphQLIAMTests
       platform: ${{ matrix.platform }}
-      build_cache_key: AWSAPIPlugin-${{ matrix.platform }}-latest-build-main
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
       xcode_version: '14.3'
       resource_subfolder: api

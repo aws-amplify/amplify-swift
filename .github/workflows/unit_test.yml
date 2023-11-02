@@ -35,7 +35,6 @@ on:
 
 permissions:
     contents: read
-    actions: write
 
 concurrency:
   group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}

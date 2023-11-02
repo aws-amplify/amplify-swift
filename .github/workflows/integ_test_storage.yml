@@ -38,7 +38,6 @@ jobs:
     with:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSS3StoragePluginIntegrationTestsWatch' || 'AWSS3StoragePluginIntegrationTests' }}
       platform: ${{ matrix.platform }}
-      build_cache_key: AWSS3StoragePlugin-${{ matrix.platform }}-latest-build-main
       project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
       xcode_version: '14.3'
       resource_subfolder: storage

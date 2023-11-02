@@ -38,7 +38,6 @@ jobs:
     with:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSLocationGeoPluginIntegrationTestsWatch' || 'AWSLocationGeoPluginIntegrationTests' }}
       platform: ${{ matrix.platform }}
-      build_cache_key: AWSLocationGeoPlugin-${{ matrix.platform }}-latest-build-main
       project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
       xcode_version: '14.3'
       resource_subfolder: geo

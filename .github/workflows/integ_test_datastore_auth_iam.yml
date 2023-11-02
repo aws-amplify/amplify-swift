@@ -38,7 +38,6 @@ jobs:
     with:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSDataStorePluginAuthIAMTestsWatch' || 'AWSDataStorePluginAuthIAMTests' }}
       platform: ${{ matrix.platform }}
-      build_cache_key: AWSDataStorePlugin-${{ matrix.platform }}-latest-build-main
       project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
       xcode_version: '14.3'
       resource_subfolder: datastore

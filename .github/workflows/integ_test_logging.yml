@@ -38,7 +38,6 @@ jobs:
     with:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSCloudWatchLoggingPluginIntegrationTestsWatch' || 'AWSCloudWatchLoggingPluginIntegrationTests' }}
       platform: ${{ matrix.platform }}
-      build_cache_key: AWSCloudWatchLoggingPlugin-${{ matrix.platform }}-latest-build-main
       project_path: ./AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginHostApp
       xcode_version: ${{ matrix.platform == 'watchOS' && '15.0' || '14.3' }}
       resource_subfolder: logging
