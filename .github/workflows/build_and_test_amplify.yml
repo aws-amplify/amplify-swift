@@ -8,25 +8,25 @@ permissions:
 
 jobs:
   build-amplify-swift-iOS:
-    name: Build for iOS
+    name: Build Amplify for Swift
     uses: ./.github/workflows/build_amplify_swift_for_testing.yml
     with:
       platform: iOS
 
   build-amplify-swift-macOS:
-    name: Build for macOS
+    name: Build Amplify for Swift
     uses: ./.github/workflows/build_amplify_swift_for_testing.yml
     with:
       platform: macOS
 
   build-amplify-swift-tvOS:
-    name: Build for tvOS
+    name: Build Amplify for Swift
     uses: ./.github/workflows/build_amplify_swift_for_testing.yml
     with:
       platform: tvOS
 
   build-amplify-swift-watchOS:
-    name: Build for watchOS
+    name: Build Amplify for Swift
     uses: ./.github/workflows/build_amplify_swift_for_testing.yml
     with:
       platform: watchOS
@@ -156,7 +156,7 @@ jobs:
       delete_build_cache_on_success: ${{ github.ref_name != 'main'}}
 
   report-coverage:
-    name: ${{ matrix.file.scheme }} Coverage Report
+    name: ${{ matrix.file.scheme }} Unit Tests
     needs: [run-unit-tests-iOS]
     strategy:
       fail-fast: false

@@ -36,7 +36,7 @@ permissions:
 
 jobs:
   test-iOS:
-    name: ${{ inputs.scheme }} iOS Tests
+    name: iOS Tests | ${{ inputs.scheme }}
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
@@ -140,7 +140,7 @@ jobs:
 
 
   test-macOS:
-    name: ${{ inputs.scheme }} macOS Tests
+    name: macOS Tests | ${{ inputs.scheme }}
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
@@ -235,7 +235,7 @@ jobs:
           key: ${{ steps.restore-main-build.outputs.cache-primary-key }}
 
   test-tvOS:
-    name: ${{ inputs.scheme }} tvOS Tests
+    name: tvOS Tests | ${{ inputs.scheme }}
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
@@ -330,7 +330,7 @@ jobs:
           key: ${{ steps.restore-main-build.outputs.cache-primary-key }}
 
   test-watchOS:
-    name: ${{ inputs.scheme }} watchOS Tests
+    name: watchOS Tests | ${{ inputs.scheme }}
     runs-on: macos-13
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
