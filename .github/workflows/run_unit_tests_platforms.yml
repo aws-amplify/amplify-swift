@@ -16,19 +16,6 @@ on:
         required: false
         type: boolean
         default: false
-      retry_on_error:
-        description: 'Whether to automatically retry if the tests fail'
-        required: false
-        type: boolean
-        default: true
-      other_flags:
-        required: false
-        type: string
-        default: ''
-
-env:
-  SCHEME: ${{ inputs.scheme }}
-  RETRY_ON_ERROR: ${{ inputs.retry_on_error }}
 
 permissions:
     contents: read
@@ -51,4 +38,5 @@ jobs:
       scheme: ${{ inputs.scheme }}
       platform: ${{ matrix.platform }}
       xcode_version: '14.3'
-      generate_coverage_report: ${{ matrix.platform == 'iOS' && inputs.generate_coverage_report }}
+      generate_coverage_report: ${{ github.event_name != 'workflow_dispatch' && matrix.platform == 'iOS' && inputs.generate_coverage_report }}
+      timeout-minutes: ${{ inputs.timeout-minutes }}

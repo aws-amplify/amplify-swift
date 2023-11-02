@@ -67,16 +67,16 @@ jobs:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: ${{ steps.dependencies-cache.outputs.cache-primary-key }}
     
-      - name: Delete the old build cache on main
-        if: steps.build-cache.outputs.cache-hit # && github.ref_name == 'main'
+      - name: Delete the old build cache
+        if: steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
         run: |
           gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
 
-      - name: Save the build cache in the main
-        #if: github.ref_name == 'main'
+      - name: Save the build cache
+        if: github.ref_name == 'main'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build

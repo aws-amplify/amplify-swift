@@ -30,7 +30,6 @@ on:
 
 permissions:
     contents: read
-    actions: write
 
 jobs:
   unit-tests:
