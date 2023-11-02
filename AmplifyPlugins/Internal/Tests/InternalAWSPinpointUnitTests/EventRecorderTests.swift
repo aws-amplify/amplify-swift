@@ -48,7 +48,7 @@ class EventRecorderTests: XCTestCase {
     /// - Given: a event recorder
     /// - When: a new pinpoint event is aved
     /// - Then: the event is saved to storage followed by a disk size check
-    func testSaveEvent() {
+    func testSaveEvent() async {
         let session = PinpointSession(sessionId: "1", startTime: Date(), stopTime: nil)
         let event = PinpointEvent(id: "1", eventType: "eventType", eventDate: Date(), session: session)
 
@@ -56,7 +56,7 @@ class EventRecorderTests: XCTestCase {
         XCTAssertEqual(storage.checkDiskSizeCallCount, 1)
 
         do {
-            try recorder.save(event)
+            try await recorder.save(event)
         } catch {
             XCTFail("Failed to save events")
         }
