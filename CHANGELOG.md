@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.21.4 (2023-11-02)
+
+### Bug Fixes
+
+- **Analytics**: Fixing crash when attempting to submit events while a previous submission is in progress (#3331)
+
 ## 2.21.3 (2023-11-01)
 
 ### Bug Fixes
