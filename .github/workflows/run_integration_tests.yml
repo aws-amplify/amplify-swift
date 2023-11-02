@@ -1,71 +1,70 @@
-name: Integration Tests | Push Notifications
+name: Run tests for the given parameters
 on:
-  workflow_dispatch:
-    inputs:
-      ios:
-        description: '📱 iOS'
-        required: true
-        default: true
-        type: boolean
-      tvos:
-        description: '📺 tvOS'
-        required: true
-        default: true
-        type: boolean
-      watchos:
-        description: '⌚️ watchOS'
-        required: true
-        default: true
-        type: boolean
   workflow_call:
+    inputs:
+      scheme:
+        description: 'The scheme to run the tests'
+        required: true
+        type: string
+      platform:
+        description: 'The platform in which to run these tests'
+        required: true
+        type: string
+      project_path:
+        required: false
+        type: string
+      xcode_version:
+        description: 'The verion of Xcode used to run these tests'
+        required: true
+        type: string
+      resource_subfolder:
+        required: true
+        type: string
+      timeout-minutes:
+        description: 'The timeout for each execution'
+        required: false
+        type: number
+        default: 30
+      build_cache_key:
+        description: 'The key used to retrieve the build cache'
+        required: true
+        type: string
 
 permissions:
     id-token: write
     contents: read
 
 jobs:
-  push-notification-integration-tests:
-    name: ${{ matrix.platform }} Tests | PushNotificationHostApp
+  integration-tests:
+    name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
     runs-on: macos-13
-    timeout-minutes: 30
+    if: inputs.platform != 'macOS' # macOS is not supported for Integration Tests
+    timeout-minutes: ${{ inputs.timeout-minutes }}
     environment: IntegrationTest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [iOS, tvOS, watchOS]
-        exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'Dummy' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
         with:
           persist-credentials: false
-      
-      - name: Get build parameters for ${{ matrix.platform}}
+
+      - name: Get build parameters for ${{ inputs.platform}}
         id: platform
         uses: ./.github/composite_actions/get_platform_parameters
         with:
-          platform: ${{ matrix.platform }}
-          xcode_version: '14.3'
-      
+          platform: ${{ inputs.platform }}
+          xcode_version: ${{ inputs.xcode_version }}
+
       - name: Create the test configuration directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
 
       - name: Download the Integration Test configurations
         uses: ./.github/composite_actions/download_test_configuration
         with:
-          resource_subfolder: push-notification
+          resource_subfolder: ${{ inputs.resource_subfolder }}
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
           destination: ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Set up node
-        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
-        with:
-          node-version: 16.x
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
@@ -85,41 +84,39 @@ jobs:
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: AWSPinpointPushNotificationsPlugin-${{ matrix.platform }}-latest-build-main
+          key: ${{ inputs.build_cache_key }}
 
-      - name: Run Local Server
-        run: |
-          cd ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp/LocalServer
-          npm install
-          npm start &
-        shell: bash
-
-      - name: Run ${{ matrix.platform }} Integration Tests
+      - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests
         continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: ${{ matrix.platform == 'watchOS' && 'PushNotificationWatchTests' || 'PushNotificationHostApp' }}
+          scheme: ${{ inputs.scheme }}
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_14.3.app
-          project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
+          xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
+          project_path: ${{ inputs.project_path }}
           generate_coverage: false
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+          test_without_building: false
+          other_flags: -test-iterations 3 -retry-tests-on-failure
 
-      - name: Retry ${{ matrix.platform }} Integration Tests
+      - name: Retry ${{ inputs.platform }} Integration Tests
         if: steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: ${{ matrix.platform == 'watchOS' && 'PushNotificationWatchTests' || 'PushNotificationHostApp' }}
+          scheme: ${{ inputs.scheme }}
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_14.3.app
-          project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
+          xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
+          project_path: ${{ inputs.project_path }}
           generate_coverage: false
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
+          # Only attempt to test without building when we are not using any cache.
+          test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
+          other_flags: -test-iterations 3 -retry-tests-on-failure
