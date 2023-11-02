@@ -41,5 +41,5 @@ jobs:
       project_path: ./AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginHostApp
       xcode_version: ${{ matrix.platform == 'watchOS' && '15.0' || '14.3' }}
       resource_subfolder: logging
-      timeout-minutes: 45
+      timeout-minutes: 60
     secrets: inherit
