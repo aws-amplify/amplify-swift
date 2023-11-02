@@ -27,19 +27,6 @@ on:
         required: false
         type: boolean
         default: false
-      build_cache_key:
-        description: 'The key used to retrieve the build cache'
-        required: false
-        default: ''
-        type: string
-      test_without_building:
-        type: boolean
-        required: false
-        default: false
-      delete_build_cache_on_success:
-        required: false
-        type: boolean
-        default: false
 
 permissions:
     contents: read
@@ -81,7 +68,7 @@ jobs:
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ inputs.build_cache_key || format('{0}-{1}-latest-build-main', inputs.scheme, inputs.platform) }} 
+          key: Amplify-${{ inputs.platform }}-build-cache
 
       - name: Run ${{ inputs.platform }} Unit Tests
         id: run-tests
@@ -96,7 +83,6 @@ jobs:
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
-          test_without_building: ${{ inputs.test_without_building && steps.dependencies-cache.outputs.cache-hit }}
           other_flags: -test-iterations 3 -retry-tests-on-failure
 
       - name: Retry ${{ inputs.platform }} Unit Tests
@@ -113,17 +99,7 @@ jobs:
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
-          test_without_building: ${{ inputs.test_without_building && steps.dependencies-cache.outputs.cache-hit}}
           other_flags: -test-iterations 3 -retry-tests-on-failure
-
-      - name: Delete the build cache
-        if: ${{ inputs.delete_build_cache_on_success && steps.build-cache.outputs.cache-hit }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
-        run: |
-          gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
-        shell: bash
 
       - name: Store Coverage Report File
         if: ${{ inputs.generate_coverage_report == true }}

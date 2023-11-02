@@ -1,0 +1,54 @@
+name: Run Unit Tests for the given scheme on all supported platforms
+on:
+  workflow_call:
+    inputs:
+      scheme:
+        description: 'The scheme to run the tests'
+        required: true
+        type: string
+      timeout-minutes:
+        description: 'The timeout for each execution'
+        required: false
+        type: number
+        default: 30
+      generate_coverage_report:
+        description: 'Whether to generate and report code coverage'
+        required: false
+        type: boolean
+        default: false
+      retry_on_error:
+        description: 'Whether to automatically retry if the tests fail'
+        required: false
+        type: boolean
+        default: true
+      other_flags:
+        required: false
+        type: string
+        default: ''
+
+env:
+  SCHEME: ${{ inputs.scheme }}
+  RETRY_ON_ERROR: ${{ inputs.retry_on_error }}
+
+permissions:
+    contents: read
+    actions: write
+
+jobs:
+  run-unit-tests:
+    name: ${{ matrix.platform }} Tests | ${{ inputs.scheme }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, macOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
+    uses: ./.github/workflows/run_unit_tests.yml
+    with:
+      scheme: ${{ inputs.scheme }}
+      platform: ${{ matrix.platform }}
+      xcode_version: '14.3'
+      generate_coverage_report: ${{ inputs.generate_coverage_report }}
