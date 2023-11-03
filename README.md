@@ -152,6 +152,17 @@ do {
 }
 ```
 
+## Describing use of required reason API
+
+As required by the Apple App Store, we provide the new `PrivacyInfo.xcprivacy` file for describing use of required reason API, see [Describing data use in privacy manifests](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files/describing_use_of_required_reason_api#4278401). You can also export the privacy report after archiving your App in Xcode, see [Exporting a privacy report](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files/describing_data_use_in_privacy_manifests#4239187).
+
+Following Amplify targets have been identified to be using the [User Default APIs](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files/describing_use_of_required_reason_api#4278401).
+
+* `AWSCognitoAuthPlugin`
+* `AWSDataStorePlugin`
+* `AWSCloudWatchLoggingPlugin`
+* `InternalAWSPinpoint`
+
 ## Reporting Bugs/Feature Requests
 
 [![Open Bugs](https://img.shields.io/github/issues/aws-amplify/amplify-swift/bug?color=d73a4a&label=bugs)](https://github.com/aws-amplify/amplify-swift/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
