@@ -78,14 +78,14 @@ jobs:
           restore-keys: |
             amplify-packages-
 
-      - name: Attempt to use the provided build cache
+      - name: Attempt to restore the build cache
         id: build-cache
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: AWSPinpointPushNotificationsPlugin-${{ matrix.platform }}-latest-build-main
+          key: Amplify-${{ matrix.platform }}-build-cache
 
       - name: Run Local Server
         run: |
