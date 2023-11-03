@@ -178,10 +178,19 @@ public struct SigV4Signer {
         date: () -> Date = { .init() },
         expires: Int = 300
     ) -> URLRequest {
+        log.debug("\(#function) entry point")
+        log.debug("\(#function) credential: \(credentials)")
+        log.debug("\(#function) service: \(serviceName)")
+        log.debug("\(#function) region: \(region)")
         let date = date()
         let timestamp = _timeFormatter.string(from: date)
         let datestamp = _dateFormatter.string(from: date)
+        log.debug("timestamp: \(timestamp)")
+        log.debug("datestamp: \(datestamp)")
+
+        log.debug("requestBody: \(body as Any)")
         let hashedPayload = _hashedPayload(body)
+        log.debug("hashedPayload: \(hashedPayload)")
 
         var headersToAdd = [
             "host": "\(url.hostWithPort)",
@@ -189,33 +198,47 @@ public struct SigV4Signer {
             "X-Amz-Content-Sha256": hashedPayload
         ]
 
-
         if let sessionToken = credentials.sessionToken {
             headersToAdd["X-Amz-Security-Token"] = sessionToken
         }
+
+        log.debug("headersToAdd: \(headersToAdd)")
         let headers = headers.merging(
             headersToAdd,
             uniquingKeysWith: { _, new in new }
         )
             .filter { $0.key != "Authorization" }
 
+        log.debug("headers: \(headers)")
+
         let url = url.path.isEmpty
         ? url.appendingPathComponent("/")
         : url
 
+        log.debug("url: \(url)")
 
         let canonicalURI = PercentEncoding.uriWithSlash.encode(url.path)
+        log.debug("canonicalURI: \(canonicalURI)")
+
         let canonicalHeaders = _canonicalHeaders(headers)
+        log.debug("canonicalHeaders: \(canonicalHeaders)")
+
         let signedHeaders = _signedHeaders(headers)
+        log.debug("signedHeaders: \(signedHeaders)")
+
         let credentialScope = _credentialScope(
             datestamp: datestamp,
             region: region,
             serviceName: serviceName
         )
+        log.debug("credentialScope: \(credentialScope)")
+
 
         let canonicalQueryString = _canonicalQueryString(
             query: url.query
         )
+
+        log.debug("canonicalQueryString: \(canonicalQueryString)")
 
         let canonicalRequest = _canonicalRequest(
             method: method,
@@ -226,26 +249,39 @@ public struct SigV4Signer {
             hashedPayload: hashedPayload
         )
 
+        log.debug("canonicalRequest: \(canonicalRequest)")
+
         let stringToSign = _stringToSign(
             canonicalRequest: canonicalRequest,
             credentialScope: credentialScope,
             timestamp: timestamp
         )
+        log.debug("stringToSign: \(String(decoding: stringToSign, as: UTF8.self))")
+
 
         let signingKey = _signingKey(
             region: region,
             secretKey: credentials.secret,
             datestamp: datestamp
         )
+        log.debug("signingKey: \(String(decoding: signingKey, as: UTF8.self))")
+
 
         let signature = _hash(data: stringToSign, key: signingKey).hexDigest()
+        log.debug("signature: \(signature)")
+
         let authorizationHeader = "AWS4-HMAC-SHA256 Credential=\(credentials.accessKey)/\(credentialScope),SignedHeaders=\(signedHeaders),Signature=\(signature)"
+
+        log.debug("authorizationHeader: \(authorizationHeader)")
+
         var request = URLRequest(url: url)
         for header in headers {
             request.setValue(header.value, forHTTPHeaderField: header.key)
         }
         request.httpMethod = method.verb
         request.setValue(authorizationHeader, forHTTPHeaderField: "Authorization")
+
+        log.debug("signed request: \(request)")
 
         return request
     }
@@ -449,10 +485,14 @@ public struct SigV4Signer {
 
         return query.split(separator: "&")
             .map {
-                String($0).split(separator: "=")
-                    .map(String.init)
-                    .map(PercentEncoding.uri.encode)
-                    .joined(separator: "=")
+                if $0.contains("=") {
+                    String($0).split(separator: "=")
+                        .map(String.init)
+                        .map(PercentEncoding.uri.encode)
+                        .joined(separator: "=")
+                } else {
+                    String($0) + "=" + ""
+                }
             }
             .sorted()
             .joined(separator: "&")

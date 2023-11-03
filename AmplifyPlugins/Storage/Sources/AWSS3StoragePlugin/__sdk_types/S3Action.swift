@@ -11,8 +11,13 @@ import AWSPluginsCore
 struct PlaceholderError: Error {}
 
 func defaultDecode<Output: Decodable & HeadersApplying>(data: Data, decoder: JSONDecoder, headers: [String: String]) throws -> Output {
+    print(">>> response data:", String(decoding: data, as: UTF8.self))
     let output = try decoder.decode(Output.self, from: data)
     return output.applying(headers: headers)
+}
+
+func defaultEncode<Input: Encodable>(input: Input, encoder: JSONEncoder) throws -> Data {
+    try encoder.encode(input)
 }
 
 struct Action<Input: Encodable, Output: Decodable & HeadersApplying> {
@@ -26,9 +31,7 @@ struct Action<Input: Encodable, Output: Decodable & HeadersApplying> {
     // TODO: Figure out a better way to do this / combine with decoding
 //    let applyHeaders: ([String: String?]) -> Output
 
-    let encode: (Input, JSONEncoder) throws -> Data = { model, encoder in
-        try encoder.encode(model)
-    }
+    let encode: (Input, JSONEncoder) throws -> Data
 
     let decode: (Data, JSONDecoder, [String: String]) throws -> Output
 
@@ -39,6 +42,7 @@ struct Action<Input: Encodable, Output: Decodable & HeadersApplying> {
         hostPrefix: String,
         method: HTTPMethod,
         mapError: @escaping (Data, HTTPURLResponse) throws -> Error,
+        encode: @escaping (Input, JSONEncoder) throws -> Data = defaultEncode(input:encoder:),
         decode: @escaping (Data, JSONDecoder, [String: String]) throws -> Output = defaultDecode(data:decoder:headers:)
     ) {
         self.name = name
@@ -47,6 +51,7 @@ struct Action<Input: Encodable, Output: Decodable & HeadersApplying> {
         self.hostPrefix = hostPrefix
         self.method = method
         self.mapError = mapError
+        self.encode = encode
         self.decode = decode
     }
 
@@ -141,7 +146,12 @@ extension Action where Input == CreateMultipartUploadInput, Output == CreateMult
             successCode: 204,
             hostPrefix: "\(input.bucket).",
             method: .post,
-            mapError: mapError(data:response:)
+            mapError: mapError(data:response:),
+            encode: { _, _ in Data() }
+//            decode: { _, response, headers in
+//                let output = CreateMultipartUploadOutputResponse()
+//                return output.applying(headers: headers)
+//            }
         )
     }
 }
@@ -188,7 +198,7 @@ extension Action where Input == CompleteMultipartUploadInput, Output == Complete
     static func completeMultipartUpload(input: CompleteMultipartUploadInput) -> Self {
         .init(
             name: "CompleteMultipartUpload",
-            requestURI: "/\(input.key)",
+            requestURI: "/\(input.key)?uploadId=\(input.uploadId)",
             successCode: 200,
             hostPrefix: "\(input.bucket).",
             method: .post,
@@ -217,7 +227,7 @@ extension Action where Input == AbortMultipartUploadInput, Output == AbortMultip
     static func abortMultipartUpload(input: AbortMultipartUploadInput) -> Self {
         .init(
             name: "AbortMultipartUpload",
-            requestURI: "/\(input.key)",
+            requestURI: "/\(input.key)?uploadId=\(input.uploadId)",
             successCode: 204,
             hostPrefix: "\(input.bucket).",
             method: .delete,

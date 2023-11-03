@@ -13,7 +13,7 @@ struct CompleteMultipartUploadInput: Equatable, Encodable {
     /// This member is required.
     var key: String
     /// This member is required.
-    var uploadId: String?
+    var uploadId: String
 
     var checksumCRC32: String?
     var checksumCRC32C: String?
@@ -43,7 +43,7 @@ struct CompleteMultipartUploadInput: Equatable, Encodable {
     var queryItems: [URLQueryItem] {
         [
             .init(name: "x-id", value: "CompleteMultipartUpload"),
-            .init(name: "uploadId", value: uploadId?.urlQueryEncoded())
+            .init(name: "uploadId", value: uploadId.urlQueryEncoded())
         ]
             .compactMap { $0.value == nil ? nil : $0 }
     }

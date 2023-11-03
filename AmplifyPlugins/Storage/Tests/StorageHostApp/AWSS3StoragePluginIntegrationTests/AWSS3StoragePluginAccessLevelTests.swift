@@ -23,8 +23,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Then: Operation completes successfully with no items since there are no keys at that location.
     func testListFromProtectedForUnauthenticatedUser() async throws {
         let key = UUID().uuidString
-        let options = StorageListRequest.Options(accessLevel: .protected,
-                                                 path: key)
+        let options = StorageListRequest.Options(
+            accessLevel: .protected,
+            path: key
+        )
         let items = try await Amplify.Storage.list(options: options).items
         XCTAssertEqual(items.count, 0)
     }
@@ -35,8 +37,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() async throws {
         do {
             let key = UUID().uuidString
-            let options = StorageListRequest.Options(accessLevel: .private,
-                                                     path: key)
+            let options = StorageListRequest.Options(
+                accessLevel: .private,
+                path: key
+            )
             _ = try await Amplify.Storage.list(options: options).items
             XCTFail("Expecting failure")
         } catch StorageError.accessDenied(let description, _, _){

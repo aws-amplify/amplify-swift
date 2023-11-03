@@ -22,9 +22,13 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadDataWithAccelerateDisabledExplicitly() async throws {
         let key = UUID().uuidString
         let data = try XCTUnwrap(key.data(using: .utf8))
-        let task = Amplify.Storage.uploadData(key: key,
-                                              data: data,
-                                              options: .init(pluginOptions:["useAccelerateEndpoint": useAccelerateEndpoint]))
+        let task = Amplify.Storage.uploadData(
+            key: key,
+            data: data,
+            options: .init(
+                pluginOptions: ["useAccelerateEndpoint": useAccelerateEndpoint]
+            )
+        )
         _ = try await task.value
         try await Amplify.Storage.remove(key: key)
     }
@@ -36,9 +40,11 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let data = try XCTUnwrap(key.data(using: .utf8))
         do {
-            let task = Amplify.Storage.uploadData(key: key,
-                                                  data: data,
-                                                  options: .init(pluginOptions:["useAccelerateEndpoint": "false"]))
+            let task = Amplify.Storage.uploadData(
+                key: key,
+                data: data,
+                options: .init(pluginOptions:["useAccelerateEndpoint": "false"])
+            )
             _ = try await task.value
             XCTFail("Expecting error from bogus useAccelerateEndpoint value type (String)")
             try await Amplify.Storage.remove(key: key)
@@ -60,9 +66,11 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
             try? FileManager.default.removeItem(at: fileURL)
         }
 
-        let task = Amplify.Storage.uploadFile(key: key,
-                                              local: fileURL,
-                                              options: .init(pluginOptions:["useAccelerateEndpoint": useAccelerateEndpoint]))
+        let task = Amplify.Storage.uploadFile(
+            key: key,
+            local: fileURL,
+            options: .init(pluginOptions: ["useAccelerateEndpoint": useAccelerateEndpoint])
+        )
         _ = try await task.value
         try await Amplify.Storage.remove(key: key)
     }
@@ -72,9 +80,11 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully.
     func testUploadLargeData() async throws {
         let key = UUID().uuidString
-        let task = Amplify.Storage.uploadData(key: key,
-                                              data: AWSS3StoragePluginTestBase.largeDataObject,
-                                              options: .init(pluginOptions:["useAccelerateEndpoint": useAccelerateEndpoint]))
+        let task = Amplify.Storage.uploadData(
+            key: key,
+            data: AWSS3StoragePluginTestBase.largeDataObject,
+            options: .init(pluginOptions: ["useAccelerateEndpoint": useAccelerateEndpoint])
+        )
         _ = try await task.value
         try await Amplify.Storage.remove(key: key)
     }
@@ -85,13 +95,17 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
     func testDownloadDataToMemory() async throws {
         let key = UUID().uuidString
         let data = try XCTUnwrap(key.data(using: .utf8))
-        let uploadTask = Amplify.Storage.uploadData(key: key,
-                                                    data: data,
-                                                    options: .init(pluginOptions:["useAccelerateEndpoint": useAccelerateEndpoint]))
+        let uploadTask = Amplify.Storage.uploadData(
+            key: key,
+            data: data,
+            options: .init(pluginOptions: ["useAccelerateEndpoint": useAccelerateEndpoint])
+        )
         _ = try await uploadTask.value
 
-        let downloadTask = Amplify.Storage.downloadData(key: key,
-                                                        options: .init(pluginOptions:["useAccelerateEndpoint": useAccelerateEndpoint]))
+        let downloadTask = Amplify.Storage.downloadData(
+            key: key,
+            options: .init(pluginOptions: ["useAccelerateEndpoint": useAccelerateEndpoint])
+        )
         let downloadedData = try await downloadTask.value
         XCTAssertEqual(downloadedData, data)
 

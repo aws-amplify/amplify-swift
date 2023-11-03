@@ -52,7 +52,7 @@ struct CreateMultipartUploadInput: Equatable, Encodable {
             "x-amz-checksum-algorithm": checksumAlgorithm?.rawValue,
             "Content-Disposition": contentEncoding,
             "Content-Language": contentLanguage,
-            "Content-Type": contentType,
+//            "Content-Type": "application/json", // TODO: make dynamic... maybe
             "x-amz-expected-bucket-owner": expectedBucketOwner,
             "Expires": expires.map {
                 DateFormatting().string(from: $0, formatter: .rfc5322WithFractionalSeconds)

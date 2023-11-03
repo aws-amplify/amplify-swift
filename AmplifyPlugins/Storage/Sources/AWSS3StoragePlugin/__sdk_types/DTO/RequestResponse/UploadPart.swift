@@ -9,7 +9,7 @@ import Foundation
 
 
 extension UploadPartInput {
-    func presignURL(config: S3ClientConfiguration, expiration: Double) throws -> URL {
+    func presignURL(config: S3ClientConfiguration, expiration: Double) async throws -> URL {
         fatalError()
     }
 }

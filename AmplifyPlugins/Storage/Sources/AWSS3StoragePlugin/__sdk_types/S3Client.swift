@@ -49,7 +49,7 @@ class S3Client: S3ClientProtocol {
             url: url,
             method: action.method,
             body: .data(requestData),
-            headers: headers
+            headers: headers.merging(["Accept": "application/json"], uniquingKeysWith: { _, new in new })
         )
 
         log.debug("[\(file)] [\(function)] [\(line)] Signed request URL: \(signedRequest)")
