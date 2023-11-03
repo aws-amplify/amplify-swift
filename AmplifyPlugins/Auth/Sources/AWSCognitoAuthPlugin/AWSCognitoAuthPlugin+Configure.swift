@@ -90,9 +90,7 @@ extension AWSCognitoAuthPlugin {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = CognitoIdentityProviderClientConfiguration(
                 region: userPoolConfig.region,
-                endpointResolver: userPoolConfig.endpoint?.resolver,
-                encoder: JSONEncoder(),
-                decoder: JSONDecoder()
+                endpointResolver: userPoolConfig.endpoint?.resolver
             )
 
 //            try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
@@ -118,11 +116,11 @@ extension AWSCognitoAuthPlugin {
 
     private func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
-        case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig): 
+        case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
+
+            
             let configuration = CognitoIdentityClientConfiguration(
-                region: identityPoolConfig.region,
-                encoder: JSONEncoder(),
-                decoder: JSONDecoder()
+                region: identityPoolConfig.region
             )
 //            configuration.httpClientEngine = .userAgentEngine(for: configuration)
 

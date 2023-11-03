@@ -50,8 +50,12 @@ struct DeleteObjectOutputResponse: Equatable, Decodable {
     var requestCharged: S3ClientTypes.RequestCharged?
     var versionId: String?
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+    init() {}
+    init(from decoder: Decoder) throws {}
+}
+
+extension DeleteObjectOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.deleteMarker = headers["x-amz-delete-marker"].flatMap(Bool.init)
         copy.requestCharged = headers["x-amz-request-charged"]

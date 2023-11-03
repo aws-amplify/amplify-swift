@@ -29,7 +29,11 @@ extension URL {
     }
 
     func replacing(queryString: String) -> URL {
-        let split = absoluteString.split(separator: "?")
+        let absolute = absoluteString.suffix(1) == "?"
+        ? String(absoluteString.dropLast(1))
+        : absoluteString
+
+        let split = absolute.split(separator: "?")
         let url: URL?
         if split.count == 2 {
             let baseURL = String(split[0])
@@ -37,7 +41,7 @@ extension URL {
                 string: baseURL + "?" + queryString
             )
         } else {
-            url = URL(string: absoluteString + "?" + queryString)
+            url = URL(string: absolute + "?" + queryString)
         }
 
         return url ?? self

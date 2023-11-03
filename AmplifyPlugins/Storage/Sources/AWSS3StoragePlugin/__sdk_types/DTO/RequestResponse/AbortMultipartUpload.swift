@@ -41,4 +41,16 @@ struct AbortMultipartUploadInput: Equatable, Encodable {
 struct AbortMultipartUploadOutputResponse: Equatable, Decodable {
     // pulled from "x-amz-request-charged" header
     var requestCharged: S3ClientTypes.RequestCharged?
+
+    init() {}
+    init(from decoder: Decoder) throws {}
+}
+
+extension AbortMultipartUploadOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> AbortMultipartUploadOutputResponse {
+        var copy = self
+        copy.requestCharged = headers["x-amz-request-charged"]
+            .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))
+        return self
+    }
 }

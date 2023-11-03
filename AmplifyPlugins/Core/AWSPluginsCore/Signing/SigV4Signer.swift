@@ -7,6 +7,7 @@
 
 import Foundation
 import CryptoKit
+import Amplify
 
 /**
  SigV4 Signing Process
@@ -180,11 +181,15 @@ public struct SigV4Signer {
         let date = date()
         let timestamp = _timeFormatter.string(from: date)
         let datestamp = _dateFormatter.string(from: date)
+        let hashedPayload = _hashedPayload(body)
 
         var headersToAdd = [
             "host": "\(url.hostWithPort)",
-            "X-Amz-Date": timestamp
+            "X-Amz-Date": timestamp,
+            "X-Amz-Content-Sha256": hashedPayload
         ]
+
+
         if let sessionToken = credentials.sessionToken {
             headersToAdd["X-Amz-Security-Token"] = sessionToken
         }
@@ -198,7 +203,7 @@ public struct SigV4Signer {
         ? url.appendingPathComponent("/")
         : url
 
-        let hashedPayload = _hashedPayload(body)
+
         let canonicalURI = PercentEncoding.uriWithSlash.encode(url.path)
         let canonicalHeaders = _canonicalHeaders(headers)
         let signedHeaders = _signedHeaders(headers)
@@ -247,39 +252,51 @@ public struct SigV4Signer {
 
     public func presign(
         url: URL,
-        method: HTTPMethod = .get,
-        body: RequestBody? = nil,
+        method: HTTPMethod,
         headers: [String: String] = [:],
         date: () -> Date = { .init() },
-        expires: Int = 300
+        expires: Int = 3000
     ) -> URL {
+        log.debug("\(#function) entry point")
+        log.debug("\(#function) credential: \(credentials)")
+        log.debug("\(#function) service: \(serviceName)")
+        log.debug("\(#function) region: \(region)")
         let date = date()
         let timestamp = _timeFormatter.string(from: date)
         let datestamp = _dateFormatter.string(from: date)
+        log.debug("timestamp: \(timestamp)")
+        log.debug("datestamp: \(datestamp)")
 
         let headersToAdd = [
-            "host": "\(url.hostWithPort)",
+            "Host": "\(url.hostWithPort)",
         ]
+        log.debug("headersToAdd: \(headersToAdd)")
         let headers = headers.merging(
             headersToAdd,
             uniquingKeysWith: { _, new in new }
         )
             .filter { $0.key != "Authorization" }
 
+        log.debug("headers: \(headers)")
         let url = url.path.isEmpty
         ? url.appendingPathComponent("/")
         : url
 
-        let hashedPayload = _hashedPayload(body)
+        log.debug("url: \(url)")
+
+//        let hashedPayload = _hashedPayload(body)
         let canonicalURI = PercentEncoding.uriWithSlash.encode(url.path)
+        log.debug("canonicalURI: \(canonicalURI)")
         let canonicalHeaders = _canonicalHeaders(headers)
+        log.debug("canonicalHeaders: \(canonicalHeaders)")
         let signedHeaders = _signedHeaders(headers)
+        log.debug("signedHeaders: \(signedHeaders)")
         let credentialScope = _credentialScope(
             datestamp: datestamp,
             region: region,
             serviceName: serviceName
         )
-
+        log.debug("credentialScope: \(credentialScope)")
         let canonicalQueryString = _queryStringForPresigning(
             query: url.query,
             signedHeaders: signedHeaders,
@@ -287,33 +304,41 @@ public struct SigV4Signer {
             credentialScope: credentialScope,
             expires: expires
         )
+        log.debug("canonicalQueryString: \(canonicalQueryString)")
 
-        let canonicalRequest = _canonicalRequest(
-            method: method,
-            canonicalURI: canonicalURI,
-            canonicalQueryString: canonicalQueryString,
-            canonicalHeaders: canonicalHeaders,
-            signedHeaders: signedHeaders,
-            hashedPayload: hashedPayload
-        )
+        let canonicalRequest = """
+        \(method.verb)
+        \(canonicalURI)
+        \(canonicalQueryString)
+        \(canonicalHeaders)
+
+        \(signedHeaders)
+        UNSIGNED-PAYLOAD
+        """
+        log.debug("canonicalRequest: \(canonicalRequest)")
 
         let stringToSign = _stringToSign(
-            canonicalRequest: canonicalRequest,
+            canonicalRequest: Data(canonicalRequest.utf8),
             credentialScope: credentialScope,
             timestamp: timestamp
         )
+        log.debug("stringToSign: \(String(decoding: stringToSign, as: UTF8.self))")
 
         let signingKey = _signingKey(
             region: region,
             secretKey: credentials.secret,
             datestamp: datestamp
         )
+        log.debug("signingKey: \(String(decoding: signingKey, as: UTF8.self))")
 
         let signature = _hash(data: stringToSign, key: signingKey).hexDigest()
 
-        let queryString = canonicalQueryString + "&X-Amz-Signature=\(signature)"
-        let signedURL = url.replacing(queryString: queryString)
+        log.debug("signature: \(signature)")
 
+        let queryString = canonicalQueryString + "&X-Amz-Signature=\(signature)"
+        log.debug("queryString: \(queryString)")
+        let signedURL = url.replacing(queryString: queryString)
+        log.debug("signedURL: \(signedURL)")
         return signedURL
     }
 
@@ -389,26 +414,32 @@ public struct SigV4Signer {
 
         let amzCredential = "\(credentials.accessKey)/\(credentialScope)"
 
-        let canonicalQueryString = query
-        + "X-Amz-Algorithm=AWS4-HMAC-SHA256"
-        + "&X-Amz-Credential=\(amzCredential)"
-        + "&X-Amz-Date=\(timestamp)"
-        + "&X-Amz-Expires=\(expires)"
-        + "&X-Amz-SignedHeaders=\(signedHeaders)"
-        + (credentials.sessionToken
-            .map { "&X-Amz-Security-Token=\($0)" } ?? "")
-
-        let sorted = canonicalQueryString.split(separator: "&")
+        var canonicalQueryString = query.split(separator: "&")
             .map {
                 String($0).split(separator: "=")
                     .map(String.init)
                     .map(PercentEncoding.uri.encode)
                     .joined(separator: "=")
             }
+            .joined(separator: "&")
+
+        canonicalQueryString += "\(encode("X-Amz-Algorithm"))=\(encode("AWS4-HMAC-SHA256"))"
+        canonicalQueryString += "&\(encode("X-Amz-Credential"))=\(encode(amzCredential))"
+        canonicalQueryString += "&\(encode("X-Amz-Date"))=\(encode(timestamp))"
+        canonicalQueryString += "&\(encode("X-Amz-Expires"))=\(encode(String(expires)))"
+        canonicalQueryString += "&\(encode("X-Amz-SignedHeaders"))=\(encode(signedHeaders))"
+        canonicalQueryString += (credentials.sessionToken
+            .map { "&\(encode("X-Amz-Security-Token"))=\(encode($0))" } ?? "")
+
+        let sorted = canonicalQueryString.split(separator: "&")
             .sorted()
             .joined(separator: "&")
 
         return sorted
+    }
+
+    private func encode(_ string: String) -> String {
+        PercentEncoding.uri.encode(string)
     }
 
     func _canonicalQueryString(
@@ -490,4 +521,15 @@ public struct SigV4Signer {
         let hash = payload.hash(payload.input)
         return hash
     }
+}
+
+extension SigV4Signer: DefaultLogger {
+    public static var log: Logger {
+        Amplify.Logging.logger(
+            forCategory: "Signing",
+            forNamespace: String(describing: self)
+        )
+    }
+
+    public var log: Logger { Self.log }
 }

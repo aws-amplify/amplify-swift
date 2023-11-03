@@ -14,4 +14,5 @@ public struct HTTPMethod {
     public static let post = Self(verb: "POST")
     public static let put = Self(verb: "PUT")
     public static let delete = Self(verb: "DELETE")
+    public static let head = Self(verb: "HEAD")
 }

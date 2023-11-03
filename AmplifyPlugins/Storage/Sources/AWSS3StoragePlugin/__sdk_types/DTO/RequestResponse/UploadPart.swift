@@ -10,9 +10,6 @@ import Foundation
 
 extension UploadPartInput {
     func presignURL(config: S3ClientConfiguration, expiration: Double) throws -> URL {
-        
-        
-
         fatalError()
     }
 }
@@ -98,9 +95,10 @@ struct UploadPartOutputResponse: Equatable {
     var sseCustomerAlgorithm: String?
     var sseCustomerKeyMD5: String?
     var ssekmsKeyId: String?
+}
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+extension UploadPartOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.bucketKeyEnabled = headers["x-amz-server-side-encryption-bucket-key-enabled"].flatMap(Bool.init)
         copy.checksumCRC32 = headers["x-amz-checksum-crc32"]

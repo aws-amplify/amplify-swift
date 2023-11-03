@@ -145,7 +145,7 @@ class LocationClient {
         }
 
         let action = Action.searchPlaceIndexForText(
-            indexName: indexName.urlPercentEncoding()
+            indexName: indexName.urlPathEncoded()
         )
 
         return try await request(action: action, input: input)
@@ -160,7 +160,7 @@ class LocationClient {
             throw PlaceholderError()
         }
         let action = Action.searchPlaceIndexForPosition(
-            indexName: indexName.urlPercentEncoding()
+            indexName: indexName.urlPathEncoded()
         )
 
         return try await request(action: action, input: input)

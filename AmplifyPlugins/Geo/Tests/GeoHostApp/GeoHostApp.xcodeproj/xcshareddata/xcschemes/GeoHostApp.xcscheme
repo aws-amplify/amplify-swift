@@ -43,7 +43,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "97914B6D29556F38002000EA"
+               BlueprintIdentifier = "97914B7E295570E1002000EA"
                BuildableName = "GeoStressTests.xctest"
                BlueprintName = "GeoStressTests"
                ReferencedContainer = "container:GeoHostApp.xcodeproj">

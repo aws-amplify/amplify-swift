@@ -8,6 +8,10 @@
 import Foundation
 import AWSPluginsCore
 
+protocol HeadersApplying {
+    func applying(headers: [String: String]) -> Self
+}
+
 class S3Client: S3ClientProtocol {
     let configuration: S3ClientConfiguration
 
@@ -43,7 +47,7 @@ class S3Client: S3ClientProtocol {
 
         let signedRequest = signer.sign(
             url: url,
-            method: .post,
+            method: action.method,
             body: .data(requestData),
             headers: headers
         )
@@ -73,7 +77,11 @@ class S3Client: S3ClientProtocol {
         }
 
         log.debug("[\(file)] [\(function)] [\(line)] Attempting to decode response object in \(#function)")
-        let response = try action.decode(responseData, configuration.decoder)
+        let response = try action.decode(
+            responseData,
+            configuration.decoder,
+            httpURLResponse.allHeaderFields as? [String: String] ?? [:]
+        )
         log.debug("[\(file)] [\(function)] [\(line)] Decoded response in `\(Output.self)`: \(response)")
 
         return response
@@ -87,7 +95,7 @@ class S3Client: S3ClientProtocol {
         log.debug("\(#function) entry point")
         log.debug("\(#function) with input: \(input)")
 
-        let action = Action.deleteObject()
+        let action = Action.deleteObject(input: input)
         let headers = input.headers
 
         return try await request(action: action, input: input, headers: headers)

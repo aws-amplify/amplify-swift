@@ -93,9 +93,10 @@ struct ListPartsOutputResponse: Equatable, Decodable {
         case storageClass = "StorageClass"
         case uploadId = "UploadId"
     }
+}
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+extension ListPartsOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.abortDate = headers["x-amz-abort-date"].flatMap {
             DateFormatting().date(from: $0, formatter: .rfc5322WithFractionalSeconds)
@@ -105,5 +106,4 @@ struct ListPartsOutputResponse: Equatable, Decodable {
             .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))
         return copy
     }
-
 }

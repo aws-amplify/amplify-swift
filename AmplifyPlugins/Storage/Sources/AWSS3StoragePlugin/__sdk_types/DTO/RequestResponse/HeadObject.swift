@@ -63,7 +63,6 @@ struct HeadObjectInput: Equatable, Encodable {
     }
 }
 
-
 struct HeadObjectOutputResponse: Equatable, Decodable {
     var acceptRanges: String?
     var archiveStatus: S3ClientTypes.ArchiveStatus?
@@ -100,8 +99,12 @@ struct HeadObjectOutputResponse: Equatable, Decodable {
     var versionId: String?
     var websiteRedirectLocation: String?
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+    init() {}
+    init(from decoder: Decoder) throws {}
+}
+
+extension HeadObjectOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.acceptRanges = headers["accept-ranges"]
         copy.bucketKeyEnabled = headers["x-amz-server-side-encryption-bucket-key-enabled"]

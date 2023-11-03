@@ -34,11 +34,13 @@ extension AWSS3StorageService {
             let contentType = contentType ?? "application/octet-stream"
 
             do {
-                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
-                                                                                 signingOperation: .putObject,
-                                                                                 metadata: metadata,
-                                                                                 accelerate: accelerate,
-                                                                                 expires: nil)
+                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(
+                    key: serviceKey,
+                    signingOperation: .putObject,
+                    metadata: metadata,
+                    accelerate: accelerate,
+                    expires: nil
+                )
                 startUpload(preSignedURL: preSignedURL,
                             fileURL: uploadFileURL,
                             contentType: contentType,

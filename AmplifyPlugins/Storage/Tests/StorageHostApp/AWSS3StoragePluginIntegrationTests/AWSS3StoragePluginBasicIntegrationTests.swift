@@ -59,6 +59,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// When: Upload the data
     /// Then: The operation completes successfully
     func testUploadData() async throws {
+        Amplify.Logging.logLevel = .verbose
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
 
@@ -207,19 +208,22 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// When: Call the getURL API
     /// Then: The operation completes successfully with the URL retrieved
     func testGetRemoteURL() async throws {
+        Amplify.Logging.logLevel = .verbose
         let key = UUID().uuidString
         try await uploadData(key: key, dataString: key)
-
         let remoteURL = try await Amplify.Storage.getURL(key: key)
 
         // The presigned URL generation does not result in an SDK or HTTP call.
 //        XCTAssertEqual(requestRecorder.sdkRequests.map { $0.method} , [])
 
         let (data, response) = try await URLSession.shared.data(from: remoteURL)
+
         let httpResponse = try XCTUnwrap(response as? HTTPURLResponse)
+        print(">>> httpResponse: \(dump(httpResponse))")
         XCTAssertEqual(httpResponse.statusCode, 200)
 
         let dataString = try XCTUnwrap(String(data: data, encoding: .utf8))
+        print(">>> data: \(dataString)")
         XCTAssertEqual(dataString, key)
 
         _ = try await Amplify.Storage.remove(key: key)

@@ -38,11 +38,15 @@ extension PutObjectInput {
 
         var components = URLComponents()
         components.scheme = "https"
-        components.host = "s3.\(config.region).amazonaws.com"
-        components.path = "/\(bucket)/\(key)"
-        components.queryItems = headers
+        components.host = "\(bucket).s3.\(config.region).amazonaws.com"
+        components.path = "/\(key)"
+        let queryItems: [URLQueryItem] = headers
             .filter { $0.key.starts(with: "x-amz-meta-") }
             .map { .init(name: $0.key, value: $0.value) }
+
+        if !queryItems.isEmpty {
+            components.queryItems = queryItems
+        }
 
         guard let url = components.url else {
             throw PlaceholderError()
@@ -180,9 +184,10 @@ struct PutObjectOutputResponse: Equatable {
     var ssekmsEncryptionContext: String?
     var ssekmsKeyId: String?
     var versionId: String?
+}
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+extension PutObjectOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.bucketKeyEnabled = headers["x-amz-server-side-encryption-bucket-key-enabled"].flatMap(Bool.init)
         copy.checksumCRC32 = headers["x-amz-checksum-crc32"]
@@ -201,6 +206,7 @@ struct PutObjectOutputResponse: Equatable {
         return copy
     }
 }
+
 
 /*
  "PutObjectRequest":{

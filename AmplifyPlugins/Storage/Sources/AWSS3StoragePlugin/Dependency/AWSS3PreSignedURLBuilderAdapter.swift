@@ -67,16 +67,15 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
         return preSignedUrl
     }
 
-//    private func urlWithEscapedToken(_ url: URL?) -> URL? {
-//        guard let url = url,
-//              var components = URLComponents(string: url.absoluteString),
-//              var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {
-//                  return nil
-//              }
-//        token.value = token.value?.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
-//        components.port = nil
-//        components.percentEncodedQueryItems?.removeAll(where: { $0.name == "X-Amz-Security-Token" })
-//        components.percentEncodedQueryItems?.append(token)
-//        return components.url
-//    }
+    private func urlWithEscapedToken(_ url: URL) -> URL? {
+        guard var components = URLComponents(string: url.absoluteString),
+              var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {
+                  return nil
+              }
+        token.value = token.value?.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
+        components.port = nil
+        components.percentEncodedQueryItems?.removeAll(where: { $0.name == "X-Amz-Security-Token" })
+        components.percentEncodedQueryItems?.append(token)
+        return components.url
+    }
 }

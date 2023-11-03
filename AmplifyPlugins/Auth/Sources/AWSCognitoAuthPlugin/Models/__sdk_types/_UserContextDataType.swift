@@ -20,5 +20,4 @@ extension CognitoIdentityProviderClientTypes {
             case ipAddress = "IpAddress"
         }
     }
-
 }

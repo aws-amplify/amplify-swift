@@ -10,19 +10,44 @@ import AWSPluginsCore
 
 struct PlaceholderError: Error {}
 
-struct Action<Input: Encodable, Output: Decodable> {
+func defaultDecode<Output: Decodable & HeadersApplying>(data: Data, decoder: JSONDecoder, headers: [String: String]) throws -> Output {
+    let output = try decoder.decode(Output.self, from: data)
+    return output.applying(headers: headers)
+}
+
+struct Action<Input: Encodable, Output: Decodable & HeadersApplying> {
     let name: String
     let requestURI: String
     let successCode: Int
     let hostPrefix: String
+    let method: HTTPMethod
     let mapError: (Data, HTTPURLResponse) throws -> Error
+
+    // TODO: Figure out a better way to do this / combine with decoding
+//    let applyHeaders: ([String: String?]) -> Output
 
     let encode: (Input, JSONEncoder) throws -> Data = { model, encoder in
         try encoder.encode(model)
     }
 
-    let decode: (Data, JSONDecoder) throws -> Output = { data, decoder in
-        try decoder.decode(Output.self, from: data)
+    let decode: (Data, JSONDecoder, [String: String]) throws -> Output
+
+    init(
+        name: String,
+        requestURI: String,
+        successCode: Int,
+        hostPrefix: String,
+        method: HTTPMethod,
+        mapError: @escaping (Data, HTTPURLResponse) throws -> Error,
+        decode: @escaping (Data, JSONDecoder, [String: String]) throws -> Output = defaultDecode(data:decoder:headers:)
+    ) {
+        self.name = name
+        self.requestURI = requestURI
+        self.successCode = successCode
+        self.hostPrefix = hostPrefix
+        self.method = method
+        self.mapError = mapError
+        self.decode = decode
     }
 
     func url(region: String) throws -> URL {
@@ -50,13 +75,18 @@ extension Action where Input == DeleteObjectInput, Output == DeleteObjectOutputR
    "documentationUrl":"http://docs.amazonwebservices.com/AmazonS3/latest/API/RESTObjectDELETE.html"
  },
  */
-    static func deleteObject() -> Self {
+    static func deleteObject(input: DeleteObjectInput) -> Self {
         .init(
             name: "DeleteObject",
-            requestURI: "/",
+            requestURI: "/\(input.key)",
             successCode: 204,
-            hostPrefix: "",
-            mapError: mapError(data:response:)
+            hostPrefix: "\(input.bucket).",
+            method: .delete,
+            mapError: mapError(data:response:),
+            decode: { _, response, headers in
+                let output = DeleteObjectOutputResponse()
+                return output.applying(headers: headers)
+            }
         )
     }
 }
@@ -84,6 +114,7 @@ extension Action where Input == ListObjectsV2Input, Output == ListObjectsV2Outpu
             requestURI: "/\(bucket)?list-type=2",
             successCode: 204,
             hostPrefix: "",
+            method: .get,
             mapError: mapError(data:response:)
         )
     }
@@ -106,9 +137,10 @@ extension Action where Input == CreateMultipartUploadInput, Output == CreateMult
     static func createMultipartUpload(input: CreateMultipartUploadInput) -> Self {
         .init(
             name: "CreateMultipartUpload",
-            requestURI: "/\(input.bucket)/\(input.key)?uploads",
+            requestURI: "/\(input.key)?uploads",
             successCode: 204,
-            hostPrefix: "",
+            hostPrefix: "\(input.bucket).",
+            method: .post,
             mapError: mapError(data:response:)
         )
     }
@@ -130,9 +162,10 @@ extension Action where Input == ListPartsInput, Output == ListPartsOutputRespons
     static func listParts(input: ListPartsInput) -> Self {
         .init(
             name: "ListParts",
-            requestURI: "/\(input.bucket)/\(input.key)",
+            requestURI: "/\(input.key)",
             successCode: 200,
-            hostPrefix: "",
+            hostPrefix: "\(input.bucket).",
+            method: .get,
             mapError: mapError(data:response:)
         )
     }
@@ -155,9 +188,10 @@ extension Action where Input == CompleteMultipartUploadInput, Output == Complete
     static func completeMultipartUpload(input: CompleteMultipartUploadInput) -> Self {
         .init(
             name: "CompleteMultipartUpload",
-            requestURI: "/\(input.bucket)/\(input.key)",
+            requestURI: "/\(input.key)",
             successCode: 200,
-            hostPrefix: "",
+            hostPrefix: "\(input.bucket).",
+            method: .post,
             mapError: mapError(data:response:)
         )
     }
@@ -183,10 +217,15 @@ extension Action where Input == AbortMultipartUploadInput, Output == AbortMultip
     static func abortMultipartUpload(input: AbortMultipartUploadInput) -> Self {
         .init(
             name: "AbortMultipartUpload",
-            requestURI: "/\(input.bucket)/\(input.key)",
+            requestURI: "/\(input.key)",
             successCode: 204,
-            hostPrefix: "",
-            mapError: mapError(data:response:)
+            hostPrefix: "\(input.bucket).",
+            method: .delete,
+            mapError: mapError(data:response:),
+            decode: { _, response, headers in
+                let output = AbortMultipartUploadOutputResponse()
+                return output.applying(headers: headers)
+            }
         )
     }
 }
@@ -210,10 +249,15 @@ extension Action where Input == HeadObjectInput, Output == HeadObjectOutputRespo
     static func headObject(input: HeadObjectInput) -> Self {
         .init(
             name: "AbortMultipartUpload",
-            requestURI: "/\(input.bucket)/\(input.key)",
+            requestURI: "/\(input.key)",
             successCode: 200,
-            hostPrefix: "",
-            mapError: mapError(data:response:)
+            hostPrefix: "\(input.bucket).",
+            method: .head,
+            mapError: mapError(data:response:),
+            decode: { _, response, headers in
+                let output = HeadObjectOutputResponse()
+                return output.applying(headers: headers)
+            }
         )
     }
 }
@@ -221,6 +265,10 @@ extension Action where Input == HeadObjectInput, Output == HeadObjectOutputRespo
 
 extension Action {
     static func mapError(data: Data, response: HTTPURLResponse) throws -> Error {
-        PlaceholderError()
+        ServiceError(
+            message: String(decoding: data, as: UTF8.self),
+            type: "placeholder",
+            httpURLResponse: response
+        )
     }
 }

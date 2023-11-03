@@ -14,6 +14,28 @@ public struct CognitoIdentityClientConfiguration {
     let signingName = "cognito-identity"
     let encoder: JSONEncoder
     let decoder: JSONDecoder
+
+    init(
+        region: String,
+        encoder: () -> JSONEncoder = epochDateEncoder,
+        decoder: () -> JSONDecoder = epochDateDecoder
+    ) {
+        self.region = region
+        self.encoder = encoder()
+        self.decoder = decoder()
+    }
+}
+
+public func epochDateDecoder() -> JSONDecoder {
+    let decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .secondsSince1970
+    return decoder
+}
+
+public func epochDateEncoder() -> JSONEncoder {
+    let encoder = JSONEncoder()
+    encoder.dateEncodingStrategy = .secondsSince1970
+    return encoder
 }
 
 public class CognitoIdentityClient {

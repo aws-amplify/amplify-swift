@@ -7,6 +7,22 @@
 
 import Foundation
 
+@propertyWrapper
+struct EpochEncoded: Codable {
+    let wrappedValue: Date
+
+    init(from decoder: Decoder) throws {
+        var container = try decoder.singleValueContainer()
+        let timeInterval = try container.decode(TimeInterval.self)
+        self.wrappedValue = Date(timeIntervalSince1970: timeInterval)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.wrappedValue.timeIntervalSince1970)
+    }
+}
+
 extension CognitoIdentityClientTypes {
     /// Credentials for the provided identity ID.
     struct Credentials: Equatable, Decodable {

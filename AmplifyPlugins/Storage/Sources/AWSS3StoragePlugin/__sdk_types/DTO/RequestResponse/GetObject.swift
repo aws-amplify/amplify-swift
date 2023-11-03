@@ -21,8 +21,8 @@ extension GetObjectInput {
 
         var components = URLComponents()
         components.scheme = "https"
-        components.host = "s3.\(config.region).amazonaws.com"
-        components.path = "/\(bucket)/\(key)"
+        components.host = "\(bucket).s3.\(config.region).amazonaws.com"
+        components.path = "/\(key)"
         components.queryItems = headers.map {
             .init(name: $0.key, value: $0.value)
         }
@@ -163,9 +163,10 @@ struct GetObjectOutputResponse: Equatable {
     enum CodingKeys: String, CodingKey {
         case body = "Body"
     }
+}
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+extension GetObjectOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.acceptRanges = headers["accept-ranges"]
         copy.bucketKeyEnabled = headers["x-amz-server-side-encryption-bucket-key-enabled"]
@@ -236,25 +237,6 @@ extension String {
         return String(dropFirst(prefix.count))
     }
 }
-
-extension String {
-    static let allowedForQuery = CharacterSet.alphanumerics.union(
-        .init(charactersIn: "_-.~")
-    )
-
-    func urlQueryEncoded() -> String {
-        addingPercentEncoding(withAllowedCharacters: Self.allowedForQuery) ?? self
-    }
-
-    static let allowedForPath = CharacterSet.alphanumerics.union(
-        .init(charactersIn: "/_-.~")
-    )
-
-    func urlPathEncoded() -> String {
-        addingPercentEncoding(withAllowedCharacters: Self.allowedForPath) ?? self
-    }
-}
-
 
 /*
  "GetObjectOutput":{

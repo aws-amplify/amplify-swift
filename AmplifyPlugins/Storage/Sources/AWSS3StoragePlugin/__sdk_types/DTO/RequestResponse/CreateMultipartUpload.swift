@@ -118,9 +118,10 @@ struct CreateMultipartUploadOutputResponse: Equatable, Decodable {
         case key = "Key"
         case uploadId = "UploadId"
     }
+}
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+extension CreateMultipartUploadOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.abortDate = headers["x-amz-abort-date"].flatMap {
             DateFormatting().date(from: $0, formatter: .rfc5322WithFractionalSeconds)

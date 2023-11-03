@@ -80,8 +80,20 @@ struct CompleteMultipartUploadOutputResponse: Equatable, Decodable {
     // "x-amz-version-id"
     var versionId: String?
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+    enum CodingKeys: String, CodingKey {
+        case bucket = "Bucket"
+        case checksumCRC32 = "ChecksumCRC32"
+        case checksumCRC32C = "ChecksumCRC32C"
+        case checksumSHA1 = "ChecksumSHA1"
+        case checksumSHA256 = "ChecksumSHA256"
+        case eTag = "ETag"
+        case key = "Key"
+        case location = "Location"
+    }
+}
+
+extension CompleteMultipartUploadOutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.bucketKeyEnabled = headers["x-amz-server-side-encryption-bucket-key-enabled"]
             .flatMap(Bool.init)
@@ -93,16 +105,5 @@ struct CompleteMultipartUploadOutputResponse: Equatable, Decodable {
         copy.ssekmsKeyId = headers["x-amz-server-side-encryption-aws-kms-key-id"]
         copy.versionId = headers["x-amz-version-id"]
         return copy
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case bucket = "Bucket"
-        case checksumCRC32 = "ChecksumCRC32"
-        case checksumCRC32C = "ChecksumCRC32C"
-        case checksumSHA1 = "ChecksumSHA1"
-        case checksumSHA256 = "ChecksumSHA256"
-        case eTag = "ETag"
-        case key = "Key"
-        case location = "Location"
     }
 }

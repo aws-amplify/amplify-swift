@@ -14,6 +14,18 @@ public struct CognitoIdentityProviderClientConfiguration {
     let endpointResolver: EndpointResolver?
     let encoder: JSONEncoder
     let decoder: JSONDecoder
+
+    init(
+        region: String,
+        endpointResolver: EndpointResolver?,
+        encoder: () -> JSONEncoder = epochDateEncoder,
+        decoder: () -> JSONDecoder = epochDateDecoder
+    ) {
+        self.region = region
+        self.endpointResolver = endpointResolver
+        self.encoder = encoder()
+        self.decoder = decoder()
+    }
 }
 
 public class CognitoIdentityProviderClient {

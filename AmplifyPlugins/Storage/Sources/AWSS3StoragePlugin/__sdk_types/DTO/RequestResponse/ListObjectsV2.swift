@@ -88,9 +88,10 @@ struct ListObjectsV2OutputResponse: Equatable, Decodable {
         case `prefix` = "Prefix"
         case startAfter = "StartAfter"
     }
+}
 
-    func applying(headers: [String: String]?) -> Self {
-        guard let headers else { return self }
+extension ListObjectsV2OutputResponse: HeadersApplying {
+    func applying(headers: [String: String]) -> Self {
         var copy = self
         copy.requestCharged = headers["x-amz-request-charged"]
             .flatMap(S3ClientTypes.RequestCharged.init(rawValue:))

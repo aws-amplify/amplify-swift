@@ -33,6 +33,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     override func setUp() async throws {
         Self.logger.debug("setUp")
+        Amplify.Logging.logLevel = .verbose
         self.requestRecorder = AWSS3StoragePluginRequestRecorder()
         do {
             await Amplify.reset()
