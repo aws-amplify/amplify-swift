@@ -25,7 +25,7 @@ let amplifyTargets: [Target] = [
             "Categories/DataStore/Model/Temporal/README.md"
         ],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .target(
@@ -39,7 +39,7 @@ let amplifyTargets: [Target] = [
             "Info.plist"
         ],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .target(
@@ -124,7 +124,7 @@ let apiTargets: [Target] = [
             "AWSAPIPlugin.md"
         ],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -168,7 +168,7 @@ let authTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .target(
@@ -212,7 +212,7 @@ let dataStoreTargets: [Target] = [
             "Sync/MutationSync/OutgoingMutationQueue/SyncMutationToCloudOperation.mmd"
         ],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -241,7 +241,7 @@ let storageTargets: [Target] = [
             "Resources/Info.plist"
         ],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -271,7 +271,7 @@ let geoTargets: [Target] = [
             "Resources/Info.plist"
         ],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -302,7 +302,7 @@ let internalPinpointTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Internal/Sources/InternalAWSPinpoint",
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -324,7 +324,7 @@ let analyticsTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin",
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -345,7 +345,7 @@ let pushNotificationsTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Notifications/Push/Sources/AWSPinpointPushNotificationsPlugin",
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -375,7 +375,7 @@ let predictionsTargets: [Target] = [
         path: "AmplifyPlugins/Predictions/AWSPredictionsPlugin",
         exclude: [],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -394,7 +394,7 @@ let predictionsTargets: [Target] = [
             "Resources/Info.plist"
         ],
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
@@ -418,7 +418,7 @@ let loggingTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
         resources: [
-            .copy("../Resources/PrivacyInfo.xcprivacy")
+            .copy("Resources/PrivacyInfo.xcprivacy")
         ]
     ),
     .testTarget(
