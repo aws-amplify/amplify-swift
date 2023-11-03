@@ -37,6 +37,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         self.requestRecorder = AWSS3StoragePluginRequestRecorder()
         do {
             await Amplify.reset()
+            Amplify.Logging.logLevel = .verbose
 
             let storagePlugin = AWSS3StoragePlugin()
 //            storagePlugin.httpClientEngineProxy = requestRecorder
