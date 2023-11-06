@@ -157,6 +157,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                         accelerate: nil,
                         expires: nil
                     )
+
                     startUploadPart(partialFileURL, preSignedURL)
                 } catch {
                     self.session?.fail(error: error)
