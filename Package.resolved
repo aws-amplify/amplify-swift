@@ -59,18 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smithy-lang/smithy-swift",
       "state" : {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "revision" : "d580ddb8c2929b380a665a884935901b5ad808cc",
-        "version" : "0.30.1"
-=======
-        "revision" : "4d965ac32af105f48061b85eb36427b0c66be192",
-        "version" : "0.33.0"
->>>>>>> 63fe2acb0 (update swift-sdk dependency to 0.29.0)
-=======
         "revision" : "6037a8157082d00da6ff1be1462022dcaccb3662",
         "version" : "0.34.0"
->>>>>>> 0c9a13ce3 (update to swift sdk 0.30.0)
       }
     },
     {
