@@ -69,11 +69,11 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
     }
 
     func testListPostEditorByPost() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = try await createUser(username: "username") else {
+        guard let user = try await createUser(username: "username".withUUID) else {
             XCTFail("Could not create user")
             return
         }
@@ -92,11 +92,11 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
     }
 
     func testListPostEditorByUser() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = try await createUser(username: "username") else {
+        guard let user = try await createUser(username: "username".withUUID) else {
             XCTFail("Could not create user")
             return
         }
@@ -118,11 +118,11 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
     // Get the post and fetch the PostEditors for that post
     // The Posteditor contains the user which is connected the post
     func testGetPostThenFetchPostEditorsToRetrieveUser() async throws {
-        guard let post = try await createPost(title: "title") else {
+        guard let post = try await createPost(title: "title".withUUID) else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = try await createUser(username: "username") else {
+        guard let user = try await createUser(username: "username".withUUID) else {
             XCTFail("Could not create user")
             return
         }
@@ -152,7 +152,7 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getPostCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -177,11 +177,12 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
     // Get the user and fetch the PostEditors for that user
     // The PostEditors should contain the two posts `post1` and `post2`
     func testGetUserThenFetchPostEditorsToRetrievePosts() async throws {
-        guard let post1 = try await createPost(title: "title") else {
+        let postTitle = "title".withUUID
+        guard let post1 = try await createPost(title: postTitle) else {
             XCTFail("Could not create post")
             return
         }
-        guard let post2 = try await createPost(title: "title") else {
+        guard let post2 = try await createPost(title: postTitle) else {
             XCTFail("Could not create post")
             return
         }
@@ -219,7 +220,7 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
-        wait(for: [getUserCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [getUserCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
 
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")

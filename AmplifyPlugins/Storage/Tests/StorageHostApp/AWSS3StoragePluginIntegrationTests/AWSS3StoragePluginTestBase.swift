@@ -12,6 +12,7 @@ import XCTest
 
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 
 class AWSS3StoragePluginTestBase: XCTestCase {
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
@@ -66,28 +67,32 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     // MARK: Common Helper functions
 
-    func uploadData(key: String, dataString: String) async {
-        await uploadData(key: key, data: dataString.data(using: .utf8)!)
+    func uploadData(key: String, dataString: String) async throws {
+        try await uploadData(key: key, data: Data(dataString.utf8))
     }
 
     func uploadTask(key: String, data: Data) async -> StorageUploadDataTask? {
-        return await wait(name: "Upload Task created") {
-            return Amplify.Storage.uploadData(key: key, data: data)
-        }
+        Amplify.Storage.uploadData(key: key, data: data)
     }
 
     func downloadTask(key: String) async -> StorageDownloadDataTask? {
-        return await wait(name: "Upload Task created") {
-            return Amplify.Storage.downloadData(key: key)
-        }
+        Amplify.Storage.downloadData(key: key)
     }
 
-    func uploadData(key: String, data: Data) async {
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
-        let result = await wait(with: completeInvoked, timeout: 60) {
-            return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
+    func uploadData(key: String, data: Data) async throws {
+        let completeInvoked = expectation(description: "Completed is invoked")
+        Task {
+            let result = try await Amplify.Storage.uploadData(
+                key: key,
+                data: data,
+                options: nil
+            ).value
+
+            XCTAssertNotNil(result)
+            completeInvoked.fulfill()
         }
-        XCTAssertNotNil(result)
+
+        await fulfillment(of: [completeInvoked], timeout: 60)
     }
     
     func remove(key: String, accessLevel: StorageAccessLevel? = nil) async {
@@ -121,35 +126,35 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             return
         }
 
-        let registerFirstUserComplete = asyncExpectation(description: "register firt user completed")
+        let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
                 try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
                                                       password: AWSS3StoragePluginTestBase.password,
                                                       email: AWSS3StoragePluginTestBase.email1)
                 Self.isFirstUserSignedUp = true
-                await registerFirstUserComplete.fulfill()
+                registerFirstUserComplete.fulfill()
             } catch {
                 XCTFail("Failed to Sign up user: \(error)")
-                await registerFirstUserComplete.fulfill()
+                registerFirstUserComplete.fulfill()
             }
         }
 
-        let registerSecondUserComplete = asyncExpectation(description: "register second user completed")
+        let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
                 try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
                                                       password: AWSS3StoragePluginTestBase.password,
                                                       email: AWSS3StoragePluginTestBase.email2)
                 Self.isSecondUserSignedUp = true
-                await registerSecondUserComplete.fulfill()
+                registerSecondUserComplete.fulfill()
             } catch {
                 XCTFail("Failed to Sign up user: \(error)")
-                await registerSecondUserComplete.fulfill()
+                registerSecondUserComplete.fulfill()
             }
         }
 
-        await waitForExpectations([registerFirstUserComplete, registerSecondUserComplete],
+        await fulfillment(of: [registerFirstUserComplete, registerSecondUserComplete],
                                   timeout: TestCommonConstants.networkTimeout)
     }
 

@@ -6,10 +6,11 @@
 //
 
 import Foundation
-
 import AWSS3
 import Amplify
 import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+import ClientRuntime
 
 /// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
@@ -53,17 +54,24 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                      httpClientEngineProxy: HttpClientEngineProxy? = nil,
                      storageConfiguration: StorageConfiguration = .default,
                      storageTransferDatabase: StorageTransferDatabase = .default,
+                     fileSystem: FileSystem = .default,
                      sessionConfiguration: URLSessionConfiguration? = nil,
                      delegateQueue: OperationQueue? = nil,
                      logger: Logger = storageLogger) throws {
         let credentialsProvider = authService.getCredentialsProvider()
         let clientConfig = try S3Client.S3ClientConfiguration(
-            credentialsProvider: credentialsProvider,
             region: region,
-            signingRegion: region)
-        if var proxy = httpClientEngineProxy {
-            proxy.target = clientConfig.httpClientEngine
-            clientConfig.httpClientEngine = proxy
+            credentialsProvider: credentialsProvider,
+            signingRegion: region
+        )
+
+        if var httpClientEngineProxy = httpClientEngineProxy {
+            httpClientEngineProxy.target = baseClientEngine(for: clientConfig)
+            clientConfig.httpClientEngine = UserAgentSettingClientEngine(
+                target: httpClientEngineProxy
+            )
+        } else {
+            clientConfig.httpClientEngine = .userAgentEngine(for: clientConfig)
         }
 
         let s3Client = S3Client(config: clientConfig)
@@ -90,7 +98,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.init(authService: authService,
                   storageConfiguration: storageConfiguration,
                   storageTransferDatabase: storageTransferDatabase,
+                  fileSystem: fileSystem,
                   sessionConfiguration: _sessionConfiguration,
+                  logger: logger,
                   s3Client: s3Client,
                   preSignedURLBuilder: preSignedURLBuilder,
                   awsS3: awsS3,
@@ -123,7 +133,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
-        self.userAgent = AmplifyAWSServiceConfiguration.frameworkMetaData(includeOS: true).description
+        self.userAgent = "\(AmplifyAWSServiceConfiguration.userAgentLib) \(AmplifyAWSServiceConfiguration.userAgentOS)"
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 

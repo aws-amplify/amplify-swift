@@ -59,63 +59,74 @@ final class StorageStressTests: XCTestCase {
     /// When: Upload the data simultaneously from 10 tasks
     /// Then: The operation completes successfully
     func testUploadMultipleSmallDataObjects() async {
-        let uploadExpectation = asyncExpectation(description: "Small data object uploaded successfully",
-                                    expectedFulfillmentCount: concurrencyLimit)
-        let removeExpectation = asyncExpectation(description: "Data object removed successfully",
-                                          expectedFulfillmentCount: concurrencyLimit)
+        let uploadExpectation = expectation(description: "Small data object uploaded successfully")
+        uploadExpectation.expectedFulfillmentCount = concurrencyLimit
+
+        let removeExpectation = expectation(description: "Data object removed successfully")
+        removeExpectation.expectedFulfillmentCount = concurrencyLimit
+
         for _ in 1...concurrencyLimit {
             Task {
                 do {
                     let key = UUID().uuidString
-                    let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                                         data: smallDataObjectForStressTest,
-                                                                         options: nil).value
+                    let uploadKey = try await Amplify.Storage.uploadData(
+                        key: key,
+                        data: smallDataObjectForStressTest,
+                        options: nil
+                    ).value
+
                     XCTAssertEqual(uploadKey, key)
-                    await uploadExpectation.fulfill()
+                    uploadExpectation.fulfill()
                     
                     try await Amplify.Storage.remove(key: key)
-                    await removeExpectation.fulfill()
+                    removeExpectation.fulfill()
                 } catch {
                     XCTFail("Error: \(error)")
                 }
             }
         }
         
-        await waitForExpectations([uploadExpectation, removeExpectation], timeout: 60)
+        await fulfillment(of: [uploadExpectation, removeExpectation], timeout: 60)
     }
     
     /// Given: A very large data object(100MB)
     /// When: Upload the data
     /// Then: The operation completes successfully
     func testUploadLargeDataObject() async {
-        let uploadExpectation = asyncExpectation(description: "Large data object uploaded successfully")
-        let removeExpectation = asyncExpectation(description: "Data object removed successfully")
+        let uploadExpectation = expectation(description: "Large data object uploaded successfully")
+        let removeExpectation = expectation(description: "Data object removed successfully")
         do {
             let key = UUID().uuidString
-            let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                                 data: largeDataObjectForStressTest,
-                                                                 options: nil).value
+            let uploadKey = try await Amplify.Storage.uploadData(
+                key: key,
+                data: largeDataObjectForStressTest,
+                options: nil
+            ).value
+
             XCTAssertEqual(uploadKey, key)
-            await uploadExpectation.fulfill()
+            uploadExpectation.fulfill()
             
             try await Amplify.Storage.remove(key: key)
-            await removeExpectation.fulfill()
+            removeExpectation.fulfill()
         } catch {
             XCTFail("Error: \(error)")
         }
-        await waitForExpectations([uploadExpectation, removeExpectation], timeout: 180)
+        await fulfillment(of: [uploadExpectation, removeExpectation], timeout: 180)
     }
     
     /// Given: An object in storage
     /// When: Object is downloaded simultaneously from 10 tasks
     /// Then: The operation completes successfully with the data retrieved
     func testDownloadMultipleSmallDataObjects() async {
-        let downloadExpectation = asyncExpectation(description: "Data object downloaded successfully",
-                                    expectedFulfillmentCount: concurrencyLimit)
-        let uploadExpectation = asyncExpectation(description: "Data object uploaded successfully",
-                                    expectedFulfillmentCount: concurrencyLimit)
-        let removeExpectation = asyncExpectation(description: "Data object removed successfully",
-                                          expectedFulfillmentCount: concurrencyLimit)
+        let downloadExpectation = expectation(description: "Data object downloaded successfully")
+        downloadExpectation.expectedFulfillmentCount = concurrencyLimit
+
+        let uploadExpectation = expectation(description: "Data object uploaded successfully")
+        uploadExpectation.expectedFulfillmentCount = concurrencyLimit
+
+        let removeExpectation = expectation(description: "Data object removed successfully")
+        removeExpectation.expectedFulfillmentCount = concurrencyLimit
+
         for _ in 1...concurrencyLimit {
             Task {
                 let key = UUID().uuidString
@@ -123,43 +134,46 @@ final class StorageStressTests: XCTestCase {
                                                                      data: smallDataObjectForStressTest,
                                                                      options: nil).value
                 XCTAssertEqual(uploadKey, key)
-                await uploadExpectation.fulfill()
+                uploadExpectation.fulfill()
                 
-                let _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
-                await downloadExpectation.fulfill()
+                _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
+                downloadExpectation.fulfill()
                 
                 try await Amplify.Storage.remove(key: key)
-                await removeExpectation.fulfill()
+                removeExpectation.fulfill()
             }
         }
         
-        await waitForExpectations([downloadExpectation, uploadExpectation, removeExpectation], timeout: 60)
+        await fulfillment(of: [downloadExpectation, uploadExpectation, removeExpectation], timeout: 60)
     }
     
     /// Given: A very large data object(100MB) in storage
     /// When: Download the data
     /// Then: The operation completes successfully
     func testDownloadLargeDataObject() async {
-        let downloadExpectation = asyncExpectation(description: "Data object downloaded successfully")
-        let uploadExpectation = asyncExpectation(description: "Data object uploaded successfully")
-        let removeExpectation = asyncExpectation(description: "Data object removed successfully")
+        let downloadExpectation = expectation(description: "Data object downloaded successfully")
+        let uploadExpectation = expectation(description: "Data object uploaded successfully")
+        let removeExpectation = expectation(description: "Data object removed successfully")
         do {
             let key = UUID().uuidString
-            let uploadKey = try await Amplify.Storage.uploadData(key: key,
-                                                                 data: largeDataObjectForStressTest,
-                                                                 options: nil).value
+            let uploadKey = try await Amplify.Storage.uploadData(
+                key: key,
+                data: largeDataObjectForStressTest,
+                options: nil
+            ).value
+
             XCTAssertEqual(uploadKey, key)
-            await uploadExpectation.fulfill()
+            uploadExpectation.fulfill()
             
             let _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
-            await downloadExpectation.fulfill()
+            downloadExpectation.fulfill()
             
             try await Amplify.Storage.remove(key: key)
-            await removeExpectation.fulfill()
+            removeExpectation.fulfill()
         } catch {
             XCTFail("Error: \(error)")
         }
-        await waitForExpectations([uploadExpectation, removeExpectation], timeout: 180)
+        await fulfillment(of: [downloadExpectation, uploadExpectation, removeExpectation], timeout: 180)
     }
 
     
@@ -170,35 +184,35 @@ final class StorageStressTests: XCTestCase {
             return
         }
 
-        let registerFirstUserComplete = asyncExpectation(description: "register firt user completed")
+        let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
                 try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
                                                       password: AWSS3StoragePluginTestBase.password,
                                                       email: AWSS3StoragePluginTestBase.email1)
                 Self.isFirstUserSignedUp = true
-                await registerFirstUserComplete.fulfill()
+                registerFirstUserComplete.fulfill()
             } catch {
                 XCTFail("Failed to Sign up user: \(error)")
-                await registerFirstUserComplete.fulfill()
+                registerFirstUserComplete.fulfill()
             }
         }
 
-        let registerSecondUserComplete = asyncExpectation(description: "register second user completed")
+        let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
                 try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
                                                       password: AWSS3StoragePluginTestBase.password,
                                                       email: AWSS3StoragePluginTestBase.email2)
                 Self.isSecondUserSignedUp = true
-                await registerSecondUserComplete.fulfill()
+                registerSecondUserComplete.fulfill()
             } catch {
                 XCTFail("Failed to Sign up user: \(error)")
-                await registerSecondUserComplete.fulfill()
+                registerSecondUserComplete.fulfill()
             }
         }
 
-        await waitForExpectations([registerFirstUserComplete, registerSecondUserComplete],
+        await fulfillment(of: [registerFirstUserComplete, registerSecondUserComplete],
                                   timeout: TestCommonConstants.networkTimeout)
     }
 

@@ -29,7 +29,7 @@ class TestConfigHelper {
     }
 
     static func retrieve(forResource: String) throws -> Data {
-        guard let path = Bundle(for: self).path(forResource: forResource, ofType: "json") else {
+        guard let path = Bundle.main.path(forResource: forResource, ofType: "json") else {
             throw "Could not retrieve configuration file: \(forResource)"
         }
 

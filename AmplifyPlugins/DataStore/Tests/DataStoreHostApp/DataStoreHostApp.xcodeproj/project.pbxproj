@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		210445632AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445612AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift */; };
+		210445642AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445622AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift */; };
 		210D5D4A2982EF6B00D748FE /* AWSDataStoreLazyLoadPostCommentWithCompositeKeySnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210D5D492982EF6B00D748FE /* AWSDataStoreLazyLoadPostCommentWithCompositeKeySnapshotTests.swift */; };
 		210D5D4C2982F0A300D748FE /* AWSDataStoreLazyLoadPostComment4SnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210D5D4B2982F0A300D748FE /* AWSDataStoreLazyLoadPostComment4SnapshotTests.swift */; };
 		210D5D4E2982F1E700D748FE /* AWSDataStoreLazyLoadPostComment7SnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210D5D4D2982F1E700D748FE /* AWSDataStoreLazyLoadPostComment7SnapshotTests.swift */; };
@@ -263,6 +265,8 @@
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
 		219B518628E3A7150080EDCC /* DataStoreHubEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */; };
+		21AA64B72AC5D78B001C6D3B /* TodoCognitoMultiOwner+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445622AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift */; };
+		21AA64B82AC5D791001C6D3B /* TodoCognitoMultiOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445612AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift */; };
 		21AB5C2A297AE56D00CCA482 /* AWSDataStoreLazyLoadPostTagSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C29297AE56D00CCA482 /* AWSDataStoreLazyLoadPostTagSnapshotTests.swift */; };
 		21AB5C5529819BF100CCA482 /* Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C4829819BF000CCA482 /* Nested.swift */; };
 		21AB5C5629819BF100CCA482 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C4929819BF000CCA482 /* NestedTypeTestModel+Schema.swift */; };
@@ -1537,6 +1541,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		210445612AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoCognitoMultiOwner.swift; sourceTree = "<group>"; };
+		210445622AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoCognitoMultiOwner+Schema.swift"; sourceTree = "<group>"; };
 		210D5D492982EF6B00D748FE /* AWSDataStoreLazyLoadPostCommentWithCompositeKeySnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostCommentWithCompositeKeySnapshotTests.swift; sourceTree = "<group>"; };
 		210D5D4B2982F0A300D748FE /* AWSDataStoreLazyLoadPostComment4SnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostComment4SnapshotTests.swift; sourceTree = "<group>"; };
 		210D5D4D2982F1E700D748FE /* AWSDataStoreLazyLoadPostComment7SnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostComment7SnapshotTests.swift; sourceTree = "<group>"; };
@@ -2994,6 +3000,8 @@
 		21BBFA94289BFE4E00B32A39 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				210445612AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift */,
+				210445622AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift */,
 				21BBFA96289BFE4E00B32A39 /* TodoCognitoPrivate.swift */,
 				21BBFA97289BFE4E00B32A39 /* TodoCognitoPrivate+Schema.swift */,
 				21BBFA9E289BFE4E00B32A39 /* TodoCustomOwnerExplicit.swift */,
@@ -4956,8 +4964,10 @@
 				213DBBFF28A577B200B30280 /* AWSDataStoreCategoryPluginAuthIntegrationTests+Support.swift in Sources */,
 				213DBC0728A577C900B30280 /* TodoCustomOwnerImplicit+Schema.swift in Sources */,
 				213DBC5928A57FFE00B30280 /* TestConfigHelper.swift in Sources */,
+				210445642AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift in Sources */,
 				213DBC0328A577C300B30280 /* TodoExplicitOwnerField.swift in Sources */,
 				213DBC0928A577C900B30280 /* TodoExplicitOwnerField+Schema.swift in Sources */,
+				210445632AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift in Sources */,
 				681DFE9028E746FD0000C36A /* AsyncExpectation.swift in Sources */,
 				681DFE8F28E746FD0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				213DBC0128A577BC00B30280 /* TodoCognitoPrivate.swift in Sources */,
@@ -6086,8 +6096,10 @@
 			files = (
 				68826E692A43A1DB005E85A7 /* TodoCustomOwnerExplicit+Schema.swift in Sources */,
 				6812A9D32A44989E00570222 /* AmplifyURLSession.swift in Sources */,
+				21AA64B72AC5D78B001C6D3B /* TodoCognitoMultiOwner+Schema.swift in Sources */,
 				68826E6A2A43A1DB005E85A7 /* AWSDataStoreCategoryPluginAuthIntegrationTests+Support.swift in Sources */,
 				68826E6B2A43A1DB005E85A7 /* TodoCustomOwnerImplicit+Schema.swift in Sources */,
+				21AA64B82AC5D791001C6D3B /* TodoCognitoMultiOwner.swift in Sources */,
 				68826E6C2A43A1DB005E85A7 /* TestConfigHelper.swift in Sources */,
 				68826E6D2A43A1DB005E85A7 /* TodoExplicitOwnerField.swift in Sources */,
 				68826E6E2A43A1DB005E85A7 /* TodoExplicitOwnerField+Schema.swift in Sources */,

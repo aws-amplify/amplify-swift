@@ -73,7 +73,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         // onCreate operation
         let onCreateValueListener = onCreateValueListenerHandler(event:)
         let onCreateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                     operation: .create)
+                                                                           operations: [.create, .read])
         self.onCreateValueListener = onCreateValueListener
         self.onCreateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
@@ -94,7 +94,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         // onUpdate operation
         let onUpdateValueListener = onUpdateValueListenerHandler(event:)
         let onUpdateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                     operation: .update)
+                                                                           operations: [.update, .read])
         self.onUpdateValueListener = onUpdateValueListener
         self.onUpdateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
@@ -115,7 +115,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         // onDelete operation
         let onDeleteValueListener = onDeleteValueListenerHandler(event:)
         let onDeleteAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                     operation: .delete)
+                                                                           operations: [.delete, .read])
         self.onDeleteValueListener = onDeleteValueListener
         self.onDeleteOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(

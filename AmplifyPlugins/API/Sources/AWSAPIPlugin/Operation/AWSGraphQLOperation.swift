@@ -34,6 +34,10 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     }
 
     override public func main() {
+        Task { await mainAsync() }
+    }
+
+    private func mainAsync() async {
         Amplify.API.log.debug("Starting \(request.operationType) \(id)")
 
         if isCancelled {
@@ -41,84 +45,40 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
             return
         }
 
-        // Validate the request
-        do {
-            try request.validate()
-        } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
-        } catch {
-            dispatch(result: .failure(APIError.unknown("Could not validate request", "", nil)))
-            finish()
-            return
-        }
+        let urlRequest = validateRequest(request).flatMap(buildURLRequest(from:))
+        let finalRequest = await getEndpointInterceptors(from: request).flatMapAsync { requestInterceptors in
+            let preludeInterceptors = requestInterceptors?.preludeInterceptors ?? []
+            let customerInterceptors = requestInterceptors?.interceptors ?? []
+            let postludeInterceptors = requestInterceptors?.postludeInterceptors ?? []
 
-        // Retrieve endpoint configuration
-        let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
-        let requestInterceptors: [URLRequestInterceptor]
-
-        do {
-            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
-
-            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
-               let authType = pluginOptions.authType {
-                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig,
-                                                                               authType: authType)
-            } else {
-                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
-            }
-        } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
-        } catch {
-            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
-            finish()
-            return
-        }
-
-        // Prepare request payload
-        let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(document: request.document,
-                                                                          variables: request.variables)
-        if Amplify.API.log.logLevel == .verbose,
-           let serializedJSON = try? JSONSerialization.data(withJSONObject: queryDocument,
-                                                            options: .prettyPrinted),
-           let prettyPrintedQueryDocument = String(data: serializedJSON, encoding: .utf8) {
-            Amplify.API.log.verbose("\(prettyPrintedQueryDocument)")
-        }
-        let requestPayload: Data
-        do {
-            requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)
-        } catch {
-            dispatch(result: .failure(APIError.operationError("Failed to serialize query document",
-                                                              "fix the document or variables",
-                                                              error)))
-            finish()
-            return
-        }
-
-        // Create request
-        let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
-                                                                       requestPayload: requestPayload)
-
-        Task {
-            // Intercept request
-            var finalRequest = urlRequest
-            for interceptor in requestInterceptors {
-                do {
-                    finalRequest = try await interceptor.intercept(finalRequest)
-                } catch let error as APIError {
-                    dispatch(result: .failure(error))
-                    cancel()
-                } catch {
-                    dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
-                                                                      "Something wrong with the interceptor",
-                                                                      error)))
-                    cancel()
+            var finalResult = urlRequest
+            // apply prelude interceptors
+            for interceptor in preludeInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
                 }
             }
 
+            // there is no customize headers for GraphQLOperationRequest
+
+            // apply customer interceptors
+            for interceptor in customerInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
+            }
+
+            // apply postlude interceptor
+            for interceptor in postludeInterceptors {
+                finalResult = await finalResult.flatMapAsync { request in
+                    await applyInterceptor(interceptor, request: request)
+                }
+            }
+            return finalResult
+        }
+
+        switch finalRequest {
+        case .success(let finalRequest):
             if isCancelled {
                 finish()
                 return
@@ -129,6 +89,102 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
             let task = session.dataTaskBehavior(with: finalRequest)
             mapper.addPair(operation: self, task: task)
             task.resume()
+        case .failure(let error):
+            dispatch(result: .failure(error))
+            finish()
         }
     }
+
+    private func validateRequest(_ request: GraphQLOperationRequest<R>) -> Result<GraphQLOperationRequest<R>, APIError> {
+        do {
+            try request.validate()
+            return .success(request)
+        } catch let error as APIError {
+            return .failure(error)
+        } catch {
+            return .failure(APIError.unknown("Could not validate request", "", nil))
+        }
+    }
+
+    private func buildURLRequest(from request: GraphQLOperationRequest<R>) -> Result<URLRequest, APIError> {
+        getEndpointConfig(from: request).flatMap { endpointConfig in
+            getRequestPayload(from: request).map { requestPayload in
+                GraphQLOperationRequestUtils.constructRequest(
+                    with: endpointConfig.baseURL,
+                    requestPayload: requestPayload
+                )
+            }
+        }
+    }
+
+    private func getRequestPayload(from request: GraphQLOperationRequest<R>) -> Result<Data, APIError> {
+        // Prepare request payload
+        let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(document: request.document,
+                                                                          variables: request.variables)
+        if Amplify.API.log.logLevel == .verbose,
+           let serializedJSON = try? JSONSerialization.data(withJSONObject: queryDocument,
+                                                            options: .prettyPrinted),
+           let prettyPrintedQueryDocument = String(data: serializedJSON, encoding: .utf8) {
+            Amplify.API.log.verbose("\(prettyPrintedQueryDocument)")
+        }
+
+        do {
+            return .success(try JSONSerialization.data(withJSONObject: queryDocument))
+        } catch {
+            return .failure(APIError.operationError(
+                "Failed to serialize query document",
+                "fix the document or variables",
+                error
+            ))
+        }
+    }
+
+    private func getEndpointConfig(from request: GraphQLOperationRequest<R>) -> Result<AWSAPICategoryPluginConfiguration.EndpointConfig, APIError> {
+        do {
+            return .success(try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL))
+        } catch let error as APIError {
+            return .failure(error)
+
+        } catch {
+            return .failure(APIError.unknown("Could not get endpoint configuration", "", nil))
+        }
+    }
+
+    private func getEndpointInterceptors(from request: GraphQLOperationRequest<R>) -> Result<AWSAPIEndpointInterceptors?, APIError> {
+        getEndpointConfig(from: request).flatMap { endpointConfig in
+            do {
+                if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
+                   let authType = pluginOptions.authType
+                {
+                    return .success(try pluginConfig.interceptorsForEndpoint(
+                        withConfig: endpointConfig,
+                        authType: authType
+                    ))
+                } else {
+                    return .success(pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig))
+                }
+            } catch let error as APIError {
+                return .failure(error)
+            } catch {
+                return .failure(APIError.unknown("Could not get endpoint interceptors", "", nil))
+            }
+        }
+    }
+
+    private func applyInterceptor(_ interceptor: URLRequestInterceptor, request: URLRequest) async -> Result<URLRequest, APIError> {
+        do {
+            return .success(try await interceptor.intercept(request))
+        } catch let error as APIError {
+            return .failure(error)
+        } catch {
+            return .failure(
+                APIError.operationError(
+                    "Failed to intercept request with \(type(of: interceptor)). Error message: \(error.localizedDescription).",
+                    "See underlying error for more details",
+                    error
+                )
+            )
+        }
+    }
+
 }

@@ -173,10 +173,6 @@ class StorageTransferTask {
         }
     }
 
-    private var cancelled: Bool {
-        status == .cancelled
-    }
-
     var isFailed: Bool {
         status == .error
     }
@@ -324,7 +320,7 @@ class StorageTransferTask {
                 logger.warn("Unable to complete after cancelled")
                 return
             }
-            guard _status == .completed else {
+            guard _status != .completed else {
                 logger.warn("Task is already completed")
                 return
             }

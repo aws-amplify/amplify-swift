@@ -26,7 +26,7 @@ protocol AWSS3Behavior {
     func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void)
 
     // Get list of uploaded parts (supports development)
-    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (SdkResult<ListPartsOutputResponse, ListPartsOutputError>) -> Void)
+    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (Result<ListPartsOutputResponse, StorageError>) -> Void)
 
     // Completes a Multipart Upload.
     func completeMultipartUpload(_ request: AWSS3CompleteMultipartUploadRequest, completion: @escaping (Result<AWSS3CompleteMultipartUploadResponse, StorageError>) -> Void)
@@ -35,12 +35,12 @@ protocol AWSS3Behavior {
     func abortMultipartUpload(_ request: AWSS3AbortMultipartUploadRequest, completion: @escaping (Result<Void, StorageError>) -> Void)
 
     // Gets a client for AWS S3 Service.
-    func getS3() -> S3Client
+    func getS3() -> S3ClientProtocol
 
 }
 
 extension AWSS3Behavior {
-    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (SdkResult<ListPartsOutputResponse, ListPartsOutputError>) -> Void) {
+    func listParts(bucket: String, key: String, uploadId: UploadID, completion: @escaping (Result<ListPartsOutputResponse, StorageError>) -> Void) {
         // do nothing
     }
 }

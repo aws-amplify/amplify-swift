@@ -66,10 +66,14 @@ final class APIStressTests: XCTestCase {
     /// - When: I create 50 subsciptions on createPost mutation and then create a Post
     /// - Then: Subscriptions should receive connected, disconnected  and progress events correctly
     func testMultipleSubscriptions() async throws {
-        let connectedInvoked = asyncExpectation(description: "Connection established", expectedFulfillmentCount: concurrencyLimit)
-        let disconnectedInvoked = asyncExpectation(description: "Connection disconnected", expectedFulfillmentCount: concurrencyLimit)
-        let completedInvoked = asyncExpectation(description: "Completed invoked", expectedFulfillmentCount: concurrencyLimit)
-        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: concurrencyLimit)
+        let connectedInvoked = expectation(description: "Connection established")
+        connectedInvoked.expectedFulfillmentCount = concurrencyLimit
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        disconnectedInvoked.expectedFulfillmentCount = concurrencyLimit
+        let completedInvoked = expectation(description: "Completed invoked")
+        completedInvoked.expectedFulfillmentCount = concurrencyLimit
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = concurrencyLimit
 
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -87,29 +91,29 @@ final class APIStressTests: XCTestCase {
                             case .connecting:
                                 break
                             case .connected:
-                                await connectedInvoked.fulfill()
+                                connectedInvoked.fulfill()
                             case .disconnected:
-                                await disconnectedInvoked.fulfill()
+                                disconnectedInvoked.fulfill()
                             }
                         case .data(let result):
                             switch result {
                             case .success(let post):
                                 if post.id == uuid {
-                                    await progressInvoked.fulfill()
+                                    progressInvoked.fulfill()
                                 }
                             case .failure(let error):
                                 XCTFail("\(error)")
                             }
                         }
                     }
-                    await completedInvoked.fulfill()
+                    completedInvoked.fulfill()
                 }
                 
                 await sequenceActor.append(sequence: subscription)
             }
         }
         
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let sequenceCount = await sequenceActor.sequences.count
         XCTAssertEqual(sequenceCount, concurrencyLimit)
@@ -119,7 +123,7 @@ final class APIStressTests: XCTestCase {
             return
         }
 
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
@@ -127,15 +131,15 @@ final class APIStressTests: XCTestCase {
             }
         }
 
-        await waitForExpectations([disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// - Given: APIPlugin configured with valid configuration and schema
     /// - When: I create 50 posts simultaneously
     /// - Then: Operation should succeed
     func testMultipleCreateMutations() async throws {
-        let postCreateExpectation = asyncExpectation(description: "Post was created successfully",
-                                                     expectedFulfillmentCount: concurrencyLimit)
+        let postCreateExpectation = expectation(description: "Post was created successfully")
+        postCreateExpectation.expectedFulfillmentCount = concurrencyLimit
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
@@ -144,21 +148,21 @@ final class APIStressTests: XCTestCase {
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
-                await postCreateExpectation.fulfill()
+                postCreateExpectation.fulfill()
             }
         }
         
-        await waitForExpectations([postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// - Given: APIPlugin configured with valid configuration and schema and 50 posts saved
     /// - When: I update 50 post simultaneously
     /// - Then: Operation should succeed
     func testMultipleUpdateMutations() async throws {
-        let postCreateExpectation = asyncExpectation(description: "Post was created successfully",
-                                                     expectedFulfillmentCount: concurrencyLimit)
-        let postUpdateExpectation = asyncExpectation(description: "Post was updated successfully",
-                                                     expectedFulfillmentCount: concurrencyLimit)
+        let postCreateExpectation = expectation(description: "Post was created successfully")
+        postCreateExpectation.expectedFulfillmentCount = concurrencyLimit
+        let postUpdateExpectation = expectation(description: "Post was updated successfully")
+        postUpdateExpectation.expectedFulfillmentCount = concurrencyLimit
         let postActor = PostActor()
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -170,11 +174,11 @@ final class APIStressTests: XCTestCase {
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
                 await postActor.append(post: post!)
-                await postCreateExpectation.fulfill()
+                postCreateExpectation.fulfill()
             }
         }
 
-        await waitForExpectations([postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
@@ -184,21 +188,23 @@ final class APIStressTests: XCTestCase {
                 XCTAssertNotNil(updatedPost)
                 XCTAssertEqual(post.id, updatedPost.id)
                 XCTAssertEqual(post.title, updatedPost.title)
-                await postUpdateExpectation.fulfill()
+                postUpdateExpectation.fulfill()
             }
         }
         
-        await waitForExpectations([postUpdateExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [postUpdateExpectation], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// - Given: APIPlugin configured with valid configuration, schema and 50 posts saved
     /// - When: I delete 50 post simultaneously
     /// - Then: Operation should succeed
     func testMultipleDeleteMutations() async throws {
-        let postCreateExpectation = asyncExpectation(description: "Post was created successfully",
-                                                     expectedFulfillmentCount: concurrencyLimit)
-        let postDeleteExpectation = asyncExpectation(description: "Post was deleted successfully",
-                                                     expectedFulfillmentCount: concurrencyLimit)
+        let postCreateExpectation = expectation(description: "Post was created successfully")
+        postCreateExpectation.expectedFulfillmentCount = concurrencyLimit
+
+        let postDeleteExpectation = expectation(description: "Post was deleted successfully")
+        postDeleteExpectation.expectedFulfillmentCount = concurrencyLimit
+
         let postActor = PostActor()
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -210,11 +216,11 @@ final class APIStressTests: XCTestCase {
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
                 await postActor.append(post: post!)
-                await postCreateExpectation.fulfill()
+                postCreateExpectation.fulfill()
             }
         }
 
-        await waitForExpectations([postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
@@ -223,21 +229,23 @@ final class APIStressTests: XCTestCase {
                 XCTAssertNotNil(deletedPost)
                 XCTAssertEqual(post.id, deletedPost.id)
                 XCTAssertEqual(post.title, deletedPost.title)
-                await postDeleteExpectation.fulfill()
+                postDeleteExpectation.fulfill()
             }
         }
         
-        await waitForExpectations([postDeleteExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [postDeleteExpectation], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// - Given: APIPlugin configured with valid configuration, schema and 50 posts saved
     /// - When: I query for 50 posts simultaneously
     /// - Then: Operation should succeed
     func testMultipleQueryByID() async throws {
-        let postCreateExpectation = asyncExpectation(description: "Post was created successfully",
-                                                     expectedFulfillmentCount: concurrencyLimit)
-        let postQueryExpectation = asyncExpectation(description: "Post was deleted successfully",
-                                                     expectedFulfillmentCount: concurrencyLimit)
+        let postCreateExpectation = expectation(description: "Post was created successfully")
+        postCreateExpectation.expectedFulfillmentCount = concurrencyLimit
+
+        let postQueryExpectation = expectation(description: "Post was deleted successfully")
+        postQueryExpectation.expectedFulfillmentCount = concurrencyLimit
+
         let postActor = PostActor()
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -249,11 +257,11 @@ final class APIStressTests: XCTestCase {
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
                 await postActor.append(post: post!)
-                await postCreateExpectation.fulfill()
+                postCreateExpectation.fulfill()
             }
         }
 
-        await waitForExpectations([postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
@@ -270,11 +278,11 @@ final class APIStressTests: XCTestCase {
                 XCTAssertNotNil(queriedPost)
                 XCTAssertEqual(post.id, queriedPost.id)
                 XCTAssertEqual(post.title, queriedPost.title)
-                await postQueryExpectation.fulfill()
+                postQueryExpectation.fulfill()
             }
         }
         
-        await waitForExpectations([postQueryExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [postQueryExpectation], timeout: TestCommonConstants.networkTimeout)
     }
     
     actor PostActor {

@@ -9,6 +9,14 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 
+/// The order of interceptor decoration is as follows:
+/// 1. **prelude interceptors**
+/// 2. **cutomize headers**
+/// 3. **customer interceptors**
+/// 4. **postlude interceptors**
+///
+/// **Prelude** and **postlude** interceptors are used by library maintainers to
+/// integrate essential functionality for a variety of authentication types.
 struct AWSAPIEndpointInterceptors {
     // API name
     let apiEndpointName: APIEndpointName
@@ -16,7 +24,11 @@ struct AWSAPIEndpointInterceptors {
     let apiAuthProviderFactory: APIAuthProviderFactory
     let authService: AWSAuthServiceBehavior?
 
+    var preludeInterceptors: [URLRequestInterceptor] = []
+
     var interceptors: [URLRequestInterceptor] = []
+
+    var postludeInterceptors: [URLRequestInterceptor] = []
 
     init(endpointName: APIEndpointName,
          apiAuthProviderFactory: APIAuthProviderFactory,
@@ -42,7 +54,7 @@ struct AWSAPIEndpointInterceptors {
         case .apiKey(let apiKeyConfig):
             let provider = BasicAPIKeyProvider(apiKey: apiKeyConfig.apiKey)
             let interceptor = APIKeyURLRequestInterceptor(apiKeyProvider: provider)
-            addInterceptor(interceptor)
+            preludeInterceptors.append(interceptor)
         case .awsIAM(let iamConfig):
             guard let authService = authService else {
                 throw PluginError.pluginConfigurationError("AuthService is not set for IAM",
@@ -52,7 +64,7 @@ struct AWSAPIEndpointInterceptors {
             let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider,
                                                        region: iamConfig.region,
                                                        endpointType: endpointType)
-            addInterceptor(interceptor)
+            postludeInterceptors.append(interceptor)
         case .amazonCognitoUserPools:
             guard let authService = authService else {
                 throw PluginError.pluginConfigurationError("AuthService not set for cognito user pools",
@@ -60,7 +72,7 @@ struct AWSAPIEndpointInterceptors {
             }
             let provider = BasicUserPoolTokenProvider(authService: authService)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider)
-            addInterceptor(interceptor)
+            preludeInterceptors.append(interceptor)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {
                 throw PluginError.pluginConfigurationError("AuthService not set for OIDC",
@@ -68,7 +80,7 @@ struct AWSAPIEndpointInterceptors {
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: oidcAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
-            addInterceptor(interceptor)
+            preludeInterceptors.append(interceptor)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw PluginError.pluginConfigurationError("AuthService not set for function auth",
@@ -76,7 +88,7 @@ struct AWSAPIEndpointInterceptors {
             }
             let wrappedAuthProvider = AuthTokenProviderWrapper(tokenAuthProvider: functionAuthProvider)
             let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: wrappedAuthProvider)
-            addInterceptor(interceptor)
+            preludeInterceptors.append(interceptor)
         }
     }
 }

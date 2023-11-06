@@ -79,10 +79,6 @@ struct GeoPluginConfigError {
     }
 
     // MARK: - Maps
-    static let mapConfigMissing = """
-                                     Map configuration is missing from amplifyconfiguration.json.
-                                     Make sure amplifyconfiguration.json includes a `maps` section.
-                                     """
 
     static func mapInvalid(mapName: String) -> PluginError {
         PluginError.pluginConfigurationError(
@@ -120,11 +116,6 @@ struct GeoPluginConfigError {
     }
 
     // MARK: - Search
-    static let searchConfigMissing = """
-                                     Search configuration is missing from amplifyconfiguration.json.
-                                     Make amplifyconfiguration.json includes a `searchIndices` section.
-                                     """
-
     static func searchDefaultNotFound(indexName: String?) -> PluginError {
         PluginError.pluginConfigurationError(
             "Configured default search index \(indexName ?? "nil") was not found in searchIndices.",

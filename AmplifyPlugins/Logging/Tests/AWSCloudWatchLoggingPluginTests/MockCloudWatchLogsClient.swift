@@ -224,5 +224,15 @@ class MockCloudWatchLogsClient: CloudWatchLogsClientProtocol {
         throw MockError.unimplemented
     }
     
-    
+    func deleteAccountPolicy(input: AWSCloudWatchLogs.DeleteAccountPolicyInput) async throws -> AWSCloudWatchLogs.DeleteAccountPolicyOutputResponse {
+        throw MockError.unimplemented
+    }
+
+    func describeAccountPolicies(input: AWSCloudWatchLogs.DescribeAccountPoliciesInput) async throws -> AWSCloudWatchLogs.DescribeAccountPoliciesOutputResponse {
+        throw MockError.unimplemented
+    }
+
+    func putAccountPolicy(input: AWSCloudWatchLogs.PutAccountPolicyInput) async throws -> AWSCloudWatchLogs.PutAccountPolicyOutputResponse {
+        throw MockError.unimplemented
+    }
 }

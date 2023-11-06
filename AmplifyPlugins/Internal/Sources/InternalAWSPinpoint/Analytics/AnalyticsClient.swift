@@ -23,7 +23,7 @@ public protocol AnalyticsClientBehaviour: Actor {
     func removeGlobalAttribute(forKey key: String, forEventType eventType: String)
     func removeGlobalMetric(forKey key: String)
     func removeGlobalMetric(forKey key: String, forEventType eventType: String)
-    func record(_ event: PinpointEvent) throws
+    func record(_ event: PinpointEvent) async throws
 
     func setRemoteGlobalAttributes(_ attributes: [String: String])
     func removeAllRemoteGlobalAttributes()
@@ -231,7 +231,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
                              session: sessionProvider())
     }
 
-    func record(_ event: PinpointEvent) throws {
+    func record(_ event: PinpointEvent) async throws {
         // Add event type attributes
         if let eventAttributes = eventTypeAttributes[event.eventType] {
             for (key, attribute) in eventAttributes {
@@ -256,7 +256,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
             event.addMetric(metric, forKey: key)
         }
 
-        try eventRecorder.save(event)
+        try await eventRecorder.save(event)
     }
 
     @discardableResult

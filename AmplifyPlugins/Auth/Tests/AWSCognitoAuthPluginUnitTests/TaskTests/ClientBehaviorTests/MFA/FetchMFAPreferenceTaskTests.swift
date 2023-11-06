@@ -11,6 +11,7 @@ import XCTest
 import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import AWSClientRuntime
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
@@ -186,7 +187,13 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
+            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
+                httpResponse: .init(body: .empty, statusCode: .ok),
+                message: nil,
+                requestID: nil,
+                requestID2: nil,
+                typeName: nil
+            )
         })
 
         do {
@@ -211,7 +218,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.invalidParameterException(.init())
+            throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
 
         do {
@@ -240,7 +247,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.notAuthorizedException(.init(message: "message"))
+            throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "message")
         })
 
         do {
@@ -267,7 +274,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.passwordResetRequiredException(.init())
+            throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
         })
 
         do {
@@ -298,7 +305,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.resourceNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
 
         do {
@@ -329,7 +336,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.tooManyRequestsException(.init())
+            throw AWSCognitoIdentityProvider.TooManyRequestsException()
         })
 
         do {
@@ -360,7 +367,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.userNotConfirmedException(.init())
+            throw AWSCognitoIdentityProvider.UserNotConfirmedException()
         })
         do {
             _ = try await plugin.fetchMFAPreference()
@@ -390,7 +397,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw GetUserOutputError.userNotFoundException(.init())
+            throw AWSCognitoIdentityProvider.UserNotFoundException()
         })
         do {
             _ = try await plugin.fetchMFAPreference()

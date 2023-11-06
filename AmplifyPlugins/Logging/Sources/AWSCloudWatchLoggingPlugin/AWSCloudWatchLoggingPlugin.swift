@@ -72,7 +72,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     }
     
     public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
-        return loggingClient.logger(forCategory: category)
+        return loggingClient.logger(forCategory: category, forNamespace: namespace)
     }
     
     /// enable plugin
@@ -155,7 +155,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             localStore.reset()
         }
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
             self.loggingClient.takeUserIdentifierFromCurrentUser()
         }
     }

@@ -23,13 +23,17 @@ class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
     /// Note: IAM auth would likely not be used on the client, since it is unlikely that the request would
     /// fail with User Pool auth but succeed with IAM auth for an authenticated user.
     func testOwnerPrivatePublicUserPoolsIAMAPIKeyAuthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: OwnerPrivatePublicUserPoolsAPIKeyModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.amazonCognitoUserPools])
 
         // Query
         await assertQuerySuccess(modelType: OwnerPrivatePublicUPIAMAPIPost.self,
@@ -44,7 +48,7 @@ class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.amazonCognitoUserPools])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 
     /// Given: an unauthenticated user
@@ -52,12 +56,16 @@ class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API Key
     func testOwnerPrivatePublicUserPoolsIAMAPIKeyUnauthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: OwnerPrivatePublicUserPoolsAPIKeyModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.apiKey])
 
         // Query
         await assertQuerySuccess(modelType: OwnerPrivatePublicUPIAMAPIPost.self,
@@ -72,7 +80,7 @@ class AWSDataStoreMultiAuthThreeRulesTests: AWSDataStoreAuthBaseTest {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.apiKey])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 }
 
@@ -85,13 +93,17 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito auth for authenticated users
     func testGroupPrivatePublicUserPoolsIAMAPIKeyAuthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: GroupPrivatePublicUserPoolsAPIKeyModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.amazonCognitoUserPools])
 
         // Query
         await assertQuerySuccess(modelType: GroupPrivatePublicUPIAMAPIPost.self,
@@ -106,7 +118,7 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.amazonCognitoUserPools])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 
     /// Given: an unauthenticated user
@@ -114,12 +126,16 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with API Key
     func testGroupPrivatePublicUserPoolsIAMAPIKeyUnauthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: GroupPrivatePublicUserPoolsAPIKeyModels(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.apiKey])
 
         // Query
         await assertQuerySuccess(modelType: GroupPrivatePublicUPIAMAPIPost.self,
@@ -133,7 +149,7 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.apiKey])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 }
 
@@ -145,13 +161,17 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito
     func testPrivatePrivatePublicUserPoolsIAMIAMAuthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePrivatePublicUserPoolsIAMIAM(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.amazonCognitoUserPools])
 
         // Query
         await assertQuerySuccess(modelType: PrivatePrivatePublicUPIAMIAMPost.self,
@@ -165,7 +185,7 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.amazonCognitoUserPools])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 
     /// Given: an unauthenticated user
@@ -173,12 +193,16 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent with IAM
     func testPrivatePrivatePublicUserPoolsIAMIAMUnauthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePrivatePublicUserPoolsIAMIAM(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.awsIAM])
 
         // Query
         await assertQuerySuccess(modelType: PrivatePrivatePublicUPIAMIAMPost.self,
@@ -193,7 +217,7 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.awsIAM])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 }
 
@@ -205,13 +229,17 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito
     func testPrivatePrivatePublicUserPoolsIAMApiKeyAuthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePrivatePublicUserPoolsIAMAPiKey(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.amazonCognitoUserPools])
 
         // Query
         await assertQuerySuccess(modelType: PrivatePrivatePublicUPIAMAPIPost.self,
@@ -226,7 +254,7 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.amazonCognitoUserPools])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 
     /// Given: an unauthenticated user
@@ -236,12 +264,16 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// Note: IAM auth would likely not be used on the client, since it is unlikely that the request would fail with
     ///     User Pool auth but succeed with IAM auth for an authenticated user.
     func testPrivatePrivatePublicUserPoolsIAMApiKeyUnauthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePrivatePublicUserPoolsIAMAPiKey(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.apiKey])
 
         // Query
         await assertQuerySuccess(modelType: PrivatePrivatePublicUPIAMAPIPost.self,
@@ -256,7 +288,7 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.apiKey])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 }
 
@@ -268,13 +300,17 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests are sent
     ///   with Cognito
     func testPrivatePublicPublicUserPoolsAPIKeyIAMAuthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePublicPublicUserPoolsAPIKeyIAM(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
         await signIn(user: user1)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.amazonCognitoUserPools])
 
         // Query
         await assertQuerySuccess(modelType: PrivatePublicPublicUPAPIIAMPost.self,
@@ -289,7 +325,7 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.amazonCognitoUserPools])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 
     /// Given: an unauthenticated user
@@ -299,12 +335,16 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
     /// Note: API key auth would likely not be used on the client, since it is unlikely that the request would fail with
     ///     public IAM auth but succeed with API key auth.
     func testPrivatePublicPublicUserPoolsAPIKeyIAMUnauthenticatedUsers() async {
+        let testId = UUID().uuidString
         await setup(withModels: PrivatePublicPublicUserPoolsAPIKeyIAM(),
-              testType: .multiAuth)
+                    testType: .multiAuth,
+                    testId: testId)
 
         let expectations = makeExpectations()
 
         await assertDataStoreReady(expectations)
+
+        let authTypeExpecation = assertUsedAuthTypes(testId: testId, authTypes: [.awsIAM])
 
         // Query
         await assertQuerySuccess(modelType: PrivatePublicPublicUPAPIIAMPost.self,
@@ -319,6 +359,6 @@ extension AWSDataStoreMultiAuthThreeRulesTests {
             XCTFail("Error mutation \(error)")
         }
 
-        assertUsedAuthTypes([.awsIAM])
+        await fulfillment(of: [authTypeExpecation], timeout: 5)
     }
 }

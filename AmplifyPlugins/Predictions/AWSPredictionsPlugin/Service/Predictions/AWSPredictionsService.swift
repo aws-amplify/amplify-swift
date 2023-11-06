@@ -12,6 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import Foundation
 import ClientRuntime
 import AWSClientRuntime
@@ -30,36 +31,53 @@ class AWSPredictionsService {
 
     convenience init(
         configuration: PredictionsPluginConfiguration,
-        credentialsProvider: CredentialsProvider,
+        credentialsProvider: CredentialsProviding,
         identifier: String
     ) throws {
         let translateClientConfiguration = try TranslateClient.TranslateClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
+        translateClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: translateClientConfiguration
+        )
+
         let awsTranslateClient = TranslateClient(config: translateClientConfiguration)
 
         let pollyClientConfiguration = try PollyClient.PollyClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
+        )
+        pollyClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: pollyClientConfiguration
         )
         let awsPollyClient = PollyClient(config: pollyClientConfiguration)
 
         let comprehendClientConfiguration = try ComprehendClient.ComprehendClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.convert.region
+            region: configuration.convert.region,
+            credentialsProvider: credentialsProvider
         )
+        comprehendClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: comprehendClientConfiguration
+        )
+
         let awsComprehendClient = ComprehendClient(config: comprehendClientConfiguration)
 
         let rekognitionClientConfiguration = try RekognitionClient.RekognitionClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.identify.region
+            region: configuration.identify.region,
+            credentialsProvider: credentialsProvider
+        )
+        rekognitionClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: rekognitionClientConfiguration
         )
         let awsRekognitionClient = RekognitionClient(config: rekognitionClientConfiguration)
 
         let textractClientConfiguration = try TextractClient.TextractClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            region: configuration.identify.region
+            region: configuration.identify.region,
+            credentialsProvider: credentialsProvider
+        )
+        textractClientConfiguration.httpClientEngine = .userAgentEngine(
+            for: textractClientConfiguration
         )
         let awsTextractClient = TextractClient(config: textractClientConfiguration)
 

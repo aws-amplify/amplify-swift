@@ -48,11 +48,6 @@
                BlueprintName = "AWSCognitoAuthPluginUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "EscapeHatchTests">
-               </Test>
-            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">

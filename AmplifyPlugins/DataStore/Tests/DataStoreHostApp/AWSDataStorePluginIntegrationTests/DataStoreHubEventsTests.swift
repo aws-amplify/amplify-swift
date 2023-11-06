@@ -44,6 +44,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
         try await Task.sleep(seconds: 1)
 
         let networkStatusReceived = expectation(description: "networkStatus received")
+        networkStatusReceived.assertForOverFulfill = false
         var networkStatusActive = false
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")

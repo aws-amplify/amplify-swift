@@ -9,8 +9,10 @@
 import AWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
-class MockEventRecorder: AnalyticsEventRecording {
-    var pinpointClient: PinpointClientProtocol = MockPinpointClient()
+actor MockEventRecorder: AnalyticsEventRecording {
+    nonisolated var pinpointClient: PinpointClientProtocol {
+        MockPinpointClient()
+    }
 
     var saveCount = 0
     var lastSavedEvent: PinpointEvent?

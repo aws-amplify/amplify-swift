@@ -127,4 +127,24 @@ final class LogActorTests: XCTestCase {
         logs = try await systemUnderTest.getLogs()
         XCTAssertEqual(logs.count, 2)
     }
+    
+    /// Given: a Log file
+    /// When: LogActor writes to a log file that doesn't exist
+    /// Then: the log file is created and the log entry is recorded
+    func testLogActorCreatesLogFileIfItDoesNotExist() async throws {
+        let files = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+        let fileURL = try XCTUnwrap(files.first)
+        try FileManager.default.removeItem(at: fileURL)
+        var logs = try await systemUnderTest.getLogs()
+        XCTAssertEqual(logs.count, 0)
+        
+        let entry = LogEntry(category: "LogActorTests", namespace: nil, level: .error, message: UUID().uuidString, created: .init(timeIntervalSince1970: 0))
+        try await systemUnderTest.record(entry)
+        try await systemUnderTest.synchronize()
+        
+        logs = try await systemUnderTest.getLogs()
+        XCTAssertEqual(logs.count, 1)
+        let contents = try XCTUnwrap(FileManager.default.contents(atPath: fileURL.path))
+        XCTAssertNotNil(contents)
+    }
 }

@@ -12,6 +12,9 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
+import AWSClientRuntime
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(InternalHttpEngineProxy) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
 
@@ -89,15 +92,17 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                endpointResolver: userPoolConfig.endpoint?.resolver,
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: userPoolConfig.region
+                region: userPoolConfig.region,
+                serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
             )
 
             if var httpClientEngineProxy = httpClientEngineProxy {
-                let sdkEngine = configuration.httpClientEngine
-                httpClientEngineProxy.target = sdkEngine
-                configuration.httpClientEngine = httpClientEngineProxy
+                httpClientEngineProxy.target = baseClientEngine(for: configuration)
+                configuration.httpClientEngine = UserAgentSettingClientEngine(
+                    target: httpClientEngineProxy
+                )
+            } else {
+                configuration.httpClientEngine = .userAgentEngine(for: configuration)
             }
 
             return CognitoIdentityProviderClient(config: configuration)
@@ -110,9 +115,10 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: identityPoolConfig.region
             )
+            configuration.httpClientEngine = .userAgentEngine(for: configuration)
+
             return CognitoIdentityClient(config: configuration)
         default:
             fatalError()

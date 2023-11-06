@@ -44,14 +44,6 @@ class StorageMultipartUploadSession {
 
     private let transferTask: StorageTransferTask
 
-    private var contentType: String? {
-        transferTask.contentType
-    }
-
-    private var requestHeaders: RequestHeaders? {
-        transferTask.requestHeaders
-    }
-
     init(client: StorageMultipartUploadClient,
          bucket: String,
          key: String,

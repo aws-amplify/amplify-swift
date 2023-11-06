@@ -118,7 +118,6 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
         let expectedUploadSource = UploadSource.local(fileURL)
         let metadata = ["mykey": "Value"]
-        let expectedMetadata = ["x-amz-meta-mykey": "Value"]
 
         let options = StorageUploadFileRequest.Options(accessLevel: .protected,
                                                        metadata: metadata,
@@ -153,7 +152,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                         key: testKey,
                                         uploadSource: expectedUploadSource,
                                         contentType: testContentType,
-                                        metadata: expectedMetadata)
+                                        metadata: metadata)
     }
 
     func testUploadFileOperationUploadFail() {
@@ -219,7 +218,6 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                       "Could not create data object greater than MultiPartUploadSizeThreshold")
         let expectedUploadSource = UploadSource.local(testURL)
         let metadata = ["mykey": "Value"]
-        let expectedMetadata = ["x-amz-meta-mykey": "Value"]
 
         let options = StorageUploadFileRequest.Options(accessLevel: .protected,
                                                        metadata: metadata,
@@ -254,7 +252,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                  key: testKey,
                                                  uploadSource: expectedUploadSource,
                                                  contentType: testContentType,
-                                                 metadata: expectedMetadata)
+                                                 metadata: metadata)
     }
 
     // TODO: test pause, resume, canel, etc.

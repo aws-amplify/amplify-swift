@@ -115,22 +115,25 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
             do {
                 let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
                 let serviceKey = prefix + request.key
-                let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.options.metadata)
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
                 if uploadSize > StorageUploadFileRequest.Options.multiPartUploadSizeThreshold {
-                    storageService.multiPartUpload(serviceKey: serviceKey,
-                                                        uploadSource: .local(request.local),
-                                                        contentType: request.options.contentType,
-                                                        metadata: serviceMetadata,
-                                                        accelerate: accelerate) { [weak self] event in
+                    storageService.multiPartUpload(
+                        serviceKey: serviceKey,
+                        uploadSource: .local(request.local),
+                        contentType: request.options.contentType,
+                        metadata: request.options.metadata,
+                        accelerate: accelerate
+                    ) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
                 } else {
-                    storageService.upload(serviceKey: serviceKey,
-                                               uploadSource: .local(request.local),
-                                               contentType: request.options.contentType,
-                                               metadata: serviceMetadata,
-                                               accelerate: accelerate) { [weak self] event in
+                    storageService.upload(
+                        serviceKey: serviceKey,
+                        uploadSource: .local(request.local),
+                        contentType: request.options.contentType,
+                        metadata: request.options.metadata,
+                        accelerate: accelerate
+                    ) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
                 }

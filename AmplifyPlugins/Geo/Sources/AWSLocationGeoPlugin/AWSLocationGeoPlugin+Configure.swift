@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
 import Amplify
 import AWSPluginsCore
-import Foundation
-
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import AWSLocation
 import AWSClientRuntime
 
@@ -30,10 +30,13 @@ extension AWSLocationGeoPlugin {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
         let region = configuration.regionName
+        // TODO: FrameworkMetadata Replacement
         let serviceConfiguration = try LocationClient.LocationClientConfiguration(
-            credentialsProvider: credentialsProvider,
-            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-            region: region)
+            region: region,
+            credentialsProvider: credentialsProvider
+        )
+
+        serviceConfiguration.httpClientEngine = .userAgentEngine(for: serviceConfiguration)
 
         let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)

@@ -86,7 +86,7 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase {
             }
         }
 
-        wait(for: [syncStarted], timeout: 100.0)
+        await fulfillment(of: [syncStarted], timeout: 100.0)
     }
 
 }

@@ -12,7 +12,7 @@ import Foundation
 
 class MockAWSSignatureV4Signer: AWSSignatureV4Signer {
     func sigV4SignedRequest(requestBuilder: SdkHttpRequestBuilder,
-                            credentialsProvider: CredentialsProvider,
+                            credentialsProvider: CredentialsProviding,
                             signingName: String,
                             signingRegion: String,
                             date: Date) throws -> SdkHttpRequest? {

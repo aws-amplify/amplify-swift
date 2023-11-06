@@ -1,0 +1,46 @@
+name: Integration Tests | Logging
+on:
+  workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
+  workflow_call:
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+  logging-integration-tests:
+    name: Logging Integration Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'Dummy' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'Dummy' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'Dummy' }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSCloudWatchLoggingPluginIntegrationTestsWatch' || 'AWSCloudWatchLoggingPluginIntegrationTests' }}
+      platform: ${{ matrix.platform }}
+      build_cache_key: AWSCloudWatchLoggingPlugin-${{ matrix.platform }}-latest-build-main
+      project_path: ./AmplifyPlugins/Logging/Tests/AWSCloudWatchLoggingPluginHostApp
+      xcode_version: ${{ matrix.platform == 'watchOS' && '15.0' || '14.3' }}
+      resource_subfolder: logging
+      timeout-minutes: 45
+    secrets: inherit

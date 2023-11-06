@@ -6,13 +6,15 @@
 //
 
 import Amplify
+import AWSCognitoAuthPlugin
 import AWSPinpoint
 import ClientRuntime
+import enum AwsCommonRuntimeKit.CommonRunTimeError
 import Foundation
 
 /// AnalyticsEventRecording saves and submits pinpoint events
-protocol AnalyticsEventRecording {
-    var pinpointClient: PinpointClientProtocol { get }
+protocol AnalyticsEventRecording: Actor {
+    nonisolated var pinpointClient: PinpointClientProtocol { get }
 
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
@@ -33,12 +35,13 @@ protocol AnalyticsEventRecording {
 }
 
 /// An AnalyticsEventRecording implementation that stores and submits pinpoint events
-class EventRecorder: AnalyticsEventRecording {
-    let appId: String
-    let storage: AnalyticsEventStorage
-    let pinpointClient: PinpointClientProtocol
-    let endpointClient: EndpointClientBehaviour
+actor EventRecorder: AnalyticsEventRecording {
+    private let appId: String
+    private let storage: AnalyticsEventStorage
     private var submittedEvents: [PinpointEvent] = []
+    private var submissionTask: Task<[PinpointEvent], Error>?
+    nonisolated let endpointClient: EndpointClientBehaviour
+    nonisolated let pinpointClient: PinpointClientProtocol
 
     /// Initializer for Event Recorder
     /// - Parameters:
@@ -64,31 +67,37 @@ class EventRecorder: AnalyticsEventRecording {
     func save(_ event: PinpointEvent) throws {
         log.verbose("saveEvent: \(event)")
         try storage.saveEvent(event)
-        try self.storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
+        try storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
     }
 
     func updateAttributesOfEvents(ofType eventType: String,
                                   withSessionId sessionId: PinpointSession.SessionId,
                                   setAttributes attributes: [String: String]) throws {
-        try self.storage.updateEvents(ofType: eventType,
+        try storage.updateEvents(ofType: eventType,
                                       withSessionId: sessionId,
                                       setAttributes: attributes)
     }
 
-    /// Submit all locally stored events in batches
-    /// If event submission fails, the event retry count is increment otherwise event is marked dirty and available for deletion in the local storage if retry count exceeds 3
-    /// If event submission succeeds, the event is removed from local storage
+    /// Submit all locally stored events in batches. If a previous submission is in progress, it waits until it's completed before proceeding.
+    /// When the submission for an event is accepted, the event is removed from local storage
+    /// When the submission for an event is rejected, the event retry count is incremented in the local storage. Events that exceed the maximum retry count (3) are purged.
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent] {
-        submittedEvents = []
-        let eventsBatch = try getBatchRecords()
-        if eventsBatch.count > 0 {
-            let endpointProfile = await endpointClient.currentEndpointProfile()
-            try await processBatch(eventsBatch, endpointProfile: endpointProfile)
-        } else {
-            log.verbose("No events to submit")
+        let task = Task { [submissionTask] in
+            // Wait for the previous submission to complete, regardless of its result
+            _ = try? await submissionTask?.value
+            submittedEvents = []
+            let eventsBatch = try getBatchRecords()
+            if eventsBatch.count > 0 {
+                let endpointProfile = await endpointClient.currentEndpointProfile()
+                try await processBatch(eventsBatch, endpointProfile: endpointProfile)
+            } else {
+                log.verbose("No events to submit")
+            }
+            return submittedEvents
         }
-        return submittedEvents
+        submissionTask = task
+        return try await task.value
     }
 
     private func getBatchRecords() throws -> [PinpointEvent] {
@@ -185,47 +194,81 @@ class EventRecorder: AnalyticsEventRecording {
         } catch let analyticsError as AnalyticsError {
             // This is a known error explicitly thrown inside the do/catch block, so just rethrow it so it can be handled by the consumer
             throw analyticsError
+        } catch let authError as AuthError {
+            // This means all events were rejected due to an Auth error
+            log.error("Unable to submit \(pinpointEvents.count) events. Error: \(authError.errorDescription). \(authError.recoverySuggestion)")
+            switch authError {
+            case .signedOut,
+                 .sessionExpired:
+                // Session Expired and Signed Out errors should be retried indefinitely, so we won't update the database
+                log.verbose("Events will be retried")
+            case .service:
+                if case .invalidAccountTypeException = authError.underlyingError as? AWSCognitoAuthError {
+                    // Unsupported Guest Access errors should be retried indefinitely, so we won't update the database
+                    log.verbose("Events will be retried")
+                } else {
+                    fallthrough
+                }
+            default:
+                if let underlyingError = authError.underlyingError {
+                    // Handle the underlying error accordingly
+                    handleError(underlyingError, for: pinpointEvents)
+                } else {
+                    // Otherwise just mark all events as dirty
+                    log.verbose("Events will be discarded")
+                    markEventsAsDirty(pinpointEvents)
+                }
+            }
+
+            // Rethrow the original error so it can be handled by the consumer
+            throw authError
         } catch {
             // This means all events were rejected
-            if isConnectivityError(error) {
-                // Connectivity errors should be retried indefinitely, so we won't update the database
-                log.error("Unable to submit \(pinpointEvents.count) events. Error: \(AWSPinpointErrorConstants.deviceOffline.errorDescription)")
-            } else if isErrorRetryable(error) {
-                // For retryable errors, increment the events retry count
-                log.error("Unable to submit \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
-                incrementRetryCounter(for: pinpointEvents)
-            } else {
-                // For remaining errors, mark events as dirty
-                log.error("Server rejected the submission of \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
-                markEventsAsDirty(pinpointEvents)
-            }
+            log.error("Unable to submit \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
+            handleError(error, for: pinpointEvents)
 
             // Rethrow the original error so it can be handled by the consumer
             throw error
         }
     }
+    
+    private func handleError(_ error: Error, for pinpointEvents: [PinpointEvent]) {
+        if isConnectivityError(error) {
+            // Connectivity errors should be retried indefinitely, so we won't update the database
+            log.verbose("Events will be retried")
+            return
+        }
+
+        if isErrorRetryable(error) {
+            // For retryable errors, increment the events retry count
+            log.verbose("Events' retry count will be increased")
+            incrementRetryCounter(for: pinpointEvents)
+        } else {
+            // For remaining errors, mark events as dirty
+            log.verbose("Events will be discarded")
+            markEventsAsDirty(pinpointEvents)
+        }
+    }
 
     private func isErrorRetryable(_ error: Error) -> Bool {
-        switch error {
-        case let clientError as ClientError:
-            return clientError.isRetryable
-        case let putEventsOutputError as PutEventsOutputError:
-            return putEventsOutputError.isRetryable
-        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
-            return sdkPutEventsOutputError.isRetryable
-        case let sdkError as SdkError<Error>:
-            return sdkError.isRetryable
-        default:
+        guard case let modeledError as ModeledError = error else {
             return false
         }
+        return type(of: modeledError).isRetryable
     }
     
     private func errorDescription(_ error: Error) -> String {
+        if isConnectivityError(error) {
+            return AWSPinpointErrorConstants.deviceOffline.errorDescription
+        }
         switch error {
-        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
-            return sdkPutEventsOutputError.errorDescription
-        case let sdkError as SdkError<Error>:
-            return sdkError.errorDescription
+        case let error as ModeledErrorDescribable:
+            return error.errorDescription
+        case let error as CommonRunTimeError:
+            switch error {
+            case .crtError(let crtError):
+                return crtError.message
+            }
         default:
             return error.localizedDescription
         }
@@ -233,15 +276,8 @@ class EventRecorder: AnalyticsEventRecording {
     
     private func isConnectivityError(_ error: Error) -> Bool {
         switch error {
-        case let clientError as ClientError:
-            if case .networkError(_) = clientError {
-                return true
-            }
-            return false
-        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
-            return sdkPutEventsOutputError.isConnectivityError
-        case let sdkError as SdkError<Error>:
-            return sdkError.isConnectivityError
+        case let error as CommonRunTimeError:
+            return error.isConnectivityError
         case let error as NSError:
             let networkErrorCodes = [
                 NSURLErrorCannotFindHost,
@@ -314,7 +350,7 @@ extension EventRecorder: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    public var log: Logger {
+    nonisolated public var log: Logger {
         Self.log
     }
 }

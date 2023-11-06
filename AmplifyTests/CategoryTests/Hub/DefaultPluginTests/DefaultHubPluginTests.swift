@@ -69,7 +69,7 @@ class DefaultHubPluginTests: XCTestCase {
         }
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
-        await waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [expectedMessageReceived], timeout: 0.5)
     }
 
     /// Given: The default Hub plugin with a registered listener
@@ -92,7 +92,7 @@ class DefaultHubPluginTests: XCTestCase {
         }
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
-        await waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [messageReceived], timeout: 0.5)
     }
 
     /// Given: A subscription token from a previous call to the default Hub plugin's `listen` method
@@ -129,7 +129,7 @@ class DefaultHubPluginTests: XCTestCase {
         }
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
-        await waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [try XCTUnwrap(currentExpectation)], timeout: 0.5)
 
         plugin.removeListener(unsubscribeToken)
         try? await Task.sleep(seconds: 0.01)
@@ -147,7 +147,7 @@ class DefaultHubPluginTests: XCTestCase {
         XCTAssertFalse(isStillRegistered.get(), "Should not be registered after removeListener")
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
-        await waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [try XCTUnwrap(currentExpectation)], timeout: 0.5)
     }
 
     /// Given: The default Hub plugin

@@ -130,10 +130,13 @@ final class InitialSyncOperation: AsynchronousOperation {
             switch result {
             case .failure(let apiError):
                 if self.isAuthSignedOutError(apiError: apiError) {
-                    self.dataStoreConfiguration.errorHandler(DataStoreError.api(apiError))
+                    self.log.error("Sync for \(self.modelSchema.name) failed due to signed out error \(apiError.errorDescription)")
                 }
+                
                 // TODO: Retry query on error
-                self.finish(result: .failure(DataStoreError.api(apiError)))
+                let error = DataStoreError.api(apiError)
+                self.dataStoreConfiguration.errorHandler(error)
+                self.finish(result: .failure(error))
             case .success(let graphQLResult):
                 self.handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
             }

@@ -159,13 +159,20 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         do {
             _ = try await Amplify.Auth.signIn(username: "username-doesnot-exist", password: "password")
             XCTFail("SignIn with unknown user should not succeed")
+        } catch let error as AuthError {
+            let underlyingError = error.underlyingError as? AWSCognitoAuthError
+            switch underlyingError {
+            case .userNotFound, .limitExceeded: break
+            default:
+                XCTFail(
+                    """
+                    Expected AWSCognitoAuthError.userNotFound || AWSCognitoAuthError.limitExceed
+                    Recevied: \(error)
+                    """
+                )
+            }
         } catch {
-            guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
-                  case .userNotFound = cognitoError
-            else {
-                      XCTFail("Should return userNotFound error")
-                      return
-                  }
+            XCTFail("Expected `AuthError` - received: \(error)")
         }
     }
 
@@ -251,7 +258,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             XCTFail("SignIn with invalid auth flow should not succeed: \(error)")
         }
 
-        wait(for: [operationExpectation], timeout: networkTimeout)
+        await fulfillment(of: [operationExpectation], timeout: networkTimeout)
 
         let confirmOperationExpectation = expectation(description: "Confirm new password should succeed")
         do {
@@ -270,7 +277,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             XCTFail("Failed to confirm new password with error: \(error)")
         }
 
-        wait(for: [confirmOperationExpectation], timeout: networkTimeout)
+        await fulfillment(of: [confirmOperationExpectation], timeout: networkTimeout)
 
     }
 
@@ -282,8 +289,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get success for both the API's
     ///
-    func testSignInWithFetchAuthSession() {
-
+    func testSignInWithFetchAuthSession() async {
         let fetchAuthSessionExpectation = expectation(description: "Fetch Auth Session completed")
         let signInExpectation = expectation(description: "Sign in completed")
 
@@ -319,7 +325,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             signInExpectation.fulfill()
         }
 
-        wait(for: [signInExpectation, fetchAuthSessionExpectation], timeout: 10)
+        await fulfillment(of: [signInExpectation, fetchAuthSessionExpectation], timeout: 60)
     }
 
 }

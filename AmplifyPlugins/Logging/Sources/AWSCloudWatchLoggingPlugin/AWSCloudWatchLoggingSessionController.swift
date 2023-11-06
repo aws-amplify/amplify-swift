@@ -6,6 +6,7 @@
 //
 
 import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import Amplify
 import Combine
 import Foundation
@@ -20,13 +21,13 @@ import Network
 final class AWSCloudWatchLoggingSessionController {
     
     var client: CloudWatchLogsClientProtocol?
+    let namespace: String?
     private let logGroupName: String
     private let region: String
     private let localStoreMaxSizeInMB: Int
-    private let credentialsProvider: CredentialsProvider
+    private let credentialsProvider: CredentialsProviding
     private let authentication: AuthCategoryUserBehavior
     private let category: String
-    private let namespace: String?
     private var session: AWSCloudWatchLoggingSession?
     private var consumer: LogBatchConsumer?
     private let logFilter: AWSCloudWatchLoggingFilterBehavior
@@ -58,7 +59,7 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     /// - Tag: CloudWatchLogSessionController.init
-    init(credentialsProvider: CredentialsProvider,
+    init(credentialsProvider: CredentialsProviding,
          authentication: AuthCategoryUserBehavior,
          logFilter: AWSCloudWatchLoggingFilterBehavior,
          category: String,
@@ -102,11 +103,14 @@ final class AWSCloudWatchLoggingSessionController {
 
     private func createConsumer() throws -> LogBatchConsumer? {
         if self.client == nil {
+            // TODO: FrameworkMetadata Replacement
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
-                credentialsProvider: credentialsProvider,
-                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                region: region
+                region: region,
+                credentialsProvider: credentialsProvider
             )
+
+            configuration.httpClientEngine = .userAgentEngine(for: configuration)
+
             self.client = CloudWatchLogsClient(config: configuration)
         }
 

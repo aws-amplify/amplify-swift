@@ -17,24 +17,34 @@ extension TodoImplicitOwnerField {
     case createdAt
     case updatedAt
   }
-
+  
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-
+  
   public static let schema = defineSchema { model in
     let todoImplicitOwnerField = TodoImplicitOwnerField.keys
-
+    
     model.authRules = [
       rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
-
-    model.pluralName = "TodoImplicitOwnerFields"
-
+    
+    model.listPluralName = "TodoImplicitOwnerFields"
+    model.syncPluralName = "TodoImplicitOwnerFields"
+    
+    model.attributes(
+      .primaryKey(fields: [todoImplicitOwnerField.id])
+    )
+    
     model.fields(
-      .id(),
+      .field(todoImplicitOwnerField.id, is: .required, ofType: .string),
       .field(todoImplicitOwnerField.content, is: .required, ofType: .string),
       .field(todoImplicitOwnerField.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(todoImplicitOwnerField.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+}
+
+extension TodoImplicitOwnerField: ModelIdentifiable {
+  public typealias IdentifierFormat = ModelIdentifierFormat.Default
+  public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }

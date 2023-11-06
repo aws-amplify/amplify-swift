@@ -1,6 +1,22 @@
 name: Integration Tests | Storage
 on:
   workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
   workflow_call:
 
 permissions:
@@ -8,85 +24,23 @@ permissions:
     contents: read
 
 jobs:
-  storage-integration-test-iOS:
-    runs-on: macos-13
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: storage
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
-          scheme: AWSS3StoragePluginIntegrationTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=latest'
-          xcode_path: '/Applications/Xcode_14.3.app'
-
-  storage-integration-test-tvOS:
-    runs-on: macos-13
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: storage
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
-          scheme: AWSS3StoragePluginIntegrationTests
-          destination: platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest
-          sdk: appletvsimulator
-          xcode_path: '/Applications/Xcode_14.3.app'
-
-  storage-integration-test-watchOS:
-    runs-on: macos-13
-    environment: IntegrationTest
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          persist-credentials: false
-
-      - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Copy integration test resouces
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: storage
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
-
-      - name: Run Integration test
-        uses: ./.github/composite_actions/run_xcodebuild_test
-        with:
-          project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
-          scheme: AWSS3StoragePluginIntegrationTestsWatch
-          destination: platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=latest
-          sdk: watchsimulator
-          xcode_path: '/Applications/Xcode_14.3.app'
+  storage-integration-tests:
+    name: Storage Integration Tests
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'Dummy' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'Dummy' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'Dummy' }}
+    uses: ./.github/workflows/run_integration_tests.yml
+    with:
+      scheme: ${{ matrix.platform == 'watchOS' && 'AWSS3StoragePluginIntegrationTestsWatch' || 'AWSS3StoragePluginIntegrationTests' }}
+      platform: ${{ matrix.platform }}
+      build_cache_key: AWSS3StoragePlugin-${{ matrix.platform }}-latest-build-main
+      project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
+      xcode_version: '14.3'
+      resource_subfolder: storage
+      timeout-minutes: 30
+    secrets: inherit

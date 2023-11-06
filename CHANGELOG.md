@@ -1,5 +1,91 @@
 # Changelog
 
+## 2.21.4 (2023-11-02)
+
+### Bug Fixes
+
+- **Analytics**: Fixing crash when attempting to submit events while a previous submission is in progress (#3331)
+
+## 2.21.3 (2023-11-01)
+
+### Bug Fixes
+
+- bump swift sdk to 0.26.1 (#3333)
+
+## 2.21.2 (2023-10-31)
+
+### Bug Fixes
+
+- **Analytics**: Handling certain auth errors as retryable errors (#3322)
+
+## 2.21.1 (2023-10-23)
+
+### Bug Fixes
+
+- **storage**: include user-controlled metadata in upload requests (#3315)
+- **PushNotifications**: Fixing .network error not being correctly reported (#3314)
+
+## 2.21.0 (2023-10-21)
+
+### Features
+
+- **datastore**: Add `isLoaded` public property in List+Model (#3296)
+
+## 2.20.1 (2023-10-19)
+
+### Bug Fixes
+
+- **storage**: add metadata support to uploads (#3295)
+
+## 2.20.0 (2023-10-18)
+
+### Features
+
+- **core**: update swift sdk dependency version to 0.26.0 (#3248)
+
+## 2.19.0 (2023-09-28)
+
+### Features
+
+- **datastore**: filter authrules with invalid ownerfield (#3223)
+
+## 2.18.2 (2023-09-28)
+
+### Bug Fixes
+
+- **datastore**: Continue initial sync if atleast one model syncs successfully and other models fail due to Unauthorized API error (#3224)
+- **datastore**: call errorHandler in Sync operation when failure
+
+## 2.18.1 (2023-09-25)
+
+### Bug Fixes
+
+- **core**: add Foundation HTTP client for watchOS / tvOS (#3230)
+
+## 2.18.0 (2023-09-21)
+
+### Features
+
+- Setting mininum watchOS version to 9 (#3229)
+- change swift-tools-version to 5.7 (#3193)
+
+## 2.17.2 (2023-09-18)
+
+### Bug Fixes
+
+- **datastore**: use unwrapped storageEngine to perform datastore operations (#3204)
+- **datastore**: using URLProtocol monitor auth request headers (#3221)
+- **api**: change request interceptors applying logic (#3190)
+- **logging**: fix issue with logger namespace not being set (#3213)
+- **datastore**: wrap failures to result when applying remote update events (#3187)
+
+## 2.17.1 (2023-09-05)
+
+### Bug Fixes
+
+- **logging**: create log file if it doesn't exist (#3202)
+- **PushNotifications**: Adding missing escape hatch to the plugin (#3201)
+
 ## 2.17.0 (2023-08-31)
 
 ### Features

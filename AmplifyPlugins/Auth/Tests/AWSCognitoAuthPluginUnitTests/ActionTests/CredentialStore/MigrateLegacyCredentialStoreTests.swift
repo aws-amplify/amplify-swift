@@ -72,7 +72,11 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
+
+        await fulfillment(
+            of: [saveCredentialHandlerInvoked],
+            timeout: 0.1
+        )
     }
 
     /// Test is responsible for making sure that the legacy credential store clearing up is getting called for user pool and identity pool
@@ -115,8 +119,124 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         let action = MigrateLegacyCredentialStore()
         await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
 
-        await waitForExpectations(timeout: 0.1)
-
+        await fulfillment(
+            of: [migrationCompletionInvoked],
+    
+            timeout: 0.1
+        )
     }
 
+    /// - Given: A credential store with an invalid environment
+    /// - When: The migration legacy store action is executed
+    /// - Then: An error event of type configuration is dispatched
+    func testExecute_withInvalidEnvironment_shouldDispatchError() async {
+        let expectation = expectation(description: "noEnvironment")
+        let action = MigrateLegacyCredentialStore()
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
+                guard let event = event as? CredentialStoreEvent,
+                      case let .throwError(error) = event.eventType else {
+                    XCTFail("Expected failure due to no CredentialEnvironment")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertEqual(error, .configuration(message: AuthPluginErrorConstants.configurationError))
+                expectation.fulfill()
+            },
+            environment: MockInvalidEnvironment()
+        )
+        await fulfillment(of: [expectation], timeout: 1)
+    }
+    
+    /// - Given: A credential store with an environment that only has identity pool
+    /// - When: The migration legacy store action is executed
+    /// - Then: 
+    ///     - A .loadCredentialStore event with type .amplifyCredentials is dispatched
+    ///     - An .identityPoolOnly credential is saved
+    func testExecute_withoutUserPool_andWithoutLoginsTokens_shouldDispatchLoadEvent() async {
+        let expectation = expectation(description: "noUserPoolTokens")
+        let action = MigrateLegacyCredentialStore()
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
+                guard let event = event as? CredentialStoreEvent,
+                      case .loadCredentialStore(let type) = event.eventType else {
+                    XCTFail("Expected .loadCredentialStore")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertEqual(type, .amplifyCredentials)
+                expectation.fulfill()
+            },
+            environment: CredentialEnvironment(
+                authConfiguration: .identityPools(.testData),
+                credentialStoreEnvironment: BasicCredentialStoreEnvironment(
+                    amplifyCredentialStoreFactory: {
+                        MockAmplifyCredentialStoreBehavior(
+                            saveCredentialHandler: { codableCredentials in
+                                guard let amplifyCredentials = codableCredentials as? AmplifyCredentials,
+                                      case .identityPoolOnly(_, let credentials) = amplifyCredentials else {
+                                    XCTFail("Expected .identityPoolOnly")
+                                    return
+                                }
+                                XCTAssertFalse(credentials.sessionToken.isEmpty)
+                            }
+                        )
+                    },
+                    legacyKeychainStoreFactory: { _ in
+                        MockKeychainStoreBehavior(data: "hostedUI")
+                    }),
+                logger: MigrateLegacyCredentialStore.log
+            )
+        )
+        await fulfillment(of: [expectation], timeout: 1)
+    }
+    
+    /// - Given: A credential store with an environment that only has identity pool
+    /// - When: The migration legacy store action is executed
+    ///     - A .loadCredentialStore event with type .amplifyCredentials is dispatched
+    ///     - An .identityPoolWithFederation credential is saved
+    func testExecute_withoutUserPool_andWithLoginsTokens_shouldDispatchLoadEvent() async {
+        let expectation = expectation(description: "noUserPoolTokens")
+        let action = MigrateLegacyCredentialStore()
+        await action.execute(
+            withDispatcher: MockDispatcher { event in
+                guard let event = event as? CredentialStoreEvent,
+                      case .loadCredentialStore(let type) = event.eventType else {
+                    XCTFail("Expected .loadCredentialStore")
+                    expectation.fulfill()
+                    return
+                }
+                XCTAssertEqual(type, .amplifyCredentials)
+                expectation.fulfill()
+            },
+            environment: CredentialEnvironment(
+                authConfiguration: .identityPools(.testData),
+                credentialStoreEnvironment: BasicCredentialStoreEnvironment(
+                    amplifyCredentialStoreFactory: {
+                        MockAmplifyCredentialStoreBehavior(
+                            saveCredentialHandler: { codableCredentials in
+                                guard let amplifyCredentials = codableCredentials as? AmplifyCredentials,
+                                      case .identityPoolWithFederation(let token, _, _) = amplifyCredentials else {
+                                    XCTFail("Expected .identityPoolWithFederation")
+                                    return
+                                }
+
+                                XCTAssertEqual(token.token, "token")
+                                XCTAssertEqual(token.provider.userPoolProviderName, "provider")
+                            }
+                        )
+                    },
+                    legacyKeychainStoreFactory: { _ in
+                        let data = try! JSONEncoder().encode([
+                            "provider": "token"
+                        ])
+                        return MockKeychainStoreBehavior(
+                            data: String(decoding: data, as: UTF8.self)
+                        )
+                    }),
+                logger: action.log
+            )
+        )
+        await fulfillment(of: [expectation], timeout: 1)
+    }
 }

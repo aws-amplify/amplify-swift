@@ -264,79 +264,64 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         return dispositions
     }
 
+    func applyRemoteModelsDisposition(
+        storageAdapter: StorageEngineAdapter,
+        disposition: RemoteSyncReconciler.Disposition
+    ) -> AnyPublisher<Result<Void, DataStoreError>, Never> {
+        let operation: Future<ApplyRemoteModelResult, DataStoreError>
+        let mutationType: MutationEvent.MutationType
+        switch disposition {
+        case .create(let remoteModel):
+            operation = self.save(storageAdapter: storageAdapter, remoteModel: remoteModel)
+            mutationType = .create
+        case .update(let remoteModel):
+            operation = self.save(storageAdapter: storageAdapter, remoteModel: remoteModel)
+            mutationType = .update
+        case .delete(let remoteModel):
+            operation = self.delete(storageAdapter: storageAdapter, remoteModel: remoteModel)
+            mutationType = .delete
+        }
+
+        return operation
+            .flatMap { applyResult in
+                self.saveMetadata(storageAdapter: storageAdapter, applyResult: applyResult, mutationType: mutationType)
+            }
+            .map {_ in Result.success(()) }
+            .catch { Just<Result<Void, DataStoreError>>(.failure($0))}
+            .eraseToAnyPublisher()
+    }
+
     // TODO: refactor - move each the publisher constructions to its own utility method for readability of the
     // `switch` and a single method that you can invoke in the `map`
     func applyRemoteModelsDispositions(
-        _ dispositions: [RemoteSyncReconciler.Disposition]) -> Future<Void, DataStoreError> {
-        Future<Void, DataStoreError> { promise in
-            var result: Result<Void, DataStoreError> = .failure(Self.unfulfilledDataStoreError())
-            defer {
-                promise(result)
-            }
-            guard !self.isCancelled else {
-                self.log.info("\(#function) - cancelled, aborting")
-                result = .successfulVoid
-                return
-            }
-            guard let storageAdapter = self.storageAdapter else {
-                let error = DataStoreError.nilStorageAdapter()
-                self.notifyDropped(count: dispositions.count, error: error)
-                result = .failure(error)
-                return
-            }
+        _ dispositions: [RemoteSyncReconciler.Disposition]
+    ) -> Future<Void, DataStoreError> {
+        guard !self.isCancelled else {
+            self.log.info("\(#function) - cancelled, aborting")
+            return Future { $0(.successfulVoid) }
+        }
 
-            guard !dispositions.isEmpty else {
-                result = .successfulVoid
-                return
-            }
+        guard let storageAdapter = self.storageAdapter else {
+            let error = DataStoreError.nilStorageAdapter()
+            self.notifyDropped(count: dispositions.count, error: error)
+            return Future { $0(.failure(error)) }
+        }
 
-            let publishers = dispositions.map { disposition ->
-                Publishers.FlatMap<Future<Void, DataStoreError>,
-                                   Future<ReconcileAndLocalSaveOperation.ApplyRemoteModelResult, DataStoreError>> in
+        guard !dispositions.isEmpty else {
+            return Future { $0(.successfulVoid) }
+        }
 
-                switch disposition {
-                case .create(let remoteModel):
-                    let publisher = self.save(storageAdapter: storageAdapter,
-                                              remoteModel: remoteModel)
-                        .flatMap { applyResult in
-                            self.saveMetadata(storageAdapter: storageAdapter,
-                                              applyResult: applyResult,
-                                              mutationType: .create)
-                        }
-                    return publisher
-                case .update(let remoteModel):
-                    let publisher = self.save(storageAdapter: storageAdapter,
-                                              remoteModel: remoteModel)
-                        .flatMap { applyResult in
-                            self.saveMetadata(storageAdapter: storageAdapter,
-                                              applyResult: applyResult,
-                                              mutationType: .update)
-                        }
-                    return publisher
-                case .delete(let remoteModel):
-                    let publisher = self.delete(storageAdapter: storageAdapter,
-                                                remoteModel: remoteModel)
-                        .flatMap { applyResult in
-                            self.saveMetadata(storageAdapter: storageAdapter,
-                                              applyResult: applyResult,
-                                              mutationType: .delete)
-                        }
-                    return publisher
-                }
-            }
+        let publishers = dispositions.map {
+            applyRemoteModelsDisposition(storageAdapter: storageAdapter, disposition: $0)
+        }
 
+        return Future { promise in
             Publishers.MergeMany(publishers)
                 .collect()
-                .sink(
-                    receiveCompletion: {
-                        if case .failure(let error) = $0 {
-                            result = .failure(error)
-                        }
-                    },
-                    receiveValue: { _ in
-                        result = .successfulVoid
-                    }
-                )
+                .sink { _ in
+                    // This stream will never fail, as we wrapped error in the result type.
+                    promise(.successfulVoid)
+                } receiveValue: { _ in }
                 .store(in: &self.cancellables)
         }
     }

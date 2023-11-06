@@ -49,24 +49,22 @@ final class AnalyticsStressTests: XCTestCase {
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
         
-        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
         
-        let recordExpectation = asyncExpectation(description: "Records are successfully recorded",
-                                                 expectedFulfillmentCount: concurrencyLimit)
+        let recordExpectation = expectation(description: "Records are successfully recorded")
+        recordExpectation.expectedFulfillmentCount = concurrencyLimit
         for eventNumber in 0...concurrencyLimit {
-            Task {
-                let properties = ["eventPropertyStringKey1": "eventProperyStringValue1",
-                                  "eventPropertyStringKey2": "eventProperyStringValue2",
-                                  "eventPropertyStringKey3": "eventProperyStringValue3",
-                                  "eventPropertyStringKey4": "eventProperyStringValue4",
-                                  "eventPropertyStringKey5": "eventProperyStringValue5"] as [String: AnalyticsPropertyValue]
-                let event = BasicAnalyticsEvent(name: "eventName" + String(eventNumber), properties: properties)
-                Amplify.Analytics.record(event: event)
-                await recordExpectation.fulfill()
-            }
+            let properties = ["eventPropertyStringKey1": "eventProperyStringValue1",
+                              "eventPropertyStringKey2": "eventProperyStringValue2",
+                              "eventPropertyStringKey3": "eventProperyStringValue3",
+                              "eventPropertyStringKey4": "eventProperyStringValue4",
+                              "eventPropertyStringKey5": "eventProperyStringValue5"] as [String: AnalyticsPropertyValue]
+            let event = BasicAnalyticsEvent(name: "eventName" + String(eventNumber), properties: properties)
+            Amplify.Analytics.record(event: event)
+            recordExpectation.fulfill()
         }
 
-        await waitForExpectations([recordExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [recordExpectation], timeout: TestCommonConstants.networkTimeout)
     }
     
     /// - Given: Analytics plugin configured with valid configuration
@@ -82,10 +80,11 @@ final class AnalyticsStressTests: XCTestCase {
         }
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
         
-        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
         
-        let recordExpectation = asyncExpectation(description: "Records are successfully recorded",
-                                                 expectedFulfillmentCount: concurrencyLimit)
+        let recordExpectation = expectation(description: "Records are successfully recorded")
+        recordExpectation.expectedFulfillmentCount = concurrencyLimit
+
         for eventNumber in 0...concurrencyLimit {
             Task {
                 let properties = ["eventPropertyStringKey1": "eventProperyStringValue1",
@@ -110,11 +109,11 @@ final class AnalyticsStressTests: XCTestCase {
                                   "eventPropertyBoolKey5": true] as [String: AnalyticsPropertyValue]
                 let event = BasicAnalyticsEvent(name: "eventName" + String(eventNumber), properties: properties)
                 Amplify.Analytics.record(event: event)
-                await recordExpectation.fulfill()
+                recordExpectation.fulfill()
             }
         }
 
-        await waitForExpectations([recordExpectation], timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(of: [recordExpectation], timeout: TestCommonConstants.networkTimeout)
     }
 
 }

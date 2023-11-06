@@ -15,7 +15,11 @@ class AuthTokenURLRequestInterceptorTests: XCTestCase {
     func testAuthTokenInterceptor() async throws {
         let mockTokenProvider = MockTokenProvider()
         let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: mockTokenProvider)
-        let request = URLRequest(url: URL(string: "http://anapiendpoint.ca")!)
+        let request = RESTOperationRequestUtils.constructURLRequest(
+            with: URL(string: "http://anapiendpoint.ca")!,
+            operationType: .get,
+            requestPayload: nil
+        )
 
         guard let headers = try await interceptor.intercept(request).allHTTPHeaderFields else {
             XCTFail("Failed retrieving headers")

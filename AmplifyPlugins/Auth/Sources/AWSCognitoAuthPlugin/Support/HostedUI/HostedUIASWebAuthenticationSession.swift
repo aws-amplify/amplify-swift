@@ -22,7 +22,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                       callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
     #if os(iOS) || os(macOS)
         self.webPresentation = presentationAnchor
-        let aswebAuthenticationSession = ASWebAuthenticationSession(
+        let aswebAuthenticationSession = createAuthenticationSession(
             url: url,
             callbackURLScheme: callbackScheme,
             completionHandler: { url, error in
@@ -58,6 +58,16 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
     }
 
 #if os(iOS) || os(macOS)
+    var authenticationSessionFactory = ASWebAuthenticationSession.init(url:callbackURLScheme:completionHandler:)
+    
+    private func createAuthenticationSession(
+        url: URL,
+        callbackURLScheme: String?,
+        completionHandler: @escaping ASWebAuthenticationSession.CompletionHandler
+    ) -> ASWebAuthenticationSession {
+        return authenticationSessionFactory(url, callbackURLScheme, completionHandler)
+    }
+
     private func convertHostedUIError(_ error: Error) -> HostedUIError {
         if let asWebAuthError = error as? ASWebAuthenticationSessionError {
             switch asWebAuthError.code {

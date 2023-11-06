@@ -9,6 +9,18 @@ import AWSPinpoint
 import Foundation
 
 class MockPinpointClient: PinpointClientProtocol {
+    func getJourneyRunExecutionActivityMetrics(input: GetJourneyRunExecutionActivityMetricsInput) async throws -> GetJourneyRunExecutionActivityMetricsOutputResponse {
+        fatalError("Not supported")
+    }
+
+    func getJourneyRunExecutionMetrics(input: GetJourneyRunExecutionMetricsInput) async throws -> GetJourneyRunExecutionMetricsOutputResponse {
+        fatalError("Not supported")
+    }
+
+    func getJourneyRuns(input: GetJourneyRunsInput) async throws -> GetJourneyRunsOutputResponse {
+        fatalError("Not supported")
+    }
+
     func createApp(input: CreateAppInput) async throws -> CreateAppOutputResponse {
         fatalError("Not supported")
     }
@@ -353,8 +365,11 @@ class MockPinpointClient: PinpointClientProtocol {
         fatalError("Not supported")
     }
 
+    var putEventsCount = 0
+    var putEventsResult: Result<PutEventsOutputResponse, Error> = .failure(CancellationError())
     func putEvents(input: PutEventsInput) async throws -> PutEventsOutputResponse {
-        fatalError("Not supported")
+        putEventsCount += 1
+        return try putEventsResult.get()
     }
 
     func putEventStream(input: PutEventStreamInput) async throws -> PutEventStreamOutputResponse {

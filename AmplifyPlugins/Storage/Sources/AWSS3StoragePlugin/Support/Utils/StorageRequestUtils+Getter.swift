@@ -25,19 +25,6 @@ extension StorageRequestUtils {
         return accessLevel.serviceAccessPrefix + "/"
     }
 
-    static func getServiceMetadata(_ metadata: [String: String]?) -> [String: String]? {
-        guard let metadata = metadata else {
-            return nil
-        }
-        var serviceMetadata: [String: String] = [:]
-        for (key, value) in metadata {
-            let serviceKey = metadataKeyPrefix + key
-            serviceMetadata[serviceKey] = value
-        }
-
-        return serviceMetadata
-    }
-
     static func getSize(_ file: URL) throws -> UInt64 {
         if let error = validateFileExists(file) {
             throw StorageError.localFileNotFound(error.errorDescription, error.recoverySuggestion)

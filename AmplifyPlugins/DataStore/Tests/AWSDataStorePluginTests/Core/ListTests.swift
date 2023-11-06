@@ -8,9 +8,9 @@
 import Combine
 import XCTest
 
-@testable import Amplify
-@testable import AmplifyTestCommon
-@testable import AWSDataStorePlugin
+import Amplify
+import AmplifyTestCommon
+import AWSDataStorePlugin
 
 class ListTests: BaseDataStoreTests {
 
@@ -25,15 +25,9 @@ class ListTests: BaseDataStoreTests {
         let postId = preparePostDataForTest()
 
         func checkComments(_ comments: List<Comment>) async throws {
-            guard case .notLoaded = comments.loadedState else {
-                XCTFail("Should not be loaded")
-                return
-            }
+            XCTAssertFalse(comments.isLoaded)
             try await comments.fetch()
-            guard case .loaded = comments.loadedState else {
-                XCTFail("Should be loaded")
-                return
-            }
+            XCTAssertTrue(comments.isLoaded)
             XCTAssertEqual(comments.count, 2)
             expect.fulfill()
         }
@@ -49,7 +43,7 @@ class ListTests: BaseDataStoreTests {
             XCTFail("\(error)")
         }
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     // MARK: - Helpers

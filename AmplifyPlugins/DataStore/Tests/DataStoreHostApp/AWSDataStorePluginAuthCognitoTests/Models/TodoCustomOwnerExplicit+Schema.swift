@@ -18,25 +18,35 @@ extension TodoCustomOwnerExplicit {
     case createdAt
     case updatedAt
   }
-
+  
   public static let keys = CodingKeys.self
   //  MARK: - ModelSchema
-
+  
   public static let schema = defineSchema { model in
     let todoCustomOwnerExplicit = TodoCustomOwnerExplicit.keys
-
+    
     model.authRules = [
       rule(allow: .owner, ownerField: "dominus", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
-
-    model.pluralName = "TodoCustomOwnerExplicits"
-
+    
+    model.listPluralName = "TodoCustomOwnerExplicits"
+    model.syncPluralName = "TodoCustomOwnerExplicits"
+    
+    model.attributes(
+      .primaryKey(fields: [todoCustomOwnerExplicit.id])
+    )
+    
     model.fields(
-      .id(),
+      .field(todoCustomOwnerExplicit.id, is: .required, ofType: .string),
       .field(todoCustomOwnerExplicit.title, is: .required, ofType: .string),
       .field(todoCustomOwnerExplicit.dominus, is: .optional, ofType: .string),
       .field(todoCustomOwnerExplicit.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(todoCustomOwnerExplicit.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+}
+
+extension TodoCustomOwnerExplicit: ModelIdentifiable {
+  public typealias IdentifierFormat = ModelIdentifierFormat.Default
+  public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }

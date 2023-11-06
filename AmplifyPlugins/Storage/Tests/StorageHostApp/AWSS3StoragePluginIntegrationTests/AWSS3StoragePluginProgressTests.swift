@@ -54,7 +54,10 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             }
             .store(in: &cancellables)
 
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await fulfillment(
+            of: [completionReceived, progressReceived],
+            timeout: TestCommonConstants.networkTimeout
+        )
         // Remove the key
         await remove(key: key)
     }
@@ -84,7 +87,11 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
                 receiveValue: { _ in resultValueReceived.fulfill() }
             )
             .store(in: &cancellables)
-        await waitForExpectations(timeout: 0.5)
+
+        await fulfillment(
+            of: [resultCompletionReceived, resultValueReceived],
+            timeout: 0.5
+        )
 
         // Progress listener should immediately complete without delivering a value
         let progressValueReceived = expectation(description: "progressValueReceived")
@@ -96,7 +103,11 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
                 receiveValue: { _ in progressValueReceived.fulfill() }
             )
             .store(in: &cancellables)
-        await waitForExpectations(timeout: 0.5)
+
+        await fulfillment(
+            of: [progressValueReceived, progressCompletionReceived],
+            timeout: 0.5
+        )
         // Remove the key
         await remove(key: key)
     }

@@ -35,6 +35,7 @@ extension AWSS3StoragePlugin {
         let result = try await storageService.getPreSignedURL(
             serviceKey: serviceKey,
             signingOperation: .getObject,
+            metadata: nil,
             accelerate: accelerate,
             expires: options.expires)
 

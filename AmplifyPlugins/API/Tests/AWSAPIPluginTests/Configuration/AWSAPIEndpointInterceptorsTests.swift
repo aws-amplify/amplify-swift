@@ -31,8 +31,9 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
 
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL, authConfiguration: config!)
 
-        XCTAssertEqual(interceptorConfig.interceptors.count, 1)
-
+        XCTAssertEqual(interceptorConfig.preludeInterceptors.count, 1)
+        XCTAssertEqual(interceptorConfig.interceptors.count, 0)
+        XCTAssertEqual(interceptorConfig.postludeInterceptors.count, 0)
     }
 
     /// Given: an AWSAPIEndpointInterceptors
@@ -44,7 +45,9 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL, authConfiguration: config!)
         interceptorConfig.addInterceptor(CustomInterceptor())
 
-        XCTAssertEqual(interceptorConfig.interceptors.count, 2)
+        XCTAssertEqual(interceptorConfig.preludeInterceptors.count, 1)
+        XCTAssertEqual(interceptorConfig.interceptors.count, 1)
+        XCTAssertEqual(interceptorConfig.postludeInterceptors.count, 0)
     }
 
     func testaddMultipleAuthInterceptors() throws {
@@ -69,10 +72,12 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         try interceptorConfig.addAuthInterceptorsToEndpoint(endpointType: .graphQL,
                                                             authConfiguration: userPoolConfig)
 
-        XCTAssertEqual(interceptorConfig.interceptors.count, 3)
-        XCTAssertNotNil(interceptorConfig.interceptors[0] as? APIKeyURLRequestInterceptor)
-        XCTAssertNotNil(interceptorConfig.interceptors[1] as? IAMURLRequestInterceptor)
-        XCTAssertNotNil(interceptorConfig.interceptors[2] as? AuthTokenURLRequestInterceptor)
+        XCTAssertEqual(interceptorConfig.preludeInterceptors.count, 2)
+        XCTAssertEqual(interceptorConfig.interceptors.count, 0)
+        XCTAssertEqual(interceptorConfig.postludeInterceptors.count, 1)
+        XCTAssertNotNil(interceptorConfig.preludeInterceptors[0] as? APIKeyURLRequestInterceptor)
+        XCTAssertNotNil(interceptorConfig.preludeInterceptors[1] as? AuthTokenURLRequestInterceptor)
+        XCTAssertNotNil(interceptorConfig.postludeInterceptors[0] as? IAMURLRequestInterceptor)
     }
 
     // MARK: - Test Helpers

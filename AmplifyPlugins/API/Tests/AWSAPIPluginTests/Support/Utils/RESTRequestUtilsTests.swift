@@ -70,7 +70,6 @@ class RESTRequestUtilsTests: XCTestCase {
         let urlRequest = RESTOperationRequestUtils.constructURLRequest(
             with: url,
             operationType: .get,
-            headers: nil,
             requestPayload: nil
         )
 

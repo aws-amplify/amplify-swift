@@ -32,7 +32,7 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | iOS       | 13+       | GA            |
 | macOS     | 10.15+    | GA            |
 | tvOS      | 13+       | GA            |
-| watchOS   | 7+        | GA            |
+| watchOS   | 9+        | GA            |
 | visionOS  | 1+        | Preview*      |
 
 > To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.

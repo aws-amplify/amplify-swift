@@ -84,7 +84,7 @@ class SessionClientTests: XCTestCase {
     }
 
     func testCurrentSession_withoutStoredSession_shouldStartNewSession() async {
-        let expectationStartSession = AsyncExpectation(description: "Start event for new session")
+        let expectationStartSession = expectation(description: "Start event for new session")
         await analyticsClient.setRecordExpectation(expectationStartSession)
         let currentSession = client.currentSession
         XCTAssertFalse(currentSession.isPaused)
@@ -93,7 +93,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(activityTracker.beginActivityTrackingCount, 0)
         XCTAssertEqual(userDefaults.saveCount, 1)
         
-        await waitForExpectations([expectationStartSession], timeout: 1)
+        await fulfillment(of: [expectationStartSession], timeout: 1)
         let updateEndpointProfileCount = await endpointClient.updateEndpointProfileCount
         XCTAssertEqual(updateEndpointProfileCount, 1)
         let createEventCount = await analyticsClient.createEventCount
@@ -157,10 +157,10 @@ class SessionClientTests: XCTestCase {
 
     func testStartPinpointSession_shouldRecordStartEvent() async {
         await resetCounters()
-        let expectationStartSession = AsyncExpectation(description: "Start event for new session")
+        let expectationStartSession = expectation(description: "Start event for new session")
         await analyticsClient.setRecordExpectation(expectationStartSession)
         client.startPinpointSession()
-        await waitForExpectations([expectationStartSession], timeout: 1)
+        await fulfillment(of: [expectationStartSession], timeout: 1)
         let updateEndpointProfileCount = await endpointClient.updateEndpointProfileCount
         XCTAssertEqual(updateEndpointProfileCount, 1)
         let createCount = await analyticsClient.createEventCount
@@ -178,10 +178,10 @@ class SessionClientTests: XCTestCase {
         storeSession()
         createNewSessionClient()
         await resetCounters()
-        let expectationStopStart = AsyncExpectation(description: "Stop event for current session and Start event for a new one")
+        let expectationStopStart = expectation(description: "Stop event for current session and Start event for a new one")
         await analyticsClient.setRecordExpectation(expectationStopStart, count: 2)
         client.startPinpointSession()
-        await waitForExpectations([expectationStopStart], timeout: 1)
+        await fulfillment(of: [expectationStopStart], timeout: 1)
         let createCount = await analyticsClient.createEventCount
         XCTAssertEqual(createCount, 2)
         let recordCount = await analyticsClient.recordCount
@@ -194,16 +194,16 @@ class SessionClientTests: XCTestCase {
 
 #if !os(macOS)
     func testApplicationMovedToBackground_notStale_shouldSaveSession_andRecordPauseEvent() async {
-        let expectationStartSession = AsyncExpectation(description: "Start event for new session")
+        let expectationStartSession = expectation(description: "Start event for new session")
         await analyticsClient.setRecordExpectation(expectationStartSession)
         client.startPinpointSession()
         client.startTrackingSessions(backgroundTimeout: sessionTimeout)
-        await waitForExpectations([expectationStartSession], timeout: 1)
+        await fulfillment(of: [expectationStartSession], timeout: 1)
         await resetCounters()
-        let expectationPauseSession = AsyncExpectation(description: "Pause event for current session")
+        let expectationPauseSession = expectation(description: "Pause event for current session")
         await analyticsClient.setRecordExpectation(expectationPauseSession)
         activityTracker.callback?(.runningInBackground(isStale: false))
-        await waitForExpectations([expectationPauseSession], timeout: 1)
+        await fulfillment(of: [expectationPauseSession], timeout: 1)
 
         XCTAssertEqual(archiver.encodeCount, 1)
         XCTAssertEqual(userDefaults.saveCount, 1)
@@ -219,19 +219,19 @@ class SessionClientTests: XCTestCase {
     }
 
     func testApplicationMovedToBackground_stale_shouldRecordStopEvent_andSubmit() async {
-        let expectationStartSession = AsyncExpectation(description: "Start event for new session")
+        let expectationStartSession = expectation(description: "Start event for new session")
         client.startPinpointSession()
         client.startTrackingSessions(backgroundTimeout: sessionTimeout)
         await analyticsClient.setRecordExpectation(expectationStartSession)
-        await waitForExpectations([expectationStartSession], timeout: 1)
+        await fulfillment(of: [expectationStartSession], timeout: 1)
 
         await resetCounters()
-        let expectationStopSession = AsyncExpectation(description: "Stop event for current session")
+        let expectationStopSession = expectation(description: "Stop event for current session")
         await analyticsClient.setRecordExpectation(expectationStopSession)
-        let expectationSubmitEvents = AsyncExpectation(description: "Submit events")
+        let expectationSubmitEvents = expectation(description: "Submit events")
         await analyticsClient.setSubmitEventsExpectation(expectationSubmitEvents)
         activityTracker.callback?(.runningInBackground(isStale: true))
-        await waitForExpectations([expectationStopSession, expectationSubmitEvents], timeout: 1)
+        await fulfillment(of: [expectationStopSession, expectationSubmitEvents], timeout: 1)
 
         XCTAssertEqual(archiver.encodeCount, 0)
         XCTAssertEqual(userDefaults.saveCount, 0)
@@ -249,10 +249,10 @@ class SessionClientTests: XCTestCase {
     }
 
     func testApplicationMovedToForeground_withNonPausedSession_shouldDoNothing() async {
-        let expectationStartSession = AsyncExpectation(description: "Start event for new session")
+        let expectationStartSession = expectation(description: "Start event for new session")
         await analyticsClient.setRecordExpectation(expectationStartSession)
         client.startPinpointSession()
-        await waitForExpectations([expectationStartSession], timeout: 1)
+        await fulfillment(of: [expectationStartSession], timeout: 1)
 
         await resetCounters()
         activityTracker.callback?(.runningInForeground)
@@ -267,7 +267,7 @@ class SessionClientTests: XCTestCase {
     }
 
     func testApplicationMovedToForeground_withNonExpiredSession_shouldRecordResumeEvent() async {
-        let expectationStartandPause = AsyncExpectation(description: "Start and Pause event for new session")
+        let expectationStartandPause = expectation(description: "Start and Pause event for new session")
         await analyticsClient.setRecordExpectation(expectationStartandPause, count: 2)
         sessionTimeout = 1000
         createNewSessionClient()
@@ -276,13 +276,13 @@ class SessionClientTests: XCTestCase {
 
         // First pause the session
         activityTracker.callback?(.runningInBackground(isStale: false))
-        await waitForExpectations([expectationStartandPause], timeout: 1)
+        await fulfillment(of: [expectationStartandPause], timeout: 1)
 
         await resetCounters()
-        let expectationResume = AsyncExpectation(description: "Resume event for non-expired session")
+        let expectationResume = expectation(description: "Resume event for non-expired session")
         await analyticsClient.setRecordExpectation(expectationResume)
         activityTracker.callback?(.runningInForeground)
-        await waitForExpectations([expectationResume], timeout: 1)
+        await fulfillment(of: [expectationResume], timeout: 1)
 
         XCTAssertEqual(archiver.encodeCount, 1)
         XCTAssertEqual(userDefaults.saveCount, 1)
@@ -298,7 +298,7 @@ class SessionClientTests: XCTestCase {
     }
 
     func testApplicationMovedToForeground_withExpiredSession_shouldStartNewSession() async {
-        let expectationStartandPause = AsyncExpectation(description: "Start and Pause event for new session")
+        let expectationStartandPause = expectation(description: "Start and Pause event for new session")
         await analyticsClient.setRecordExpectation(expectationStartandPause, count: 2)
         sessionTimeout = 0
         createNewSessionClient()
@@ -307,13 +307,13 @@ class SessionClientTests: XCTestCase {
 
         // First pause the session
         activityTracker.callback?(.runningInBackground(isStale: false))
-        await waitForExpectations([expectationStartandPause], timeout: 1)
+        await fulfillment(of: [expectationStartandPause], timeout: 1)
 
         await resetCounters()
-        let expectationStopAndStart = AsyncExpectation(description: "Stop event for expired session and Start event for a new one")
+        let expectationStopAndStart = expectation(description: "Stop event for expired session and Start event for a new one")
         await analyticsClient.setRecordExpectation(expectationStopAndStart, count: 2)
         activityTracker.callback?(.runningInForeground)
-        await waitForExpectations([expectationStopAndStart], timeout: 1)
+        await fulfillment(of: [expectationStopAndStart], timeout: 1)
 
         XCTAssertEqual(archiver.encodeCount, 1)
         XCTAssertEqual(userDefaults.saveCount, 1)
@@ -328,17 +328,17 @@ class SessionClientTests: XCTestCase {
     }
 #endif
     func testApplicationTerminated_shouldRecordStopEvent() async {
-        let expectationStart = AsyncExpectation(description: "Start event for new session")
+        let expectationStart = expectation(description: "Start event for new session")
         await analyticsClient.setRecordExpectation(expectationStart)
         client.startPinpointSession()
         client.startTrackingSessions(backgroundTimeout: sessionTimeout)
-        await waitForExpectations([expectationStart], timeout: 1)
+        await fulfillment(of: [expectationStart], timeout: 1)
 
         await resetCounters()
-        let expectationStop = AsyncExpectation(description: "Stop event for current session")
+        let expectationStop = expectation(description: "Stop event for current session")
         await analyticsClient.setRecordExpectation(expectationStop)
         activityTracker.callback?(.terminated)
-        await waitForExpectations([expectationStop], timeout: 1)
+        await fulfillment(of: [expectationStop], timeout: 1)
 
         XCTAssertEqual(archiver.encodeCount, 0)
         XCTAssertEqual(userDefaults.saveCount, 0)

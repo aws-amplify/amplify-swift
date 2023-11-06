@@ -42,14 +42,17 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     let contentType: String?
     let requestHeaders: RequestHeaders?
     weak var session: StorageMultipartUploadSession?
-
+    let metadata: [String: String]?
+    
     init(serviceProxy: StorageServiceProxy,
          fileSystem: FileSystem = .default,
          bucket: String,
          key: String,
          uploadFile: UploadFile,
          contentType: String? = nil,
-         requestHeaders: RequestHeaders? = nil) {
+         requestHeaders: RequestHeaders? = nil,
+         metadata: [String: String]? = nil
+    ) {
         self.serviceProxy = serviceProxy
         self.fileSystem = fileSystem
         self.bucket = bucket
@@ -57,6 +60,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         self.uploadFile = uploadFile
         self.contentType = contentType
         self.requestHeaders = requestHeaders
+        self.metadata = metadata
     }
 
     func integrate(session: StorageMultipartUploadSession) {
@@ -71,7 +75,19 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         // The AWS S3 SDK handles the request so there will be not taskIdentifier
         session.handle(multipartUploadEvent: .creating)
 
-        let request = CreateMultipartUploadRequest(bucket: bucket, key: key)
+        // User-defined metadata needs to provided
+        // when initiating the MPU.
+        // --
+        // https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html#mpu-process
+        // > Multipart upload initiation
+        // "If you want to provide any metadata describing the object
+        // being uploaded, you must provide it in the request to initiate
+        // multipart upload."
+        let request = CreateMultipartUploadRequest(
+            bucket: bucket,
+            key: key,
+            metadata: metadata
+        )
         serviceProxy.awsS3.createMultipartUpload(request) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -135,6 +151,9 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                     let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
                         key: self.key,
                         signingOperation: operation,
+                        // user-controlled metadata should *not* be provided
+                        // with each upload part.
+                        metadata: nil,
                         accelerate: nil,
                         expires: nil
                     )

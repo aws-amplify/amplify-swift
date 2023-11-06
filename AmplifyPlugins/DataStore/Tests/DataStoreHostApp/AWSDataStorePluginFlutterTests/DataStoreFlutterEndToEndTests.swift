@@ -74,15 +74,15 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         plugin.save(newPost.model, modelSchema: Post.schema) { _ in }
 
-        wait(for: [createReceived], timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         plugin.save(updatedPost.model, modelSchema: Post.schema) { _ in }
 
-        wait(for: [updateReceived], timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
 
         plugin.delete(updatedPost.model, modelSchema: Post.schema) { _ in }
 
-        wait(for: [deleteReceived], timeout: networkTimeout)
+        await fulfillment(of: [deleteReceived], timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
@@ -151,11 +151,11 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
 
         plugin.save(newPost.model, modelSchema: Post.schema) { _ in }
 
-        wait(for: [createReceived], timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
 
         plugin.save(updatedPost.model, modelSchema: Post.schema, where: post.title == title) { _ in }
 
-        wait(for: [updateReceived], timeout: networkTimeout)
+        await fulfillment(of: [updateReceived], timeout: networkTimeout)
     }
 
     /// Ensure DataStore.stop followed by DataStore.start is successful
@@ -186,7 +186,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [stopStartSuccess], timeout: networkTimeout)
+        await fulfillment(of: [stopStartSuccess], timeout: networkTimeout)
         try validateSavePost(plugin: plugin)
 
     }
@@ -211,13 +211,13 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         try startAmplify {
             amplifyStarted.fulfill()
         }
-        wait(for: [amplifyStarted], timeout: 1.0)
+        await fulfillment(of: [amplifyStarted], timeout: 1.0)
 
         // We expect the query to complete, but not to return a value. Thus, we'll ignore the error
         let queryCompleted = expectation(description: "queryCompleted")
         plugin.query(FlutterSerializedModel.self, modelSchema: Post.schema, where: Post.keys.id.eq("123")) { _ in queryCompleted.fulfill() }
 
-        wait(for: [dataStoreStarted, queryCompleted], timeout: networkTimeout)
+        await fulfillment(of: [dataStoreStarted, queryCompleted], timeout: networkTimeout)
         sink.cancel()
     }
 
@@ -249,7 +249,7 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [clearStartSuccess], timeout: networkTimeout)
+        await fulfillment(of: [clearStartSuccess], timeout: networkTimeout)
         try validateSavePost(plugin: plugin)
     }
 
@@ -290,6 +290,6 @@ class DataStoreEndToEndTests: SyncEngineFlutterIntegrationTestBase {
         }
 
         plugin.save(newPost.model, modelSchema: Post.schema) { _ in }
-        wait(for: [createReceived], timeout: networkTimeout)
+        await fulfillment(of: [createReceived], timeout: networkTimeout)
     }
 }
