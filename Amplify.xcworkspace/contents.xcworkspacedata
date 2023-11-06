@@ -1713,6 +1713,9 @@
    <Group
       location = "group:AmplifyPlugins"
       name = "AmplifyPlugins">
+      <FileRef
+         location = "group:../HostApp/AmplifyHostApp/AmplifyHostApp.xcodeproj">
+      </FileRef>
       <Group
          location = "group:Core"
          name = "Core">
@@ -12699,6 +12702,9 @@
          </Group>
       </Group>
    </Group>
+   <FileRef
+      location = "group:HostApp/AmplifyHostApp/AmplifyHostApp.xcodeproj">
+   </FileRef>
    <FileRef
       location = "group:AmplifyPlugins/Storage/Tests/StorageHostApp/StorageHostApp.xcodeproj">
    </FileRef>

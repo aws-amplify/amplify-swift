@@ -1,0 +1,733 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		901BF6AB2AF98BF3007FC4D7 /* AmplifyHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901BF6AA2AF98BF3007FC4D7 /* AmplifyHostAppApp.swift */; };
+		901BF6AD2AF98BF3007FC4D7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901BF6AC2AF98BF3007FC4D7 /* ContentView.swift */; };
+		901BF6AF2AF98BF4007FC4D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 901BF6AE2AF98BF4007FC4D7 /* Assets.xcassets */; };
+		901BF6B32AF98BF4007FC4D7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 901BF6B22AF98BF4007FC4D7 /* Preview Assets.xcassets */; };
+		901BF6BD2AF98BF5007FC4D7 /* AmplifyHostAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901BF6BC2AF98BF5007FC4D7 /* AmplifyHostAppTests.swift */; };
+		901BF6C72AF98BF5007FC4D7 /* AmplifyHostAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901BF6C62AF98BF5007FC4D7 /* AmplifyHostAppUITests.swift */; };
+		901BF6C92AF98BF5007FC4D7 /* AmplifyHostAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 901BF6C82AF98BF5007FC4D7 /* AmplifyHostAppUITestsLaunchTests.swift */; };
+		901BF6D92AF98CCF007FC4D7 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6D82AF98CCF007FC4D7 /* Amplify */; };
+		901BF6DB2AF98CCF007FC4D7 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6DA2AF98CCF007FC4D7 /* AWSAPIPlugin */; };
+		901BF6DD2AF98CCF007FC4D7 /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6DC2AF98CCF007FC4D7 /* AWSCloudWatchLoggingPlugin */; };
+		901BF6DF2AF98CCF007FC4D7 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6DE2AF98CCF007FC4D7 /* AWSCognitoAuthPlugin */; };
+		901BF6E12AF98CCF007FC4D7 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6E02AF98CCF007FC4D7 /* AWSDataStorePlugin */; };
+		901BF6E32AF98CCF007FC4D7 /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6E22AF98CCF007FC4D7 /* AWSLocationGeoPlugin */; };
+		901BF6E52AF98CCF007FC4D7 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6E42AF98CCF007FC4D7 /* AWSPinpointAnalyticsPlugin */; };
+		901BF6E72AF98CCF007FC4D7 /* AWSPinpointPushNotificationsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6E62AF98CCF007FC4D7 /* AWSPinpointPushNotificationsPlugin */; };
+		901BF6E92AF98CCF007FC4D7 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6E82AF98CCF007FC4D7 /* AWSPluginsCore */; };
+		901BF6EB2AF98CCF007FC4D7 /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6EA2AF98CCF007FC4D7 /* AWSPredictionsPlugin */; };
+		901BF6ED2AF98CCF007FC4D7 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6EC2AF98CCF007FC4D7 /* AWSS3StoragePlugin */; };
+		901BF6EF2AF98CCF007FC4D7 /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 901BF6EE2AF98CCF007FC4D7 /* CoreMLPredictionsPlugin */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		901BF6B92AF98BF5007FC4D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 901BF69F2AF98BF3007FC4D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 901BF6A62AF98BF3007FC4D7;
+			remoteInfo = AmplifyHostApp;
+		};
+		901BF6C32AF98BF5007FC4D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 901BF69F2AF98BF3007FC4D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 901BF6A62AF98BF3007FC4D7;
+			remoteInfo = AmplifyHostApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		901BF6A72AF98BF3007FC4D7 /* AmplifyHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmplifyHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		901BF6AA2AF98BF3007FC4D7 /* AmplifyHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyHostAppApp.swift; sourceTree = "<group>"; };
+		901BF6AC2AF98BF3007FC4D7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		901BF6AE2AF98BF4007FC4D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		901BF6B02AF98BF4007FC4D7 /* AmplifyHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AmplifyHostApp.entitlements; sourceTree = "<group>"; };
+		901BF6B22AF98BF4007FC4D7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		901BF6B82AF98BF5007FC4D7 /* AmplifyHostAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmplifyHostAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		901BF6BC2AF98BF5007FC4D7 /* AmplifyHostAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyHostAppTests.swift; sourceTree = "<group>"; };
+		901BF6C22AF98BF5007FC4D7 /* AmplifyHostAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmplifyHostAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		901BF6C62AF98BF5007FC4D7 /* AmplifyHostAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyHostAppUITests.swift; sourceTree = "<group>"; };
+		901BF6C82AF98BF5007FC4D7 /* AmplifyHostAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyHostAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		901BF6D62AF98C5C007FC4D7 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../..; sourceTree = "<group>"; };
+		901BF6F02AF98CFF007FC4D7 /* Playground_macOS.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Playground_macOS.playground; path = ../Playground_macOS.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		901BF6F12AF98D1D007FC4D7 /* Playground_iOS.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Playground_iOS.playground; path = ../Playground_iOS.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		901BF6A42AF98BF3007FC4D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				901BF6EB2AF98CCF007FC4D7 /* AWSPredictionsPlugin in Frameworks */,
+				901BF6E32AF98CCF007FC4D7 /* AWSLocationGeoPlugin in Frameworks */,
+				901BF6DB2AF98CCF007FC4D7 /* AWSAPIPlugin in Frameworks */,
+				901BF6E92AF98CCF007FC4D7 /* AWSPluginsCore in Frameworks */,
+				901BF6D92AF98CCF007FC4D7 /* Amplify in Frameworks */,
+				901BF6E72AF98CCF007FC4D7 /* AWSPinpointPushNotificationsPlugin in Frameworks */,
+				901BF6ED2AF98CCF007FC4D7 /* AWSS3StoragePlugin in Frameworks */,
+				901BF6DD2AF98CCF007FC4D7 /* AWSCloudWatchLoggingPlugin in Frameworks */,
+				901BF6EF2AF98CCF007FC4D7 /* CoreMLPredictionsPlugin in Frameworks */,
+				901BF6E12AF98CCF007FC4D7 /* AWSDataStorePlugin in Frameworks */,
+				901BF6DF2AF98CCF007FC4D7 /* AWSCognitoAuthPlugin in Frameworks */,
+				901BF6E52AF98CCF007FC4D7 /* AWSPinpointAnalyticsPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		901BF6B52AF98BF5007FC4D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		901BF6BF2AF98BF5007FC4D7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		901BF69E2AF98BF3007FC4D7 = {
+			isa = PBXGroup;
+			children = (
+				901BF6F12AF98D1D007FC4D7 /* Playground_iOS.playground */,
+				901BF6F02AF98CFF007FC4D7 /* Playground_macOS.playground */,
+				901BF6D52AF98C23007FC4D7 /* Packages */,
+				901BF6A92AF98BF3007FC4D7 /* AmplifyHostApp */,
+				901BF6BB2AF98BF5007FC4D7 /* AmplifyHostAppTests */,
+				901BF6C52AF98BF5007FC4D7 /* AmplifyHostAppUITests */,
+				901BF6A82AF98BF3007FC4D7 /* Products */,
+				901BF6D72AF98CCF007FC4D7 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		901BF6A82AF98BF3007FC4D7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				901BF6A72AF98BF3007FC4D7 /* AmplifyHostApp.app */,
+				901BF6B82AF98BF5007FC4D7 /* AmplifyHostAppTests.xctest */,
+				901BF6C22AF98BF5007FC4D7 /* AmplifyHostAppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		901BF6A92AF98BF3007FC4D7 /* AmplifyHostApp */ = {
+			isa = PBXGroup;
+			children = (
+				901BF6AA2AF98BF3007FC4D7 /* AmplifyHostAppApp.swift */,
+				901BF6AC2AF98BF3007FC4D7 /* ContentView.swift */,
+				901BF6AE2AF98BF4007FC4D7 /* Assets.xcassets */,
+				901BF6B02AF98BF4007FC4D7 /* AmplifyHostApp.entitlements */,
+				901BF6B12AF98BF4007FC4D7 /* Preview Content */,
+			);
+			path = AmplifyHostApp;
+			sourceTree = "<group>";
+		};
+		901BF6B12AF98BF4007FC4D7 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				901BF6B22AF98BF4007FC4D7 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		901BF6BB2AF98BF5007FC4D7 /* AmplifyHostAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				901BF6BC2AF98BF5007FC4D7 /* AmplifyHostAppTests.swift */,
+			);
+			path = AmplifyHostAppTests;
+			sourceTree = "<group>";
+		};
+		901BF6C52AF98BF5007FC4D7 /* AmplifyHostAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				901BF6C62AF98BF5007FC4D7 /* AmplifyHostAppUITests.swift */,
+				901BF6C82AF98BF5007FC4D7 /* AmplifyHostAppUITestsLaunchTests.swift */,
+			);
+			path = AmplifyHostAppUITests;
+			sourceTree = "<group>";
+		};
+		901BF6D52AF98C23007FC4D7 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				901BF6D62AF98C5C007FC4D7 /* amplify-swift */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		901BF6D72AF98CCF007FC4D7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		901BF6A62AF98BF3007FC4D7 /* AmplifyHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 901BF6CC2AF98BF5007FC4D7 /* Build configuration list for PBXNativeTarget "AmplifyHostApp" */;
+			buildPhases = (
+				901BF6A32AF98BF3007FC4D7 /* Sources */,
+				901BF6A42AF98BF3007FC4D7 /* Frameworks */,
+				901BF6A52AF98BF3007FC4D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AmplifyHostApp;
+			packageProductDependencies = (
+				901BF6D82AF98CCF007FC4D7 /* Amplify */,
+				901BF6DA2AF98CCF007FC4D7 /* AWSAPIPlugin */,
+				901BF6DC2AF98CCF007FC4D7 /* AWSCloudWatchLoggingPlugin */,
+				901BF6DE2AF98CCF007FC4D7 /* AWSCognitoAuthPlugin */,
+				901BF6E02AF98CCF007FC4D7 /* AWSDataStorePlugin */,
+				901BF6E22AF98CCF007FC4D7 /* AWSLocationGeoPlugin */,
+				901BF6E42AF98CCF007FC4D7 /* AWSPinpointAnalyticsPlugin */,
+				901BF6E62AF98CCF007FC4D7 /* AWSPinpointPushNotificationsPlugin */,
+				901BF6E82AF98CCF007FC4D7 /* AWSPluginsCore */,
+				901BF6EA2AF98CCF007FC4D7 /* AWSPredictionsPlugin */,
+				901BF6EC2AF98CCF007FC4D7 /* AWSS3StoragePlugin */,
+				901BF6EE2AF98CCF007FC4D7 /* CoreMLPredictionsPlugin */,
+			);
+			productName = AmplifyHostApp;
+			productReference = 901BF6A72AF98BF3007FC4D7 /* AmplifyHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		901BF6B72AF98BF5007FC4D7 /* AmplifyHostAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 901BF6CF2AF98BF5007FC4D7 /* Build configuration list for PBXNativeTarget "AmplifyHostAppTests" */;
+			buildPhases = (
+				901BF6B42AF98BF5007FC4D7 /* Sources */,
+				901BF6B52AF98BF5007FC4D7 /* Frameworks */,
+				901BF6B62AF98BF5007FC4D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				901BF6BA2AF98BF5007FC4D7 /* PBXTargetDependency */,
+			);
+			name = AmplifyHostAppTests;
+			productName = AmplifyHostAppTests;
+			productReference = 901BF6B82AF98BF5007FC4D7 /* AmplifyHostAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		901BF6C12AF98BF5007FC4D7 /* AmplifyHostAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 901BF6D22AF98BF5007FC4D7 /* Build configuration list for PBXNativeTarget "AmplifyHostAppUITests" */;
+			buildPhases = (
+				901BF6BE2AF98BF5007FC4D7 /* Sources */,
+				901BF6BF2AF98BF5007FC4D7 /* Frameworks */,
+				901BF6C02AF98BF5007FC4D7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				901BF6C42AF98BF5007FC4D7 /* PBXTargetDependency */,
+			);
+			name = AmplifyHostAppUITests;
+			productName = AmplifyHostAppUITests;
+			productReference = 901BF6C22AF98BF5007FC4D7 /* AmplifyHostAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		901BF69F2AF98BF3007FC4D7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					901BF6A62AF98BF3007FC4D7 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+					901BF6B72AF98BF5007FC4D7 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 901BF6A62AF98BF3007FC4D7;
+					};
+					901BF6C12AF98BF5007FC4D7 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 901BF6A62AF98BF3007FC4D7;
+					};
+				};
+			};
+			buildConfigurationList = 901BF6A22AF98BF3007FC4D7 /* Build configuration list for PBXProject "AmplifyHostApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 901BF69E2AF98BF3007FC4D7;
+			productRefGroup = 901BF6A82AF98BF3007FC4D7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				901BF6A62AF98BF3007FC4D7 /* AmplifyHostApp */,
+				901BF6B72AF98BF5007FC4D7 /* AmplifyHostAppTests */,
+				901BF6C12AF98BF5007FC4D7 /* AmplifyHostAppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		901BF6A52AF98BF3007FC4D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				901BF6B32AF98BF4007FC4D7 /* Preview Assets.xcassets in Resources */,
+				901BF6AF2AF98BF4007FC4D7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		901BF6B62AF98BF5007FC4D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		901BF6C02AF98BF5007FC4D7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		901BF6A32AF98BF3007FC4D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				901BF6AD2AF98BF3007FC4D7 /* ContentView.swift in Sources */,
+				901BF6AB2AF98BF3007FC4D7 /* AmplifyHostAppApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		901BF6B42AF98BF5007FC4D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				901BF6BD2AF98BF5007FC4D7 /* AmplifyHostAppTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		901BF6BE2AF98BF5007FC4D7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				901BF6C72AF98BF5007FC4D7 /* AmplifyHostAppUITests.swift in Sources */,
+				901BF6C92AF98BF5007FC4D7 /* AmplifyHostAppUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		901BF6BA2AF98BF5007FC4D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 901BF6A62AF98BF3007FC4D7 /* AmplifyHostApp */;
+			targetProxy = 901BF6B92AF98BF5007FC4D7 /* PBXContainerItemProxy */;
+		};
+		901BF6C42AF98BF5007FC4D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 901BF6A62AF98BF3007FC4D7 /* AmplifyHostApp */;
+			targetProxy = 901BF6C32AF98BF5007FC4D7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		901BF6CA2AF98BF5007FC4D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		901BF6CB2AF98BF5007FC4D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		901BF6CD2AF98BF5007FC4D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AmplifyHostApp/AmplifyHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AmplifyHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AmplifyHostApp.AmplifyHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		901BF6CE2AF98BF5007FC4D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AmplifyHostApp/AmplifyHostApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AmplifyHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AmplifyHostApp.AmplifyHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		901BF6D02AF98BF5007FC4D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AmplifyHostApp.AmplifyHostAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AmplifyHostApp";
+			};
+			name = Debug;
+		};
+		901BF6D12AF98BF5007FC4D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AmplifyHostApp.AmplifyHostAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AmplifyHostApp";
+			};
+			name = Release;
+		};
+		901BF6D32AF98BF5007FC4D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AmplifyHostApp.AmplifyHostAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AmplifyHostApp;
+			};
+			name = Debug;
+		};
+		901BF6D42AF98BF5007FC4D7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AmplifyHostApp.AmplifyHostAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AmplifyHostApp;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		901BF6A22AF98BF3007FC4D7 /* Build configuration list for PBXProject "AmplifyHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				901BF6CA2AF98BF5007FC4D7 /* Debug */,
+				901BF6CB2AF98BF5007FC4D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		901BF6CC2AF98BF5007FC4D7 /* Build configuration list for PBXNativeTarget "AmplifyHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				901BF6CD2AF98BF5007FC4D7 /* Debug */,
+				901BF6CE2AF98BF5007FC4D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		901BF6CF2AF98BF5007FC4D7 /* Build configuration list for PBXNativeTarget "AmplifyHostAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				901BF6D02AF98BF5007FC4D7 /* Debug */,
+				901BF6D12AF98BF5007FC4D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		901BF6D22AF98BF5007FC4D7 /* Build configuration list for PBXNativeTarget "AmplifyHostAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				901BF6D32AF98BF5007FC4D7 /* Debug */,
+				901BF6D42AF98BF5007FC4D7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		901BF6D82AF98CCF007FC4D7 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		901BF6DA2AF98CCF007FC4D7 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
+		901BF6DC2AF98CCF007FC4D7 /* AWSCloudWatchLoggingPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCloudWatchLoggingPlugin;
+		};
+		901BF6DE2AF98CCF007FC4D7 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		901BF6E02AF98CCF007FC4D7 /* AWSDataStorePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSDataStorePlugin;
+		};
+		901BF6E22AF98CCF007FC4D7 /* AWSLocationGeoPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSLocationGeoPlugin;
+		};
+		901BF6E42AF98CCF007FC4D7 /* AWSPinpointAnalyticsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPinpointAnalyticsPlugin;
+		};
+		901BF6E62AF98CCF007FC4D7 /* AWSPinpointPushNotificationsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPinpointPushNotificationsPlugin;
+		};
+		901BF6E82AF98CCF007FC4D7 /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPluginsCore;
+		};
+		901BF6EA2AF98CCF007FC4D7 /* AWSPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSPredictionsPlugin;
+		};
+		901BF6EC2AF98CCF007FC4D7 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSS3StoragePlugin;
+		};
+		901BF6EE2AF98CCF007FC4D7 /* CoreMLPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreMLPredictionsPlugin;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 901BF69F2AF98BF3007FC4D7 /* Project object */;
+}
