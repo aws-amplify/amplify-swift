@@ -9,8 +9,8 @@ import AWSPluginsCore
 import Amplify
 import Combine
 import Foundation
-import AWSCloudWatchLogs
-import AWSClientRuntime
+//import AWSCloudWatchLogs
+//import AWSClientRuntime
 import Network
 
 /// Concrete implementation of
@@ -26,7 +26,7 @@ final class AWSCloudWatchLoggingCategoryClient {
     private let lock = NSLock()
     private let logGroupName: String
     private let region: String
-    private let credentialsProvider: CredentialsProviding
+    private let credentialsProvider: CredentialsProvider
     private let authentication: AuthCategoryUserBehavior
     private var loggersByKey: [LoggerKey: AWSCloudWatchLoggingSessionController] = [:]
     private let localStoreMaxSizeInMB: Int
@@ -38,7 +38,7 @@ final class AWSCloudWatchLoggingCategoryClient {
     
     init(
         enable: Bool,
-        credentialsProvider: CredentialsProviding,
+        credentialsProvider: CredentialsProvider,
         authentication: AuthCategoryUserBehavior,
         loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver,
         logGroupName: String,
@@ -183,7 +183,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
         return self.logger(forCategory: category, namespace: namespace, logLevel: defaultLogLevel)
     }
     
-    func getInternalClient() -> CloudWatchLogsClientProtocol {
+    func getInternalClient() -> CloudWatchClient {
         guard let client = loggersByKey.first(where: { $0.value.client != nil })?.value.client else {
             return Fatal.preconditionFailure(
                 """

@@ -10,9 +10,35 @@ import AWSPluginsCore
 import Amplify
 import Combine
 import Foundation
-import AWSCloudWatchLogs
-import AWSClientRuntime
+//import AWSCloudWatchLogs
+//import AWSClientRuntime
 import Network
+
+struct CloudWatchClientConfiguration {
+    let region: String
+    let credentialsProvider: CredentialsProvider
+}
+
+public class CloudWatchClient {
+    let configuration: CloudWatchClientConfiguration
+
+    init(configuration: CloudWatchClientConfiguration) {
+        self.configuration = configuration
+    }
+
+    func describeLogStreams(input: DescribeLogStreamsInput) async throws -> DescribeLogStreamsOutputResponse {
+        fatalError()
+    }
+
+    func createLogStream(input: CreateLogStreamInput) async throws -> CreateLogStreamOutputResponse {
+        fatalError()
+    }    
+
+    func putLogEvents(input: PutLogEventsInput) async throws -> PutLogEventsOutputResponse {
+        fatalError()
+    }
+
+}
 
 /// Responsible for setting up and tearing-down log sessions for a given category/tag according to changes in
 /// user authentication sessions.
@@ -20,12 +46,12 @@ import Network
 /// - Tag: CloudWatchLogSessionController
 final class AWSCloudWatchLoggingSessionController {
     
-    var client: CloudWatchLogsClientProtocol?
+    var client: CloudWatchClient?
     let namespace: String?
     private let logGroupName: String
     private let region: String
     private let localStoreMaxSizeInMB: Int
-    private let credentialsProvider: CredentialsProviding
+    private let credentialsProvider: CredentialsProvider
     private let authentication: AuthCategoryUserBehavior
     private let category: String
     private var session: AWSCloudWatchLoggingSession?
@@ -59,7 +85,7 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     /// - Tag: CloudWatchLogSessionController.init
-    init(credentialsProvider: CredentialsProviding,
+    init(credentialsProvider: CredentialsProvider,
          authentication: AuthCategoryUserBehavior,
          logFilter: AWSCloudWatchLoggingFilterBehavior,
          category: String,
@@ -104,14 +130,14 @@ final class AWSCloudWatchLoggingSessionController {
     private func createConsumer() throws -> LogBatchConsumer? {
         if self.client == nil {
             // TODO: FrameworkMetadata Replacement
-            let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
+            let configuration = try CloudWatchClientConfiguration(
                 region: region,
                 credentialsProvider: credentialsProvider
             )
 
             configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
-            self.client = CloudWatchLogsClient(config: configuration)
+            self.client = CloudWatchClient(configuration: configuration)
         }
 
         guard let cloudWatchClient = client else { return nil }

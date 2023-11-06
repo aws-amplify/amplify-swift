@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCloudWatchLogs
+//import AWSCloudWatchLogs
 import AWSPluginsCore
 import Amplify
 import Combine
@@ -42,7 +42,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             let authService = AWSAuthService()
             self.loggingClient = AWSCloudWatchLoggingCategoryClient(
                 enable: configuration.enable,
-                credentialsProvider: authService.getCredentialsProvider(),
+                credentialsProvider: authService._credentialsProvider(),
                 authentication: Amplify.Auth,
                 loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
                 logGroupName: configuration.logGroupName,
@@ -93,7 +93,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     /// Retrieve the escape hatch to perform low level operations on AWSCloudWatch
     ///
     /// - Returns: AWS CloudWatch Client
-    public func getEscapeHatch() -> CloudWatchLogsClientProtocol {
+    public func getEscapeHatch() -> CloudWatchClient {
         return loggingClient.getInternalClient()
     }
     
@@ -127,7 +127,7 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
             
             self.loggingClient = AWSCloudWatchLoggingCategoryClient(
                 enable: configuration.enable,
-                credentialsProvider: authService.getCredentialsProvider(),
+                credentialsProvider: authService._credentialsProvider(),
                 authentication: Amplify.Auth,
                 loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
                 logGroupName: configuration.logGroupName,

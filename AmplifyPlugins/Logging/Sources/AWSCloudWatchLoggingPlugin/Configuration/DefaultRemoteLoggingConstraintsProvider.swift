@@ -8,13 +8,13 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSClientRuntime
-import ClientRuntime
+//import AWSClientRuntime
+//import ClientRuntime
 
 public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {    
     public let refreshIntervalInSeconds: Int
     private let endpoint: URL
-    private let credentialProvider: CredentialsProviding?
+    private let credentialProvider: CredentialsProvider?
     private let region: String
     private let loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard
     
@@ -31,12 +31,12 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     public init(
          endpoint: URL,
          region: String,
-         credentialProvider: CredentialsProviding? = nil,
+         credentialProvider: CredentialsProvider? = nil,
          refreshIntervalInSeconds: Int = 1200
     ) {
         self.endpoint = endpoint
         if credentialProvider == nil {
-            self.credentialProvider = AWSAuthService().getCredentialsProvider()
+            self.credentialProvider = AWSAuthService()._credentialsProvider() // getCredentialsProvider()
         } else {
             self.credentialProvider = credentialProvider
         }
@@ -76,40 +76,41 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(host, forHTTPHeaderField: "host")
 
-        let httpMethod = (request.httpMethod?.uppercased())
-            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
-
-        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?
-            .queryItems?
-            .map { ClientRuntime.URLQueryItem(name: $0.name, value: $0.value) } ?? []
-
-        let requestBuilder = SdkHttpRequestBuilder()
-            .withHost(host)
-            .withPath(url.path)
-            .withQueryItems(queryItems)
-            .withMethod(httpMethod)
-            .withPort(443)
-            .withProtocol(.https)
-            .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
-            .withBody(.data(request.httpBody))
-        
-        guard let credentialProvider = self.credentialProvider else {
-            return request
-        }
-        
-        guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
-            requestBuilder: requestBuilder,
-            credentialsProvider: credentialProvider,
-            signingName: "execute-api",
-            signingRegion: region,
-            date: Date()
-        ) else {
-            throw APIError.unknown("Unable to sign request", "")
-        }
-
-        for header in urlRequest.headers.headers {
-            request.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
-        }
+        // TODO: Use signing from AWSPluginsCore
+//        let httpMethod = (request.httpMethod?.uppercased())
+//            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
+//
+//        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+//            .queryItems?
+//            .map { ClientRuntime.URLQueryItem(name: $0.name, value: $0.value) } ?? []
+//
+//        let requestBuilder = SdkHttpRequestBuilder()
+//            .withHost(host)
+//            .withPath(url.path)
+//            .withQueryItems(queryItems)
+//            .withMethod(httpMethod)
+//            .withPort(443)
+//            .withProtocol(.https)
+//            .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
+//            .withBody(.data(request.httpBody))
+//        
+//        guard let credentialProvider = self.credentialProvider else {
+//            return request
+//        }
+//        
+//        guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
+//            requestBuilder: requestBuilder,
+//            credentialsProvider: credentialProvider,
+//            signingName: "execute-api",
+//            signingRegion: region,
+//            date: Date()
+//        ) else {
+//            throw APIError.unknown("Unable to sign request", "")
+//        }
+//
+//        for header in urlRequest.headers.headers {
+//            request.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
+//        }
 
         return request
     }

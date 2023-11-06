@@ -6,20 +6,20 @@
 //
 
 import AWSPluginsCore
-import AWSCloudWatchLogs
-import AWSClientRuntime
+//import AWSCloudWatchLogs
+//import AWSClientRuntime
 import Amplify
 import Foundation
 
 class CloudWatchLoggingConsumer {
     
-    private let client: CloudWatchLogsClientProtocol
+    private let client: CloudWatchClient
     private let logGroupName: String
     private let logStreamName: String
     private var ensureLogStreamExistsComplete: Bool = false
     private let encoder = JSONEncoder()
     init(
-        client: CloudWatchLogsClientProtocol,
+        client: CloudWatchClient,
         logGroupName: String,
         userIdentifier: String?
     ) throws {
