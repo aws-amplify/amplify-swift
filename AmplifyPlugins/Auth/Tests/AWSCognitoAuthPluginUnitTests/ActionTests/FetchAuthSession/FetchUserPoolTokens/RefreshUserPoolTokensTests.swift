@@ -46,7 +46,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutputResponse()
+                    return InitiateAuthOutput()
                 }
             )
         }
@@ -78,7 +78,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutputResponse(
+                    return InitiateAuthOutput(
                         authenticationResult: .init(
                             accessToken: "accessTokenNew",
                             expiresIn: 100,

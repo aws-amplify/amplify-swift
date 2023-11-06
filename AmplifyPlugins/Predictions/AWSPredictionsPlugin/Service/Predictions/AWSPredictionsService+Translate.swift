@@ -32,7 +32,7 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
             text: text
         )
 
-        let textTranslateResult: TranslateTextOutputResponse
+        let textTranslateResult: TranslateTextOutput
         do {
             textTranslateResult = try await awsTranslate.translateText(input: request)
         } catch let error as PredictionsErrorConvertible {

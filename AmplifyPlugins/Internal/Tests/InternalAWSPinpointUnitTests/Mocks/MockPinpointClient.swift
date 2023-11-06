@@ -9,443 +9,443 @@ import AWSPinpoint
 import Foundation
 
 class MockPinpointClient: PinpointClientProtocol {
-    func getJourneyRunExecutionActivityMetrics(input: GetJourneyRunExecutionActivityMetricsInput) async throws -> GetJourneyRunExecutionActivityMetricsOutputResponse {
+    func getJourneyRunExecutionActivityMetrics(input: GetJourneyRunExecutionActivityMetricsInput) async throws -> GetJourneyRunExecutionActivityMetricsOutput {
         fatalError("Not supported")
     }
 
-    func getJourneyRunExecutionMetrics(input: GetJourneyRunExecutionMetricsInput) async throws -> GetJourneyRunExecutionMetricsOutputResponse {
+    func getJourneyRunExecutionMetrics(input: GetJourneyRunExecutionMetricsInput) async throws -> GetJourneyRunExecutionMetricsOutput {
         fatalError("Not supported")
     }
 
-    func getJourneyRuns(input: GetJourneyRunsInput) async throws -> GetJourneyRunsOutputResponse {
+    func getJourneyRuns(input: GetJourneyRunsInput) async throws -> GetJourneyRunsOutput {
         fatalError("Not supported")
     }
 
-    func createApp(input: CreateAppInput) async throws -> CreateAppOutputResponse {
+    func createApp(input: CreateAppInput) async throws -> CreateAppOutput {
         fatalError("Not supported")
     }
 
-    func createCampaign(input: CreateCampaignInput) async throws -> CreateCampaignOutputResponse {
+    func createCampaign(input: CreateCampaignInput) async throws -> CreateCampaignOutput {
         fatalError("Not supported")
     }
 
-    func createEmailTemplate(input: CreateEmailTemplateInput) async throws -> CreateEmailTemplateOutputResponse {
+    func createEmailTemplate(input: CreateEmailTemplateInput) async throws -> CreateEmailTemplateOutput {
         fatalError("Not supported")
     }
 
-    func createExportJob(input: CreateExportJobInput) async throws -> CreateExportJobOutputResponse {
+    func createExportJob(input: CreateExportJobInput) async throws -> CreateExportJobOutput {
         fatalError("Not supported")
     }
 
-    func createImportJob(input: CreateImportJobInput) async throws -> CreateImportJobOutputResponse {
+    func createImportJob(input: CreateImportJobInput) async throws -> CreateImportJobOutput {
         fatalError("Not supported")
     }
 
-    func createInAppTemplate(input: CreateInAppTemplateInput) async throws -> CreateInAppTemplateOutputResponse {
+    func createInAppTemplate(input: CreateInAppTemplateInput) async throws -> CreateInAppTemplateOutput {
         fatalError("Not supported")
     }
 
-    func createJourney(input: CreateJourneyInput) async throws -> CreateJourneyOutputResponse {
+    func createJourney(input: CreateJourneyInput) async throws -> CreateJourneyOutput {
         fatalError("Not supported")
     }
 
-    func createPushTemplate(input: CreatePushTemplateInput) async throws -> CreatePushTemplateOutputResponse {
+    func createPushTemplate(input: CreatePushTemplateInput) async throws -> CreatePushTemplateOutput {
         fatalError("Not supported")
     }
 
-    func createRecommenderConfiguration(input: CreateRecommenderConfigurationInput) async throws -> CreateRecommenderConfigurationOutputResponse {
+    func createRecommenderConfiguration(input: CreateRecommenderConfigurationInput) async throws -> CreateRecommenderConfigurationOutput {
         fatalError("Not supported")
     }
 
-    func createSegment(input: CreateSegmentInput) async throws -> CreateSegmentOutputResponse {
+    func createSegment(input: CreateSegmentInput) async throws -> CreateSegmentOutput {
         fatalError("Not supported")
     }
 
-    func createSmsTemplate(input: CreateSmsTemplateInput) async throws -> CreateSmsTemplateOutputResponse {
+    func createSmsTemplate(input: CreateSmsTemplateInput) async throws -> CreateSmsTemplateOutput {
         fatalError("Not supported")
     }
 
-    func createVoiceTemplate(input: CreateVoiceTemplateInput) async throws -> CreateVoiceTemplateOutputResponse {
+    func createVoiceTemplate(input: CreateVoiceTemplateInput) async throws -> CreateVoiceTemplateOutput {
         fatalError("Not supported")
     }
 
-    func deleteAdmChannel(input: DeleteAdmChannelInput) async throws -> DeleteAdmChannelOutputResponse {
+    func deleteAdmChannel(input: DeleteAdmChannelInput) async throws -> DeleteAdmChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteApnsChannel(input: DeleteApnsChannelInput) async throws -> DeleteApnsChannelOutputResponse {
+    func deleteApnsChannel(input: DeleteApnsChannelInput) async throws -> DeleteApnsChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteApnsSandboxChannel(input: DeleteApnsSandboxChannelInput) async throws -> DeleteApnsSandboxChannelOutputResponse {
+    func deleteApnsSandboxChannel(input: DeleteApnsSandboxChannelInput) async throws -> DeleteApnsSandboxChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteApnsVoipChannel(input: DeleteApnsVoipChannelInput) async throws -> DeleteApnsVoipChannelOutputResponse {
+    func deleteApnsVoipChannel(input: DeleteApnsVoipChannelInput) async throws -> DeleteApnsVoipChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteApnsVoipSandboxChannel(input: DeleteApnsVoipSandboxChannelInput) async throws -> DeleteApnsVoipSandboxChannelOutputResponse {
+    func deleteApnsVoipSandboxChannel(input: DeleteApnsVoipSandboxChannelInput) async throws -> DeleteApnsVoipSandboxChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteApp(input: DeleteAppInput) async throws -> DeleteAppOutputResponse {
+    func deleteApp(input: DeleteAppInput) async throws -> DeleteAppOutput {
         fatalError("Not supported")
     }
 
-    func deleteBaiduChannel(input: DeleteBaiduChannelInput) async throws -> DeleteBaiduChannelOutputResponse {
+    func deleteBaiduChannel(input: DeleteBaiduChannelInput) async throws -> DeleteBaiduChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteCampaign(input: DeleteCampaignInput) async throws -> DeleteCampaignOutputResponse {
+    func deleteCampaign(input: DeleteCampaignInput) async throws -> DeleteCampaignOutput {
         fatalError("Not supported")
     }
 
-    func deleteEmailChannel(input: DeleteEmailChannelInput) async throws -> DeleteEmailChannelOutputResponse {
+    func deleteEmailChannel(input: DeleteEmailChannelInput) async throws -> DeleteEmailChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteEmailTemplate(input: DeleteEmailTemplateInput) async throws -> DeleteEmailTemplateOutputResponse {
+    func deleteEmailTemplate(input: DeleteEmailTemplateInput) async throws -> DeleteEmailTemplateOutput {
         fatalError("Not supported")
     }
 
-    func deleteEndpoint(input: DeleteEndpointInput) async throws -> DeleteEndpointOutputResponse {
+    func deleteEndpoint(input: DeleteEndpointInput) async throws -> DeleteEndpointOutput {
         fatalError("Not supported")
     }
 
-    func deleteEventStream(input: DeleteEventStreamInput) async throws -> DeleteEventStreamOutputResponse {
+    func deleteEventStream(input: DeleteEventStreamInput) async throws -> DeleteEventStreamOutput {
         fatalError("Not supported")
     }
 
-    func deleteGcmChannel(input: DeleteGcmChannelInput) async throws -> DeleteGcmChannelOutputResponse {
+    func deleteGcmChannel(input: DeleteGcmChannelInput) async throws -> DeleteGcmChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteInAppTemplate(input: DeleteInAppTemplateInput) async throws -> DeleteInAppTemplateOutputResponse {
+    func deleteInAppTemplate(input: DeleteInAppTemplateInput) async throws -> DeleteInAppTemplateOutput {
         fatalError("Not supported")
     }
 
-    func deleteJourney(input: DeleteJourneyInput) async throws -> DeleteJourneyOutputResponse {
+    func deleteJourney(input: DeleteJourneyInput) async throws -> DeleteJourneyOutput {
         fatalError("Not supported")
     }
 
-    func deletePushTemplate(input: DeletePushTemplateInput) async throws -> DeletePushTemplateOutputResponse {
+    func deletePushTemplate(input: DeletePushTemplateInput) async throws -> DeletePushTemplateOutput {
         fatalError("Not supported")
     }
 
-    func deleteRecommenderConfiguration(input: DeleteRecommenderConfigurationInput) async throws -> DeleteRecommenderConfigurationOutputResponse {
+    func deleteRecommenderConfiguration(input: DeleteRecommenderConfigurationInput) async throws -> DeleteRecommenderConfigurationOutput {
         fatalError("Not supported")
     }
 
-    func deleteSegment(input: DeleteSegmentInput) async throws -> DeleteSegmentOutputResponse {
+    func deleteSegment(input: DeleteSegmentInput) async throws -> DeleteSegmentOutput {
         fatalError("Not supported")
     }
 
-    func deleteSmsChannel(input: DeleteSmsChannelInput) async throws -> DeleteSmsChannelOutputResponse {
+    func deleteSmsChannel(input: DeleteSmsChannelInput) async throws -> DeleteSmsChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteSmsTemplate(input: DeleteSmsTemplateInput) async throws -> DeleteSmsTemplateOutputResponse {
+    func deleteSmsTemplate(input: DeleteSmsTemplateInput) async throws -> DeleteSmsTemplateOutput {
         fatalError("Not supported")
     }
 
-    func deleteUserEndpoints(input: DeleteUserEndpointsInput) async throws -> DeleteUserEndpointsOutputResponse {
+    func deleteUserEndpoints(input: DeleteUserEndpointsInput) async throws -> DeleteUserEndpointsOutput {
         fatalError("Not supported")
     }
 
-    func deleteVoiceChannel(input: DeleteVoiceChannelInput) async throws -> DeleteVoiceChannelOutputResponse {
+    func deleteVoiceChannel(input: DeleteVoiceChannelInput) async throws -> DeleteVoiceChannelOutput {
         fatalError("Not supported")
     }
 
-    func deleteVoiceTemplate(input: DeleteVoiceTemplateInput) async throws -> DeleteVoiceTemplateOutputResponse {
+    func deleteVoiceTemplate(input: DeleteVoiceTemplateInput) async throws -> DeleteVoiceTemplateOutput {
         fatalError("Not supported")
     }
 
-    func getAdmChannel(input: GetAdmChannelInput) async throws -> GetAdmChannelOutputResponse {
+    func getAdmChannel(input: GetAdmChannelInput) async throws -> GetAdmChannelOutput {
         fatalError("Not supported")
     }
 
-    func getApnsChannel(input: GetApnsChannelInput) async throws -> GetApnsChannelOutputResponse {
+    func getApnsChannel(input: GetApnsChannelInput) async throws -> GetApnsChannelOutput {
         fatalError("Not supported")
     }
 
-    func getApnsSandboxChannel(input: GetApnsSandboxChannelInput) async throws -> GetApnsSandboxChannelOutputResponse {
+    func getApnsSandboxChannel(input: GetApnsSandboxChannelInput) async throws -> GetApnsSandboxChannelOutput {
         fatalError("Not supported")
     }
 
-    func getApnsVoipChannel(input: GetApnsVoipChannelInput) async throws -> GetApnsVoipChannelOutputResponse {
+    func getApnsVoipChannel(input: GetApnsVoipChannelInput) async throws -> GetApnsVoipChannelOutput {
         fatalError("Not supported")
     }
 
-    func getApnsVoipSandboxChannel(input: GetApnsVoipSandboxChannelInput) async throws -> GetApnsVoipSandboxChannelOutputResponse {
+    func getApnsVoipSandboxChannel(input: GetApnsVoipSandboxChannelInput) async throws -> GetApnsVoipSandboxChannelOutput {
         fatalError("Not supported")
     }
 
-    func getApp(input: GetAppInput) async throws -> GetAppOutputResponse {
+    func getApp(input: GetAppInput) async throws -> GetAppOutput {
         fatalError("Not supported")
     }
 
-    func getApplicationDateRangeKpi(input: GetApplicationDateRangeKpiInput) async throws -> GetApplicationDateRangeKpiOutputResponse {
+    func getApplicationDateRangeKpi(input: GetApplicationDateRangeKpiInput) async throws -> GetApplicationDateRangeKpiOutput {
         fatalError("Not supported")
     }
 
-    func getApplicationSettings(input: GetApplicationSettingsInput) async throws -> GetApplicationSettingsOutputResponse {
+    func getApplicationSettings(input: GetApplicationSettingsInput) async throws -> GetApplicationSettingsOutput {
         fatalError("Not supported")
     }
 
-    func getApps(input: GetAppsInput) async throws -> GetAppsOutputResponse {
+    func getApps(input: GetAppsInput) async throws -> GetAppsOutput {
         fatalError("Not supported")
     }
 
-    func getBaiduChannel(input: GetBaiduChannelInput) async throws -> GetBaiduChannelOutputResponse {
+    func getBaiduChannel(input: GetBaiduChannelInput) async throws -> GetBaiduChannelOutput {
         fatalError("Not supported")
     }
 
-    func getCampaign(input: GetCampaignInput) async throws -> GetCampaignOutputResponse {
+    func getCampaign(input: GetCampaignInput) async throws -> GetCampaignOutput {
         fatalError("Not supported")
     }
 
-    func getCampaignActivities(input: GetCampaignActivitiesInput) async throws -> GetCampaignActivitiesOutputResponse {
+    func getCampaignActivities(input: GetCampaignActivitiesInput) async throws -> GetCampaignActivitiesOutput {
         fatalError("Not supported")
     }
 
-    func getCampaignDateRangeKpi(input: GetCampaignDateRangeKpiInput) async throws -> GetCampaignDateRangeKpiOutputResponse {
+    func getCampaignDateRangeKpi(input: GetCampaignDateRangeKpiInput) async throws -> GetCampaignDateRangeKpiOutput {
         fatalError("Not supported")
     }
 
-    func getCampaigns(input: GetCampaignsInput) async throws -> GetCampaignsOutputResponse {
+    func getCampaigns(input: GetCampaignsInput) async throws -> GetCampaignsOutput {
         fatalError("Not supported")
     }
 
-    func getCampaignVersion(input: GetCampaignVersionInput) async throws -> GetCampaignVersionOutputResponse {
+    func getCampaignVersion(input: GetCampaignVersionInput) async throws -> GetCampaignVersionOutput {
         fatalError("Not supported")
     }
 
-    func getCampaignVersions(input: GetCampaignVersionsInput) async throws -> GetCampaignVersionsOutputResponse {
+    func getCampaignVersions(input: GetCampaignVersionsInput) async throws -> GetCampaignVersionsOutput {
         fatalError("Not supported")
     }
 
-    func getChannels(input: GetChannelsInput) async throws -> GetChannelsOutputResponse {
+    func getChannels(input: GetChannelsInput) async throws -> GetChannelsOutput {
         fatalError("Not supported")
     }
 
-    func getEmailChannel(input: GetEmailChannelInput) async throws -> GetEmailChannelOutputResponse {
+    func getEmailChannel(input: GetEmailChannelInput) async throws -> GetEmailChannelOutput {
         fatalError("Not supported")
     }
 
-    func getEmailTemplate(input: GetEmailTemplateInput) async throws -> GetEmailTemplateOutputResponse {
+    func getEmailTemplate(input: GetEmailTemplateInput) async throws -> GetEmailTemplateOutput {
         fatalError("Not supported")
     }
 
-    func getEndpoint(input: GetEndpointInput) async throws -> GetEndpointOutputResponse {
+    func getEndpoint(input: GetEndpointInput) async throws -> GetEndpointOutput {
         fatalError("Not supported")
     }
 
-    func getEventStream(input: GetEventStreamInput) async throws -> GetEventStreamOutputResponse {
+    func getEventStream(input: GetEventStreamInput) async throws -> GetEventStreamOutput {
         fatalError("Not supported")
     }
 
-    func getExportJob(input: GetExportJobInput) async throws -> GetExportJobOutputResponse {
+    func getExportJob(input: GetExportJobInput) async throws -> GetExportJobOutput {
         fatalError("Not supported")
     }
 
-    func getExportJobs(input: GetExportJobsInput) async throws -> GetExportJobsOutputResponse {
+    func getExportJobs(input: GetExportJobsInput) async throws -> GetExportJobsOutput {
         fatalError("Not supported")
     }
 
-    func getGcmChannel(input: GetGcmChannelInput) async throws -> GetGcmChannelOutputResponse {
+    func getGcmChannel(input: GetGcmChannelInput) async throws -> GetGcmChannelOutput {
         fatalError("Not supported")
     }
 
-    func getImportJob(input: GetImportJobInput) async throws -> GetImportJobOutputResponse {
+    func getImportJob(input: GetImportJobInput) async throws -> GetImportJobOutput {
         fatalError("Not supported")
     }
 
-    func getImportJobs(input: GetImportJobsInput) async throws -> GetImportJobsOutputResponse {
+    func getImportJobs(input: GetImportJobsInput) async throws -> GetImportJobsOutput {
         fatalError("Not supported")
     }
 
-    func getInAppMessages(input: GetInAppMessagesInput) async throws -> GetInAppMessagesOutputResponse {
+    func getInAppMessages(input: GetInAppMessagesInput) async throws -> GetInAppMessagesOutput {
         fatalError("Not supported")
     }
 
-    func getInAppTemplate(input: GetInAppTemplateInput) async throws -> GetInAppTemplateOutputResponse {
+    func getInAppTemplate(input: GetInAppTemplateInput) async throws -> GetInAppTemplateOutput {
         fatalError("Not supported")
     }
 
-    func getJourney(input: GetJourneyInput) async throws -> GetJourneyOutputResponse {
+    func getJourney(input: GetJourneyInput) async throws -> GetJourneyOutput {
         fatalError("Not supported")
     }
 
-    func getJourneyDateRangeKpi(input: GetJourneyDateRangeKpiInput) async throws -> GetJourneyDateRangeKpiOutputResponse {
+    func getJourneyDateRangeKpi(input: GetJourneyDateRangeKpiInput) async throws -> GetJourneyDateRangeKpiOutput {
         fatalError("Not supported")
     }
 
-    func getJourneyExecutionActivityMetrics(input: GetJourneyExecutionActivityMetricsInput) async throws -> GetJourneyExecutionActivityMetricsOutputResponse {
+    func getJourneyExecutionActivityMetrics(input: GetJourneyExecutionActivityMetricsInput) async throws -> GetJourneyExecutionActivityMetricsOutput {
         fatalError("Not supported")
     }
 
-    func getJourneyExecutionMetrics(input: GetJourneyExecutionMetricsInput) async throws -> GetJourneyExecutionMetricsOutputResponse {
+    func getJourneyExecutionMetrics(input: GetJourneyExecutionMetricsInput) async throws -> GetJourneyExecutionMetricsOutput {
         fatalError("Not supported")
     }
 
-    func getPushTemplate(input: GetPushTemplateInput) async throws -> GetPushTemplateOutputResponse {
+    func getPushTemplate(input: GetPushTemplateInput) async throws -> GetPushTemplateOutput {
         fatalError("Not supported")
     }
 
-    func getRecommenderConfiguration(input: GetRecommenderConfigurationInput) async throws -> GetRecommenderConfigurationOutputResponse {
+    func getRecommenderConfiguration(input: GetRecommenderConfigurationInput) async throws -> GetRecommenderConfigurationOutput {
         fatalError("Not supported")
     }
 
-    func getRecommenderConfigurations(input: GetRecommenderConfigurationsInput) async throws -> GetRecommenderConfigurationsOutputResponse {
+    func getRecommenderConfigurations(input: GetRecommenderConfigurationsInput) async throws -> GetRecommenderConfigurationsOutput {
         fatalError("Not supported")
     }
 
-    func getSegment(input: GetSegmentInput) async throws -> GetSegmentOutputResponse {
+    func getSegment(input: GetSegmentInput) async throws -> GetSegmentOutput {
         fatalError("Not supported")
     }
 
-    func getSegmentExportJobs(input: GetSegmentExportJobsInput) async throws -> GetSegmentExportJobsOutputResponse {
+    func getSegmentExportJobs(input: GetSegmentExportJobsInput) async throws -> GetSegmentExportJobsOutput {
         fatalError("Not supported")
     }
 
-    func getSegmentImportJobs(input: GetSegmentImportJobsInput) async throws -> GetSegmentImportJobsOutputResponse {
+    func getSegmentImportJobs(input: GetSegmentImportJobsInput) async throws -> GetSegmentImportJobsOutput {
         fatalError("Not supported")
     }
 
-    func getSegments(input: GetSegmentsInput) async throws -> GetSegmentsOutputResponse {
+    func getSegments(input: GetSegmentsInput) async throws -> GetSegmentsOutput {
         fatalError("Not supported")
     }
 
-    func getSegmentVersion(input: GetSegmentVersionInput) async throws -> GetSegmentVersionOutputResponse {
+    func getSegmentVersion(input: GetSegmentVersionInput) async throws -> GetSegmentVersionOutput {
         fatalError("Not supported")
     }
 
-    func getSegmentVersions(input: GetSegmentVersionsInput) async throws -> GetSegmentVersionsOutputResponse {
+    func getSegmentVersions(input: GetSegmentVersionsInput) async throws -> GetSegmentVersionsOutput {
         fatalError("Not supported")
     }
 
-    func getSmsChannel(input: GetSmsChannelInput) async throws -> GetSmsChannelOutputResponse {
+    func getSmsChannel(input: GetSmsChannelInput) async throws -> GetSmsChannelOutput {
         fatalError("Not supported")
     }
 
-    func getSmsTemplate(input: GetSmsTemplateInput) async throws -> GetSmsTemplateOutputResponse {
+    func getSmsTemplate(input: GetSmsTemplateInput) async throws -> GetSmsTemplateOutput {
         fatalError("Not supported")
     }
 
-    func getUserEndpoints(input: GetUserEndpointsInput) async throws -> GetUserEndpointsOutputResponse {
+    func getUserEndpoints(input: GetUserEndpointsInput) async throws -> GetUserEndpointsOutput {
         fatalError("Not supported")
     }
 
-    func getVoiceChannel(input: GetVoiceChannelInput) async throws -> GetVoiceChannelOutputResponse {
+    func getVoiceChannel(input: GetVoiceChannelInput) async throws -> GetVoiceChannelOutput {
         fatalError("Not supported")
     }
 
-    func getVoiceTemplate(input: GetVoiceTemplateInput) async throws -> GetVoiceTemplateOutputResponse {
+    func getVoiceTemplate(input: GetVoiceTemplateInput) async throws -> GetVoiceTemplateOutput {
         fatalError("Not supported")
     }
 
-    func listJourneys(input: ListJourneysInput) async throws -> ListJourneysOutputResponse {
+    func listJourneys(input: ListJourneysInput) async throws -> ListJourneysOutput {
         fatalError("Not supported")
     }
 
-    func listTagsForResource(input: ListTagsForResourceInput) async throws -> ListTagsForResourceOutputResponse {
+    func listTagsForResource(input: ListTagsForResourceInput) async throws -> ListTagsForResourceOutput {
         fatalError("Not supported")
     }
 
-    func listTemplates(input: ListTemplatesInput) async throws -> ListTemplatesOutputResponse {
+    func listTemplates(input: ListTemplatesInput) async throws -> ListTemplatesOutput {
         fatalError("Not supported")
     }
 
-    func listTemplateVersions(input: ListTemplateVersionsInput) async throws -> ListTemplateVersionsOutputResponse {
+    func listTemplateVersions(input: ListTemplateVersionsInput) async throws -> ListTemplateVersionsOutput {
         fatalError("Not supported")
     }
 
-    func phoneNumberValidate(input: PhoneNumberValidateInput) async throws -> PhoneNumberValidateOutputResponse {
+    func phoneNumberValidate(input: PhoneNumberValidateInput) async throws -> PhoneNumberValidateOutput {
         fatalError("Not supported")
     }
 
     var putEventsCount = 0
-    var putEventsResult: Result<PutEventsOutputResponse, Error> = .failure(CancellationError())
-    func putEvents(input: PutEventsInput) async throws -> PutEventsOutputResponse {
+    var putEventsResult: Result<PutEventsOutput, Error> = .failure(CancellationError())
+    func putEvents(input: PutEventsInput) async throws -> PutEventsOutput {
         putEventsCount += 1
         return try putEventsResult.get()
     }
 
-    func putEventStream(input: PutEventStreamInput) async throws -> PutEventStreamOutputResponse {
+    func putEventStream(input: PutEventStreamInput) async throws -> PutEventStreamOutput {
         fatalError("Not supported")
     }
 
-    func removeAttributes(input: RemoveAttributesInput) async throws -> RemoveAttributesOutputResponse {
+    func removeAttributes(input: RemoveAttributesInput) async throws -> RemoveAttributesOutput {
         fatalError("Not supported")
     }
 
-    func sendMessages(input: SendMessagesInput) async throws -> SendMessagesOutputResponse {
+    func sendMessages(input: SendMessagesInput) async throws -> SendMessagesOutput {
         fatalError("Not supported")
     }
 
-    func sendOTPMessage(input: SendOTPMessageInput) async throws -> SendOTPMessageOutputResponse {
+    func sendOTPMessage(input: SendOTPMessageInput) async throws -> SendOTPMessageOutput {
         fatalError("Not supported")
     }
 
-    func sendUsersMessages(input: SendUsersMessagesInput) async throws -> SendUsersMessagesOutputResponse {
+    func sendUsersMessages(input: SendUsersMessagesInput) async throws -> SendUsersMessagesOutput {
         fatalError("Not supported")
     }
 
-    func tagResource(input: TagResourceInput) async throws -> TagResourceOutputResponse {
+    func tagResource(input: TagResourceInput) async throws -> TagResourceOutput {
         fatalError("Not supported")
     }
 
-    func untagResource(input: UntagResourceInput) async throws -> UntagResourceOutputResponse {
+    func untagResource(input: UntagResourceInput) async throws -> UntagResourceOutput {
         fatalError("Not supported")
     }
 
-    func updateAdmChannel(input: UpdateAdmChannelInput) async throws -> UpdateAdmChannelOutputResponse {
+    func updateAdmChannel(input: UpdateAdmChannelInput) async throws -> UpdateAdmChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateApnsChannel(input: UpdateApnsChannelInput) async throws -> UpdateApnsChannelOutputResponse {
+    func updateApnsChannel(input: UpdateApnsChannelInput) async throws -> UpdateApnsChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateApnsSandboxChannel(input: UpdateApnsSandboxChannelInput) async throws -> UpdateApnsSandboxChannelOutputResponse {
+    func updateApnsSandboxChannel(input: UpdateApnsSandboxChannelInput) async throws -> UpdateApnsSandboxChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateApnsVoipChannel(input: UpdateApnsVoipChannelInput) async throws -> UpdateApnsVoipChannelOutputResponse {
+    func updateApnsVoipChannel(input: UpdateApnsVoipChannelInput) async throws -> UpdateApnsVoipChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateApnsVoipSandboxChannel(input: UpdateApnsVoipSandboxChannelInput) async throws -> UpdateApnsVoipSandboxChannelOutputResponse {
+    func updateApnsVoipSandboxChannel(input: UpdateApnsVoipSandboxChannelInput) async throws -> UpdateApnsVoipSandboxChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateApplicationSettings(input: UpdateApplicationSettingsInput) async throws -> UpdateApplicationSettingsOutputResponse {
+    func updateApplicationSettings(input: UpdateApplicationSettingsInput) async throws -> UpdateApplicationSettingsOutput {
         fatalError("Not supported")
     }
 
-    func updateBaiduChannel(input: UpdateBaiduChannelInput) async throws -> UpdateBaiduChannelOutputResponse {
+    func updateBaiduChannel(input: UpdateBaiduChannelInput) async throws -> UpdateBaiduChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateCampaign(input: UpdateCampaignInput) async throws -> UpdateCampaignOutputResponse {
+    func updateCampaign(input: UpdateCampaignInput) async throws -> UpdateCampaignOutput {
         fatalError("Not supported")
     }
 
-    func updateEmailChannel(input: UpdateEmailChannelInput) async throws -> UpdateEmailChannelOutputResponse {
+    func updateEmailChannel(input: UpdateEmailChannelInput) async throws -> UpdateEmailChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateEmailTemplate(input: UpdateEmailTemplateInput) async throws -> UpdateEmailTemplateOutputResponse {
+    func updateEmailTemplate(input: UpdateEmailTemplateInput) async throws -> UpdateEmailTemplateOutput {
         fatalError("Not supported")
     }
 
     var updateEndpointCount = 0
-    var updateEndpointResult: Result<UpdateEndpointOutputResponse, Error>?
-    func updateEndpoint(input: UpdateEndpointInput) async throws -> UpdateEndpointOutputResponse {
+    var updateEndpointResult: Result<UpdateEndpointOutput, Error>?
+    func updateEndpoint(input: UpdateEndpointInput) async throws -> UpdateEndpointOutput {
         updateEndpointCount += 1
         guard let result = updateEndpointResult else {
-            return UpdateEndpointOutputResponse()
+            return UpdateEndpointOutput()
         }
 
         switch result {
@@ -456,59 +456,59 @@ class MockPinpointClient: PinpointClientProtocol {
         }
     }
 
-    func updateEndpointsBatch(input: UpdateEndpointsBatchInput) async throws -> UpdateEndpointsBatchOutputResponse {
+    func updateEndpointsBatch(input: UpdateEndpointsBatchInput) async throws -> UpdateEndpointsBatchOutput {
         fatalError("Not supported")
     }
 
-    func updateGcmChannel(input: UpdateGcmChannelInput) async throws -> UpdateGcmChannelOutputResponse {
+    func updateGcmChannel(input: UpdateGcmChannelInput) async throws -> UpdateGcmChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateInAppTemplate(input: UpdateInAppTemplateInput) async throws -> UpdateInAppTemplateOutputResponse {
+    func updateInAppTemplate(input: UpdateInAppTemplateInput) async throws -> UpdateInAppTemplateOutput {
         fatalError("Not supported")
     }
 
-    func updateJourney(input: UpdateJourneyInput) async throws -> UpdateJourneyOutputResponse {
+    func updateJourney(input: UpdateJourneyInput) async throws -> UpdateJourneyOutput {
         fatalError("Not supported")
     }
 
-    func updateJourneyState(input: UpdateJourneyStateInput) async throws -> UpdateJourneyStateOutputResponse {
+    func updateJourneyState(input: UpdateJourneyStateInput) async throws -> UpdateJourneyStateOutput {
         fatalError("Not supported")
     }
 
-    func updatePushTemplate(input: UpdatePushTemplateInput) async throws -> UpdatePushTemplateOutputResponse {
+    func updatePushTemplate(input: UpdatePushTemplateInput) async throws -> UpdatePushTemplateOutput {
         fatalError("Not supported")
     }
 
-    func updateRecommenderConfiguration(input: UpdateRecommenderConfigurationInput) async throws -> UpdateRecommenderConfigurationOutputResponse {
+    func updateRecommenderConfiguration(input: UpdateRecommenderConfigurationInput) async throws -> UpdateRecommenderConfigurationOutput {
         fatalError("Not supported")
     }
 
-    func updateSegment(input: UpdateSegmentInput) async throws -> UpdateSegmentOutputResponse {
+    func updateSegment(input: UpdateSegmentInput) async throws -> UpdateSegmentOutput {
         fatalError("Not supported")
     }
 
-    func updateSmsChannel(input: UpdateSmsChannelInput) async throws -> UpdateSmsChannelOutputResponse {
+    func updateSmsChannel(input: UpdateSmsChannelInput) async throws -> UpdateSmsChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateSmsTemplate(input: UpdateSmsTemplateInput) async throws -> UpdateSmsTemplateOutputResponse {
+    func updateSmsTemplate(input: UpdateSmsTemplateInput) async throws -> UpdateSmsTemplateOutput {
         fatalError("Not supported")
     }
 
-    func updateTemplateActiveVersion(input: UpdateTemplateActiveVersionInput) async throws -> UpdateTemplateActiveVersionOutputResponse {
+    func updateTemplateActiveVersion(input: UpdateTemplateActiveVersionInput) async throws -> UpdateTemplateActiveVersionOutput {
         fatalError("Not supported")
     }
 
-    func updateVoiceChannel(input: UpdateVoiceChannelInput) async throws -> UpdateVoiceChannelOutputResponse {
+    func updateVoiceChannel(input: UpdateVoiceChannelInput) async throws -> UpdateVoiceChannelOutput {
         fatalError("Not supported")
     }
 
-    func updateVoiceTemplate(input: UpdateVoiceTemplateInput) async throws -> UpdateVoiceTemplateOutputResponse {
+    func updateVoiceTemplate(input: UpdateVoiceTemplateInput) async throws -> UpdateVoiceTemplateOutput {
         fatalError("Not supported")
     }
 
-    func verifyOTPMessage(input: VerifyOTPMessageInput) async throws -> VerifyOTPMessageOutputResponse {
+    func verifyOTPMessage(input: VerifyOTPMessageInput) async throws -> VerifyOTPMessageOutput {
         fatalError("Not supported")
     }
 }

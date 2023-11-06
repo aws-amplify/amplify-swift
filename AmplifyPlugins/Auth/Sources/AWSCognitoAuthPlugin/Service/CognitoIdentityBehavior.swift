@@ -13,7 +13,7 @@ protocol CognitoIdentityBehavior {
     /// Generates (or retrieves) a Cognito ID. Supplying multiple logins will create an implicit linked account.
     /// This is a public API. You do not need any credentials to call this API.
     /// Throws GetIdOutputError
-    func getId(input: GetIdInput) async throws -> GetIdOutputResponse
+    func getId(input: GetIdInput) async throws -> GetIdOutput
 
     /// Returns credentials for the provided identity ID.
     /// Any provided logins will be validated against supported login providers. If the token is for cognito-identity.amazonaws.com,
@@ -21,6 +21,6 @@ protocol CognitoIdentityBehavior {
     /// This is a public API. You do not need any credentials to call this API.
     /// Throws GetCredentialsForIdentityOutputError
     func getCredentialsForIdentity(
-        input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse
+        input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutput
 
 }
