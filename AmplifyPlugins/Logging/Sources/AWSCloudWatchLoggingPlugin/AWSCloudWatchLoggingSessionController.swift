@@ -130,12 +130,12 @@ final class AWSCloudWatchLoggingSessionController {
     private func createConsumer() throws -> LogBatchConsumer? {
         if self.client == nil {
             // TODO: FrameworkMetadata Replacement
-            let configuration = try CloudWatchClientConfiguration(
+            let configuration = CloudWatchClientConfiguration(
                 region: region,
                 credentialsProvider: credentialsProvider
             )
 
-            configuration.httpClientEngine = .userAgentEngine(for: configuration)
+//            configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
             self.client = CloudWatchClient(configuration: configuration)
         }
