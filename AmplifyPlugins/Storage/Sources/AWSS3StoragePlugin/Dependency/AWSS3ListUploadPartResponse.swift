@@ -29,7 +29,7 @@ struct AWSS3ListUploadPartResponse {
 
 extension AWSS3ListUploadPartResponse {
 
-    init?(response: ListPartsOutputResponse) {
+    init?(response: ListPartsOutput) {
         guard let bucket = response.bucket,
               let key = response.key,
               let uploadId = response.uploadId,

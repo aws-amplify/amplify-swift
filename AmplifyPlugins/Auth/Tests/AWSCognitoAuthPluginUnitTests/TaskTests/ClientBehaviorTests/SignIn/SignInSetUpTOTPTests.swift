@@ -29,10 +29,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSuccessfulTOTPSetupChallenge() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -63,13 +63,13 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithNextStepSetupMFAWithUnavailableMFAType() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            InitiateAuthOutputResponse(
+            InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { _ in
-            RespondToAuthChallengeOutputResponse(
+            RespondToAuthChallengeOutput(
                 authenticationResult: .none,
                 challengeName: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\"]"],
@@ -102,10 +102,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     ///
     func testSuccessfulTOTPSetupChallengeWithEmptyMFASCanSetup() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
             session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -143,10 +143,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithInvalidResult() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -183,10 +183,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSecondSignInAfterSignInWithInvalidResult() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -201,10 +201,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
             XCTFail("Should not receive a success response \(result)")
         } catch {
             self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-                return InitiateAuthOutputResponse(
+                return InitiateAuthOutput(
                     authenticationResult: .none,
                     challengeName: .passwordVerifier,
-                    challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                    challengeParameters: InitiateAuthOutput.validChalengeParams,
                     session: "someSession")
             }, mockRespondToAuthChallengeResponse: { input in
                 return .testData(
@@ -244,10 +244,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithInternalErrorException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -282,10 +282,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithInvalidParameterException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -321,10 +321,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithNotAuthorizedException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -359,10 +359,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithResourceNotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -398,10 +398,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithConcurrentModificationException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -436,10 +436,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithForbiddenException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -474,10 +474,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithSoftwareTokenMFANotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(
@@ -513,10 +513,10 @@ class SignInSetUpTOTPTests: BasePluginTest {
     func testSignInWithUnknownAWSHttpServiceError() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
-            return InitiateAuthOutputResponse(
+            return InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
             return .testData(

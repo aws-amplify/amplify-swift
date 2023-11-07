@@ -10,7 +10,7 @@ import Foundation
 
 extension PutEventsInput: AmplifyStringConvertible {}
 
-extension PutEventsOutputResponse: AmplifyStringConvertible {
+extension PutEventsOutput: AmplifyStringConvertible {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case eventsResponse = "EventsResponse"
     }
@@ -25,7 +25,7 @@ extension PutEventsOutputResponse: AmplifyStringConvertible {
 
 extension UpdateEndpointInput: AmplifyStringConvertible {}
 
-extension UpdateEndpointOutputResponse: AmplifyStringConvertible {
+extension UpdateEndpointOutput: AmplifyStringConvertible {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case messageBody = "MessageBody"
     }

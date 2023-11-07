@@ -24,385 +24,385 @@ final class MockS3Client {
     /// in order to extract results during each invocation.
     ///
     /// - Tag: MockS3Client.listObjectsV2Handler
-    var listObjectsV2Handler: (ListObjectsV2Input) async throws -> ListObjectsV2OutputResponse = { _ in throw ClientError.missingResult }
+    var listObjectsV2Handler: (ListObjectsV2Input) async throws -> ListObjectsV2Output = { _ in throw ClientError.missingResult }
 
-    var headObjectHandler: (HeadObjectInput) async throws -> HeadObjectOutputResponse = { _ in return HeadObjectOutputResponse() }
+    var headObjectHandler: (HeadObjectInput) async throws -> HeadObjectOutput = { _ in return HeadObjectOutput() }
 }
 
 extension MockS3Client: S3ClientProtocol {
 
     /// - Tag: MockS3Client.listObjectsV2
-    func listObjectsV2(input: AWSS3.ListObjectsV2Input) async throws -> AWSS3.ListObjectsV2OutputResponse {
+    func listObjectsV2(input: AWSS3.ListObjectsV2Input) async throws -> AWSS3.ListObjectsV2Output {
         interactions.append("\(#function) bucket: \(input.bucket ?? "nil") prefix: \(input.prefix ?? "nil") continuationToken: \(input.continuationToken ?? "nil")")
         return try await listObjectsV2Handler(input)
     }
 
-    func abortMultipartUpload(input: AWSS3.AbortMultipartUploadInput) async throws -> AWSS3.AbortMultipartUploadOutputResponse {
+    func abortMultipartUpload(input: AWSS3.AbortMultipartUploadInput) async throws -> AWSS3.AbortMultipartUploadOutput {
         throw ClientError.missingImplementation
     }
 
-    func completeMultipartUpload(input: AWSS3.CompleteMultipartUploadInput) async throws -> AWSS3.CompleteMultipartUploadOutputResponse {
+    func completeMultipartUpload(input: AWSS3.CompleteMultipartUploadInput) async throws -> AWSS3.CompleteMultipartUploadOutput {
         throw ClientError.missingImplementation
     }
 
-    func copyObject(input: AWSS3.CopyObjectInput) async throws -> AWSS3.CopyObjectOutputResponse {
+    func copyObject(input: AWSS3.CopyObjectInput) async throws -> AWSS3.CopyObjectOutput {
         throw ClientError.missingImplementation
     }
 
-    func createBucket(input: AWSS3.CreateBucketInput) async throws -> AWSS3.CreateBucketOutputResponse {
+    func createBucket(input: AWSS3.CreateBucketInput) async throws -> AWSS3.CreateBucketOutput {
         throw ClientError.missingImplementation
     }
 
-    func createMultipartUpload(input: AWSS3.CreateMultipartUploadInput) async throws -> AWSS3.CreateMultipartUploadOutputResponse {
+    func createMultipartUpload(input: AWSS3.CreateMultipartUploadInput) async throws -> AWSS3.CreateMultipartUploadOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucket(input: AWSS3.DeleteBucketInput) async throws -> AWSS3.DeleteBucketOutputResponse {
+    func deleteBucket(input: AWSS3.DeleteBucketInput) async throws -> AWSS3.DeleteBucketOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketAnalyticsConfiguration(input: AWSS3.DeleteBucketAnalyticsConfigurationInput) async throws -> AWSS3.DeleteBucketAnalyticsConfigurationOutputResponse {
+    func deleteBucketAnalyticsConfiguration(input: AWSS3.DeleteBucketAnalyticsConfigurationInput) async throws -> AWSS3.DeleteBucketAnalyticsConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketCors(input: AWSS3.DeleteBucketCorsInput) async throws -> AWSS3.DeleteBucketCorsOutputResponse {
+    func deleteBucketCors(input: AWSS3.DeleteBucketCorsInput) async throws -> AWSS3.DeleteBucketCorsOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketEncryption(input: AWSS3.DeleteBucketEncryptionInput) async throws -> AWSS3.DeleteBucketEncryptionOutputResponse {
+    func deleteBucketEncryption(input: AWSS3.DeleteBucketEncryptionInput) async throws -> AWSS3.DeleteBucketEncryptionOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketIntelligentTieringConfiguration(input: AWSS3.DeleteBucketIntelligentTieringConfigurationInput) async throws -> AWSS3.DeleteBucketIntelligentTieringConfigurationOutputResponse {
+    func deleteBucketIntelligentTieringConfiguration(input: AWSS3.DeleteBucketIntelligentTieringConfigurationInput) async throws -> AWSS3.DeleteBucketIntelligentTieringConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketInventoryConfiguration(input: AWSS3.DeleteBucketInventoryConfigurationInput) async throws -> AWSS3.DeleteBucketInventoryConfigurationOutputResponse {
+    func deleteBucketInventoryConfiguration(input: AWSS3.DeleteBucketInventoryConfigurationInput) async throws -> AWSS3.DeleteBucketInventoryConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketLifecycle(input: AWSS3.DeleteBucketLifecycleInput) async throws -> AWSS3.DeleteBucketLifecycleOutputResponse {
+    func deleteBucketLifecycle(input: AWSS3.DeleteBucketLifecycleInput) async throws -> AWSS3.DeleteBucketLifecycleOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketMetricsConfiguration(input: AWSS3.DeleteBucketMetricsConfigurationInput) async throws -> AWSS3.DeleteBucketMetricsConfigurationOutputResponse {
+    func deleteBucketMetricsConfiguration(input: AWSS3.DeleteBucketMetricsConfigurationInput) async throws -> AWSS3.DeleteBucketMetricsConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketOwnershipControls(input: AWSS3.DeleteBucketOwnershipControlsInput) async throws -> AWSS3.DeleteBucketOwnershipControlsOutputResponse {
+    func deleteBucketOwnershipControls(input: AWSS3.DeleteBucketOwnershipControlsInput) async throws -> AWSS3.DeleteBucketOwnershipControlsOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketPolicy(input: AWSS3.DeleteBucketPolicyInput) async throws -> AWSS3.DeleteBucketPolicyOutputResponse {
+    func deleteBucketPolicy(input: AWSS3.DeleteBucketPolicyInput) async throws -> AWSS3.DeleteBucketPolicyOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketReplication(input: AWSS3.DeleteBucketReplicationInput) async throws -> AWSS3.DeleteBucketReplicationOutputResponse {
+    func deleteBucketReplication(input: AWSS3.DeleteBucketReplicationInput) async throws -> AWSS3.DeleteBucketReplicationOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketTagging(input: AWSS3.DeleteBucketTaggingInput) async throws -> AWSS3.DeleteBucketTaggingOutputResponse {
+    func deleteBucketTagging(input: AWSS3.DeleteBucketTaggingInput) async throws -> AWSS3.DeleteBucketTaggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteBucketWebsite(input: AWSS3.DeleteBucketWebsiteInput) async throws -> AWSS3.DeleteBucketWebsiteOutputResponse {
+    func deleteBucketWebsite(input: AWSS3.DeleteBucketWebsiteInput) async throws -> AWSS3.DeleteBucketWebsiteOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteObject(input: AWSS3.DeleteObjectInput) async throws -> AWSS3.DeleteObjectOutputResponse {
+    func deleteObject(input: AWSS3.DeleteObjectInput) async throws -> AWSS3.DeleteObjectOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteObjects(input: AWSS3.DeleteObjectsInput) async throws -> AWSS3.DeleteObjectsOutputResponse {
+    func deleteObjects(input: AWSS3.DeleteObjectsInput) async throws -> AWSS3.DeleteObjectsOutput {
         throw ClientError.missingImplementation
     }
 
-    func deleteObjectTagging(input: AWSS3.DeleteObjectTaggingInput) async throws -> AWSS3.DeleteObjectTaggingOutputResponse {
+    func deleteObjectTagging(input: AWSS3.DeleteObjectTaggingInput) async throws -> AWSS3.DeleteObjectTaggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func deletePublicAccessBlock(input: AWSS3.DeletePublicAccessBlockInput) async throws -> AWSS3.DeletePublicAccessBlockOutputResponse {
+    func deletePublicAccessBlock(input: AWSS3.DeletePublicAccessBlockInput) async throws -> AWSS3.DeletePublicAccessBlockOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketAccelerateConfiguration(input: AWSS3.GetBucketAccelerateConfigurationInput) async throws -> AWSS3.GetBucketAccelerateConfigurationOutputResponse {
+    func getBucketAccelerateConfiguration(input: AWSS3.GetBucketAccelerateConfigurationInput) async throws -> AWSS3.GetBucketAccelerateConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketAcl(input: AWSS3.GetBucketAclInput) async throws -> AWSS3.GetBucketAclOutputResponse {
+    func getBucketAcl(input: AWSS3.GetBucketAclInput) async throws -> AWSS3.GetBucketAclOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketAnalyticsConfiguration(input: AWSS3.GetBucketAnalyticsConfigurationInput) async throws -> AWSS3.GetBucketAnalyticsConfigurationOutputResponse {
+    func getBucketAnalyticsConfiguration(input: AWSS3.GetBucketAnalyticsConfigurationInput) async throws -> AWSS3.GetBucketAnalyticsConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketCors(input: AWSS3.GetBucketCorsInput) async throws -> AWSS3.GetBucketCorsOutputResponse {
+    func getBucketCors(input: AWSS3.GetBucketCorsInput) async throws -> AWSS3.GetBucketCorsOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketEncryption(input: AWSS3.GetBucketEncryptionInput) async throws -> AWSS3.GetBucketEncryptionOutputResponse {
+    func getBucketEncryption(input: AWSS3.GetBucketEncryptionInput) async throws -> AWSS3.GetBucketEncryptionOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketIntelligentTieringConfiguration(input: AWSS3.GetBucketIntelligentTieringConfigurationInput) async throws -> AWSS3.GetBucketIntelligentTieringConfigurationOutputResponse {
+    func getBucketIntelligentTieringConfiguration(input: AWSS3.GetBucketIntelligentTieringConfigurationInput) async throws -> AWSS3.GetBucketIntelligentTieringConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketInventoryConfiguration(input: AWSS3.GetBucketInventoryConfigurationInput) async throws -> AWSS3.GetBucketInventoryConfigurationOutputResponse {
+    func getBucketInventoryConfiguration(input: AWSS3.GetBucketInventoryConfigurationInput) async throws -> AWSS3.GetBucketInventoryConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketLifecycleConfiguration(input: AWSS3.GetBucketLifecycleConfigurationInput) async throws -> AWSS3.GetBucketLifecycleConfigurationOutputResponse {
+    func getBucketLifecycleConfiguration(input: AWSS3.GetBucketLifecycleConfigurationInput) async throws -> AWSS3.GetBucketLifecycleConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketLocation(input: AWSS3.GetBucketLocationInput) async throws -> AWSS3.GetBucketLocationOutputResponse {
+    func getBucketLocation(input: AWSS3.GetBucketLocationInput) async throws -> AWSS3.GetBucketLocationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketLogging(input: AWSS3.GetBucketLoggingInput) async throws -> AWSS3.GetBucketLoggingOutputResponse {
+    func getBucketLogging(input: AWSS3.GetBucketLoggingInput) async throws -> AWSS3.GetBucketLoggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketMetricsConfiguration(input: AWSS3.GetBucketMetricsConfigurationInput) async throws -> AWSS3.GetBucketMetricsConfigurationOutputResponse {
+    func getBucketMetricsConfiguration(input: AWSS3.GetBucketMetricsConfigurationInput) async throws -> AWSS3.GetBucketMetricsConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketNotificationConfiguration(input: AWSS3.GetBucketNotificationConfigurationInput) async throws -> AWSS3.GetBucketNotificationConfigurationOutputResponse {
+    func getBucketNotificationConfiguration(input: AWSS3.GetBucketNotificationConfigurationInput) async throws -> AWSS3.GetBucketNotificationConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketOwnershipControls(input: AWSS3.GetBucketOwnershipControlsInput) async throws -> AWSS3.GetBucketOwnershipControlsOutputResponse {
+    func getBucketOwnershipControls(input: AWSS3.GetBucketOwnershipControlsInput) async throws -> AWSS3.GetBucketOwnershipControlsOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketPolicy(input: AWSS3.GetBucketPolicyInput) async throws -> AWSS3.GetBucketPolicyOutputResponse {
+    func getBucketPolicy(input: AWSS3.GetBucketPolicyInput) async throws -> AWSS3.GetBucketPolicyOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketPolicyStatus(input: AWSS3.GetBucketPolicyStatusInput) async throws -> AWSS3.GetBucketPolicyStatusOutputResponse {
+    func getBucketPolicyStatus(input: AWSS3.GetBucketPolicyStatusInput) async throws -> AWSS3.GetBucketPolicyStatusOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketReplication(input: AWSS3.GetBucketReplicationInput) async throws -> AWSS3.GetBucketReplicationOutputResponse {
+    func getBucketReplication(input: AWSS3.GetBucketReplicationInput) async throws -> AWSS3.GetBucketReplicationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketRequestPayment(input: AWSS3.GetBucketRequestPaymentInput) async throws -> AWSS3.GetBucketRequestPaymentOutputResponse {
+    func getBucketRequestPayment(input: AWSS3.GetBucketRequestPaymentInput) async throws -> AWSS3.GetBucketRequestPaymentOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketTagging(input: AWSS3.GetBucketTaggingInput) async throws -> AWSS3.GetBucketTaggingOutputResponse {
+    func getBucketTagging(input: AWSS3.GetBucketTaggingInput) async throws -> AWSS3.GetBucketTaggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketVersioning(input: AWSS3.GetBucketVersioningInput) async throws -> AWSS3.GetBucketVersioningOutputResponse {
+    func getBucketVersioning(input: AWSS3.GetBucketVersioningInput) async throws -> AWSS3.GetBucketVersioningOutput {
         throw ClientError.missingImplementation
     }
 
-    func getBucketWebsite(input: AWSS3.GetBucketWebsiteInput) async throws -> AWSS3.GetBucketWebsiteOutputResponse {
+    func getBucketWebsite(input: AWSS3.GetBucketWebsiteInput) async throws -> AWSS3.GetBucketWebsiteOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObject(input: AWSS3.GetObjectInput) async throws -> AWSS3.GetObjectOutputResponse {
+    func getObject(input: AWSS3.GetObjectInput) async throws -> AWSS3.GetObjectOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObjectAcl(input: AWSS3.GetObjectAclInput) async throws -> AWSS3.GetObjectAclOutputResponse {
+    func getObjectAcl(input: AWSS3.GetObjectAclInput) async throws -> AWSS3.GetObjectAclOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObjectAttributes(input: AWSS3.GetObjectAttributesInput) async throws -> AWSS3.GetObjectAttributesOutputResponse {
+    func getObjectAttributes(input: AWSS3.GetObjectAttributesInput) async throws -> AWSS3.GetObjectAttributesOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObjectLegalHold(input: AWSS3.GetObjectLegalHoldInput) async throws -> AWSS3.GetObjectLegalHoldOutputResponse {
+    func getObjectLegalHold(input: AWSS3.GetObjectLegalHoldInput) async throws -> AWSS3.GetObjectLegalHoldOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObjectLockConfiguration(input: AWSS3.GetObjectLockConfigurationInput) async throws -> AWSS3.GetObjectLockConfigurationOutputResponse {
+    func getObjectLockConfiguration(input: AWSS3.GetObjectLockConfigurationInput) async throws -> AWSS3.GetObjectLockConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObjectRetention(input: AWSS3.GetObjectRetentionInput) async throws -> AWSS3.GetObjectRetentionOutputResponse {
+    func getObjectRetention(input: AWSS3.GetObjectRetentionInput) async throws -> AWSS3.GetObjectRetentionOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObjectTagging(input: AWSS3.GetObjectTaggingInput) async throws -> AWSS3.GetObjectTaggingOutputResponse {
+    func getObjectTagging(input: AWSS3.GetObjectTaggingInput) async throws -> AWSS3.GetObjectTaggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func getObjectTorrent(input: AWSS3.GetObjectTorrentInput) async throws -> AWSS3.GetObjectTorrentOutputResponse {
+    func getObjectTorrent(input: AWSS3.GetObjectTorrentInput) async throws -> AWSS3.GetObjectTorrentOutput {
         throw ClientError.missingImplementation
     }
 
-    func getPublicAccessBlock(input: AWSS3.GetPublicAccessBlockInput) async throws -> AWSS3.GetPublicAccessBlockOutputResponse {
+    func getPublicAccessBlock(input: AWSS3.GetPublicAccessBlockInput) async throws -> AWSS3.GetPublicAccessBlockOutput {
         throw ClientError.missingImplementation
     }
 
-    func headBucket(input: AWSS3.HeadBucketInput) async throws -> AWSS3.HeadBucketOutputResponse {
+    func headBucket(input: AWSS3.HeadBucketInput) async throws -> AWSS3.HeadBucketOutput {
         throw ClientError.missingImplementation
     }
 
-    func headObject(input: HeadObjectInput) async throws -> HeadObjectOutputResponse {
+    func headObject(input: HeadObjectInput) async throws -> HeadObjectOutput {
         interactions.append(#function)
         return try await headObjectHandler(input)
     }
 
-    func listBucketAnalyticsConfigurations(input: AWSS3.ListBucketAnalyticsConfigurationsInput) async throws -> AWSS3.ListBucketAnalyticsConfigurationsOutputResponse {
+    func listBucketAnalyticsConfigurations(input: AWSS3.ListBucketAnalyticsConfigurationsInput) async throws -> AWSS3.ListBucketAnalyticsConfigurationsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listBucketIntelligentTieringConfigurations(input: AWSS3.ListBucketIntelligentTieringConfigurationsInput) async throws -> AWSS3.ListBucketIntelligentTieringConfigurationsOutputResponse {
+    func listBucketIntelligentTieringConfigurations(input: AWSS3.ListBucketIntelligentTieringConfigurationsInput) async throws -> AWSS3.ListBucketIntelligentTieringConfigurationsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listBucketInventoryConfigurations(input: AWSS3.ListBucketInventoryConfigurationsInput) async throws -> AWSS3.ListBucketInventoryConfigurationsOutputResponse {
+    func listBucketInventoryConfigurations(input: AWSS3.ListBucketInventoryConfigurationsInput) async throws -> AWSS3.ListBucketInventoryConfigurationsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listBucketMetricsConfigurations(input: AWSS3.ListBucketMetricsConfigurationsInput) async throws -> AWSS3.ListBucketMetricsConfigurationsOutputResponse {
+    func listBucketMetricsConfigurations(input: AWSS3.ListBucketMetricsConfigurationsInput) async throws -> AWSS3.ListBucketMetricsConfigurationsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listBuckets(input: AWSS3.ListBucketsInput) async throws -> AWSS3.ListBucketsOutputResponse {
+    func listBuckets(input: AWSS3.ListBucketsInput) async throws -> AWSS3.ListBucketsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listMultipartUploads(input: AWSS3.ListMultipartUploadsInput) async throws -> AWSS3.ListMultipartUploadsOutputResponse {
+    func listMultipartUploads(input: AWSS3.ListMultipartUploadsInput) async throws -> AWSS3.ListMultipartUploadsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listObjects(input: AWSS3.ListObjectsInput) async throws -> AWSS3.ListObjectsOutputResponse {
+    func listObjects(input: AWSS3.ListObjectsInput) async throws -> AWSS3.ListObjectsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listObjectVersions(input: AWSS3.ListObjectVersionsInput) async throws -> AWSS3.ListObjectVersionsOutputResponse {
+    func listObjectVersions(input: AWSS3.ListObjectVersionsInput) async throws -> AWSS3.ListObjectVersionsOutput {
         throw ClientError.missingImplementation
     }
 
-    func listParts(input: AWSS3.ListPartsInput) async throws -> AWSS3.ListPartsOutputResponse {
+    func listParts(input: AWSS3.ListPartsInput) async throws -> AWSS3.ListPartsOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketAccelerateConfiguration(input: AWSS3.PutBucketAccelerateConfigurationInput) async throws -> AWSS3.PutBucketAccelerateConfigurationOutputResponse {
+    func putBucketAccelerateConfiguration(input: AWSS3.PutBucketAccelerateConfigurationInput) async throws -> AWSS3.PutBucketAccelerateConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketAcl(input: AWSS3.PutBucketAclInput) async throws -> AWSS3.PutBucketAclOutputResponse {
+    func putBucketAcl(input: AWSS3.PutBucketAclInput) async throws -> AWSS3.PutBucketAclOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketAnalyticsConfiguration(input: AWSS3.PutBucketAnalyticsConfigurationInput) async throws -> AWSS3.PutBucketAnalyticsConfigurationOutputResponse {
+    func putBucketAnalyticsConfiguration(input: AWSS3.PutBucketAnalyticsConfigurationInput) async throws -> AWSS3.PutBucketAnalyticsConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketCors(input: AWSS3.PutBucketCorsInput) async throws -> AWSS3.PutBucketCorsOutputResponse {
+    func putBucketCors(input: AWSS3.PutBucketCorsInput) async throws -> AWSS3.PutBucketCorsOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketEncryption(input: AWSS3.PutBucketEncryptionInput) async throws -> AWSS3.PutBucketEncryptionOutputResponse {
+    func putBucketEncryption(input: AWSS3.PutBucketEncryptionInput) async throws -> AWSS3.PutBucketEncryptionOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketIntelligentTieringConfiguration(input: AWSS3.PutBucketIntelligentTieringConfigurationInput) async throws -> AWSS3.PutBucketIntelligentTieringConfigurationOutputResponse {
+    func putBucketIntelligentTieringConfiguration(input: AWSS3.PutBucketIntelligentTieringConfigurationInput) async throws -> AWSS3.PutBucketIntelligentTieringConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketInventoryConfiguration(input: AWSS3.PutBucketInventoryConfigurationInput) async throws -> AWSS3.PutBucketInventoryConfigurationOutputResponse {
+    func putBucketInventoryConfiguration(input: AWSS3.PutBucketInventoryConfigurationInput) async throws -> AWSS3.PutBucketInventoryConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketLifecycleConfiguration(input: AWSS3.PutBucketLifecycleConfigurationInput) async throws -> AWSS3.PutBucketLifecycleConfigurationOutputResponse {
+    func putBucketLifecycleConfiguration(input: AWSS3.PutBucketLifecycleConfigurationInput) async throws -> AWSS3.PutBucketLifecycleConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketLogging(input: AWSS3.PutBucketLoggingInput) async throws -> AWSS3.PutBucketLoggingOutputResponse {
+    func putBucketLogging(input: AWSS3.PutBucketLoggingInput) async throws -> AWSS3.PutBucketLoggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketMetricsConfiguration(input: AWSS3.PutBucketMetricsConfigurationInput) async throws -> AWSS3.PutBucketMetricsConfigurationOutputResponse {
+    func putBucketMetricsConfiguration(input: AWSS3.PutBucketMetricsConfigurationInput) async throws -> AWSS3.PutBucketMetricsConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketNotificationConfiguration(input: AWSS3.PutBucketNotificationConfigurationInput) async throws -> AWSS3.PutBucketNotificationConfigurationOutputResponse {
+    func putBucketNotificationConfiguration(input: AWSS3.PutBucketNotificationConfigurationInput) async throws -> AWSS3.PutBucketNotificationConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketOwnershipControls(input: AWSS3.PutBucketOwnershipControlsInput) async throws -> AWSS3.PutBucketOwnershipControlsOutputResponse {
+    func putBucketOwnershipControls(input: AWSS3.PutBucketOwnershipControlsInput) async throws -> AWSS3.PutBucketOwnershipControlsOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketPolicy(input: AWSS3.PutBucketPolicyInput) async throws -> AWSS3.PutBucketPolicyOutputResponse {
+    func putBucketPolicy(input: AWSS3.PutBucketPolicyInput) async throws -> AWSS3.PutBucketPolicyOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketReplication(input: AWSS3.PutBucketReplicationInput) async throws -> AWSS3.PutBucketReplicationOutputResponse {
+    func putBucketReplication(input: AWSS3.PutBucketReplicationInput) async throws -> AWSS3.PutBucketReplicationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketRequestPayment(input: AWSS3.PutBucketRequestPaymentInput) async throws -> AWSS3.PutBucketRequestPaymentOutputResponse {
+    func putBucketRequestPayment(input: AWSS3.PutBucketRequestPaymentInput) async throws -> AWSS3.PutBucketRequestPaymentOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketTagging(input: AWSS3.PutBucketTaggingInput) async throws -> AWSS3.PutBucketTaggingOutputResponse {
+    func putBucketTagging(input: AWSS3.PutBucketTaggingInput) async throws -> AWSS3.PutBucketTaggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketVersioning(input: AWSS3.PutBucketVersioningInput) async throws -> AWSS3.PutBucketVersioningOutputResponse {
+    func putBucketVersioning(input: AWSS3.PutBucketVersioningInput) async throws -> AWSS3.PutBucketVersioningOutput {
         throw ClientError.missingImplementation
     }
 
-    func putBucketWebsite(input: AWSS3.PutBucketWebsiteInput) async throws -> AWSS3.PutBucketWebsiteOutputResponse {
+    func putBucketWebsite(input: AWSS3.PutBucketWebsiteInput) async throws -> AWSS3.PutBucketWebsiteOutput {
         throw ClientError.missingImplementation
     }
 
-    func putObject(input: AWSS3.PutObjectInput) async throws -> AWSS3.PutObjectOutputResponse {
+    func putObject(input: AWSS3.PutObjectInput) async throws -> AWSS3.PutObjectOutput {
         throw ClientError.missingImplementation
     }
 
-    func putObjectAcl(input: AWSS3.PutObjectAclInput) async throws -> AWSS3.PutObjectAclOutputResponse {
+    func putObjectAcl(input: AWSS3.PutObjectAclInput) async throws -> AWSS3.PutObjectAclOutput {
         throw ClientError.missingImplementation
     }
 
-    func putObjectLegalHold(input: AWSS3.PutObjectLegalHoldInput) async throws -> AWSS3.PutObjectLegalHoldOutputResponse {
+    func putObjectLegalHold(input: AWSS3.PutObjectLegalHoldInput) async throws -> AWSS3.PutObjectLegalHoldOutput {
         throw ClientError.missingImplementation
     }
 
-    func putObjectLockConfiguration(input: AWSS3.PutObjectLockConfigurationInput) async throws -> AWSS3.PutObjectLockConfigurationOutputResponse {
+    func putObjectLockConfiguration(input: AWSS3.PutObjectLockConfigurationInput) async throws -> AWSS3.PutObjectLockConfigurationOutput {
         throw ClientError.missingImplementation
     }
 
-    func putObjectRetention(input: AWSS3.PutObjectRetentionInput) async throws -> AWSS3.PutObjectRetentionOutputResponse {
+    func putObjectRetention(input: AWSS3.PutObjectRetentionInput) async throws -> AWSS3.PutObjectRetentionOutput {
         throw ClientError.missingImplementation
     }
 
-    func putObjectTagging(input: AWSS3.PutObjectTaggingInput) async throws -> AWSS3.PutObjectTaggingOutputResponse {
+    func putObjectTagging(input: AWSS3.PutObjectTaggingInput) async throws -> AWSS3.PutObjectTaggingOutput {
         throw ClientError.missingImplementation
     }
 
-    func putPublicAccessBlock(input: AWSS3.PutPublicAccessBlockInput) async throws -> AWSS3.PutPublicAccessBlockOutputResponse {
+    func putPublicAccessBlock(input: AWSS3.PutPublicAccessBlockInput) async throws -> AWSS3.PutPublicAccessBlockOutput {
         throw ClientError.missingImplementation
     }
 
-    func restoreObject(input: AWSS3.RestoreObjectInput) async throws -> AWSS3.RestoreObjectOutputResponse {
+    func restoreObject(input: AWSS3.RestoreObjectInput) async throws -> AWSS3.RestoreObjectOutput {
         throw ClientError.missingImplementation
     }
 
-    func selectObjectContent(input: AWSS3.SelectObjectContentInput) async throws -> AWSS3.SelectObjectContentOutputResponse {
+    func selectObjectContent(input: AWSS3.SelectObjectContentInput) async throws -> AWSS3.SelectObjectContentOutput {
         throw ClientError.missingImplementation
     }
 
-    func uploadPart(input: AWSS3.UploadPartInput) async throws -> AWSS3.UploadPartOutputResponse {
+    func uploadPart(input: AWSS3.UploadPartInput) async throws -> AWSS3.UploadPartOutput {
         throw ClientError.missingImplementation
     }
 
-    func uploadPartCopy(input: AWSS3.UploadPartCopyInput) async throws -> AWSS3.UploadPartCopyOutputResponse {
+    func uploadPartCopy(input: AWSS3.UploadPartCopyInput) async throws -> AWSS3.UploadPartCopyOutput {
         throw ClientError.missingImplementation
     }
 
-    func writeGetObjectResponse(input: AWSS3.WriteGetObjectResponseInput) async throws -> AWSS3.WriteGetObjectResponseOutputResponse {
+    func writeGetObjectResponse(input: AWSS3.WriteGetObjectResponseInput) async throws -> AWSS3.WriteGetObjectResponseOutput {
         throw ClientError.missingImplementation
     }
 }

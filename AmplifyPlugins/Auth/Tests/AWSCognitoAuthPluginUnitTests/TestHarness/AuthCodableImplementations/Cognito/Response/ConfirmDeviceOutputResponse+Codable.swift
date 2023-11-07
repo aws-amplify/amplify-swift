@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ConfirmDeviceOutputResponse: Codable {
+extension ConfirmDeviceOutput: Codable {
 
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case userConfirmationNecessary = "UserConfirmationNecessary"

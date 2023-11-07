@@ -11,10 +11,10 @@ import ClientRuntime
 
 struct MockIdentity: CognitoIdentityBehavior {
 
-    typealias MockGetIdResponse = (GetIdInput) async throws -> GetIdOutputResponse
+    typealias MockGetIdResponse = (GetIdInput) async throws -> GetIdOutput
 
     typealias MockGetCredentialsResponse = (GetCredentialsForIdentityInput) async throws
-    -> GetCredentialsForIdentityOutputResponse
+    -> GetCredentialsForIdentityOutput
 
     let mockGetIdResponse: MockGetIdResponse?
     let mockGetCredentialsResponse: MockGetCredentialsResponse?
@@ -25,11 +25,11 @@ struct MockIdentity: CognitoIdentityBehavior {
         self.mockGetCredentialsResponse = mockGetCredentialsResponse
     }
 
-    func getId(input: GetIdInput) async throws -> GetIdOutputResponse {
+    func getId(input: GetIdInput) async throws -> GetIdOutput {
         return try await mockGetIdResponse!(input)
     }
 
-    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse {
+    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutput {
         return try await mockGetCredentialsResponse!(input)
     }
 

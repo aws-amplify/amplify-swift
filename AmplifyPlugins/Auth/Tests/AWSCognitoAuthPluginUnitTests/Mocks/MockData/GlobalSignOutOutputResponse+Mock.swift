@@ -8,9 +8,9 @@
 import Foundation
 import AWSCognitoIdentityProvider
 
-extension GlobalSignOutOutputResponse {
+extension GlobalSignOutOutput {
 
-    static var testData: GlobalSignOutOutputResponse {
+    static var testData: GlobalSignOutOutput {
         return .init()
     }
 }

@@ -17,20 +17,20 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
-            mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-                GetUserAttributeVerificationCodeOutputResponse()
+            mockGetUserAttributeVerificationCodeOutput: { _ in
+                GetUserAttributeVerificationCodeOutput()
             },
             mockGetUserAttributeResponse: { _ in
-                GetUserOutputResponse()
+                GetUserOutput()
             },
             mockUpdateUserAttributeResponse: { _ in
-                UpdateUserAttributesOutputResponse()
+                UpdateUserAttributesOutput()
             },
-            mockConfirmUserAttributeOutputResponse: { _ in
-                try await VerifyUserAttributeOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            mockConfirmUserAttributeOutput: { _ in
+                try await VerifyUserAttributeOutput(httpResponse: .init(body: .empty, statusCode: .ok))
             },
-            mockChangePasswordOutputResponse: { _ in
-                try await ChangePasswordOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            mockChangePasswordOutput: { _ in
+                try await ChangePasswordOutput(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
     }
@@ -45,7 +45,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     ///
     func testFetchUserAttributesRequest() async throws {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            GetUserOutputResponse(
+            GetUserOutput(
                 mfaOptions: [],
                 preferredMfaSetting: "",
                 userAttributes: [.init(name: "email", value: "Amplify@amazon.com")],
@@ -67,7 +67,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     ///
     func testFetchUserAttributesRequestWithoutOptions() async throws {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            GetUserOutputResponse(
+            GetUserOutput(
                 mfaOptions: [],
                 preferredMfaSetting: "",
                 userAttributes: [.init(name: "email", value: "Amplify@amazon.com")],
@@ -145,8 +145,8 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     ///    - I should get a valid task completion
     ///
     func testResendConfirmationCodeAttributeRequest() async throws {
-        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            GetUserAttributeVerificationCodeOutputResponse(
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutput: { _ in
+            GetUserAttributeVerificationCodeOutput(
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,
@@ -166,11 +166,11 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     ///    - I should get a valid task completion
     ///
     func testResendConfirmationCodeWithPluginOptions() async throws {
-        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { request in
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutput: { request in
 
             XCTAssertNotNil(request.clientMetadata)
             XCTAssertEqual(request.clientMetadata?["key"], "value")
-            return GetUserAttributeVerificationCodeOutputResponse(
+            return GetUserAttributeVerificationCodeOutput(
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,
@@ -190,8 +190,8 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     ///    - I should get a valid task completion
     ///
     func testResendConfirmationCodeAttributeRequestWithoutOptions() async throws {
-        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            GetUserAttributeVerificationCodeOutputResponse(
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutput: { _ in
+            GetUserAttributeVerificationCodeOutput(
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,

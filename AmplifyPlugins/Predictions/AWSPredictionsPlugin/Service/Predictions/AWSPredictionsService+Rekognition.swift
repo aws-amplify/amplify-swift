@@ -124,7 +124,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let imageData = try dataFromImage(url: image)
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
         let request = DetectTextInput(image: rekognitionImage)
-        let textResult: DetectTextOutputResponse
+        let textResult: DetectTextOutput
 
         do {
             textResult = try await awsRekognition.detectText(input: request)
@@ -144,7 +144,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         if let words = identifyTextResult.words, words.count < rekognitionWordLimit {
             return identifyTextResult
         } else {
-            let documentTextResult: DetectDocumentTextOutputResponse
+            let documentTextResult: DetectDocumentTextOutput
             do {
                 documentTextResult = try await detectDocumentText(image: imageData)
             } catch let error as PredictionsErrorConvertible {
@@ -197,7 +197,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let rekognitionImage = RekognitionClientTypes.Image(bytes: imageData)
         let request = DetectTextInput(image: rekognitionImage)
 
-        let textResult: DetectTextOutputResponse
+        let textResult: DetectTextOutput
         do {
             textResult = try await awsRekognition.detectText(input: request)
         } catch let error as PredictionsErrorConvertible {
@@ -217,7 +217,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         if let words = identifyTextResult.words, words.count < rekognitionWordLimit {
             return identifyTextResult
         } else {
-            let documentTextResult: DetectDocumentTextOutputResponse
+            let documentTextResult: DetectDocumentTextOutput
             do {
                 documentTextResult = try await detectDocumentText(image: imageData)
             } catch let error as PredictionsErrorConvertible {
@@ -246,7 +246,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     private func detectModerationLabels(
         image: Data
-    ) async throws -> DetectModerationLabelsOutputResponse {
+    ) async throws -> DetectModerationLabelsOutput {
         let image = RekognitionClientTypes.Image(bytes: image)
         let request = DetectModerationLabelsInput(
             image: image
@@ -256,7 +256,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     private func detectLabels(
         image: Data
-    ) async throws -> DetectLabelsOutputResponse {
+    ) async throws -> DetectLabelsOutput {
         let image = RekognitionClientTypes.Image(bytes: image)
         let request = DetectLabelsInput(
             image: image

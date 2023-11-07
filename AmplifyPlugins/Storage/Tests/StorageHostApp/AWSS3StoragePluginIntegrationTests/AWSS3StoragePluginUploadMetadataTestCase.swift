@@ -231,7 +231,7 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
         return fileURL
     }
 
-    private func headObject(key: String) async throws -> HeadObjectOutputResponse {
+    private func headObject(key: String) async throws -> HeadObjectOutput {
         let plugin = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
         let storagePlugin = try XCTUnwrap(
             plugin as? AWSS3StoragePlugin,

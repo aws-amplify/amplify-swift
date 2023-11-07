@@ -111,7 +111,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
     private func signature() throws -> String {
         let action = VerifyDevicePasswordSRP(
             stateData: .testData,
-            authResponse: InitiateAuthOutputResponse.validTestData
+            authResponse: InitiateAuthOutput.validTestData
         )
 
         return try action.signature(

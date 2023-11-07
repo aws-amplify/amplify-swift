@@ -140,7 +140,7 @@ actor EventRecorder: AnalyticsEventRecording {
         do {
             log.verbose("PutEventsInput: \(putEventsInput)")
             let response = try await pinpointClient.putEvents(input: putEventsInput)
-            log.verbose("PutEventsOutputResponse received: \(response)")
+            log.verbose("PutEventsOutput received: \(response)")
             guard let results = response.eventsResponse?.results else {
                 let errorMessage = "Unexpected response from server when attempting to submit events."
                 log.error(errorMessage)

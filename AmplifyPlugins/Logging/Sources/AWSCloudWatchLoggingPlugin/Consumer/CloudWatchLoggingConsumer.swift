@@ -121,7 +121,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         }
     }
     
-    private func retriable(entries: [LogEntry], in response: PutLogEventsOutputResponse) -> [LogEntry] {
+    private func retriable(entries: [LogEntry], in response: PutLogEventsOutput) -> [LogEntry] {
         guard let tooNewLogEventStartIndex = response.rejectedLogEventsInfo?.tooNewLogEventStartIndex else {
             return []
         }

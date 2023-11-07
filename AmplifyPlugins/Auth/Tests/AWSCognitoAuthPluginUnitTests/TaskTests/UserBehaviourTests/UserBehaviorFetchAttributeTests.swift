@@ -25,7 +25,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testSuccessfulFetchUserAttributes() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            GetUserOutputResponse(
+            GetUserOutput(
                 mfaOptions: [],
                 preferredMfaSetting: "",
                 userAttributes: [.init(name: "email", value: "Amplify@amazon.com")],
@@ -50,7 +50,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithInvalidResult() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            GetUserOutputResponse()
+            GetUserOutput()
         })
         do {
             _ = try await plugin.fetchUserAttributes()
