@@ -16,4 +16,8 @@ struct PollyClient {
     }
 
     let configuration: Configuration
+
+    func synthesizeSpeech(input: SynthesizeSpeechInput) async throws -> SynthesizeSpeechOutputResponse {
+        fatalError()
+    }
 }

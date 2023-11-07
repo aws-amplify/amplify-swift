@@ -23,7 +23,7 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
 
         do {
             let synthesizedSpeechResult = try await awsPolly.synthesizeSpeech(input: input)
-            guard let speech = try await synthesizedSpeechResult.audioStream?.readData()
+            guard let speech = synthesizedSpeechResult.audioStream
             else {
                 throw PredictionsError.service(
                     .init(
