@@ -35,6 +35,8 @@ struct SynthesizeSpeechOutputResponse: Equatable {
 
 
 struct SynthesizeSpeechInput: Equatable {
+    // "/v1/speech"
+
     var engine: PollyClientTypes.Engine?
     var languageCode: PollyClientTypes.LanguageCode?
     var lexiconNames: [String]?

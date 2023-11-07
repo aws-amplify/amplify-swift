@@ -53,9 +53,8 @@ struct AnalyzeDocumentOutputResponse: Equatable {
 }
 
 struct DetectDocumentTextInput: Equatable {
-    /// The input document as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Textract operations, you can't pass image bytes. The document must be an image in JPEG or PNG format. If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes that are passed using the Bytes field.
     /// This member is required.
-    var document: TextractClientTypes.Document?
+    var document: TextractClientTypes.Document
 
     enum CodingKeys: String, CodingKey {
         case document = "Document"
@@ -64,11 +63,8 @@ struct DetectDocumentTextInput: Equatable {
 
 
 struct DetectDocumentTextOutputResponse: Equatable {
-    /// An array of Block objects that contain the text that's detected in the document.
     var blocks: [TextractClientTypes.Block]?
-    ///
     var detectDocumentTextModelVersion: String?
-    /// Metadata about the document. It contains the number of pages that are detected in the document.
     var documentMetadata: TextractClientTypes.DocumentMetadata?
 
     enum CodingKeys: String, CodingKey {

@@ -10,13 +10,6 @@ import AWSPluginsCore
 @_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import Foundation
 
-
-
-
-
-
-
-
 class AWSPredictionsService {
     var identifier: String!
     var awsTranslate: TranslateClient!

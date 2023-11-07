@@ -135,6 +135,13 @@ extension ComprehendClientTypes {
         var negative: Float?
         var neutral: Float?
         var positive: Float?
+
+        enum CodingKeys: String, CodingKey {
+            case mixed = "Mixed"
+            case negative = "Negative"
+            case neutral = "Neutral"
+            case positive = "Positive"
+        }
     }
 }
 
@@ -299,12 +306,14 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    /// Document type for each page in the document.
     struct DocumentTypeListItem: Equatable {
-        /// Page number.
         var page: Int?
-        /// Document type.
         var type: ComprehendClientTypes.DocumentType?
+
+        enum CodingKeys: String, CodingKey {
+            case page = "Page"
+            case type = "Type"
+        }
     }
 }
 
@@ -395,36 +404,21 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    /// Provides information about an entity.
     struct Entity: Equatable {
-        /// The zero-based offset from the beginning of the source text to the first character in the entity. This field is empty for non-text input.
         var beginOffset: Int?
-        /// A reference to each block for this entity. This field is empty for plain-text input.
         var blockReferences: [ComprehendClientTypes.BlockReference]?
-        /// The zero-based offset from the beginning of the source text to the last character in the entity. This field is empty for non-text input.
         var endOffset: Int?
-        /// The level of confidence that Amazon Comprehend has in the accuracy of the detection.
         var score: Float?
-        /// The text of the entity.
         var text: String?
-        /// The entity type. For entity detection using the built-in model, this field contains one of the standard entity types listed below. For custom entity detection, this field contains one of the entity types that you specified when you trained your custom model.
         var type: ComprehendClientTypes.EntityType?
 
-        init(
-            beginOffset: Int? = nil,
-            blockReferences: [ComprehendClientTypes.BlockReference]? = nil,
-            endOffset: Int? = nil,
-            score: Float? = nil,
-            text: String? = nil,
-            type: ComprehendClientTypes.EntityType? = nil
-        )
-        {
-            self.beginOffset = beginOffset
-            self.blockReferences = blockReferences
-            self.endOffset = endOffset
-            self.score = score
-            self.text = text
-            self.type = type
+        enum CodingKeys: String, CodingKey {
+            case beginOffset = "BeginOffset"
+            case blockReferences = "BlockReferences"
+            case endOffset = "EndOffset"
+            case score = "Score"
+            case text = "Text"
+            case type = "Type"
         }
     }
 }
@@ -445,6 +439,11 @@ extension ComprehendClientTypes {
     struct DocumentMetadata: Equatable {
         var extractedCharacters: [ComprehendClientTypes.ExtractedCharactersListItem]?
         var pages: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case extractedCharacters = "ExtractedCharacters"
+            case pages = "Pages"
+        }
     }
 }
 
@@ -521,28 +520,23 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    /// Information about each word or line of text in the input document. For additional information, see [Block](https://docs.aws.amazon.com/textract/latest/dg/API_Block.html) in the Amazon Textract API reference.
     struct Block: Equatable {
-        /// The block represents a line of text or one word of text.
-        ///
-        /// * WORD - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.
-        ///
-        /// * LINE - A string of tab-delimited, contiguous words that are detected on a document page
         var blockType: ComprehendClientTypes.BlockType?
-        /// Co-ordinates of the rectangle or polygon that contains the text.
         var geometry: ComprehendClientTypes.Geometry?
-        /// Unique identifier for the block.
         var id: String?
-        /// Page number where the block appears.
         var page: Int?
-        /// A list of child blocks of the current block. For example, a LINE object has child blocks for each WORD block that's part of the line of text.
         var relationships: [ComprehendClientTypes.RelationshipsListItem]?
-        /// The word or line of text extracted from the block.
         var text: String?
 
-
+        enum CodingKeys: String, CodingKey {
+            case blockType = "BlockType"
+            case geometry = "Geometry"
+            case id = "Id"
+            case page = "Page"
+            case relationships = "Relationships"
+            case text = "Text"
+        }
     }
-
 }
 
 extension ComprehendClientTypes {
@@ -592,6 +586,13 @@ extension ComprehendClientTypes {
         var endOffset: Int?
         var score: Float?
         var text: String?
+
+        enum CodingKeys: String, CodingKey {
+            case jobName = "JobName"
+            case jobStatus = "JobStatus"
+            case submitTimeAfter = "SubmitTimeAfter"
+            case submitTimeBefore = "SubmitTimeBefore"
+        }
     }
 }
 
@@ -708,6 +709,14 @@ extension ComprehendClientTypes {
         var partOfSpeech: ComprehendClientTypes.PartOfSpeechTag?
         var text: String?
         var tokenId: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case beginOffset = "BeginOffset"
+            case endOffset = "EndOffset"
+            case partOfSpeech = "PartOfSpeech"
+            case text = "Text"
+            case tokenId = "TokenId"
+        }
     }
 }
 
@@ -716,6 +725,11 @@ extension ComprehendClientTypes {
     struct DominantLanguage: Equatable {
         var languageCode: String?
         var score: Float?
+
+        enum CodingKeys: String, CodingKey {
+            case languageCode = "LanguageCode"
+            case score = "Score"
+        }
     }
 }
 

@@ -355,6 +355,26 @@ extension RekognitionClientTypes {
         var quality: RekognitionClientTypes.ImageQuality?
         var smile: RekognitionClientTypes.Smile?
         var sunglasses: RekognitionClientTypes.Sunglasses?
+
+        enum CodingKeys: String, CodingKey {
+            case ageRange = "AgeRange"
+            case beard = "Beard"
+            case boundingBox = "BoundingBox"
+            case confidence = "Confidence"
+            case emotions = "Emotions"
+            case eyeDirection = "EyeDirection"
+            case eyeglasses = "Eyeglasses"
+            case eyesOpen = "EyesOpen"
+            case faceOccluded = "FaceOccluded"
+            case gender = "Gender"
+            case landmarks = "Landmarks"
+            case mouthOpen = "MouthOpen"
+            case mustache = "Mustache"
+            case pose = "Pose"
+            case quality = "Quality"
+            case smile = "Smile"
+            case sunglasses = "Sunglasses"
+        }
     }
 }
 
@@ -628,9 +648,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    /// A potential alias of for a given label.
     struct LabelAlias: Equatable {
-        /// The name of an alias for a given label.
         var name: String?
 
         enum CodingKeys: String, CodingKey {
@@ -867,6 +885,11 @@ extension RekognitionClientTypes {
     struct FaceMatch: Equatable {
         var face: RekognitionClientTypes.Face?
         var similarity: Float?
+
+        enum CodingKeys: String, CodingKey {
+            case face = "Face"
+            case similarity = "Similarity"
+        }
     }
 }
 

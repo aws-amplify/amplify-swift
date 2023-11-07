@@ -21,7 +21,6 @@ struct ComprehendClient {
         fatalError()
     }
 
-
     func detectSyntax(input: DetectSyntaxInput) async throws -> DetectSyntaxOutputResponse {
         fatalError()
     }
