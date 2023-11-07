@@ -330,13 +330,13 @@ let predictionsTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .target(name: "CoreMLPredictionsPlugin"),
-            .product(name: "AWSComprehend", package: "aws-sdk-swift"),
-            .product(name: "AWSPolly", package: "aws-sdk-swift"),
-            .product(name: "AWSRekognition", package: "aws-sdk-swift"),
-            .product(name: "AWSTextract", package: "aws-sdk-swift"),
-            .product(name: "AWSTranscribeStreaming", package: "aws-sdk-swift"),
-            .product(name: "AWSTranslate", package: "aws-sdk-swift")
+            .target(name: "CoreMLPredictionsPlugin")
+//            .product(name: "AWSComprehend", package: "aws-sdk-swift"),
+//            .product(name: "AWSPolly", package: "aws-sdk-swift"),
+//            .product(name: "AWSRekognition", package: "aws-sdk-swift"),
+//            .product(name: "AWSTextract", package: "aws-sdk-swift"),
+//            .product(name: "AWSTranscribeStreaming", package: "aws-sdk-swift"),
+//            .product(name: "AWSTranslate", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Predictions/AWSPredictionsPlugin",
         exclude: []
