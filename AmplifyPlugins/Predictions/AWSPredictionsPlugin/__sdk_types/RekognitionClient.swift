@@ -16,4 +16,28 @@ struct RekognitionClient {
     }
 
     let configuration: Configuration
+
+    func recognizeCelebrities(input: RecognizeCelebritiesInput) async throws -> RecognizeCelebritiesOutputResponse {
+        fatalError()
+    }
+
+    func searchFacesByImage(input: SearchFacesByImageInput) async throws -> SearchFacesByImageOutputResponse {
+        fatalError()
+    }
+
+    func detectFaces(input: DetectFacesInput) async throws -> DetectFacesOutputResponse {
+        fatalError()
+    }
+
+    func detectText(input: DetectTextInput) async throws -> DetectTextOutputResponse {
+        fatalError()
+    }
+
+    func detectModerationLabels(input: DetectModerationLabelsInput) async throws -> DetectModerationLabelsOutputResponse {
+        fatalError()
+    }
+
+    func detectLabels(input: DetectLabelsInput) async throws -> DetectLabelsOutputResponse {
+        fatalError()
+    }
 }

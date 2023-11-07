@@ -16,4 +16,12 @@ struct TextractClient {
     }
 
     let configuration: Configuration
+
+    func detectDocumentText(input: DetectDocumentTextInput) async throws -> DetectDocumentTextOutputResponse {
+        fatalError()
+    }
+
+    func analyzeDocument(input: AnalyzeDocumentInput) async throws -> AnalyzeDocumentOutputResponse {
+        fatalError()
+    }
 }

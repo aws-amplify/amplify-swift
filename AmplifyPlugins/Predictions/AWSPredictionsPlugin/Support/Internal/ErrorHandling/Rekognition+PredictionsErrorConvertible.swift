@@ -13,7 +13,6 @@ extension AWSRekognition.HumanLoopQuotaExceededException: PredictionsErrorConver
             .init(
                 description: "The number of in-progress human reviews you have has exceeded the number allowed.",
                 recoverySuggestion: "Try again later.",
-                httpStatusCode: httpResponse.statusCode.rawValue,
                 underlyingError: self
             )
         )
@@ -50,7 +49,6 @@ extension AWSRekognition.ImageTooLargeException: PredictionsErrorConvertible {
             .init(
                 description: "The image you sent was too large.",
                 recoverySuggestion: "Try downsizing the image and sending it again.",
-                httpStatusCode: httpResponse.statusCode.rawValue,
                 underlyingError: self
             )
         )
@@ -63,7 +61,6 @@ extension AWSRekognition.InvalidImageFormatException: PredictionsErrorConvertibl
             .init(
                 description: "The provided image format isn't supported.",
                 recoverySuggestion: "Use a supported image format (.JPEG and .PNG) and try again.",
-                httpStatusCode: httpResponse.statusCode.rawValue,
                 underlyingError: self
             )
         )
@@ -76,7 +73,6 @@ extension AWSRekognition.InvalidParameterException: PredictionsErrorConvertible 
             .init(
                 description: "An input parameter violated a constraint.",
                 recoverySuggestion: "Validate your parameters before calling the API operation again.",
-                httpStatusCode: httpResponse.statusCode.rawValue,
                 underlyingError: self
             )
         )
@@ -93,7 +89,6 @@ extension AWSRekognition.InvalidS3ObjectException: PredictionsErrorConvertible {
                 Check the limits here:
                 https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_rekognition
                 """,
-                httpStatusCode: httpResponse.statusCode.rawValue,
                 underlyingError: self
             )
         )
@@ -110,7 +105,6 @@ extension AWSRekognition.ProvisionedThroughputExceededException: PredictionsErro
                 Check the limits here:
                 https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_rekognition
                 """,
-                httpStatusCode: httpResponse.statusCode.rawValue,
                 underlyingError: self
             )
         )

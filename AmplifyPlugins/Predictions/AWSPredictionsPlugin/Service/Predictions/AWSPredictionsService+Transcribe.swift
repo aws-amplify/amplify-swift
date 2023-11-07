@@ -44,7 +44,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                             )
                         )
                         let isPartial = transcription.transcript?.results?.map(\.isPartial) ?? []
-                        let shouldContinue = isPartial.allSatisfy { $0 }
+                        let shouldContinue = isPartial.allSatisfy { $0 ?? false } // TODO: Can this maybe be Bool instead of Bool?
                         if !shouldContinue { continuation.finish() }
                     }
                 } catch let error as URLError {

@@ -16,4 +16,8 @@ struct TranslateClient {
     }
 
     let configuration: Configuration
+
+    func translateText(input: TranslateTextInput) async throws -> TranslateTextOutputResponse {
+        fatalError()
+    }
 }

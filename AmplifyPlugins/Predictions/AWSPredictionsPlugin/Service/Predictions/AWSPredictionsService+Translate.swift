@@ -40,9 +40,8 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
             throw PredictionsError.unexpectedServiceErrorType(error)
         }
 
-        guard let translatedText = textTranslateResult.translatedText else {
-            throw PredictionsError.service(.translationFailed)
-        }
+        // TODO: made this non-optional based on docs - double check if it causes issues
+        let translatedText = textTranslateResult.translatedText
 
         let translateTextResult = Predictions.Convert.TranslateText.Result(
             text: translatedText,

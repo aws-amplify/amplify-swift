@@ -20,10 +20,10 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         let mediaSampleRateHertz: Int
     }
 
-    let credentialsProvider: CredentialsProviding
+    let credentialsProvider: CredentialsProvider
     let region: String
 
-    init(credentialsProvider: CredentialsProviding, region: String) {
+    init(credentialsProvider: CredentialsProvider, region: String) {
         self.credentialsProvider = credentialsProvider
         self.region = region
     }
