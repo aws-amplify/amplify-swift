@@ -15,7 +15,7 @@ extension AWSComprehend {
     struct TextSizeLimitExceededException: Error {}
 }
 
-struct DetectSentimentInput: Equatable {
+struct DetectSentimentInput: Equatable, Encodable {
     /// This member is required.
     var languageCode: ComprehendClientTypes.LanguageCode
     /// This member is required.
@@ -27,7 +27,7 @@ struct DetectSentimentInput: Equatable {
     }
 }
 
-struct DetectSentimentOutputResponse: Equatable {
+struct DetectSentimentOutputResponse: Equatable, Decodable {
     var sentiment: ComprehendClientTypes.SentimentType?
     var sentimentScore: ComprehendClientTypes.SentimentScore?
 
@@ -37,7 +37,7 @@ struct DetectSentimentOutputResponse: Equatable {
     }
 }
 
-struct DetectEntitiesInput: Equatable {
+struct DetectEntitiesInput: Equatable, Encodable {
     var bytes: Data?
     var documentReaderConfig: ComprehendClientTypes.DocumentReaderConfig?
     var endpointArn: String?
@@ -53,7 +53,7 @@ struct DetectEntitiesInput: Equatable {
     }
 }
 
-struct DetectEntitiesOutputResponse: Equatable {
+struct DetectEntitiesOutputResponse: Equatable, Decodable {
     var blocks: [ComprehendClientTypes.Block]?
     var documentMetadata: ComprehendClientTypes.DocumentMetadata?
     var documentType: [ComprehendClientTypes.DocumentTypeListItem]?
@@ -70,7 +70,7 @@ struct DetectEntitiesOutputResponse: Equatable {
 }
 
 
-struct DetectKeyPhrasesInput: Equatable {
+struct DetectKeyPhrasesInput: Equatable, Encodable {
     /// This member is required.
     var languageCode: ComprehendClientTypes.LanguageCode
     /// This member is required.
@@ -82,7 +82,7 @@ struct DetectKeyPhrasesInput: Equatable {
     }
 }
 
-struct DetectKeyPhrasesOutputResponse: Equatable {
+struct DetectKeyPhrasesOutputResponse: Equatable, Decodable {
     var keyPhrases: [ComprehendClientTypes.KeyPhrase]?
 
     enum CodingKeys: String, CodingKey {
@@ -90,7 +90,7 @@ struct DetectKeyPhrasesOutputResponse: Equatable {
     }
 }
 
-struct DetectSyntaxInput: Equatable {
+struct DetectSyntaxInput: Equatable, Encodable {
     /// This member is required.
     var languageCode: ComprehendClientTypes.SyntaxLanguageCode
     /// This member is required.
@@ -102,7 +102,7 @@ struct DetectSyntaxInput: Equatable {
     }
 }
 
-struct DetectSyntaxOutputResponse: Equatable {
+struct DetectSyntaxOutputResponse: Equatable, Decodable {
     var syntaxTokens: [ComprehendClientTypes.SyntaxToken]?
 
     enum CodingKeys: String, CodingKey {
@@ -110,7 +110,7 @@ struct DetectSyntaxOutputResponse: Equatable {
     }
 }
 
-struct DetectDominantLanguageInput: Equatable {
+struct DetectDominantLanguageInput: Equatable, Encodable {
     /// This member is required.
     var text: String
 
@@ -119,7 +119,7 @@ struct DetectDominantLanguageInput: Equatable {
     }
 }
 
-struct DetectDominantLanguageOutputResponse: Equatable {
+struct DetectDominantLanguageOutputResponse: Equatable, Decodable {
     var languages: [ComprehendClientTypes.DominantLanguage]?
 
     enum CodingKeys: String, CodingKey {
@@ -130,7 +130,7 @@ struct DetectDominantLanguageOutputResponse: Equatable {
 enum ComprehendClientTypes {}
 
 extension ComprehendClientTypes {
-    struct SentimentScore: Equatable {
+    struct SentimentScore: Equatable, Decodable {
         var mixed: Float?
         var negative: Float?
         var neutral: Float?
@@ -243,7 +243,7 @@ extension ComprehendClientTypes {
 
 
 extension ComprehendClientTypes {
-    struct DocumentReaderConfig: Equatable {
+    struct DocumentReaderConfig: Equatable, Encodable {
         /// This member is required.
         var documentReadAction: ComprehendClientTypes.DocumentReadAction
         var documentReadMode: ComprehendClientTypes.DocumentReadMode?
@@ -306,7 +306,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct DocumentTypeListItem: Equatable {
+    struct DocumentTypeListItem: Equatable, Decodable {
         var page: Int?
         var type: ComprehendClientTypes.DocumentType?
 
@@ -359,7 +359,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct ErrorsListItem: Equatable {
+    struct ErrorsListItem: Equatable, Decodable {
         var errorCode: ComprehendClientTypes.PageBasedErrorCode?
         var errorMessage: String?
         var page: Int?
@@ -373,7 +373,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct ChildBlock: Equatable {
+    struct ChildBlock: Equatable, Decodable {
         var beginOffset: Int?
         var childBlockId: String?
         var endOffset: Int?
@@ -388,7 +388,7 @@ extension ComprehendClientTypes {
 
 
 extension ComprehendClientTypes {
-    struct BlockReference: Equatable {
+    struct BlockReference: Equatable, Decodable {
         var beginOffset: Int?
         var blockId: String?
         var childBlocks: [ComprehendClientTypes.ChildBlock]?
@@ -404,7 +404,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct Entity: Equatable {
+    struct Entity: Equatable, Decodable {
         var beginOffset: Int?
         var blockReferences: [ComprehendClientTypes.BlockReference]?
         var endOffset: Int?
@@ -424,7 +424,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct ExtractedCharactersListItem: Equatable {
+    struct ExtractedCharactersListItem: Equatable, Decodable {
         var count: Int?
         var page: Int?
 
@@ -436,7 +436,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct DocumentMetadata: Equatable {
+    struct DocumentMetadata: Equatable, Decodable {
         var extractedCharacters: [ComprehendClientTypes.ExtractedCharactersListItem]?
         var pages: Int?
 
@@ -448,7 +448,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct Geometry: Equatable {
+    struct Geometry: Equatable, Decodable {
         var boundingBox: ComprehendClientTypes.BoundingBox?
         var polygon: [ComprehendClientTypes.Point]?
 
@@ -460,7 +460,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct BoundingBox: Equatable {
+    struct BoundingBox: Equatable, Decodable {
         var height: Float?
         var `left`: Float?
         var top: Float?
@@ -476,7 +476,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct Point: Equatable {
+    struct Point: Equatable, Decodable {
         var x: Float?
         var y: Float?
 
@@ -520,7 +520,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct Block: Equatable {
+    struct Block: Equatable, Decodable {
         var blockType: ComprehendClientTypes.BlockType?
         var geometry: ComprehendClientTypes.Geometry?
         var id: String?
@@ -540,7 +540,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct RelationshipsListItem: Equatable {
+    struct RelationshipsListItem: Equatable, Decodable {
         var ids: [String]?
         var type: ComprehendClientTypes.RelationshipType?
 
@@ -581,17 +581,17 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct KeyPhrase: Equatable {
+    struct KeyPhrase: Equatable, Decodable {
         var beginOffset: Int?
         var endOffset: Int?
         var score: Float?
         var text: String?
 
-        enum CodingKeys: String, CodingKey {
-            case jobName = "JobName"
-            case jobStatus = "JobStatus"
-            case submitTimeAfter = "SubmitTimeAfter"
-            case submitTimeBefore = "SubmitTimeBefore"
+        enum CodingKeys: Swift.String, Swift.CodingKey {
+            case beginOffset = "BeginOffset"
+            case endOffset = "EndOffset"
+            case score = "Score"
+            case text = "Text"
         }
     }
 }
@@ -703,7 +703,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct SyntaxToken: Equatable {
+    struct SyntaxToken: Equatable, Decodable {
         var beginOffset: Int?
         var endOffset: Int?
         var partOfSpeech: ComprehendClientTypes.PartOfSpeechTag?
@@ -722,7 +722,7 @@ extension ComprehendClientTypes {
 
 
 extension ComprehendClientTypes {
-    struct DominantLanguage: Equatable {
+    struct DominantLanguage: Equatable, Decodable {
         var languageCode: String?
         var score: Float?
 
@@ -734,7 +734,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    struct PartOfSpeechTag: Equatable {
+    struct PartOfSpeechTag: Equatable, Decodable {
         var score: Float?
         var tag: ComprehendClientTypes.PartOfSpeechTagType?
 
