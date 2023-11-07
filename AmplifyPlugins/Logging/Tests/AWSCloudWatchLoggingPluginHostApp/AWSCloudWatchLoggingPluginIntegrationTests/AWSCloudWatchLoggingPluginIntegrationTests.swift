@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSCloudWatchLogs
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSCloudWatchLoggingPlugin
@@ -143,7 +142,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     }
     
     func verifyMessagesSent(plugin: AWSCloudWatchLoggingPlugin,
-                            client: CloudWatchLogsClientProtocol?,
+                            client: CloudWatchClient?,
                             logGroupName: String?,
                             messageCount: Int,
                             message: String,
@@ -168,7 +167,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     }
     
     func verifyMessageSent(plugin: AWSCloudWatchLoggingPlugin,
-                           client: CloudWatchLogsClientProtocol?,
+                           client: CloudWatchClient?,
                            logGroupName: String?,
                            logLevel: String,
                            message: String,
@@ -194,7 +193,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     }
     
     func verifyMessageNotSent(plugin: AWSCloudWatchLoggingPlugin,
-                              client: CloudWatchLogsClientProtocol?,
+                              client: CloudWatchClient?,
                               logGroupName: String?,
                               message: String) async throws {
 
@@ -209,7 +208,7 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     }
     
     func getLastMessageSent(plugin: AWSCloudWatchLoggingPlugin,
-                            client: CloudWatchLogsClientProtocol?,
+                            client: CloudWatchClient?,
                             logGroupName: String?,
                             expectedMessageCount: Int,
                             message: String,

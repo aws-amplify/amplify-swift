@@ -72,9 +72,30 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         guard let host = url.host else {
             throw APIError.unknown("Could not get host from mutable request", "")
         }
-        
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(host, forHTTPHeaderField: "host")
+
+        guard let credentials = try await credentialProvider?.fetchCredentials()
+        else {
+            throw APIError.unknown("Unable to retrieve credentials", "")
+        }
+
+        let signer = SigV4Signer(
+            credentials: credentials,
+            serviceName: "execute-api",
+            region: region
+        )
+
+        let httpMethod = (request.httpMethod?.uppercased())
+            .flatMap(HTTPMethod.init(verb:)) ?? .get
+
+        let signedRequest = signer.sign(
+            url: url,
+            method: httpMethod,
+            body: .data(request.httpBody ?? .init()),
+            headers: ["Content-Type": "application/json"]
+        )
+
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.setValue(host, forHTTPHeaderField: "host")
 
         // TODO: Use signing from AWSPluginsCore
 //        let httpMethod = (request.httpMethod?.uppercased())
@@ -112,7 +133,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
 //            request.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
 //        }
 
-        return request
+        return signedRequest
     }
     
     func refresh() {

@@ -10,35 +10,7 @@ import AWSPluginsCore
 import Amplify
 import Combine
 import Foundation
-//import AWSCloudWatchLogs
-//import AWSClientRuntime
 import Network
-
-struct CloudWatchClientConfiguration {
-    let region: String
-    let credentialsProvider: CredentialsProvider
-}
-
-public class CloudWatchClient {
-    let configuration: CloudWatchClientConfiguration
-
-    init(configuration: CloudWatchClientConfiguration) {
-        self.configuration = configuration
-    }
-
-    func describeLogStreams(input: DescribeLogStreamsInput) async throws -> DescribeLogStreamsOutputResponse {
-        fatalError()
-    }
-
-    func createLogStream(input: CreateLogStreamInput) async throws -> CreateLogStreamOutputResponse {
-        fatalError()
-    }    
-
-    func putLogEvents(input: PutLogEventsInput) async throws -> PutLogEventsOutputResponse {
-        fatalError()
-    }
-
-}
 
 /// Responsible for setting up and tearing-down log sessions for a given category/tag according to changes in
 /// user authentication sessions.

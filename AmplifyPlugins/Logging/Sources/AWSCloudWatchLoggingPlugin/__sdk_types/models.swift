@@ -7,17 +7,14 @@
 
 import Foundation
 
-struct PutLogEventsInput: Equatable {
-    /// The log events.
+struct PutLogEventsInput: Equatable, Encodable {
     /// This member is required.
-    var logEvents: [CloudWatchLogsClientTypes.InputLogEvent]?
-    /// The name of the log group.
+    var logEvents: [CloudWatchLogsClientTypes.InputLogEvent]
     /// This member is required.
-    var logGroupName: String?
-    /// The name of the log stream.
+    var logGroupName: String
     /// This member is required.
-    var logStreamName: String?
-    /// The sequence token obtained from the response of the previous PutLogEvents call. The sequenceToken parameter is now ignored in PutLogEvents actions. PutLogEvents actions are now accepted and never return InvalidSequenceTokenException or DataAlreadyAcceptedException even if the sequence token is not valid.
+    var logStreamName: String
+
     var sequenceToken: String?
 
     enum CodingKeys: String, CodingKey {
@@ -30,42 +27,48 @@ struct PutLogEventsInput: Equatable {
 
 extension CloudWatchLogsClientTypes {
     /// Represents the rejected events.
-    struct RejectedLogEventsInfo: Swift.Equatable {
-        /// The expired log events.
-        var expiredLogEventEndIndex: Swift.Int?
-        /// The log events that are too new.
-        var tooNewLogEventStartIndex: Swift.Int?
-        /// The log events that are dated too far in the past.
-        var tooOldLogEventEndIndex: Swift.Int?
+    struct RejectedLogEventsInfo: Equatable, Decodable {
+        var expiredLogEventEndIndex: Int?
+        var tooNewLogEventStartIndex: Int?
+        var tooOldLogEventEndIndex: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case expiredLogEventEndIndex
+            case tooNewLogEventStartIndex
+            case tooOldLogEventEndIndex
+        }
     }
 }
 
-struct PutLogEventsOutputResponse: Equatable {
-    /// The next sequence token. This field has been deprecated. The sequence token is now ignored in PutLogEvents actions. PutLogEvents actions are always accepted even if the sequence token is not valid. You can use parallel PutLogEvents actions on the same log stream and you do not need to wait for the response of a previous PutLogEvents action to obtain the nextSequenceToken value.
+struct PutLogEventsOutputResponse: Equatable, Decodable {
     var nextSequenceToken: String?
-    /// The rejected events.
     var rejectedLogEventsInfo: CloudWatchLogsClientTypes.RejectedLogEventsInfo?
+
+    enum CodingKeys: String, CodingKey {
+        case nextSequenceToken
+        case rejectedLogEventsInfo
+    }
 }
 
 extension CloudWatchLogsClientTypes {
-    /// Represents a log event, which is a record of activity that was recorded by the application or resource being monitored.
-    struct InputLogEvent: Equatable {
-        /// The raw event message. Each log event can be no larger than 256 KB.
+    struct InputLogEvent: Equatable, Encodable {
         /// This member is required.
-        var message: String?
-        /// The time the event occurred, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
+        var message: String
         /// This member is required.
-        var timestamp: Int?
+        var timestamp: Int
+
+        enum CodingKeys: String, CodingKey {
+            case message
+            case timestamp
+        }
     }
 }
 
-struct CreateLogStreamInput: Equatable {
-    /// The name of the log group.
+struct CreateLogStreamInput: Equatable, Encodable {
     /// This member is required.
-    var logGroupName: String?
-    /// The name of the log stream.
+    var logGroupName: String
     /// This member is required.
-    var logStreamName: String?
+    var logStreamName: String
 
     enum CodingKeys: String, CodingKey {
         case logGroupName
@@ -73,49 +76,33 @@ struct CreateLogStreamInput: Equatable {
     }
 }
 
-struct CreateLogStreamOutputResponse: Equatable {
-    init() { }
+struct CreateLogStreamOutputResponse: Equatable, Decodable {
+    init() {}
 }
 
 
-struct DescribeLogStreamsInput: Equatable {
-    /// If the value is true, results are returned in descending order. If the value is to false, results are returned in ascending order. The default value is false.
+struct DescribeLogStreamsInput: Equatable, Encodable {
     var descending: Bool?
-    /// The maximum number of items returned. If you don't specify a value, the default is up to 50 items.
     var limit: Int?
-    /// Specify either the name or ARN of the log group to view. If the log group is in a source account and you are using a monitoring account, you must use the log group ARN. You must include either logGroupIdentifier or logGroupName, but not both.
     var logGroupIdentifier: String?
-    /// The name of the log group. You must include either logGroupIdentifier or logGroupName, but not both.
     var logGroupName: String?
-    /// The prefix to match. If orderBy is LastEventTime, you cannot specify this parameter.
     var logStreamNamePrefix: String?
-    /// The token for the next set of items to return. (You received this token from a previous call.)
     var nextToken: String?
-    /// If the value is LogStreamName, the results are ordered by log stream name. If the value is LastEventTime, the results are ordered by the event time. The default value is LogStreamName. If you order the results by event time, you cannot specify the logStreamNamePrefix parameter. lastEventTimestamp represents the time of the most recent log event in the log stream in CloudWatch Logs. This number is expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC. lastEventTimestamp updates on an eventual consistency basis. It typically updates in less than an hour from ingestion, but in rare situations might take longer.
     var orderBy: CloudWatchLogsClientTypes.OrderBy?
 
-    init(
-        descending: Bool? = nil,
-        limit: Int? = nil,
-        logGroupIdentifier: String? = nil,
-        logGroupName: String? = nil,
-        logStreamNamePrefix: String? = nil,
-        nextToken: String? = nil,
-        orderBy: CloudWatchLogsClientTypes.OrderBy? = nil
-    )
-    {
-        self.descending = descending
-        self.limit = limit
-        self.logGroupIdentifier = logGroupIdentifier
-        self.logGroupName = logGroupName
-        self.logStreamNamePrefix = logStreamNamePrefix
-        self.nextToken = nextToken
-        self.orderBy = orderBy
+    enum CodingKeys: String, CodingKey {
+        case descending
+        case limit
+        case logGroupIdentifier
+        case logGroupName
+        case logStreamNamePrefix
+        case nextToken
+        case orderBy
     }
 }
 
 extension CloudWatchLogsClientTypes {
-    enum OrderBy: Equatable, RawRepresentable, CaseIterable, Codable, Swift.Hashable {
+    enum OrderBy: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case lasteventtime
         case logstreamname
         case sdkUnknown(String)
@@ -147,34 +134,99 @@ extension CloudWatchLogsClientTypes {
 }
 
 
-struct DescribeLogStreamsOutputResponse: Equatable {
-    /// The log streams.
+struct DescribeLogStreamsOutputResponse: Equatable, Decodable {
     var logStreams: [CloudWatchLogsClientTypes.LogStream]?
-    /// The token for the next set of items to return. The token expires after 24 hours.
     var nextToken: String?
+
+    enum CodingKeys: String, CodingKey {
+        case logStreams
+        case nextToken
+    }
 }
 
 enum CloudWatchLogsClientTypes {}
 
 extension CloudWatchLogsClientTypes {
-    /// Represents a log stream, which is a sequence of log events from a single emitter of logs.
-    struct LogStream: Equatable {
-        /// The Amazon Resource Name (ARN) of the log stream.
+    struct LogStream: Equatable, Decodable {
         var arn: String?
-        /// The creation time of the stream, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
         var creationTime: Int?
-        /// The time of the first event, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC.
         var firstEventTimestamp: Int?
-        /// The time of the most recent log event in the log stream in CloudWatch Logs. This number is expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC. The lastEventTime value updates on an eventual consistency basis. It typically updates in less than an hour from ingestion, but in rare situations might take longer.
         var lastEventTimestamp: Int?
-        /// The ingestion time, expressed as the number of milliseconds after Jan 1, 1970 00:00:00 UTC The lastIngestionTime value updates on an eventual consistency basis. It typically updates in less than an hour after ingestion, but in rare situations might take longer.
         var lastIngestionTime: Int?
-        /// The name of the log stream.
         var logStreamName: String?
-        /// The number of bytes stored. Important: As of June 17, 2019, this parameter is no longer supported for log streams, and is always reported as zero. This change applies only to log streams. The storedBytes parameter for log groups is not affected.
         @available(*, deprecated, message: "Starting on June 17, 2019, this parameter will be deprecated for log streams, and will be reported as zero. This change applies only to log streams. The storedBytes parameter for log groups is not affected.")
         var storedBytes: Int?
-        /// The sequence token. The sequence token is now ignored in PutLogEvents actions. PutLogEvents actions are always accepted regardless of receiving an invalid sequence token. You don't need to obtain uploadSequenceToken to use a PutLogEvents action.
         var uploadSequenceToken: String?
+
+        enum CodingKeys: String, CodingKey {
+            case arn
+            case creationTime
+            case firstEventTimestamp
+            case lastEventTimestamp
+            case lastIngestionTime
+            case logStreamName
+            case storedBytes
+            case uploadSequenceToken
+        }
+    }
+}
+
+
+extension CloudWatchLogsClientTypes {
+    struct FilteredLogEvent: Equatable, Decodable {
+        var eventId: String?
+        var ingestionTime: Int?
+        var logStreamName: String?
+        var message: String?
+        var timestamp: Int?
+    }
+}
+
+struct FilterLogEventsInput: Equatable, Encodable {
+    var endTime: Int?
+    var filterPattern: String?
+    @available(*, deprecated, message: "Starting on June 17, 2019, this parameter will be ignored and the value will be assumed to be true. The response from this operation will always interleave events from multiple log streams within a log group.")
+    var interleaved: Bool?
+    var limit: Int?
+    var logGroupIdentifier: String?
+    var logGroupName: String?
+    var logStreamNamePrefix: String?
+    var logStreamNames: [String]?
+    var nextToken: String?
+    var startTime: Int?
+    var unmask: Bool?
+
+    enum CodingKeys: String, CodingKey {
+        case endTime
+        case filterPattern
+        case interleaved
+        case limit
+        case logGroupIdentifier
+        case logGroupName
+        case logStreamNamePrefix
+        case logStreamNames
+        case nextToken
+        case startTime
+        case unmask
+    }
+}
+
+struct FilterLogEventsOutputResponse: Equatable, Decodable {
+    var events: [CloudWatchLogsClientTypes.FilteredLogEvent]?
+    var nextToken: String?
+    var searchedLogStreams: [CloudWatchLogsClientTypes.SearchedLogStream]?
+
+    enum CodingKeys: String, CodingKey {
+        case events
+        case nextToken
+        case searchedLogStreams
+    }
+
+}
+
+extension CloudWatchLogsClientTypes {
+    struct SearchedLogStream: Equatable, Decodable {
+        var logStreamName: String?
+        var searchedCompletely: Bool?
     }
 }
