@@ -21,34 +21,34 @@ extension AWSPolly {
     struct MarksNotSupportedForFormatException: Error {}
 }
 
-public struct SynthesizeSpeechOutputResponse: Swift.Equatable {
-    public var audioStream: Data?
+struct SynthesizeSpeechOutputResponse: Equatable {
+    var audioStream: Data?
     // "Content-Type"
-    public var contentType: Swift.String?
+    var contentType: String?
     // "x-amzn-RequestCharacters"
-    public var requestCharacters: Swift.Int?
+    var requestCharacters: Int?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case audioStream = "AudioStream"
     }
 }
 
 
-public struct SynthesizeSpeechInput: Swift.Equatable {
-    public var engine: PollyClientTypes.Engine?
-    public var languageCode: PollyClientTypes.LanguageCode?
-    public var lexiconNames: [Swift.String]?
+struct SynthesizeSpeechInput: Equatable {
+    var engine: PollyClientTypes.Engine?
+    var languageCode: PollyClientTypes.LanguageCode?
+    var lexiconNames: [String]?
     /// This member is required.
-    public var outputFormat: PollyClientTypes.OutputFormat
-    public var sampleRate: Swift.String?
-    public var speechMarkTypes: [PollyClientTypes.SpeechMarkType]?
+    var outputFormat: PollyClientTypes.OutputFormat
+    var sampleRate: String?
+    var speechMarkTypes: [PollyClientTypes.SpeechMarkType]?
     /// This member is required.
-    public var text: Swift.String
-    public var textType: PollyClientTypes.TextType?
+    var text: String
+    var textType: PollyClientTypes.TextType?
     /// This member is required.
-    public var voiceId: PollyClientTypes.VoiceId
+    var voiceId: PollyClientTypes.VoiceId
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case engine = "Engine"
         case languageCode = "LanguageCode"
         case lexiconNames = "LexiconNames"
@@ -61,33 +61,33 @@ public struct SynthesizeSpeechInput: Swift.Equatable {
     }
 }
 
-public enum PollyClientTypes {}
+enum PollyClientTypes {}
 
 extension PollyClientTypes {
-    public enum TextType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum TextType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case ssml
         case text
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [TextType] {
+        static var allCases: [TextType] {
             return [
                 .ssml,
                 .text,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .ssml: return "ssml"
             case .text: return "text"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = TextType(rawValue: rawValue) ?? TextType.sdkUnknown(rawValue)
@@ -96,14 +96,14 @@ extension PollyClientTypes {
 }
 
 extension PollyClientTypes {
-    public enum SpeechMarkType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum SpeechMarkType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case sentence
         case ssml
         case viseme
         case word
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [SpeechMarkType] {
+        static var allCases: [SpeechMarkType] {
             return [
                 .sentence,
                 .ssml,
@@ -112,11 +112,11 @@ extension PollyClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .sentence: return "sentence"
             case .ssml: return "ssml"
@@ -125,7 +125,7 @@ extension PollyClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = SpeechMarkType(rawValue: rawValue) ?? SpeechMarkType.sdkUnknown(rawValue)
@@ -134,14 +134,14 @@ extension PollyClientTypes {
 }
 
 extension PollyClientTypes {
-    public enum OutputFormat: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum OutputFormat: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case json
         case mp3
         case oggVorbis
         case pcm
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [OutputFormat] {
+        static var allCases: [OutputFormat] {
             return [
                 .json,
                 .mp3,
@@ -150,11 +150,11 @@ extension PollyClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .json: return "json"
             case .mp3: return "mp3"
@@ -163,7 +163,7 @@ extension PollyClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = OutputFormat(rawValue: rawValue) ?? OutputFormat.sdkUnknown(rawValue)
@@ -172,7 +172,7 @@ extension PollyClientTypes {
 }
 
 extension PollyClientTypes {
-    public enum LanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum LanguageCode: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case arAe
         case arb
         case caEs
@@ -212,9 +212,9 @@ extension PollyClientTypes {
         case svSe
         case trTr
         case yueCn
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [LanguageCode] {
+        static var allCases: [LanguageCode] {
             return [
                 .arAe,
                 .arb,
@@ -258,11 +258,11 @@ extension PollyClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .arAe: return "ar-AE"
             case .arb: return "arb"
@@ -306,7 +306,7 @@ extension PollyClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = LanguageCode(rawValue: rawValue) ?? LanguageCode.sdkUnknown(rawValue)
@@ -315,30 +315,30 @@ extension PollyClientTypes {
 }
 
 extension PollyClientTypes {
-    public enum Engine: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum Engine: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case neural
         case standard
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [Engine] {
+        static var allCases: [Engine] {
             return [
                 .neural,
                 .standard,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .neural: return "neural"
             case .standard: return "standard"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = Engine(rawValue: rawValue) ?? Engine.sdkUnknown(rawValue)
@@ -347,7 +347,7 @@ extension PollyClientTypes {
 }
 
 extension PollyClientTypes {
-    public enum VoiceId: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum VoiceId: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case aditi
         case adriano
         case amy
@@ -441,9 +441,9 @@ extension PollyClientTypes {
         case zayd
         case zeina
         case zhiyu
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [VoiceId] {
+        static var allCases: [VoiceId] {
             return [
                 .aditi,
                 .adriano,
@@ -541,11 +541,11 @@ extension PollyClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .aditi: return "Aditi"
             case .adriano: return "Adriano"
@@ -643,7 +643,7 @@ extension PollyClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = VoiceId(rawValue: rawValue) ?? VoiceId.sdkUnknown(rawValue)

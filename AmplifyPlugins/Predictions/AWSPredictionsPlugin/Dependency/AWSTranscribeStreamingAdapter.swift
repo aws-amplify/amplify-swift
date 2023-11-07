@@ -129,7 +129,7 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
 
                             continuation.yield(transcribedPayload)
                             let isPartial = transcribedPayload.transcript?.results?.map(\.isPartial) ?? []
-                            let shouldContinue = isPartial.allSatisfy { $0 }
+                            let shouldContinue = isPartial.allSatisfy { $0 ?? false } 
                             return shouldContinue
                         } catch {
                             return true

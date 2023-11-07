@@ -22,15 +22,15 @@ extension AWSTextract {
     struct UnsupportedDocumentException: Error {}
 }
 
-public struct AnalyzeDocumentInput: Swift.Equatable {
+struct AnalyzeDocumentInput: Equatable {
     /// This member is required.
-    public var document: TextractClientTypes.Document
+    var document: TextractClientTypes.Document
     /// This member is required.
-    public var featureTypes: [TextractClientTypes.FeatureType]
-    public var humanLoopConfig: TextractClientTypes.HumanLoopConfig?
-    public var queriesConfig: TextractClientTypes.QueriesConfig?
+    var featureTypes: [TextractClientTypes.FeatureType]
+    var humanLoopConfig: TextractClientTypes.HumanLoopConfig?
+    var queriesConfig: TextractClientTypes.QueriesConfig?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case document = "Document"
         case featureTypes = "FeatureTypes"
         case humanLoopConfig = "HumanLoopConfig"
@@ -38,13 +38,13 @@ public struct AnalyzeDocumentInput: Swift.Equatable {
     }
 }
 
-public struct AnalyzeDocumentOutputResponse: Swift.Equatable {
-    public var analyzeDocumentModelVersion: Swift.String?
-    public var blocks: [TextractClientTypes.Block]?
-    public var documentMetadata: TextractClientTypes.DocumentMetadata?
-    public var humanLoopActivationOutput: TextractClientTypes.HumanLoopActivationOutput?
+struct AnalyzeDocumentOutputResponse: Equatable {
+    var analyzeDocumentModelVersion: String?
+    var blocks: [TextractClientTypes.Block]?
+    var documentMetadata: TextractClientTypes.DocumentMetadata?
+    var humanLoopActivationOutput: TextractClientTypes.HumanLoopActivationOutput?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case analyzeDocumentModelVersion = "AnalyzeDocumentModelVersion"
         case blocks = "Blocks"
         case documentMetadata = "DocumentMetadata"
@@ -52,41 +52,41 @@ public struct AnalyzeDocumentOutputResponse: Swift.Equatable {
     }
 }
 
-public struct DetectDocumentTextInput: Swift.Equatable {
+struct DetectDocumentTextInput: Equatable {
     /// The input document as base64-encoded bytes or an Amazon S3 object. If you use the AWS CLI to call Amazon Textract operations, you can't pass image bytes. The document must be an image in JPEG or PNG format. If you're using an AWS SDK to call Amazon Textract, you might not need to base64-encode image bytes that are passed using the Bytes field.
     /// This member is required.
-    public var document: TextractClientTypes.Document?
+    var document: TextractClientTypes.Document?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case document = "Document"
     }
 }
 
 
-public struct DetectDocumentTextOutputResponse: Swift.Equatable {
+struct DetectDocumentTextOutputResponse: Equatable {
     /// An array of Block objects that contain the text that's detected in the document.
-    public var blocks: [TextractClientTypes.Block]?
+    var blocks: [TextractClientTypes.Block]?
     ///
-    public var detectDocumentTextModelVersion: Swift.String?
+    var detectDocumentTextModelVersion: String?
     /// Metadata about the document. It contains the number of pages that are detected in the document.
-    public var documentMetadata: TextractClientTypes.DocumentMetadata?
+    var documentMetadata: TextractClientTypes.DocumentMetadata?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case blocks = "Blocks"
         case detectDocumentTextModelVersion = "DetectDocumentTextModelVersion"
         case documentMetadata = "DocumentMetadata"
     }
 }
 
-public enum TextractClientTypes {}
+enum TextractClientTypes {}
 
 extension TextractClientTypes {
-    public struct HumanLoopActivationOutput: Swift.Equatable {
-        public var humanLoopActivationConditionsEvaluationResults: Swift.String?
-        public var humanLoopActivationReasons: [Swift.String]?
-        public var humanLoopArn: Swift.String?
+    struct HumanLoopActivationOutput: Equatable {
+        var humanLoopActivationConditionsEvaluationResults: String?
+        var humanLoopActivationReasons: [String]?
+        var humanLoopArn: String?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case humanLoopActivationConditionsEvaluationResults = "HumanLoopActivationConditionsEvaluationResults"
             case humanLoopActivationReasons = "HumanLoopActivationReasons"
             case humanLoopArn = "HumanLoopArn"
@@ -95,51 +95,51 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct QueriesConfig: Swift.Equatable {
+    struct QueriesConfig: Equatable {
         /// This member is required.
-        public var queries: [TextractClientTypes.Query]
+        var queries: [TextractClientTypes.Query]
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case queries = "Queries"
         }
     }
 }
 
 extension TextractClientTypes {
-    public struct HumanLoopDataAttributes: Swift.Equatable {
-        public var contentClassifiers: [TextractClientTypes.ContentClassifier]?
+    struct HumanLoopDataAttributes: Equatable {
+        var contentClassifiers: [TextractClientTypes.ContentClassifier]?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case contentClassifiers = "ContentClassifiers"
         }
     }
 }
 
 extension TextractClientTypes {
-    public enum ContentClassifier: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum ContentClassifier: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case freeOfAdultContent
         case freeOfPersonallyIdentifiableInformation
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [ContentClassifier] {
+        static var allCases: [ContentClassifier] {
             return [
                 .freeOfAdultContent,
                 .freeOfPersonallyIdentifiableInformation,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .freeOfAdultContent: return "FreeOfAdultContent"
             case .freeOfPersonallyIdentifiableInformation: return "FreeOfPersonallyIdentifiableInformation"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = ContentClassifier(rawValue: rawValue) ?? ContentClassifier.sdkUnknown(rawValue)
@@ -148,14 +148,14 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct HumanLoopConfig: Swift.Equatable {
-        public var dataAttributes: TextractClientTypes.HumanLoopDataAttributes?
+    struct HumanLoopConfig: Equatable {
+        var dataAttributes: TextractClientTypes.HumanLoopDataAttributes?
         /// This member is required.
-        public var flowDefinitionArn: Swift.String
+        var flowDefinitionArn: String
         /// This member is required.
-        public var humanLoopName: Swift.String
+        var humanLoopName: String
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case dataAttributes = "DataAttributes"
             case flowDefinitionArn = "FlowDefinitionArn"
             case humanLoopName = "HumanLoopName"
@@ -164,14 +164,14 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public enum FeatureType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum FeatureType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case forms
         case queries
         case signatures
         case tables
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [FeatureType] {
+        static var allCases: [FeatureType] {
             return [
                 .forms,
                 .queries,
@@ -180,11 +180,11 @@ extension TextractClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .forms: return "FORMS"
             case .queries: return "QUERIES"
@@ -193,7 +193,7 @@ extension TextractClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = FeatureType(rawValue: rawValue) ?? FeatureType.sdkUnknown(rawValue)
@@ -202,7 +202,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public enum BlockType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum BlockType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case cell
         case keyValueSet
         case line
@@ -217,9 +217,9 @@ extension TextractClientTypes {
         case tableTitle
         case title
         case word
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [BlockType] {
+        static var allCases: [BlockType] {
             return [
                 .cell,
                 .keyValueSet,
@@ -238,11 +238,11 @@ extension TextractClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .cell: return "CELL"
             case .keyValueSet: return "KEY_VALUE_SET"
@@ -261,7 +261,7 @@ extension TextractClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = BlockType(rawValue: rawValue) ?? BlockType.sdkUnknown(rawValue)
@@ -271,24 +271,24 @@ extension TextractClientTypes {
 
 
 extension TextractClientTypes {
-    public struct Block: Swift.Equatable {
-        public var blockType: TextractClientTypes.BlockType?
-        public var columnIndex: Swift.Int?
-        public var columnSpan: Swift.Int?
-        public var confidence: Swift.Float?
-        public var entityTypes: [TextractClientTypes.EntityType]?
-        public var geometry: TextractClientTypes.Geometry?
-        public var id: Swift.String?
-        public var page: Swift.Int?
-        public var query: TextractClientTypes.Query?
-        public var relationships: [TextractClientTypes.Relationship]?
-        public var rowIndex: Swift.Int?
-        public var rowSpan: Swift.Int?
-        public var selectionStatus: TextractClientTypes.SelectionStatus?
-        public var text: Swift.String?
-        public var textType: TextractClientTypes.TextType?
+    struct Block: Equatable {
+        var blockType: TextractClientTypes.BlockType?
+        var columnIndex: Int?
+        var columnSpan: Int?
+        var confidence: Float?
+        var entityTypes: [TextractClientTypes.EntityType]?
+        var geometry: TextractClientTypes.Geometry?
+        var id: String?
+        var page: Int?
+        var query: TextractClientTypes.Query?
+        var relationships: [TextractClientTypes.Relationship]?
+        var rowIndex: Int?
+        var rowSpan: Int?
+        var selectionStatus: TextractClientTypes.SelectionStatus?
+        var text: String?
+        var textType: TextractClientTypes.TextType?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case blockType = "BlockType"
             case columnIndex = "ColumnIndex"
             case columnSpan = "ColumnSpan"
@@ -309,30 +309,30 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public enum TextType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum TextType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case handwriting
         case printed
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [TextType] {
+        static var allCases: [TextType] {
             return [
                 .handwriting,
                 .printed,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .handwriting: return "HANDWRITING"
             case .printed: return "PRINTED"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = TextType(rawValue: rawValue) ?? TextType.sdkUnknown(rawValue)
@@ -342,30 +342,30 @@ extension TextractClientTypes {
 
 
 extension TextractClientTypes {
-    public enum SelectionStatus: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum SelectionStatus: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case notSelected
         case selected
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [SelectionStatus] {
+        static var allCases: [SelectionStatus] {
             return [
                 .notSelected,
                 .selected,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .notSelected: return "NOT_SELECTED"
             case .selected: return "SELECTED"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = SelectionStatus(rawValue: rawValue) ?? SelectionStatus.sdkUnknown(rawValue)
@@ -374,11 +374,11 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct Relationship: Swift.Equatable {
-        public var ids: [Swift.String]?
-        public var type: TextractClientTypes.RelationshipType?
+    struct Relationship: Equatable {
+        var ids: [String]?
+        var type: TextractClientTypes.RelationshipType?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case ids = "Ids"
             case type = "Type"
         }
@@ -386,7 +386,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public enum RelationshipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum RelationshipType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case answer
         case child
         case complexFeatures
@@ -396,9 +396,9 @@ extension TextractClientTypes {
         case tableTitle
         case title
         case value
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [RelationshipType] {
+        static var allCases: [RelationshipType] {
             return [
                 .answer,
                 .child,
@@ -412,11 +412,11 @@ extension TextractClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .answer: return "ANSWER"
             case .child: return "CHILD"
@@ -430,7 +430,7 @@ extension TextractClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = RelationshipType(rawValue: rawValue) ?? RelationshipType.sdkUnknown(rawValue)
@@ -439,13 +439,13 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct Query: Swift.Equatable {
-        public var alias: Swift.String?
-        public var pages: [Swift.String]?
+    struct Query: Equatable {
+        var alias: String?
+        var pages: [String]?
         /// This member is required.
-        public var text: Swift.String
+        var text: String
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case alias = "Alias"
             case pages = "Pages"
             case text = "Text"
@@ -455,11 +455,11 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct Geometry: Swift.Equatable {
-        public var boundingBox: TextractClientTypes.BoundingBox?
-        public var polygon: [TextractClientTypes.Point]?
+    struct Geometry: Equatable {
+        var boundingBox: TextractClientTypes.BoundingBox?
+        var polygon: [TextractClientTypes.Point]?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case boundingBox = "BoundingBox"
             case polygon = "Polygon"
         }
@@ -467,13 +467,13 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct BoundingBox: Swift.Equatable {
-        public var height: Swift.Float?
-        public var `left`: Swift.Float?
-        public var top: Swift.Float?
-        public var width: Swift.Float?
+    struct BoundingBox: Equatable {
+        var height: Float?
+        var `left`: Float?
+        var top: Float?
+        var width: Float?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case height = "Height"
             case `left` = "Left"
             case top = "Top"
@@ -483,11 +483,11 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct Point: Swift.Equatable {
-        public var x: Swift.Float
-        public var y: Swift.Float
+    struct Point: Equatable {
+        var x: Float
+        var y: Float
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case x = "X"
             case y = "Y"
         }
@@ -495,7 +495,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum EntityType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case columnHeader
         case key
         case semiStructuredTable
@@ -505,9 +505,9 @@ extension TextractClientTypes {
         case tableSummary
         case tableTitle
         case value
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [EntityType] {
+        static var allCases: [EntityType] {
             return [
                 .columnHeader,
                 .key,
@@ -521,11 +521,11 @@ extension TextractClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .columnHeader: return "COLUMN_HEADER"
             case .key: return "KEY"
@@ -539,7 +539,7 @@ extension TextractClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = EntityType(rawValue: rawValue) ?? EntityType.sdkUnknown(rawValue)
@@ -548,21 +548,21 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct DocumentMetadata: Swift.Equatable {
-        public var pages: Swift.Int?
+    struct DocumentMetadata: Equatable {
+        var pages: Int?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case pages = "Pages"
         }
     }
 }
 
 extension TextractClientTypes {
-    public struct Document: Swift.Equatable {
-        public var bytes: Data?
-        public var s3Object: TextractClientTypes.S3Object?
+    struct Document: Equatable {
+        var bytes: Data?
+        var s3Object: TextractClientTypes.S3Object?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case bytes = "Bytes"
             case s3Object = "S3Object"
         }
@@ -570,12 +570,12 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    public struct S3Object: Swift.Equatable {
-        public var bucket: Swift.String?
-        public var name: Swift.String?
-        public var version: Swift.String?
+    struct S3Object: Equatable {
+        var bucket: String?
+        var name: String?
+        var version: String?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case bucket = "Bucket"
             case name = "Name"
             case version = "Version"

@@ -15,36 +15,36 @@ extension AWSComprehend {
     struct TextSizeLimitExceededException: Error {}
 }
 
-public struct DetectSentimentInput: Swift.Equatable {
+struct DetectSentimentInput: Equatable {
     /// This member is required.
-    public var languageCode: ComprehendClientTypes.LanguageCode
+    var languageCode: ComprehendClientTypes.LanguageCode
     /// This member is required.
-    public var text: Swift.String
+    var text: String
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case languageCode = "LanguageCode"
         case text = "Text"
     }
 }
 
-public struct DetectSentimentOutputResponse: Swift.Equatable {
-    public var sentiment: ComprehendClientTypes.SentimentType?
-    public var sentimentScore: ComprehendClientTypes.SentimentScore?
+struct DetectSentimentOutputResponse: Equatable {
+    var sentiment: ComprehendClientTypes.SentimentType?
+    var sentimentScore: ComprehendClientTypes.SentimentScore?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case sentiment = "Sentiment"
         case sentimentScore = "SentimentScore"
     }
 }
 
-public struct DetectEntitiesInput: Swift.Equatable {
-    public var bytes: Data?
-    public var documentReaderConfig: ComprehendClientTypes.DocumentReaderConfig?
-    public var endpointArn: Swift.String?
-    public var languageCode: ComprehendClientTypes.LanguageCode?
-    public var text: Swift.String?
+struct DetectEntitiesInput: Equatable {
+    var bytes: Data?
+    var documentReaderConfig: ComprehendClientTypes.DocumentReaderConfig?
+    var endpointArn: String?
+    var languageCode: ComprehendClientTypes.LanguageCode?
+    var text: String?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case bytes = "Bytes"
         case documentReaderConfig = "DocumentReaderConfig"
         case endpointArn = "EndpointArn"
@@ -53,14 +53,14 @@ public struct DetectEntitiesInput: Swift.Equatable {
     }
 }
 
-public struct DetectEntitiesOutputResponse: Swift.Equatable {
-    public var blocks: [ComprehendClientTypes.Block]?
-    public var documentMetadata: ComprehendClientTypes.DocumentMetadata?
-    public var documentType: [ComprehendClientTypes.DocumentTypeListItem]?
-    public var entities: [ComprehendClientTypes.Entity]?
-    public var errors: [ComprehendClientTypes.ErrorsListItem]?
+struct DetectEntitiesOutputResponse: Equatable {
+    var blocks: [ComprehendClientTypes.Block]?
+    var documentMetadata: ComprehendClientTypes.DocumentMetadata?
+    var documentType: [ComprehendClientTypes.DocumentTypeListItem]?
+    var entities: [ComprehendClientTypes.Entity]?
+    var errors: [ComprehendClientTypes.ErrorsListItem]?
     
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case blocks = "Blocks"
         case documentMetadata = "DocumentMetadata"
         case documentType = "DocumentType"
@@ -70,99 +70,99 @@ public struct DetectEntitiesOutputResponse: Swift.Equatable {
 }
 
 
-public struct DetectKeyPhrasesInput: Swift.Equatable {
+struct DetectKeyPhrasesInput: Equatable {
     /// This member is required.
-    public var languageCode: ComprehendClientTypes.LanguageCode
+    var languageCode: ComprehendClientTypes.LanguageCode
     /// This member is required.
-    public var text: Swift.String
+    var text: String
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case languageCode = "LanguageCode"
         case text = "Text"
     }
 }
 
-public struct DetectKeyPhrasesOutputResponse: Swift.Equatable {
-    public var keyPhrases: [ComprehendClientTypes.KeyPhrase]?
+struct DetectKeyPhrasesOutputResponse: Equatable {
+    var keyPhrases: [ComprehendClientTypes.KeyPhrase]?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case keyPhrases = "KeyPhrases"
     }
 }
 
-public struct DetectSyntaxInput: Swift.Equatable {
+struct DetectSyntaxInput: Equatable {
     /// This member is required.
-    public var languageCode: ComprehendClientTypes.SyntaxLanguageCode
+    var languageCode: ComprehendClientTypes.SyntaxLanguageCode
     /// This member is required.
-    public var text: Swift.String
+    var text: String
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case languageCode = "LanguageCode"
         case text = "Text"
     }
 }
 
-public struct DetectSyntaxOutputResponse: Swift.Equatable {
-    public var syntaxTokens: [ComprehendClientTypes.SyntaxToken]?
+struct DetectSyntaxOutputResponse: Equatable {
+    var syntaxTokens: [ComprehendClientTypes.SyntaxToken]?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case syntaxTokens = "SyntaxTokens"
     }
 }
 
-public struct DetectDominantLanguageInput: Swift.Equatable {
+struct DetectDominantLanguageInput: Equatable {
     /// This member is required.
-    public var text: Swift.String
+    var text: String
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case text = "Text"
     }
 }
 
-public struct DetectDominantLanguageOutputResponse: Swift.Equatable {
-    public var languages: [ComprehendClientTypes.DominantLanguage]?
+struct DetectDominantLanguageOutputResponse: Equatable {
+    var languages: [ComprehendClientTypes.DominantLanguage]?
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case languages = "Languages"
     }
 }
 
-public enum ComprehendClientTypes {}
+enum ComprehendClientTypes {}
 
 extension ComprehendClientTypes {
-    public struct SentimentScore: Swift.Equatable {
-        public var mixed: Swift.Float?
-        public var negative: Swift.Float?
-        public var neutral: Swift.Float?
-        public var positive: Swift.Float?
+    struct SentimentScore: Equatable {
+        var mixed: Float?
+        var negative: Float?
+        var neutral: Float?
+        var positive: Float?
     }
 }
 
 extension ComprehendClientTypes {
-    public enum DocumentReadMode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum DocumentReadMode: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case forceDocumentReadAction
         case serviceDefault
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [DocumentReadMode] {
+        static var allCases: [DocumentReadMode] {
             return [
                 .forceDocumentReadAction,
                 .serviceDefault,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .forceDocumentReadAction: return "FORCE_DOCUMENT_READ_ACTION"
             case .serviceDefault: return "SERVICE_DEFAULT"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = DocumentReadMode(rawValue: rawValue) ?? DocumentReadMode.sdkUnknown(rawValue)
@@ -171,30 +171,30 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum DocumentReadAction: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum DocumentReadAction: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case textractAnalyzeDocument
         case textractDetectDocumentText
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [DocumentReadAction] {
+        static var allCases: [DocumentReadAction] {
             return [
                 .textractAnalyzeDocument,
                 .textractDetectDocumentText,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .textractAnalyzeDocument: return "TEXTRACT_ANALYZE_DOCUMENT"
             case .textractDetectDocumentText: return "TEXTRACT_DETECT_DOCUMENT_TEXT"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = DocumentReadAction(rawValue: rawValue) ?? DocumentReadAction.sdkUnknown(rawValue)
@@ -203,30 +203,30 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum DocumentReadFeatureTypes: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum DocumentReadFeatureTypes: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case forms
         case tables
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [DocumentReadFeatureTypes] {
+        static var allCases: [DocumentReadFeatureTypes] {
             return [
                 .forms,
                 .tables,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .forms: return "FORMS"
             case .tables: return "TABLES"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = DocumentReadFeatureTypes(rawValue: rawValue) ?? DocumentReadFeatureTypes.sdkUnknown(rawValue)
@@ -236,13 +236,13 @@ extension ComprehendClientTypes {
 
 
 extension ComprehendClientTypes {
-    public struct DocumentReaderConfig: Swift.Equatable {
+    struct DocumentReaderConfig: Equatable {
         /// This member is required.
-        public var documentReadAction: ComprehendClientTypes.DocumentReadAction
-        public var documentReadMode: ComprehendClientTypes.DocumentReadMode?
-        public var featureTypes: [ComprehendClientTypes.DocumentReadFeatureTypes]?
+        var documentReadAction: ComprehendClientTypes.DocumentReadAction
+        var documentReadMode: ComprehendClientTypes.DocumentReadMode?
+        var featureTypes: [ComprehendClientTypes.DocumentReadFeatureTypes]?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case documentReadAction = "DocumentReadAction"
             case documentReadMode = "DocumentReadMode"
             case featureTypes = "FeatureTypes"
@@ -251,7 +251,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum DocumentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum DocumentType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case image
         case msWord
         case nativePdf
@@ -259,9 +259,9 @@ extension ComprehendClientTypes {
         case scannedPdf
         case textractAnalyzeDocumentJson
         case textractDetectDocumentTextJson
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [DocumentType] {
+        static var allCases: [DocumentType] {
             return [
                 .image,
                 .msWord,
@@ -274,11 +274,11 @@ extension ComprehendClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .image: return "IMAGE"
             case .msWord: return "MS_WORD"
@@ -290,7 +290,7 @@ extension ComprehendClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = DocumentType(rawValue: rawValue) ?? DocumentType.sdkUnknown(rawValue)
@@ -300,24 +300,24 @@ extension ComprehendClientTypes {
 
 extension ComprehendClientTypes {
     /// Document type for each page in the document.
-    public struct DocumentTypeListItem: Swift.Equatable {
+    struct DocumentTypeListItem: Equatable {
         /// Page number.
-        public var page: Swift.Int?
+        var page: Int?
         /// Document type.
-        public var type: ComprehendClientTypes.DocumentType?
+        var type: ComprehendClientTypes.DocumentType?
     }
 }
 
 extension ComprehendClientTypes {
-    public enum PageBasedErrorCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum PageBasedErrorCode: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case internalServerError
         case pageCharactersExceeded
         case pageSizeExceeded
         case textractBadPage
         case textractProvisionedThroughputExceeded
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [PageBasedErrorCode] {
+        static var allCases: [PageBasedErrorCode] {
             return [
                 .internalServerError,
                 .pageCharactersExceeded,
@@ -327,11 +327,11 @@ extension ComprehendClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .internalServerError: return "INTERNAL_SERVER_ERROR"
             case .pageCharactersExceeded: return "PAGE_CHARACTERS_EXCEEDED"
@@ -341,7 +341,7 @@ extension ComprehendClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = PageBasedErrorCode(rawValue: rawValue) ?? PageBasedErrorCode.sdkUnknown(rawValue)
@@ -350,12 +350,12 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct ErrorsListItem: Swift.Equatable {
-        public var errorCode: ComprehendClientTypes.PageBasedErrorCode?
-        public var errorMessage: Swift.String?
-        public var page: Swift.Int?
+    struct ErrorsListItem: Equatable {
+        var errorCode: ComprehendClientTypes.PageBasedErrorCode?
+        var errorMessage: String?
+        var page: Int?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case errorCode = "ErrorCode"
             case errorMessage = "ErrorMessage"
             case page = "Page"
@@ -364,12 +364,12 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct ChildBlock: Swift.Equatable {
-        public var beginOffset: Swift.Int?
-        public var childBlockId: Swift.String?
-        public var endOffset: Swift.Int?
+    struct ChildBlock: Equatable {
+        var beginOffset: Int?
+        var childBlockId: String?
+        var endOffset: Int?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case beginOffset = "BeginOffset"
             case childBlockId = "ChildBlockId"
             case endOffset = "EndOffset"
@@ -379,13 +379,13 @@ extension ComprehendClientTypes {
 
 
 extension ComprehendClientTypes {
-    public struct BlockReference: Swift.Equatable {
-        public var beginOffset: Swift.Int?
-        public var blockId: Swift.String?
-        public var childBlocks: [ComprehendClientTypes.ChildBlock]?
-        public var endOffset: Swift.Int?
+    struct BlockReference: Equatable {
+        var beginOffset: Int?
+        var blockId: String?
+        var childBlocks: [ComprehendClientTypes.ChildBlock]?
+        var endOffset: Int?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case beginOffset = "BeginOffset"
             case blockId = "BlockId"
             case childBlocks = "ChildBlocks"
@@ -396,26 +396,26 @@ extension ComprehendClientTypes {
 
 extension ComprehendClientTypes {
     /// Provides information about an entity.
-    public struct Entity: Swift.Equatable {
+    struct Entity: Equatable {
         /// The zero-based offset from the beginning of the source text to the first character in the entity. This field is empty for non-text input.
-        public var beginOffset: Swift.Int?
+        var beginOffset: Int?
         /// A reference to each block for this entity. This field is empty for plain-text input.
-        public var blockReferences: [ComprehendClientTypes.BlockReference]?
+        var blockReferences: [ComprehendClientTypes.BlockReference]?
         /// The zero-based offset from the beginning of the source text to the last character in the entity. This field is empty for non-text input.
-        public var endOffset: Swift.Int?
+        var endOffset: Int?
         /// The level of confidence that Amazon Comprehend has in the accuracy of the detection.
-        public var score: Swift.Float?
+        var score: Float?
         /// The text of the entity.
-        public var text: Swift.String?
+        var text: String?
         /// The entity type. For entity detection using the built-in model, this field contains one of the standard entity types listed below. For custom entity detection, this field contains one of the entity types that you specified when you trained your custom model.
-        public var type: ComprehendClientTypes.EntityType?
+        var type: ComprehendClientTypes.EntityType?
 
-        public init(
-            beginOffset: Swift.Int? = nil,
+        init(
+            beginOffset: Int? = nil,
             blockReferences: [ComprehendClientTypes.BlockReference]? = nil,
-            endOffset: Swift.Int? = nil,
-            score: Swift.Float? = nil,
-            text: Swift.String? = nil,
+            endOffset: Int? = nil,
+            score: Float? = nil,
+            text: String? = nil,
             type: ComprehendClientTypes.EntityType? = nil
         )
         {
@@ -430,11 +430,11 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct ExtractedCharactersListItem: Swift.Equatable {
-        public var count: Swift.Int?
-        public var page: Swift.Int?
+    struct ExtractedCharactersListItem: Equatable {
+        var count: Int?
+        var page: Int?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case count = "Count"
             case page = "Page"
         }
@@ -442,18 +442,18 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct DocumentMetadata: Swift.Equatable {
-        public var extractedCharacters: [ComprehendClientTypes.ExtractedCharactersListItem]?
-        public var pages: Swift.Int?
+    struct DocumentMetadata: Equatable {
+        var extractedCharacters: [ComprehendClientTypes.ExtractedCharactersListItem]?
+        var pages: Int?
     }
 }
 
 extension ComprehendClientTypes {
-    public struct Geometry: Swift.Equatable {
-        public var boundingBox: ComprehendClientTypes.BoundingBox?
-        public var polygon: [ComprehendClientTypes.Point]?
+    struct Geometry: Equatable {
+        var boundingBox: ComprehendClientTypes.BoundingBox?
+        var polygon: [ComprehendClientTypes.Point]?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case boundingBox = "BoundingBox"
             case polygon = "Polygon"
         }
@@ -461,13 +461,13 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct BoundingBox: Swift.Equatable {
-        public var height: Swift.Float?
-        public var `left`: Swift.Float?
-        public var top: Swift.Float?
-        public var width: Swift.Float?
+    struct BoundingBox: Equatable {
+        var height: Float?
+        var `left`: Float?
+        var top: Float?
+        var width: Float?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case height = "Height"
             case `left` = "Left"
             case top = "Top"
@@ -477,11 +477,11 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct Point: Swift.Equatable {
-        public var x: Swift.Float?
-        public var y: Swift.Float?
+    struct Point: Equatable {
+        var x: Float?
+        var y: Float?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case x = "X"
             case y = "Y"
         }
@@ -489,30 +489,30 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum BlockType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum BlockType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case line
         case word
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [BlockType] {
+        static var allCases: [BlockType] {
             return [
                 .line,
                 .word,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .line: return "LINE"
             case .word: return "WORD"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = BlockType(rawValue: rawValue) ?? BlockType.sdkUnknown(rawValue)
@@ -522,23 +522,23 @@ extension ComprehendClientTypes {
 
 extension ComprehendClientTypes {
     /// Information about each word or line of text in the input document. For additional information, see [Block](https://docs.aws.amazon.com/textract/latest/dg/API_Block.html) in the Amazon Textract API reference.
-    public struct Block: Swift.Equatable {
+    struct Block: Equatable {
         /// The block represents a line of text or one word of text.
         ///
         /// * WORD - A word that's detected on a document page. A word is one or more ISO basic Latin script characters that aren't separated by spaces.
         ///
         /// * LINE - A string of tab-delimited, contiguous words that are detected on a document page
-        public var blockType: ComprehendClientTypes.BlockType?
+        var blockType: ComprehendClientTypes.BlockType?
         /// Co-ordinates of the rectangle or polygon that contains the text.
-        public var geometry: ComprehendClientTypes.Geometry?
+        var geometry: ComprehendClientTypes.Geometry?
         /// Unique identifier for the block.
-        public var id: Swift.String?
+        var id: String?
         /// Page number where the block appears.
-        public var page: Swift.Int?
+        var page: Int?
         /// A list of child blocks of the current block. For example, a LINE object has child blocks for each WORD block that's part of the line of text.
-        public var relationships: [ComprehendClientTypes.RelationshipsListItem]?
+        var relationships: [ComprehendClientTypes.RelationshipsListItem]?
         /// The word or line of text extracted from the block.
-        public var text: Swift.String?
+        var text: String?
 
 
     }
@@ -546,11 +546,11 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct RelationshipsListItem: Swift.Equatable {
-        public var ids: [Swift.String]?
-        public var type: ComprehendClientTypes.RelationshipType?
+    struct RelationshipsListItem: Equatable {
+        var ids: [String]?
+        var type: ComprehendClientTypes.RelationshipType?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case ids = "Ids"
             case type = "Type"
         }
@@ -558,27 +558,27 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum RelationshipType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum RelationshipType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case child
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [RelationshipType] {
+        static var allCases: [RelationshipType] {
             return [
                 .child,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .child: return "CHILD"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = RelationshipType(rawValue: rawValue) ?? RelationshipType.sdkUnknown(rawValue)
@@ -587,16 +587,16 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct KeyPhrase: Swift.Equatable {
-        public var beginOffset: Swift.Int?
-        public var endOffset: Swift.Int?
-        public var score: Swift.Float?
-        public var text: Swift.String?
+    struct KeyPhrase: Equatable {
+        var beginOffset: Int?
+        var endOffset: Int?
+        var score: Float?
+        var text: String?
     }
 }
 
 extension ComprehendClientTypes {
-    public enum LanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum LanguageCode: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case ar
         case de
         case en
@@ -609,9 +609,9 @@ extension ComprehendClientTypes {
         case pt
         case zh
         case zhTw
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [LanguageCode] {
+        static var allCases: [LanguageCode] {
             return [
                 .ar,
                 .de,
@@ -628,11 +628,11 @@ extension ComprehendClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .ar: return "ar"
             case .de: return "de"
@@ -649,7 +649,7 @@ extension ComprehendClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = LanguageCode(rawValue: rawValue) ?? LanguageCode.sdkUnknown(rawValue)
@@ -658,16 +658,16 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum SyntaxLanguageCode: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum SyntaxLanguageCode: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case de
         case en
         case es
         case fr
         case it
         case pt
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [SyntaxLanguageCode] {
+        static var allCases: [SyntaxLanguageCode] {
             return [
                 .de,
                 .en,
@@ -678,11 +678,11 @@ extension ComprehendClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .de: return "de"
             case .en: return "en"
@@ -693,7 +693,7 @@ extension ComprehendClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = SyntaxLanguageCode(rawValue: rawValue) ?? SyntaxLanguageCode.sdkUnknown(rawValue)
@@ -702,29 +702,29 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public struct SyntaxToken: Swift.Equatable {
-        public var beginOffset: Swift.Int?
-        public var endOffset: Swift.Int?
-        public var partOfSpeech: ComprehendClientTypes.PartOfSpeechTag?
-        public var text: Swift.String?
-        public var tokenId: Swift.Int?
+    struct SyntaxToken: Equatable {
+        var beginOffset: Int?
+        var endOffset: Int?
+        var partOfSpeech: ComprehendClientTypes.PartOfSpeechTag?
+        var text: String?
+        var tokenId: Int?
     }
 }
 
 
 extension ComprehendClientTypes {
-    public struct DominantLanguage: Swift.Equatable {
-        public var languageCode: Swift.String?
-        public var score: Swift.Float?
+    struct DominantLanguage: Equatable {
+        var languageCode: String?
+        var score: Float?
     }
 }
 
 extension ComprehendClientTypes {
-    public struct PartOfSpeechTag: Swift.Equatable {
-        public var score: Swift.Float?
-        public var tag: ComprehendClientTypes.PartOfSpeechTagType?
+    struct PartOfSpeechTag: Equatable {
+        var score: Float?
+        var tag: ComprehendClientTypes.PartOfSpeechTagType?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case score = "Score"
             case tag = "Tag"
         }
@@ -732,14 +732,14 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum SentimentType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum SentimentType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case mixed
         case negative
         case neutral
         case positive
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [SentimentType] {
+        static var allCases: [SentimentType] {
             return [
                 .mixed,
                 .negative,
@@ -748,11 +748,11 @@ extension ComprehendClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .mixed: return "MIXED"
             case .negative: return "NEGATIVE"
@@ -761,7 +761,7 @@ extension ComprehendClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = SentimentType(rawValue: rawValue) ?? SentimentType.sdkUnknown(rawValue)
@@ -770,7 +770,7 @@ extension ComprehendClientTypes {
 }
 
 extension ComprehendClientTypes {
-    public enum PartOfSpeechTagType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum PartOfSpeechTagType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case adj
         case adp
         case adv
@@ -789,9 +789,9 @@ extension ComprehendClientTypes {
         case sconj
         case sym
         case verb
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [PartOfSpeechTagType] {
+        static var allCases: [PartOfSpeechTagType] {
             return [
                 .adj,
                 .adp,
@@ -814,11 +814,11 @@ extension ComprehendClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .adj: return "ADJ"
             case .adp: return "ADP"
@@ -841,7 +841,7 @@ extension ComprehendClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = PartOfSpeechTagType(rawValue: rawValue) ?? PartOfSpeechTagType.sdkUnknown(rawValue)
@@ -851,7 +851,7 @@ extension ComprehendClientTypes {
 
 
 extension ComprehendClientTypes {
-    public enum EntityType: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum EntityType: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case commercialItem
         case date
         case event
@@ -861,9 +861,9 @@ extension ComprehendClientTypes {
         case person
         case quantity
         case title
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [EntityType] {
+        static var allCases: [EntityType] {
             return [
                 .commercialItem,
                 .date,
@@ -877,11 +877,11 @@ extension ComprehendClientTypes {
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .commercialItem: return "COMMERCIAL_ITEM"
             case .date: return "DATE"
@@ -895,7 +895,7 @@ extension ComprehendClientTypes {
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = EntityType(rawValue: rawValue) ?? EntityType.sdkUnknown(rawValue)

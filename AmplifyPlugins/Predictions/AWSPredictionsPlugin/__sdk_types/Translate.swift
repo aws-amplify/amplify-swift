@@ -19,17 +19,17 @@ extension AWSTranslate {
     struct UnsupportedLanguagePairException: Error {}
 }
 
-public struct TranslateTextInput: Swift.Equatable {
-    public var settings: TranslateClientTypes.TranslationSettings?
+struct TranslateTextInput: Equatable {
+    var settings: TranslateClientTypes.TranslationSettings?
     /// This member is required.
-    public var sourceLanguageCode: Swift.String
+    var sourceLanguageCode: String
     /// This member is required.
-    public var targetLanguageCode: Swift.String
-    public var terminologyNames: [Swift.String]?
+    var targetLanguageCode: String
+    var terminologyNames: [String]?
     /// This member is required.
-    public var text: Swift.String
+    var text: String
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case settings = "Settings"
         case sourceLanguageCode = "SourceLanguageCode"
         case targetLanguageCode = "TargetLanguageCode"
@@ -38,17 +38,17 @@ public struct TranslateTextInput: Swift.Equatable {
     }
 }
 
-public struct TranslateTextOutputResponse: Swift.Equatable {
-    public var appliedSettings: TranslateClientTypes.TranslationSettings?
-    public var appliedTerminologies: [TranslateClientTypes.AppliedTerminology]?
+struct TranslateTextOutputResponse: Equatable {
+    var appliedSettings: TranslateClientTypes.TranslationSettings?
+    var appliedTerminologies: [TranslateClientTypes.AppliedTerminology]?
     /// This member is required.
-    public var sourceLanguageCode: Swift.String
+    var sourceLanguageCode: String
     /// This member is required.
-    public var targetLanguageCode: Swift.String
+    var targetLanguageCode: String
     /// This member is required.
-    public var translatedText: Swift.String
+    var translatedText: String
 
-    enum CodingKeys: Swift.String, Swift.CodingKey {
+    enum CodingKeys: String, CodingKey {
         case appliedSettings = "AppliedSettings"
         case appliedTerminologies = "AppliedTerminologies"
         case sourceLanguageCode = "SourceLanguageCode"
@@ -58,14 +58,14 @@ public struct TranslateTextOutputResponse: Swift.Equatable {
 }
 
 
-public enum TranslateClientTypes {}
+enum TranslateClientTypes {}
 
 extension TranslateClientTypes {
-    public struct AppliedTerminology: Swift.Equatable {
-        public var name: Swift.String?
-        public var terms: [TranslateClientTypes.Term]?
+    struct AppliedTerminology: Equatable {
+        var name: String?
+        var terms: [TranslateClientTypes.Term]?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case name = "Name"
             case terms = "Terms"
         }
@@ -73,11 +73,11 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
-    public struct Term: Swift.Equatable {
-        public var sourceText: Swift.String?
-        public var targetText: Swift.String?
+    struct Term: Equatable {
+        var sourceText: String?
+        var targetText: String?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case sourceText = "SourceText"
             case targetText = "TargetText"
         }
@@ -85,11 +85,11 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
-    public struct TranslationSettings: Swift.Equatable {
-        public var formality: TranslateClientTypes.Formality?
-        public var profanity: TranslateClientTypes.Profanity?
+    struct TranslationSettings: Equatable {
+        var formality: TranslateClientTypes.Formality?
+        var profanity: TranslateClientTypes.Profanity?
 
-        enum CodingKeys: Swift.String, Swift.CodingKey {
+        enum CodingKeys: String, CodingKey {
             case formality = "Formality"
             case profanity = "Profanity"
         }
@@ -97,27 +97,27 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
-    public enum Profanity: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum Profanity: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case mask
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [Profanity] {
+        static var allCases: [Profanity] {
             return [
                 .mask,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .mask: return "MASK"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = Profanity(rawValue: rawValue) ?? Profanity.sdkUnknown(rawValue)
@@ -126,30 +126,30 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
-    public enum Formality: Swift.Equatable, Swift.RawRepresentable, Swift.CaseIterable, Swift.Codable, Swift.Hashable {
+    enum Formality: Equatable, RawRepresentable, CaseIterable, Codable, Hashable {
         case formal
         case informal
-        case sdkUnknown(Swift.String)
+        case sdkUnknown(String)
 
-        public static var allCases: [Formality] {
+        static var allCases: [Formality] {
             return [
                 .formal,
                 .informal,
                 .sdkUnknown("")
             ]
         }
-        public init?(rawValue: Swift.String) {
+        init?(rawValue: String) {
             let value = Self.allCases.first(where: { $0.rawValue == rawValue })
             self = value ?? Self.sdkUnknown(rawValue)
         }
-        public var rawValue: Swift.String {
+        var rawValue: String {
             switch self {
             case .formal: return "FORMAL"
             case .informal: return "INFORMAL"
             case let .sdkUnknown(s): return s
             }
         }
-        public init(from decoder: Swift.Decoder) throws {
+        init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             let rawValue = try container.decode(RawValue.self)
             self = Formality(rawValue: rawValue) ?? Formality.sdkUnknown(rawValue)
