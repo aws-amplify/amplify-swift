@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPolly
 import Amplify
 
 extension AWSPolly.InvalidSampleRateException: PredictionsErrorConvertible {

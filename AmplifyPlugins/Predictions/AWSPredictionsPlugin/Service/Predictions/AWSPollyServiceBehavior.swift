@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSPolly
 
 protocol AWSPollyServiceBehavior {
     func synthesizeText(

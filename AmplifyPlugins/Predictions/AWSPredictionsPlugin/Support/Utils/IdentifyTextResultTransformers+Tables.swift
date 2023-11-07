@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSTextract
 
 extension IdentifyTextResultTransformers {
 

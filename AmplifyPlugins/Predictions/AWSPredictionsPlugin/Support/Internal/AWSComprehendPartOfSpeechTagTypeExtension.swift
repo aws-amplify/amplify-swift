@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSComprehend
 
 extension ComprehendClientTypes.PartOfSpeechTagType {
     // swiftlint:disable cyclomatic_complexity

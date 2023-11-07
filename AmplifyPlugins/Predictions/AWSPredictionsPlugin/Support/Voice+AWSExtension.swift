@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPolly
 
 extension Predictions.Voice {
     public static let arabicFemaleZeina = Self(id: "Zeina")

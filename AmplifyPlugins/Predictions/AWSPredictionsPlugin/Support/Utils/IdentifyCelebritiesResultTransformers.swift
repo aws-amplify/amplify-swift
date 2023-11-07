@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AWSRekognition
 import Amplify
 
 enum IdentifyCelebritiesResultTransformers {

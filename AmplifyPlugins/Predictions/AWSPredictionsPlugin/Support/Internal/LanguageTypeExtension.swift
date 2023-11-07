@@ -6,8 +6,6 @@
 //
 
 import Amplify
-import AWSComprehend
-import AWSTranscribeStreaming
 
 extension Predictions.Language {
 

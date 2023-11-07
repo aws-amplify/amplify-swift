@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AWSComprehend
 import Amplify
 
 extension AWSPredictionsService: AWSComprehendServiceBehavior {

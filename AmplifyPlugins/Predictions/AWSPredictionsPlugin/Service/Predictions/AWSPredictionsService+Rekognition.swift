@@ -6,8 +6,6 @@
 //
 
 import Amplify
-import AWSRekognition
-import AWSTextract
 import Foundation
 
 // swiftlint:disable file_length

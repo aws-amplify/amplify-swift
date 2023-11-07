@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSTextract
 import Foundation
 
 protocol AWSTextractServiceBehavior {

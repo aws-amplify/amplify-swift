@@ -8,7 +8,6 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSTranscribeStreaming
 
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
     func transcribe(

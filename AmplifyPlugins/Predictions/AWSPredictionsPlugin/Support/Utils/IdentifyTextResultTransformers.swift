@@ -6,9 +6,7 @@
 //
 
 import Foundation
-import AWSRekognition
 import Amplify
-import AWSTextract
 
 enum IdentifyTextResultTransformers {
 

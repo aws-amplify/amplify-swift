@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSPolly
 
 extension AWSPredictionsService: AWSPollyServiceBehavior {
     func synthesizeText(

@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSTranslate
 
 protocol AWSTranslateServiceBehavior {
     func translateText(

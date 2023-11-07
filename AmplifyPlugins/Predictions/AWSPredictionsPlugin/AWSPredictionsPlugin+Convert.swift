@@ -8,7 +8,6 @@
 import Foundation
 import Amplify
 @_spi(PredictionsConvertRequestKind) import Amplify
-import AWSPolly
 
 extension AWSPredictionsPlugin {
 

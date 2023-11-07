@@ -8,8 +8,6 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSTranscribeStreaming
-import AWSClientRuntime
 
 class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
 

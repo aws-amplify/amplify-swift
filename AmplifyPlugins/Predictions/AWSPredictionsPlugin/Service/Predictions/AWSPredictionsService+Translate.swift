@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSTranslate
 
 extension AWSPredictionsService: AWSTranslateServiceBehavior {
     func translateText(

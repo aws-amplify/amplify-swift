@@ -7,8 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSRekognition
-import AWSTextract
 import CoreGraphics
 
 enum IdentifyResultTransformers {

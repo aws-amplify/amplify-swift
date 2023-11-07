@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSTranscribeStreaming
 
 protocol AWSTranscribeStreamingBehavior {
     func startStreamTranscription(

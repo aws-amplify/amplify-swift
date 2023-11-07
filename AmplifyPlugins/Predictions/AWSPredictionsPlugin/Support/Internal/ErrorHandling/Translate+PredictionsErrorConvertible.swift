@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSTranslate
 import Amplify
 
 extension AWSTranslate.DetectedLanguageLowConfidenceException: PredictionsErrorConvertible {

@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSRekognition
 import Foundation
 
 protocol AWSRekognitionServiceBehavior {
