@@ -10,6 +10,10 @@ import Foundation
 public struct HTTPMethod {
     public let verb: String
 
+    public init(verb: String) {
+        self.verb = verb
+    }
+
     public static let get = Self(verb: "GET")
     public static let post = Self(verb: "POST")
     public static let put = Self(verb: "PUT")

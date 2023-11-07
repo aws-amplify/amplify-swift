@@ -459,7 +459,7 @@ public struct SigV4Signer {
             }
             .joined(separator: "&")
 
-        canonicalQueryString += "\(encode("X-Amz-Algorithm"))=\(encode("AWS4-HMAC-SHA256"))"
+        canonicalQueryString += "&\(encode("X-Amz-Algorithm"))=\(encode("AWS4-HMAC-SHA256"))"
         canonicalQueryString += "&\(encode("X-Amz-Credential"))=\(encode(amzCredential))"
         canonicalQueryString += "&\(encode("X-Amz-Date"))=\(encode(timestamp))"
         canonicalQueryString += "&\(encode("X-Amz-Expires"))=\(encode(String(expires)))"
