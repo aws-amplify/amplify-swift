@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if !os(xrOS)
+#if !os(visionOS)
 #if os(iOS) || os(macOS)
 
 import Foundation
