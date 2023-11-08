@@ -64,7 +64,7 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
     private func sendSignOutEvent() async {
 
         let presentationAnchor: AuthUIPresentationAnchor?
-    #if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS) || os(visionOS)
         presentationAnchor = request.options.presentationAnchorForWebUI
     #else
         presentationAnchor = nil
@@ -72,8 +72,13 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
 
         let signOutData = SignOutEventData(
             globalSignOut: request.options.globalSignOut,
-            presentationAnchor: presentationAnchor
+            presentationAnchor: request.options.presentationAnchorForWebUI
         )
+        #else
+        signOutData = SignOutEventData(
+            globalSignOut: request.options.globalSignOut
+        )
+        #endif
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
         await authStateMachine.send(event)
     }

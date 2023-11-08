@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 import AuthenticationServices
 
+//#if os(iOS) || os(macOS) || os(visionOS)
 class ShowHostedUISignOut: NSObject, Action {
 
     var identifier: String = "ShowHostedUISignOut"
@@ -109,3 +110,4 @@ extension ShowHostedUISignOut {
         debugDictionary.debugDescription
     }
 }
+//#endif

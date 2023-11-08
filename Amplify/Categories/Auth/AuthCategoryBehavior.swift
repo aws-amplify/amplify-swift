@@ -6,7 +6,7 @@
 //
 
 import Foundation
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import AuthenticationServices
 public typealias AuthUIPresentationAnchor = ASPresentationAnchor
 #endif
@@ -66,7 +66,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                 password: String?,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
     /// SignIn using pre configured web UI.
     ///
     /// Calling this method will always launch the Auth plugin's default web user interface
