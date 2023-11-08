@@ -1,0 +1,60 @@
+name: 'Get the build parameters for a given platform'
+inputs:
+  platform:
+    description: 'The name of the platform. Valid values are iOS, tvOS, watchOS and macOS'
+    required: true
+    type: string
+  xcode_version:
+    description: 'The version of Xcode. Valid values are 14.3 and 15.0'
+    required: true
+    type: string
+outputs:
+  destination:
+    description: "The destination associated with the given platform and Xcode version"
+    value: ${{ steps.platform.outputs.destination }}
+  sdk:
+    description: "The SDK associated with the given platform"
+    value: ${{ steps.platform.outputs.sdk }}
+runs:
+  using: "composite"
+  steps:
+    - id: platform
+      run: |
+        PLATFORM=${{ inputs.platform }}
+        case $PLATFORM in
+          iOS|tvOS|watchOS|macOS) ;;
+          *) echo "Unsupported platform: $PLATFORM"; exit 1 ;;
+        esac
+
+        XCODE_VERSION=${{ inputs.xcode_version }}
+        case $XCODE_VERSION in
+          14.3|15.0) ;;
+          *) echo "Unsupported Xcode version: $XCODE_VERSION"; exit 1 ;;
+        esac
+
+        DESTINATION_MAPPING='{
+          "14.3": {
+            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.4",
+            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4",
+            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4",
+            "macOS": "platform=macOS,arch=x86_64"
+          },
+          "15.0": {
+            "iOS": "platform=iOS Simulator,name=iPhone 15,OS=latest",
+            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest",
+            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=latest",
+            "macOS": "platform=macOS,arch=x86_64"
+          }
+        }'
+
+        SDK_MAPPING='{
+          "iOS": "iphonesimulator",
+          "tvOS": "appletvsimulator",
+          "watchOS": "watchsimulator",
+          "macOS": "macosx"
+        }'
+
+        echo "destination=$(echo $DESTINATION_MAPPING | jq -r ."\"$XCODE_VERSION\"".$PLATFORM)" >> $GITHUB_OUTPUT
+        echo "sdk=$(echo $SDK_MAPPING | jq -r .$PLATFORM)" >> $GITHUB_OUTPUT
+      shell: bash
+
