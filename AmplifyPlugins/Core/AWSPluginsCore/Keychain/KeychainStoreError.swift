@@ -52,7 +52,8 @@ extension KeychainStoreError: AmplifyError {
         case .conversionError(let errorDescription, _), .codingError(let errorDescription, _):
             return errorDescription
         case .securityError(let status):
-            return "Keychain error occurred with status: \(status)"
+            let keychainStatus = KeychainStatus(status: status)
+            return keychainStatus.description
         case .unknown(let errorDescription, _):
             return "Unexpected error occurred with message: \(errorDescription)"
         case .itemNotFound:
@@ -65,7 +66,25 @@ extension KeychainStoreError: AmplifyError {
     /// Recovery Suggestion
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .unknown, .conversionError, .securityError, .itemNotFound, .codingError, .configuration:
+        case .itemNotFound:
+            // If a keychain item is not found, there is no recovery suggestion to suggest
+            return ""
+        case .securityError(let status):
+            let keychainStatus = KeychainStatus(status: status)
+#if os(macOS)
+            // If its Missing entitlement error on macOS
+            guard keychainStatus == .missingEntitlement else {
+                return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
+            }
+            return """
+            To use Auth in a macOS project, you'll need to enable the Keychain Sharing capability.
+            This capability is required because Auth uses the Data Protection Keychain on macOS as a platform best practice. See TN3137: macOS keychain APIs and implementations for more information on how Keychain works on macOS and the Keychain Sharing entitlement.
+            For more information on adding capabilities to your application, see Xcode Capabilities.
+            """
+#else
+            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
+#endif
+        case .unknown, .conversionError, .codingError, .configuration:
             return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
