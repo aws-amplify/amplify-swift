@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 import AuthenticationServices
 
+//#if os(iOS) || os(macOS) || os(visionOS)
 class ShowHostedUISignOut: NSObject, Action {
 
     var identifier: String = "ShowHostedUISignOut"
@@ -40,11 +41,19 @@ class ShowHostedUISignOut: NSObject, Action {
         do {
             let logoutURL = try HostedUIRequestHelper.createSignOutURL(configuration: hostedUIConfig)
             let sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
+            #if os(iOS) || os(macOS) || os(visionOS)
             _ = try await sessionAdapter.showHostedUI(
                 url: logoutURL,
                 callbackScheme: callbackURLScheme,
                 inPrivate: false,
                 presentationAnchor: signOutEvent.presentationAnchor)
+            #else
+            _ = try await sessionAdapter.showHostedUI(
+                url: logoutURL,
+                callbackScheme: callbackURLScheme,
+                inPrivate: false,
+                presentationAnchor: nil)
+            #endif
             await sendEvent(with: nil, dispatcher: dispatcher, environment: environment)
         } catch {
             self.logVerbose("\(#fileID) Received error \(error)", environment: environment)
@@ -101,3 +110,4 @@ extension ShowHostedUISignOut {
         debugDictionary.debugDescription
     }
 }
+//#endif

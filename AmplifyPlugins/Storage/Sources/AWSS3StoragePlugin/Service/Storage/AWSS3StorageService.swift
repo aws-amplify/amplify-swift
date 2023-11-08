@@ -88,7 +88,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         if let sessionConfiguration = sessionConfiguration {
             sessionConfig = sessionConfiguration
         } else {
-            #if os(macOS) || os(xrOS)
+            #if os(macOS) || os(visionOS)
             let sessionConfiguration = URLSessionConfiguration.default
             #else
             let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: storageConfiguration.sessionIdentifier)

@@ -118,7 +118,7 @@ public struct DeviceInfo {
     ///
     /// - Tag: DeviceInfo.screenBounds
     public var screenBounds: CGRect {
-    #if os(xrOS)
+    #if os(visionOS)
         .zero
     #elseif canImport(WatchKit)
         .zero
