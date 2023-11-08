@@ -83,20 +83,19 @@ enum AmplifyAPI {
 }
 
 enum CognitoAPI {
-    case forgotPassword(CognitoAPIData<ForgotPasswordInput, ForgotPasswordOutputResponse, ForgotPasswordOutputError>)
-    case signUp(CognitoAPIData<SignUpInput, SignUpOutputResponse, SignUpOutputError>)
-    case deleteUser(CognitoAPIData<DeleteUserInput, DeleteUserOutputResponse, DeleteUserOutputError>)
-    case respondToAuthChallenge(CognitoAPIData<RespondToAuthChallengeInput, RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>)
-    case getId(CognitoAPIData<GetIdInput, GetIdOutputResponse, GetIdOutputError>)
-    case getCredentialsForIdentity(CognitoAPIData<GetCredentialsForIdentityInput, GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>)
-    case confirmDevice(CognitoAPIData<ConfirmDeviceInput, ConfirmDeviceOutputResponse, ConfirmDeviceOutputError>)
-    case initiateAuth(CognitoAPIData<InitiateAuthInput, InitiateAuthOutputResponse, InitiateAuthOutputError>)
-    case revokeToken(CognitoAPIData<RevokeTokenInput, RevokeTokenOutputResponse, RevokeTokenOutputError>)
-    case globalSignOut(CognitoAPIData<GlobalSignOutInput, GlobalSignOutOutputResponse, GlobalSignOutOutputError>)
+    case forgotPassword(CognitoAPIData<ForgotPasswordInput, ForgotPasswordOutput>)
+    case signUp(CognitoAPIData<SignUpInput, SignUpOutput>)
+    case deleteUser(CognitoAPIData<DeleteUserInput, DeleteUserOutput>)
+    case respondToAuthChallenge(CognitoAPIData<RespondToAuthChallengeInput, RespondToAuthChallengeOutput>)
+    case getId(CognitoAPIData<GetIdInput, GetIdOutput>)
+    case getCredentialsForIdentity(CognitoAPIData<GetCredentialsForIdentityInput, GetCredentialsForIdentityOutput>)
+    case confirmDevice(CognitoAPIData<ConfirmDeviceInput, ConfirmDeviceOutput>)
+    case initiateAuth(CognitoAPIData<InitiateAuthInput, InitiateAuthOutput>)
+    case revokeToken(CognitoAPIData<RevokeTokenInput, RevokeTokenOutput>)
+    case globalSignOut(CognitoAPIData<GlobalSignOutInput, GlobalSignOutOutput>)
 }
 
-struct CognitoAPIData<Input: Decodable, Output: Decodable, E: ClientRuntime.HttpResponseErrorBinding> {
+struct CognitoAPIData<Input: Decodable, Output: Decodable> {
     let expectedInput: Input?
-    let errorBinding: E.Type
     let output: Result<Output, Error>
 }

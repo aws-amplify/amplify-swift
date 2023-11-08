@@ -52,7 +52,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
     ///    - I should get back a result with dominant language
     ///
     func testWithOnlyLanguageResult() async throws {
-        let mockDominantLanguage = DetectDominantLanguageOutputResponse(
+        let mockDominantLanguage = DetectDominantLanguageOutput(
             languages: [.init(languageCode: "en", score: 0.5)]
         )
         mockComprehend.languageResponse = { _ in mockDominantLanguage }
@@ -78,7 +78,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
         let english = ComprehendClientTypes.DominantLanguage(languageCode: "en", score: 0.1)
         let spanish = ComprehendClientTypes.DominantLanguage(languageCode: "es", score: 0.2)
         let italian = ComprehendClientTypes.DominantLanguage(languageCode: "it", score: 0.6)
-        let mockDominantLanguage = DetectDominantLanguageOutputResponse(
+        let mockDominantLanguage = DetectDominantLanguageOutput(
             languages: [english, spanish, italian]
         )
         mockComprehend.languageResponse = { _ in mockDominantLanguage }
@@ -101,7 +101,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
     ///    - I should get an error
     ///
     func testWithEmptyLanguageResult() async throws {
-        let mockDominantLanguage = DetectDominantLanguageOutputResponse()
+        let mockDominantLanguage = DetectDominantLanguageOutput()
         mockComprehend.languageResponse = { _ in mockDominantLanguage }
 
         do {
@@ -152,7 +152,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
     func testCompleteResult() async throws {
         let english = ComprehendClientTypes.DominantLanguage(languageCode: "en", score: 0.2)
         let spanish = ComprehendClientTypes.DominantLanguage(languageCode: "es", score: 0.7)
-        let mockDominantLanguage = DetectDominantLanguageOutputResponse(
+        let mockDominantLanguage = DetectDominantLanguageOutput(
             languages: [english, spanish]
         )
         mockComprehend.languageResponse = { _ in mockDominantLanguage }
@@ -164,10 +164,10 @@ class PredictionsServiceComprehendTests: XCTestCase {
             partOfSpeech: partOfSpeech
         )
         let unknownToken = ComprehendClientTypes.SyntaxToken(beginOffset: 0, endOffset: 2)
-        let mockSyntaxTokens = DetectSyntaxOutputResponse(syntaxTokens: [adjToken, unknownToken])
+        let mockSyntaxTokens = DetectSyntaxOutput(syntaxTokens: [adjToken, unknownToken])
         mockComprehend.syntaxResponse = { _ in mockSyntaxTokens }
 
-        let mockSentiment = DetectSentimentOutputResponse(sentiment: .positive)
+        let mockSentiment = DetectSentimentOutput(sentiment: .positive)
         mockComprehend.sentimentResponse = { _ in mockSentiment }
 
         let entity = ComprehendClientTypes.Entity(
@@ -176,7 +176,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
             text: "some text",
             type: .commercialItem
         )
-        let mockEntities = DetectEntitiesOutputResponse(entities: [entity])
+        let mockEntities = DetectEntitiesOutput(entities: [entity])
         mockComprehend.entitiesResponse = { _ in mockEntities }
 
         let keyPhrase = ComprehendClientTypes.KeyPhrase(
@@ -185,7 +185,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
             score: 0.8,
             text: "some text"
         )
-        let mockKeyPhrases = DetectKeyPhrasesOutputResponse(keyPhrases: [keyPhrase])
+        let mockKeyPhrases = DetectKeyPhrasesOutput(keyPhrases: [keyPhrase])
         mockComprehend.keyPhrasesResponse = { _ in mockKeyPhrases }
 
         let result = try await predictionsService.comprehend(text: inputForTest)

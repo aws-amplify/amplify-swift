@@ -20,7 +20,7 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
-                try await UpdateDeviceStatusOutputResponse(
+                try await UpdateDeviceStatusOutput(
                     httpResponse: MockHttpResponse.ok
                 )
             }

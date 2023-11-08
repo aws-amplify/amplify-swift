@@ -18,7 +18,7 @@ class InitiateAuthSRPTests: XCTestCase {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
                     initiateAuthInvoked.fulfill()
-                    return InitiateAuthOutputResponse()
+                    return InitiateAuthOutput()
                 }
             )
         }
@@ -83,7 +83,7 @@ class InitiateAuthSRPTests: XCTestCase {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutputResponse()
+                    return InitiateAuthOutput()
                 }
             )
         }

@@ -22,8 +22,8 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///    - I should get a successful result
     ///
     func testSuccessfulConfirmUpdateUserAttributes() async throws {
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
-            try await VerifyUserAttributeOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
+            try await VerifyUserAttributeOutput(httpResponse: .init(body: .empty, statusCode: .ok))
         })
         try await plugin.confirm(userAttribute: .email, confirmationCode: "code")
     }
@@ -40,7 +40,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testConfirmUpdateUserAttributesWithCodeMismatchException() async throws {
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.CodeMismatchException()
         })
         do {
@@ -69,7 +69,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithExpiredCodeException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.ExpiredCodeException()
         })
         do {
@@ -97,7 +97,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testcConfirmUpdateUserAttributesWithInternalErrorException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw try await AWSCognitoIdentityProvider.InternalErrorException(
                 httpResponse: .init(body: .empty, statusCode: .accepted),
                 decoder: nil,
@@ -128,7 +128,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithInvalidParameterException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.InvalidParameterException()
         })
         do {
@@ -158,7 +158,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithLimitExceededException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.LimitExceededException()
         })
         do {
@@ -188,7 +188,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithNotAuthorizedException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.NotAuthorizedException()
         })
         do {
@@ -214,7 +214,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithPasswordResetRequiredException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
         })
         do {
@@ -244,7 +244,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithResourceNotFoundException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.ResourceNotFoundException()
         })
         do {
@@ -274,7 +274,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithTooManyRequestsException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.TooManyRequestsException()
         })
 
@@ -305,7 +305,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithUserNotConfirmedException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.UserNotConfirmedException()
         })
 
@@ -336,7 +336,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
     ///
     func testConfirmUpdateUserAttributesWithUserNotFoundException() async throws {
 
-        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
+        mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutput: { _ in
             throw AWSCognitoIdentityProvider.UserNotFoundException()
         })
         do {
