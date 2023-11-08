@@ -194,9 +194,9 @@ public struct KeychainStore: KeychainStoreBehavior {
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     public func _removeAll() throws {
         var query = attributes.defaultGetQuery()
-#if !os(iOS) && !os(watchOS) && !os(tvOS)
+        #if os(macOS)
         query[Constants.MatchLimit] = Constants.MatchLimitAll
-#endif
+        #endif
 
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
