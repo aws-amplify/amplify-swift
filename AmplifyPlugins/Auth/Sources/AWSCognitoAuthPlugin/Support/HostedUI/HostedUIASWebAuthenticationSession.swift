@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 import AuthenticationServices
 #endif
 
@@ -15,13 +15,12 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
     weak var webPresentation: AuthUIPresentationAnchor?
 
-    func showHostedUI(
-        url: URL,
-        callbackScheme: String,
-        inPrivate: Bool,
-        presentationAnchor: AuthUIPresentationAnchor?) async throws -> [URLQueryItem] {
-
-    #if os(iOS) || os(macOS)
+    func showHostedUI(url: URL,
+                      callbackScheme: String,
+                      inPrivate: Bool,
+                      presentationAnchor: AuthUIPresentationAnchor?,
+                      callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
+    #if os(iOS) || os(macOS) || os(visionOS)
         self.webPresentation = presentationAnchor
 
         return try await withCheckedThrowingContinuation { [weak self]
@@ -76,7 +75,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
     #endif
     }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
     var authenticationSessionFactory = ASWebAuthenticationSession.init(url:callbackURLScheme:completionHandler:)
 
     private func createAuthenticationSession(
@@ -105,7 +104,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 #endif
 }
 
-#if os(iOS) || os(macOS)
+#if os(iOS) || os(macOS) || os(visionOS)
 extension HostedUIASWebAuthenticationSession: ASWebAuthenticationPresentationContextProviding {
 
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
