@@ -379,7 +379,7 @@ class ShowHostedUISignOutTests: XCTestCase {
     private func identityProviderFactory() throws -> CognitoUserPoolBehavior {
         return MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
-                return InitiateAuthOutputResponse(
+                return InitiateAuthOutput(
                     authenticationResult: .init(
                         accessToken: "accessTokenNew",
                         expiresIn: 100,

@@ -20,6 +20,6 @@ protocol SignInResponseBehavior {
     var session: Swift.String? { get }
 }
 
-extension RespondToAuthChallengeOutputResponse: SignInResponseBehavior { }
+extension RespondToAuthChallengeOutput: SignInResponseBehavior { }
 
-extension InitiateAuthOutputResponse: SignInResponseBehavior { }
+extension InitiateAuthOutput: SignInResponseBehavior { }

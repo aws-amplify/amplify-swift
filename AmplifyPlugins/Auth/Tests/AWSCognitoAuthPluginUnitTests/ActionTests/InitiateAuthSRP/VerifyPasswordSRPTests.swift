@@ -31,14 +31,14 @@ class VerifyPasswordSRPTests: XCTestCase {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
                     verifyPasswordInvoked.fulfill()
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.validTestData
+        let data = InitiateAuthOutput.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -67,14 +67,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.validTestData
+        let data = InitiateAuthOutput.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -118,14 +118,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.invalidChallenge
+        let data = InitiateAuthOutput.invalidChallenge
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -169,14 +169,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.invalidTestDataWithNoSalt
+        let data = InitiateAuthOutput.invalidTestDataWithNoSalt
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -220,14 +220,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.invalidTestDataWithNoSecretBlock
+        let data = InitiateAuthOutput.invalidTestDataWithNoSecretBlock
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -271,14 +271,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.invalidTestDataWithNoSRPB
+        let data = InitiateAuthOutput.invalidTestDataWithNoSRPB
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -322,14 +322,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse()
+                    return RespondToAuthChallengeOutput()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.invalidTestDataForException
+        let data = InitiateAuthOutput.invalidTestDataForException
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -372,14 +372,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse.testData()
+                    return RespondToAuthChallengeOutput.testData()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.validTestData
+        let data = InitiateAuthOutput.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -432,7 +432,7 @@ class VerifyPasswordSRPTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.validTestData
+        let data = InitiateAuthOutput.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -483,7 +483,7 @@ class VerifyPasswordSRPTests: XCTestCase {
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.validTestData
+        let data = InitiateAuthOutput.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -524,14 +524,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse.testDataWithNewDevice()
+                    return RespondToAuthChallengeOutput.testDataWithNewDevice()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.validTestData
+        let data = InitiateAuthOutput.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])
@@ -570,14 +570,14 @@ class VerifyPasswordSRPTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    return RespondToAuthChallengeOutputResponse.testDataWithVerifyDevice()
+                    return RespondToAuthChallengeOutput.testDataWithVerifyDevice()
                 })
         }
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
 
-        let data = InitiateAuthOutputResponse.validTestData
+        let data = InitiateAuthOutput.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data,
                                        clientMetadata: [:])

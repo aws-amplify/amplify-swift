@@ -19,8 +19,8 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
-                try await ListDevicesOutputResponse(httpResponse: MockHttpResponse.ok)
+            mockListDevicesOutput: { _ in
+                try await ListDevicesOutput(httpResponse: MockHttpResponse.ok)
             }
         )
     }
@@ -35,8 +35,8 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     ///
     func testFetchDevicesRequest() async throws {
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
-                ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
+            mockListDevicesOutput: { _ in
+                ListDevicesOutput(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
             }
         )
         let options = AuthFetchDevicesRequest.Options()
@@ -53,8 +53,8 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     ///
     func testFetchDevicesRequestWithoutOptions() async throws {
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
-                ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
+            mockListDevicesOutput: { _ in
+                ListDevicesOutput(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
             }
         )
         _ = try await plugin.fetchDevices()
@@ -71,8 +71,8 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testSuccessfulListDevices() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
-                ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
+            mockListDevicesOutput: { _ in
+                ListDevicesOutput(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
             }
         )
         let listDevicesResult = try await plugin.fetchDevices()
@@ -93,8 +93,8 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithInvalidResult() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
-                ListDevicesOutputResponse(devices: nil, paginationToken: nil)
+            mockListDevicesOutput: { _ in
+                ListDevicesOutput(devices: nil, paginationToken: nil)
             }
         )
         do {
@@ -123,7 +123,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw try await AWSCognitoIdentityProvider.InternalErrorException(
                     httpResponse: .init(body: .empty, statusCode: .accepted)
                 )
@@ -153,7 +153,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.InvalidParameterException(
                     message: "invalid parameter"
                 )
@@ -187,7 +187,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithInvalidUserPoolConfigurationException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
                     message: "invalid user poo configuration"
                 )
@@ -217,7 +217,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.NotAuthorizedException(
                     message: "not authorized"
                 )
@@ -247,7 +247,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
                     message: "password reset required"
                 )
@@ -281,7 +281,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.ResourceNotFoundException(
                     message: "resource not found"
                 )
@@ -315,7 +315,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.TooManyRequestsException(
                     message: "too many requests"
                 )
@@ -349,7 +349,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.UserNotConfirmedException(
                     message: "user not confirmed"
                 )
@@ -383,7 +383,7 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     func testListDevicesWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockListDevicesOutputResponse: { _ in
+            mockListDevicesOutput: { _ in
                 throw AWSCognitoIdentityProvider.UserNotFoundException(
                     message: "user not found"
                 )

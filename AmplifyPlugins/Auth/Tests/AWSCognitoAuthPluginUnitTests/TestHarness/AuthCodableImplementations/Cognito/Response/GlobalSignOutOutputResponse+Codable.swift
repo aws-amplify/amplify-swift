@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension GlobalSignOutOutputResponse: Codable {
+extension GlobalSignOutOutput: Codable {
 
     public init(from decoder: Swift.Decoder) throws {
         self.init()

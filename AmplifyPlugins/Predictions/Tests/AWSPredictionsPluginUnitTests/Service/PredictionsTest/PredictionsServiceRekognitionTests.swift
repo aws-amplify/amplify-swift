@@ -88,7 +88,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyLabelsService() async throws {
         setUpAmplify()
-        let mockResponse = DetectLabelsOutputResponse(labels: [])
+        let mockResponse = DetectLabelsOutput(labels: [])
         mockRekognition.detectLabelsResponse = { _ in mockResponse }
         let url = try url("testImageLabels")
 
@@ -128,7 +128,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyModerationLabelsService() async throws {
         setUpAmplify()
-        let mockResponse = DetectModerationLabelsOutputResponse(moderationLabels: [])
+        let mockResponse = DetectModerationLabelsOutput(moderationLabels: [])
         mockRekognition.moderationLabelsResponse = { _ in mockResponse }
         let url = try url("testImageLabels")
 
@@ -172,8 +172,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyAllLabelsService() async throws {
         setUpAmplify()
-        let mockLabelsResponse = DetectLabelsOutputResponse(labels: [])
-        let mockModerationResponse = DetectModerationLabelsOutputResponse(moderationLabels: [])
+        let mockLabelsResponse = DetectLabelsOutput(labels: [])
+        let mockModerationResponse = DetectModerationLabelsOutput(moderationLabels: [])
         mockRekognition.detectLabelsResponse = { _ in mockLabelsResponse }
         mockRekognition.moderationLabelsResponse = { _ in mockModerationResponse }
         let url = try url("testImageLabels")
@@ -198,7 +198,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyAllLabelsServiceWithNilModerationResponse() async throws {
         setUpAmplify()
-        let mockLabelsResponse = DetectLabelsOutputResponse(labels: [])
+        let mockLabelsResponse = DetectLabelsOutput(labels: [])
         mockRekognition.detectLabelsResponse = { _ in mockLabelsResponse }
         let url = try url("testImageLabels")
 
@@ -241,7 +241,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyEntitiesService() async throws {
         setUpAmplify()
-        let mockResponse = DetectFacesOutputResponse(faceDetails: [])
+        let mockResponse = DetectFacesOutput(faceDetails: [])
         mockRekognition.facesResponse = { _ in mockResponse }
         let url = try url("testImageEntities")
 
@@ -285,7 +285,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyEntityMatchesService()  async throws {
         setUpAmplify(withCollection: true)
-        let mockResponse = SearchFacesByImageOutputResponse(faceMatches: [])
+        let mockResponse = SearchFacesByImageOutput(faceMatches: [])
         mockRekognition.facesFromCollectionResponse = { _ in mockResponse }
         let url = try url("testImageEntities")
         let collectionID = try XCTUnwrap(predictionsService.predictionsConfig.identify.identifyEntities?.collectionId)
@@ -325,7 +325,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     func testIdentifyPlainTextService() async throws {
         setUpAmplify()
-        let mockResponse = DetectTextOutputResponse(textDetections: [])
+        let mockResponse = DetectTextOutput(textDetections: [])
         mockRekognition.detectTextResponse = { _ in mockResponse }
         let url = try url("testImageText")
         let result = try await predictionsService.detectPlainText(image: url)
