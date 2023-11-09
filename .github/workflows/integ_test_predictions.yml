@@ -31,14 +31,13 @@ jobs:
       matrix:
         platform: [iOS, tvOS, watchOS]
         exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'Dummy' }}
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSPredictionsPluginIntegrationTestsWatch' || 'AWSPredictionsPluginIntegrationTests' }}
       platform: ${{ matrix.platform }}
-      build_cache_key: AWSPredictionsPlugin-${{ matrix.platform }}-latest-build-main
       project_path: ./AmplifyPlugins/Predictions/Tests/PredictionsHostApp
       xcode_version: '14.3'
       resource_subfolder: predictions

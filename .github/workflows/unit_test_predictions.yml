@@ -1,17 +1,38 @@
 name: Unit Tests | Predictions
 on:
   workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      macos:
+        description: '💻 macOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
 
 permissions:
     contents: read
 
 jobs:
   predictions-unit-tests:
-    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: AWSPredictionsPlugin
 
   coreml-predictions-unit-tests:
-    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: CoreMLPredictionsPlugin
