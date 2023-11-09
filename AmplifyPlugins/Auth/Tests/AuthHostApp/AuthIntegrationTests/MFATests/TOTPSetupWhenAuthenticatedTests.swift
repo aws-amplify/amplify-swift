@@ -21,7 +21,8 @@ class TOTPSetupWhenAuthenticatedTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: randomEmail
+        )
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
     }

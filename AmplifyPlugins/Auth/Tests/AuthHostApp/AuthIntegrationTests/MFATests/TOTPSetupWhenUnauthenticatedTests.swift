@@ -42,7 +42,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.signUpUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: randomEmail
+        )
 
         XCTAssertTrue(didSucceed, "Signup should succeed")
 
@@ -82,8 +83,9 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.signUpUser(
             username: username,
             password: password,
-            email: defaultTestEmail,
-            phoneNumber: "+16135550116")
+            email: randomEmail,
+            phoneNumber: randomPhoneNumber
+        )
 
         XCTAssertTrue(didSucceed, "Signup should succeed")
 
@@ -132,7 +134,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.signUpUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: randomEmail
+        )
 
         XCTAssertTrue(didSucceed, "Signup should succeed")
 
@@ -179,7 +182,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.signUpUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: randomEmail
+        )
 
         XCTAssertTrue(didSucceed, "Signup should succeed")
 
@@ -246,7 +250,8 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.signUpUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: randomEmail
+        )
 
         XCTAssertTrue(didSucceed, "Signup should succeed")
 
