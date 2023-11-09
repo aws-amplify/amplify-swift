@@ -15,7 +15,7 @@
       "location" : "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
       "state" : {
         "branch" : "fix-watchos",
-        "revision" : "ed49c3bfb89fa14ee54fc181a7a5634bd9ecc0f3"
+        "revision" : "6a6fcd12888a5e3aef262127cfec00c07383959f"
       }
     },
     {
@@ -86,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "937e904258d22af6e447a0b72c0bc67583ef64a2",
-        "version" : "1.0.4"
+        "revision" : "a902f1823a7ff3c9ab2fba0f992396b948eda307",
+        "version" : "1.0.5"
       }
     },
     {

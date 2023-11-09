@@ -186,10 +186,20 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         } else if case ConnectionProviderError.unauthorized = error {
             errorDescription += ": \(APIError.UnauthorizedMessageString)"
-        } else if case ConnectionProviderError.connection = error {
+        } else if case let ConnectionProviderError.connection(errorMessage, underlyingError) = error {
             errorDescription += ": connection"
-            let error = URLError(.networkConnectionLost)
-            fail(APIError.networkError(errorDescription, nil, error))
+            
+            let apiError: APIError
+            if let errorMessage = errorMessage,
+                errorMessage.range(of: "watchOS", options: .caseInsensitive) != nil {
+                errorDescription += " : \(errorMessage)"
+                apiError = .operationError(errorDescription, "", underlyingError)
+            } else {
+                let error = URLError(.networkConnectionLost)
+                apiError = .networkError(errorDescription, nil, error)
+            }
+            
+            fail(apiError)
             return
         }
 
@@ -391,10 +401,20 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         } else if case ConnectionProviderError.unauthorized = error {
             errorDescription += ": \(APIError.UnauthorizedMessageString)"
-        } else if case ConnectionProviderError.connection = error {
+        } else if case let ConnectionProviderError.connection(errorMessage, underlyingError) = error {
             errorDescription += ": connection"
-            let error = URLError(.networkConnectionLost)
-            dispatch(result: .failure(APIError.networkError(errorDescription, nil, error)))
+            
+            let apiError: APIError
+            if let errorMessage = errorMessage,
+                errorMessage.range(of: "watchOS", options: .caseInsensitive) != nil {
+                errorDescription += " : \(errorMessage)"
+                apiError = .operationError(errorDescription, "", underlyingError)
+            } else {
+                let error = URLError(.networkConnectionLost)
+                apiError = .networkError(errorDescription, nil, error)
+            }
+            
+            dispatch(result: .failure(apiError))
             finish()
             return
         }

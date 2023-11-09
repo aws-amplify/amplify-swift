@@ -215,6 +215,14 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationDisabled))
                 return
             }
+            
+            if case let .api(error, _) = dataStoreError,
+               case let APIError.operationError(errorDescription, _, _) = error,
+               isOperationNotAllowed(errorDescription: errorDescription) {
+                log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined operation isOperationNotAllowed \(modelSchema.name)")
+                modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationNotAllowed))
+                return
+            }
             log.error("[InitializeSubscription.3] AWSModelReconciliationQueue receiveCompletion: error: \(dataStoreError)")
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
@@ -289,6 +297,13 @@ extension AWSModelReconciliationQueue {
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
            case .operationDisabled = AppSyncErrorType(errorTypeValue) {
+            return true
+        }
+        return false
+    }
+    
+    private func isOperationNotAllowed(errorDescription: String) -> Bool {
+        if errorDescription.range(of: "watchOS", options: .caseInsensitive) != nil {
             return true
         }
         return false

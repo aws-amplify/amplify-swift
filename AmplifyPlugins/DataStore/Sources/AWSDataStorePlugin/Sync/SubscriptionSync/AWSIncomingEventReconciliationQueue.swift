@@ -146,10 +146,11 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 }
             }
         case .disconnected(modelName: let modelName, reason: .operationDisabled),
-             .disconnected(modelName: let modelName, reason: .unauthorized):
+             .disconnected(modelName: let modelName, reason: .unauthorized),
+             .disconnected(modelName: let modelName, reason: .operationNotAllowed):
             connectionStatusSerialQueue.async {
                 self.log.verbose("[InitializeSubscription.4] subscription disconnected [\(modelName)] reason: [\(receiveValue)]")
-                // A disconnected subscription due to operation disabled or unauthorized will still contribute
+                // A disconnected subscription due to operation disabled, notAllowed or unauthorized will still contribute
                 // to the overall state of the reconciliation queue system on sending the `.initialized` event
                 // since subscriptions may be disabled and have to reconcile locally sourced mutation evemts.
                 self.reconciliationQueueConnectionStatus[modelName] = true
