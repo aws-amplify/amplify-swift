@@ -22,7 +22,7 @@ extension KeychainStoreError: AuthErrorConvertible {
         case .codingError(let errorDescription, let error):
             return .configuration(errorDescription, self.recoverySuggestion, error)
         case .itemNotFound:
-            return .service(self.errorDescription, self.recoverySuggestion, self)
+            return .service(self.errorDescription, self.recoverySuggestion)
         case .securityError:
             return .service(self.errorDescription, self.recoverySuggestion)
         }

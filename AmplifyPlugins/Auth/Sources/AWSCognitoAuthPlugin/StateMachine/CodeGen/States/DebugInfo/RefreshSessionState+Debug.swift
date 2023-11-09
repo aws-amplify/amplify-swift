@@ -10,7 +10,7 @@ import Foundation
 extension RefreshSessionState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
-        var additionalMetadataDictionary: [String: Any] = [:]
+        let additionalMetadataDictionary: [String: Any]
         switch self {
         case .fetchingAuthSessionWithUserPool(let state, _):
             additionalMetadataDictionary = ["fetchingSession": state.debugDictionary]
