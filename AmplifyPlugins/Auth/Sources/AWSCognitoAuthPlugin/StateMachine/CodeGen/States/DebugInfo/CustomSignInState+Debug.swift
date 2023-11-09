@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension CustomSignInState {
+extension CustomSignInState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 

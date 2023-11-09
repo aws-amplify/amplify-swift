@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension RefreshSessionState {
+extension RefreshSessionState: CustomDebugDictionaryConvertible{
 
     var debugDictionary: [String: Any] {
         var additionalMetadataDictionary: [String: Any] = [:]

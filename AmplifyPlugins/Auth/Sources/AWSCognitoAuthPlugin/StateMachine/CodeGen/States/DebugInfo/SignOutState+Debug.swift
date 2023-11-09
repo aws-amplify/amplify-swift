@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension SignOutState {
+extension SignOutState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 

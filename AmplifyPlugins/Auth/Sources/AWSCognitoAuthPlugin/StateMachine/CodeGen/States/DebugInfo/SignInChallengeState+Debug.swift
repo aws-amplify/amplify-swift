@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension SignInChallengeState {
+extension SignInChallengeState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
         var additionalMetadataDictionary: [String: Any] = [:]

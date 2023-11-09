@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension SRPSignInState {
+extension SRPSignInState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 

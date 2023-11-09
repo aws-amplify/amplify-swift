@@ -36,6 +36,5 @@ extension AuthState: CustomDebugStringConvertible {
 
     var debugDescription: String {
         return (debugDictionary as AnyObject).description
-
     }
 }

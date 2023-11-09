@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension SignInTOTPSetupState {
+extension SignInTOTPSetupState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
         var additionalMetadataDictionary: [String: Any] = [:]

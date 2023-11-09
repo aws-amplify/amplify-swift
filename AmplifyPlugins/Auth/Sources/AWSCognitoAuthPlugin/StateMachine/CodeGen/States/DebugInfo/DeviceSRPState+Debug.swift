@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension DeviceSRPState {
+extension DeviceSRPState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 
