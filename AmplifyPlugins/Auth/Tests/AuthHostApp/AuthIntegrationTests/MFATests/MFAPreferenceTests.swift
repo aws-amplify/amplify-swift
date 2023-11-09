@@ -23,14 +23,17 @@ class MFAPreferenceTests: AWSAuthBaseTest {
         AuthSessionHelper.clearSession()
     }
 
-    func signUpAndSignIn(phoneNumber: String? = nil) async throws {
+    func signUpAndSignIn(
+        email: String? = nil,
+        phoneNumber: String? = nil
+    ) async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail,
+            email: email ?? defaultTestEmail,
             phoneNumber: phoneNumber)
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
@@ -69,7 +72,7 @@ class MFAPreferenceTests: AWSAuthBaseTest {
     ///
     func testFetchAndUpdateMFAPreferenceForTOTP() async throws {
         do {
-            try await signUpAndSignIn()
+            try await signUpAndSignIn(email: randomEmail)
 
             let authCognitoPlugin = try Amplify.Auth.getPlugin(
                 for: "awsCognitoAuthPlugin") as! AWSCognitoAuthPlugin
@@ -198,76 +201,78 @@ class MFAPreferenceTests: AWSAuthBaseTest {
     ///    - I should get valid fetchMFAPreference results corresponding to the updateMFAPreference
     ///
     func testFetchAndUpdateMFAPreferenceForSMSAndTOTP() async throws {
-        do {
-            try await signUpAndSignIn(phoneNumber: "+16135550116") // Fake number for testing
+        let randomPhoneNumber = "+1" + (1...10)
+            .map { _ in String(Int.random(in: 0...9)) }
+            .joined()
 
-            let authCognitoPlugin = try Amplify.Auth.getPlugin(
-                for: "awsCognitoAuthPlugin") as! AWSCognitoAuthPlugin
+        try await signUpAndSignIn(
+            phoneNumber: randomPhoneNumber
+        )
 
-            var fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
-            XCTAssertNil(fetchMFAResult.enabled)
-            XCTAssertNil(fetchMFAResult.preferred)
+        let authCognitoPlugin = try Amplify.Auth.getPlugin(
+            for: "awsCognitoAuthPlugin") as! AWSCognitoAuthPlugin
 
-            let totpSetupDetails = try await Amplify.Auth.setUpTOTP()
-            let totpCode = TOTPHelper.generateTOTPCode(sharedSecret: totpSetupDetails.sharedSecret)
-            try await Amplify.Auth.verifyTOTPSetup(code: totpCode)
+        var fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+        XCTAssertNil(fetchMFAResult.enabled)
+        XCTAssertNil(fetchMFAResult.preferred)
 
-            // Test both MFA types as enabled
-            try await authCognitoPlugin.updateMFAPreference(
-                sms: .enabled,
-                totp: .enabled)
+        let totpSetupDetails = try await Amplify.Auth.setUpTOTP()
+        let totpCode = TOTPHelper.generateTOTPCode(sharedSecret: totpSetupDetails.sharedSecret)
+        try await Amplify.Auth.verifyTOTPSetup(code: totpCode)
 
-            fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
-            XCTAssertNotNil(fetchMFAResult.enabled)
-            XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
-            XCTAssertNil(fetchMFAResult.preferred)
+        // Test both MFA types as enabled
+        try await authCognitoPlugin.updateMFAPreference(
+            sms: .enabled,
+            totp: .enabled)
 
-            // Test SMS as preferred, TOTP as enabled
-            try await authCognitoPlugin.updateMFAPreference(
-                sms: .preferred,
-                totp: .enabled)
+        fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+        XCTAssertNotNil(fetchMFAResult.enabled)
+        XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
+        XCTAssertNil(fetchMFAResult.preferred)
 
-            fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
-            XCTAssertNotNil(fetchMFAResult.enabled)
-            XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
-            XCTAssertNotNil(fetchMFAResult.preferred)
-            XCTAssertEqual(fetchMFAResult.preferred, .sms)
+        // Test SMS as preferred, TOTP as enabled
+        try await authCognitoPlugin.updateMFAPreference(
+            sms: .preferred,
+            totp: .enabled)
 
-            // Test SMS as notPreferred, TOTP as preferred
-            try await authCognitoPlugin.updateMFAPreference(
-                sms: .notPreferred,
-                totp: .preferred)
+        fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+        XCTAssertNotNil(fetchMFAResult.enabled)
+        XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
+        XCTAssertNotNil(fetchMFAResult.preferred)
+        XCTAssertEqual(fetchMFAResult.preferred, .sms)
 
-            fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
-            XCTAssertNotNil(fetchMFAResult.enabled)
-            XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
-            XCTAssertNotNil(fetchMFAResult.preferred)
-            XCTAssertEqual(fetchMFAResult.preferred, .totp)
+        // Test SMS as notPreferred, TOTP as preferred
+        try await authCognitoPlugin.updateMFAPreference(
+            sms: .notPreferred,
+            totp: .preferred)
 
-            // Test SMS as disabled, no change to TOTP
-            try await authCognitoPlugin.updateMFAPreference(
-                sms: .disabled,
-                totp: nil)
+        fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+        XCTAssertNotNil(fetchMFAResult.enabled)
+        XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
+        XCTAssertNotNil(fetchMFAResult.preferred)
+        XCTAssertEqual(fetchMFAResult.preferred, .totp)
 
-            fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
-            XCTAssertNotNil(fetchMFAResult.enabled)
-            XCTAssertEqual(fetchMFAResult.enabled, [.totp])
-            XCTAssertNotNil(fetchMFAResult.preferred)
-            XCTAssertEqual(fetchMFAResult.preferred, .totp)
+        // Test SMS as disabled, no change to TOTP
+        try await authCognitoPlugin.updateMFAPreference(
+            sms: .disabled,
+            totp: nil)
 
-            // Test SMS as preferred, no change to TOTP (which should remove TOTP from preferred list)
-            try await authCognitoPlugin.updateMFAPreference(
-                sms: .preferred,
-                totp: nil)
+        fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+        XCTAssertNotNil(fetchMFAResult.enabled)
+        XCTAssertEqual(fetchMFAResult.enabled, [.totp])
+        XCTAssertNotNil(fetchMFAResult.preferred)
+        XCTAssertEqual(fetchMFAResult.preferred, .totp)
 
-            fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
-            XCTAssertNotNil(fetchMFAResult.enabled)
-            XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
-            XCTAssertNotNil(fetchMFAResult.preferred)
-            XCTAssertEqual(fetchMFAResult.preferred, .sms)
-        } catch {
-            XCTFail("API should succeed without any errors instead failed with \(error)")
-        }
+        // Test SMS as preferred, no change to TOTP (which should remove TOTP from preferred list)
+        try await authCognitoPlugin.updateMFAPreference(
+            sms: .preferred,
+            totp: nil)
+
+        fetchMFAResult = try await authCognitoPlugin.fetchMFAPreference()
+        XCTAssertNotNil(fetchMFAResult.enabled)
+        XCTAssertEqual(fetchMFAResult.enabled, [.sms, .totp])
+        XCTAssertNotNil(fetchMFAResult.preferred)
+        XCTAssertEqual(fetchMFAResult.preferred, .sms)
     }
 
     /// Test invalidParameter exception in updateMFAPreference API

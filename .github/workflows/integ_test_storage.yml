@@ -31,14 +31,13 @@ jobs:
       matrix:
         platform: [iOS, tvOS, watchOS]
         exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'Dummy' }}
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     uses: ./.github/workflows/run_integration_tests.yml
     with:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSS3StoragePluginIntegrationTestsWatch' || 'AWSS3StoragePluginIntegrationTests' }}
       platform: ${{ matrix.platform }}
-      build_cache_key: AWSS3StoragePlugin-${{ matrix.platform }}-latest-build-main
       project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
       xcode_version: '14.3'
       resource_subfolder: storage

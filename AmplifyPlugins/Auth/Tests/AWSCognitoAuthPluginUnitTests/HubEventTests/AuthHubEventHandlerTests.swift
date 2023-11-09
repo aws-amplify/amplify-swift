@@ -308,13 +308,13 @@ class AuthHubEventHandlerTests: XCTestCase {
 
     private func configurePluginForSignInEvent() {
         let mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            InitiateAuthOutputResponse(
+            InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { _ in
-            RespondToAuthChallengeOutputResponse(
+            RespondToAuthChallengeOutput(
                 authenticationResult: .init(
                     accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
@@ -358,12 +358,12 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
             },
-            mockDeleteUserOutputResponse: { _ in
-                try await DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            mockDeleteUserOutput: { _ in
+                try await DeleteUserOutput(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
 
@@ -380,10 +380,10 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await RevokeTokenOutput(httpResponse: .init(body: .empty, statusCode: .ok))
             },
             mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                try await GlobalSignOutOutput(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
 

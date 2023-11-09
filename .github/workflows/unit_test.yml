@@ -7,6 +7,27 @@ on:
         type: string
 
   workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      macos:
+        description: '💻 macOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
   push:
     branches-ignore:
       - main
@@ -14,7 +35,6 @@ on:
 
 permissions:
     contents: read
-    actions: write
 
 concurrency:
   group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -29,7 +49,7 @@ jobs:
         scheme: [
           InternalAWSPinpointUnitTests
         ]
-    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
       generate_coverage_report: false
@@ -53,13 +73,13 @@ jobs:
           AWSS3StoragePlugin,
           CoreMLPredictionsPlugin
         ]
-    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
       generate_coverage_report: true
 
   report-coverage:
-    name: ${{ matrix.file.scheme }} Coverage Report
+    name: ${{ matrix.file.scheme }} Unit Tests
     needs: [unit-tests-with-coverage]
     strategy:
       fail-fast: false

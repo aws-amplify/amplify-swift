@@ -9,11 +9,11 @@ import AWSPolly
 @testable import AWSPredictionsPlugin
 
 class MockPollyBehavior: PollyClientProtocol {
-    var synthesizeSpeechResult: ((SynthesizeSpeechInput) async throws -> SynthesizeSpeechOutputResponse)? = nil
+    var synthesizeSpeechResult: ((SynthesizeSpeechInput) async throws -> SynthesizeSpeechOutput)? = nil
 
     func synthesizeSpeech(
         input: SynthesizeSpeechInput
-    ) async throws -> SynthesizeSpeechOutputResponse {
+    ) async throws -> SynthesizeSpeechOutput {
         guard let synthesizeSpeechResult else { throw MockBehaviorDefaultError() }
         return try await synthesizeSpeechResult(input)
     }
@@ -25,12 +25,12 @@ class MockPollyBehavior: PollyClientProtocol {
 
 // MARK: Unused PolliClientProtocol Methods
 extension MockPollyBehavior {
-    func deleteLexicon(input: AWSPolly.DeleteLexiconInput) async throws -> AWSPolly.DeleteLexiconOutputResponse { fatalError() }
-    func describeVoices(input: AWSPolly.DescribeVoicesInput) async throws -> AWSPolly.DescribeVoicesOutputResponse { fatalError() }
-    func getLexicon(input: AWSPolly.GetLexiconInput) async throws -> AWSPolly.GetLexiconOutputResponse { fatalError() }
-    func getSpeechSynthesisTask(input: AWSPolly.GetSpeechSynthesisTaskInput) async throws -> AWSPolly.GetSpeechSynthesisTaskOutputResponse { fatalError() }
-    func listLexicons(input: AWSPolly.ListLexiconsInput) async throws -> AWSPolly.ListLexiconsOutputResponse { fatalError() }
-    func listSpeechSynthesisTasks(input: AWSPolly.ListSpeechSynthesisTasksInput) async throws -> AWSPolly.ListSpeechSynthesisTasksOutputResponse { fatalError() }
-    func putLexicon(input: AWSPolly.PutLexiconInput) async throws -> AWSPolly.PutLexiconOutputResponse { fatalError() }
-    func startSpeechSynthesisTask(input: AWSPolly.StartSpeechSynthesisTaskInput) async throws -> AWSPolly.StartSpeechSynthesisTaskOutputResponse { fatalError() }
+    func deleteLexicon(input: AWSPolly.DeleteLexiconInput) async throws -> AWSPolly.DeleteLexiconOutput { fatalError() }
+    func describeVoices(input: AWSPolly.DescribeVoicesInput) async throws -> AWSPolly.DescribeVoicesOutput { fatalError() }
+    func getLexicon(input: AWSPolly.GetLexiconInput) async throws -> AWSPolly.GetLexiconOutput { fatalError() }
+    func getSpeechSynthesisTask(input: AWSPolly.GetSpeechSynthesisTaskInput) async throws -> AWSPolly.GetSpeechSynthesisTaskOutput { fatalError() }
+    func listLexicons(input: AWSPolly.ListLexiconsInput) async throws -> AWSPolly.ListLexiconsOutput { fatalError() }
+    func listSpeechSynthesisTasks(input: AWSPolly.ListSpeechSynthesisTasksInput) async throws -> AWSPolly.ListSpeechSynthesisTasksOutput { fatalError() }
+    func putLexicon(input: AWSPolly.PutLexiconInput) async throws -> AWSPolly.PutLexiconOutput { fatalError() }
+    func startSpeechSynthesisTask(input: AWSPolly.StartSpeechSynthesisTaskInput) async throws -> AWSPolly.StartSpeechSynthesisTaskOutput { fatalError() }
 }

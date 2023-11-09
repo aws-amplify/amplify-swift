@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ChangePasswordOutputResponse: Codable {
+extension ChangePasswordOutput: Codable {
 
     enum CodingKeys: String, CodingKey {
         case httpResponse = "httpResponse"

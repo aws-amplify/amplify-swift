@@ -51,7 +51,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///    - I should get back a result
     ///
     func testTranslateService() async throws {
-        let mockResponse = TranslateTextOutputResponse(translatedText: "translated text here")
+        let mockResponse = TranslateTextOutput(translatedText: "translated text here")
         mockTranslate.translateTextResult = { _ in mockResponse }
 
         let result = try await predictionsService.translateText(
@@ -132,7 +132,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
             XCTFail("Initialization of the text failed. \(error)")
         }
 
-        let mockResponse = TranslateTextOutputResponse(translatedText: "translated text here")
+        let mockResponse = TranslateTextOutput(translatedText: "translated text here")
         mockTranslate.translateTextResult = { _ in mockResponse }
 
         let result = try await predictionsService.translateText(
@@ -157,7 +157,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///    - I should get back an error
     ///
     func testNilSourceLanguageError() async throws {
-        let mockResponse = TranslateTextOutputResponse(translatedText: "translated text here")
+        let mockResponse = TranslateTextOutput(translatedText: "translated text here")
         mockTranslate.translateTextResult = { _ in mockResponse }
 
         do {
@@ -182,7 +182,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///    - I should get back an error
     ///
     func testNilTargetLanguageError() async throws {
-        let mockResponse = TranslateTextOutputResponse(translatedText: "translated text here")
+        let mockResponse = TranslateTextOutput(translatedText: "translated text here")
         mockTranslate.translateTextResult = { _ in mockResponse }
 
         do {
@@ -206,7 +206,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///    - I should get an error back
     ///
     func testNilTranslatedTextResult() async throws {
-        let mockResponse = TranslateTextOutputResponse()
+        let mockResponse = TranslateTextOutput()
         mockTranslate.translateTextResult = { _ in mockResponse }
 
         do {
@@ -230,7 +230,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///    - The target language should be set
     ///
     func testTargetLanguageTranslateService() async throws {
-        let mockResponse = TranslateTextOutputResponse(translatedText: "translated text here")
+        let mockResponse = TranslateTextOutput(translatedText: "translated text here")
         mockTranslate.translateTextResult = { _ in mockResponse }
 
         let result = try await predictionsService.translateText(

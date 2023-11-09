@@ -95,7 +95,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testData))
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             resultExpectation.fulfill()
-            return InitiateAuthOutputResponse(authenticationResult: .init(
+            return InitiateAuthOutput(authenticationResult: .init(
                 accessToken: "accessToken",
                 expiresIn: 1000,
                 idToken: "idToken",
@@ -259,7 +259,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testDataWithExpiredTokens))
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            return InitiateAuthOutputResponse(authenticationResult: .init(accessToken: "accessToken",
+            return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",
                                                                           expiresIn: 1000,
                                                                           idToken: "idToken",
                                                                           refreshToken: "refreshToke"))
@@ -493,7 +493,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testDataWithExpiredTokens))
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            return InitiateAuthOutputResponse(authenticationResult: .init(accessToken: nil,
+            return InitiateAuthOutput(authenticationResult: .init(accessToken: nil,
                                                                           expiresIn: 1000,
                                                                           idToken: "idToken",
                                                                           refreshToken: "refreshToke"))
@@ -546,14 +546,14 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testDataWithExpiredTokens))
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            return InitiateAuthOutputResponse(authenticationResult: .init(accessToken: "accessToken",
+            return InitiateAuthOutput(authenticationResult: .init(accessToken: "accessToken",
                                                                           expiresIn: 1000,
                                                                           idToken: "idToken",
                                                                           refreshToken: "refreshToke"))
         }
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            return GetCredentialsForIdentityOutputResponse(credentials: nil, identityId: "ss")
+            return GetCredentialsForIdentityOutput(credentials: nil, identityId: "ss")
         }
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
@@ -608,7 +608,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                                                                      expiration: Date(),
                                                                      secretKey: "secret",
                                                                      sessionToken: "session")
-            return GetCredentialsForIdentityOutputResponse(credentials: credentials,
+            return GetCredentialsForIdentityOutput(credentials: credentials,
                                                            identityId: "ss")
         }
         let plugin = configurePluginWith(

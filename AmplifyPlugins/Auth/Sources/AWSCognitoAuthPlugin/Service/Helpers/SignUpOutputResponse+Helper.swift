@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import AWSCognitoIdentityProvider
 
-extension SignUpOutputResponse {
+extension SignUpOutput {
 
     var authResponse: AuthSignUpResult {
         if self.userConfirmed {

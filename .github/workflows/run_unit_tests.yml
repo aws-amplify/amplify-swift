@@ -1,4 +1,4 @@
-name: Run tests for the given parameters
+name: Run Unit Tests for the given parameters
 on:
   workflow_call:
     inputs:
@@ -14,10 +14,7 @@ on:
         required: false
         type: string
       xcode_version:
-        description: 'The verion of Xcode used to run these tests'
-        required: true
-        type: string
-      resource_subfolder:
+        description: 'The version of Xcode used to run these tests'
         required: true
         type: string
       timeout-minutes:
@@ -25,18 +22,20 @@ on:
         required: false
         type: number
         default: 30
+      generate_coverage_report:
+        description: 'Whether to generate and report code coverage'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
-    id-token: write
     contents: read
 
 jobs:
-  integration-tests:
+  unit-tests:
     name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
     runs-on: macos-13
-    if: inputs.platform != 'macOS' # macOS is not supported for Integration Tests
     timeout-minutes: ${{ inputs.timeout-minutes }}
-    environment: IntegrationTest
     steps:
       - name: Checkout repository
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
@@ -49,18 +48,6 @@ jobs:
         with:
           platform: ${{ inputs.platform }}
           xcode_version: ${{ inputs.xcode_version }}
-
-      - name: Create the test configuration directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
-
-      - name: Download the Integration Test configurations
-        uses: ./.github/composite_actions/download_test_configuration
-        with:
-          resource_subfolder: ${{ inputs.resource_subfolder }}
-          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
-          destination: ~/.aws-amplify/amplify-ios/testconfiguration/
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
@@ -82,7 +69,7 @@ jobs:
           path: ${{ github.workspace }}/Build
           key: Amplify-${{ inputs.platform }}-build-cache
 
-      - name: Run ${{ inputs.platform }} Integration Tests
+      - name: Run ${{ inputs.platform }} Unit Tests
         id: run-tests
         continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild_test
@@ -91,15 +78,13 @@ jobs:
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
           xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
-          project_path: ${{ inputs.project_path }}
-          generate_coverage: false
+          generate_coverage: ${{ inputs.generate_coverage_report }}
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
-          test_without_building: false
           other_flags: -test-iterations 3 -retry-tests-on-failure
 
-      - name: Retry ${{ inputs.platform }} Integration Tests
+      - name: Retry ${{ inputs.platform }} Unit Tests
         if: steps.run-tests.outcome=='failure'
         id: retry-tests
         uses: ./.github/composite_actions/run_xcodebuild_test
@@ -109,10 +94,17 @@ jobs:
           sdk: ${{ steps.platform.outputs.sdk }}
           xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
           project_path: ${{ inputs.project_path }}
-          generate_coverage: false
+          generate_coverage: ${{ inputs.generate_coverage_report }}
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
-          # Only attempt to test without building when we are not using any cache.
-          test_without_building: ${{ !steps.build-cache.outputs.cache-hit }}
           other_flags: -test-iterations 3 -retry-tests-on-failure
+
+      - name: Store Coverage Report File
+        if: ${{ inputs.generate_coverage_report == true }}
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
+        with:
+          name: ${{ inputs.scheme }}-Coverage-${{ github.sha }}
+          path: ${{ github.workspace }}/${{ inputs.scheme }}-Coverage.lcov
+          if-no-files-found: error
+          retention-days: 1

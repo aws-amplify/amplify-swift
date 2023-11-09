@@ -16,7 +16,7 @@ permissions:
 jobs:
   build-amplify-swift:
     name: Build Amplify package
-    uses: ./.github/workflows/build_amplify_swift.yml
+    uses: ./.github/workflows/build_amplify_swift_platforms.yml
     with:
       identifier: 'workflow-call-build-amplify-swift'
   

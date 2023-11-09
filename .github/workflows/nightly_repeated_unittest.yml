@@ -32,7 +32,7 @@ jobs:
           CoreMLPredictionsPlugin,
           InternalAWSPinpointUnitTests
         ]
-    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
       timeout-minutes: 50
