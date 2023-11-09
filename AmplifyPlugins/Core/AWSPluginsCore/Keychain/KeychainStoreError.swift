@@ -73,7 +73,7 @@ extension KeychainStoreError: AmplifyError {
             let keychainStatus = KeychainStatus(status: status)
 #if os(macOS)
             // If its Missing entitlement error on macOS
-            guard keychainStatus == .missingEntitlement else {
+            guard case .missingEntitlement = keychainStatus else {
                 return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
             }
             return """
