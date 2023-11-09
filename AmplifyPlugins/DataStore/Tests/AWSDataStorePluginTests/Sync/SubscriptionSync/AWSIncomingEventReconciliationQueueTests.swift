@@ -233,4 +233,42 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
         sink.cancel()
 
     }
+    
+    // This test case tests that initialized event is received even
+    // all models fail with a "OperationNotAllowed"
+    func testSubscriptionFailedBecauseOfOperationNotAllowed() async {
+        let expectStarted = expectation(description: "eventQueue expected to send out started state")
+        let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
+        let eventQueue = await initEventQueue(modelSchemas: [Post.schema])
+        eventQueue.start()
+
+        let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting this to call")
+        }, receiveValue: { event  in
+            switch event {
+            case .idle:
+                break
+            case .started:
+                expectStarted.fulfill()
+            case .initialized:
+                expectInitialized.fulfill()
+            default:
+                XCTFail("Should not expect any other state, received: \(event)")
+            }
+        })
+        
+        let reconciliationQueues = MockModelReconciliationQueue.mockModelReconciliationQueues
+        for (queueName, queue) in reconciliationQueues {
+            let cancellableOperation = CancelAwareBlockOperation {
+                let event: ModelReconciliationQueueEvent = .disconnected(modelName: queueName, reason: .operationNotAllowed)
+                queue.modelReconciliationQueueSubject.send(event)
+            }
+            operationQueue.addOperation(cancellableOperation)
+        }
+        operationQueue.isSuspended = false
+        await waitForExpectations(timeout: 2)
+
+        sink.cancel()
+
+    }
 }

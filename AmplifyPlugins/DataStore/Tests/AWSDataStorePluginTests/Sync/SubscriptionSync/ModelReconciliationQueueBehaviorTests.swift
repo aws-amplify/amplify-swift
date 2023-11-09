@@ -412,6 +412,12 @@ extension ModelReconciliationQueueBehaviorTests {
         let dataStoreError = DataStoreError.api(apiError, nil)
         return .failure(dataStoreError)
     }
+    
+    private func completionSignalWithOperationWatchOSRelatedError() -> Subscribers.Completion<DataStoreError> {
+        let apiError = APIError.operationError("watchOS related error", "recovery message", nil)
+        let dataStoreError = DataStoreError.api(apiError, nil)
+        return .failure(dataStoreError)
+    }
 
     func testProcessingUnauthorizedError() async {
         let eventSentViaPublisher = expectation(description: "Sent via publisher")
@@ -429,10 +435,11 @@ extension ModelReconciliationQueueBehaviorTests {
             XCTFail("Not expecting a call to completion, received \(value)")
         }, receiveValue: { event in
             switch event {
-            case .idle:
-                break
-            default:
+            case .disconnected(_, let reason):
+                XCTAssertEqual(reason, .unauthorized)
                 eventSentViaPublisher.fulfill()
+            default:
+                break
             }
         })
 
@@ -457,10 +464,40 @@ extension ModelReconciliationQueueBehaviorTests {
             XCTFail("Not expecting a call to completion, received \(value)")
         }, receiveValue: { event in
             switch event {
-            case .idle:
-                break
-            default:
+            case .disconnected(_, let reason):
+                XCTAssertEqual(reason, .operationDisabled)
                 eventSentViaPublisher.fulfill()
+            default:
+                break
+            }
+        })
+
+        subscriptionEventsSubject.send(completion: completion)
+        wait(for: [eventSentViaPublisher], timeout: 1.0)
+        queueSink.cancel()
+    }
+    
+    func testProcessingOperationNotAllowedError() async {
+        let eventSentViaPublisher = expectation(description: "Sent via publisher")
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+                                                storageAdapter: storageAdapter,
+                                                api: apiPlugin,
+                                                reconcileAndSaveQueue: reconcileAndSaveQueue,
+                                                modelPredicate: modelPredicate,
+                                                auth: authPlugin,
+                                                authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                                incomingSubscriptionEvents: subscriptionEventsPublisher)
+        let completion = completionSignalWithOperationWatchOSRelatedError()
+
+        let queueSink = queue.publisher.sink(receiveCompletion: { value in
+            XCTFail("Not expecting a call to completion, received \(value)")
+        }, receiveValue: { event in
+            switch event {
+            case .disconnected(_, let reason):
+                XCTAssertEqual(reason, .operationNotAllowed)
+                eventSentViaPublisher.fulfill()
+            default:
+                break
             }
         })
 
