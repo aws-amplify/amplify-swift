@@ -16,6 +16,16 @@ class AWSAuthBaseTest: XCTestCase {
     var defaultTestEmail = "test-\(UUID().uuidString)@amazon.com"
     var defaultTestPassword = UUID().uuidString
 
+    var randomEmail: String {
+        "test-\(UUID().uuidString)@amazon.com"
+    }
+
+    var randomPhoneNumber: String {
+        "+1" + (1...10)
+            .map { _ in String(Int.random(in: 0...9)) }
+            .joined()
+    }
+
     var amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
 
