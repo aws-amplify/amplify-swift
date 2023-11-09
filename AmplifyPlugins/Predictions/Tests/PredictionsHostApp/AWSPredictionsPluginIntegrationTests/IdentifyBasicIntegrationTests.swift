@@ -11,7 +11,6 @@ import XCTest
 import Combine
 @testable import Amplify
 @testable import AWSPredictionsPlugin
-@testable import AWSRekognition
 
 class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
@@ -66,6 +65,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     }
 
     func testIdentifyEntities() async throws {
+        Amplify.Logging.logLevel = .verbose
         let image = try imageURL(for: "testImageEntities")
         let result = try await Amplify.Predictions.identify(.entities, in: image)
         let imageContainsTwoEntities = result.entities.count == 2

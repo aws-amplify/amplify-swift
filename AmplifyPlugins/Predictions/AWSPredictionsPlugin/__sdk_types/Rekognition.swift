@@ -22,7 +22,7 @@ extension AWSRekognition {
     struct ProvisionedThroughputExceededException: Error {}
 }
 
-struct DetectLabelsInput: Equatable {
+struct DetectLabelsInput: Equatable, Encodable {
     var features: [RekognitionClientTypes.DetectLabelsFeatureName]?
     /// This member is required.
     var image: RekognitionClientTypes.Image
@@ -39,7 +39,7 @@ struct DetectLabelsInput: Equatable {
     }
 }
 
-struct DetectLabelsOutputResponse: Equatable {
+struct DetectLabelsOutputResponse: Equatable, Decodable {
     var imageProperties: RekognitionClientTypes.DetectLabelsImageProperties?
     var labelModelVersion: String?
     var labels: [RekognitionClientTypes.Label]?
@@ -53,7 +53,7 @@ struct DetectLabelsOutputResponse: Equatable {
     }
 }
 
-struct DetectModerationLabelsInput: Equatable {
+struct DetectModerationLabelsInput: Equatable, Encodable {
     var humanLoopConfig: RekognitionClientTypes.HumanLoopConfig?
     /// This member is required.
     var image: RekognitionClientTypes.Image
@@ -66,7 +66,7 @@ struct DetectModerationLabelsInput: Equatable {
     }
 }
 
-struct DetectModerationLabelsOutputResponse: Equatable {
+struct DetectModerationLabelsOutputResponse: Equatable, Decodable {
     var humanLoopActivationOutput: RekognitionClientTypes.HumanLoopActivationOutput?
     var moderationLabels: [RekognitionClientTypes.ModerationLabel]?
     var moderationModelVersion: String?
@@ -78,7 +78,7 @@ struct DetectModerationLabelsOutputResponse: Equatable {
     }
 }
 
-struct DetectTextInput: Equatable {
+struct DetectTextInput: Equatable, Encodable {
     var filters: RekognitionClientTypes.DetectTextFilters?
     /// This member is required.
     var image: RekognitionClientTypes.Image
@@ -89,7 +89,7 @@ struct DetectTextInput: Equatable {
     }
 }
 
-struct DetectTextOutputResponse: Equatable {
+struct DetectTextOutputResponse: Equatable, Decodable {
     var textDetections: [RekognitionClientTypes.TextDetection]?
     var textModelVersion: String?
 
@@ -101,7 +101,7 @@ struct DetectTextOutputResponse: Equatable {
 
 
 
-struct DetectFacesInput: Equatable {
+struct DetectFacesInput: Equatable, Encodable {
     var attributes: [RekognitionClientTypes.Attribute]?
     /// This member is required.
     var image: RekognitionClientTypes.Image
@@ -112,7 +112,7 @@ struct DetectFacesInput: Equatable {
     }
 }
 
-struct DetectFacesOutputResponse: Equatable {
+struct DetectFacesOutputResponse: Equatable, Decodable {
     var faceDetails: [RekognitionClientTypes.FaceDetail]?
     var orientationCorrection: RekognitionClientTypes.OrientationCorrection?
 
@@ -122,7 +122,7 @@ struct DetectFacesOutputResponse: Equatable {
     }
 }
 
-struct SearchFacesByImageInput: Equatable {
+struct SearchFacesByImageInput: Equatable, Encodable {
     /// This member is required.
     var collectionId: String
     var faceMatchThreshold: Float?
@@ -140,7 +140,7 @@ struct SearchFacesByImageInput: Equatable {
     }
 }
 
-struct SearchFacesByImageOutputResponse: Equatable {
+struct SearchFacesByImageOutputResponse: Equatable, Decodable {
     var faceMatches: [RekognitionClientTypes.FaceMatch]?
     var faceModelVersion: String?
     var searchedFaceBoundingBox: RekognitionClientTypes.BoundingBox?
@@ -154,7 +154,7 @@ struct SearchFacesByImageOutputResponse: Equatable {
     }
 }
 
-struct RecognizeCelebritiesInput: Equatable {
+struct RecognizeCelebritiesInput: Equatable, Encodable {
     /// This member is required.
     var image: RekognitionClientTypes.Image
 
@@ -163,7 +163,7 @@ struct RecognizeCelebritiesInput: Equatable {
     }
 }
 
-struct RecognizeCelebritiesOutputResponse: Equatable {
+struct RecognizeCelebritiesOutputResponse: Equatable, Decodable {
     var celebrityFaces: [RekognitionClientTypes.Celebrity]?
     var orientationCorrection: RekognitionClientTypes.OrientationCorrection?
     var unrecognizedFaces: [RekognitionClientTypes.ComparedFace]?
@@ -179,7 +179,7 @@ struct RecognizeCelebritiesOutputResponse: Equatable {
 enum RekognitionClientTypes {}
 
 extension RekognitionClientTypes {
-    struct AgeRange: Equatable {
+    struct AgeRange: Equatable, Decodable {
         var high: Int?
         var low: Int?
 
@@ -191,7 +191,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Beard: Equatable {
+    struct Beard: Equatable, Decodable {
         var confidence: Float?
         var value: Bool
 
@@ -203,7 +203,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct EyeDirection: Equatable {
+    struct EyeDirection: Equatable, Decodable {
         var confidence: Float?
         var pitch: Float?
         var yaw: Float?
@@ -217,7 +217,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Eyeglasses: Equatable {
+    struct Eyeglasses: Equatable, Decodable {
         var confidence: Float?
         var value: Bool
 
@@ -229,7 +229,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct EyeOpen: Equatable {
+    struct EyeOpen: Equatable, Decodable {
         var confidence: Float?
         var value: Bool
 
@@ -241,7 +241,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct FaceOccluded: Equatable {
+    struct FaceOccluded: Equatable, Decodable {
         var confidence: Float?
         var value: Bool
 
@@ -285,7 +285,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Gender: Equatable {
+    struct Gender: Equatable, Decodable {
         var confidence: Float?
         var value: RekognitionClientTypes.GenderType?
 
@@ -298,7 +298,7 @@ extension RekognitionClientTypes {
 
 extension RekognitionClientTypes {
     /// Indicates whether or not the mouth on the face is open, and the confidence level in the determination.
-    struct MouthOpen: Equatable {
+    struct MouthOpen: Equatable, Decodable {
         /// Level of confidence in the determination.
         var confidence: Float?
         /// Boolean value that indicates whether the mouth on the face is open or not.
@@ -312,7 +312,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Mustache: Equatable {
+    struct Mustache: Equatable, Decodable {
         var confidence: Float?
         var value: Bool
 
@@ -324,7 +324,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Sunglasses: Equatable {
+    struct Sunglasses: Equatable, Decodable {
         var confidence: Float?
         var value: Bool
 
@@ -337,7 +337,7 @@ extension RekognitionClientTypes {
 
 
 extension RekognitionClientTypes {
-    struct FaceDetail: Equatable {
+    struct FaceDetail: Equatable, Decodable {
         var ageRange: RekognitionClientTypes.AgeRange?
         var beard: RekognitionClientTypes.Beard?
         var boundingBox: RekognitionClientTypes.BoundingBox?
@@ -379,7 +379,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Geometry: Equatable {
+    struct Geometry: Equatable, Decodable {
         var boundingBox: RekognitionClientTypes.BoundingBox?
         var polygon: [RekognitionClientTypes.Point]?
 
@@ -391,7 +391,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Point: Equatable {
+    struct Point: Equatable, Codable {
         var x: Float?
         var y: Float?
 
@@ -435,7 +435,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct TextDetection: Equatable {
+    struct TextDetection: Equatable, Decodable {
         var confidence: Float?
         var detectedText: String?
         var geometry: RekognitionClientTypes.Geometry?
@@ -455,7 +455,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct RegionOfInterest: Equatable {
+    struct RegionOfInterest: Equatable, Encodable {
         var boundingBox: RekognitionClientTypes.BoundingBox?
         var polygon: [RekognitionClientTypes.Point]?
 
@@ -467,7 +467,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectionFilter: Equatable {
+    struct DetectionFilter: Equatable, Encodable {
         var minBoundingBoxHeight: Float?
         var minBoundingBoxWidth: Float?
         var minConfidence: Float?
@@ -481,7 +481,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectTextFilters: Equatable {
+    struct DetectTextFilters: Equatable, Encodable {
         var regionsOfInterest: [RekognitionClientTypes.RegionOfInterest]?
         var wordFilter: RekognitionClientTypes.DetectionFilter?
 
@@ -562,7 +562,7 @@ extension RekognitionClientTypes {
 
 
 extension RekognitionClientTypes {
-    struct ModerationLabel: Equatable {
+    struct ModerationLabel: Equatable, Decodable {
         var confidence: Float?
         var name: String?
         var parentName: String?
@@ -576,7 +576,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct HumanLoopActivationOutput: Equatable {
+    struct HumanLoopActivationOutput: Equatable, Decodable {
         var humanLoopActivationConditionsEvaluationResults: String?
         var humanLoopActivationReasons: [String]?
         var humanLoopArn: String?
@@ -622,7 +622,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct HumanLoopDataAttributes: Equatable {
+    struct HumanLoopDataAttributes: Equatable, Encodable {
         var contentClassifiers: [RekognitionClientTypes.ContentClassifier]?
 
         enum CodingKeys: String, CodingKey {
@@ -632,7 +632,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct HumanLoopConfig: Equatable {
+    struct HumanLoopConfig: Equatable, Encodable {
         var dataAttributes: RekognitionClientTypes.HumanLoopDataAttributes?
         /// This member is required.
         var flowDefinitionArn: String
@@ -648,7 +648,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct LabelAlias: Equatable {
+    struct LabelAlias: Equatable, Decodable {
         var name: String?
 
         enum CodingKeys: String, CodingKey {
@@ -658,7 +658,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct LabelCategory: Equatable {
+    struct LabelCategory: Equatable, Decodable {
         var name: String?
 
         enum CodingKeys: String, CodingKey {
@@ -668,7 +668,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DominantColor: Equatable {
+    struct DominantColor: Equatable, Decodable {
         var blue: Int?
         var cssColor: String?
         var green: Int?
@@ -690,7 +690,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Instance: Equatable {
+    struct Instance: Equatable, Decodable {
         var boundingBox: RekognitionClientTypes.BoundingBox?
         var confidence: Float?
         var dominantColors: [RekognitionClientTypes.DominantColor]?
@@ -704,7 +704,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Parent: Equatable {
+    struct Parent: Equatable, Decodable {
         var name: String?
 
         enum CodingKeys: String, CodingKey {
@@ -715,7 +715,7 @@ extension RekognitionClientTypes {
 
 
 extension RekognitionClientTypes {
-    struct Label: Equatable {
+    struct Label: Equatable, Decodable {
         var aliases: [RekognitionClientTypes.LabelAlias]?
         var categories: [RekognitionClientTypes.LabelCategory]?
         var confidence: Float?
@@ -735,7 +735,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectLabelsImageBackground: Equatable {
+    struct DetectLabelsImageBackground: Equatable, Decodable {
         var dominantColors: [RekognitionClientTypes.DominantColor]?
         var quality: RekognitionClientTypes.DetectLabelsImageQuality?
 
@@ -747,7 +747,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectLabelsImageQuality: Equatable {
+    struct DetectLabelsImageQuality: Equatable, Decodable {
         var brightness: Float?
         var contrast: Float?
         var sharpness: Float?
@@ -761,7 +761,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectLabelsImageForeground: Equatable {
+    struct DetectLabelsImageForeground: Equatable, Decodable {
         var dominantColors: [RekognitionClientTypes.DominantColor]?
         var quality: RekognitionClientTypes.DetectLabelsImageQuality?
 
@@ -773,7 +773,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectLabelsImageProperties: Equatable {
+    struct DetectLabelsImageProperties: Equatable, Decodable {
         var background: RekognitionClientTypes.DetectLabelsImageBackground?
         var dominantColors: [RekognitionClientTypes.DominantColor]?
         var foreground: RekognitionClientTypes.DetectLabelsImageForeground?
@@ -789,7 +789,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct GeneralLabelsSettings: Equatable {
+    struct GeneralLabelsSettings: Equatable, Encodable {
         var labelCategoryExclusionFilters: [String]?
         var labelCategoryInclusionFilters: [String]?
         var labelExclusionFilters: [String]?
@@ -805,7 +805,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectLabelsImagePropertiesSettings: Equatable {
+    struct DetectLabelsImagePropertiesSettings: Equatable, Encodable {
         var maxDominantColors: Int?
 
         enum CodingKeys: String, CodingKey {
@@ -815,7 +815,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct DetectLabelsSettings: Equatable {
+    struct DetectLabelsSettings: Equatable, Encodable {
         var generalLabels: RekognitionClientTypes.GeneralLabelsSettings?
         var imageProperties: RekognitionClientTypes.DetectLabelsImagePropertiesSettings?
         
@@ -859,7 +859,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Face: Equatable {
+    struct Face: Equatable, Decodable {
         var boundingBox: RekognitionClientTypes.BoundingBox?
         var confidence: Float?
         var externalImageId: String?
@@ -882,7 +882,7 @@ extension RekognitionClientTypes {
 
 
 extension RekognitionClientTypes {
-    struct FaceMatch: Equatable {
+    struct FaceMatch: Equatable, Decodable {
         var face: RekognitionClientTypes.Face?
         var similarity: Float?
 
@@ -973,7 +973,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Emotion: Equatable {
+    struct Emotion: Equatable, Decodable {
         var confidence: Float?
         var type: RekognitionClientTypes.EmotionName?
 
@@ -1038,7 +1038,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Pose: Equatable {
+    struct Pose: Equatable, Decodable {
         var pitch: Float?
         var roll: Float?
         var yaw: Float?
@@ -1168,7 +1168,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Landmark: Equatable {
+    struct Landmark: Equatable, Decodable {
         var type: RekognitionClientTypes.LandmarkType?
         var x: Float?
         var y: Float?
@@ -1182,7 +1182,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct ImageQuality: Equatable {
+    struct ImageQuality: Equatable, Decodable {
         var brightness: Float?
         var sharpness: Float?
 
@@ -1194,7 +1194,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Smile: Equatable {
+    struct Smile: Equatable, Decodable {
         var confidence: Float?
         var value: Bool
 
@@ -1207,7 +1207,7 @@ extension RekognitionClientTypes {
 
 
 extension RekognitionClientTypes {
-    struct ComparedFace: Equatable {
+    struct ComparedFace: Equatable, Decodable {
         var boundingBox: RekognitionClientTypes.BoundingBox?
         var confidence: Float?
         var emotions: [RekognitionClientTypes.Emotion]?
@@ -1215,11 +1215,21 @@ extension RekognitionClientTypes {
         var pose: RekognitionClientTypes.Pose?
         var quality: RekognitionClientTypes.ImageQuality?
         var smile: RekognitionClientTypes.Smile?
+
+        enum CodingKeys: String, CodingKey {
+            case boundingBox = "BoundingBox"
+            case confidence = "Confidence"
+            case emotions = "Emotions"
+            case landmarks = "Landmarks"
+            case pose = "Pose"
+            case quality = "Quality"
+            case smile = "Smile"
+        }
     }
 }
 
 extension RekognitionClientTypes {
-    struct BoundingBox: Equatable {
+    struct BoundingBox: Equatable, Codable {
         var height: Float?
         var `left`: Float?
         var top: Float?
@@ -1235,7 +1245,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct KnownGender: Equatable {
+    struct KnownGender: Equatable, Decodable {
         var type: RekognitionClientTypes.KnownGenderType?
 
         enum CodingKeys: String, CodingKey {
@@ -1283,7 +1293,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Celebrity: Equatable {
+    struct Celebrity: Equatable, Decodable {
         var face: RekognitionClientTypes.ComparedFace?
         var id: String?
         var knownGender: RekognitionClientTypes.KnownGender?
@@ -1303,7 +1313,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct Image: Equatable {
+    struct Image: Equatable, Codable {
         var bytes: Data?
         var s3Object: RekognitionClientTypes.S3Object?
 
@@ -1315,7 +1325,7 @@ extension RekognitionClientTypes {
 }
 
 extension RekognitionClientTypes {
-    struct S3Object: Equatable {
+    struct S3Object: Equatable, Codable {
         var bucket: String?
         var name: String?
         var version: String?

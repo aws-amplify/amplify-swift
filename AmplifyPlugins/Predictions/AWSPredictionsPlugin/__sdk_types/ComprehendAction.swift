@@ -38,7 +38,7 @@ struct ComprehendAction<Input: Encodable, Output: Decodable> {
     }
 }
 
-func mapError(data: Data, response: HTTPURLResponse) throws -> Error {
+fileprivate func mapError(data: Data, response: HTTPURLResponse) throws -> Error {
     ServiceError(
         message: String(decoding: data, as: UTF8.self),
         type: "Comprehend",

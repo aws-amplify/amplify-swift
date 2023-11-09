@@ -19,7 +19,7 @@ extension AWSTranslate {
     struct UnsupportedLanguagePairException: Error {}
 }
 
-struct TranslateTextInput: Equatable {
+struct TranslateTextInput: Equatable, Encodable {
     var settings: TranslateClientTypes.TranslationSettings?
     /// This member is required.
     var sourceLanguageCode: String
@@ -38,7 +38,7 @@ struct TranslateTextInput: Equatable {
     }
 }
 
-struct TranslateTextOutputResponse: Equatable {
+struct TranslateTextOutputResponse: Equatable, Decodable {
     var appliedSettings: TranslateClientTypes.TranslationSettings?
     var appliedTerminologies: [TranslateClientTypes.AppliedTerminology]?
     /// This member is required.
@@ -61,7 +61,7 @@ struct TranslateTextOutputResponse: Equatable {
 enum TranslateClientTypes {}
 
 extension TranslateClientTypes {
-    struct AppliedTerminology: Equatable {
+    struct AppliedTerminology: Equatable, Decodable {
         var name: String?
         var terms: [TranslateClientTypes.Term]?
 
@@ -73,7 +73,7 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
-    struct Term: Equatable {
+    struct Term: Equatable, Decodable {
         var sourceText: String?
         var targetText: String?
 
@@ -85,7 +85,7 @@ extension TranslateClientTypes {
 }
 
 extension TranslateClientTypes {
-    struct TranslationSettings: Equatable {
+    struct TranslationSettings: Equatable, Codable {
         var formality: TranslateClientTypes.Formality?
         var profanity: TranslateClientTypes.Profanity?
 

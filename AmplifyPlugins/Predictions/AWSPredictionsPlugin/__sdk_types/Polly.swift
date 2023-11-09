@@ -21,7 +21,7 @@ extension AWSPolly {
     struct MarksNotSupportedForFormatException: Error {}
 }
 
-struct SynthesizeSpeechOutputResponse: Equatable {
+struct SynthesizeSpeechOutputResponse: Equatable, Decodable {
     var audioStream: Data?
     // "Content-Type"
     var contentType: String?
@@ -31,10 +31,14 @@ struct SynthesizeSpeechOutputResponse: Equatable {
     enum CodingKeys: String, CodingKey {
         case audioStream = "AudioStream"
     }
+
+    init(audioStream: Data?) {
+        self.audioStream = audioStream
+    }
 }
 
 
-struct SynthesizeSpeechInput: Equatable {
+struct SynthesizeSpeechInput: Equatable, Encodable {
     // "/v1/speech"
 
     var engine: PollyClientTypes.Engine?

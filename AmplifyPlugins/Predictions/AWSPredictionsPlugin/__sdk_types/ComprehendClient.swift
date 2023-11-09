@@ -13,7 +13,7 @@ struct ComprehendClient {
     struct Configuration {
         let region: String
         let credentialsProvider: CredentialsProvider
-        let signingName = ""
+        let signingName = "comprehend"
         let encoder: JSONEncoder
         let decoder: JSONDecoder
 
@@ -128,7 +128,7 @@ struct ComprehendClient {
 extension ComprehendClient: DefaultLogger {
     public static let log: Logger = {
         Amplify.Logging.logger(
-            forCategory: "ComprehendClient",
+            forCategory: "Predictions",
             forNamespace: "ComprehendClient"
         )
     }()

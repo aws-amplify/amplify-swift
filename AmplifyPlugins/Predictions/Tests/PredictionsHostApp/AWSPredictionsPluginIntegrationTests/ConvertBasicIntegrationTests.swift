@@ -63,6 +63,7 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
     }
 
     func testConvertTextToSpeech() async throws {
+        Amplify.Logging.logLevel = .verbose
         let result = try await Amplify.Predictions.convert(
             .textToSpeech("Hello, world!"),
             options: .init(voice: .brazPortugueseMaleRicardo)

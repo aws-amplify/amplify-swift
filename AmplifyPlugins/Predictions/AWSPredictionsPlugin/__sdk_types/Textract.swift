@@ -22,7 +22,7 @@ extension AWSTextract {
     struct UnsupportedDocumentException: Error {}
 }
 
-struct AnalyzeDocumentInput: Equatable {
+struct AnalyzeDocumentInput: Equatable, Encodable {
     /// This member is required.
     var document: TextractClientTypes.Document
     /// This member is required.
@@ -38,7 +38,7 @@ struct AnalyzeDocumentInput: Equatable {
     }
 }
 
-struct AnalyzeDocumentOutputResponse: Equatable {
+struct AnalyzeDocumentOutputResponse: Equatable, Decodable {
     var analyzeDocumentModelVersion: String?
     var blocks: [TextractClientTypes.Block]?
     var documentMetadata: TextractClientTypes.DocumentMetadata?
@@ -52,7 +52,7 @@ struct AnalyzeDocumentOutputResponse: Equatable {
     }
 }
 
-struct DetectDocumentTextInput: Equatable {
+struct DetectDocumentTextInput: Equatable, Encodable {
     /// This member is required.
     var document: TextractClientTypes.Document
 
@@ -62,7 +62,7 @@ struct DetectDocumentTextInput: Equatable {
 }
 
 
-struct DetectDocumentTextOutputResponse: Equatable {
+struct DetectDocumentTextOutputResponse: Equatable, Decodable {
     var blocks: [TextractClientTypes.Block]?
     var detectDocumentTextModelVersion: String?
     var documentMetadata: TextractClientTypes.DocumentMetadata?
@@ -77,7 +77,7 @@ struct DetectDocumentTextOutputResponse: Equatable {
 enum TextractClientTypes {}
 
 extension TextractClientTypes {
-    struct HumanLoopActivationOutput: Equatable {
+    struct HumanLoopActivationOutput: Equatable, Decodable {
         var humanLoopActivationConditionsEvaluationResults: String?
         var humanLoopActivationReasons: [String]?
         var humanLoopArn: String?
@@ -91,7 +91,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct QueriesConfig: Equatable {
+    struct QueriesConfig: Equatable, Encodable {
         /// This member is required.
         var queries: [TextractClientTypes.Query]
 
@@ -102,7 +102,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct HumanLoopDataAttributes: Equatable {
+    struct HumanLoopDataAttributes: Equatable, Encodable {
         var contentClassifiers: [TextractClientTypes.ContentClassifier]?
 
         enum CodingKeys: String, CodingKey {
@@ -144,7 +144,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct HumanLoopConfig: Equatable {
+    struct HumanLoopConfig: Equatable, Encodable {
         var dataAttributes: TextractClientTypes.HumanLoopDataAttributes?
         /// This member is required.
         var flowDefinitionArn: String
@@ -267,7 +267,7 @@ extension TextractClientTypes {
 
 
 extension TextractClientTypes {
-    struct Block: Equatable {
+    struct Block: Equatable, Decodable {
         var blockType: TextractClientTypes.BlockType?
         var columnIndex: Int?
         var columnSpan: Int?
@@ -370,7 +370,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct Relationship: Equatable {
+    struct Relationship: Equatable, Decodable {
         var ids: [String]?
         var type: TextractClientTypes.RelationshipType?
 
@@ -435,7 +435,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct Query: Equatable {
+    struct Query: Equatable, Codable {
         var alias: String?
         var pages: [String]?
         /// This member is required.
@@ -451,7 +451,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct Geometry: Equatable {
+    struct Geometry: Equatable, Decodable {
         var boundingBox: TextractClientTypes.BoundingBox?
         var polygon: [TextractClientTypes.Point]?
 
@@ -463,7 +463,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct BoundingBox: Equatable {
+    struct BoundingBox: Equatable, Decodable {
         var height: Float?
         var `left`: Float?
         var top: Float?
@@ -479,7 +479,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct Point: Equatable {
+    struct Point: Equatable, Decodable {
         var x: Float
         var y: Float
 
@@ -544,7 +544,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct DocumentMetadata: Equatable {
+    struct DocumentMetadata: Equatable, Decodable {
         var pages: Int?
 
         enum CodingKeys: String, CodingKey {
@@ -554,7 +554,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct Document: Equatable {
+    struct Document: Equatable, Encodable {
         var bytes: Data?
         var s3Object: TextractClientTypes.S3Object?
 
@@ -566,7 +566,7 @@ extension TextractClientTypes {
 }
 
 extension TextractClientTypes {
-    struct S3Object: Equatable {
+    struct S3Object: Equatable, Encodable {
         var bucket: String?
         var name: String?
         var version: String?
