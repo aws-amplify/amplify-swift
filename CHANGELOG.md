@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.22.0 (2023-11-10)
+
+### Features
+
+- update swift sdk dependency to 0.31.0 (#3351)
+
 ## 2.21.5 (2023-11-08)
 
 ### Bug Fixes
