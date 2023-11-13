@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSTextract
 import Amplify
 @testable import AWSPredictionsPlugin
 
@@ -54,7 +53,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
 
     func testAnalyzeDocument_internalServerError() throws {
         assertCatchVariations(
-            for: InternalServerError(),
+            for: AWSTextract.InternalServerError(),
             expecting: .internalServerError,
             label: "internalServerError"
         )
@@ -62,7 +61,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
 
     func testAnalyzeDocument_accessDeniedException() throws {
         assertCatchVariations(
-            for: AccessDeniedException(),
+            for: AWSTextract.AccessDeniedException(),
             expecting: .accessDenied,
             label: "accessDenied"
         )
@@ -70,7 +69,7 @@ final class TextractErrorMappingTestCase: XCTestCase {
 
     func testAnalyzeDocument_throttlingException() throws {
         assertCatchVariations(
-            for: ThrottlingException(),
+            for: AWSTextract.ThrottlingException(),
             expecting: .throttling,
             label: "throttling"
         )

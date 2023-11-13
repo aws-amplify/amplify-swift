@@ -7,7 +7,6 @@
 
 import XCTest
 import Amplify
-import AWSTranscribeStreaming
 @testable import AWSPredictionsPlugin
 
 class MockTranscribeBehavior: AWSTranscribeStreamingBehavior {

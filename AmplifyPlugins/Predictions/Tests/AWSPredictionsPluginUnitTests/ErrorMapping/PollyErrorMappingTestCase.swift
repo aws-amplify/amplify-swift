@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSPolly
 import Amplify
 @testable import AWSPredictionsPlugin
 
@@ -55,7 +54,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_invalidSampleRateException() throws {
         assertCatchVariations(
-            for: InvalidSampleRateException(),
+            for: AWSPolly.InvalidSampleRateException(),
             expecting: .invalidSampleRate,
             label: "invalidSampleRate"
         )
@@ -63,7 +62,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_languageNotSupportedException() throws {
         assertCatchVariations(
-            for: LanguageNotSupportedException(),
+            for: AWSPolly.LanguageNotSupportedException(),
             expecting: .unsupportedLanguage,
             label: "unsupportedLanguage"
         )
@@ -71,7 +70,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_serviceFailureException() throws {
         assertCatchVariations(
-            for: ServiceFailureException(),
+            for: AWSPolly.ServiceFailureException(),
             expecting: .internalServerError,
             label: "internalServerError"
         )
@@ -79,7 +78,7 @@ final class PollyErrorMappingTestCase: XCTestCase {
 
     func testSynthesizeSpeech_textLengthExceededException() throws {
         assertCatchVariations(
-            for: TextLengthExceededException(),
+            for: AWSPolly.TextLengthExceededException(),
             expecting: .textSizeLimitExceeded,
             label: "textSizeLimitExceeded"
         )
