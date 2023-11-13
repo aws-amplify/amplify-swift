@@ -272,7 +272,7 @@ let internalPinpointTargets: [Target] = [
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
-            .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
+//            .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
             .product(name: "AmplifyUtilsNotifications", package: "amplify-swift-utils-notifications")
         ],
         path: "AmplifyPlugins/Internal/Sources/InternalAWSPinpoint"
@@ -331,12 +331,6 @@ let predictionsTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .target(name: "CoreMLPredictionsPlugin")
-//            .product(name: "AWSComprehend", package: "aws-sdk-swift"),
-//            .product(name: "AWSPolly", package: "aws-sdk-swift"),
-//            .product(name: "AWSRekognition", package: "aws-sdk-swift"),
-//            .product(name: "AWSTextract", package: "aws-sdk-swift"),
-//            .product(name: "AWSTranscribeStreaming", package: "aws-sdk-swift"),
-//            .product(name: "AWSTranslate", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Predictions/AWSPredictionsPlugin",
         exclude: []
