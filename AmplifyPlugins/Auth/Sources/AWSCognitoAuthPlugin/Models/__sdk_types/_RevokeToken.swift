@@ -24,5 +24,4 @@ struct RevokeTokenInput: Equatable, Encodable {
     }
 }
 
-
 struct RevokeTokenOutputResponse: Equatable, Decodable {}

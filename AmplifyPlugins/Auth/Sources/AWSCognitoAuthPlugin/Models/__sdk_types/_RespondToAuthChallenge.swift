@@ -78,7 +78,9 @@ struct RespondToAuthChallengeOutputResponse: Equatable, Decodable {
         case challengeParameters = "ChallengeParameters"
         case session = "Session"
     }
+}
 
+extension RespondToAuthChallengeOutputResponse {
     init(from decoder: Swift.Decoder) throws {
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
         challengeName = try containerValues.decodeIfPresent(

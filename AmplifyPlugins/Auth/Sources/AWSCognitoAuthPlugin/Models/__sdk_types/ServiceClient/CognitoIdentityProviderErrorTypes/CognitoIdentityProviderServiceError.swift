@@ -175,6 +175,12 @@ struct UserNotFoundException: Error {
     let httpURLResponse: HTTPURLResponse
 }
 
+struct UnsupportedTokenTypeException: Error {
+    let name: String?
+    let message: String?
+    let httpURLResponse: HTTPURLResponse
+}
+
 // Cognito Identity
 
 struct ResourceConflictException: Error {
