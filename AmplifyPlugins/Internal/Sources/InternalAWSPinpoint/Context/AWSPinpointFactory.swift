@@ -20,7 +20,7 @@ public class AWSPinpointFactory {
     
     private init() {}
     
-    static var credentialsProvider = AWSAuthService().getCredentialsProvider()
+    static var credentialsProvider = AWSAuthService()._credentialsProvider()
 
     static var provisioningProfileReader: ProvisioningProfileReader = .default
     

@@ -6,12 +6,11 @@
 //
 
 import Amplify
-import AWSPinpoint
 import Foundation
 
 extension PinpointContext: AWSPinpointBehavior {
 
-    var pinpointClient: PinpointClientProtocol {
+    var pinpointClient: PinpointClient {
         analyticsClient.pinpointClient
     }
 

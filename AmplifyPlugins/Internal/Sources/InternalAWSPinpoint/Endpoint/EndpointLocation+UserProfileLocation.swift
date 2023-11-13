@@ -6,32 +6,13 @@
 //
 
 import Amplify
-import AWSPinpoint
 
 extension PinpointClientTypes.EndpointLocation {
     mutating func update(with location: UserProfileLocation) {
-        if let latitudeValue = location.latitude {
-            latitude = latitudeValue
-        }
-
-        if let longitudeValue = location.longitude {
-            longitude = longitudeValue
-        }
-
-        if let postalCodeValue = location.postalCode {
-            postalCode = postalCodeValue
-        }
-
-        if let cityValue = location.city {
-            city = cityValue
-        }
-
-        if let regionValue = location.region {
-            region = regionValue
-        }
-
-        if let countryValue = location.country {
-            country = countryValue
-        }
+        latitude = location.latitude ?? latitude
+        longitude = location.longitude ?? longitude
+        city = location.city ?? city
+        region = location.region ?? region
+        country = location.country ?? country
     }
 }

@@ -8,12 +8,12 @@
 import Foundation
 import StoreKit
 import Amplify
-import AWSPinpoint
+
 
 @_spi(InternalAWSPinpoint)
 public protocol AnalyticsClientBehaviour: Actor {
     typealias SubmitResult = ((Result<[PinpointEvent], Error>) -> Void)
-    nonisolated var pinpointClient: PinpointClientProtocol { get }
+    nonisolated var pinpointClient: PinpointClient { get }
 
     func addGlobalAttribute(_ attribute: String, forKey key: String)
     func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String)
@@ -76,7 +76,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     // However, 'convenience' is required to build with swift <5.7
 #if swift(>=5.7)
     init(applicationId: String,
-         pinpointClient: PinpointClientProtocol,
+         pinpointClient: PinpointClient,
          endpointClient: EndpointClientBehaviour,
          sessionProvider: @escaping SessionProvider) throws
     {
@@ -103,7 +103,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     }
 #endif
     
-    nonisolated var pinpointClient: PinpointClientProtocol {
+    nonisolated var pinpointClient: PinpointClient {
         return eventRecorder.pinpointClient
     }
 

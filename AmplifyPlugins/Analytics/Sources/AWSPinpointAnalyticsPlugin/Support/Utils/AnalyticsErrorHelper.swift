@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AwsCommonRuntimeKit
 
 enum AnalyticsErrorHelper {
     static func getDefaultError(_ error: Error) -> AnalyticsError {

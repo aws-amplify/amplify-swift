@@ -6,8 +6,6 @@
 //
 
 import Amplify
-import AWSClientRuntime
-import AWSPinpoint
 import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
 
@@ -76,14 +74,14 @@ struct PinpointContextConfiguration {
     /// The Pinpoint region
     let region: String
     /// Used to retrieve the proper AWSCredentials when creating the PinpointCLient
-    let credentialsProvider: CredentialsProviding
+    let credentialsProvider: CredentialsProvider
     /// Indicates if the App is in Debug or Release build. Defaults to `false`
     /// Setting this flag to true will set the Endpoint Profile to have a channel type of "APNS_SANDBOX".
     let isDebug: Bool
 
     init(appId: String,
          region: String,
-         credentialsProvider: CredentialsProviding,
+         credentialsProvider: CredentialsProvider,
          isDebug: Bool = false) {
         self.appId = appId
         self.region = region
@@ -123,9 +121,12 @@ class PinpointContext {
                                          archiver: archiver)
         uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
 
-        let pinpointClient = try PinpointClient(region: configuration.region,
-                                                credentialsProvider: configuration.credentialsProvider)
+        let pinpointConfiguration = PinpointClientConfiguration(
+            region: configuration.region,
+            credentialsProvider: configuration.credentialsProvider
+        )
 
+        let pinpointClient = PinpointClient(configuration: pinpointConfiguration)
         endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
                                                              uniqueDeviceId: uniqueId,
                                                              isDebug: configuration.isDebug),

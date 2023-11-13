@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPinpoint
 @testable import AWSPinpointPushNotificationsPlugin
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import XCTest

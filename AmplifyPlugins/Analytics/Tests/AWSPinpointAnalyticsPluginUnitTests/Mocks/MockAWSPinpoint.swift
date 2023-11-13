@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPinpoint
 import Foundation
 import StoreKit
 import XCTest
@@ -87,11 +86,28 @@ class MockAWSPinpoint: AWSPinpointBehavior {
 
     public init() {}
 
-    public var pinpointClient: PinpointClientProtocol {
+    public var pinpointClient: PinpointClient {
         escapeHatchCalled += 1
-        return try! PinpointClient(region: "us-east-1")
+        return PinpointClient(configuration: .init(region: "us-east-1", credentialsProvider: .mock))
     }
 }
+
+import AWSPluginsCore
+struct MockCredentialsProvider: CredentialsProvider {
+    func fetchCredentials() async throws -> Credentials {
+        .init(
+            accessKey: "access_key",
+            secret: "secret_key",
+            expirationTimeout: .init() + 500,
+            sessionToken: "session_token"
+        )
+    }
+}
+
+extension CredentialsProvider where Self == MockCredentialsProvider {
+    static var mock: Self { .init() }
+}
+
 
 extension MockAWSPinpoint {
     public func verifyCurrentEndpointProfile() {

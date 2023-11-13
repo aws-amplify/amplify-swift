@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPinpoint
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 import UserNotifications

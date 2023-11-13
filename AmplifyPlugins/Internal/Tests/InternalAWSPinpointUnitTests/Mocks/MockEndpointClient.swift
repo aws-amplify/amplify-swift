@@ -7,7 +7,6 @@
 
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import AWSClientRuntime
-import AWSPinpoint
 import Foundation
 
 actor MockEndpointClient: EndpointClientBehaviour {

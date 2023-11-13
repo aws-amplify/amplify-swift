@@ -7,7 +7,6 @@
 
 import XCTest
 import AWSPluginsCore
-import AWSPinpoint
 @testable import Amplify
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 

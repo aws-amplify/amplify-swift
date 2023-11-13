@@ -6,8 +6,6 @@
 //
 
 import Amplify
-import AWSPinpoint
-import ClientRuntime
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 

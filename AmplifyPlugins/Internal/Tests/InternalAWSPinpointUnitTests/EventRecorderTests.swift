@@ -6,10 +6,7 @@
 //
 
 import XCTest
-import AWSPinpoint
-import AwsCommonRuntimeKit
 @testable import Amplify
-import ClientRuntime
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class EventRecorderTests: XCTestCase {

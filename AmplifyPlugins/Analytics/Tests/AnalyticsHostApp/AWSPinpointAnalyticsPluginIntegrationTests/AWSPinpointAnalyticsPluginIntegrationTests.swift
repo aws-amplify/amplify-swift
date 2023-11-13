@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSPinpoint
 
 @testable import Amplify
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
@@ -23,6 +22,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     override func setUp() {
         do {
             let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
+            Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
             try Amplify.configure(config)
@@ -358,7 +358,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         return analyticsPlugin
     }
 
-    private func pinpointClient() -> PinpointClientProtocol {
+    private func pinpointClient() -> PinpointClient {
         return plugin().getEscapeHatch()
     }
 

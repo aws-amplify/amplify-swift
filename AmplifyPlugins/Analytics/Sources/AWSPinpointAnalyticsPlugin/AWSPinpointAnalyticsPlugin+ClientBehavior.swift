@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPinpoint
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
@@ -116,7 +115,7 @@ extension AWSPinpointAnalyticsPlugin {
     /// Retrieve the escape hatch to perform actions directly on PinpointClient.
     ///
     /// - Returns: PinpointClientProtocol instance
-    public func getEscapeHatch() -> PinpointClientProtocol {
+    public func getEscapeHatch() -> PinpointClient {
         pinpoint.pinpointClient
     }
 

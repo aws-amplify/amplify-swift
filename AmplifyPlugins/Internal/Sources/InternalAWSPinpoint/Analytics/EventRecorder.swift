@@ -7,14 +7,11 @@
 
 import Amplify
 import AWSCognitoAuthPlugin
-import AWSPinpoint
-import ClientRuntime
-import enum AwsCommonRuntimeKit.CommonRunTimeError
 import Foundation
 
 /// AnalyticsEventRecording saves and submits pinpoint events
 protocol AnalyticsEventRecording {
-    var pinpointClient: PinpointClientProtocol { get }
+    var pinpointClient: PinpointClient { get }
 
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
@@ -38,7 +35,7 @@ protocol AnalyticsEventRecording {
 class EventRecorder: AnalyticsEventRecording {
     let appId: String
     let storage: AnalyticsEventStorage
-    let pinpointClient: PinpointClientProtocol
+    let pinpointClient: PinpointClient
     let endpointClient: EndpointClientBehaviour
     private var submittedEvents: [PinpointEvent] = []
 
@@ -50,7 +47,7 @@ class EventRecorder: AnalyticsEventRecording {
     ///   - endpointClient: An EndpointClientBehaviour client
     init(appId: String,
          storage: AnalyticsEventStorage,
-         pinpointClient: PinpointClientProtocol,
+         pinpointClient: PinpointClient,
          endpointClient: EndpointClientBehaviour) throws {
         self.appId = appId
         self.storage = storage
@@ -134,7 +131,7 @@ class EventRecorder: AnalyticsEventRecording {
             log.verbose("PutEventsInput: \(putEventsInput)")
             let response = try await pinpointClient.putEvents(input: putEventsInput)
             log.verbose("PutEventsOutputResponse received: \(response)")
-            guard let results = response.eventsResponse?.results else {
+            guard let results = response.eventsResponse.results else {
                 let errorMessage = "Unexpected response from server when attempting to submit events."
                 log.error(errorMessage)
                 throw AnalyticsError.unknown(errorMessage)
@@ -142,7 +139,7 @@ class EventRecorder: AnalyticsEventRecording {
 
             let endpointResponseMap = results.compactMap { $0.value.endpointItemResponse }
             for endpointResponse in endpointResponseMap {
-                if HttpStatusCode.accepted.rawValue == endpointResponse.statusCode {
+                if endpointResponse.statusCode == 202 {
                     log.verbose("EndpointProfile updated successfully.")
                 } else {
                     log.error("Unable to update EndpointProfile. Error: \(endpointResponse.message ?? "Unknown")")
@@ -153,13 +150,13 @@ class EventRecorder: AnalyticsEventRecording {
             for (eventId, eventResponse) in eventsResponseMap.flatMap({ $0 }) {
                 guard let event = pinpointEventsById[eventId] else { continue }
                 let responseMessage = eventResponse.message ?? "Unknown"
-                if HttpStatusCode.accepted.rawValue == eventResponse.statusCode,
+                if eventResponse.statusCode == 202,
                    Constants.acceptedResponseMessage == responseMessage {
                     // On successful submission, add the event to the list of submitted events and delete it from the local storage
                     log.verbose("Successful submit for event with id \(eventId)")
                     submittedEvents.append(event)
                     deleteEvent(eventId: eventId)
-                } else if HttpStatusCode.badRequest.rawValue == eventResponse.statusCode {
+                } else if eventResponse.statusCode == 400 {
                     // On bad request responses, mark the event as dirty
                     log.error("Server rejected submission of event. Event with id \(eventId) will be discarded. Error: \(responseMessage)")
                     setDirtyEvent(eventId: eventId)
@@ -244,10 +241,12 @@ class EventRecorder: AnalyticsEventRecording {
     }
 
     private func isErrorRetryable(_ error: Error) -> Bool {
-        guard case let modeledError as ModeledError = error else {
-            return false
-        }
-        return type(of: modeledError).isRetryable
+        false
+        // TODO: Add retryable logic for new world
+//        guard case let modeledError as ModeledError = error else {
+//            return false
+//        }
+//        return type(of: modeledError).isRetryable
     }
     
     private func errorDescription(_ error: Error) -> String {
@@ -257,11 +256,11 @@ class EventRecorder: AnalyticsEventRecording {
         switch error {
         case let error as ModeledErrorDescribable:
             return error.errorDescription
-        case let error as CommonRunTimeError:
-            switch error {
-            case .crtError(let crtError):
-                return crtError.message
-            }
+//        case let error as CommonRunTimeError:
+//            switch error {
+//            case .crtError(let crtError):
+//                return crtError.message
+//            }
         default:
             return error.localizedDescription
         }
@@ -269,8 +268,8 @@ class EventRecorder: AnalyticsEventRecording {
     
     private func isConnectivityError(_ error: Error) -> Bool {
         switch error {
-        case let error as CommonRunTimeError:
-            return error.isConnectivityError
+//        case let error as CommonRunTimeError:
+//            return error.isConnectivityError
         case let error as NSError:
             let networkErrorCodes = [
                 NSURLErrorCannotFindHost,

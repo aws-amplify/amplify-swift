@@ -7,9 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSPinpoint
-import ClientRuntime
-import AWSClientRuntime
 
 private func recoverySuggestion(for error: ClientRuntime.ModeledError) -> String {
     type(of: error).isRetryable

@@ -6,8 +6,6 @@
 //
 
 import XCTest
-import AWSPinpoint
-
 @testable import Amplify
 @testable import AWSPinpointAnalyticsPlugin
 import AWSCognitoAuthPlugin

@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPinpoint
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class MockEventRecorder: AnalyticsEventRecording {

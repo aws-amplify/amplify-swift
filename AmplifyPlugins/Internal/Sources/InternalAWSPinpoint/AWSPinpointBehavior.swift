@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPinpoint
 import Foundation
 
 /// Implemented by `PinpointContext` as a pass through to the methods on `analyticClient` and `endpointClient`.
@@ -15,7 +14,7 @@ import Foundation
 public protocol AWSPinpointBehavior {
     // MARK: Escape hatch
     /// The low-level `PinpointClientProcotol` client used to interact with AWS Pinpoint for Analytics and Targeting.
-    var pinpointClient: PinpointClientProtocol { get }
+    var pinpointClient: PinpointClient { get }
 
     // MARK: Analytics
     /// Creates a `PinpointEvent` with the specificed eventType

@@ -40,6 +40,7 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
                                   networkMonitor: mockNetworkMonitor)
 
         await Amplify.reset()
+        Amplify.Logging.logLevel = .verbose
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)

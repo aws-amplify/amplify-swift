@@ -7,13 +7,12 @@
 
 import Amplify
 import AmplifyUtilsNotifications
-import AWSPinpoint
 @_spi(KeychainStore) import AWSPluginsCore
 import Foundation
 
 @_spi(InternalAWSPinpoint)
 public protocol EndpointClientBehaviour: Actor {
-    nonisolated var pinpointClient: PinpointClientProtocol { get }
+    nonisolated var pinpointClient: PinpointClient { get }
 
     func currentEndpointProfile() async -> PinpointEndpointProfile
     func updateEndpointProfile() async throws
@@ -28,7 +27,7 @@ actor EndpointClient: EndpointClientBehaviour {
         let isDebug: Bool
     }
 
-    let pinpointClient: PinpointClientProtocol
+    let pinpointClient: PinpointClient
 
     private let configuration: EndpointClient.Configuration
     private let archiver: AmplifyArchiverBehaviour
@@ -41,7 +40,7 @@ actor EndpointClient: EndpointClientBehaviour {
     private static let defaultDateFormatter = ISO8601DateFormatter()
 
     init(configuration: EndpointClient.Configuration,
-         pinpointClient: PinpointClientProtocol,
+         pinpointClient: PinpointClient,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
          endpointInformation: EndpointInformation = .current,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,

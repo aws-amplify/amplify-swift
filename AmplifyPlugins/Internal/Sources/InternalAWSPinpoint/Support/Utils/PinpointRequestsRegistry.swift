@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import AWSPinpoint
-import ClientRuntime
 @_spi(PluginHTTPClientEngine)
 import AWSPluginsCore
 
@@ -21,13 +19,13 @@ import AWSPluginsCore
         pendingRequests[api, default: []].insert(source)
     }
 
-    nonisolated func setCustomHttpEngine(on configuration: PinpointClient.PinpointClientConfiguration) {
-        let baseHTTPClientEngine = configuration.httpClientEngine
-
-        configuration.httpClientEngine = CustomPinpointHttpClientEngine(
-            httpClientEngine: baseHTTPClientEngine
-        )
-    }
+//    nonisolated func setCustomHttpEngine(on configuration: PinpointClient.PinpointClientConfiguration) {
+//        let baseHTTPClientEngine = configuration.httpClientEngine
+//
+//        configuration.httpClientEngine = CustomPinpointHttpClientEngine(
+//            httpClientEngine: baseHTTPClientEngine
+//        )
+//    }
 
     fileprivate func sources(for api: API) -> Set<AWSPinpointSource> {
         return pendingRequests[api, default: []]
@@ -53,38 +51,38 @@ import AWSPluginsCore
     }
 }
 
-private struct CustomPinpointHttpClientEngine: HttpClientEngine {
-    private let userAgentHeader = "User-Agent"
-    private let httpClientEngine: HttpClientEngine
-
-    init(httpClientEngine: HttpClientEngine) {
-        self.httpClientEngine = httpClientEngine
-    }
-
-    func execute(request: ClientRuntime.SdkHttpRequest) async throws -> ClientRuntime.HttpResponse {
-        guard let url = request.endpoint.url,
-              let pinpointApi = PinpointRequestsRegistry.API(from: url),
-              let userAgentSuffix = await userAgent(for: pinpointApi) else {
-            return try await httpClientEngine.execute(request: request)
-        }
-
-        let currentUserAgent = request.headers.value(for: userAgentHeader) ?? ""
-        let updatedRequest = request.updatingUserAgent(with: "\(currentUserAgent) \(userAgentSuffix)")
-
-        await PinpointRequestsRegistry.shared.unregisterSources(for: pinpointApi)
-        return try await httpClientEngine.execute(request: updatedRequest)
-    }
-
-    private func userAgent(for api: PinpointRequestsRegistry.API) async -> String? {
-        let sources = await PinpointRequestsRegistry.shared.sources(for: api)
-        if sources.isEmpty {
-            return nil
-        }
-
-        var userAgent = ""
-        for source in sources {
-            userAgent.append(" ft/\(source.rawValue)")
-        }
-        return userAgent
-    }
-}
+//private struct CustomPinpointHttpClientEngine: HttpClientEngine {
+//    private let userAgentHeader = "User-Agent"
+////    private let httpClientEngine: HttpClientEngine
+////
+////    init(httpClientEngine: HttpClientEngine) {
+////        self.httpClientEngine = httpClientEngine
+////    }
+//
+//    func execute(request: ClientRuntime.SdkHttpRequest) async throws -> ClientRuntime.HttpResponse {
+//        guard let url = request.endpoint.url,
+//              let pinpointApi = PinpointRequestsRegistry.API(from: url),
+//              let userAgentSuffix = await userAgent(for: pinpointApi) else {
+//            return try await httpClientEngine.execute(request: request)
+//        }
+//
+//        let currentUserAgent = request.headers.value(for: userAgentHeader) ?? ""
+//        let updatedRequest = request.updatingUserAgent(with: "\(currentUserAgent) \(userAgentSuffix)")
+//
+//        await PinpointRequestsRegistry.shared.unregisterSources(for: pinpointApi)
+//        return try await httpClientEngine.execute(request: updatedRequest)
+//    }
+//
+//    private func userAgent(for api: PinpointRequestsRegistry.API) async -> String? {
+//        let sources = await PinpointRequestsRegistry.shared.sources(for: api)
+//        if sources.isEmpty {
+//            return nil
+//        }
+//
+//        var userAgent = ""
+//        for source in sources {
+//            userAgent.append(" ft/\(source.rawValue)")
+//        }
+//        return userAgent
+//    }
+//}

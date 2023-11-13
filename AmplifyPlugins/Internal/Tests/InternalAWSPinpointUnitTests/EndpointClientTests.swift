@@ -7,7 +7,6 @@
 
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import XCTest
-import AWSPinpoint
 import UserNotifications
 
 class EndpointClientTests: XCTestCase {

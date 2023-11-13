@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPinpoint
-import ClientRuntime
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import XCTest
 
