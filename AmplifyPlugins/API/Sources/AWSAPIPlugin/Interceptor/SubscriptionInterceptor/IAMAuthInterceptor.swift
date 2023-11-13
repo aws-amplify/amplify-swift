@@ -9,8 +9,6 @@ import Foundation
 import AWSPluginsCore
 import Amplify
 import AppSyncRealTimeClient
-import AWSClientRuntime
-import ClientRuntime
 
 class IAMAuthInterceptor: AuthInterceptorAsync {
 
@@ -21,10 +19,10 @@ class IAMAuthInterceptor: AuthInterceptorAsync {
                                                            RealtimeProviderConstants.amzDate.lowercased(),
                                                            RealtimeProviderConstants.iamSecurityTokenKey.lowercased()]
 
-    let authProvider: CredentialsProviding
+    let authProvider: CredentialsProvider
     let region: AWSRegionType
 
-    init(_ authProvider: CredentialsProviding, region: AWSRegionType) {
+    init(_ authProvider: CredentialsProvider, region: AWSRegionType) {
         self.authProvider = authProvider
         self.region = region
     }
@@ -70,73 +68,63 @@ class IAMAuthInterceptor: AuthInterceptorAsync {
         return signedRequest
     }
 
-    func getAuthHeader(_ endpoint: URL,
-                       with payload: String,
-                       signer: AWSSignatureV4Signer = AmplifyAWSSignatureV4Signer()) async -> IAMAuthenticationHeader? {
+    func getAuthHeader(
+        _ endpoint: URL,
+        with payload: String
+    ) async -> IAMAuthenticationHeader? {
         guard let host = endpoint.host else {
+            Amplify.Logging.error("No host present in url: \(endpoint)")
             return nil
         }
 
-        /// The process of getting the auth header for an IAM based authentication request is as follows:
-        ///
-        /// 1. A request is created with the IAM based auth headers (date,  accept, content encoding, content type, and
-        /// additional headers.
-        let requestBuilder = SdkHttpRequestBuilder()
-            .withHost(endpoint.host ?? "")
-            .withPath(endpoint.path)
-            .withMethod(.post)
-            .withPort(443)
-            .withProtocol(.https)
-            .withHeader(name: RealtimeProviderConstants.acceptKey, value: RealtimeProviderConstants.iamAccept)
-            .withHeader(name: RealtimeProviderConstants.contentEncodingKey, value: RealtimeProviderConstants.iamEncoding)
-            .withHeader(name: URLRequestConstants.Header.contentType, value: RealtimeProviderConstants.iamConentType)
-            .withHeader(name: URLRequestConstants.Header.host, value: host)
-            .withBody(.data(payload.data(using: .utf8)))
-
-        /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
-        /// the request headers as authorization and security token.
         do {
-            guard let urlRequest = try await signer.sigV4SignedRequest(requestBuilder: requestBuilder,
-                                                                 credentialsProvider: authProvider,
-                                                                 signingName: SubscriptionConstants.appsyncServiceName,
-                                                                 signingRegion: region,
-                                                                 date: Date()) else {
-                Amplify.Logging.error("Unable to sign request")
-                return nil
+            let credentials = try await authProvider.fetchCredentials()
+
+            let signer = SigV4Signer(
+                credentials: credentials,
+                serviceName: SubscriptionConstants.appsyncServiceName,
+                region: region
+            )
+
+            let signedRequest = signer.sign(
+                url: endpoint,
+                method: .put,
+                body: .string(payload),
+                headers: [
+                    RealtimeProviderConstants.acceptKey: RealtimeProviderConstants.iamAccept,
+                    RealtimeProviderConstants.contentEncodingKey: RealtimeProviderConstants.iamEncoding,
+                    URLRequestConstants.Header.contentType: RealtimeProviderConstants.iamConentType
+                ]
+            )
+
+            let signedHeaders = signedRequest.allHTTPHeaderFields
+
+            // TODO: Better error handling for missing header values
+            let authorization = signedHeaders?[SubscriptionConstants.authorizationkey] ?? ""
+            let securityToken = signedHeaders?[RealtimeProviderConstants.iamSecurityTokenKey] ?? ""
+            let amzDate = signedHeaders?[RealtimeProviderConstants.amzDate] ?? ""
+            let additionalHeaders = signedHeaders?.filter {
+                ![
+                    SubscriptionConstants.authorizationkey,
+                    RealtimeProviderConstants.iamSecurityTokenKey,
+                    RealtimeProviderConstants.amzDate
+                ].contains($0.key)
             }
 
-            var authorization: String = ""
-            // TODO: Using long lived credentials without getting a session with security token will fail
-            // since the session token does not exist on the signed request, and is an empty string.
-            // Once Amplify.Auth is ready to be integrated, this code path needs to be re-tested.
-            var securityToken: String = ""
-            var amzDate: String = ""
-            var additionalHeaders: [String: String]?
-            for header in urlRequest.headers.headers {
-                guard let value = header.value.first else {
-                    continue
-                }
-                let headerName = header.name.lowercased()
-                if headerName == SubscriptionConstants.authorizationkey.lowercased() {
-                    authorization = value
-                } else if headerName == RealtimeProviderConstants.amzDate.lowercased() {
-                    amzDate = value
-                } else if headerName == RealtimeProviderConstants.iamSecurityTokenKey.lowercased() {
-                    securityToken = value
-                } else {
-                    additionalHeaders?.updateValue(header.value.joined(separator: ","), forKey: header.name)
-                }
-            }
 
-            return IAMAuthenticationHeader(host: host,
-                                           authorization: authorization,
-                                           securityToken: securityToken,
-                                           amzDate: amzDate,
-                                           accept: RealtimeProviderConstants.iamAccept,
-                                           contentEncoding: RealtimeProviderConstants.iamEncoding,
-                                           contentType: RealtimeProviderConstants.iamConentType,
-                                           additionalHeaders: additionalHeaders)
+            return IAMAuthenticationHeader(
+                host: host,
+                authorization: authorization,
+                securityToken: securityToken,
+                amzDate: amzDate,
+                accept: RealtimeProviderConstants.iamAccept,
+                contentEncoding: RealtimeProviderConstants.iamEncoding,
+                contentType: RealtimeProviderConstants.iamConentType,
+                additionalHeaders: additionalHeaders
+            )
+
         } catch {
+            // TODO: don't log here - propogate the error up
             Amplify.Logging.error("Unable to sign request")
             return nil
         }

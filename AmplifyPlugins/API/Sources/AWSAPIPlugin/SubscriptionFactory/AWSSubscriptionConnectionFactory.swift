@@ -76,7 +76,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             let provider = AWSOIDCAuthProvider(authService: authService)
             authInterceptor = OIDCAuthInterceptorAsync(provider)
         case .awsIAM(let awsIAMConfiguration):
-            authInterceptor = IAMAuthInterceptor(authService.getCredentialsProvider(),
+            authInterceptor = IAMAuthInterceptor(authService._credentialsProvider(),
                                                  region: awsIAMConfiguration.region)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {

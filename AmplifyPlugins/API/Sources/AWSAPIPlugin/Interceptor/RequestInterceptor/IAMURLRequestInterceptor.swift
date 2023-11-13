@@ -8,7 +8,6 @@
 import Amplify
 import AWSPluginsCore
 import Foundation
-import ClientRuntime
 
 typealias AWSRegionType = String
 
@@ -27,33 +26,11 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     }
 
     func intercept(_ request: URLRequest) async throws -> URLRequest {
-        var request = request
-
         guard let url = request.url else {
             throw APIError.unknown("Could not get url from mutable request", "")
         }
-        guard let host = url.host else {
-            throw APIError.unknown("Could not get host from mutable request", "")
-        }
 
-        request.setValue(host, forHTTPHeaderField: "host")
-        request.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
-
-        let httpMethod = (request.httpMethod?.uppercased())
-            .flatMap(HttpMethodType.init(rawValue:)) ?? .get
-
-        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?
-            .map { ClientRuntime.URLQueryItem(name: $0.name, value: $0.value)} ?? []
-
-        let requestBuilder = SdkHttpRequestBuilder()
-            .withHost(host)
-            .withPath(url.path)
-            .withQueryItems(queryItems)
-            .withMethod(httpMethod)
-            .withPort(443)
-            .withProtocol(.https)
-            .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
-            .withBody(.data(request.httpBody))
+        let credentials = try await iamCredentialsProvider._credentialsProvider().fetchCredentials()
 
         let signingName: String
         switch endpointType {
@@ -63,20 +40,24 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
             signingName = URLRequestConstants.apiGatewayServiceName
         }
 
-        guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
-            requestBuilder: requestBuilder,
-            credentialsProvider: iamCredentialsProvider.getCredentialsProvider(),
-            signingName: signingName,
-            signingRegion: region,
-            date: Date()
-        ) else {
-            throw APIError.unknown("Unable to sign request", "")
-        }
+        let signer = SigV4Signer(
+            credentials: credentials,
+            serviceName: signingName,
+            region: region
+        )
 
-        for header in urlRequest.headers.headers {
-            request.setValue(header.value.joined(separator: ","), forHTTPHeaderField: header.name)
-        }
+        let httpMethod = (request.httpMethod?.uppercased())
+            .flatMap(HTTPMethod.init(verb:)) ?? .get
 
-        return request
+        let signedRequest = signer.sign(
+            url: url,
+            method: httpMethod,
+            body: .data(request.httpBody ?? .init()),
+            headers: [
+                URLRequestConstants.Header.userAgent: userAgent
+            ]
+        )
+
+        return signedRequest
     }
 }
