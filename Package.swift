@@ -9,7 +9,7 @@ let platforms: [SupportedPlatform] = [
     .watchOS(.v9)
 ]
 let dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.26.0"),
+//    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.26.0"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.0.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.13.2"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
@@ -83,7 +83,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "AWSPluginsCore",
-            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+//            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
         exclude: [
@@ -95,7 +95,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "AWSPluginsCore",
             "AmplifyTestCommon",
-            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+//            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
@@ -272,7 +272,6 @@ let internalPinpointTargets: [Target] = [
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
-//            .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
             .product(name: "AmplifyUtilsNotifications", package: "amplify-swift-utils-notifications")
         ],
         path: "AmplifyPlugins/Internal/Sources/InternalAWSPinpoint"
@@ -368,7 +367,6 @@ let loggingTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore")
-//            .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin"
     ),
