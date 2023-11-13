@@ -62,7 +62,7 @@ extension AWSPinpointPushNotificationsPlugin {
     /// Retrieves the escape hatch to perform actions directly on PinpointClient.
     ///
     /// - Returns: PinpointClientProtocol instance
-    public func getEscapeHatch() -> PinpointClientProtocol {
+    public func getEscapeHatch() -> PinpointClient {
         pinpoint.pinpointClient
     }
 

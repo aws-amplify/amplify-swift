@@ -7,22 +7,22 @@
 
 import Foundation
 import Amplify
-import AwsCommonRuntimeKit
+//import AwsCommonRuntimeKit
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
 
-extension CommonRunTimeError: PushNotificationsErrorConvertible {
-    var pushNotificationsError: PushNotificationsError {
-        if isConnectivityError {
-            return .network(
-                PushNotificationsPluginErrorConstants.deviceOffline.errorDescription,
-                PushNotificationsPluginErrorConstants.deviceOffline.recoverySuggestion,
-                self
-            )
-        }
-
-        switch self {
-        case .crtError(let crtError):
-            return .unknown(crtError.message, self)
-        }
-    }
-}
+//extension CommonRunTimeError: PushNotificationsErrorConvertible {
+//    var pushNotificationsError: PushNotificationsError {
+//        if isConnectivityError {
+//            return .network(
+//                PushNotificationsPluginErrorConstants.deviceOffline.errorDescription,
+//                PushNotificationsPluginErrorConstants.deviceOffline.recoverySuggestion,
+//                self
+//            )
+//        }
+//
+//        switch self {
+//        case .crtError(let crtError):
+//            return .unknown(crtError.message, self)
+//        }
+//    }
+//}
