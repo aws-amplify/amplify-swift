@@ -187,13 +187,7 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: .init(body: .empty, statusCode: .ok),
-                message: nil,
-                requestID: nil,
-                requestID2: nil,
-                typeName: nil
-            )
+            throw PlaceholderError()
         })
 
         do {
@@ -218,7 +212,11 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.InvalidParameterException()
+            throw InvalidParameterException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         do {
@@ -247,7 +245,11 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "message")
+            throw NotAuthorizedException(
+                name: nil,
+                message: "message",
+                httpURLResponse: .init()
+            )
         })
 
         do {
@@ -274,7 +276,11 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
+            throw PasswordResetRequiredException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         do {
@@ -305,7 +311,11 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
+            throw ResourceNotFoundException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         do {
@@ -336,7 +346,11 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.TooManyRequestsException()
+            throw TooManyRequestsException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         do {
@@ -367,7 +381,11 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotConfirmedException()
+            throw UserNotConfirmedException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
         do {
             _ = try await plugin.fetchMFAPreference()
@@ -397,7 +415,11 @@ class FetchMFAPreferenceTaskTests: BasePluginTest {
     func testFetchMFAPreferenceWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotFoundException()
+            throw UserNotFoundException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
         do {
             _ = try await plugin.fetchMFAPreference()

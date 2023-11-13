@@ -5,11 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 import AWSPluginsCore
-
-
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import Foundation
@@ -173,13 +169,12 @@ struct CognitoAPIDecodingHelper {
 
     private static func getApiInputAndOutput<
         Input: Decodable,
-        Output: Decodable,
-        ErrorGenerator: ClientRuntime.HttpResponseErrorBinding
+        Output: Decodable
     >(
         request: Data?,
         response: [String: JSONValue],
         responseType: String
-    ) async -> CognitoAPIData<Input, Output, ErrorGenerator> {
+    ) async -> CognitoAPIData<Input, Output> {
         var input: Input? = nil
 
         if let request = request {
@@ -191,22 +186,11 @@ struct CognitoAPIDecodingHelper {
 
         switch responseType {
         case "failure":
-            guard case .string(let errorType) = response["errorType"],
-                  case .string(let errorMessage) = response["errorType"] else {
+            guard case .string(let errorType) = response["errorType"] else {
                 fatalError()
             }
 
-            let error = try! await ErrorGenerator.makeError(
-                httpResponse: .init(
-                    headers: Headers(
-                        [
-                            "x-amzn-error-message": errorMessage,
-                            "X-Amzn-Errortype": "#\(errorType):"]),
-                    body: .empty,
-                    statusCode: .ok
-                ),
-                decoder: nil
-            )
+            let error = makeError(type: errorType)
             result = .failure(error)
         case "success":
             let responseData = try! JSONEncoder().encode(response)
@@ -218,8 +202,44 @@ struct CognitoAPIDecodingHelper {
         }
         return CognitoAPIData(
             expectedInput: input,
-            errorBinding: ErrorGenerator.self,
             output: result
         )
+    }
+
+    private static func makeError(type: String) -> Error {
+        switch type {
+        case "CodeDeliveryFailureException":
+            return CodeDeliveryFailureException(name: nil, message: nil, httpURLResponse: .init())
+        case "ForbiddenException":
+            return ForbiddenException(name: nil, message: nil, httpURLResponse: .init())
+        case "InternalErrorException":
+            return InternalErrorException(name: nil, message: nil, httpURLResponse: .init())
+        case "InvalidEmailRoleAccessPolicyException":
+            return InvalidEmailRoleAccessPolicyException(name: nil, message: nil, httpURLResponse: .init())
+        case "InvalidLambdaResponseException":
+            return InvalidLambdaResponseException(name: nil, message: nil, httpURLResponse: .init())
+        case "InvalidParameterException":
+            return InvalidParameterException(name: nil, message: nil, httpURLResponse: .init())
+        case "InvalidSmsRoleAccessPolicyException":
+            return InvalidSmsRoleAccessPolicyException(name: nil, message: nil, httpURLResponse: .init())
+        case "InvalidSmsRoleTrustRelationshipException":
+            return InvalidSmsRoleTrustRelationshipException(name: nil, message: nil, httpURLResponse: .init())
+        case "LimitExceededException":
+            return LimitExceededException(name: nil, message: nil, httpURLResponse: .init())
+        case "NotAuthorizedException":
+            return NotAuthorizedException(name: nil, message: nil, httpURLResponse: .init())
+        case "ResourceNotFoundException":
+            return ResourceNotFoundException(name: nil, message: nil, httpURLResponse: .init())
+        case "TooManyRequestsException":
+            return TooManyRequestsException(name: nil, message: nil, httpURLResponse: .init())
+        case "UnexpectedLambdaException":
+            return UnexpectedLambdaException(name: nil, message: nil, httpURLResponse: .init())
+        case "UserLambdaValidationException":
+            return UserLambdaValidationException(name: nil, message: nil, httpURLResponse: .init())
+        case "UserNotFoundException":
+            return UserNotFoundException(name: nil, message: nil, httpURLResponse: .init())
+        default:
+            return PlaceholderError()
+        }
     }
 }

@@ -5,18 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
-
+import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension InitiateAuthInput: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case authFlow
-        case authParameters
-        case clientId
-        case clientMetadata
-    }
-
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let authFlow = try values.decodeIfPresent(CognitoIdentityProviderClientTypes.AuthFlowType.self, forKey: .authFlow)
@@ -27,6 +19,7 @@ extension InitiateAuthInput: Decodable {
             authFlow: authFlow,
             authParameters: authParameters,
             clientId: clientId,
-            clientMetadata: clientMetadata)
+            clientMetadata: clientMetadata
+        )
     }
 }

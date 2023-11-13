@@ -20,7 +20,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                try await ForgetDeviceOutputResponse(httpResponse: MockHttpResponse.ok)
+                ForgetDeviceOutputResponse()
             }
         )
     }
@@ -72,9 +72,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.InternalErrorException(
-                    message: "internal error"
-                )
+                throw InternalErrorException(name: nil, message: "internal error", httpURLResponse: .init())
             }
         )
 
@@ -103,9 +101,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.InternalErrorException(
-                    message: "internal error"
-                )
+                throw InternalErrorException(name: nil, message: "internal error", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -139,11 +135,10 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InvalidParameterException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted),
-                    decoder: nil,
+                throw try await InvalidParameterException(
+                    name: nil,
                     message: nil,
-                    requestID: nil
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -173,9 +168,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidParameterException(
-                    message: "invalid parameter"
-                )
+                throw InvalidParameterException(name: nil, message: "invalid parameter", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -210,9 +203,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
-                    message: "invalid user pool configuration"
-                )
+                throw InvalidUserPoolConfigurationException(name: nil, message: "invalid user pool configuration", httpURLResponse: .init())
             }
         )
         do {
@@ -240,9 +231,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
-                    message: "invalid user pool configuration"
-                )
+                throw InvalidUserPoolConfigurationException(name: nil, message: "invalid user pool configuration", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -276,9 +265,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException(
-                    message: "not authorized"
-                )
+                throw NotAuthorizedException(name: nil, message: "not authorized", httpURLResponse: .init())
             }
         )
         do {
@@ -306,9 +293,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException(
-                    message: "not authorized"
-                )
+                throw NotAuthorizedException(name: nil, message: "not authorized", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -342,9 +327,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
-                    message: "password reset required"
-                )
+                throw PasswordResetRequiredException(name: nil, message: "password reset required", httpURLResponse: .init())
             }
         )
         do {
@@ -376,9 +359,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
-                    message: "password reset required"
-                )
+                throw PasswordResetRequiredException(name: nil, message: "password reset required", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -416,9 +397,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.ResourceNotFoundException(
-                    message: "resource not found"
-                )
+                throw ResourceNotFoundException(name: nil, message: "resource not found", httpURLResponse: .init())
             }
         )
         do {
@@ -450,9 +429,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.ResourceNotFoundException(
-                    message: "resource not found"
-                )
+                throw ResourceNotFoundException(name: nil, message: "resource not found", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -490,9 +467,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.TooManyRequestsException(
-                    message: "too many requests"
-                )
+                throw TooManyRequestsException(name: nil, message: "too many requests", httpURLResponse: .init())
             }
         )
         do {
@@ -524,9 +499,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.TooManyRequestsException(
-                    message: "too many requests"
-                )
+                throw TooManyRequestsException(name: nil, message: "too many requests", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -564,9 +537,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
-                    message: "user not confirmed"
-                )
+                throw UserNotConfirmedException(name: nil, message: "user not confirmed", httpURLResponse: .init())
             }
         )
         do {
@@ -598,9 +569,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
-                    message: "user not confirmed"
-                )
+                throw UserNotConfirmedException(name: nil, message: "user not confirmed", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",
@@ -638,9 +607,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserNotFoundException(
-                    message: "user not found"
-                )
+                throw UserNotFoundException(name: nil, message: "user not found", httpURLResponse: .init())
             }
         )
         do {
@@ -672,9 +639,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgetDeviceResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserNotFoundException(
-                    message: "user not found"
-                )
+                throw UserNotFoundException(name: nil, message: "user not found", httpURLResponse: .init())
             }
         )
         let awsAuthDevice = AWSAuthDevice(id: "authDeviceID",

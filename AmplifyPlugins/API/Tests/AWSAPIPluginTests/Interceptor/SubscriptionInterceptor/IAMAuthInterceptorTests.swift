@@ -95,10 +95,10 @@ class IAMAuthInterceptorTests: XCTestCase {
 
     func testInterceptConnection() async {
         let mockAuthService = MockAWSAuthService()
-        let interceptor = IAMAuthInterceptor(mockAuthService.getCredentialsProvider(), region: "us-west-2")
+        let interceptor = IAMAuthInterceptor(mockAuthService._credentialsProvider(), region: "us-west-2")
         let url = URL(string: "https://abc.appsync-api.us-west-2.amazonaws.com/graphql")!
-        let signer = MockAWSSignatureV4Signer()
-        guard let authHeader = await interceptor.getAuthHeader(url, with: "payload", signer: signer) else {
+//        let signer = MockAWSSignatureV4Signer()
+        guard let authHeader = await interceptor.getAuthHeader(url, with: "payload") else {
             XCTFail("Could not get authHeader")
             return
         }

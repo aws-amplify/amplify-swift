@@ -148,8 +148,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.CodeDeliveryFailureException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
+                throw CodeDeliveryFailureException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -179,8 +181,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithInternalErrorException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.InternalErrorException(
-                    message: "internal error"
+                throw InternalErrorException(
+                    name: nil,
+                    message: "internal error",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -207,8 +211,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithInvalidEmailRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException(
-                    message: "Invalid email role access policy"
+                throw InvalidEmailRoleAccessPolicyException(
+                    name: nil,
+                    message: "Invalid email role access policy",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -239,8 +245,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithinvalidSmsRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
-                    message: "Invalid sms role access policy"
+                throw InvalidSmsRoleAccessPolicyException(
+                    name: nil,
+                    message: "Invalid sms role access policy",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -271,8 +279,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithInvalidSmsRoleTrustRelationshipException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(
-                    message: "Invalid sms role trust relationship"
+                throw InvalidSmsRoleTrustRelationshipException(
+                    name: nil,
+                    message: "Invalid sms role trust relationship",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -303,8 +313,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(
-                    message: "Invalid lambda response"
+                throw InvalidLambdaResponseException(
+                    name: nil,
+                    message: "Invalid lambda response",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -336,8 +348,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithInvalidParameterException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidParameterException(
-                    message: "invalid parameter"
+                throw InvalidParameterException(
+                    name: nil,
+                    message: "invalid parameter",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -369,8 +383,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithLimitExceededException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.LimitExceededException(
-                    message: "limit exceeded"
+                throw LimitExceededException(
+                    name: nil,
+                    message: "limit exceeded",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -402,8 +418,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithNotAuthorizedException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException(
-                    message: "not authorized"
+                throw NotAuthorizedException(
+                    name: nil,
+                    message: "not authorized",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -431,8 +449,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithResourceNotFoundException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.ResourceNotFoundException(
-                    message: "resource not found"
+                throw ResourceNotFoundException(
+                    name: nil,
+                    message: "resource not found",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -464,8 +484,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithTooManyRequestsException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.TooManyRequestsException(
-                    message: "too many requests"
+                throw TooManyRequestsException(
+                    name: nil,
+                    message: "too many requests",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -497,8 +519,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithUnexpectedLambdaException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
-                    message: "unexpected lambda"
+                throw UnexpectedLambdaException(
+                    name: nil,
+                    message: "unexpected lambda",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -530,8 +554,10 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeWithUserLambdaValidationException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserLambdaValidationException(
-                    message: "user lambda validation exception"
+                throw UserLambdaValidationException(
+                    name: nil,
+                    message: "user lambda validation exception",
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -563,9 +589,7 @@ class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
     func testResendSignupCodeUpWithUserNotFoundException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserNotFoundException(
-                    message: "user not found"
-                )
+                throw UserNotFoundException(name: nil, message: "user not found", httpURLResponse: .init())
             }
         )
         do {

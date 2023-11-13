@@ -92,7 +92,12 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.InternalErrorException(message: "Error Occurred")
+            throw InternalErrorException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
+            )
+
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -115,7 +120,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(message: "Error Occurred")
+            throw InvalidLambdaResponseException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -142,7 +151,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.InvalidParameterException(message: "Error Occurred")
+            throw InvalidParameterException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
+            )
         }
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
@@ -169,8 +182,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
-                message: "Error Occurred"
+            throw InvalidSmsRoleAccessPolicyException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -198,8 +213,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
-                message: "Error Occurred"
+            throw InvalidUserPoolConfigurationException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -223,8 +240,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.NotAuthorizedException(
-                message: "Error Occurred"
+            throw NotAuthorizedException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -248,8 +267,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
-                message: "Error Occurred"
+            throw PasswordResetRequiredException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -272,8 +293,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.ResourceNotFoundException(
-                message: "Error Occurred"
+            throw ResourceNotFoundException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -300,8 +323,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.TooManyRequestsException(
-                message: "Error Occurred"
+            throw TooManyRequestsException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -328,8 +353,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
-                message: "Error Occurred"
+            throw UnexpectedLambdaException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -356,8 +383,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.UserLambdaValidationException(
-                message: "Error Occurred"
+            throw UserLambdaValidationException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -384,8 +413,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.UserNotConfirmedException(
-                message: "Error Occurred"
+            throw UserNotConfirmedException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 
@@ -408,8 +439,10 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            throw AWSCognitoIdentityProvider.UserNotFoundException(
-                message: "Error Occurred"
+            throw UserNotFoundException(
+                name: nil,
+                message: "Error Occurred",
+                httpURLResponse: .init()
             )
         }
 

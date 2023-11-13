@@ -5,16 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
+import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension RevokeTokenInput: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case token
-        case clientId
-        case clientSecret
-    }
-
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let token = try values.decodeIfPresent(String.self, forKey: .token)
@@ -24,7 +18,7 @@ extension RevokeTokenInput: Decodable {
         self.init(
             clientId: clientId,
             clientSecret: clientSecret,
-            token: token)
-
+            token: token
+        )
     }
 }

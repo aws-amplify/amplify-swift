@@ -6,48 +6,47 @@
 //
 
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-import AWSClientRuntime
 import Foundation
 
-actor MockEndpointClient: EndpointClientBehaviour {
-    let pinpointClient: PinpointClientProtocol = MockPinpointClient()
-
-    class MockCredentialsProvider: CredentialsProviding {
-        func getCredentials() async throws -> AWSCredentials {
-            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: Date().addingTimeInterval(1000))
-        }
-    }
-
-    var updateEndpointProfileCount = 0
-    func updateEndpointProfile() async throws {
-        updateEndpointProfileCount += 1
-    }
-
-    func resetCounters() {
-        updateEndpointProfileCount = 0
-    }
-
-    var currentEndpointProfileCount = 0
-    var mockedEndpointProfile: PinpointEndpointProfile?
-    func currentEndpointProfile() -> PinpointEndpointProfile {
-        currentEndpointProfileCount += 1
-        return mockedEndpointProfile ?? PinpointEndpointProfile(applicationId: "", endpointId: "")
-    }
-
-    var updateEndpointProfileWithCount = 0
-    func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws {
-        updateEndpointProfileWithCount += 1
-    }
-
-    func addAttributes(_ attributes: [String], forKey key: String) {}
-
-    func removeAttributes(forKey key: String) {}
-
-    func addMetric(_ metric: Double, forKey key: String) {}
-
-    func removeMetric(forKey key: String) {}
-
-    nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint {
-        return PinpointClientTypes.PublicEndpoint()
-    }
-}
+//actor MockEndpointClient: EndpointClientBehaviour {
+//    let pinpointClient: PinpointClient = MockPinpointClient()
+//
+//    class MockCredentialsProvider: CredentialsProviding {
+//        func getCredentials() async throws -> AWSCredentials {
+//            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: Date().addingTimeInterval(1000))
+//        }
+//    }
+//
+//    var updateEndpointProfileCount = 0
+//    func updateEndpointProfile() async throws {
+//        updateEndpointProfileCount += 1
+//    }
+//
+//    func resetCounters() {
+//        updateEndpointProfileCount = 0
+//    }
+//
+//    var currentEndpointProfileCount = 0
+//    var mockedEndpointProfile: PinpointEndpointProfile?
+//    func currentEndpointProfile() -> PinpointEndpointProfile {
+//        currentEndpointProfileCount += 1
+//        return mockedEndpointProfile ?? PinpointEndpointProfile(applicationId: "", endpointId: "")
+//    }
+//
+//    var updateEndpointProfileWithCount = 0
+//    func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws {
+//        updateEndpointProfileWithCount += 1
+//    }
+//
+//    func addAttributes(_ attributes: [String], forKey key: String) {}
+//
+//    func removeAttributes(forKey key: String) {}
+//
+//    func addMetric(_ metric: Double, forKey key: String) {}
+//
+//    func removeMetric(forKey key: String) {}
+//
+//    nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint {
+//        return PinpointClientTypes.PublicEndpoint()
+//    }
+//}

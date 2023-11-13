@@ -254,7 +254,11 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSCognitoIdentityProvider.InternalErrorException()
+            throw InternalErrorException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -292,7 +296,11 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSCognitoIdentityProvider.InvalidParameterException()
+            throw InvalidParameterException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -331,7 +339,11 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSCognitoIdentityProvider.NotAuthorizedException()
+            throw NotAuthorizedException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -369,7 +381,11 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
+            throw ResourceNotFoundException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -408,7 +424,11 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSCognitoIdentityProvider.ConcurrentModificationException()
+            throw ConcurrentModificationException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -446,7 +466,11 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSCognitoIdentityProvider.ForbiddenException()
+            throw ForbiddenException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -484,7 +508,11 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException()
+            throw SoftwareTokenMFANotFoundException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         })
 
         let options = AuthSignInRequest.Options()
@@ -523,13 +551,7 @@ class SignInSetUpTOTPTests: BasePluginTest {
                 challenge: .mfaSetup,
                 challengeParameters: ["MFAS_CAN_SETUP": "[\"SMS_MFA\",\"SOFTWARE_TOKEN_MFA\"]"])
         }, mockAssociateSoftwareTokenResponse: { input in
-            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: .init(body: .empty, statusCode: .ok),
-                message: nil,
-                requestID: nil,
-                requestID2: nil,
-                typeName: nil
-            )
+            throw PlaceholderError()
         })
 
         let options = AuthSignInRequest.Options()

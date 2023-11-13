@@ -6,10 +6,9 @@
 //
 
 import Foundation
-
+@testable import AWSCognitoAuthPlugin
 
 extension GlobalSignOutOutputResponse {
-
     static var testData: GlobalSignOutOutputResponse {
         return .init()
     }

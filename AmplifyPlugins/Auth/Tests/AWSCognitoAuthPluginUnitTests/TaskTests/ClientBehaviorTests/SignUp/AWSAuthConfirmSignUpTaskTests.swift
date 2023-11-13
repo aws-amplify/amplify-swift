@@ -33,7 +33,7 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
-            return try await .init(httpResponse: MockHttpResponse.ok)
+            return .init()
         }
 
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
@@ -52,12 +52,7 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let functionExpectation = expectation(description: "API call should be invoked")
         let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
-            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: MockHttpResponse.ok,
-                message: nil,
-                requestID: nil,
-                typeName: nil
-            )
+            throw PlaceholderError()
         }
 
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(

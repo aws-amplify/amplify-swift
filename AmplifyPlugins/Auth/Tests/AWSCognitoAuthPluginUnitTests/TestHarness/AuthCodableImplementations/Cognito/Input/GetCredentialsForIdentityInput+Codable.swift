@@ -5,16 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
-
+import Foundation
+@testable import AWSCognitoAuthPlugin
 
 extension GetCredentialsForIdentityInput: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case logins
-        case identityId
-    }
-
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let logins = try values.decodeIfPresent([String: String].self, forKey: .logins)

@@ -5,26 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+@testable import AWSCognitoAuthPlugin
 
-
-
-extension ChangePasswordOutputResponse: Codable {
-
-    enum CodingKeys: String, CodingKey {
-        case httpResponse = "httpResponse"
-    }
-
-    public init(from decoder: Decoder) throws {
-        let containerValues = try decoder.container(keyedBy: CodingKeys.self)
-        guard let httpResponse = try containerValues.decodeIfPresent(HttpResponse.self, forKey: .httpResponse) else {
-            fatalError("Unable to decode http response")
-        }
-        self.init()
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeNil(forKey: .httpResponse)
-    }
-
-}
+//extension ChangePasswordOutputResponse: Codable {}

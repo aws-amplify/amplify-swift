@@ -81,13 +81,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                    httpResponse: .init(body: .empty, statusCode: .ok),
-                    message: nil,
-                    requestID: nil,
-                    requestID2: nil,
-                    typeName: nil
-                )
+                throw PlaceholderError()
             }
         )
 
@@ -120,7 +114,11 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidParameterException()
+                throw InvalidParameterException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
+                )
             }
         )
 
@@ -157,7 +155,11 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "message")
+                throw NotAuthorizedException(
+                    name: nil,
+                    message: "message",
+                    httpURLResponse: .init()
+                )
             }
         )
 
@@ -192,7 +194,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
+                throw PasswordResetRequiredException(name: nil, message: nil, httpURLResponse: .init())
             }
         )
 
@@ -231,7 +233,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSCognitoIdentityProvider.ResourceNotFoundException()
+                throw ResourceNotFoundException(name: nil, message: nil, httpURLResponse: .init())
             }
         )
 
@@ -270,7 +272,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSCognitoIdentityProvider.ForbiddenException()
+                throw ForbiddenException(name: nil, message: nil, httpURLResponse: .init())
             }
         )
 
@@ -305,7 +307,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserNotConfirmedException()
+                throw UserNotConfirmedException(name: nil, message: nil, httpURLResponse: .init())
             }
         )
         do {
@@ -343,7 +345,7 @@ class UpdateMFAPreferenceTaskTests: BasePluginTest {
                 )
             },
             mockSetUserMFAPreferenceResponse: { _ in
-                throw AWSCognitoIdentityProvider.UserNotFoundException()
+                throw UserNotFoundException(name: nil, message: nil, httpURLResponse: .init())
             }
         )
         do {

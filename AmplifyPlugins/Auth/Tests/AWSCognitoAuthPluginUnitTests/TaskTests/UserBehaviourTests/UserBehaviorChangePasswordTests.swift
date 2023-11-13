@@ -25,7 +25,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     ///
     func testSuccessfulChangePassword() async throws {
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            return try await ChangePasswordOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            return ChangePasswordOutputResponse()
         })
         try await plugin.update(oldPassword: "old password", to: "new password")
     }
@@ -41,9 +41,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithInternalErrorException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.InternalErrorException(
-                message: "internal error exception"
-            )
+            throw InternalErrorException(name: nil, message: "internal error exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -69,9 +67,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithInvalidParameterException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.InvalidParameterException(
-                message: "invalid parameter exception"
-            )
+            throw InvalidParameterException(name: nil, message: "invalid parameter exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -101,9 +97,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithInvalidPasswordException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.InvalidPasswordException(
-                message: "invalid password exception"
-            )
+            throw InvalidPasswordException(name: nil, message: "invalid password exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -133,11 +127,10 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithLimitExceededException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw try await AWSCognitoIdentityProvider.LimitExceededException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
+            throw LimitExceededException(
+                name: nil,
                 message: nil,
-                requestID: nil
+                httpURLResponse: .init()
             )
         })
         do {
@@ -168,9 +161,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithNotAuthorizedException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.NotAuthorizedException(
-                message: "not authorized exception"
-            )
+            throw NotAuthorizedException(name: nil, message: "not authorized exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -196,9 +187,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithPasswordResetRequiredException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
-                message: "password reset required exception"
-            )
+            throw PasswordResetRequiredException(name: nil, message: "password reset required exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -228,9 +217,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithResourceNotFoundException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.ResourceNotFoundException(
-                message: "resource not found exception"
-            )
+            throw ResourceNotFoundException(name: nil, message: "resource not found exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -260,9 +247,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithTooManyRequestsException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.TooManyRequestsException(
-                message: "too many requests exception"
-            )
+            throw TooManyRequestsException(name: nil, message: "too many requests exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -292,9 +277,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithUserNotConfirmedException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotConfirmedException(
-                message: "user not confirmed exception"
-            )
+            throw UserNotConfirmedException(name: nil, message: "user not confirmed exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")
@@ -324,9 +307,7 @@ class UserBehaviorChangePasswordTests: BasePluginTest {
     func testChangePasswordWithUserNotFoundException() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(mockChangePasswordOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotFoundException(
-                message: "user not found exception"
-            )
+            throw UserNotFoundException(name: nil, message: "user not found exception", httpURLResponse: .init())
         })
         do {
             try await plugin.update(oldPassword: "old password", to: "new password")

@@ -5,29 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+@testable import AWSCognitoAuthPlugin
 
-
-
-// Already conforms to encodable
 extension ChangePasswordInput: Decodable {
-
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "AccessToken"
-        case previousPassword = "PreviousPassword"
-        case proposedPassword = "ProposedPassword"
-    }
-
     public init(from decoder: Decoder) throws {
-
         let containerValues = try decoder.container(keyedBy: CodingKeys.self)
-        let previousPasswordDecoded = try containerValues.decodeIfPresent(String.self, forKey: .previousPassword)
-        let proposedPasswordDecoded = try containerValues.decodeIfPresent(String.self, forKey: .proposedPassword)
-        let accessTokenDecoded = try containerValues.decodeIfPresent(String.self, forKey: .accessToken)
-
-        self.init(
-            accessToken: accessTokenDecoded,
-            previousPassword: previousPasswordDecoded,
-            proposedPassword: proposedPasswordDecoded)
-
+        self.init()
+        previousPassword = try containerValues.decodeIfPresent(String.self, forKey: .previousPassword)
+        proposedPassword = try containerValues.decodeIfPresent(String.self, forKey: .proposedPassword)
+        accessToken = try containerValues.decodeIfPresent(String.self, forKey: .accessToken)
     }
 }

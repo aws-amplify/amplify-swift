@@ -115,3 +115,28 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
     }
 
 }
+
+public extension String {
+    func appendingPathComponent(_ pathComponent: String) -> String {
+        let path: String
+        if self.hasSuffix("/") {
+            if pathComponent.hasPrefix("/") {
+                path = self + pathComponent.dropFirst()
+            } else {
+                path = self + pathComponent
+            }
+        } else {
+            if pathComponent.hasPrefix("/") {
+                path = self + pathComponent
+            } else {
+                path = self + "/" + pathComponent
+            }
+        }
+
+        if path.count > 1 && path.hasSuffix("/") {
+            return String(path.dropLast())
+        } else {
+            return path
+        }
+    }
+}

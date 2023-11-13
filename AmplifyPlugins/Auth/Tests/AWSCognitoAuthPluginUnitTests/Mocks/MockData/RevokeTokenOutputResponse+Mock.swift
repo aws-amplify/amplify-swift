@@ -6,11 +6,10 @@
 //
 
 import Foundation
-
+@testable import AWSCognitoAuthPlugin
 
 extension RevokeTokenOutputResponse {
-
     static var testData: RevokeTokenOutputResponse {
-        return .init()
+        .init()
     }
 }

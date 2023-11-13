@@ -9,7 +9,6 @@ import Foundation
 @testable import AWSCognitoAuthPlugin
 
 extension SignedInData {
-
     static var testData: SignedInData {
         let tokens = AWSCognitoUserPoolTokens.testData
         return SignedInData(signedInDate: Date(),

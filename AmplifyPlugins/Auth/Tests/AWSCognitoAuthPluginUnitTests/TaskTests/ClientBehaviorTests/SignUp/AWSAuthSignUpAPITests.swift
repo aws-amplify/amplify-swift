@@ -6,11 +6,8 @@
 //
 
 import XCTest
-
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
-
-
 
 class AWSAuthSignUpAPITests: BasePluginTest {
 
@@ -188,18 +185,18 @@ class AWSAuthSignUpAPITests: BasePluginTest {
     func testSignUpServiceError() async {
 
         let errorsToTest: [(signUpOutputError: Error, cognitoError: AWSCognitoAuthError)] = [
-            (AWSCognitoIdentityProvider.CodeDeliveryFailureException(), .codeDelivery),
-            (AWSCognitoIdentityProvider.InvalidEmailRoleAccessPolicyException(), .emailRole),
-            (AWSCognitoIdentityProvider.InvalidLambdaResponseException(), .lambda),
-            (AWSCognitoIdentityProvider.InvalidParameterException(), .invalidParameter),
-            (AWSCognitoIdentityProvider.InvalidPasswordException(), .invalidPassword),
-            (AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(), .smsRole),
-            (AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(), .smsRole),
-            (AWSCognitoIdentityProvider.ResourceNotFoundException(), .resourceNotFound),
-            (AWSCognitoIdentityProvider.TooManyRequestsException(), .requestLimitExceeded),
-            (AWSCognitoIdentityProvider.UnexpectedLambdaException(), .lambda),
-            (AWSCognitoIdentityProvider.UserLambdaValidationException(), .lambda),
-            (AWSCognitoIdentityProvider.UsernameExistsException(), .usernameExists),
+            (CodeDeliveryFailureException(name: nil, message: nil, httpURLResponse: .init()), .codeDelivery),
+            (InvalidEmailRoleAccessPolicyException(name: nil, message: nil, httpURLResponse: .init()), .emailRole),
+            (InvalidLambdaResponseException(name: nil, message: nil, httpURLResponse: .init()), .lambda),
+            (InvalidParameterException(name: nil, message: nil, httpURLResponse: .init()), .invalidParameter),
+            (InvalidPasswordException(name: nil, message: nil, httpURLResponse: .init()), .invalidPassword),
+            (InvalidSmsRoleAccessPolicyException(name: nil, message: nil, httpURLResponse: .init()), .smsRole),
+            (InvalidSmsRoleTrustRelationshipException(name: nil, message: nil, httpURLResponse: .init()), .smsRole),
+            (ResourceNotFoundException(name: nil, message: nil, httpURLResponse: .init()), .resourceNotFound),
+            (TooManyRequestsException(name: nil, message: nil, httpURLResponse: .init()), .requestLimitExceeded),
+            (UnexpectedLambdaException(name: nil, message: nil, httpURLResponse: .init()), .lambda),
+            (UserLambdaValidationException(name: nil, message: nil, httpURLResponse: .init()), .lambda),
+            (UsernameExistsException(name: nil, message: nil, httpURLResponse: .init()), .usernameExists),
         ]
 
         for errorToTest in errorsToTest {
@@ -213,7 +210,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException()
+                throw NotAuthorizedException(name: nil, message: nil, httpURLResponse: .init())
             }
         )
 
@@ -245,8 +242,10 @@ class AWSAuthSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockSignUpResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
+                throw InternalErrorException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
                 )
             }
         )

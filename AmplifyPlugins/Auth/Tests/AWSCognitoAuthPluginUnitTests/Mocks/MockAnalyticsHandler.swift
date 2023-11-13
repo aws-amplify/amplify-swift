@@ -8,11 +8,8 @@
 import Amplify
 @testable import AWSCognitoAuthPlugin
 
-
 struct MockAnalyticsHandler: UserPoolAnalyticsBehavior {
-
     func analyticsMetadata() -> CognitoIdentityProviderClientTypes.AnalyticsMetadataType? {
         return nil
     }
-
 }

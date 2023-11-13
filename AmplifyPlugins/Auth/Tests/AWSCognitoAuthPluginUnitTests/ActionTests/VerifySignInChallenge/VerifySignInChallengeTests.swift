@@ -168,13 +168,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                        httpResponse: MockHttpResponse.ok,
-                        message: nil,
-                        requestID: nil,
-                        requestID2: nil,
-                        typeName: nil
-                    )
+                    throw PlaceholderError()
                 })
         }
 
@@ -224,7 +218,7 @@ class VerifySignInChallengeTests: XCTestCase {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
-                    throw AWSCognitoIdentityProvider.ResourceNotFoundException()
+                    throw ResourceNotFoundException(name: nil, message: nil, httpURLResponse: .init())
                 })
         }
 

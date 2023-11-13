@@ -232,11 +232,11 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         return try await mockConfirmDeviceResponse!(input)
     }
 
-    func associateSoftwareToken(input: AWSCognitoIdentityProvider.AssociateSoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.AssociateSoftwareTokenOutputResponse {
+    func associateSoftwareToken(input: AssociateSoftwareTokenInput) async throws -> AssociateSoftwareTokenOutputResponse {
         return try await mockAssociateSoftwareTokenResponse!(input)
     }
 
-    func verifySoftwareToken(input: AWSCognitoIdentityProvider.VerifySoftwareTokenInput) async throws -> AWSCognitoIdentityProvider.VerifySoftwareTokenOutputResponse {
+    func verifySoftwareToken(input: VerifySoftwareTokenInput) async throws -> VerifySoftwareTokenOutputResponse {
         return try await mockVerifySoftwareTokenResponse!(input)
     }
 

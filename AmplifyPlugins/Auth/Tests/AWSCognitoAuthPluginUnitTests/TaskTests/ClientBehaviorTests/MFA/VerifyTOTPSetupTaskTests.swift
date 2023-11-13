@@ -58,9 +58,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.ForbiddenException(
-                    message: "Exception"
-                )
+                throw ForbiddenException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -90,9 +88,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.InternalErrorException(
-                    message: "Exception"
-                )
+                throw InternalErrorException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -122,9 +118,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.InvalidParameterException(
-                    message: "Exception"
-                )
+                throw InvalidParameterException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -156,9 +150,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException(
-                    message: "Exception"
-                )
+                throw NotAuthorizedException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -186,9 +178,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
-                    message: "Exception"
-                )
+                throw SoftwareTokenMFANotFoundException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -218,9 +208,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithResourceNotFoundException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.ResourceNotFoundException(
-                    message: "Exception"
-                )
+                throw ResourceNotFoundException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -251,13 +239,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                    httpResponse: .init(body: .empty, statusCode: .ok),
-                    message: nil,
-                    requestID: nil,
-                    requestID2: nil,
-                    typeName: nil
-                )
+                throw PlaceholderError()
             })
 
         do {
@@ -283,9 +265,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.CodeMismatchException(
-                    message: "Exception"
-                )
+                throw CodeMismatchException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -315,9 +295,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithEnableSoftwareTokenMFAException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.EnableSoftwareTokenMFAException(
-                    message: "Exception"
-                )
+                throw EnableSoftwareTokenMFAException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -347,9 +325,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithPasswordResetRequiredException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
-                    message: "Exception"
-                )
+                throw PasswordResetRequiredException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -379,9 +355,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithTooManyRequestsException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.TooManyRequestsException(
-                    message: "Exception"
-                )
+                throw TooManyRequestsException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -411,9 +385,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithUserNotFoundException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.UserNotFoundException(
-                    message: "Exception"
-                )
+                throw UserNotFoundException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -443,9 +415,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithUserNotConfirmedException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
-                    message: "Exception"
-                )
+                throw UserNotConfirmedException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -475,9 +445,7 @@ class VerifyTOTPSetupTaskTests: BasePluginTest {
     func testVerifyTOTPSetupInWithInvalidUserPoolConfigurationException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.InvalidUserPoolConfigurationException(
-                    message: "Exception"
-                )
+                throw InvalidUserPoolConfigurationException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {

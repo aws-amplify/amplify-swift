@@ -76,13 +76,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSClientRuntime.UnknownAWSHTTPServiceError(
-                httpResponse: .init(body: .empty, statusCode: .ok),
-                message: nil,
-                requestID: nil,
-                requestID2: nil,
-                typeName: nil
-            )
+            throw PlaceholderError()
         })
 
         do {
@@ -107,7 +101,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.InvalidParameterException()
+            throw InvalidParameterException(name: nil, message: nil, httpURLResponse: .init())
         })
 
         do {
@@ -136,11 +130,10 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
+            throw NotAuthorizedException(
+                name: nil,
                 message: nil,
-                requestID: nil
+                httpURLResponse: .init()
             )
         })
 
@@ -168,7 +161,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
+            throw PasswordResetRequiredException(name: nil, message: nil, httpURLResponse: .init())
         })
 
         do {
@@ -199,7 +192,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
+            throw ResourceNotFoundException(name: nil, message: nil, httpURLResponse: .init())
         })
 
         do {
@@ -230,7 +223,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.TooManyRequestsException()
+            throw TooManyRequestsException(name: nil, message: nil, httpURLResponse: .init())
         })
 
         do {
@@ -261,7 +254,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotConfirmedException()
+            throw UserNotConfirmedException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.fetchUserAttributes()
@@ -291,7 +284,7 @@ class UserBehaviorFetchAttributesTests: BasePluginTest {
     func testFetchUserAttributesWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotFoundException()
+            throw UserNotFoundException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.fetchUserAttributes()

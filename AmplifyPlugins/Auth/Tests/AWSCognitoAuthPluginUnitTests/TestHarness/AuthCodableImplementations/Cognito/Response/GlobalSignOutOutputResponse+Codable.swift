@@ -7,15 +7,15 @@
 
 
 
-
-extension GlobalSignOutOutputResponse: Codable {
-
-    public init(from decoder: Swift.Decoder) throws {
-        self.init()
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        fatalError("Not supported")
-    }
-
-}
+//
+//extension GlobalSignOutOutputResponse: Codable {
+//
+//    public init(from decoder: Swift.Decoder) throws {
+//        self.init()
+//    }
+//
+//    public func encode(to encoder: Encoder) throws {
+//        fatalError("Not supported")
+//    }
+//
+//}

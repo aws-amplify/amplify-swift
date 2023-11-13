@@ -76,11 +76,10 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithCodeMismatchException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw try await AWSCognitoIdentityProvider.CodeDeliveryFailureException(
-                httpResponse: .init(body: .empty, statusCode: .accepted),
-                decoder: nil,
+            throw CodeDeliveryFailureException(
+                name: nil,
                 message: nil,
-                requestID: nil
+                httpURLResponse: .init()
             )
         })
         do {
@@ -109,7 +108,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.InternalErrorException()
+            throw InternalErrorException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
@@ -135,7 +134,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.InvalidParameterException()
+            throw InvalidParameterException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
@@ -165,7 +164,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithLimitExceededException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.LimitExceededException()
+            throw LimitExceededException(name: nil, message: nil, httpURLResponse: .init())
         })
 
         do {
@@ -196,7 +195,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.NotAuthorizedException()
+            throw NotAuthorizedException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
@@ -222,7 +221,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.PasswordResetRequiredException()
+            throw PasswordResetRequiredException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
@@ -252,7 +251,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.ResourceNotFoundException()
+            throw ResourceNotFoundException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
@@ -282,7 +281,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.TooManyRequestsException()
+            throw TooManyRequestsException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
@@ -312,7 +311,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotConfirmedException()
+            throw UserNotConfirmedException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
@@ -342,7 +341,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
     func testResendConfirmationCodeWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
-            throw AWSCognitoIdentityProvider.UserNotFoundException()
+            throw UserNotFoundException(name: nil, message: nil, httpURLResponse: .init())
         })
         do {
             _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)

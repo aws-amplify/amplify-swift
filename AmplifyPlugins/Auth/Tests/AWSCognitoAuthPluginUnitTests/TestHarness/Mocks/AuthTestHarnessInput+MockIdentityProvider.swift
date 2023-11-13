@@ -6,7 +6,7 @@
 //
 
 import XCTest
-
+@testable import AWSCognitoAuthPlugin
 
 extension AuthTestHarnessInput {
 

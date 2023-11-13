@@ -209,8 +209,10 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testDataWithExpiredTokens))
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
-                httpResponse: MockHttpResponse.ok
+            throw NotAuthorizedException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
             )
         }
 
@@ -266,8 +268,10 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         }
 
         let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
-                httpResponse: MockHttpResponse.ok
+            throw NotAuthorizedException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
             )
         }
 
@@ -656,7 +660,12 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                 AmplifyCredentials.testDataWithExpiredTokens))
 
         let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
-            throw AWSCognitoIdentityProvider.NotAuthorizedException(message: "NotAuthorized")
+            throw NotAuthorizedException(
+                name: nil,
+                message: "NotAuthorized",
+                httpURLResponse: .init()
+            )
+
         }
 
         let plugin = configurePluginWith(

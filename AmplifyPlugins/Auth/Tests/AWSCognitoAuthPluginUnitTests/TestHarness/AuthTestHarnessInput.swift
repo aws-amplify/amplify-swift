@@ -5,11 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
-
 import AWSPluginsCore
-
-
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import Foundation
@@ -83,20 +79,30 @@ enum AmplifyAPI {
 }
 
 enum CognitoAPI {
-    case forgotPassword(CognitoAPIData<ForgotPasswordInput, ForgotPasswordOutputResponse, ForgotPasswordOutputError>)
-    case signUp(CognitoAPIData<SignUpInput, SignUpOutputResponse, SignUpOutputError>)
-    case deleteUser(CognitoAPIData<DeleteUserInput, DeleteUserOutputResponse, DeleteUserOutputError>)
-    case respondToAuthChallenge(CognitoAPIData<RespondToAuthChallengeInput, RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>)
-    case getId(CognitoAPIData<GetIdInput, GetIdOutputResponse, GetIdOutputError>)
-    case getCredentialsForIdentity(CognitoAPIData<GetCredentialsForIdentityInput, GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>)
-    case confirmDevice(CognitoAPIData<ConfirmDeviceInput, ConfirmDeviceOutputResponse, ConfirmDeviceOutputError>)
-    case initiateAuth(CognitoAPIData<InitiateAuthInput, InitiateAuthOutputResponse, InitiateAuthOutputError>)
-    case revokeToken(CognitoAPIData<RevokeTokenInput, RevokeTokenOutputResponse, RevokeTokenOutputError>)
-    case globalSignOut(CognitoAPIData<GlobalSignOutInput, GlobalSignOutOutputResponse, GlobalSignOutOutputError>)
+    case forgotPassword(CognitoAPIData<ForgotPasswordInput, ForgotPasswordOutputResponse>)
+    case signUp(CognitoAPIData<SignUpInput, SignUpOutputResponse>)
+    case deleteUser(CognitoAPIData<DeleteUserInput, DeleteUserOutputResponse>)
+    case respondToAuthChallenge(CognitoAPIData<RespondToAuthChallengeInput, RespondToAuthChallengeOutputResponse>)
+    case getId(CognitoAPIData<GetIdInput, GetIdOutputResponse>)
+    case getCredentialsForIdentity(CognitoAPIData<GetCredentialsForIdentityInput, GetCredentialsForIdentityOutputResponse>)
+    case confirmDevice(CognitoAPIData<ConfirmDeviceInput, ConfirmDeviceOutputResponse>)
+    case initiateAuth(CognitoAPIData<InitiateAuthInput, InitiateAuthOutputResponse>)
+    case revokeToken(CognitoAPIData<RevokeTokenInput, RevokeTokenOutputResponse>)
+    case globalSignOut(CognitoAPIData<GlobalSignOutInput, GlobalSignOutOutputResponse>)
 }
 
-struct CognitoAPIData<Input: Decodable, Output: Decodable, E: ClientRuntime.HttpResponseErrorBinding> {
+struct CognitoAPIData<Input: Decodable, Output: Decodable> {
     let expectedInput: Input?
-    let errorBinding: E.Type
     let output: Result<Output, Error>
 }
+
+//extension ForgotPasswordInput: Decodable {}
+//extension SignUpInput: Decodable {}
+//extension DeleteUserInput: Decodable {}
+//extension RespondToAuthChallengeInput: Decodable {}
+//extension GetIdInput: Decodable {}
+//extension GetCredentialsForIdentityInput: Decodable {}
+//extension ConfirmDeviceInput: Decodable {}
+//extension InitiateAuthInput: Decodable {}
+//extension RevokeTokenInput: Decodable {}
+//extension GlobalSignOutInput: Decodable {}

@@ -6,7 +6,6 @@
 //
 
 @testable import AWSCognitoAuthPlugin
-
 @testable import AWSPluginsTestCommon
 import XCTest
 

@@ -6,7 +6,6 @@
 //
 
 import XCTest
-
 @testable import Amplify
 @testable import AWSAPIPlugin
 

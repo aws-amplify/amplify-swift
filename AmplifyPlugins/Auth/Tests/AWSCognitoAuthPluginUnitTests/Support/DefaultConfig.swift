@@ -62,7 +62,12 @@ enum Defaults {
     }
 
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
-        return try CognitoIdentityProviderClient(region: regionString)
+        return CognitoIdentityProviderClient(
+            configuration: .init(
+                region: regionString,
+                endpointResolver: nil
+            )
+        )
     }
 
     static func makeDefaultASF() -> AdvancedSecurityBehavior {

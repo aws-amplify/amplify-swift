@@ -5,11 +5,25 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSLocation
 import Foundation
 import XCTest
-
+import AWSPluginsCore
 @testable import AWSLocationGeoPlugin
+
+struct MockCredentialsProvider: CredentialsProvider {
+    func fetchCredentials() async throws -> AWSPluginsCore.Credentials {
+        .init(
+            accessKey: "key",
+            secret: "secret",
+            expirationTimeout: .init(),
+            sessionToken: "token"
+        )
+    }
+}
+
+extension CredentialsProvider where Self == MockCredentialsProvider {
+    static var mock: Self { .init() }
+}
 
 public class MockAWSLocation: AWSLocationBehavior {
 
@@ -26,8 +40,13 @@ public class MockAWSLocation: AWSLocationBehavior {
     var searchPlaceIndexForPositionRequest: SearchPlaceIndexForPositionInput?
 
     public init(pluginConfig: AWSLocationGeoPluginConfiguration) throws {
-        self.locationClient = try LocationClient(
-            config: .mock(region: pluginConfig.regionName)
+        self.locationClient = LocationClient(
+            configuration: .init(
+                region: pluginConfig.regionName,
+                credentialsProvider: .mock,
+                encoder: .init(),
+                decoder: .init()
+            )
         )
     }
 

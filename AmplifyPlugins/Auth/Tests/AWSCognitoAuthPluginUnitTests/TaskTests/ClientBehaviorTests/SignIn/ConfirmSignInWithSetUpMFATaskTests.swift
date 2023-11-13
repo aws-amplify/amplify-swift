@@ -152,9 +152,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.CodeMismatchException(
-                    message: "Exception"
-                )
+                throw CodeMismatchException(name: nil, message: "Exception", httpURLResponse: .init())
             }
         )
 
@@ -187,9 +185,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
     func testConfirmSignInRetryWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.CodeMismatchException(
-                    message: "Exception"
-                )
+                throw CodeMismatchException(name: nil, message: "Exception", httpURLResponse: .init())
             }
         )
 
@@ -239,9 +235,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.InternalErrorException(
-                    message: "Exception"
-                )
+                throw InternalErrorException(name: nil, message: "Exception", httpURLResponse: .init())
             }
         )
 
@@ -270,9 +264,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.InvalidParameterException(
-                    message: "Exception"
-                )
+                throw InvalidParameterException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -350,9 +342,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException(
-                    message: "Exception"
-                )
+                throw NotAuthorizedException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -380,9 +370,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
-                    message: "Exception"
-                )
+                throw PasswordResetRequiredException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -411,9 +399,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
-                    message: "Exception"
-                )
+                throw SoftwareTokenMFANotFoundException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -445,9 +431,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.TooManyRequestsException(
-                    message: "Exception"
-                )
+                throw TooManyRequestsException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -479,9 +463,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
-                    message: "Exception"
-                )
+                throw UserNotConfirmedException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {
@@ -509,9 +491,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockVerifySoftwareTokenResponse: { request in
-                throw AWSCognitoIdentityProvider.UserNotFoundException(
-                    message: "Exception"
-                )
+                throw UserNotFoundException(name: nil, message: "Exception", httpURLResponse: .init())
             })
 
         do {

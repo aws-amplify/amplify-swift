@@ -358,12 +358,12 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutputResponse()
             }, mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutputResponse()
             },
             mockDeleteUserOutputResponse: { _ in
-                try await DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                DeleteUserOutputResponse()
             }
         )
 
@@ -380,10 +380,10 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
-                try await RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                RevokeTokenOutputResponse()
             },
             mockGlobalSignOutResponse: { _ in
-                try await GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+                GlobalSignOutOutputResponse()
             }
         )
 
@@ -418,8 +418,10 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         let mockIdentityProvider = MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.NotAuthorizedException(
-                    httpResponse: .init(body: .empty, statusCode: .ok)
+                throw NotAuthorizedException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
                 )
             })
 

@@ -264,7 +264,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             if shouldThrowError {
-                throw AWSCognitoIdentity.InternalErrorException()
+                throw InternalErrorException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
+                )
             } else {
                 return .init(identityId: "mockIdentityId")
             }
@@ -787,7 +791,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
             if shouldThrowError {
-                throw AWSCognitoIdentity.InvalidParameterException()
+                throw InvalidParameterException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
+                )
             } else {
                 return .init(credentials: credentials, identityId: mockIdentityId)
             }
@@ -859,12 +867,20 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("GetId should not be called")
-            throw AWSCognitoIdentity.InternalErrorException()
+            throw InternalErrorException(
+                name: nil,
+                message: nil,
+                httpURLResponse: .init()
+            )
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
             if shouldThrowError {
-                throw AWSCognitoIdentity.InternalErrorException()
+                throw InternalErrorException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
+                )
             } else {
                 return .init(credentials: credentials, identityId: mockIdentityId)
             }

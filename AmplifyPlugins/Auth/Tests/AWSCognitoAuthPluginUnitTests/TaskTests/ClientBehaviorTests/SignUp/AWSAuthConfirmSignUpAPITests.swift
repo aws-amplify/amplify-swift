@@ -116,17 +116,17 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     func testSignUpServiceError() async {
 
         let errorsToTest: [(confirmSignUpOutputError: Error, cognitoError: AWSCognitoAuthError)] = [
-            (AWSCognitoIdentityProvider.AliasExistsException(), .aliasExists),
-            (AWSCognitoIdentityProvider.CodeMismatchException(), .codeMismatch),
-            (AWSCognitoIdentityProvider.InvalidLambdaResponseException(), .lambda),
-            (AWSCognitoIdentityProvider.InvalidParameterException(), .invalidParameter),
-            (AWSCognitoIdentityProvider.ResourceNotFoundException(), .resourceNotFound),
-            (AWSCognitoIdentityProvider.TooManyRequestsException(), .requestLimitExceeded),
-            (AWSCognitoIdentityProvider.UnexpectedLambdaException(), .lambda),
-            (AWSCognitoIdentityProvider.UserLambdaValidationException(), .lambda),
-            (AWSCognitoIdentityProvider.UserNotFoundException(), .userNotFound),
-            (AWSCognitoIdentityProvider.LimitExceededException(), .limitExceeded),
-            (AWSCognitoIdentityProvider.TooManyFailedAttemptsException(), .failedAttemptsLimitExceeded)
+            (AliasExistsException(name: nil, message: nil, httpURLResponse: .init()), .aliasExists),
+            (CodeMismatchException(name: nil, message: nil, httpURLResponse: .init()), .codeMismatch),
+            (InvalidLambdaResponseException(name: nil, message: nil, httpURLResponse: .init()), .lambda),
+            (InvalidParameterException(name: nil, message: nil, httpURLResponse: .init()), .invalidParameter),
+            (ResourceNotFoundException(name: nil, message: nil, httpURLResponse: .init()), .resourceNotFound),
+            (TooManyRequestsException(name: nil, message: nil, httpURLResponse: .init()), .requestLimitExceeded),
+            (UnexpectedLambdaException(name: nil, message: nil, httpURLResponse: .init()), .lambda),
+            (UserLambdaValidationException(name: nil, message: nil, httpURLResponse: .init()), .lambda),
+            (UserNotFoundException(name: nil, message: nil, httpURLResponse: .init()), .userNotFound),
+            (LimitExceededException(name: nil, message: nil, httpURLResponse: .init()), .limitExceeded),
+            (TooManyFailedAttemptsException(name: nil, message: nil, httpURLResponse: .init()), .failedAttemptsLimitExceeded)
         ]
 
         for errorToTest in errorsToTest {
@@ -140,7 +140,11 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
-                throw AWSCognitoIdentityProvider.NotAuthorizedException()
+                throw NotAuthorizedException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
+                )
             }
         )
 
@@ -172,8 +176,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
-                throw try await AWSCognitoIdentityProvider.InternalErrorException(
-                    httpResponse: .init(body: .empty, statusCode: .accepted)
+                throw InternalErrorException(
+                    name: nil,
+                    message: nil,
+                    httpURLResponse: .init()
                 )
             }
         )
@@ -202,12 +208,7 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockConfirmSignUpResponse: { _ in
-                throw AWSClientRuntime.UnknownAWSHTTPServiceError.init(
-                    httpResponse: .init(body: .empty, statusCode: .accepted),
-                    message: nil,
-                    requestID: nil,
-                    typeName: nil
-                )
+                throw PlaceholderError()
             }
         )
 
