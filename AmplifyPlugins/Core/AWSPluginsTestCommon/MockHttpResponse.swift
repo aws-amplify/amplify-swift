@@ -4,11 +4,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-
-import ClientRuntime
-
-class MockHttpResponse {
-    class var ok: HttpResponse {
-        HttpResponse(body: .none, statusCode: .ok)
-    }
-}
+//
+//import ClientRuntime
+//
+//class MockHttpResponse {
+//    class var ok: HttpResponse {
+//        HttpResponse(body: .none, statusCode: .ok)
+//    }
+//}

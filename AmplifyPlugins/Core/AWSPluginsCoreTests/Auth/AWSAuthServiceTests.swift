@@ -6,10 +6,8 @@
 //
 
 import XCTest
-
 @testable import Amplify
 @testable import AWSPluginsCore
-import AWSClientRuntime
 
 class AWSAuthServiceTests: XCTestCase {
 
