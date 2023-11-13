@@ -65,12 +65,8 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
     }
     
     func sigV4Sign(_ request: URLRequest, region: String) async throws -> URLRequest {
-        var request = request
         guard let url = request.url else {
             throw APIError.unknown("Could not get url from mutable request", "")
-        }
-        guard let host = url.host else {
-            throw APIError.unknown("Could not get host from mutable request", "")
         }
 
         guard let credentials = try await credentialProvider?.fetchCredentials()
