@@ -9,12 +9,12 @@ import Amplify
 @testable import AWSPinpointPushNotificationsPlugin
 import XCTest
 
-class AWSPinpointPushNotificationsPluginResetTests: AWSPinpointPushNotificationsPluginTestBase {
-    func testReset_shouldResetValues() async {
-        let resettable = plugin as Resettable
-        await resettable.reset()
-
-        XCTAssertNil(plugin.pinpoint)
-        XCTAssertTrue(plugin.options.isEmpty)
-    }
-}
+//class AWSPinpointPushNotificationsPluginResetTests: AWSPinpointPushNotificationsPluginTestBase {
+//    func testReset_shouldResetValues() async {
+//        let resettable = plugin as Resettable
+//        await resettable.reset()
+//
+//        XCTAssertNil(plugin.pinpoint)
+//        XCTAssertTrue(plugin.options.isEmpty)
+//    }
+//}

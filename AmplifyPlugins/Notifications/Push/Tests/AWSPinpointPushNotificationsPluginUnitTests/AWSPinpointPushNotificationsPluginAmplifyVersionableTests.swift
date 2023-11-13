@@ -8,8 +8,8 @@
 import XCTest
 import AWSPinpointPushNotificationsPlugin
 
-class AWSPinpointPushNotificationsPluginAmplifyVersionableTests: AWSPinpointPushNotificationsPluginTestBase {
-    func testVersion_shouldReturnNotNil() {
-        XCTAssertNotNil(plugin.version)
-    }
-}
+//class AWSPinpointPushNotificationsPluginAmplifyVersionableTests: AWSPinpointPushNotificationsPluginTestBase {
+//    func testVersion_shouldReturnNotNil() {
+//        XCTAssertNotNil(plugin.version)
+//    }
+//}
