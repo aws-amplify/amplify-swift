@@ -14,7 +14,7 @@ public struct MutationSyncMetadata: Model {
 
     public let id: MutationSyncIdentifier
     public var deleted: Bool
-    public var lastChangedAt: Int
+    public var lastChangedAt: Int64
     public var version: Int
 
     static let deliminator = "|"
@@ -30,14 +30,14 @@ public struct MutationSyncMetadata: Model {
         The format of the `id` has changed to support unique ids across mutiple model types.
         Use init(modelId:modelName:deleted:lastChangedAt) to pass in the `modelName`.
     """)
-    public init(id: MutationSyncIdentifier, deleted: Bool, lastChangedAt: Int, version: Int) {
+    public init(id: MutationSyncIdentifier, deleted: Bool, lastChangedAt: Int64, version: Int) {
         self.id = id
         self.deleted = deleted
         self.lastChangedAt = lastChangedAt
         self.version = version
     }
 
-    public init(modelId: ModelId, modelName: String, deleted: Bool, lastChangedAt: Int, version: Int) {
+    public init(modelId: ModelId, modelName: String, deleted: Bool, lastChangedAt: Int64, version: Int) {
         self.id = Self.identifier(modelName: modelName, modelId: modelId)
         self.deleted = deleted
         self.lastChangedAt = lastChangedAt
