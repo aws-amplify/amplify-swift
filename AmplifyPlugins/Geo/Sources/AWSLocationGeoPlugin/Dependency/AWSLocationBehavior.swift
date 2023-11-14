@@ -16,8 +16,8 @@ protocol AWSLocationBehavior {
     func getEscapeHatch() -> LocationClient
 
     func searchPlaceIndex(forText: SearchPlaceIndexForTextInput)
-            async throws -> SearchPlaceIndexForTextOutputResponse
+            async throws -> SearchPlaceIndexForTextOutput
 
     func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput)
-            async throws -> SearchPlaceIndexForPositionOutputResponse
+            async throws -> SearchPlaceIndexForPositionOutput
 }

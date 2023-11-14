@@ -8,9 +8,9 @@
 import Foundation
 import AWSCognitoIdentityProvider
 
-extension RevokeTokenOutputResponse {
+extension RevokeTokenOutput {
 
-    static var testData: RevokeTokenOutputResponse {
+    static var testData: RevokeTokenOutput {
         return .init()
     }
 }

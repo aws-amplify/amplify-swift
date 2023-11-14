@@ -7,11 +7,11 @@
 
 import Foundation
 
-extension SignInState {
+extension SignInState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
 
-        var additionalMetadataDictionary: [String: Any] = [:]
+        let additionalMetadataDictionary: [String: Any]
 
         switch self {
 
@@ -22,9 +22,13 @@ extension SignInState {
         case .signingInWithHostedUI(let substate):
             additionalMetadataDictionary = substate.debugDictionary
         case .resolvingChallenge(let challengeState, let challengeType, let signInMethod):
-            additionalMetadataDictionary = challengeState.debugDictionary
-            additionalMetadataDictionary["challengeType"] = challengeType
-            additionalMetadataDictionary["signInMethod"] = signInMethod
+
+            additionalMetadataDictionary = challengeState.debugDictionary.merging(
+                [
+                    "challengeType": challengeType,
+                    "signInMethod": signInMethod
+                ],
+                uniquingKeysWith: {$1})
 
         case .notStarted:
             additionalMetadataDictionary = [:]

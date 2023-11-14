@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   upload-coverage:
-    name: ${{ inputs.scheme }} Coverage Report
+    name: Upload Coverage | ${{ inputs.scheme }}
     timeout-minutes: 2
     runs-on: ubuntu-latest
     steps:

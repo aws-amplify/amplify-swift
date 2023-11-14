@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension ForgotPasswordOutputResponse: Codable {
+extension ForgotPasswordOutput: Codable {
 
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case codeDeliveryDetails = "CodeDeliveryDetails"

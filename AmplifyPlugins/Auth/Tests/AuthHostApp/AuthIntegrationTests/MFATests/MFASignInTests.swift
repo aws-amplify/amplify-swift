@@ -45,7 +45,8 @@ class MFASignInTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail)
+            email: randomEmail
+        )
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
 
@@ -115,8 +116,9 @@ class MFASignInTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail,
-            phoneNumber: "+16135550116")
+            email: randomEmail,
+            phoneNumber: randomPhoneNumber
+        )
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
 
@@ -175,8 +177,8 @@ class MFASignInTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail,
-            phoneNumber: "+16135550116")
+            email: randomEmail,
+            phoneNumber: randomPhoneNumber)
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
 
@@ -254,8 +256,9 @@ class MFASignInTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail,
-            phoneNumber: "+16135550116")
+            email: randomEmail,
+            phoneNumber: randomPhoneNumber
+        )
 
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
 

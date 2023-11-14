@@ -25,10 +25,6 @@ on:
         required: false
         type: number
         default: 30
-      build_cache_key:
-        description: 'The key used to retrieve the build cache'
-        required: true
-        type: string
 
 permissions:
     id-token: write
@@ -77,14 +73,14 @@ jobs:
           restore-keys: |
             amplify-packages-
 
-      - name: Attempt to use the provided build cache
+      - name: Attempt to restore the build cache
         id: build-cache
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: ${{ inputs.build_cache_key }}
+          key: Amplify-${{ inputs.platform }}-build-cache
 
       - name: Run ${{ inputs.platform }} Integration Tests
         id: run-tests

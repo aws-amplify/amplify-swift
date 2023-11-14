@@ -1,12 +1,33 @@
 name: Unit Tests | Internal Pinpoint
 on:
   workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      macos:
+        description: '💻 macOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
 
 permissions:
     contents: read
 
 jobs:
   internal-pinpoint-unit-tests:
-    uses: ./.github/workflows/run_xcodebuild_test_platforms.yml
+    uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: InternalAWSPinpointUnitTests

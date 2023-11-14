@@ -84,9 +84,9 @@ class ClientSecretConfigurationTests: XCTestCase {
             destination: "Amplify@amazon.com"
         )
         mockIdentityProvider = MockIdentityProvider(
-            mockForgotPasswordOutputResponse: { request in
+            mockForgotPasswordOutput: { request in
                 XCTAssertNotNil(request.secretHash)
-                return ForgotPasswordOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
+                return ForgotPasswordOutput(codeDeliveryDetails: codeDeliveryDetails)
             }
         )
         _ = try await plugin.resetPassword(for: "user", options: nil)
@@ -102,9 +102,9 @@ class ClientSecretConfigurationTests: XCTestCase {
     ///
     func testClientSecretWithConfirmResetPassword() async throws {
         mockIdentityProvider = MockIdentityProvider(
-            mockConfirmForgotPasswordOutputResponse: { request in
+            mockConfirmForgotPasswordOutput: { request in
                 XCTAssertNotNil(request.secretHash)
-                return try await ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
+                return try await ConfirmForgotPasswordOutput(httpResponse: MockHttpResponse.ok)
             }
         )
         try await plugin.confirmResetPassword(
@@ -131,9 +131,9 @@ class ClientSecretConfigurationTests: XCTestCase {
             destination: nil
         )
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { request in
+            mockResendConfirmationCodeOutput: { request in
                 XCTAssertNotNil(request.secretHash)
-                return ResendConfirmationCodeOutputResponse(
+                return ResendConfirmationCodeOutput(
                     codeDeliveryDetails: codeDeliveryDetails
                 )
             }
@@ -243,10 +243,10 @@ class ClientSecretConfigurationTests: XCTestCase {
                 return .testData
             }, mockInitiateAuthResponse: { request in
                 XCTAssertNotNil(request.authParameters?["SECRET_HASH"])
-                return InitiateAuthOutputResponse(
+                return InitiateAuthOutput(
                     authenticationResult: .none,
                     challengeName: .passwordVerifier,
-                    challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                    challengeParameters: InitiateAuthOutput.validChalengeParams,
                     session: "someSession")
 
             }, mockGlobalSignOutResponse: { _ in
@@ -254,7 +254,7 @@ class ClientSecretConfigurationTests: XCTestCase {
 
             }, mockRespondToAuthChallengeResponse: { request in
                 XCTAssertNotNil(request.challengeResponses?["SECRET_HASH"])
-                return RespondToAuthChallengeOutputResponse(
+                return RespondToAuthChallengeOutput(
                     authenticationResult: .init(
                         accessToken: Defaults.validAccessToken,
                         expiresIn: 300,

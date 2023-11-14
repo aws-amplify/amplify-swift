@@ -34,9 +34,9 @@ jobs:
       matrix:
         platform: [iOS, tvOS, watchOS]
         exclude:
-          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'Dummy' }}
-          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'Dummy' }}
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
@@ -78,14 +78,14 @@ jobs:
           restore-keys: |
             amplify-packages-
 
-      - name: Attempt to use the provided build cache
+      - name: Attempt to restore the build cache
         id: build-cache
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
-          key: AWSPinpointPushNotificationsPlugin-${{ matrix.platform }}-latest-build-main
+          key: Amplify-${{ matrix.platform }}-build-cache
 
       - name: Run Local Server
         run: |

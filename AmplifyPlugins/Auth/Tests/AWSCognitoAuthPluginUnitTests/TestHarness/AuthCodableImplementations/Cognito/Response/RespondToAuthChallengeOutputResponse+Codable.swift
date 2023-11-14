@@ -8,7 +8,7 @@
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-extension RespondToAuthChallengeOutputResponse: Codable {
+extension RespondToAuthChallengeOutput: Codable {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case authenticationResult = "AuthenticationResult"
         case challengeName = "ChallengeName"

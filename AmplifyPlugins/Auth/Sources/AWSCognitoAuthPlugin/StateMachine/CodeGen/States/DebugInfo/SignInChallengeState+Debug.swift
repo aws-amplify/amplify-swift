@@ -7,18 +7,21 @@
 
 import Foundation
 
-extension SignInChallengeState {
+extension SignInChallengeState: CustomDebugDictionaryConvertible {
 
     var debugDictionary: [String: Any] {
-        var additionalMetadataDictionary: [String: Any] = [:]
+        let additionalMetadataDictionary: [String: Any]
         switch self {
 
         case .waitingForAnswer(let respondAuthChallenge, _),
                 .verifying(let respondAuthChallenge, _, _):
             additionalMetadataDictionary = respondAuthChallenge.debugDictionary
         case .error(let respondAuthChallenge, _, let error):
-            additionalMetadataDictionary = respondAuthChallenge.debugDictionary
-            additionalMetadataDictionary["error"] = error
+            additionalMetadataDictionary = respondAuthChallenge.debugDictionary.merging(
+                [
+                    "error": error
+                ],
+                uniquingKeysWith: {$1})
         default: additionalMetadataDictionary = [:]
         }
         return [type: additionalMetadataDictionary]

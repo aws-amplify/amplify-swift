@@ -20,13 +20,13 @@ class AWSAuthSignInOptionsTestCase: BasePluginTest {
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
-            InitiateAuthOutputResponse(
+            InitiateAuthOutput(
                 authenticationResult: .none,
                 challengeName: .passwordVerifier,
-                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                challengeParameters: InitiateAuthOutput.validChalengeParams,
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { _ in
-            RespondToAuthChallengeOutputResponse(
+            RespondToAuthChallengeOutput(
                 authenticationResult: .init(
                     accessToken: Defaults.validAccessToken,
                     expiresIn: 300,

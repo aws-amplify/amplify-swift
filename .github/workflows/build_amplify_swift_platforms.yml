@@ -1,0 +1,67 @@
+name: Build | Amplify Swift
+on:
+  workflow_call:
+    inputs:
+      identifier:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      ios:
+        description: '📱 iOS'
+        required: true
+        default: true
+        type: boolean
+      macos:
+        description: '💻 macOS'
+        required: true
+        default: true
+        type: boolean
+      tvos:
+        description: '📺 tvOS'
+        required: true
+        default: true
+        type: boolean
+      watchos:
+        description: '⌚️ watchOS'
+        required: true
+        default: true
+        type: boolean
+  push:
+    branches-ignore:
+      - main
+      - release
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: ${{ inputs.identifier || github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main'}}
+
+jobs:
+  build-amplify-swift:
+    name: Build Amplify Swift for ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, macOS, tvOS, watchOS]
+        exclude:
+          - platform: ${{ github.event.inputs.ios == 'false' && 'iOS' || 'None' }}
+          - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}
+          - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
+          - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
+    uses: ./.github/workflows/build_amplify_swift.yml
+    with:
+      platform: ${{ matrix.platform }}
+
+  confirm-pass:
+    runs-on: ubuntu-latest
+    name: Confirm Passing Build Steps
+    if: ${{ !cancelled() }}
+    needs: [ build-amplify-swift ]
+    env:
+      EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}
+    steps:
+      - run: exit $EXIT_CODE
