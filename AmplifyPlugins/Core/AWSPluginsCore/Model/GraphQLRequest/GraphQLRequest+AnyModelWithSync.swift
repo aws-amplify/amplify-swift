@@ -49,7 +49,7 @@ protocol ModelSyncGraphQLRequestFactory {
                           where predicate: QueryPredicate?,
                           limit: Int?,
                           nextToken: String?,
-                          lastSync: Int?,
+                          lastSync: Int64?,
                           authType: AWSAuthorizationType?) -> GraphQLRequest<SyncQueryResult>
 
 }
@@ -110,7 +110,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
-                                 lastSync: Int? = nil,
+                                 lastSync: Int64? = nil,
                                  authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
         syncQuery(modelSchema: modelType.schema,
                          where: predicate,
@@ -215,7 +215,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
-                                 lastSync: Int? = nil,
+                                 lastSync: Int64? = nil,
                                  authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query,

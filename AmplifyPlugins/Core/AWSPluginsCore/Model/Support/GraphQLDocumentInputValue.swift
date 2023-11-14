@@ -37,6 +37,16 @@ extension Int: GraphQLDocumentValueRepresentable {
     }
 }
 
+extension Int64: GraphQLDocumentValueRepresentable {
+    public var graphQLDocumentValue: String {
+        return "\(self)"
+    }
+
+    public var graphQLInlineValue: String {
+        return "\(self)"
+    }
+}
+
 extension String: GraphQLDocumentValueRepresentable {
     public var graphQLDocumentValue: String {
         return self
