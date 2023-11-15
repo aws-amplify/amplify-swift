@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask {
+class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let request: AuthConfirmUserAttributeRequest
