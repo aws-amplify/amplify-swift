@@ -15,45 +15,56 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
     weak var webPresentation: AuthUIPresentationAnchor?
 
-    func showHostedUI(url: URL,
-                      callbackScheme: String,
-                      inPrivate: Bool,
-                      presentationAnchor: AuthUIPresentationAnchor?,
-                      callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
+    func showHostedUI(
+        url: URL,
+        callbackScheme: String,
+        inPrivate: Bool,
+        presentationAnchor: AuthUIPresentationAnchor?) async throws -> [URLQueryItem] {
+
     #if os(iOS) || os(macOS)
         self.webPresentation = presentationAnchor
-        let aswebAuthenticationSession = createAuthenticationSession(
-            url: url,
-            callbackURLScheme: callbackScheme,
-            completionHandler: { url, error in
-                if let url = url {
-                    let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
-                    let queryItems = urlComponents?.queryItems ?? []
 
-                    if let error = queryItems.first(where: { $0.name == "error" })?.value {
-                        let errorDescription = queryItems.first(
-                            where: { $0.name == "error_description" }
-                        )?.value?.trim() ?? ""
-                        let message = "\(error) \(errorDescription)"
-                        callback(.failure(.serviceMessage(message)))
-                        return
+        return try await withCheckedThrowingContinuation {
+            (continuation: CheckedContinuation<[URLQueryItem], Error>) in
+
+            let aswebAuthenticationSession = createAuthenticationSession(
+                url: url,
+                callbackURLScheme: callbackScheme,
+                completionHandler: { url, error in
+
+                    if let url = url {
+                        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                        let queryItems = urlComponents?.queryItems ?? []
+
+                        // Validate if query items contains an error
+                        if let error = queryItems.first(where: { $0.name == "error" })?.value {
+                            let errorDescription = queryItems.first(
+                                where: { $0.name == "error_description" }
+                            )?.value?.trim() ?? ""
+                            let message = "\(error) \(errorDescription)"
+                            return continuation.resume(
+                                throwing: HostedUIError.serviceMessage(message))
+                        }
+                        return continuation.resume(
+                            returning: queryItems)
+                    } else if let error = error {
+                        return continuation.resume(
+                            throwing: self.convertHostedUIError(error))
+                    } else {
+                        return continuation.resume(
+                            throwing: HostedUIError.unknown)
                     }
-                    callback(.success(queryItems))
-                } else if let error = error {
-                    callback(.failure(self.convertHostedUIError(error)))
+                })
+            aswebAuthenticationSession.presentationContextProvider = self
+            aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
 
-                } else {
-                    callback(.failure(.unknown))
-                }
-            })
-        aswebAuthenticationSession.presentationContextProvider = self
-        aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
-
-        DispatchQueue.main.async {
-            aswebAuthenticationSession.start()
+            DispatchQueue.main.async {
+                aswebAuthenticationSession.start()
+            }
         }
+
     #else
-        callback(.failure(.serviceMessage("HostedUI is only available in iOS and macOS")))
+        throw HostedUIError.serviceMessage("HostedUI is only available in iOS and macOS")
     #endif
     }
 

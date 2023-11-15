@@ -11,9 +11,10 @@ import Amplify
 
 protocol HostedUISessionBehavior {
 
-    func showHostedUI(url: URL,
-                      callbackScheme: String,
-                      inPrivate: Bool,
-                      presentationAnchor: AuthUIPresentationAnchor?,
-                      callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void)
+    func showHostedUI(
+        url: URL,
+        callbackScheme: String,
+        inPrivate: Bool,
+        presentationAnchor: AuthUIPresentationAnchor?
+    ) async throws -> [URLQueryItem]
 }
