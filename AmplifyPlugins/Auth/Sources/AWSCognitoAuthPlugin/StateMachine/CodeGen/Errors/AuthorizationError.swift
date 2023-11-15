@@ -22,7 +22,10 @@ extension AuthorizationError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
         case .sessionExpired(let error):
-            return .sessionExpired("", "", error)
+            return .sessionExpired(
+                "Session expired", 
+                "Invoke Auth.signIn to re-authenticate the user",
+                error)
         case .configuration(let message):
             return .configuration(message, "")
         case .service(let error):
