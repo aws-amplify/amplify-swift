@@ -23,7 +23,8 @@ struct InformSessionError: Action {
         switch error {
         case .service(let serviceError):
             if isNotAuthorizedError(serviceError) {
-                event = .init(eventType: .throwError(.sessionExpired))
+                event = .init(eventType: .throwError(
+                    .sessionExpired(error: serviceError)))
             } else {
                 event = .init(eventType: .receivedSessionError(error))
             }
