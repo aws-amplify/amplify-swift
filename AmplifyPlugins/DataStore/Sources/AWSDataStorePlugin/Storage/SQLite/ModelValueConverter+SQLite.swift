@@ -31,6 +31,8 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         case .string:
             return value as? String
         case .int:
+            return value as? Int
+        case .int64:
             return value as? Int64
         case .double:
             return value as? Double
@@ -68,7 +70,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         switch fieldType {
         case .string, .date, .dateTime, .time:
             return value as? String
-        case .int:
+        case .int, .int64:
             return value as? Int64
         case .double:
             return value as? Double

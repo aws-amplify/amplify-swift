@@ -31,7 +31,7 @@ extension MutationSyncMetadata {
         definition.fields(
             .id(),
             .field(sync.deleted, is: .required, ofType: .bool),
-            .field(sync.lastChangedAt, is: .required, ofType: .int),
+            .field(sync.lastChangedAt, is: .required, ofType: .int64),
             .field(sync.version, is: .required, ofType: .int)
         )
     }

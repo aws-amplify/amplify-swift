@@ -14,6 +14,7 @@ public enum ModelFieldType {
 
     case string
     case int
+    case int64
     case double
     case date
     case dateTime

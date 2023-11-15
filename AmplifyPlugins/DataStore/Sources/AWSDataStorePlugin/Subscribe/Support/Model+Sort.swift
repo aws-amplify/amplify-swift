@@ -109,7 +109,13 @@ extension ModelSchema {
             return ModelValueCompare(value1Optional: value1Optional,
                                      value2Optional: value2Optional)
                 .sortComparator(sortOrder: sortOrder)
-
+        case .int64:
+            guard let value1Optional = value1 as? Int64?, let value2Optional = value2 as? Int64? else {
+                return false
+            }
+            return ModelValueCompare(value1Optional: value1Optional,
+                                     value2Optional: value2Optional)
+                .sortComparator(sortOrder: sortOrder)
         case .double:
             guard let value1Optional = value1 as? Double?, let value2Optional = value2 as? Double? else {
                 return false

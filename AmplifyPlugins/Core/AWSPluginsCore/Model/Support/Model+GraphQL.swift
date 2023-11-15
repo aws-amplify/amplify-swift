@@ -103,7 +103,7 @@ extension Model {
                         return Fatal.preconditionFailure("Could not turn into json object from \(value)")
                     }
                 }
-            case .string, .int, .double, .timestamp, .bool:
+            case .string, .int, .int64, .double, .timestamp, .bool:
                 input[name] = value
             }
         }
