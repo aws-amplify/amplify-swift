@@ -70,13 +70,18 @@ public struct DataStoreConfiguration {
     /// Authorization mode strategy
     public var authModeStrategyType: AuthModeStrategyType
 
+    /// This configuration allows developers to disable real-time updates.
+    /// Experimental flag
+    public let disableRealTimeUpdates: Bool
+    
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
          syncInterval: TimeInterval,
          syncMaxRecords: UInt,
          syncPageSize: UInt,
          syncExpressions: [DataStoreSyncExpression],
-         authModeStrategy: AuthModeStrategyType = .default) {
+         authModeStrategy: AuthModeStrategyType = .default,
+         disableRealTimeUpdates: Bool = false) {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval
@@ -84,6 +89,7 @@ public struct DataStoreConfiguration {
         self.syncPageSize = syncPageSize
         self.syncExpressions = syncExpressions
         self.authModeStrategyType = authModeStrategy
+        self.disableRealTimeUpdates = disableRealTimeUpdates
     }
 
 }

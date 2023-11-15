@@ -11,6 +11,8 @@ import Combine
 import Foundation
 
 // Used for testing:
+typealias DisableRealTimeUpdates = Bool
+
 typealias IncomingEventReconciliationQueueFactory =
     ([ModelSchema],
     APICategoryGraphQLBehaviorExtended,
@@ -18,7 +20,8 @@ typealias IncomingEventReconciliationQueueFactory =
     [DataStoreSyncExpression],
     AuthCategoryBehavior?,
     AuthModeStrategy,
-    ModelReconciliationQueueFactory?
+    ModelReconciliationQueueFactory?,
+     DisableRealTimeUpdates
 ) async -> IncomingEventReconciliationQueue
 
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
@@ -48,7 +51,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior? = nil,
          authModeStrategy: AuthModeStrategy,
-         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) async {
+         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil,
+         disableRealTimeUpdates: Bool = false) async {
         self.modelSchemasCount = modelSchemas.count
         self.modelReconciliationQueueSinks.set([:])
         self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.idle)
@@ -77,14 +81,15 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 log.warn("Duplicate model name found: \(modelName), not subscribing")
                 continue
             }
+            let operationDisabledForSubscriptionsOrNil = disableRealTimeUpdates ? OperationDisabledIncomingSubscriptionEventPublisher() : nil
             let queue = await self.modelReconciliationQueueFactory(modelSchema,
-                                                             storageAdapter,
-                                                             api,
-                                                             reconcileAndSaveQueue,
-                                                             modelPredicate,
-                                                             auth,
-                                                             authModeStrategy,
-                                                             nil)
+                                                                   storageAdapter,
+                                                                   api,
+                                                                   reconcileAndSaveQueue,
+                                                                   modelPredicate,
+                                                                   auth,
+                                                                   authModeStrategy,
+                                                                   operationDisabledForSubscriptionsOrNil)
             
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue
@@ -191,14 +196,15 @@ extension AWSIncomingEventReconciliationQueue: DefaultLogger {
 
 // MARK: - Static factory
 extension AWSIncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _ in
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _, disableRealTimeUpdates in
         await AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
-                                            api: api,
-                                            storageAdapter: storageAdapter,
-                                            syncExpressions: syncExpressions,
-                                            auth: auth,
-                                            authModeStrategy: authModeStrategy,
-                                            modelReconciliationQueueFactory: nil)
+                                                  api: api,
+                                                  storageAdapter: storageAdapter,
+                                                  syncExpressions: syncExpressions,
+                                                  auth: auth,
+                                                  authModeStrategy: authModeStrategy,
+                                                  modelReconciliationQueueFactory: nil,
+                                                  disableRealTimeUpdates: disableRealTimeUpdates)
     }
 }
 

@@ -10,6 +10,31 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
+final class OperationDisabledIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublisher {
+    
+    private let subscriptionEventSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>
+    
+    var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> {
+        return subscriptionEventSubject.eraseToAnyPublisher()
+    }
+    
+    init() {
+        self.subscriptionEventSubject = PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>()
+        
+        
+        // Immediately send back "Operation Disabled" error
+        Task {
+            let apiError = APIError.operationError(AppSyncErrorType.operationDisabled.rawValue, "", nil)
+            let dataStoreError = DataStoreError.api(apiError, nil)
+            subscriptionEventSubject.send(completion: .failure(dataStoreError))
+        }
+    }
+    
+    func cancel() {
+    }
+    
+    
+}
 /// Facade to hide the AsyncEventQueue/ModelMapper structures from the ModelReconciliationQueue.
 /// Provides a publisher for all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.
 final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublisher {
