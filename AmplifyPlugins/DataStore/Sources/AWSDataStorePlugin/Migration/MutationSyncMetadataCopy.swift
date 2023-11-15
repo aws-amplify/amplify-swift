@@ -12,7 +12,7 @@ extension MutationSyncMetadataMigration {
     public struct MutationSyncMetadataCopy: Model {
         public let id: String
         public var deleted: Bool
-        public var lastChangedAt: Int
+        public var lastChangedAt: Int64
         public var version: Int
 
         // MARK: - CodingKeys
@@ -36,7 +36,7 @@ extension MutationSyncMetadataMigration {
             definition.fields(
                 .id(),
                 .field(sync.deleted, is: .required, ofType: .bool),
-                .field(sync.lastChangedAt, is: .required, ofType: .int),
+                .field(sync.lastChangedAt, is: .required, ofType: .int64),
                 .field(sync.version, is: .required, ofType: .int)
             )
         }

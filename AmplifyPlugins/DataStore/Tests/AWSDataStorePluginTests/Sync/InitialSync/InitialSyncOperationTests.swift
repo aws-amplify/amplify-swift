@@ -29,7 +29,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - It reads sync metadata from storage
     func testReadsMetadata() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -90,7 +90,7 @@ class InitialSyncOperationTests: XCTestCase {
     func testQueriesAPI() {
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -148,7 +148,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - The method invokes a completion callback when complete
     func testInvokesPublisherCompletion() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -203,7 +203,7 @@ class InitialSyncOperationTests: XCTestCase {
         var nextTokens = ["token1", "token2"]
 
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
@@ -254,13 +254,13 @@ class InitialSyncOperationTests: XCTestCase {
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
     func testSubmitsToReconciliationQueue() {
-        let startedAtMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+        let startedAtMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
         let model = MockSynced(id: "1")
         let anyModel = AnyModel(model)
         let metadata = MutationSyncMetadata(modelId: "1",
                                             modelName: MockSynced.modelName,
                                             deleted: false,
-                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            lastChangedAt: Int64(Date().timeIntervalSince1970),
                                             version: 1)
         let mutationSync = MutationSync(model: anyModel, syncMetadata: metadata)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
@@ -331,7 +331,7 @@ class InitialSyncOperationTests: XCTestCase {
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
     func testUpdatesSyncMetadata() throws {
-        let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+        let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startedAt = startDateMilliseconds
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
@@ -470,6 +470,25 @@ class InitialSyncOperationTests: XCTestCase {
         sink.cancel()
     }
 
+    func testQueriesFromLastSyncPre() throws {
+        let startDateMilliseconds = (Int64(Date().timeIntervalSince1970) - 100) * 1_000
+
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
+
+        let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateMilliseconds)
+        let syncMetadataSaved = expectation(description: "Sync metadata saved")
+        storageAdapter.save(syncMetadata) { result in
+            switch result {
+            case .failure(let dataStoreError):
+                XCTAssertNil(dataStoreError)
+            case .success(let savedSyncMetadata):
+                XCTAssertEqual(savedSyncMetadata.lastSync, syncMetadata.lastSync)
+                syncMetadataSaved.fulfill()
+            }
+        }
+        wait(for: [syncMetadataSaved], timeout: 1.0)
+    }
     /// - Given: An InitialSyncOperation in a system with previous sync metadata
     /// - When:
     ///    - I invoke main()
@@ -477,7 +496,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - It performs a sync query against the API category with a "lastSync" time from the last start time of
     ///      the stored metadata
     func testQueriesFromLastSync() throws {
-        let startDateMilliseconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
+        let startDateMilliseconds = (Int64(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
@@ -496,7 +515,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
-            let lastSync = request.variables?["lastSync"] as? Int
+            let lastSync = request.variables?["lastSync"] as? Int64
             XCTAssertEqual(lastSync, startDateMilliseconds)
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
@@ -548,7 +567,7 @@ class InitialSyncOperationTests: XCTestCase {
 
     func testBaseQueryWhenExpiredLastSync() throws {
         // Set start date to 100 seconds in the past
-        let startDateMilliSeconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
+        let startDateMilliSeconds = (Int64(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])

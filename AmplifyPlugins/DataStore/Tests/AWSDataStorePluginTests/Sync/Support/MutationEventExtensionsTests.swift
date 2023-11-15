@@ -361,7 +361,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let metadata = MutationSyncMetadata(modelId: model.identifier(schema: MutationEvent.schema).stringValue,
                                             modelName: model.modelName,
                                             deleted: false,
-                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            lastChangedAt: Int64(Date().timeIntervalSince1970),
                                             version: version)
         return MutationSync(model: AnyModel(model), syncMetadata: metadata)
     }

@@ -155,7 +155,9 @@ extension Statement: StatementModelConvertible {
 
         default:
             let value = getValue(from: element, by: path + [field.name])
-            return try SQLiteModelValueConverter.convertToSource(from: value, fieldType: field.type)
+            let convertedValue = try SQLiteModelValueConverter.convertToSource(from: value, fieldType: field.type)
+            print("\(convertedValue) for \(element)")
+            return convertedValue
         }
     }
 
