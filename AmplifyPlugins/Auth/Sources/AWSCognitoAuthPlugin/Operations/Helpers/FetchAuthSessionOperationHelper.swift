@@ -41,9 +41,10 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
                 forceRefresh: forceRefresh)
 
         case .error(let error):
-            if case .sessionExpired = error {
+            if case .sessionExpired(let error) = error {
                 log.verbose("Session is expired")
-                let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
+                let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession(
+                    underlyingError: error)
                 return session
             } else if case .sessionError(_, let credentials) = error {
                 return try await refreshIfRequired(
@@ -125,8 +126,9 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
             return try sessionResultWithFetchError(fetchError,
                                                    authenticationState: authenticationState,
                                                    existingCredentials: credentials)
-        case .sessionExpired:
-            let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
+        case .sessionExpired(let error):
+            let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession(
+                underlyingError: error)
             return session
         default:
             let message = "Unknown error occurred"

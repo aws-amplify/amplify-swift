@@ -85,7 +85,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthorizationState.configured),
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
-                AuthorizationState.error(.sessionExpired))
+                AuthorizationState.error(.sessionExpired(
+                    error: NotAuthorizedException(message: "message"))))
         ]
 
         for initialState in statesToTest {
