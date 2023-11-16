@@ -15,8 +15,6 @@ class ShowHostedUISignIn: NSObject, Action {
 
     let signingInData: HostedUISigningInState
 
-    var sessionAdapter: HostedUISessionBehavior?
-
     init(signInData: HostedUISigningInState) {
         self.signingInData = signInData
     }
@@ -48,15 +46,15 @@ class ShowHostedUISignIn: NSObject, Action {
         self.logVerbose("\(#fileID) Showing url \(url.absoluteString)", environment: environment)
 
         do {
-            sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
-            let queryItems = try await sessionAdapter?.showHostedUI(
+            let sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
+            let queryItems = try await sessionAdapter.showHostedUI(
                 url: url,
                 callbackScheme: callbackURLScheme,
                 inPrivate: signingInData.options.preferPrivateSession,
                 presentationAnchor: signingInData.presentationAnchor)
 
-            guard let code = queryItems?.first(where: { $0.name == "code" })?.value,
-                  let state = queryItems?.first(where: { $0.name == "state" })?.value,
+            guard let code = queryItems.first(where: { $0.name == "code" })?.value,
+                  let state = queryItems.first(where: { $0.name == "state" })?.value,
                   self.signingInData.state == state else {
 
                 let event = HostedUIEvent(eventType: .throwError(.hostedUI(.codeValidation)))

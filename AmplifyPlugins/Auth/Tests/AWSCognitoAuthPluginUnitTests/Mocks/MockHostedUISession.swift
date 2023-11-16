@@ -17,12 +17,13 @@ class MockHostedUISession: HostedUISessionBehavior {
         self.result = result
     }
 
-    func showHostedUI(url: URL,
-                      callbackScheme: String,
-                      inPrivate: Bool,
-                      presentationAnchor: AuthUIPresentationAnchor?,
-                      callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
-        callback(result)
+    func showHostedUI(
+        url: URL,
+        callbackScheme: String,
+        inPrivate: Bool,
+        presentationAnchor: AuthUIPresentationAnchor?
+    ) async throws -> [URLQueryItem] {
+        return try result.get()
     }
 
 }

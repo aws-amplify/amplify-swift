@@ -29,77 +29,50 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns a URL with query items
     /// Then: An array of query items should be returned
-    func testShowHostedUI_withUrlInCallback_withQueryItems_shouldReturnQueryItems() {
-        let expectation = expectation(description: "showHostedUI")
+    func testShowHostedUI_withUrlInCallback_withQueryItems_shouldReturnQueryItems() async throws {
         factory.mockedURL = createURL(queryItems: [.init(name: "name", value: "value")])
-
-        session.showHostedUI() { result in
-            do {
-                let queryItems = try result.get()
-                XCTAssertEqual(queryItems.count, 1)
-                XCTAssertEqual(queryItems.first?.name, "name")
-                XCTAssertEqual(queryItems.first?.value, "value")
-            } catch {
-                XCTFail("Expected .success(queryItems), got \(result)")
-            }
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 1)
+        let queryItems = try await session.showHostedUI()
+        XCTAssertEqual(queryItems.count, 1)
+        XCTAssertEqual(queryItems.first?.name, "name")
+        XCTAssertEqual(queryItems.first?.value, "value")
     }
     
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns a URL without query items
     /// Then: An empty array should be returned
-    func testShowHostedUI_withUrlInCallback_withoutQueryItems_shouldReturnEmptyQueryItems() {
-        let expectation = expectation(description: "showHostedUI")
+    func testShowHostedUI_withUrlInCallback_withoutQueryItems_shouldReturnEmptyQueryItems() async throws {
         factory.mockedURL = createURL()
-
-        session.showHostedUI() { result in
-            do {
-                let queryItems = try result.get()
-                XCTAssertTrue(queryItems.isEmpty)
-            } catch {
-                XCTFail("Expected .success(queryItems), got \(result)")
-            }
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 1)
+        let queryItems = try await session.showHostedUI()
+        XCTAssertTrue(queryItems.isEmpty)
     }
     
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns a URL with query items representing errors
     /// Then: A HostedUIError.serviceMessage should be returned
-    func testShowHostedUI_withUrlInCallback_withErrorInQueryItems_shouldReturnServiceMessageError() {
-        let expectation = expectation(description: "showHostedUI")
+    func testShowHostedUI_withUrlInCallback_withErrorInQueryItems_shouldReturnServiceMessageError() async {
         factory.mockedURL = createURL(
             queryItems: [
                 .init(name: "error", value: "Error."),
                 .init(name: "error_description", value: "Something went wrong")
             ]
         )
-
-        session.showHostedUI() { result in
-            do {
-                _ = try result.get()
-                XCTFail("Expected failure(.serviceMessage), got \(result)")
-            } catch let error as HostedUIError {
-                if case .serviceMessage(let message) = error {
-                    XCTAssertEqual(message, "Error. Something went wrong")
-                } else {
-                    XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
-                }
-            } catch {
+        do {
+            _ = try await session.showHostedUI()
+        } catch let error as HostedUIError {
+            if case .serviceMessage(let message) = error {
+                XCTAssertEqual(message, "Error. Something went wrong")
+            } else {
                 XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
             }
-            expectation.fulfill()
+        } catch {
+            XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
         }
-        waitForExpectations(timeout: 1)
     }
     
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns ASWebAuthenticationSessionErrors
     /// Then: A HostedUIError corresponding to the error code should be returned
-    func testShowHostedUI_withASWebAuthenticationSessionErrors_shouldReturnRightError() {
+    func testShowHostedUI_withASWebAuthenticationSessionErrors_shouldReturnRightError() async {
         let errorMap: [ASWebAuthenticationSessionError.Code: HostedUIError] = [
             .canceledLogin: .cancelled,
             .presentationContextNotProvided: .invalidContext,
@@ -116,40 +89,28 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
         for code in errorCodes {
             factory.mockedError = ASWebAuthenticationSessionError(code)
             let expectedError = errorMap[code] ?? .unknown
-            let expectation = expectation(description: "showHostedUI for error \(code)")
-            session.showHostedUI() { result in
-                do {
-                    _ = try result.get()
-                    XCTFail("Expected failure(.\(expectedError)), got \(result)")
-                } catch let error as HostedUIError {
-                    XCTAssertEqual(error, expectedError)
-                } catch {
-                    XCTFail("Expected HostedUIError.\(expectedError), got \(error)")
-                }
-                expectation.fulfill()
+            do {
+                _ = try await session.showHostedUI()
+            } catch let error as HostedUIError {
+                XCTAssertEqual(error, expectedError)
+            } catch {
+                XCTFail("Expected HostedUIError.\(expectedError), got \(error)")
             }
-            waitForExpectations(timeout: 1)
         }
     }
     
     /// Given: A HostedUIASWebAuthenticationSession
     /// When: showHostedUI is invoked and the session factory returns an error
     /// Then: A HostedUIError.unknown should be returned
-    func testShowHostedUI_withOtherError_shouldReturnUnknownError() {
+    func testShowHostedUI_withOtherError_shouldReturnUnknownError() async {
         factory.mockedError = CancellationError()
-        let expectation = expectation(description: "showHostedUI")
-        session.showHostedUI() { result in
-            do {
-                _ = try result.get()
-                XCTFail("Expected failure(.unknown), got \(result)")
-            } catch let error as HostedUIError {
-                XCTAssertEqual(error, .unknown)
-            } catch {
-                XCTFail("Expected HostedUIError.unknown, got \(error)")
-            }
-            expectation.fulfill()
+        do {
+            _ = try await session.showHostedUI()
+        } catch let error as HostedUIError {
+            XCTAssertEqual(error, .unknown)
+        } catch {
+            XCTFail("Expected HostedUIError.unknown, got \(error)")
         }
-        waitForExpectations(timeout: 1)
     }
     
     private func createURL(queryItems: [URLQueryItem] = []) -> URL {
@@ -203,13 +164,12 @@ class MockASWebAuthenticationSession: ASWebAuthenticationSession {
 }
 
 extension HostedUIASWebAuthenticationSession {
-    func showHostedUI(callback: @escaping (Result<[URLQueryItem], HostedUIError>) -> Void) {
-        showHostedUI(
+    func showHostedUI() async throws -> [URLQueryItem] {
+        return try await showHostedUI(
             url: URL(string: "https://test.com")!,
             callbackScheme: "https",
             inPrivate: false,
-            presentationAnchor: nil,
-            callback: callback)
+            presentationAnchor: nil)
     }
 }
 #else
@@ -218,30 +178,19 @@ extension HostedUIASWebAuthenticationSession {
 import XCTest
 
 class HostedUIASWebAuthenticationSessionTests: XCTestCase {
-    func testShowHostedUI_shouldThrowServiceError() {
-        let expectation = expectation(description: "showHostedUI")
+    func testShowHostedUI_shouldThrowServiceError() async {
         let session = HostedUIASWebAuthenticationSession()
-        session.showHostedUI(
-            url: URL(string: "https://test.com")!,
-            callbackScheme: "https",
-            inPrivate: false,
-            presentationAnchor: nil
-        ) { result in
-            do {
-                _ = try result.get()
-                XCTFail("Expected failure(.serviceMessage), got \(result)")
-            } catch let error as HostedUIError {
-                if case .serviceMessage(let message) = error {
-                    XCTAssertEqual(message, "HostedUI is only available in iOS and macOS")
-                } else {
-                    XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
-                }
-            } catch {
+        do {
+            _ = try await session.showHostedUI()
+        } catch let error as HostedUIError {
+            if case .serviceMessage(let message) = error {
+                XCTAssertEqual(message, "HostedUI is only available in iOS and macOS")
+            } else {
                 XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
             }
-            expectation.fulfill()
+        } catch {
+            XCTFail("Expected HostedUIError.serviceMessage, got \(error)")
         }
-        waitForExpectations(timeout: 1)
     }
 }
 
