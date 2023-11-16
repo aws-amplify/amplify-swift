@@ -23,7 +23,7 @@ class ReconcileAndSaveQueueTests: XCTestCase {
         anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                modelName: testPost.modelName,
                                                deleted: false,
-                                               lastChangedAt: Int(Date().timeIntervalSince1970),
+                                               lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                version: 1)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)

@@ -11,5 +11,5 @@ import Foundation
 public struct PaginatedList<ModelType: Model>: Decodable {
     public let items: [MutationSync<ModelType>]
     public let nextToken: String?
-    public let startedAt: Int?
+    public let startedAt: Int64?
 }

@@ -36,7 +36,7 @@ public struct OutboxMutationEvent {
     public struct OutboxMutationEventElement {
         public let model: Model
         public var version: Int?
-        public var lastChangedAt: Int?
+        public var lastChangedAt: Int64?
         public var deleted: Bool?
     }
 }
