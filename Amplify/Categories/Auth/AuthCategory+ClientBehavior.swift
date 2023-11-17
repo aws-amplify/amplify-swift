@@ -85,5 +85,22 @@ extension AuthCategory: AuthCategoryBehavior {
     ) async throws {
         try await plugin.verifyTOTPSetup(code: code, options: options)
     }
-
+    
+    // MARK: -  Passwordless Auth
+    
+    public func signInWithMagicLink(
+        username: String,
+        flow: AuthPasswordlessFlow,
+        redirectURL: String,
+        options: AuthSignInRequest.Options?
+    ) async throws -> AuthSignInResult {
+        try await plugin.signInWithMagicLink(username: username, flow: flow, redirectURL: redirectURL, options: options)
+    }
+    
+    public func confirmSignInWithMagicLink(
+        challengeResponse: String,
+        options: AuthConfirmSignInRequest.Options?
+    ) async throws -> AuthSignInResult {
+        try await plugin.confirmSignInWithMagicLink(challengeResponse: challengeResponse, options: options)
+    }
 }
