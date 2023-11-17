@@ -181,7 +181,11 @@ class HostedUIASWebAuthenticationSessionTests: XCTestCase {
     func testShowHostedUI_shouldThrowServiceError() async {
         let session = HostedUIASWebAuthenticationSession()
         do {
-            _ = try await session.showHostedUI()
+            _ = try await session.showHostedUI(
+                url: URL(string: "https://test.com")!,
+                callbackScheme: "https",
+                inPrivate: false,
+                presentationAnchor: nil)
         } catch let error as HostedUIError {
             if case .serviceMessage(let message) = error {
                 XCTAssertEqual(message, "HostedUI is only available in iOS and macOS")
