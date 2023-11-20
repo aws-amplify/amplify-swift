@@ -46,6 +46,13 @@ public enum AuthSignInStep {
     /// Auth step that required the user to be confirmed
     ///
     case confirmSignUp(AdditionalInfo?)
+    
+    /// Auth Passwordless
+    /// Confirm sign in with OTP
+    case confirmSignInWithOTP(AuthCodeDeliveryDetails, AdditionalInfo?)
+    
+    /// Confirm sign in with magic link
+    case confirmSignInWithMagicLink(AuthCodeDeliveryDetails, AdditionalInfo?)
 
     /// There is no next step and the signIn flow is complete
     ///
