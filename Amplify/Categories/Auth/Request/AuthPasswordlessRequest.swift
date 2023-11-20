@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Request to sign in a user with Magic Link
+/// Request to sign in a user with Passwordless flow
 public struct AuthPasswordlessRequest: AmplifyOperationRequest {
 
     /// Extra request options defined in `AuthPasswordlessRequest.Options`
