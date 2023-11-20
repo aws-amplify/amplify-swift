@@ -115,6 +115,14 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     ) async throws {
         fatalError()
     }
+    
+    func signInWithMagicLink(username: String, flow: AuthPasswordlessFlow, redirectURL: String, options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
+        fatalError()
+    }
+    
+    func confirmSignInWithMagicLink(challengeResponse: String, options: AuthConfirmSignInRequest.Options?) async throws -> AuthSignInResult {
+        fatalError()
+    }
 
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,

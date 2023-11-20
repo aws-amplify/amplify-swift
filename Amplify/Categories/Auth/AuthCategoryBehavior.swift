@@ -145,4 +145,34 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
         options: VerifyTOTPSetupRequest.Options?
     ) async throws
 
+    // MARK: -  Passwordless Auth
+    
+    /// Initiates Sign in with Magiclink
+    ///
+    /// Invoke this operation to start sign in with Magic Link flow
+    ///
+    /// - Parameters:
+    ///   - username: username used for sign in
+    ///   - flow: `AuthPasswordlessFlow` type - can be `.signUpAndSignIn` or `.signIn`
+    ///   - redirectURL: URL format to be used for the Magic Link
+    ///   - options: Parameters specific to plugin behavior
+    func signInWithMagicLink(
+        username: String,
+        flow: AuthPasswordlessFlow,
+        redirectURL: String,
+        options: AuthSignInRequest.Options?
+    ) async throws -> AuthSignInResult
+    
+    /// Confirms Sign in with Magiclink flow
+    ///
+    /// Invoke this operation to confirm sign in with Magic Link flow and sign in the user
+    ///
+    /// - Parameters:
+    ///   - challengeResponse: challengeResponse contained in the Magic Link received by the user
+    ///   - options: Parameters specific to plugin behavior
+    func confirmSignInWithMagicLink(
+        challengeResponse: String,
+        options: AuthConfirmSignInRequest.Options?
+    ) async throws -> AuthSignInResult
+
 }
