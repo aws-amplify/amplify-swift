@@ -14,6 +14,41 @@ import XCTest
 @testable import APIHostApp
 #endif
 
+import AWSPluginsCore
+
+public struct PaginatedListResult<ModelType: Model>: Decodable {
+    public let items: [ModelType]
+    public let nextToken: String?
+}
+
+extension GraphQLRequest {
+    public static func paginatedList<M: Model>(_ modelType: M.Type,
+                                               where predicate: QueryPredicate? = nil,
+                                               limit: Int? = nil,
+                                               nextToken: String? = nil,
+                                               lastSync: Int? = nil,
+                                               authType: AWSAuthorizationType? = nil) -> GraphQLRequest<PaginatedListResult<M>> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query,
+                                                               primaryKeysOnly: true)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+        if let predicate = predicate {
+            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelType.schema)))
+        }
+        documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
+        documentBuilder.add(decorator: AuthRuleDecorator(.query, authType: authType))
+        let document = documentBuilder.build()
+
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: modelType.schema.name)
+        let requestOptions = GraphQLRequest<PaginatedListResult<M>>.Options(pluginOptions: awsPluginOptions)
+
+        return GraphQLRequest<PaginatedListResult<M>>(document: document.stringValue,
+                                               variables: document.variables,
+                                               responseType: PaginatedListResult<M>.self,
+                                               decodePath: document.name,
+                                               options: requestOptions)
+    }
+}
 /*
  (HasMany) A Post that can have many comments
  ```
@@ -126,6 +161,23 @@ extension GraphQLConnectionScenario3Tests {
         XCTAssertTrue(!posts.isEmpty)
     }
 
+    func testPaginatedList() async throws {
+        guard try await createPost(title: "title".withUUID) != nil else {
+            XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
+            return
+        }
+
+        
+        let graphQLResponse = try await Amplify.API.query(request: .paginatedList(Post3.self))
+        guard case let .success(listQueryResults) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
+        }
+        
+        XCTAssertTrue(!listQueryResults.items.isEmpty)
+        XCTAssertTrue(!listQueryResults.nextToken.isEmpty)
+    }
+    
     func testListPostWithPredicate() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
