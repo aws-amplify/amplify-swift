@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// Request to sign in a user with Passwordless flow
-public struct AuthPasswordlessRequest: AmplifyOperationRequest {
+/// Request to sign in a user with Passwordless Magic Link flow
+public struct AuthPasswordlessMagicLinkRequest: AmplifyOperationRequest {
 
-    /// Extra request options defined in `AuthPasswordlessRequest.Options`
+    /// Extra request options defined in `AuthPasswordlessMagicLinkRequest.Options`
     public var options: Options
 
     public init(options: Options) {
@@ -18,7 +18,7 @@ public struct AuthPasswordlessRequest: AmplifyOperationRequest {
     }
 }
 
-public extension AuthPasswordlessRequest {
+public extension AuthPasswordlessMagicLinkRequest {
 
     struct Options {
 

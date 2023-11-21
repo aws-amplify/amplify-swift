@@ -92,14 +92,14 @@ extension AuthCategory: AuthCategoryBehavior {
         username: String,
         flow: AuthPasswordlessFlow,
         redirectURL: String,
-        options: AuthPasswordlessRequest.Options?
+        options: AuthPasswordlessMagicLinkRequest.Options? = nil
     ) async throws -> AuthSignInResult {
         try await plugin.signInWithMagicLink(username: username, flow: flow, redirectURL: redirectURL, options: options)
     }
     
     public func confirmSignInWithMagicLink(
         challengeResponse: String,
-        options: AuthPasswordlessRequest.Options?
+        options: AuthPasswordlessMagicLinkRequest.Options? = nil
     ) async throws -> AuthSignInResult {
         try await plugin.confirmSignInWithMagicLink(challengeResponse: challengeResponse, options: options)
     }

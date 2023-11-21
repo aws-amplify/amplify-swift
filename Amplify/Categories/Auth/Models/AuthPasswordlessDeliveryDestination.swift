@@ -10,6 +10,6 @@ import Foundation
 /// Delivery destination for the Auth Passwordless flows
 ///
 public enum AuthPasswordlessDeliveryDestination {
-   case phone
+   case sms
    case email
 }
