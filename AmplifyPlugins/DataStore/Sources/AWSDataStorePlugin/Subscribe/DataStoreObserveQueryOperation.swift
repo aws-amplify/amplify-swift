@@ -211,13 +211,6 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             })
     }
 
-    /// If the `storageEngine` does sync from remote, the initial batch should
-    /// collect snapshots based on time / snapshots received.
-    /// If it doesn't, it should publish each snapshot without waiting.
-    private var shouldBatchDuringSync: Bool {
-        (storageEngine as? StorageEngine)?.syncsFromRemote ?? true
-    }
-
     // MARK: Observe item changes
 
     /// Subscribe to item changes with two subscribers (During Sync and After Sync). During Sync, the items are filtered
@@ -237,9 +230,16 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 .handleEvents(receiveOutput: self.onItemChangeDuringSync(mutationEvent:) )
                 .collect(
                     .byTimeOrCount(
+                        // on queue
                         self.serialQueue,
+                        // collect over this timeframe
                         self.itemsChangedPeriodicPublishTimeInSeconds,
-                        self.shouldBatchDuringSync ? self.itemsChangedMaxSize : 1
+                        // If the `storageEngine` does sync from remote, the initial batch should
+                        // collect snapshots based on time / snapshots received.
+                        // If it doesn't, it should publish each snapshot without waiting.
+                        self.storageEngine.syncsFromRemote
+                        ? self.itemsChangedMaxSize
+                        : 1
                     )
                 )
                 .sink(receiveCompletion: self.onReceiveCompletion(completed:),
