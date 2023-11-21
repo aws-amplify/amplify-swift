@@ -9,12 +9,12 @@ import Foundation
 
 /// Auth Passwordless flow types
 ///
-/// `.signUpAndSignIn` will create a new user and initiate signing in the user
-/// `.signIn` will initiate signing in an existing user
+
+
 public enum AuthPasswordlessFlow {
-    case signUpAndSignIn(
-        userAttributes: [String: String]?,
-        clientMetadata: [String: String]?
-    )
-    case signIn(clientMetadata: [String: String]?)
+    /// `.signUpAndSignIn` will create a new user and initiate signing in the user
+    case signUpAndSignIn
+    
+    /// `.signIn` will initiate signing in an existing user
+    case signIn
 }
