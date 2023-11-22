@@ -83,7 +83,12 @@ extension DataStoreConfiguration {
     }
     #endif
     
-    #if !os(watchOS)
+    #if os(watchOS)
+    /// The default configuration.
+    public static var subscriptionsDisabled: DataStoreConfiguration {
+        .custom(disableSubscriptions: { false })
+    }
+    #else
     /// The default configuration.
     public static var `default`: DataStoreConfiguration {
         .custom()
@@ -96,6 +101,7 @@ extension DataStoreConfiguration {
         .custom(disableSubscriptions: disableSubscriptions)
     }
     #else
+    /// Internal method for testing
     static func testDefault() -> DataStoreConfiguration {
         .custom()
     }

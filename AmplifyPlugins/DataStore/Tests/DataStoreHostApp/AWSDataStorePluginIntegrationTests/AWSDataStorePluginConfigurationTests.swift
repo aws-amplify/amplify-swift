@@ -19,7 +19,11 @@ class AWSDataStorePluginConfigurationTests: XCTestCase {
     // Note this test requires the ability to write a new database in the Documents directcory, so it must be embedded
     // in a host app
     func testDoesNotThrowOnMissingConfig() throws {
+        #if os(watchOS)
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(), configuration: .subscriptionsDisabled)
+        #else
         let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration())
+        #endif
         try Amplify.add(plugin: plugin)
 
         let amplifyConfig = AmplifyConfiguration()

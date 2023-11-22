@@ -23,7 +23,7 @@ class LocalStoreIntegrationTestBase: XCTestCase {
         do {
             #if os(watchOS)
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, 
-                                                       configuration: .custom(disableSubscriptions:  { false })))
+                                                       configuration: .subscriptionsDisabled))
             #else
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             #endif
