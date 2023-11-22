@@ -36,9 +36,9 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
             let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
-                                                  dataStoreConfiguration: .default)
+                                                  dataStoreConfiguration: .testDefault())
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)

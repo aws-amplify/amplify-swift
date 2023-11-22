@@ -127,7 +127,7 @@ class SyncEngineTestBase: XCTestCase {
                                     resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
         syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                      dataStoreConfiguration: .default,
+                                      dataStoreConfiguration: .testDefault(),
                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
                                       outgoingMutationQueue: mutationQueue,
                                       mutationEventIngester: mutationDatabaseAdapter,
@@ -156,7 +156,7 @@ class SyncEngineTestBase: XCTestCase {
         let validAuthPluginKey = "MockAuthCategoryPlugin"
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)

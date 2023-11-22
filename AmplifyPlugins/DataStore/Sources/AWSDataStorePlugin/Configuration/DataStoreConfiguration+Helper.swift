@@ -82,10 +82,22 @@ extension DataStoreConfiguration {
                                       authModeStrategy: authModeStrategy)
     }
     #endif
-
+    
+    #if !os(watchOS)
     /// The default configuration.
     public static var `default`: DataStoreConfiguration {
         .custom()
     }
-
+    #endif
+    
+    #if os(watchOS)
+    /// Internal method for testing
+    static func testDefault(disableSubscriptions: @escaping () -> Bool = { false }) -> DataStoreConfiguration {
+        .custom(disableSubscriptions: disableSubscriptions)
+    }
+    #else
+    static func testDefault() -> DataStoreConfiguration {
+        .custom()
+    }
+    #endif
 }

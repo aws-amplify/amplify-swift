@@ -50,7 +50,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                 case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                     XCTFail("Expected API error with mutationEvent")
@@ -96,7 +96,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -139,7 +139,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -182,7 +182,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -227,7 +227,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -278,7 +278,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -318,7 +318,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -357,7 +357,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -396,7 +396,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                   case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
                 XCTFail("Expected API error with mutationEvent")
@@ -448,7 +448,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             XCTAssertEqual(dataStoreError.errorDescription, "Missing remote model from the response from AppSync.")
             expectCompletion.fulfill()
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .testDefault(),
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
@@ -484,7 +484,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             XCTAssertEqual(dataStoreError.errorDescription, "Should never get conflict unhandled for create mutation")
             expectCompletion.fulfill()
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .testDefault(),
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
@@ -514,7 +514,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .testDefault(),
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
@@ -561,7 +561,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
-        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+        let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
                 let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
@@ -638,7 +638,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
-        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+        let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
                 let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
@@ -731,7 +731,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 expectHubEvent.fulfill()
             }
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .testDefault(),
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
@@ -794,7 +794,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 expectHubEvent.fulfill()
             }
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .testDefault(),
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
@@ -864,7 +864,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             }
         }
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
-        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+        let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
                 let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
@@ -933,7 +933,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
-        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+        let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
                 let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
@@ -1012,7 +1012,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
-        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+        let configuration = custom(conflictHandler: { data, resolve  in
             guard let localPost = data.local as? Post,
                 let remotePost = data.remote as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
@@ -1091,7 +1091,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
-        let configuration = DataStoreConfiguration.custom(errorHandler: { _ in
+        let configuration = custom(errorHandler: { _ in
             expectErrorHandlerCalled.fulfill()
         }, conflictHandler: { data, resolve in
             guard let localPost = data.local as? Post,
@@ -1151,7 +1151,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                        errorType: .operationDisabled)
 
         let operation = ProcessMutationErrorFromCloudOperation(
-            dataStoreConfiguration: DataStoreConfiguration.default,
+            dataStoreConfiguration: DataStoreConfiguration.testDefault(),
             mutationEvent: mutationEvent,
             api: mockAPIPlugin,
             storageAdapter: storageAdapter,
@@ -1244,5 +1244,34 @@ extension ProcessMutationErrorFromCloudOperationTests {
                      locations: nil,
                      path: nil,
                      extensions: ["errorType": .string(errorType.rawValue)])
+    }
+    
+    private func custom(errorHandler: DataStoreErrorHandler? = nil,
+                        conflictHandler: (DataStoreConflictHandler)? = nil) -> DataStoreConfiguration {
+        if let conflictHandler = conflictHandler, let errorHandler = errorHandler {
+            #if os(watchOS)
+            return .custom(errorHandler: errorHandler,
+                           conflictHandler: conflictHandler,
+                           disableSubscriptions: { false })
+            #else
+            return .custom(errorHandler: errorHandler,
+                    conflictHandler: conflictHandler)
+            #endif
+        } else if let errorHandler = errorHandler {
+            #if os(watchOS)
+            return .custom(errorHandler: errorHandler,
+                           disableSubscriptions: { false })
+            #else
+            return .custom(errorHandler: errorHandler)
+            #endif
+        } else if let conflictHandler = conflictHandler {
+            #if os(watchOS)
+            return .custom(conflictHandler: conflictHandler,
+                           disableSubscriptions: { false })
+            #else
+            return .custom(conflictHandler: conflictHandler)
+            #endif
+        }
+        return .testDefault()
     }
 }

@@ -16,7 +16,13 @@ class AWSDataStorePluginConfigurationTests: XCTestCase {
     }
 
     func testDoesNotThrowOnMissingConfig() throws {
+        #if os(watchOS)
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        configuration: .custom(disableSubscriptions: { false }))
+        #else
         let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration())
+    
+        #endif
         try Amplify.add(plugin: plugin)
 
         let categoryConfig = DataStoreCategoryConfiguration(plugins: ["NonExistentPlugin": true])
