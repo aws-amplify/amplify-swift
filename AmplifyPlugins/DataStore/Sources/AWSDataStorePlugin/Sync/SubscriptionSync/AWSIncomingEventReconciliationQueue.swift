@@ -71,6 +71,19 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.connectionStatusSerialQueue
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
 
+        let subscriptionsDisabled = disableSubscriptions()
+        
+        #if targetEnvironment(simulator) && os(watchOS)
+        if !subscriptionsDisabled {
+            let message = """
+            DataStore uses subscriptions via websockets, which work on the watchOS simulator but not on the device.
+            Running DataStore on watchOS with subscriptions enabled is only possible during special circumstances
+            such as actively streaming audio. See https://github.com/aws-amplify/amplify-swift/pull/3368 for more details.
+            """
+            self.log.verbose(message)
+        }
+        #endif
+
         for modelSchema in modelSchemas {
             let modelName = modelSchema.name
             let syncExpression = syncExpressions.first(where: {
@@ -88,7 +101,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                                    modelPredicate,
                                                                    auth,
                                                                    authModeStrategy,
-                                                                   disableSubscriptions() ? OperationDisabledIncomingSubscriptionEventPublisher() : nil)
+                                                                   subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil)
             
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue
