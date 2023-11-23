@@ -201,8 +201,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
 
         Task {
+            let latestSyncMetadata = try? storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId, modelName: mutationEvent.modelName)
             let syncMutationToCloudOperation = await SyncMutationToCloudOperation(
                 mutationEvent: mutationEvent,
+                latestSyncMetadata: latestSyncMetadata,
                 api: api,
                 authModeStrategy: authModeStrategy
             ) { [weak self] result in

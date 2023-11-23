@@ -67,12 +67,15 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             expectMutationRequestCompletion.fulfill()
         }
 
-        let operation = await SyncMutationToCloudOperation(mutationEvent: mutationEvent,
-                                                     api: mockAPIPlugin,
-                                                     authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                     networkReachabilityPublisher: publisher,
-                                                     currentAttemptNumber: 1,
-                                                     completion: completion)
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: mutationEvent,
+            latestSyncMetadata: nil,
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: completion
+        )
         let queue = OperationQueue()
         queue.addOperation(operation)
         await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
@@ -139,13 +142,16 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
             expectMutationRequestCompletion.fulfill()
         }
-        let operation = await SyncMutationToCloudOperation(mutationEvent: mutationEvent,
-                                                     api: mockAPIPlugin,
-                                                     authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                     networkReachabilityPublisher: publisher,
-                                                     currentAttemptNumber: 1,
-                                                     requestRetryablePolicy: mockRequestRetryPolicy,
-                                                     completion: completion)
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: mutationEvent,
+            latestSyncMetadata: nil,
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            requestRetryablePolicy: mockRequestRetryPolicy,
+            completion: completion
+        )
         let queue = OperationQueue()
         queue.addOperation(operation)
         await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
@@ -212,13 +218,16 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 break
             }
         }
-        let operation = await SyncMutationToCloudOperation(mutationEvent: mutationEvent,
-                                                     api: mockAPIPlugin,
-                                                     authModeStrategy: AWSDefaultAuthModeStrategy(),
-                                                     networkReachabilityPublisher: publisher,
-                                                     currentAttemptNumber: 1,
-                                                     requestRetryablePolicy: mockRequestRetryPolicy,
-                                                     completion: completion)
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: mutationEvent,
+            latestSyncMetadata: nil,
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            requestRetryablePolicy: mockRequestRetryPolicy,
+            completion: completion
+        )
         let queue = OperationQueue()
         queue.addOperation(operation)
         await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)

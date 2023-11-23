@@ -19,6 +19,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
     private weak var api: APICategoryGraphQLBehaviorExtended?
     private let mutationEvent: MutationEvent
+    private let latestSyncMetadata: MutationSyncMetadata?
     private let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener
     private let requestRetryablePolicy: RequestRetryablePolicy
 
@@ -31,6 +32,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     private var authTypesIterator: AWSAuthorizationTypeIterator?
 
     init(mutationEvent: MutationEvent,
+         latestSyncMetadata: MutationSyncMetadata?,
          api: APICategoryGraphQLBehaviorExtended,
          authModeStrategy: AuthModeStrategy,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
@@ -38,6 +40,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
          completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) async {
         self.mutationEvent = mutationEvent
+        self.latestSyncMetadata = latestSyncMetadata
         self.api = api
         self.networkReachabilityPublisher = networkReachabilityPublisher
         self.completion = completion
@@ -128,7 +131,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: model,
                                                                             modelSchema: modelSchema,
                                                                             where: graphQLFilter,
-                                                                            version: mutationEvent.version)
+                                                                            version: latestSyncMetadata?.version)
             case .update:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -140,7 +143,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
                                                                             modelSchema: modelSchema,
                                                                             where: graphQLFilter,
-                                                                            version: mutationEvent.version)
+                                                                            version: latestSyncMetadata?.version)
             case .create:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -151,7 +154,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 }
                 request = GraphQLRequest<MutationSyncResult>.createMutation(of: model,
                                                                             modelSchema: modelSchema,
-                                                                            version: mutationEvent.version)
+                                                                            version: latestSyncMetadata?.version)
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
