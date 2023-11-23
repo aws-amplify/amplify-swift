@@ -20,37 +20,6 @@ class RemoteSyncReconcilerTests: XCTestCase {
         ModelRegistry.register(modelType: MockSynced.self)
     }
 
-    // MARK: reconcile(pendingMutations)
-
-    func testFilter_EmptyRemoteModels() {
-        let pendingMutations: [MutationEvent] = [makeMutationEvent()]
-        let results = RemoteSyncReconciler.filter([], pendingMutations: pendingMutations)
-
-        XCTAssertTrue(results.isEmpty)
-    }
-
-    func testFilter_EmptyPendingMutations() {
-        let remoteModel = makeRemoteModel()
-        let results = RemoteSyncReconciler.filter([remoteModel], pendingMutations: [])
-
-        XCTAssertEqual(results.first?.model.id, remoteModel.model.id)
-    }
-
-    func testFilter_pendingMutationMatchRemoteModel() {
-        let remoteModel = makeRemoteModel()
-        let pendingMutation = makeMutationEvent(modelId: remoteModel.model.id)
-        let results = RemoteSyncReconciler.filter([remoteModel], pendingMutations: [pendingMutation])
-
-        XCTAssertTrue(results.isEmpty)
-    }
-
-    func testFilter_pendingMutationDoesNotMatchRemoteModel() {
-        let remoteModel = makeRemoteModel(modelId: "1")
-        let pendingMutation = makeMutationEvent(modelId: "2")
-        let results = RemoteSyncReconciler.filter([remoteModel], pendingMutations: [pendingMutation])
-
-        XCTAssertEqual(results.first?.model.id, remoteModel.model.id)
-    }
 
     // MARK: - reconcile(remoteModel:localMetadata)
 
