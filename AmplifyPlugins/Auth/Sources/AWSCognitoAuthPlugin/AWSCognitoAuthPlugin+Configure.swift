@@ -102,6 +102,15 @@ extension AWSCognitoAuthPlugin {
                 configuration.httpClientEngine = .userAgentEngine(for: configuration)
             }
 
+            if let requestTimeout = networkPreferences?.timeoutIntervalForRequest {
+                let requestTimeOutMs = requestTimeout * 1_000
+                configuration.connectTimeoutMs = UInt32(requestTimeOutMs)
+            }
+
+            if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
+                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase:  Int(maxRetryUnwrapped))
+            }
+
             return CognitoIdentityProviderClient(config: configuration)
         default:
             fatalError()
@@ -116,6 +125,15 @@ extension AWSCognitoAuthPlugin {
             )
             configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
+            if let requestTimeout = networkPreferences?.timeoutIntervalForRequest {
+                let requestTimeOutMs = requestTimeout * 1_000
+                configuration.connectTimeoutMs = UInt32(requestTimeOutMs)
+            }
+
+            if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
+                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase:  Int(maxRetryUnwrapped))
+            }
+
             return CognitoIdentityClient(config: configuration)
         default:
             fatalError()
@@ -129,6 +147,15 @@ extension AWSCognitoAuthPlugin {
     private func makeURLSession() -> URLSession {
         let configuration = URLSessionConfiguration.default
         configuration.urlCache = nil
+
+        if let timeoutIntervalForRequest = networkPreferences?.timeoutIntervalForRequest {
+            configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
+        }
+
+        if let timeoutIntervalForResource = networkPreferences?.timeoutIntervalForResource {
+            configuration.timeoutIntervalForResource = timeoutIntervalForResource
+        }
+
         return URLSession(configuration: configuration)
     }
 
