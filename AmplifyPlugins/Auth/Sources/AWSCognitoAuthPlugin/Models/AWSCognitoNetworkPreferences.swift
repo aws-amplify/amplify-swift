@@ -17,11 +17,14 @@ public struct AWSCognitoNetworkPreferences {
     public let timeoutIntervalForRequest: Double
 
     /// The maximum amount of time that a resource request should be allowed to take.
-    public let timeoutIntervalForResource: Double
+    /// 
+    /// NOTE: Resource time out is only applicable to HostedUI ATM, because the underlying Swift SDK does
+    /// not support resource timeouts
+    public let timeoutIntervalForResource: Double?
 
     public init(maxRetryCount: UInt32,
                 timeoutIntervalForRequest: Double,
-                timeoutIntervalForResource: Double) {
+                timeoutIntervalForResource: Double? = nil) {
         self.maxRetryCount = maxRetryCount
         self.timeoutIntervalForRequest = timeoutIntervalForRequest
         self.timeoutIntervalForResource = timeoutIntervalForResource
