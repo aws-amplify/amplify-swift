@@ -56,7 +56,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     #if os(watchOS)
-    /// No-argument init that uses defaults for all providers
+    /// Initializer
+    /// - Parameters:
+    ///   - modelRegistration: Register DataStore models.
+    ///   - dataStoreConfiguration: Configuration object for DataStore
     public init(modelRegistration: AmplifyModelRegistration,
                 configuration dataStoreConfiguration: DataStoreConfiguration) {
         self.modelRegistration = modelRegistration
@@ -79,7 +82,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dispatchedModelSyncedEvents = [:]
     }
     #else
-    /// No-argument init that uses defaults for all providers
+    /// Initializer
+    /// - Parameters:
+    ///   - modelRegistration: Register DataStore models.
+    ///   - dataStoreConfiguration: Configuration object for DataStore
     public init(modelRegistration: AmplifyModelRegistration,
                 configuration dataStoreConfiguration: DataStoreConfiguration = .default) {
         self.modelRegistration = modelRegistration

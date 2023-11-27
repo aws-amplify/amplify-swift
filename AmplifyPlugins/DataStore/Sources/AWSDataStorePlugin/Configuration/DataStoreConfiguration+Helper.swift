@@ -25,6 +25,7 @@ extension DataStoreConfiguration {
     ///   - syncMaxRecords: the number of records to sync per execution
     ///   - syncPageSize: the page size of each sync execution
     ///   - authModeStrategy: authorization strategy (.default | multiauth)
+    ///   - disableSubscriptions: called before establishing subscriptions. Return true to disable subscriptions.
     /// - Returns: an instance of `DataStoreConfiguration` with the passed parameters.
     public static func custom(
         errorHandler: @escaping DataStoreErrorHandler = { error in
@@ -84,7 +85,10 @@ extension DataStoreConfiguration {
     #endif
     
     #if os(watchOS)
-    /// The default configuration.
+    /// Default configuration with subscriptions disabled for watchOS. DataStore uses subscriptions via websockets,
+    /// which work on the watchOS simulator but not on the device. Running DataStore on watchOS with subscriptions
+    /// enabled is only possible during special circumstances such as actively streaming audio.
+    /// See https://github.com/aws-amplify/amplify-swift/pull/3368 for more details.
     public static var subscriptionsDisabled: DataStoreConfiguration {
         .custom(disableSubscriptions: { false })
     }
