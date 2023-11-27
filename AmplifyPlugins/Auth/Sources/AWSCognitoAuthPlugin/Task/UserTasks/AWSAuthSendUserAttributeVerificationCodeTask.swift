@@ -50,7 +50,7 @@ class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerific
 
     func initiateGettingVerificationCode(with accessToken: String) async throws -> AuthCodeDeliveryDetails {
         let userPoolService = try userPoolFactory()
-        let clientMetaData = (request.options.pluginOptions as? AWSAttributeResendConfirmationCodeOptions)?.metadata ?? [:]
+        let clientMetaData = (request.options.pluginOptions as? AWSSendUserAttributeVerificationCodeOptions)?.metadata ?? [:]
 
         let input = GetUserAttributeVerificationCodeInput(
             accessToken: accessToken,
