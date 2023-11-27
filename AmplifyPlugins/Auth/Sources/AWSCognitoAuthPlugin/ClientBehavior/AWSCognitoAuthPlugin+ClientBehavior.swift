@@ -198,14 +198,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         username: String,
         flow: AuthPasswordlessFlow,
         redirectURL: String,
-        options: AuthPasswordlessMagicLinkRequest.Options?
+        options: AuthSignInWithMagicLinkRequest.Options?
     ) async throws -> AuthSignInResult {
         throw AuthError.unknown("Not Implemented")
     }
     
     public func confirmSignInWithMagicLink(
         challengeResponse: String,
-        options: AuthPasswordlessMagicLinkRequest.Options?
+        options: AuthConfirmSignInWithMagicLinkRequest.Options?
     ) async throws -> AuthSignInResult {
         throw AuthError.unknown("Not Implemented")
     }
