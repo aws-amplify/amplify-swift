@@ -7,18 +7,22 @@
 
 import Foundation
 
-/// Request to sign in a user with Passwordless OTP flow
-public struct AuthPasswordlessOTPRequest: AmplifyOperationRequest {
+/// Request to confirm sign in a user with OTP flow
+public struct AuthConfirmSignInWithOTPRequest: AmplifyOperationRequest {
+
+    /// The value of `challengeResponse`is the OTP that is received on the destination provided during sign in request
+    public let challengeResponse: String
 
     /// Extra request options defined in `AuthPasswordlessOTPRequest.Options`
     public var options: Options
 
-    public init(options: Options) {
+    public init(challengeResponse: String, options: Options) {
+        self.challengeResponse = challengeResponse
         self.options = options
     }
 }
 
-public extension AuthPasswordlessOTPRequest {
+public extension AuthConfirmSignInWithOTPRequest {
 
     struct Options {
 

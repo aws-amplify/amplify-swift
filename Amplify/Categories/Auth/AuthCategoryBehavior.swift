@@ -175,4 +175,32 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
         options: AuthPasswordlessMagicLinkRequest.Options?
     ) async throws -> AuthSignInResult
 
+    /// Initiates Sign in with OTP
+    ///
+    /// Invoke this operation to start sign in with Magic Link flow
+    ///
+    /// - Parameters:
+    ///   - username: username used for sign in
+    ///   - flow: `AuthPasswordlessFlow` type - can be `.signUpAndSignIn` or `.signIn`
+    ///   - destination: `AuthPasswordlessDeliveryDestination` type - can be `sms` or `email`
+    ///   - options: Parameters specific to plugin behavior
+    func signInWithOTP(
+        username: String,
+        flow: AuthPasswordlessFlow,
+        destination: AuthPasswordlessDeliveryDestination,
+        options: AuthSignInWithOTPRequest.Options?
+    ) async throws -> AuthSignInResult
+
+    /// Confirms Sign in for OTP flow
+    ///
+    /// Invoke this operation to confirm sign in with OTP flow and sign in the user
+    ///
+    /// - Parameters:
+    ///   - challengeResponse: challengeResponse received as a OTP on the destination provided during sign in
+    ///   - options: Parameters specific to plugin behavior
+    func confirmSignInWithOTP(
+        challengeResponse: String,
+        options: AuthConfirmSignInWithOTPRequest.Options?
+    ) async throws -> AuthSignInResult
+
 }

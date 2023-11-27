@@ -209,4 +209,43 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     ) async throws -> AuthSignInResult {
         throw AuthError.unknown("Not Implemented")
     }
+
+    public func signInWithOTP(
+        username: String,
+        flow: AuthPasswordlessFlow,
+        destination: AuthPasswordlessDeliveryDestination,
+        options: AuthSignInWithOTPRequest.Options?
+    ) async throws -> AuthSignInResult {
+        let options = options ?? AuthSignInWithOTPRequest.Options()
+        let request = AuthSignInWithOTPRequest(
+            username: username,
+            flow: flow,
+            destination: destination,
+            options: options)
+        let task = AWSAuthSignInWithOTPTask(
+            request,
+            authStateMachine: self.authStateMachine,
+            configuration: authConfiguration)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthSignInResult
+    }
+
+    public func confirmSignInWithOTP(
+        challengeResponse: String,
+        options: AuthConfirmSignInWithOTPRequest.Options?
+    ) async throws -> AuthSignInResult {
+
+        let options = options ?? AuthConfirmSignInWithOTPRequest.Options()
+        let request = AuthConfirmSignInWithOTPRequest(
+            challengeResponse: challengeResponse,
+            options: options)
+        let task = AWSAuthConfirmSignInWithOTPTask(
+            request,
+            stateMachine: authStateMachine,
+            configuration: authConfiguration)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthSignInResult
+    }
 }
