@@ -14,6 +14,16 @@ struct ConfirmSignInEventData {
     let metadata: [String: String]?
     let friendlyDeviceName: String?
 
+    init(answer: String,
+         attributes: [String : String] = [:],
+         metadata: [String : String]? = nil,
+         friendlyDeviceName: String? = nil) {
+        self.answer = answer
+        self.attributes = attributes
+        self.metadata = metadata
+        self.friendlyDeviceName = friendlyDeviceName
+    }
+
 }
 
 extension ConfirmSignInEventData: Equatable { }

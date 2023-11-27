@@ -94,13 +94,41 @@ extension AuthCategory: AuthCategoryBehavior {
         redirectURL: String,
         options: AuthPasswordlessMagicLinkRequest.Options? = nil
     ) async throws -> AuthSignInResult {
-        try await plugin.signInWithMagicLink(username: username, flow: flow, redirectURL: redirectURL, options: options)
+        try await plugin.signInWithMagicLink(
+            username: username,
+            flow: flow,
+            redirectURL: redirectURL,
+            options: options)
     }
     
     public func confirmSignInWithMagicLink(
         challengeResponse: String,
         options: AuthPasswordlessMagicLinkRequest.Options? = nil
     ) async throws -> AuthSignInResult {
-        try await plugin.confirmSignInWithMagicLink(challengeResponse: challengeResponse, options: options)
+        try await plugin.confirmSignInWithMagicLink(
+            challengeResponse: challengeResponse,
+            options: options)
+    }
+
+    public func signInWithOTP(
+        username: String, 
+        flow: AuthPasswordlessFlow,
+        destination: AuthPasswordlessDeliveryDestination,
+        options: AuthSignInWithOTPRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
+        try await plugin.signInWithOTP(
+            username: username,
+            flow: flow,
+            destination: destination,
+            options: options)
+    }
+
+    public func confirmSignInWithOTP(
+        challengeResponse: String,
+        options: AuthConfirmSignInWithOTPRequest.Options? = nil
+    ) async throws -> AuthSignInResult {
+        try await plugin.confirmSignInWithOTP(
+            challengeResponse: challengeResponse,
+            options: options)
     }
 }
