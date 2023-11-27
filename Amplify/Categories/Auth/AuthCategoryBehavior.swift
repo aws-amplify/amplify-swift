@@ -160,7 +160,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
         username: String,
         flow: AuthPasswordlessFlow,
         redirectURL: String,
-        options: AuthPasswordlessMagicLinkRequest.Options?
+        options: AuthSignInWithMagicLinkRequest.Options?
     ) async throws -> AuthSignInResult
     
     /// Confirms Sign in with Magiclink flow
@@ -172,7 +172,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - options: Parameters specific to plugin behavior
     func confirmSignInWithMagicLink(
         challengeResponse: String,
-        options: AuthPasswordlessMagicLinkRequest.Options?
+        options: AuthConfirmSignInWithMagicLinkRequest.Options?
     ) async throws -> AuthSignInResult
 
     /// Initiates Sign in with OTP

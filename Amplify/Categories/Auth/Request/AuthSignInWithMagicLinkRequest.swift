@@ -8,17 +8,29 @@
 import Foundation
 
 /// Request to sign in a user with Passwordless Magic Link flow
-public struct AuthPasswordlessMagicLinkRequest: AmplifyOperationRequest {
+public struct AuthSignInWithMagicLinkRequest: AmplifyOperationRequest {
 
-    /// Extra request options defined in `AuthPasswordlessMagicLinkRequest.Options`
+    /// User name for which the magic link was requested
+    public let username: String
+
+    /// The flow that the request should begin with.
+    public let flow: AuthPasswordlessFlow
+
+    /// The redirect url that the magic link will be configured with
+    public let redirectURL: String
+    
+    /// Extra request options defined in `AuthSignInWithMagicLinkRequest.Options`
     public var options: Options
 
-    public init(options: Options) {
+    public init(username: String, flow: AuthPasswordlessFlow, redirectURL: String, options: Options) {
+        self.username = username
+        self.flow = flow
+        self.redirectURL = redirectURL
         self.options = options
     }
 }
 
-public extension AuthPasswordlessMagicLinkRequest {
+public extension AuthSignInWithMagicLinkRequest {
 
     struct Options {
 

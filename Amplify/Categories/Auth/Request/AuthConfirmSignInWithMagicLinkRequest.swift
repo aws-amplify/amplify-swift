@@ -7,13 +7,14 @@
 
 import Foundation
 
-/// Request to confirm sign in a user with OTP flow
-public struct AuthConfirmSignInWithOTPRequest: AmplifyOperationRequest {
+/// Request to confirm sign in a user with magic link flow
+public struct AuthConfirmSignInWithMagicLinkRequest: AmplifyOperationRequest {
 
-    /// The value of `challengeResponse`is the OTP that is received on the destination provided during sign in request
+    /// The value of `challengeResponse` is the code that is received
+    /// by the user in magic link
     public let challengeResponse: String
 
-    /// Extra request options defined in `AuthConfirmSignInWithOTPRequest.Options`
+    /// Extra request options defined in `AuthConfirmSignInWithMagicLinkRequest.Options`
     public var options: Options
 
     public init(challengeResponse: String, options: Options) {
@@ -22,7 +23,7 @@ public struct AuthConfirmSignInWithOTPRequest: AmplifyOperationRequest {
     }
 }
 
-public extension AuthConfirmSignInWithOTPRequest {
+public extension AuthConfirmSignInWithMagicLinkRequest {
 
     struct Options {
 
