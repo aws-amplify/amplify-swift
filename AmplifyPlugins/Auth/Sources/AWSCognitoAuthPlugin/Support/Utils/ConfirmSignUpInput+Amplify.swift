@@ -13,6 +13,7 @@ extension ConfirmSignUpInput {
          confirmationCode: String,
          clientMetadata: [String: String]?,
          asfDeviceId: String?,
+         forceAliasCreation: Bool?,
          environment: UserPoolEnvironment
     ) {
 
@@ -37,6 +38,7 @@ extension ConfirmSignUpInput {
             clientId: configuration.clientId,
             clientMetadata: clientMetadata,
             confirmationCode: confirmationCode,
+            forceAliasCreation: forceAliasCreation,
             secretHash: secretHash,
             userContextData: userContextData,
             username: username)
