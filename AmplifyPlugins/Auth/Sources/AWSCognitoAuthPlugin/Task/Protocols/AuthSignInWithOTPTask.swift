@@ -12,5 +12,5 @@ protocol AuthSignInWithOTPTask: AmplifyAuthTask where Request == AuthSignInWithO
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let signInWithOTPAPI = "Auth.SignInWithOTPAPI"
+    static let signInWithOTPAPI = "Auth.signInWithOTPAPI"
 }

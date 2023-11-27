@@ -128,7 +128,7 @@ class AWSAuthSignInWithOTPTask: AuthSignInWithOTPTask, DefaultLogger {
         return [:]
     }
 
-    // MARK: Sign In Cancelation
+    // MARK: Sign In Cancellation
 
     private func sendCancelSignInEvent() async {
         let event = AuthenticationEvent(eventType: .cancelSignIn)
