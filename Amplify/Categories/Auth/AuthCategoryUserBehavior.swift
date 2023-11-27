@@ -39,8 +39,21 @@ public protocol AuthCategoryUserBehavior: AnyObject {
     /// - Parameters:
     ///   - userAttributeKey: Attribute to be verified
     ///   - options: Parameters specific to plugin behavior
-    func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
-                                options: AuthAttributeResendConfirmationCodeRequest.Options?) async throws -> AuthCodeDeliveryDetails
+    @available(*, deprecated, renamed: "sendVerificationCode")
+    func resendConfirmationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthAttributeResendConfirmationCodeRequest.Options?
+    ) async throws -> AuthCodeDeliveryDetails
+
+    /// Sends the verification code required to verify an attribute
+    ///
+    /// - Parameters:
+    ///   - userAttributeKey: Attribute to be verified
+    ///   - options: Parameters specific to plugin behavior
+    func sendVerificationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthSendUserAttributeVerificationCodeRequest.Options?
+    ) async throws -> AuthCodeDeliveryDetails
 
     /// Confirm an attribute using confirmation code
     ///

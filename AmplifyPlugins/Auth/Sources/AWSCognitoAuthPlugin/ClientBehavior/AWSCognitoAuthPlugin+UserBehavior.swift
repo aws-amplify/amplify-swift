@@ -41,13 +41,31 @@ public extension AWSCognitoAuthPlugin {
         } as! [AuthUserAttributeKey: AuthUpdateAttributeResult]
     }
 
-    func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
-                                options: AuthAttributeResendConfirmationCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
+    func resendConfirmationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthAttributeResendConfirmationCodeRequest.Options? = nil
+    ) async throws -> AuthCodeDeliveryDetails {
 
         let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
         let request = AuthAttributeResendConfirmationCodeRequest(
             attributeKey: userAttributeKey, options: options)
         let task = AWSAuthAttributeResendConfirmationCodeTask(request, authStateMachine: authStateMachine, userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthCodeDeliveryDetails
+    }
+
+    func sendVerificationCode(
+        forUserAttributeKey userAttributeKey:
+        AuthUserAttributeKey,
+        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil
+    ) async throws -> AuthCodeDeliveryDetails {
+        let options = options ?? AuthSendUserAttributeVerificationCodeRequest.Options()
+        let request = AuthSendUserAttributeVerificationCodeRequest(
+            attributeKey: userAttributeKey, options: options)
+        let task = AWSAuthSendUserAttributeVerificationCodeTask(
+            request, authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthCodeDeliveryDetails
