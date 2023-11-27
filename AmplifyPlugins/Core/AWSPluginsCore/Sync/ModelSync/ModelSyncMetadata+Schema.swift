@@ -27,7 +27,7 @@ extension ModelSyncMetadata {
 
         definition.fields(
             .id(),
-            .field(keys.lastSync, is: .optional, ofType: .int64)
+            .field(keys.lastSync, is: .optional, ofType: .int)
         )
     }
 }

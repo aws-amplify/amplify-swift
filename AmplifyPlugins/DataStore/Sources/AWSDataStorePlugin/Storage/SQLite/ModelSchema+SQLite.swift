@@ -92,7 +92,7 @@ extension ModelField: SQLColumn {
         switch type {
         case .string, .enum, .date, .dateTime, .time, .model:
             return .text
-        case .int, .int64, .bool, .timestamp:
+        case .int, .bool, .timestamp:
             return .integer
         case .double:
             return .real
