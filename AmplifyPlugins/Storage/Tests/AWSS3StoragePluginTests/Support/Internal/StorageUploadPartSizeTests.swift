@@ -48,7 +48,7 @@ class StorageUploadPartSizeTests: XCTestCase {
 
     func testUploadPartSizeForLargeValidFile() throws {
         // use a file size which requires increasing from minimum part size
-        let fileSize = UInt64(minimumPartSize * maximumPartCount * 10)
+        let fileSize = minimumPartSize * UInt64(maximumPartCount) * 10
         let partSize = assertNoThrow(try StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
         if let partSize = partSize,
@@ -62,7 +62,7 @@ class StorageUploadPartSizeTests: XCTestCase {
 
     func testUploadPartSizeForSuperCrazyBigFile() throws {
         // use the maximum object size / max part count
-        let fileSize = UInt64(maximumObjectSize / maximumPartCount)
+        let fileSize = maximumObjectSize / UInt64(maximumPartCount)
         let partSize = assertNoThrow(try StorageUploadPartSize(fileSize: fileSize))
         XCTAssertNotNil(partSize)
         if let partSize = partSize,

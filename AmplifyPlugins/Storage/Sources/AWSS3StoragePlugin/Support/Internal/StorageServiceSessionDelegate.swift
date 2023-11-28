@@ -165,7 +165,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
                 return
             }
 
-            multipartUploadSession.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: Int(bytesSent), taskIdentifier: task.taskIdentifier))
+            multipartUploadSession.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: UInt64(bytesSent), taskIdentifier: task.taskIdentifier))
         case .upload(let onEvent):
             let progress = Progress(totalUnitCount: totalBytesExpectedToSend)
             progress.completedUnitCount = totalBytesSent
