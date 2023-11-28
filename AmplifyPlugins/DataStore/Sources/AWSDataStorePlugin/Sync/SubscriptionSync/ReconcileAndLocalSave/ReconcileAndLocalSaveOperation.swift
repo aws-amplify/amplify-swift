@@ -113,6 +113,14 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     // MARK: - Responder methods
 
+    /// The reconcile function incorporates incoming mutation events into the local database through the following steps:
+    /// 1. Retrieve the local metadata of the models.
+    /// 2. Generate dispositions based on incoming mutation events and local metadata.
+    /// 3. Categorize dispositions into:
+    ///   3.1 Apply metadata only for those with existing pending mutations.
+    ///     3.1.1 Notify the count of these incoming mutation events as dropped items.
+    ///   3.2 Apply incoming mutation and metadata for those without existing pending mutations.
+    /// 4. Notify the final result.
     func reconcile(remoteModels: [RemoteModel]) {
         guard !isCancelled else {
             log.info("\(#function) - cancelled, aborting")

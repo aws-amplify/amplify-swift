@@ -17,6 +17,8 @@ public struct MutationEvent: Model {
     public var json: String
     public var mutationType: String
     public var createdAt: Temporal.DateTime
+
+    @available(*, deprecated, message: "version field is deprecated")
     public var version: Int?
     public var inProcess: Bool
     public var graphQLFilterJSON: String?
