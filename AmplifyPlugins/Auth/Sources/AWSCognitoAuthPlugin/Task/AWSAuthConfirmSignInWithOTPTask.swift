@@ -14,6 +14,7 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
     private let authConfiguration: AuthConfiguration
+    private let confirmSignInRequestMetadata: PasswordlessCustomAuthRequest
 
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.confirmSignInWithOTPAPI
@@ -26,20 +27,12 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
         self.authStateMachine = stateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         self.authConfiguration = configuration
+        self.confirmSignInRequestMetadata = .init(signInMethod: .otp, action: .confirm)
     }
 
     func execute() async throws -> AuthSignInResult {
         log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
-
-        //Check if we have a user pool configuration
-        guard authConfiguration.getUserPoolConfiguration() != nil else {
-            let message = AuthPluginErrorConstants.configurationError
-            let authError = AuthError.configuration(
-                "Could not find user pool configuration",
-                message)
-            throw authError
-        }
 
         if let validationError = request.hasError() {
             throw validationError
@@ -53,11 +46,6 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
             throw invalidStateError
         }
 
-        // [HS] TODO: Following implementations need to be complete
-        // 1. Validate it is the correct state to confirm Sign In With OTP
-        // 2. Send event
-        // 3. Listent to events
-        // 4. Complete the task
         guard case .resolvingChallenge(let challengeState, _, _) = signInState else {
             throw invalidStateError
         }
@@ -69,7 +57,6 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
         default:
             throw invalidStateError
         }
-
 
         let stateSequences = await authStateMachine.listen()
         log.verbose("Waiting for response")
@@ -110,14 +97,21 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
     }
 
     private func createConfirmSignInEventData() -> ConfirmSignInEventData {
+        // TODO:
+        // Discuss if we should have dedicated options for ConfirmSignWith OTP
+        // Because `AWSAuthConfirmSignInOptions` has `friendlyDeviceName` and `userAttributes`
+        // that is not supported by this task. Customers might get confused that these are supported fields.
+        var passwordlessMetadata = confirmSignInRequestMetadata.toDictionary()
+        if let customerMetadata = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.metadata {
+            passwordlessMetadata.merge(customerMetadata, uniquingKeysWith: { passwordlessMetadata, customerMetadata in
+                // TODO: Discuss with team to namespace passwordless metadata
+                // Giving precedence to passwordless metadata.
+                passwordlessMetadata
 
-        // [HS] TODO: Confirm if any metadata needs to be passed during confirm sign in
-        /*
-         * Attributes
-         * Metadata
-         * Device Name
-         */
+            })
+        }
         return ConfirmSignInEventData(
-            answer: self.request.challengeResponse)
+            answer: self.request.challengeResponse,
+            metadata: passwordlessMetadata)
     }
 }
