@@ -97,15 +97,12 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
     }
 
     private func createConfirmSignInEventData() -> ConfirmSignInEventData {
-        // TODO:
-        // Discuss if we should have dedicated options for ConfirmSignWith OTP
-        // Because `AWSAuthConfirmSignInOptions` has `friendlyDeviceName` and `userAttributes`
-        // that is not supported by this task. Customers might get confused that these are supported fields.
         var passwordlessMetadata = confirmSignInRequestMetadata.toDictionary()
         if let customerMetadata = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.metadata {
             passwordlessMetadata.merge(customerMetadata, uniquingKeysWith: { passwordlessMetadata, customerMetadata in
-                // TODO: Discuss with team to namespace passwordless metadata
-                // Giving precedence to passwordless metadata.
+                // Ideally key collision won't happen, because passwordless has been namespaced
+                // if for some reason collision still happens,
+                // prioritizing passwordlessFlow keys for flow to continue without any issues.
                 passwordlessMetadata
 
             })

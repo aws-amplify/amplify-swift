@@ -53,8 +53,8 @@ class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { request in
                 XCTAssertEqual(request.challengeName, .customChallenge)
                 XCTAssertEqual(request.challengeResponses?["ANSWER"], "code")
-                XCTAssertEqual(request.clientMetadata?["signInMethod"], "OTP")
-                XCTAssertEqual(request.clientMetadata?["action"], "CONFIRM")
+                XCTAssertEqual(request.clientMetadata?["Amplify.Passwordless.signInMethod"], "OTP")
+                XCTAssertEqual(request.clientMetadata?["Amplify.Passwordless.action"], "CONFIRM")
                 XCTAssertEqual(request.clientMetadata?["somekey"], "somevalue")
                 return .testData()
             })

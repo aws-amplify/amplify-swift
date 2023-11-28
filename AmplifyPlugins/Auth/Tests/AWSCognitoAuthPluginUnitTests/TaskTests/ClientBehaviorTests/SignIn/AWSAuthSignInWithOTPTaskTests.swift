@@ -42,9 +42,9 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
                 ],
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
-            XCTAssertEqual(input.clientMetadata?["signInMethod"], "OTP")
-            XCTAssertEqual(input.clientMetadata?["action"], "REQUEST")
-            XCTAssertEqual(input.clientMetadata?["deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "OTP")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(

@@ -173,8 +173,9 @@ class AWSAuthSignInWithOTPTask: AuthSignInWithOTPTask, DefaultLogger {
     private func sendEventForProvidingAuthParameters() async {
         var passwordlessFlowMetadata = signInMetadataRequestMetadata.toDictionary()
         passwordlessFlowMetadata.merge(customerClientMetadata()) { passwordlessFlowMetadata, customerClientMetadata in
-            // TODO: Discuss with team to namespace passwordless metadata
-            // Giving precedence to passwordless metadata.
+            // Ideally key collision won't happen, because passwordless has been namespaced
+            // if for some reason collision still happens,
+            // prioritizing passwordlessFlow keys for flow to continue without any issues.
             passwordlessFlowMetadata
         }
         let confirmSignInEventData = ConfirmSignInEventData(
