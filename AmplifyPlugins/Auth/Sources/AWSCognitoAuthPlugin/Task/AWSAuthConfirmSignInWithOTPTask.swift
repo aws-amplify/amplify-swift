@@ -98,7 +98,7 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
 
     private func createConfirmSignInEventData() -> ConfirmSignInEventData {
         var passwordlessMetadata = confirmSignInRequestMetadata.toDictionary()
-        if let customerMetadata = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.metadata {
+        if let customerMetadata = (request.options.pluginOptions as? AWSAuthConfirmSignInWithOTPOptions)?.metadata {
             passwordlessMetadata.merge(customerMetadata, uniquingKeysWith: { passwordlessMetadata, customerMetadata in
                 // Ideally key collision won't happen, because passwordless has been namespaced
                 // if for some reason collision still happens,
