@@ -42,10 +42,13 @@ extension AWSCognitoAuthPlugin {
         let credentialsClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStoreMachine)
 
+        let urlSessionClient = URLSessionClient(urlSession: makeURLSession())
+        
         let authResolver = AuthState.Resolver().eraseToAnyResolver()
         let authEnvironment = makeAuthEnvironment(
             authConfiguration: authConfiguration,
-            credentialsClient: credentialsClient
+            credentialsClient: credentialsClient,
+            urlSessionClient: urlSessionClient
         )
 
         let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
@@ -154,7 +157,8 @@ extension AWSCognitoAuthPlugin {
 
     private func makeAuthEnvironment(
         authConfiguration: AuthConfiguration,
-        credentialsClient: CredentialStoreStateBehavior
+        credentialsClient: CredentialStoreStateBehavior,
+        urlSessionClient: URLSessionClientBehavior
     ) -> AuthEnvironment {
 
         switch authConfiguration {
@@ -169,6 +173,7 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: credentialsClient,
+                urlSessionClient: urlSessionClient,
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -181,6 +186,7 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
+                urlSessionClient: urlSessionClient,
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -196,6 +202,7 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
+                urlSessionClient: urlSessionClient,
                 logger: log)
         }
     }

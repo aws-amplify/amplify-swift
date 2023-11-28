@@ -15,6 +15,7 @@ struct AuthEnvironment: Environment, LoggerProvider {
     let authenticationEnvironment: AuthenticationEnvironment?
     let authorizationEnvironment: AuthorizationEnvironment?
     let credentialsClient: CredentialStoreStateBehavior
+    let urlSessionClient: URLSessionClientBehavior?
     let logger: Logger
 }
 
