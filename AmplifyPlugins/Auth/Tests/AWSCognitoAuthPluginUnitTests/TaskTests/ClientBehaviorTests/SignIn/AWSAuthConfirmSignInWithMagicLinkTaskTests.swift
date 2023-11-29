@@ -3,10 +3,8 @@
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
-//
 
 import Foundation
-
 import XCTest
 import Amplify
 @testable import AWSCognitoAuthPlugin
@@ -14,7 +12,7 @@ import AWSCognitoIdentityProvider
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
+class AWSAuthConfirmSignInWithMagicLinkTaskTests: BasePluginTest {
 
     override var initialState: AuthState {
         AuthState.configured(
@@ -36,15 +34,15 @@ class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
             AuthorizationState.sessionEstablished(.testData))
     }
 
-    /// Test a successful confirmSignInWithOTP call with .done as next step
+    /// Test a successful confirmSignInWithMagicLink call with .done as next step
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successful response
     /// - When:
-    ///    - I invoke confirmSignInWithOTP with a valid confirmation code
+    ///    - I invoke confirmSignInWithMagicLink with a valid code
     /// - Then:
     ///    - I should get a successful result with .done as the next step
     ///
-    func testSuccessfulConfirmSignInWithOTP() async {
+    func testSuccessfulConfirmSignInWithMagicLink() async {
 
         let customerMetadata = [
             "somekey": "somevalue"
@@ -53,17 +51,17 @@ class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { request in
                 XCTAssertEqual(request.challengeName, .customChallenge)
                 XCTAssertEqual(request.challengeResponses?["ANSWER"], "code")
-                XCTAssertEqual(request.clientMetadata?["amplify.passwordless.signInMethod"], "OTP")
+                XCTAssertEqual(request.clientMetadata?["amplify.passwordless.signInMethod"], "MAGIC_LINK")
                 XCTAssertEqual(request.clientMetadata?["amplify.passwordless.action"], "CONFIRM")
                 XCTAssertEqual(request.clientMetadata?["somekey"], "somevalue")
                 return .testData()
             })
 
         do {
-            let confirmSignInOptions = AWSAuthConfirmSignInWithOTPOptions(
+            let confirmSignInOptions = AWSAuthConfirmSignInWithMagicLinkOptions(
                 metadata: customerMetadata)
-            let option = AuthConfirmSignInWithOTPRequest.Options(pluginOptions: confirmSignInOptions)
-            let confirmSignInResult = try await plugin.confirmSignInWithOTP(
+            let option = AuthConfirmSignInWithMagicLinkRequest.Options(pluginOptions: confirmSignInOptions)
+            let confirmSignInResult = try await plugin.confirmSignInWithMagicLink(
                 challengeResponse: "code",
                 options: option)
 

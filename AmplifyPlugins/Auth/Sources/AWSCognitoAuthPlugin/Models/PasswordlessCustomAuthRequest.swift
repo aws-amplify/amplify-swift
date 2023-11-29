@@ -20,18 +20,21 @@ enum PasswordlessCustomAuthRequestAction: String {
 
 struct PasswordlessCustomAuthRequest {
 
-    private let namespace = "Amplify.Passwordless"
+    private let namespace = "amplify.passwordless"
 
     let signInMethod: PasswordlessCustomAuthSignInMethod
     let action: PasswordlessCustomAuthRequestAction
     let deliveryMedium: AuthPasswordlessDeliveryDestination?
+    let redirectURL: String?
 
     init(signInMethod: PasswordlessCustomAuthSignInMethod,
          action: PasswordlessCustomAuthRequestAction,
-         deliveryMedium: AuthPasswordlessDeliveryDestination? = nil) {
+         deliveryMedium: AuthPasswordlessDeliveryDestination? = nil,
+         redirectURL: String? = nil) {
         self.signInMethod = signInMethod
         self.action = action
         self.deliveryMedium = deliveryMedium
+        self.redirectURL = redirectURL
     }
 
     func toDictionary() -> [String: String] {
@@ -41,6 +44,9 @@ struct PasswordlessCustomAuthRequest {
         ]
         if let deliveryMedium = deliveryMedium {
             dictionary[namespace + ".deliveryMedium"] = deliveryMedium.rawValue
+        }
+        if let redirectURL = redirectURL {
+            dictionary[namespace + ".redirectUri"] = redirectURL
         }
         return dictionary
     }
