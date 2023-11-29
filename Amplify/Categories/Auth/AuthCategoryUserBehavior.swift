@@ -39,7 +39,7 @@ public protocol AuthCategoryUserBehavior: AnyObject {
     /// - Parameters:
     ///   - userAttributeKey: Attribute to be verified
     ///   - options: Parameters specific to plugin behavior
-    @available(*, deprecated, renamed: "sendVerificationCode")
+    @available(*, deprecated, renamed: "sendVerificationCode(forUserAttributeKey:options:)")
     func resendConfirmationCode(
         forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
         options: AuthAttributeResendConfirmationCodeRequest.Options?
