@@ -16,7 +16,7 @@ struct SignInEventData {
     let signInMethod: SignInMethod
 
     init(username: String?,
-         password: String?,
+         password: String? = nil,
          clientMetadata: [String: String] = [:],
          signInMethod: SignInMethod) {
         self.username = username
