@@ -512,7 +512,7 @@ class ConfirmSignInTOTPTaskTests: BasePluginTest {
             authenticationEnvironment: nil,
             authorizationEnvironment: authorizationEnvironment,
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
-            preInitiateAuthSignUpClient: nil,
+            authPasswordlessClient: nil,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         let stateMachine = Defaults.authStateMachineWith(environment: environment,

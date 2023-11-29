@@ -10,7 +10,7 @@ import Amplify
 @testable import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 
-class MockPreInitiateAuthSignUpBehavior: PreInitiateAuthSignUpBehavior {
+class MockAuthPasswordlessBehavior: AuthPasswordlessBehavior {
     
     public var preInitiateAuthSignUpCallCount = 0
     

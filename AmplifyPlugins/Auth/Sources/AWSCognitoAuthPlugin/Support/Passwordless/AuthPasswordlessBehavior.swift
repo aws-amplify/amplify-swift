@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 // Protocol for initiating sign up in a passwordless flow
-protocol PreInitiateAuthSignUpBehavior {
+protocol AuthPasswordlessBehavior {
     
     func preInitiateAuthSignUp(
         preInitiateAuthSignUpEndpoint: URL,

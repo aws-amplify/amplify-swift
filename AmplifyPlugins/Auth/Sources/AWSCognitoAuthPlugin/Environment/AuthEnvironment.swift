@@ -15,7 +15,7 @@ struct AuthEnvironment: Environment, LoggerProvider {
     let authenticationEnvironment: AuthenticationEnvironment?
     let authorizationEnvironment: AuthorizationEnvironment?
     let credentialsClient: CredentialStoreStateBehavior
-    let preInitiateAuthSignUpClient: PreInitiateAuthSignUpBehavior?
+    let authPasswordlessClient: AuthPasswordlessBehavior?
     let logger: Logger
 }
 

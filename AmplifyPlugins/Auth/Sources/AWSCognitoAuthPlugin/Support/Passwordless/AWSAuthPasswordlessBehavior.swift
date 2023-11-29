@@ -10,7 +10,7 @@ import Amplify
 import AWSPluginsCore
 
 /// Concrete implementation of PreInitiateAuthSignUpBehavior
-class AWSPreInitiateAuthSignUpBehavior : PreInitiateAuthSignUpBehavior {
+class AWSAuthPasswordlessBehavior : AuthPasswordlessBehavior {
     
     let urlSession: URLSession
     let userAgent: String
