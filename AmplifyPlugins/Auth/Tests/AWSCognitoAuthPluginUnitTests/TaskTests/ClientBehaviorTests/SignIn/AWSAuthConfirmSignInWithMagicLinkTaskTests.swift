@@ -44,15 +44,29 @@ class AWSAuthConfirmSignInWithMagicLinkTaskTests: BasePluginTest {
     ///
     func testSuccessfulConfirmSignInWithMagicLink() async {
 
+        let validMagicLinkToken = "eyJ1c2VybmFtZSI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MDExODkwODksImV4cCI6MTcwMTE4OTY4OX0.AQIDBAUGBwgJ"
         let customerMetadata = [
             "somekey": "somevalue"
         ]
+        
         self.mockIdentityProvider = MockIdentityProvider(
+            mockInitiateAuthResponse: { input in
+                XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
+                XCTAssertEqual(input.authParameters?["USERNAME"], "test@example.com")
+
+                return InitiateAuthOutput(
+                    authenticationResult: .none,
+                    challengeName: .customChallenge,
+                    challengeParameters: [
+                        "nextStep": "PROVIDE_AUTH_PARAMETERS"
+                    ],
+                    session: "someSession")
+            },
             mockRespondToAuthChallengeResponse: { request in
                 XCTAssertEqual(request.challengeName, .customChallenge)
-                XCTAssertEqual(request.challengeResponses?["ANSWER"], "code")
-                XCTAssertEqual(request.clientMetadata?["amplify.passwordless.signInMethod"], "MAGIC_LINK")
-                XCTAssertEqual(request.clientMetadata?["amplify.passwordless.action"], "CONFIRM")
+                XCTAssertEqual(request.challengeResponses?["ANSWER"], validMagicLinkToken)
+                XCTAssertEqual(request.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
+                XCTAssertEqual(request.clientMetadata?["Amplify.Passwordless.action"], "CONFIRM")
                 XCTAssertEqual(request.clientMetadata?["somekey"], "somevalue")
                 return .testData()
             })
@@ -62,7 +76,7 @@ class AWSAuthConfirmSignInWithMagicLinkTaskTests: BasePluginTest {
                 metadata: customerMetadata)
             let option = AuthConfirmSignInWithMagicLinkRequest.Options(pluginOptions: confirmSignInOptions)
             let confirmSignInResult = try await plugin.confirmSignInWithMagicLink(
-                challengeResponse: "code",
+                challengeResponse: validMagicLinkToken,
                 options: option)
 
             guard case .done = confirmSignInResult.nextStep else {
