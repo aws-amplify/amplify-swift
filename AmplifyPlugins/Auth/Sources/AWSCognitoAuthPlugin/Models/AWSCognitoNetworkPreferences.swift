@@ -18,7 +18,7 @@ public struct AWSCognitoNetworkPreferences {
 
     /// The maximum amount of time that a resource request should be allowed to take.
     /// 
-    /// NOTE: Resource time out is only applicable to HostedUI ATM, because the underlying Swift SDK does
+    /// NOTE: This value is only applicable to HostedUI because the underlying Swift SDK does
     /// not support resource timeouts
     public let timeoutIntervalForResource: Double?
 
