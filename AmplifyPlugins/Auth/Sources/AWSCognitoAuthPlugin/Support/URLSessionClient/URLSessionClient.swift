@@ -26,7 +26,7 @@ public struct URLSessionClient: URLSessionClientBehavior {
         for request: URLRequest,
         delegate: (URLSessionTaskDelegate)?)
     async throws -> (Data, URLResponse) {
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, macOS 12.0, tvOS 15.0, *) {
             return try await self.urlSession.data(
                 for: request,
                 delegate: delegate
@@ -57,7 +57,7 @@ public struct URLSessionClient: URLSessionClientBehavior {
         from url: URL,
         delegate: (URLSessionTaskDelegate)?)
     async throws -> (Data, URLResponse) {
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, macOS 12.0, tvOS 15.0, *) {
             return try await self.urlSession.data(
                 from: url,
                 delegate: delegate
