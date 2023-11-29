@@ -27,6 +27,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
             try await plugin.update(userAttributes: userAttributes, options: options)
     }
 
+    @available(*, deprecated, renamed: "sendVerificationCode")
     public func resendConfirmationCode(
         forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
         options: AuthAttributeResendConfirmationCodeRequest.Options? = nil

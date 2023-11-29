@@ -41,6 +41,7 @@ public extension AWSCognitoAuthPlugin {
         } as! [AuthUserAttributeKey: AuthUpdateAttributeResult]
     }
 
+    @available(*, deprecated, renamed: "sendVerificationCode")
     func resendConfirmationCode(
         forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
         options: AuthAttributeResendConfirmationCodeRequest.Options? = nil
