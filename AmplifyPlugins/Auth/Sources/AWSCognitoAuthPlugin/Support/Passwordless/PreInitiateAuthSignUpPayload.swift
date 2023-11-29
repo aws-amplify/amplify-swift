@@ -9,7 +9,7 @@ import Foundation
 
 // Payload data structure to send to the API Gateway endpoint
 // for password sign up and sign in flow to initiate creating a new user
-struct PreInitiateAuthPayload: Codable {
+struct PreInitiateAuthSignUpPayload: Codable {
     let username: String
     let deliveryMedium: String
     let userAttributes: [String:String]?

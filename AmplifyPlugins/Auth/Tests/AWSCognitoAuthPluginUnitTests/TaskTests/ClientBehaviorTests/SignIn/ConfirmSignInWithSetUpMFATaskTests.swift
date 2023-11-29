@@ -311,7 +311,7 @@ class ConfirmSignInWithSetUpMFATaskTests: BasePluginTest {
             authenticationEnvironment: nil,
             authorizationEnvironment: authorizationEnvironment,
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
-            urlSessionClient: nil,
+            preInitiateAuthSignUpClient: nil,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         let stateMachine = Defaults.authStateMachineWith(environment: environment,

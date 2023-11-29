@@ -168,7 +168,7 @@ enum Defaults {
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             credentialsClient: makeCredentialStoreOperationBehavior(),
-            urlSessionClient: URLSessionClient(urlSession: makeURLSession()),
+            preInitiateAuthSignUpClient: AWSPreInitiateAuthSignUpBehavior(urlSession: makeURLSession()),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose

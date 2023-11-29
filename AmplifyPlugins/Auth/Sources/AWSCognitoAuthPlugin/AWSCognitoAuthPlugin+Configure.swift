@@ -42,13 +42,13 @@ extension AWSCognitoAuthPlugin {
         let credentialsClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStoreMachine)
 
-        let urlSessionClient = URLSessionClient(urlSession: makeURLSession())
+        let preInitiateAuthSignUpClient = AWSPreInitiateAuthSignUpBehavior(urlSession: makeURLSession())
         
         let authResolver = AuthState.Resolver().eraseToAnyResolver()
         let authEnvironment = makeAuthEnvironment(
             authConfiguration: authConfiguration,
             credentialsClient: credentialsClient,
-            urlSessionClient: urlSessionClient
+            preInitiateAuthSignUpClient: preInitiateAuthSignUpClient
         )
 
         let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
@@ -158,7 +158,7 @@ extension AWSCognitoAuthPlugin {
     private func makeAuthEnvironment(
         authConfiguration: AuthConfiguration,
         credentialsClient: CredentialStoreStateBehavior,
-        urlSessionClient: URLSessionClientBehavior
+        preInitiateAuthSignUpClient: PreInitiateAuthSignUpBehavior
     ) -> AuthEnvironment {
 
         switch authConfiguration {
@@ -173,7 +173,7 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: credentialsClient,
-                urlSessionClient: urlSessionClient,
+                preInitiateAuthSignUpClient: preInitiateAuthSignUpClient,
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -186,7 +186,7 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                urlSessionClient: urlSessionClient,
+                preInitiateAuthSignUpClient: preInitiateAuthSignUpClient,
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -202,7 +202,7 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                urlSessionClient: urlSessionClient,
+                preInitiateAuthSignUpClient: preInitiateAuthSignUpClient,
                 logger: log)
         }
     }
