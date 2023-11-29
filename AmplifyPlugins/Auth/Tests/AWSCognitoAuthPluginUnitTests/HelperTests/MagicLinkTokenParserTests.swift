@@ -33,14 +33,47 @@ class MagicLinkTokenParserTests: XCTestCase {
 
     /// Given: A invalid Magic Link Token
     /// When: MagicLinkTokenParser.extractUserName is invoked
-    /// Then: A SignInError should be thrown
-    func testUsernameExtractionFailure() throws {
+    /// Then: A SignInError should be thrown with missing username message
+    func testUsernameExtractionFailureWhenMissingUsername() throws {
         let token = "eyJpYXQiOjE3MDExODkyNjcsImV4cCI6MTcwMTE4OTg2N30.AQIDBAUGBwgJ"
         do {
-            let username = try MagicLinkTokenParser.extractUserName(from: token)
-            XCTFail("Extraction of error should not pass")
+            _ = try MagicLinkTokenParser.extractUserName(from: token)
+            XCTFail("Extraction of username should not pass")
         } catch SignInError.invalidServiceResponse(let message) {
             XCTAssertNotNil(message)
+            XCTAssertEqual(message, "Did not find username object in magic link token")
+        } catch {
+            XCTFail("Error should be of type Sign In Error")
+        }
+    }
+
+    /// Given: A invalid Magic Link Token which is malformed
+    /// When: MagicLinkTokenParser.extractUserName is invoked
+    /// Then: A SignInError should be thrown with malformed error
+    func testUsernameExtractionFailureWhenTokenMalformed() throws {
+        let token = "eyJpYXQiOjE3MDExODkyNjcsImV4cCI6MTcwMTE4OTg2N30"
+        do {
+            _ = try MagicLinkTokenParser.extractUserName(from: token)
+            XCTFail("Extraction of username should not pass")
+        } catch SignInError.invalidServiceResponse(let message) {
+            XCTAssertNotNil(message)
+            XCTAssertEqual(message, "Malformed magic link token")
+        } catch {
+            XCTFail("Error should be of type Sign In Error")
+        }
+    }
+
+    /// Given: A invalid Magic Link Token with bad data
+    /// When: MagicLinkTokenParser.extractUserName is invoked
+    /// Then: A SignInError should be thrown with unable to decode message
+    func testUsernameExtractionFailureWithBadTokenData() throws {
+        let token = "badData.badData"
+        do {
+            _ = try MagicLinkTokenParser.extractUserName(from: token)
+            XCTFail("Extraction of username should not pass")
+        } catch SignInError.invalidServiceResponse(let message) {
+            XCTAssertNotNil(message)
+            XCTAssertEqual(message, "Unable to to decode magic link token")
         } catch {
             XCTFail("Error should be of type Sign In Error")
         }

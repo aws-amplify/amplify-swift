@@ -27,7 +27,7 @@ struct MagicLinkTokenParser {
                 with: encodedData,
                 options: []) as? [String: Any] else {
             throw SignInError.invalidServiceResponse(
-                message: "Unable to to encode magic link token")
+                message: "Unable to to decode magic link token")
         }
 
         guard let username = jsonObject["username"] as? String else {
