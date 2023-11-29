@@ -3,7 +3,6 @@
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
-//
 
 import XCTest
 import AWSCognitoIdentity
@@ -12,23 +11,22 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import ClientRuntime
 
-class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
+class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
 
     override var initialState: AuthState {
         AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
     }
 
-    /// Test happy path for signInWithOTP
+    /// Test happy path for signInWithMagicLink
     ///
     /// - Given: An auth plugin with mocked service.
     ///
     /// - When:
-    ///    - I invoke signInWithOTP
+    ///    - I invoke signInWithMagicLink
     /// - Then:
-    ///    - I should get `confirmSignInWithOTP` as the next step. 
+    ///    - I should get the info in next step
     ///
-    func testSignInWithOTP() async {
-
+    func testSignInWithMagicLink() async {
         let clientMetadata = [
             "somekey": "somevalue"
         ]
@@ -42,7 +40,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
                 ],
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
-            XCTAssertEqual(input.clientMetadata?["amplify.passwordless.signInMethod"], "OTP")
+            XCTAssertEqual(input.clientMetadata?["amplify.passwordless.signInMethod"], "MAGIC_LINK")
             XCTAssertEqual(input.clientMetadata?["amplify.passwordless.action"], "REQUEST")
             XCTAssertEqual(input.clientMetadata?["amplify.passwordless.deliveryMedium"], "EMAIL")
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
@@ -60,16 +58,16 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
         })
 
         let pluginOptions = AWSAuthSignInPasswordlessOptions(clientMetadata: clientMetadata)
-        let options = AuthSignInWithOTPRequest.Options(pluginOptions: pluginOptions)
+        let options = AuthSignInWithMagicLinkRequest.Options(pluginOptions: pluginOptions)
         do {
-            let result = try await plugin.signInWithOTP(
+            let result = try await plugin.signInWithMagicLink(
                 username: "username",
                 flow: .signIn,
-                destination: .email,
+                redirectURL: "https://example.com/magic-link/##code##",
                 options: options)
             
-            guard case .confirmSignInWithOTP(let codeDeliveryDetails, _) = result.nextStep else {
-                XCTFail("Result should be .confirmSignInWithOTP for next step")
+            guard case .confirmSignInWithMagicLink(let codeDeliveryDetails, _) = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithMagicLink for next step")
                 return
             }
 
