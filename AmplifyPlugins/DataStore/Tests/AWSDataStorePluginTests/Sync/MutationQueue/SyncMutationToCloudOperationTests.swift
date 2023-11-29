@@ -69,7 +69,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 
         let operation = await SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
-            latestSyncMetadata: nil,
+            getLatestSyncMetadata: { nil },
             api: mockAPIPlugin,
             authModeStrategy: AWSDefaultAuthModeStrategy(),
             networkReachabilityPublisher: publisher,
@@ -144,7 +144,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         let operation = await SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
-            latestSyncMetadata: nil,
+            getLatestSyncMetadata: { nil },
             api: mockAPIPlugin,
             authModeStrategy: AWSDefaultAuthModeStrategy(),
             networkReachabilityPublisher: publisher,
@@ -220,7 +220,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         let operation = await SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
-            latestSyncMetadata: nil,
+            getLatestSyncMetadata: { nil },
             api: mockAPIPlugin,
             authModeStrategy: AWSDefaultAuthModeStrategy(),
             networkReachabilityPublisher: publisher,

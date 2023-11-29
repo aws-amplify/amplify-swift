@@ -19,7 +19,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
     private weak var api: APICategoryGraphQLBehaviorExtended?
     private let mutationEvent: MutationEvent
-    private let latestSyncMetadata: MutationSyncMetadata?
+    private let getLatestSyncMetadata: () -> MutationSyncMetadata?
     private let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener
     private let requestRetryablePolicy: RequestRetryablePolicy
 
@@ -32,7 +32,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     private var authTypesIterator: AWSAuthorizationTypeIterator?
 
     init(mutationEvent: MutationEvent,
-         latestSyncMetadata: MutationSyncMetadata?,
+         getLatestSyncMetadata: @escaping () -> MutationSyncMetadata?,
          api: APICategoryGraphQLBehaviorExtended,
          authModeStrategy: AuthModeStrategy,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
@@ -40,7 +40,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
          completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) async {
         self.mutationEvent = mutationEvent
-        self.latestSyncMetadata = latestSyncMetadata
+        self.getLatestSyncMetadata = getLatestSyncMetadata
         self.api = api
         self.networkReachabilityPublisher = networkReachabilityPublisher
         self.completion = completion
@@ -60,6 +60,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
     override func main() {
         log.verbose(#function)
+
         sendMutationToCloud(withAuthType: authTypesIterator?.next())
     }
 
@@ -111,6 +112,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
         mutationType: GraphQLMutationType,
         authType: AWSAuthorizationType? = nil
     ) -> GraphQLRequest<MutationSync<AnyModel>>? {
+        let latestSyncMetadata = getLatestSyncMetadata()
         var request: GraphQLRequest<MutationSync<AnyModel>>
 
         do {

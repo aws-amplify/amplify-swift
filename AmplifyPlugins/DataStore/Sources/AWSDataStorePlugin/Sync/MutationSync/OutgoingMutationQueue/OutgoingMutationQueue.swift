@@ -201,10 +201,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
 
         Task {
-            let latestSyncMetadata = try? storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId, modelName: mutationEvent.modelName)
             let syncMutationToCloudOperation = await SyncMutationToCloudOperation(
                 mutationEvent: mutationEvent,
-                latestSyncMetadata: latestSyncMetadata,
+                getLatestSyncMetadata: { try? self.storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId, modelName: mutationEvent.modelName) },
                 api: api,
                 authModeStrategy: authModeStrategy
             ) { [weak self] result in
@@ -258,12 +257,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 return
             }
             reconciliationQueue.offer([mutationSync], modelName: mutationEvent.modelName)
-            MutationEvent.reconcilePendingMutationEventsVersion(
-                sent: mutationEvent,
-                received: mutationSync,
-                storageAdapter: storageAdapter) { _ in
-                self.completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
-            }
+            completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
         } else {
             completeProcessingEvent(mutationEvent)
         }
