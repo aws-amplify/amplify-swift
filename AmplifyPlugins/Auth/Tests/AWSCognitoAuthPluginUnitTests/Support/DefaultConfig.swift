@@ -60,6 +60,12 @@ enum Defaults {
     static func makeCredentialStoreOperationBehavior() -> CredentialStoreStateBehavior {
         return MockCredentialStoreOperationClient()
     }
+    
+    static func makeURLSession() -> URLSession {
+        let configuration = URLSessionConfiguration.default
+        configuration.urlCache = nil
+        return URLSession(configuration: configuration)
+    }
 
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
         return try CognitoIdentityProviderClient(region: regionString)
@@ -162,6 +168,7 @@ enum Defaults {
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             credentialsClient: makeCredentialStoreOperationBehavior(),
+            authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose
