@@ -9,7 +9,7 @@ import Foundation
 
 /// Delivery destination for the Auth Passwordless flows
 ///
-public enum AuthPasswordlessDeliveryDestination {
-   case sms
-   case email
+public enum AuthPasswordlessDeliveryDestination: String {
+   case sms = "SMS"
+   case email = "EMAIL"
 }
