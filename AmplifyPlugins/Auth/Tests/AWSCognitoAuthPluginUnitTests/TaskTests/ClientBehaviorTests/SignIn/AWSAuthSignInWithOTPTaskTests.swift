@@ -25,7 +25,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     /// - When:
     ///    - I invoke signInWithOTP
     /// - Then:
-    ///    - I should get a the info in next step
+    ///    - I should get `confirmSignInWithOTP` as the next step. 
     ///
     func testSignInWithOTP() async {
 

@@ -6,6 +6,7 @@
 //
 import Amplify
 
+//[HS]: TODO: Make sure this is approved API for options
 public struct AWSAuthConfirmSignInWithOTPOptions {
 
     /// A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.
