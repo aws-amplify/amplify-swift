@@ -494,6 +494,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             authenticationEnvironment: nil,
             authorizationEnvironment: authorizationEnvironment,
             credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
+            authPasswordlessClient: nil,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         let stateMachine = Defaults.authStateMachineWith(environment: environment,
