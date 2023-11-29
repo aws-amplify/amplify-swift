@@ -200,14 +200,38 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         redirectURL: String,
         options: AuthSignInWithMagicLinkRequest.Options?
     ) async throws -> AuthSignInResult {
-        throw AuthError.unknown("Not Implemented")
+        let options = options ?? AuthSignInWithMagicLinkRequest.Options()
+        let request = AuthSignInWithMagicLinkRequest(
+            username: username,
+            flow: flow,
+            redirectURL: redirectURL,
+            options: options)
+        
+        // TODO: Add authEnvironment parameter here to access URLSessionClient
+        let task = AWSAuthSignInWithMagicLinkTask(
+            request,
+            authStateMachine: self.authStateMachine,
+            configuration: authConfiguration)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthSignInResult
     }
     
     public func confirmSignInWithMagicLink(
         challengeResponse: String,
         options: AuthConfirmSignInWithMagicLinkRequest.Options?
     ) async throws -> AuthSignInResult {
-        throw AuthError.unknown("Not Implemented")
+        let options = options ?? AuthConfirmSignInWithMagicLinkRequest.Options()
+        let request = AuthConfirmSignInWithMagicLinkRequest(
+            challengeResponse: challengeResponse,
+            options: options)
+        let task = AWSAuthConfirmSignInWithMagicLinkTask(
+            request,
+            stateMachine: authStateMachine,
+            configuration: authConfiguration)
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! AuthSignInResult
     }
 
     public func signInWithOTP(
