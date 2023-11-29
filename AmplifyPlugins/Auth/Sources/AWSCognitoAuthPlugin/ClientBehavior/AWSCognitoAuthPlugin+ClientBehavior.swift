@@ -225,7 +225,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthConfirmSignInWithMagicLinkRequest(
             challengeResponse: challengeResponse,
             options: options)
-        let task = AWSAuthConfirmSignInWithMagicLinkTask(
+        let task = try AWSAuthConfirmSignInWithMagicLinkTask(
             request,
             stateMachine: authStateMachine,
             configuration: authConfiguration)

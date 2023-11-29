@@ -20,7 +20,7 @@ enum PasswordlessCustomAuthRequestAction: String {
 
 struct PasswordlessCustomAuthRequest {
 
-    private let namespace = "amplify.passwordless"
+    private let namespace = "Amplify.Passwordless"
 
     let signInMethod: PasswordlessCustomAuthSignInMethod
     let action: PasswordlessCustomAuthRequestAction

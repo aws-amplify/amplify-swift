@@ -40,9 +40,9 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
                 ],
                 session: "someSession")
         }, mockRespondToAuthChallengeResponse: { input in
-            XCTAssertEqual(input.clientMetadata?["amplify.passwordless.signInMethod"], "MAGIC_LINK")
-            XCTAssertEqual(input.clientMetadata?["amplify.passwordless.action"], "REQUEST")
-            XCTAssertEqual(input.clientMetadata?["amplify.passwordless.deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(
