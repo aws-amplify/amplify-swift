@@ -42,7 +42,7 @@ extension AWSCognitoAuthPlugin {
         let credentialsClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStoreMachine)
 
-        let authPasswordlessClient = AWSAuthPasswordlessBehavior(urlSession: makeURLSession())
+        let authPasswordlessClient = AWSAuthPasswordlessClient(urlSession: makeURLSession())
         
         let authResolver = AuthState.Resolver().eraseToAnyResolver()
         let authEnvironment = makeAuthEnvironment(

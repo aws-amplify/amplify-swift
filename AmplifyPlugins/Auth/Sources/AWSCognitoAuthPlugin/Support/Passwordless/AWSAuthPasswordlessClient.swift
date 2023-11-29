@@ -9,8 +9,8 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-/// Concrete implementation of PreInitiateAuthSignUpBehavior
-class AWSAuthPasswordlessBehavior : AuthPasswordlessBehavior {
+/// Concrete implementation of AuthPasswordlessBehavior
+class AWSAuthPasswordlessClient : AuthPasswordlessBehavior {
     
     let urlSession: URLSession
     let userAgent: String
@@ -20,10 +20,10 @@ class AWSAuthPasswordlessBehavior : AuthPasswordlessBehavior {
         self.userAgent = "\(AmplifyAWSServiceConfiguration.userAgentLib) \(AmplifyAWSServiceConfiguration.userAgentOS)"
     }
     
-    func preInitiateAuthSignUp(preInitiateAuthSignUpEndpoint: URL,
-                               preInitiateAuthSignUpPayload: PreInitiateAuthSignUpPayload) async throws -> Result<Void, AuthError> {
+    func preInitiateAuthSignUp(endpoint: URL,
+                               payload: PreInitiateAuthSignUpPayload) async throws -> Result<Void, AuthError> {
         
-        var request = URLRequest(url: preInitiateAuthSignUpEndpoint)
+        var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         

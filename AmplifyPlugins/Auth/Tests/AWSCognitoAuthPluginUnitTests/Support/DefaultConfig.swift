@@ -168,7 +168,7 @@ enum Defaults {
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             credentialsClient: makeCredentialStoreOperationBehavior(),
-            authPasswordlessClient: AWSAuthPasswordlessBehavior(urlSession: makeURLSession()),
+            authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose

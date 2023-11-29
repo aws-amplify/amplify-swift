@@ -124,7 +124,7 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: makeCredentialStoreClient(),
-                authPasswordlessClient: AWSAuthPasswordlessBehavior(urlSession: makeURLSession()),
+                authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -137,7 +137,7 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                authPasswordlessClient: AWSAuthPasswordlessBehavior(urlSession: makeURLSession()),
+                authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -153,7 +153,7 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                authPasswordlessClient: AWSAuthPasswordlessBehavior(urlSession: makeURLSession()),
+                authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
                 logger: log)
         }
     }

@@ -12,8 +12,8 @@ import Amplify
 protocol AuthPasswordlessBehavior {
     
     func preInitiateAuthSignUp(
-        preInitiateAuthSignUpEndpoint: URL,
-        preInitiateAuthSignUpPayload: PreInitiateAuthSignUpPayload) 
+        endpoint: URL,
+        payload: PreInitiateAuthSignUpPayload) 
     async throws -> Result<Void, AuthError>
     
 }
