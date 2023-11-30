@@ -51,10 +51,12 @@ class TemporalTests: XCTestCase {
     ///   - Time should be parsed with utc time zone
     func testConvertToIso8601String() {
         do {
-            let datetime = try Temporal.DateTime(iso8601String: "2023-11-30T11:00:00-08:00")
-            XCTAssertEqual(datetime.iso8601String, "2023-11-30T11:00:00.000-08:00")
-            let datetime1 = try Temporal.DateTime(iso8601String: "2023-11-30T11:00:00.000-08:00")
-            XCTAssertEqual(datetime1.iso8601String, "2023-11-30T11:00:00.000-08:00")
+            let datetime = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03-08:00")
+            XCTAssertEqual(datetime.iso8601String, "2023-11-30T11:04:03.000-08:00")
+            let datetime1 = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03.322-0800")
+            XCTAssertEqual(datetime1.iso8601String, "2023-11-30T11:04:03.322-08:00")
+            let datetime2 = try Temporal.DateTime(iso8601String: "2023-11-30T14:09:27.128-0830")
+            XCTAssertEqual(datetime2.iso8601String, "2023-11-30T14:09:27.128-08:30")
             let date = try Temporal.Date(iso8601String: "2023-11-30-08:00")
             XCTAssertEqual(date.iso8601String, "2023-11-30Z")
             let time = try Temporal.Time(iso8601String: "11:00:00.000-08:00")

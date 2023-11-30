@@ -13,88 +13,96 @@ extension TimeZone {
     private static let iso8601TimeZoneHHMMRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}\\d{2}$")
     private static let iso8601TimeZoneHHRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}$")
 
+    private enum ISO8601TimeZonePart {
+        case utc
+        case hhmm(hours: Int, minutes: Int)
+        case hh(hours: Int)
+
+        init?(iso8601DateString: String) {
+            func hasMatch(regex: NSRegularExpression?, str: String) -> Bool {
+                return regex.flatMap {
+                    $0.firstMatch(in: str, range: NSRange(location: 0, length: str.count))
+                } != nil
+            }
+
+            // <time>±hh:mm
+            func suffixHHColonMM() -> String? {
+                if iso8601DateString.count > 6 {
+                    let tz = String(iso8601DateString.dropFirst(iso8601DateString.count - 6))
+                    if hasMatch(regex: TimeZone.iso8601TimeZoneHHColonMMRegex, str: tz) {
+                        return tz
+                    }
+                }
+                return nil
+            }
+
+            // <time>±hhmm
+            func suffixHHMM() -> String? {
+                if iso8601DateString.count > 5 {
+                    let tz = String(iso8601DateString.dropFirst(iso8601DateString.count - 5))
+                    if hasMatch(regex: TimeZone.iso8601TimeZoneHHMMRegex, str: tz) {
+                        return tz
+                    }
+                }
+                return nil
+            }
+
+            // <time>±hh
+            func suffixHH() -> String? {
+                if iso8601DateString.count > 3 {
+                    let tz = String(iso8601DateString.dropFirst(iso8601DateString.count - 3))
+                    if hasMatch(regex: TimeZone.iso8601TimeZoneHHRegex, str: tz) {
+                        return tz
+                    }
+                }
+                return nil
+            }
+
+            if iso8601DateString.hasPrefix("Z") { // <time>Z
+                self = .utc
+                return
+            }
+
+            if let tz = suffixHHColonMM(),
+               let hours = Int(tz.dropLast(3)),
+               let minutes = Int(tz.dropFirst(4))
+            {
+                self = .hhmm(hours: hours, minutes: minutes)
+                return
+            }
+
+            if let tz = suffixHHMM(),
+               let hours = Int(tz.dropLast(2)),
+               let minutes = Int(tz.dropFirst(3))
+            {
+                self = .hhmm(hours: hours, minutes: minutes)
+                return
+            }
+
+            if let tz = suffixHH(),
+               let hours = Int(tz)
+            {
+                self = .hh(hours: hours)
+                return
+            }
+
+            return nil
+        }
+    }
+
     /// https://en.wikipedia.org/wiki/ISO_8601#Time_zone_designators
     @usableFromInline
     internal init?(iso8601DateString: String) {
-        func hasMatch(regex: NSRegularExpression?, str: String) -> Bool {
-            return regex.flatMap {
-                $0.firstMatch(in: str, range: NSRange(location: 0, length: str.count))
-            } != nil
-        }
-        // <time>Z
-        func hasSuffixZ() -> Bool {
-            return iso8601DateString.hasSuffix("Z")
-        }
-
-        // <time>±hh:mm
-        func hasSuffixHHColonMM() -> String? {
-            if iso8601DateString.count > 6 {
-                let tz = String(iso8601DateString.dropFirst(iso8601DateString.count - 6))
-                if hasMatch(regex: TimeZone.iso8601TimeZoneHHColonMMRegex, str: tz) {
-                    return tz
-                }
-            }
-            return nil
-        }
-
-        // <time>±hhmm
-        func hasSuffixHHMM() -> String? {
-            if iso8601DateString.count > 5 {
-                let tz = String(iso8601DateString.dropFirst(iso8601DateString.count - 5))
-                if hasMatch(regex: TimeZone.iso8601TimeZoneHHMMRegex, str: tz) {
-                    return tz
-                }
-            }
-            return nil
-        }
-
-        // <time>±hh
-        func hasSuffixHH() -> String? {
-            if iso8601DateString.count > 3 {
-                let tz = String(iso8601DateString.dropFirst(iso8601DateString.count - 3))
-                if hasMatch(regex: TimeZone.iso8601TimeZoneHHRegex, str: tz) {
-                    return tz
-                }
-            }
-            return nil
-        }
-
-        if hasSuffixZ() {
+        switch ISO8601TimeZonePart(iso8601DateString: iso8601DateString) {
+        case .some(.utc):
             self.init(abbreviation: "UTC")
-            return
-        }
-
-        if let tz = hasSuffixHHColonMM() {
-            guard let hours = Int(tz.dropLast(3)),
-                  let mins = Int(tz.dropFirst(4))
-            else {
-                return nil
-            }
-
-            self.init(secondsFromGMT: hours * 60 * 60 + (hours > 0 ? 1 : -1) * mins * 60)
-            return
-        }
-
-        if let tz = hasSuffixHHMM() {
-            guard let hours = Int(tz.dropLast(2)),
-                  let mins = Int(tz.dropFirst(3))
-            else {
-                return nil
-            }
-
-            self.init(secondsFromGMT: hours * 60 * 60 + (hours > 0 ? 1 : -1) * mins * 60)
-            return
-        }
-
-        if let tz = hasSuffixHH() {
-            guard let hours = Int(tz) else {
-                return nil
-            }
-
+        case let .some(.hh(hours: hours)):
             self.init(secondsFromGMT: hours * 60 * 60)
-            return
+        case let .some(.hhmm(hours: hours, minutes: minutes)):
+            self.init(secondsFromGMT: hours * 60 * 60 +
+                      (hours > 0 ? 1 : -1) * minutes * 60)
+        case .none:
+            return nil
         }
-
-        return nil
     }
 }
