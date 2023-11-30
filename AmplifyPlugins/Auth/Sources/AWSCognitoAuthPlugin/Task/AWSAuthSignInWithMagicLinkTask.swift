@@ -16,13 +16,14 @@ class AWSAuthSignInWithMagicLinkTask: AuthSignInWithMagicLinkTask, DefaultLogger
         HubPayload.EventName.Auth.signInWithMagicLinkAPI
     }
 
-    // TODO: Add authEnvironment parameter here to access URLSessionClient
     init(_ request: AuthSignInWithMagicLinkRequest,
          authStateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+         configuration: AuthConfiguration,
+         authEnvironment: AuthEnvironment) {
         passwordlessSignInHelper = PasswordlessSignInHelper(
             authStateMachine: authStateMachine,
             configuration: configuration,
+            authEnvironment: authEnvironment,
             username: request.username,
             // NOTE: answer is not applicable in this scenario
             // because this event is only responsible for initializing the passwordless OTP workflow

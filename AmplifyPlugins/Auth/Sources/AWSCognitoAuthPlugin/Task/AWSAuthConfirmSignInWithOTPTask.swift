@@ -24,7 +24,8 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
         self.confirmSignInHelper = PasswordlessConfirmSignInHelper(
             authStateMachine: stateMachine,
             challengeResponse: request.challengeResponse,
-            confirmSignInRequestMetadata: .init(signInMethod: .otp, action: .confirm),
+            confirmSignInRequestMetadata: .init(signInMethod: .otp, 
+                                                action: .confirm),
             pluginOptions: request.options.pluginOptions)
     }
 

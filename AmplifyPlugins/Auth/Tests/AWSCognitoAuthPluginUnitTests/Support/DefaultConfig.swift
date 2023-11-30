@@ -20,6 +20,7 @@ enum Defaults {
     static let userPoolId = "XXX_XX"
     static let appClientId = "XXX"
     static let appClientSecret = "XXX"
+    static let passwordlessSignUpEndpoint = "https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/"
 
     static let validAccessToken = "eyJraWQiOiJRbWZIcnYyS1F2ZEtyRm5WYUNxbzd4MWM1ZjA3TFhFaFhZQ1VSSXU2eitvPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI0MjEzZGY1ZS1mNzBiLTQ0MDUtYjhiNC05NjMzMjRhNmUwYjgiLCJkZXZpY2Vfa2V5IjoidXMtZWFzdC0xXzUyMDYxOTFjLTY5N2QtNGEzNC1iYTZmLWVmMDcwOGFkMzk3OSIsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX2w2bksxOUFMUSIsImNsaWVudF9pZCI6IjY5OW91OHRhcXZhaDVvYzA3M29zZmo4bzgyIiwib3JpZ2luX2p0aSI6ImViMDRiOTcwLTY5NDEtNDVlZS05NTQ1LTY4ODk1ZTNlMDAwZiIsImV2ZW50X2lkIjoiODYyM2JlZDctMTBhYi00YzM1LTk0MzctMzdlMWY2YTkxZDg1IiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiIsImF1dGhfdGltZSI6MTY1OTA2OTMwNywiZXhwIjoxNjU5MDcyOTA3LCJpYXQiOjE2NTkwNjkzMDcsImp0aSI6ImE2ZWQ2MWE1LTFiMGUtNDgyZC04YmY1LTI1M2JiYWRhNjFhYyIsInVzZXJuYW1lIjoiaW50ZWd0ZXN0OWRlMmVlNDctY2I4MS00YjdhLWI4OTAtOGMyYzczZjRkN2RmIn0.Mjl-G9QGXF8KwZbQrxd3uNaOf4EChzltfklRp7inuxLTFLuKQqena8VctiSUQp4jDnBEBXw2Hu3D5ZvVyGoL0FQamxMvtPRIVl050XEir_RKk6M_d9Qp4pdDNH1HwJ-id9CgpvA3xpgpIH09n2voTMbgGGLO-ivuCsJCa0IbsRUJwrua-wkr5g3-3mmFFqrNrqyFhvuQRWQ6DoVo_bjwp3WVYmNq69PaxxYYXw7b-86DGGOC4kqAvQD9WiZtu8ad63kc5zJ-MjtbKfJLK8L4cyW6ga-kZn-6MjDIn8UoToWOtLncfFM1sJiucFCcPdZoM2jBJA5WDT_0QDwAOBQjMg"
 
@@ -45,7 +46,8 @@ enum Defaults {
                     "PoolId": userPoolId,
                     "AppClientId": appClientId,
                     "AppClientSecret": appClientSecret,
-                    "Region": regionString
+                    "Region": regionString,
+                    "PasswordlessSignUpEndpoint": passwordlessSignUpEndpoint
                 ]
             ],
             "Auth": [
@@ -101,7 +103,8 @@ enum Defaults {
                                   region: regionString,
                                   clientSecret: appClientSecret,
                                   pinpointAppId: "",
-                                  hostedUIConfig: withHostedUI)
+                                  hostedUIConfig: withHostedUI,
+                                  passwordlessSignUpEndpoint: passwordlessSignUpEndpoint   )
     }
 
     static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
@@ -141,7 +144,8 @@ enum Defaults {
         authZEnvironment: BasicAuthorizationEnvironment? = nil,
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
         userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
-        hostedUIEnvironment: HostedUIEnvironment? = nil
+        hostedUIEnvironment: HostedUIEnvironment? = nil,
+        authPasswordlessClient: AuthPasswordlessBehavior? = nil
     ) -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
         let identityPoolConfigData = makeIdentityConfigData()
@@ -168,7 +172,7 @@ enum Defaults {
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             credentialsClient: makeCredentialStoreOperationBehavior(),
-            authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
+            authPasswordlessClient: authPasswordlessClient ?? AWSAuthPasswordlessClient(urlSession: makeURLSession()),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose

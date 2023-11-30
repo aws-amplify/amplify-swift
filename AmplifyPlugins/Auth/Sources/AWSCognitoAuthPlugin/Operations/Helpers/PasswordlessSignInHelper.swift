@@ -11,6 +11,7 @@ import Amplify
 struct PasswordlessSignInHelper: DefaultLogger {
 
     private let authStateMachine: AuthStateMachine
+    private let authEnvironment: AuthEnvironment
     private let taskHelper: AWSAuthTaskHelper
     private let authConfiguration: AuthConfiguration?
     private let username: String
@@ -19,18 +20,18 @@ struct PasswordlessSignInHelper: DefaultLogger {
     private let passwordlessFlow: AuthPasswordlessFlow
     private let pluginOptions: Any?
 
-    // TODO: Add authEnvironment parameter here to access URLSessionClient
     init(authStateMachine: AuthStateMachine,
          configuration: AuthConfiguration?,
+         authEnvironment: AuthEnvironment,
          username: String,
          challengeAnswer: String,
          signInRequestMetadata: PasswordlessCustomAuthRequest,
          passwordlessFlow: AuthPasswordlessFlow,
          pluginOptions: Any?) {
-
         self.authStateMachine = authStateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
         self.authConfiguration = configuration
+        self.authEnvironment = authEnvironment
         self.username = username
         self.challengeAnswer = challengeAnswer
         self.signInRequestMetadata = signInRequestMetadata
@@ -60,7 +61,57 @@ struct PasswordlessSignInHelper: DefaultLogger {
                 }
 
                 log.verbose("Starting Passwordless Sign Up flow")
-                // [HS] TODO: Proceed to sign up flow first
+                guard let authPasswordlessClient = authEnvironment.authPasswordlessClient else {
+                    let message = AuthPluginErrorConstants.configurationError
+                    let authError = AuthError.configuration(
+                        "URL Session client is not set up",
+                        message)
+                    throw authError
+                }
+                
+                guard let endpoint = userPoolConfiguration.passwordlessSignUpEndpoint else {
+                    let message = AuthPluginErrorConstants.configurationError
+                    let authError = AuthError.configuration(
+                        "API Gateway endpoint not found in configuration",
+                        message)
+                    throw authError
+                }
+                
+                guard let endpointURL = URL(string: endpoint) else {
+                    let message = AuthPluginErrorConstants.configurationError
+                    let authError = AuthError.configuration(
+                        "API Gateway URL is not valid",
+                        message)
+                    throw authError
+                }
+                
+                guard let deliveryMedium = signInRequestMetadata.deliveryMedium else {
+                    let message = AuthPluginErrorConstants.configurationError
+                    let authError = AuthError.configuration(
+                        "Delivery medium is not specified",
+                        message)
+                    throw authError
+                }
+                
+                var userAttributes : [String:String] = [:]
+                if let pluginOptions = pluginOptions as? AWSAuthSignUpAndSignInPasswordlessOptions,
+                   let attributes = pluginOptions.userAttributes {
+                    userAttributes = attributes
+                }
+                
+                let payload = PreInitiateAuthSignUpPayload(username: username,
+                                                           deliveryMedium: deliveryMedium.rawValue,
+                                                           userAttributes: userAttributes,
+                                                           userPoolId: userPoolConfiguration.poolId,
+                                                           region: userPoolConfiguration.region)
+                let result = try await authPasswordlessClient.preInitiateAuthSignUp(endpoint: endpointURL,
+                                                                                    payload: payload)
+                switch result {
+                case .success():
+                    log.verbose("Passwordless Sign Up flow success")
+                case .failure(let authError):
+                    throw authError
+                }
             }
 
             // Start sign in
