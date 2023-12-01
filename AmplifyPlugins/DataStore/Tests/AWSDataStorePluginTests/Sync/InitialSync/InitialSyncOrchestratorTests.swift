@@ -28,7 +28,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -126,7 +126,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     .failure(APIError.operationError("", "", nil))
                 listener?(event)
             } else if request.document.contains("SyncComments") {
-                let startedAt = Int(Date().timeIntervalSince1970)
+                let startedAt = Int64(Date().timeIntervalSince1970)
                 let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
                 let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
                 listener?(event)
@@ -239,7 +239,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         TestModelsWithNoAssociations().registerModels(registry: ModelRegistry.self)
 
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -306,7 +306,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                 commentWasQueried.fulfill()
             }
 
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -380,7 +380,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                 commentWasQueried.fulfill()
             }
 
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))

@@ -137,7 +137,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
     func testSyncQueryGraphQLRequestWithDateInPK() throws {
         let nextToken = "nextToken"
         let limit = 100
-        let lastSync = 123
+        let lastSync: Int64 = 123
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: CustomerWithMultipleFieldsinPK.modelName,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
@@ -188,7 +188,7 @@ class GraphQLRequestSyncCustomPrimaryKeyWithMultipleFieldsTests: XCTestCase {
         XCTAssertNotNil(variables["nextToken"])
         XCTAssertEqual(variables["nextToken"] as? String, nextToken)
         XCTAssertNotNil(variables["lastSync"])
-        XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
+        XCTAssertEqual(variables["lastSync"] as? Int64, lastSync)
     }
 
 }

@@ -676,7 +676,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let metadata = MutationSyncMetadata(modelId: modelId,
                                             modelName: modelName,
                                             deleted: false,
-                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            lastChangedAt: Int64(Date().timeIntervalSince1970),
                                             version: 1)
 
         storageAdapter.save(metadata) { result in
@@ -700,12 +700,12 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         let metadata1 = MutationSyncMetadata(modelId: UUID().uuidString,
                                              modelName: modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let metadata2 = MutationSyncMetadata(modelId: UUID().uuidString,
                                              modelName: modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
 
         let saveMetadata1 = expectation(description: "save metadata1 success")

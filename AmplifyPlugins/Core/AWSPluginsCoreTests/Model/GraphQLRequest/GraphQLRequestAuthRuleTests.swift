@@ -303,7 +303,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         let modelType = Article.self as Model.Type
         let nextToken = "nextToken"
         let limit = 100
-        let lastSync = 123
+        let lastSync: Int64 = 123
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
@@ -347,6 +347,6 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         XCTAssertNotNil(variables["nextToken"])
         XCTAssertEqual(variables["nextToken"] as? String, nextToken)
         XCTAssertNotNil(variables["lastSync"])
-        XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
+        XCTAssertEqual(variables["lastSync"] as? Int64, lastSync)
     }
 }

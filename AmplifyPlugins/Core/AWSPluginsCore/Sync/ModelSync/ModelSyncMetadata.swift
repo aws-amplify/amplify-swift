@@ -12,10 +12,10 @@ public struct ModelSyncMetadata: Model {
     public let id: String
 
     /// The timestamp (in Unix seconds) at which the last sync was started, as reported by the service
-    public var lastSync: Int?
+    public var lastSync: Int64?
 
     public init(id: String,
-                lastSync: Int?) {
+                lastSync: Int64?) {
         self.id = id
         self.lastSync = lastSync
     }

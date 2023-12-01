@@ -228,7 +228,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         let modelType = Post.self as Model.Type
         let nextToken = "nextToken"
         let limit = 100
-        let lastSync = 123
+        let lastSync: Int64 = 123
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
@@ -274,14 +274,14 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         XCTAssertNotNil(variables["nextToken"])
         XCTAssertEqual(variables["nextToken"] as? String, nextToken)
         XCTAssertNotNil(variables["lastSync"])
-        XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
+        XCTAssertEqual(variables["lastSync"] as? Int64, lastSync)
     }
 
     func testOptimizedSyncQueryGraphQLRequestWithFilter() {
         let modelType = Post.self as Model.Type
         let nextToken = "nextToken"
         let limit = 100
-        let lastSync = 123
+        let lastSync: Int64 = 123
         let postId = "123"
         let predicate = Post.CodingKeys.id.eq(postId)
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(
@@ -310,7 +310,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         let modelType = Post.self as Model.Type
         let nextToken = "nextToken"
         let limit = 100
-        let lastSync = 123
+        let lastSync: Int64 = 123
         let postId = "123"
         let altPostId = "456"
         let predicate = Post.CodingKeys.id.eq(postId) || Post.CodingKeys.id.eq(altPostId)

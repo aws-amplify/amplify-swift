@@ -8,7 +8,7 @@
 import Foundation
 
 extension Date {
-    var unixSeconds: Int {
-        Int(timeIntervalSince1970)
+    var unixSeconds: Int64 {
+        Int64(timeIntervalSince1970)
     }
 }
