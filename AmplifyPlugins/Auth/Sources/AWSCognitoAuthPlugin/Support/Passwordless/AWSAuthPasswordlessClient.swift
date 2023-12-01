@@ -21,7 +21,7 @@ class AWSAuthPasswordlessClient : AuthPasswordlessBehavior {
     }
     
     func preInitiateAuthSignUp(endpoint: URL,
-                               payload: PreInitiateAuthSignUpPayload) async throws -> Result<Void, AuthError> {
+                               payload: PreInitiateAuthSignUpPayload) async -> Result<Void, AuthError> {
         
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
@@ -31,18 +31,18 @@ class AWSAuthPasswordlessClient : AuthPasswordlessBehavior {
             let (_, response) = try await self.data(for: request)
             
             guard let response = response as? HTTPURLResponse else {
-                throw AuthError.unknown("Response received is not a HTTPURLResponse")
+                return .failure(AuthError.unknown("Response received is not a HTTPURLResponse"))
             }
             
             if response.statusCode == 200 {
                 return .successfulVoid
             } else {
-                throw AuthError.unknown("Response received with status code: \(response.statusCode)")
+                return .failure(AuthError.unknown("Response received with status code: \(response.statusCode)"))
             }
         } catch {
-            throw AuthError.service(error.localizedDescription,
+            return .failure(AuthError.service(error.localizedDescription,
                                     "API Gateway returned an error. Please check the error message for more details.",
-                                    error)
+                                    error))
         }
     }
     

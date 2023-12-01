@@ -17,21 +17,16 @@ class AWSAuthConfirmSignInWithMagicLinkTask: AuthConfirmSignInWithMagicLinkTask,
     }
 
     init(_ request: AuthConfirmSignInWithMagicLinkRequest,
-         stateMachine: AuthStateMachine,
-         configuration: AuthConfiguration,
-         authEnvironment: AuthEnvironment) throws {
+         stateMachine: AuthStateMachine) throws {
 
         let username = try MagicLinkTokenParser.extractUserName(from: request.challengeResponse)
         passwordlessSignInHelper = PasswordlessSignInHelper(
             authStateMachine: stateMachine,
-            configuration: nil,
-            authEnvironment: authEnvironment,
             username: username,
             challengeAnswer: request.challengeResponse,
             signInRequestMetadata: .init(
                 signInMethod: .magicLink,
-                action: .confirm,
-                deliveryMedium: .email),
+                action: .confirm),
             passwordlessFlow: .signIn,
             pluginOptions: request.options.pluginOptions)
     }

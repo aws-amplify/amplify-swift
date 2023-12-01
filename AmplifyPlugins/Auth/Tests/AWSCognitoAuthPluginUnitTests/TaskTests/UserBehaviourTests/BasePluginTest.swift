@@ -50,8 +50,7 @@ class BasePluginTest: XCTestCase {
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { self.mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider },
-            authPasswordlessClient: self.mockAuthPasswordlessBehavior
+            userPoolFactory: { self.mockIdentityProvider }
         )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(

@@ -18,8 +18,7 @@ class AWSAuthConfirmSignInWithOTPTask: AuthConfirmSignInWithOTPTask, DefaultLogg
     }
 
     init(_ request: AuthConfirmSignInWithOTPRequest,
-         stateMachine: AuthStateMachine,
-         configuration: AuthConfiguration) {
+         stateMachine: AuthStateMachine) {
         self.request = request
         self.confirmSignInHelper = PasswordlessConfirmSignInHelper(
             authStateMachine: stateMachine,

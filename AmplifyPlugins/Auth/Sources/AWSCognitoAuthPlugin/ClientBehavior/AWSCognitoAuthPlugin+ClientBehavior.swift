@@ -228,9 +228,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             options: options)
         let task = try AWSAuthConfirmSignInWithMagicLinkTask(
             request,
-            stateMachine: authStateMachine,
-            configuration: authConfiguration,
-            authEnvironment: authEnvironment)
+            stateMachine: authStateMachine)
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSignInResult
@@ -269,8 +267,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
             options: options)
         let task = AWSAuthConfirmSignInWithOTPTask(
             request,
-            stateMachine: authStateMachine,
-            configuration: authConfiguration)
+            stateMachine: authStateMachine)
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthSignInResult

@@ -106,6 +106,30 @@ enum Defaults {
                                   hostedUIConfig: withHostedUI,
                                   passwordlessSignUpEndpoint: passwordlessSignUpEndpoint   )
     }
+    
+    static func makeDefaultUserPoolConfigDataWithEmptySignUpEndpoint(
+        withHostedUI: HostedUIConfigurationData? = nil
+    )-> UserPoolConfigurationData {
+        UserPoolConfigurationData(poolId: userPoolId,
+                                  clientId: appClientId,
+                                  region: regionString,
+                                  clientSecret: appClientSecret,
+                                  pinpointAppId: "",
+                                  hostedUIConfig: withHostedUI,
+                                  passwordlessSignUpEndpoint: "")
+    }
+    
+    static func makeDefaultUserPoolConfigDataWithNilPasswordlessSignUpEndpoint(
+        withHostedUI: HostedUIConfigurationData? = nil
+    )-> UserPoolConfigurationData {
+        UserPoolConfigurationData(poolId: userPoolId,
+                                  clientId: appClientId,
+                                  region: regionString,
+                                  clientSecret: appClientSecret,
+                                  pinpointAppId: "",
+                                  hostedUIConfig: withHostedUI,
+                                  passwordlessSignUpEndpoint: nil)
+    }
 
     static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
         IdentityPoolConfigurationData(poolId: identityPoolId,
@@ -172,7 +196,7 @@ enum Defaults {
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             credentialsClient: makeCredentialStoreOperationBehavior(),
-            authPasswordlessClient: authPasswordlessClient ?? AWSAuthPasswordlessClient(urlSession: makeURLSession()),
+            authPasswordlessClient: authPasswordlessClient,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose

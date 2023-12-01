@@ -11,9 +11,7 @@ import Amplify
 struct PasswordlessSignInHelper: DefaultLogger {
 
     private let authStateMachine: AuthStateMachine
-    private let authEnvironment: AuthEnvironment
     private let taskHelper: AWSAuthTaskHelper
-    private let authConfiguration: AuthConfiguration?
     private let username: String
     private let challengeAnswer: String
     private let signInRequestMetadata: PasswordlessCustomAuthRequest
@@ -21,8 +19,6 @@ struct PasswordlessSignInHelper: DefaultLogger {
     private let pluginOptions: Any?
 
     init(authStateMachine: AuthStateMachine,
-         configuration: AuthConfiguration?,
-         authEnvironment: AuthEnvironment,
          username: String,
          challengeAnswer: String,
          signInRequestMetadata: PasswordlessCustomAuthRequest,
@@ -30,8 +26,6 @@ struct PasswordlessSignInHelper: DefaultLogger {
          pluginOptions: Any?) {
         self.authStateMachine = authStateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
-        self.authConfiguration = configuration
-        self.authEnvironment = authEnvironment
         self.username = username
         self.challengeAnswer = challengeAnswer
         self.signInRequestMetadata = signInRequestMetadata
@@ -47,72 +41,6 @@ struct PasswordlessSignInHelper: DefaultLogger {
         do {
             // Make sure current state is a valid state to initialize sign in
             try await validateCurrentState()
-            
-            if passwordlessFlow == .signUpAndSignIn {
-                // Check if we have a user pool configuration
-                // User pool configuration is used retrieve API Gateway information,
-                // so that sign up flow can take place
-                guard let userPoolConfiguration = authConfiguration?.getUserPoolConfiguration() else {
-                    let message = AuthPluginErrorConstants.configurationError
-                    let authError = AuthError.configuration(
-                        "Could not find user pool configuration",
-                        message)
-                    throw authError
-                }
-
-                log.verbose("Starting Passwordless Sign Up flow")
-                guard let authPasswordlessClient = authEnvironment.authPasswordlessClient else {
-                    let message = AuthPluginErrorConstants.configurationError
-                    let authError = AuthError.configuration(
-                        "URL Session client is not set up",
-                        message)
-                    throw authError
-                }
-                
-                guard let endpoint = userPoolConfiguration.passwordlessSignUpEndpoint else {
-                    let message = AuthPluginErrorConstants.configurationError
-                    let authError = AuthError.configuration(
-                        "API Gateway endpoint not found in configuration",
-                        message)
-                    throw authError
-                }
-                
-                guard let endpointURL = URL(string: endpoint) else {
-                    let message = AuthPluginErrorConstants.configurationError
-                    let authError = AuthError.configuration(
-                        "API Gateway URL is not valid",
-                        message)
-                    throw authError
-                }
-                
-                guard let deliveryMedium = signInRequestMetadata.deliveryMedium else {
-                    let message = AuthPluginErrorConstants.configurationError
-                    let authError = AuthError.configuration(
-                        "Delivery medium is not specified",
-                        message)
-                    throw authError
-                }
-                
-                var userAttributes : [String:String] = [:]
-                if let pluginOptions = pluginOptions as? AWSAuthSignUpAndSignInPasswordlessOptions,
-                   let attributes = pluginOptions.userAttributes {
-                    userAttributes = attributes
-                }
-                
-                let payload = PreInitiateAuthSignUpPayload(username: username,
-                                                           deliveryMedium: deliveryMedium.rawValue,
-                                                           userAttributes: userAttributes,
-                                                           userPoolId: userPoolConfiguration.poolId,
-                                                           region: userPoolConfiguration.region)
-                let result = try await authPasswordlessClient.preInitiateAuthSignUp(endpoint: endpointURL,
-                                                                                    payload: payload)
-                switch result {
-                case .success():
-                    log.verbose("Passwordless Sign Up flow success")
-                case .failure(let authError):
-                    throw authError
-                }
-            }
 
             // Start sign in
             return try await startPasswordlessSignIn()
@@ -129,8 +57,6 @@ struct PasswordlessSignInHelper: DefaultLogger {
             throw error
         }
     }
-
-
 
     private func startPasswordlessSignIn() async throws -> AuthSignInResult {
 

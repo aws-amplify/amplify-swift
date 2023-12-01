@@ -10,8 +10,10 @@ import AWSPluginsCore
 
 class AWSAuthSignInWithOTPTask: AuthSignInWithOTPTask, DefaultLogger {
 
+    let passwordlessFlow: AuthPasswordlessFlow
     let passwordlessSignInHelper: PasswordlessSignInHelper
-
+    let passwordlessSignUpHelper: PasswordlessSignUpHelper
+    
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.signInWithOTPAPI
     }
@@ -20,10 +22,11 @@ class AWSAuthSignInWithOTPTask: AuthSignInWithOTPTask, DefaultLogger {
          authStateMachine: AuthStateMachine,
          configuration: AuthConfiguration,
          authEnvironment: AuthEnvironment) {
+        passwordlessFlow = request.flow
+        
+        // sign in helper
         passwordlessSignInHelper = PasswordlessSignInHelper(
             authStateMachine: authStateMachine,
-            configuration: configuration,
-            authEnvironment: authEnvironment,
             username: request.username,
             // NOTE: answer is not applicable in this scenario
             // because this event is only responsible for initializing the passwordless workflow
@@ -34,9 +37,30 @@ class AWSAuthSignInWithOTPTask: AuthSignInWithOTPTask, DefaultLogger {
                 deliveryMedium: request.destination),
             passwordlessFlow: request.flow,
             pluginOptions: request.options.pluginOptions)
+        
+        // sign up helper
+        passwordlessSignUpHelper = PasswordlessSignUpHelper(
+            configuration: configuration,
+            authEnvironment: authEnvironment,
+            username: request.username,
+            signInRequestMetadata: .init(
+                signInMethod: .otp,
+                action: .request,
+                deliveryMedium: request.destination),
+            pluginOptions: request.options.pluginOptions)
     }
 
     func execute() async throws -> AuthSignInResult {
+        if passwordlessFlow == .signUpAndSignIn {
+            let result = await passwordlessSignUpHelper.signUp()
+            switch result {
+            case .success():
+                log.verbose("Passwordless Sign Up flow success")
+            case .failure(let authError):
+                throw authError
+            }
+        }
+        
         return try await passwordlessSignInHelper.signIn()
     }
 }
