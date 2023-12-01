@@ -193,8 +193,6 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         }
         resolvedEvent.mutationType = updatedMutationType
 
-        resolvedEvent.version = candidate.version
-
         return resolvedEvent
     }
 
