@@ -60,6 +60,12 @@ struct ConfigurationHelper {
         if case .string(let clientSecretFromConfig) = cognitoUserPoolJSON.value(at: "AppClientSecret") {
             clientSecret = clientSecretFromConfig
         }
+        
+        var passwordlessSignUpEndpoint: String?
+        // TODO: Update the JSON key after CDK has finalized on the format
+        if case .string(let passwordlessSignUpEndpointFromConfig) = cognitoUserPoolJSON.value(at: "PasswordlessSignUpEndpoint") {
+            passwordlessSignUpEndpoint = passwordlessSignUpEndpointFromConfig
+        }
 
         let hostedUIConfig = parseHostedConfiguration(
             configuration: config.value(at: "Auth.Default.OAuth"))
@@ -71,7 +77,8 @@ struct ConfigurationHelper {
                                          clientSecret: clientSecret,
                                          pinpointAppId: pinpointId,
                                          authFlowType: authFlowType,
-                                         hostedUIConfig: hostedUIConfig)
+                                         hostedUIConfig: hostedUIConfig,
+                                         passwordlessSignUpEndpoint: passwordlessSignUpEndpoint)
     }
 
     static func parseHostedConfiguration(configuration: JSONValue?) -> HostedUIConfigurationData? {

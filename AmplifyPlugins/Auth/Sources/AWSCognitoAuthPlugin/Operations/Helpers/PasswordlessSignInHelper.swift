@@ -12,25 +12,20 @@ struct PasswordlessSignInHelper: DefaultLogger {
 
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
-    private let authConfiguration: AuthConfiguration?
     private let username: String
     private let challengeAnswer: String
     private let signInRequestMetadata: PasswordlessCustomAuthRequest
     private let passwordlessFlow: AuthPasswordlessFlow
     private let pluginOptions: Any?
 
-    // TODO: Add authEnvironment parameter here to access URLSessionClient
     init(authStateMachine: AuthStateMachine,
-         configuration: AuthConfiguration?,
          username: String,
          challengeAnswer: String,
          signInRequestMetadata: PasswordlessCustomAuthRequest,
          passwordlessFlow: AuthPasswordlessFlow,
          pluginOptions: Any?) {
-
         self.authStateMachine = authStateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
-        self.authConfiguration = configuration
         self.username = username
         self.challengeAnswer = challengeAnswer
         self.signInRequestMetadata = signInRequestMetadata
@@ -46,22 +41,6 @@ struct PasswordlessSignInHelper: DefaultLogger {
         do {
             // Make sure current state is a valid state to initialize sign in
             try await validateCurrentState()
-            
-            if passwordlessFlow == .signUpAndSignIn {
-                // Check if we have a user pool configuration
-                // User pool configuration is used retrieve API Gateway information,
-                // so that sign up flow can take place
-                guard let userPoolConfiguration = authConfiguration?.getUserPoolConfiguration() else {
-                    let message = AuthPluginErrorConstants.configurationError
-                    let authError = AuthError.configuration(
-                        "Could not find user pool configuration",
-                        message)
-                    throw authError
-                }
-
-                log.verbose("Starting Passwordless Sign Up flow")
-                // [HS] TODO: Proceed to sign up flow first
-            }
 
             // Start sign in
             return try await startPasswordlessSignIn()
@@ -78,8 +57,6 @@ struct PasswordlessSignInHelper: DefaultLogger {
             throw error
         }
     }
-
-
 
     private func startPasswordlessSignIn() async throws -> AuthSignInResult {
 

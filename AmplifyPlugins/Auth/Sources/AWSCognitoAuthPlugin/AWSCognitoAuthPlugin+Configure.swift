@@ -42,13 +42,10 @@ extension AWSCognitoAuthPlugin {
         let credentialsClient = CredentialStoreOperationClient(
             credentialStoreStateMachine: credentialStoreMachine)
 
-        let authPasswordlessClient = AWSAuthPasswordlessClient(urlSession: makeURLSession())
-        
         let authResolver = AuthState.Resolver().eraseToAnyResolver()
         let authEnvironment = makeAuthEnvironment(
             authConfiguration: authConfiguration,
-            credentialsClient: credentialsClient,
-            authPasswordlessClient: authPasswordlessClient
+            credentialsClient: credentialsClient
         )
 
         let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
@@ -173,6 +170,10 @@ extension AWSCognitoAuthPlugin {
     private func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
         return analyticsHandler
     }
+    
+    private func makePasswordlessClient() -> AuthPasswordlessBehavior {
+        return AWSAuthPasswordlessClient(urlSession: makeURLSession())
+    }
 
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
@@ -184,15 +185,13 @@ extension AWSCognitoAuthPlugin {
 
     private func makeAuthEnvironment(
         authConfiguration: AuthConfiguration,
-        credentialsClient: CredentialStoreStateBehavior,
-        authPasswordlessClient: AuthPasswordlessBehavior
+        credentialsClient: CredentialStoreStateBehavior
     ) -> AuthEnvironment {
 
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(
                 userPoolConfigData: userPoolConfigurationData)
-
             return AuthEnvironment(
                 configuration: authConfiguration,
                 userPoolConfigData: userPoolConfigurationData,
@@ -200,7 +199,6 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: credentialsClient,
-                authPasswordlessClient: authPasswordlessClient,
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -213,7 +211,6 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                authPasswordlessClient: authPasswordlessClient,
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -229,7 +226,6 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                authPasswordlessClient: authPasswordlessClient,
                 logger: log)
         }
     }
@@ -245,9 +241,12 @@ extension AWSCognitoAuthPlugin {
             cognitoUserPoolASFFactory: makeCognitoASF,
             cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
+        let authPasswordlessEnvironment: AuthPasswordlessEnvironment? = (userPoolConfigData.passwordlessSignUpEndpoint != nil) ?
+            BasicPasswordlessEnvironment(authPasswordlessFactory: makePasswordlessClient) : nil
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                               userPoolEnvironment: userPoolEnvironment,
-                                              hostedUIEnvironment: hostedUIEnvironment)
+                                              hostedUIEnvironment: hostedUIEnvironment,
+                                              authPasswordlessEnvironment: authPasswordlessEnvironment)
     }
 
     private func hostedUIEnvironment(_ configuration: UserPoolConfigurationData) -> HostedUIEnvironment? {

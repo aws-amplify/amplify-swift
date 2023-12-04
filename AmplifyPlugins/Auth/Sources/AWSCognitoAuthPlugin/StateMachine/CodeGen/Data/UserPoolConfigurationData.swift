@@ -17,6 +17,7 @@ struct UserPoolConfigurationData: Equatable {
     let pinpointAppId: String?
     let hostedUIConfig: HostedUIConfigurationData?
     let authFlowType: AuthFlowType
+    let passwordlessSignUpEndpoint: String?
 
     init(
         poolId: String,
@@ -26,7 +27,8 @@ struct UserPoolConfigurationData: Equatable {
         clientSecret: String? = nil,
         pinpointAppId: String? = nil,
         authFlowType: AuthFlowType = .userSRP,
-        hostedUIConfig: HostedUIConfigurationData? = nil
+        hostedUIConfig: HostedUIConfigurationData? = nil,
+        passwordlessSignUpEndpoint: String? = nil
     ) {
         self.poolId = poolId
         self.clientId = clientId
@@ -36,6 +38,7 @@ struct UserPoolConfigurationData: Equatable {
         self.pinpointAppId = pinpointAppId
         self.hostedUIConfig = hostedUIConfig
         self.authFlowType = authFlowType
+        self.passwordlessSignUpEndpoint = passwordlessSignUpEndpoint
     }
 
     /// Amazon Cognito user pool: cognito-idp.<region>.amazonaws.com/<YOUR_USER_POOL_ID>,
@@ -56,7 +59,8 @@ extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
             "endpoint": endpoint ?? "N/A",
             "clientSecret": clientSecret.masked(interiorCount: 4),
             "pinpointAppId": pinpointAppId.masked(interiorCount: 4, retainingCount: 4),
-            "hostedUI": hostedUIConfig?.debugDescription ?? "N/A"
+            "hostedUI": hostedUIConfig?.debugDescription ?? "N/A",
+            "passwordlessSignUpEndpoint": passwordlessSignUpEndpoint ?? "N/A"
         ]
     }
 }

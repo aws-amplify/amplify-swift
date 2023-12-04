@@ -21,7 +21,7 @@ class AWSAuthPasswordlessClient : AuthPasswordlessBehavior {
     }
     
     func preInitiateAuthSignUp(endpoint: URL,
-                               payload: PreInitiateAuthSignUpPayload) async throws -> Result<Void, AuthError> {
+                               payload: PreInitiateAuthSignUpPayload) async throws {
         
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
@@ -34,9 +34,10 @@ class AWSAuthPasswordlessClient : AuthPasswordlessBehavior {
                 throw AuthError.unknown("Response received is not a HTTPURLResponse")
             }
             
-            if response.statusCode == 200 {
-                return .successfulVoid
-            } else {
+            switch response.statusCode {
+            case 200..<300:
+                return
+            default:
                 throw AuthError.unknown("Response received with status code: \(response.statusCode)")
             }
         } catch {
