@@ -34,9 +34,10 @@ class AWSAuthPasswordlessClient : AuthPasswordlessBehavior {
                 throw AuthError.unknown("Response received is not a HTTPURLResponse")
             }
             
-            if response.statusCode == 200 {
+            switch response.statusCode {
+            case 200..<300:
                 return
-            } else {
+            default:
                 throw AuthError.unknown("Response received with status code: \(response.statusCode)")
             }
         } catch {

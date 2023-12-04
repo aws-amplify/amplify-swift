@@ -31,7 +31,8 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///    - I should get the info in next step
     ///
     func testSignInWithMagicLink() async {
-        
+        let username = "username"
+        let redirectURL = "https://example.com/magic-link/##code##"
         setUpWith(authPasswordlessEnvironment:
                     BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient))
         let clientMetadata = [
@@ -50,6 +51,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.redirectUri"], redirectURL)
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(
@@ -68,9 +70,9 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
         let options = AuthSignInWithMagicLinkRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signInWithMagicLink(
-                username: "username",
+                username: username,
                 flow: .signIn,
-                redirectURL: "https://example.com/magic-link/##code##",
+                redirectURL: redirectURL,
                 options: options)
             
            guard case .confirmSignInWithMagicLink(let codeDeliveryDetails, _) = result.nextStep else {
@@ -108,6 +110,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///
     func testSignUpAndSignInWithMagicLink() async {
         let username = "username"
+        let redirectURL = "https://example.com/magic-link/##code##"
         self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
             XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
             XCTAssertEqual(payload.username, username)
@@ -139,6 +142,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.redirectUri"], redirectURL)
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(
@@ -160,7 +164,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             let result = try await plugin.signInWithMagicLink(
                 username: username,
                 flow: .signUpAndSignIn,
-                redirectURL: "https://example.com/magic-link/##code##",
+                redirectURL: redirectURL,
                 options: options)
             
             
@@ -199,6 +203,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///
     func testSignUpAndSignInWithMagicLinkWithMissingEndpointURL() async {
         let username = "username"
+        let redirectURL = "https://example.com/magic-link/##code##"
         self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
             XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
             XCTAssertEqual(payload.username, username)
@@ -235,6 +240,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.redirectUri"], redirectURL)
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(
@@ -256,7 +262,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             let _ = try await plugin.signInWithMagicLink(
                 username: username,
                 flow: .signUpAndSignIn,
-                redirectURL: "https://example.com/magic-link/##code##",
+                redirectURL: redirectURL,
                 options: options)
             
             XCTFail("Should fail due to missing endpoint URL in configuration")
@@ -288,6 +294,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///
     func testSignUpAndSignInWithMagicLinkWithNilPasswordlessClient() async {
         let username = "username"
+        let redirectURL = "https://example.com/magic-link/##code##"
         self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
             XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
             XCTAssertEqual(payload.username, username)
@@ -317,6 +324,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.redirectUri"], redirectURL)
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(
@@ -338,7 +346,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             let _ = try await plugin.signInWithMagicLink(
                 username: username,
                 flow: .signUpAndSignIn,
-                redirectURL: "https://example.com/magic-link/##code##",
+                redirectURL: redirectURL,
                 options: options)
             
             XCTFail("Should fail")
@@ -370,6 +378,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///
     func testSignUpAndSignInWithMagicLinkWithMissingUserPoolConfig() async {
         let username = "username"
+        let redirectURL = "https://example.com/magic-link/##code##"
         self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
             XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
             XCTAssertEqual(payload.username, username)
@@ -399,6 +408,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.redirectUri"], redirectURL)
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(
@@ -420,7 +430,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             let _ = try await plugin.signInWithMagicLink(
                 username: username,
                 flow: .signUpAndSignIn,
-                redirectURL: "https://example.com/magic-link/##code##",
+                redirectURL: redirectURL,
                 options: options)
             
             XCTFail("Should fail")
@@ -452,6 +462,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///
     func testSignUpAndSignInWithMagicLinkWithEmptyEndpointURL() async {
         let username = "username"
+        let redirectURL = "https://example.com/magic-link/##code##"
         self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
             XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
             XCTAssertEqual(payload.username, username)
@@ -486,6 +497,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.signInMethod"], "MAGIC_LINK")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.action"], "REQUEST")
             XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.deliveryMedium"], "EMAIL")
+            XCTAssertEqual(input.clientMetadata?["Amplify.Passwordless.redirectUri"], redirectURL)
             XCTAssertEqual(input.clientMetadata?["somekey"], "somevalue")
 
             return RespondToAuthChallengeOutput(
@@ -507,7 +519,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             let _ = try await plugin.signInWithMagicLink(
                 username: username,
                 flow: .signUpAndSignIn,
-                redirectURL: "https://example.com/magic-link/##code##",
+                redirectURL: redirectURL,
                 options: options)
             
             XCTFail("Should fail due to missing endpoint URL in configuration")
