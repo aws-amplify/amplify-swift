@@ -143,6 +143,10 @@ extension AWSCognitoAuthPlugin {
     private func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
         return analyticsHandler
     }
+    
+    private func makePasswordlessClient() -> AuthPasswordlessBehavior {
+        return AWSAuthPasswordlessClient(urlSession: makeURLSession())
+    }
 
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
@@ -161,8 +165,6 @@ extension AWSCognitoAuthPlugin {
         case .userPools(let userPoolConfigurationData):
             let authenticationEnvironment = authenticationEnvironment(
                 userPoolConfigData: userPoolConfigurationData)
-            let authPasswordlessClient =
-                (userPoolConfigurationData.passwordlessSignUpEndpoint != nil) ? AWSAuthPasswordlessClient(urlSession: makeURLSession()) : nil
             return AuthEnvironment(
                 configuration: authConfiguration,
                 userPoolConfigData: userPoolConfigurationData,
@@ -170,7 +172,6 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: credentialsClient,
-                authPasswordlessClient: authPasswordlessClient,
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -183,7 +184,6 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                authPasswordlessClient: nil,
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -192,8 +192,6 @@ extension AWSCognitoAuthPlugin {
                 userPoolConfigData: userPoolConfigurationData)
             let authorizationEnvironment = authorizationEnvironment(
                 identityPoolConfigData: identityPoolConfigurationData)
-            let authPasswordlessClient =
-                (userPoolConfigurationData.passwordlessSignUpEndpoint != nil) ? AWSAuthPasswordlessClient(urlSession: makeURLSession()) : nil
             return AuthEnvironment(
                 configuration: authConfiguration,
                 userPoolConfigData: userPoolConfigurationData,
@@ -201,7 +199,6 @@ extension AWSCognitoAuthPlugin {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: credentialsClient,
-                authPasswordlessClient: authPasswordlessClient,
                 logger: log)
         }
     }
@@ -217,9 +214,12 @@ extension AWSCognitoAuthPlugin {
             cognitoUserPoolASFFactory: makeCognitoASF,
             cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
+        let authPasswordlessEnvironment: AuthPasswordlessEnvironment? = (userPoolConfigData.passwordlessSignUpEndpoint != nil) ?
+            BasicPasswordlessEnvironment(authPasswordlessFactory: makePasswordlessClient) : nil
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                               userPoolEnvironment: userPoolEnvironment,
-                                              hostedUIEnvironment: hostedUIEnvironment)
+                                              hostedUIEnvironment: hostedUIEnvironment,
+                                              authPasswordlessEnvironment: authPasswordlessEnvironment)
     }
 
     private func hostedUIEnvironment(_ configuration: UserPoolConfigurationData) -> HostedUIEnvironment? {

@@ -14,6 +14,6 @@ protocol AuthPasswordlessBehavior {
     func preInitiateAuthSignUp(
         endpoint: URL,
         payload: PreInitiateAuthSignUpPayload) 
-    async -> Result<Void, AuthError>
+    async throws
     
 }

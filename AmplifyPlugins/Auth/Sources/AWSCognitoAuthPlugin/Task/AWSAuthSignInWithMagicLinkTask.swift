@@ -41,6 +41,7 @@ class AWSAuthSignInWithMagicLinkTask: AuthSignInWithMagicLinkTask, DefaultLogger
         
         // sign up helper
         passwordlessSignUpHelper = PasswordlessSignUpHelper(
+            authStateMachine: authStateMachine,
             configuration: configuration,
             authEnvironment: authEnvironment,
             username: request.username,
@@ -54,13 +55,9 @@ class AWSAuthSignInWithMagicLinkTask: AuthSignInWithMagicLinkTask, DefaultLogger
 
     func execute() async throws -> AuthSignInResult {
         if passwordlessFlow == .signUpAndSignIn {
-            let result = await passwordlessSignUpHelper.signUp()
-            switch result {
-            case .success():
-                log.verbose("Passwordless Sign Up flow success")
-            case .failure(let authError):
-                throw authError
-            }
+            log.verbose("Starting Passwordless Sign Up flow")
+            try await passwordlessSignUpHelper.signUp()
+            log.verbose("Passwordless Sign Up flow success")
         }
         
         return try await passwordlessSignInHelper.signIn()

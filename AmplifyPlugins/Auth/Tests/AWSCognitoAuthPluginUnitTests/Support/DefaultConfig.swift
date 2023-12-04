@@ -81,6 +81,12 @@ enum Defaults {
         MockAnalyticsHandler()
     }
     
+    static func makePasswordlessClient() -> AuthPasswordlessBehavior {
+        MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            
+        })
+    }
+    
     static func makeIdentity() throws -> CognitoIdentityBehavior {
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -121,7 +127,7 @@ enum Defaults {
     
     static func makeDefaultUserPoolConfigDataWithNilPasswordlessSignUpEndpoint(
         withHostedUI: HostedUIConfigurationData? = nil
-    )-> UserPoolConfigurationData {
+    ) -> UserPoolConfigurationData {
         UserPoolConfigurationData(poolId: userPoolId,
                                   clientId: appClientId,
                                   region: regionString,
@@ -169,7 +175,7 @@ enum Defaults {
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
         userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
         hostedUIEnvironment: HostedUIEnvironment? = nil,
-        authPasswordlessClient: AuthPasswordlessBehavior? = nil
+        authPasswordlessEnvironment: AuthPasswordlessEnvironment? = nil
     ) -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
         let identityPoolConfigData = makeIdentityConfigData()
@@ -185,7 +191,8 @@ enum Defaults {
             cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                                                        userPoolEnvironment: userPoolEnvironment,
-                                                                       hostedUIEnvironment: hostedUIEnvironment)
+                                                                       hostedUIEnvironment: hostedUIEnvironment,
+                                                                       authPasswordlessEnvironment: authPasswordlessEnvironment)
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
             cognitoIdentityFactory: identityPoolFactory)
@@ -196,7 +203,6 @@ enum Defaults {
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
             credentialsClient: makeCredentialStoreOperationBehavior(),
-            authPasswordlessClient: authPasswordlessClient,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose

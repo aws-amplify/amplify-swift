@@ -94,6 +94,12 @@ struct MockedAuthCognitoPluginHelper {
     private func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
         MockAnalyticsHandler()
     }
+    
+    private func makePasswordlessClient() -> AuthPasswordlessBehavior {
+        MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            
+        })
+    }
 
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         MockAmplifyStore()
@@ -124,7 +130,6 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
                 credentialsClient: makeCredentialStoreClient(),
-                authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -137,7 +142,6 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -153,7 +157,6 @@ struct MockedAuthCognitoPluginHelper {
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
                 credentialsClient: makeCredentialStoreClient(),
-                authPasswordlessClient: AWSAuthPasswordlessClient(urlSession: makeURLSession()),
                 logger: log)
         }
     }
@@ -169,9 +172,11 @@ struct MockedAuthCognitoPluginHelper {
             cognitoUserPoolASFFactory: makeCognitoASF,
             cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
+        let passwordlessEnvironment: AuthPasswordlessEnvironment? = (userPoolConfigData.passwordlessSignUpEndpoint != nil) ? BasicPasswordlessEnvironment(authPasswordlessFactory: makePasswordlessClient) : nil
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                               userPoolEnvironment: userPoolEnvironment,
-                                              hostedUIEnvironment: hostedUIEnvironment)
+                                              hostedUIEnvironment: hostedUIEnvironment,
+                                              authPasswordlessEnvironment: passwordlessEnvironment)
     }
 
     private func hostedUIEnvironment(_ configuration: UserPoolConfigurationData) -> HostedUIEnvironment? {

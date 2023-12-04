@@ -10,12 +10,16 @@ import Amplify
 @testable import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 
-class MockAuthPasswordlessBehavior: AuthPasswordlessBehavior {
+struct MockAuthPasswordlessBehavior: AuthPasswordlessBehavior {
+    
+    typealias MockGetAuthPasswordlessResponse = (URL, PreInitiateAuthSignUpPayload) async throws -> Void
+    
+    let mockGetAuthPasswordlessResponse: MockGetAuthPasswordlessResponse?
     
     func preInitiateAuthSignUp(
         endpoint: URL,
         payload: PreInitiateAuthSignUpPayload)
-    async -> Result<Void, AuthError> {
-        return .successfulVoid
+    async throws {
+        return try await mockGetAuthPasswordlessResponse!(endpoint, payload)
     }
 }

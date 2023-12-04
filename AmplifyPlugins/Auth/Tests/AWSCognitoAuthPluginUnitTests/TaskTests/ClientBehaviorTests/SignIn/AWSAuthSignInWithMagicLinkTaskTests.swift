@@ -31,7 +31,9 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///    - I should get the info in next step
     ///
     func testSignInWithMagicLink() async {
-        setUpWith(passwordlessClient: MockAuthPasswordlessBehavior())
+        
+        setUpWith(authPasswordlessEnvironment:
+                    BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient))
         let clientMetadata = [
             "somekey": "somevalue"
         ]
@@ -105,9 +107,23 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///    - I should get the correct info in next step
     ///
     func testSignUpAndSignInWithMagicLink() async {
-        setUpWith(passwordlessClient: MockAuthPasswordlessBehavior())
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
+        
+        setUpWith(authPasswordlessEnvironment:
+                    BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient))
         
         let clientMetadata = [
+            "somekey": "somevalue"
+        ]
+        let userAttributes = [
             "somekey": "somevalue"
         ]
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
@@ -137,11 +153,12 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInPasswordlessOptions(clientMetadata: clientMetadata)
+        let pluginOptions = AWSAuthSignUpAndSignInPasswordlessOptions(userAttributes: userAttributes,
+                                                                      clientMetadata: clientMetadata)
         let options = AuthSignInWithMagicLinkRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signInWithMagicLink(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 redirectURL: "https://example.com/magic-link/##code##",
                 options: options)
@@ -181,14 +198,28 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithMagicLinkWithMissingEndpointURL() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
+        
         setUpWith(
-            passwordlessClient: MockAuthPasswordlessBehavior(),
+            authPasswordlessEnvironment:
+                        BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient),
             authConfiguration: .userPoolsAndIdentityPools(
                 Defaults.makeDefaultUserPoolConfigDataWithNilPasswordlessSignUpEndpoint(),
                 Defaults.makeIdentityConfigData())
         )
         
         let clientMetadata = [
+            "somekey": "somevalue"
+        ]
+        let userAttributes = [
             "somekey": "somevalue"
         ]
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
@@ -218,11 +249,12 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInPasswordlessOptions(clientMetadata: clientMetadata)
+        let pluginOptions = AWSAuthSignUpAndSignInPasswordlessOptions(userAttributes: userAttributes,
+                                                                      clientMetadata: clientMetadata)
         let options = AuthSignInWithMagicLinkRequest.Options(pluginOptions: pluginOptions)
         do {
             let _ = try await plugin.signInWithMagicLink(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 redirectURL: "https://example.com/magic-link/##code##",
                 options: options)
@@ -247,7 +279,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     
     /// Test failure path for signInAndSignUpWithMagicLink
     ///
-    /// - Given: An auth plugin with mocked service and `nil` passwordless client
+    /// - Given: An auth plugin with mocked service and `nil` passwordless environment
     ///
     /// - When:
     ///    - I invoke signInWithMagicLink with flow as `.signUpAndSignIn`
@@ -255,9 +287,21 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithMagicLinkWithNilPasswordlessClient() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
         setUpWith()
         
         let clientMetadata = [
+            "somekey": "somevalue"
+        ]
+        let userAttributes = [
             "somekey": "somevalue"
         ]
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
@@ -287,11 +331,12 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInPasswordlessOptions(clientMetadata: clientMetadata)
+        let pluginOptions = AWSAuthSignUpAndSignInPasswordlessOptions(userAttributes: userAttributes,
+                                                                      clientMetadata: clientMetadata)
         let options = AuthSignInWithMagicLinkRequest.Options(pluginOptions: pluginOptions)
         do {
             let _ = try await plugin.signInWithMagicLink(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 redirectURL: "https://example.com/magic-link/##code##",
                 options: options)
@@ -324,9 +369,21 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithMagicLinkWithMissingUserPoolConfig() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
         setUpWith(authConfiguration: .identityPools(Defaults.makeIdentityConfigData()))
         
         let clientMetadata = [
+            "somekey": "somevalue"
+        ]
+        let userAttributes = [
             "somekey": "somevalue"
         ]
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
@@ -356,11 +413,12 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInPasswordlessOptions(clientMetadata: clientMetadata)
+        let pluginOptions = AWSAuthSignUpAndSignInPasswordlessOptions(userAttributes: userAttributes,
+                                                                      clientMetadata: clientMetadata)
         let options = AuthSignInWithMagicLinkRequest.Options(pluginOptions: pluginOptions)
         do {
             let _ = try await plugin.signInWithMagicLink(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 redirectURL: "https://example.com/magic-link/##code##",
                 options: options)
@@ -393,13 +451,26 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithMagicLinkWithEmptyEndpointURL() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
         setUpWith(
-            passwordlessClient: MockAuthPasswordlessBehavior(),
+            authPasswordlessEnvironment:
+                        BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient),
             authConfiguration: .userPoolsAndIdentityPools(
                 Defaults.makeDefaultUserPoolConfigDataWithEmptySignUpEndpoint(),
                 Defaults.makeIdentityConfigData()))
         
         let clientMetadata = [
+            "somekey": "somevalue"
+        ]
+        let userAttributes = [
             "somekey": "somevalue"
         ]
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { input in
@@ -429,11 +500,12 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
                 session: "session")
         })
 
-        let pluginOptions = AWSAuthSignInPasswordlessOptions(clientMetadata: clientMetadata)
+        let pluginOptions = AWSAuthSignUpAndSignInPasswordlessOptions(userAttributes: userAttributes,
+                                                                      clientMetadata: clientMetadata)
         let options = AuthSignInWithMagicLinkRequest.Options(pluginOptions: pluginOptions)
         do {
             let _ = try await plugin.signInWithMagicLink(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 redirectURL: "https://example.com/magic-link/##code##",
                 options: options)
@@ -456,12 +528,12 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
     }
     
     private func setUpWith(
-        passwordlessClient: AuthPasswordlessBehavior? = nil,
+        authPasswordlessEnvironment: AuthPasswordlessEnvironment? = nil,
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData()) {
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { self.mockIdentity },
             userPoolFactory: { self.mockIdentityProvider },
-            authPasswordlessClient: passwordlessClient
+            authPasswordlessEnvironment: authPasswordlessEnvironment
         )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
@@ -476,5 +548,9 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler())
+    }
+    
+    private func makeAuthPasswordlessClient() -> AuthPasswordlessBehavior {
+        self.mockAuthPasswordlessProvider
     }
 }

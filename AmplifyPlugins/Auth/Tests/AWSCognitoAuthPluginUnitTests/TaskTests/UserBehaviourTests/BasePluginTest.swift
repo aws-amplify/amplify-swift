@@ -14,16 +14,15 @@ class BasePluginTest: XCTestCase {
     
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!
+    var mockAuthPasswordlessProvider: AuthPasswordlessBehavior!
+    var plugin: AWSCognitoAuthPlugin!
+    
     lazy var mockIdentity: CognitoIdentityBehavior = {
         MockIdentity(
             mockGetIdResponse: getId,
             mockGetCredentialsResponse: getCredentials)
     }()
-    lazy var mockAuthPasswordlessBehavior: AuthPasswordlessBehavior = {
-        MockAuthPasswordlessBehavior()
-    }()
-    var plugin: AWSCognitoAuthPlugin!
-
+    
     let getId: MockIdentity.MockGetIdResponse = { _ in
         return .init(identityId: "mockIdentityId")
     }

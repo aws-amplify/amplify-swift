@@ -32,7 +32,8 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     ///    - I should get `confirmSignInWithOTP` as the next step. 
     ///
     func testSignInWithOTP() async {
-        setUpWith(passwordlessClient: MockAuthPasswordlessBehavior())
+        setUpWith(authPasswordlessEnvironment:
+                    BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient))
         let clientMetadata = [
             "somekey": "somevalue"
         ]
@@ -106,7 +107,18 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     ///    - I should get `confirmSignInWithOTP` as the next step.
     ///
     func testSignUpAndSignInWithOTP() async {
-        setUpWith(passwordlessClient: MockAuthPasswordlessBehavior())
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
+        
+        setUpWith(authPasswordlessEnvironment:
+                    BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient))
         let clientMetadata = [
             "somekey": "somevalue"
         ]
@@ -147,7 +159,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
         let options = AuthSignInWithOTPRequest.Options(pluginOptions: pluginOptions)
         do {
             let result = try await plugin.signInWithOTP(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 destination: .email,
                 options: options)
@@ -186,8 +198,17 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithOTPWithMissingEndpointURL() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
         setUpWith(
-            passwordlessClient: MockAuthPasswordlessBehavior(),
+            authPasswordlessEnvironment:BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient),
             authConfiguration: .userPoolsAndIdentityPools(
                 Defaults.makeDefaultUserPoolConfigDataWithNilPasswordlessSignUpEndpoint(),
                 Defaults.makeIdentityConfigData())
@@ -233,7 +254,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
         let options = AuthSignInWithOTPRequest.Options(pluginOptions: pluginOptions)
         do {
             let _ = try await plugin.signInWithOTP(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 destination: .email,
                 options: options)
@@ -258,7 +279,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     
     /// Test failure path for signInAndSignUpWithOTP
     ///
-    /// - Given: An auth plugin with mocked service and `nil` passwordless client
+    /// - Given: An auth plugin with mocked service and `nil` passwordless environment
     ///
     /// - When:
     ///    - I invoke signInWithOTP with flow as `.signUpAndSignIn`
@@ -266,6 +287,16 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithOTPWithNilPasswordlessClient() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
+        
         setUpWith()
         
         let clientMetadata = [
@@ -308,7 +339,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
         let options = AuthSignInWithOTPRequest.Options(pluginOptions: pluginOptions)
         do {
             let _ = try await plugin.signInWithOTP(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 destination: .email,
                 options: options)
@@ -340,6 +371,16 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithOTPWithMissingUserPoolConfig() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
+        
         setUpWith(authConfiguration: .identityPools(Defaults.makeIdentityConfigData()))
         
         let clientMetadata = [
@@ -382,7 +423,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
         let options = AuthSignInWithOTPRequest.Options(pluginOptions: pluginOptions)
         do {
             let _ = try await plugin.signInWithOTP(
-                username: "username",
+                username: username,
                 flow: .signUpAndSignIn,
                 destination: .email,
                 options: options)
@@ -414,8 +455,18 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     ///    - I should get an error
     ///
     func testSignUpAndSignInWithOTPWithEmptyEndpointURL() async {
+        let username = "username"
+        self.mockAuthPasswordlessProvider = MockAuthPasswordlessBehavior(mockGetAuthPasswordlessResponse: { url, payload in
+            XCTAssertEqual(url.absoluteString, Defaults.passwordlessSignUpEndpoint)
+            XCTAssertEqual(payload.username, username)
+            XCTAssertEqual(payload.deliveryMedium, "EMAIL")
+            XCTAssertEqual(payload.userAttributes?["somekey"], "somevalue")
+            XCTAssertEqual(payload.userPoolId, Defaults.userPoolId)
+            XCTAssertEqual(payload.region, Defaults.regionString)
+        })
         setUpWith(
-            passwordlessClient: MockAuthPasswordlessBehavior(),
+            authPasswordlessEnvironment:
+                    BasicPasswordlessEnvironment(authPasswordlessFactory: makeAuthPasswordlessClient),
             authConfiguration: .userPoolsAndIdentityPools(
                 Defaults.makeDefaultUserPoolConfigDataWithEmptySignUpEndpoint(),
                 Defaults.makeIdentityConfigData()))
@@ -483,12 +534,12 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
     }
     
     private func setUpWith(
-        passwordlessClient: AuthPasswordlessBehavior? = nil,
+        authPasswordlessEnvironment: AuthPasswordlessEnvironment? = nil,
         authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData()) {
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { self.mockIdentity },
             userPoolFactory: { self.mockIdentityProvider },
-            authPasswordlessClient: passwordlessClient
+            authPasswordlessEnvironment: authPasswordlessEnvironment
         )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
@@ -505,4 +556,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
             analyticsHandler: MockAnalyticsHandler())
     }
     
+    private func makeAuthPasswordlessClient() -> AuthPasswordlessBehavior {
+        self.mockAuthPasswordlessProvider
+    }
 }
