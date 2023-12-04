@@ -8,9 +8,12 @@
 protocol AuthenticationEnvironment: Environment {
 
     var srpSignInEnvironment: SRPSignInEnvironment { get }
+    
     var userPoolEnvironment: UserPoolEnvironment { get }
 
     var hostedUIEnvironment: HostedUIEnvironment? { get }
+    
+    var authPasswordlessEnvironment: AuthPasswordlessEnvironment? { get }
 }
 
 struct BasicAuthenticationEnvironment: AuthenticationEnvironment {
@@ -20,4 +23,6 @@ struct BasicAuthenticationEnvironment: AuthenticationEnvironment {
     let userPoolEnvironment: UserPoolEnvironment
 
     let hostedUIEnvironment: HostedUIEnvironment?
+    
+    let authPasswordlessEnvironment: AuthPasswordlessEnvironment?
 }

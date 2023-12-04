@@ -11,16 +11,18 @@ import AWSCognitoIdentity
 @testable import AWSCognitoAuthPlugin
 
 class BasePluginTest: XCTestCase {
-
+    
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!
+    var mockAuthPasswordlessProvider: AuthPasswordlessBehavior!
+    var plugin: AWSCognitoAuthPlugin!
+    
     lazy var mockIdentity: CognitoIdentityBehavior = {
         MockIdentity(
             mockGetIdResponse: getId,
             mockGetCredentialsResponse: getCredentials)
     }()
-    var plugin: AWSCognitoAuthPlugin!
-
+    
     let getId: MockIdentity.MockGetIdResponse = { _ in
         return .init(identityId: "mockIdentityId")
     }
@@ -47,7 +49,8 @@ class BasePluginTest: XCTestCase {
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { self.mockIdentity },
-            userPoolFactory: { self.mockIdentityProvider })
+            userPoolFactory: { self.mockIdentityProvider }
+        )
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,

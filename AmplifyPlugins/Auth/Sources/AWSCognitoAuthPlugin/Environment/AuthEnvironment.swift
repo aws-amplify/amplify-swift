@@ -15,7 +15,6 @@ struct AuthEnvironment: Environment, LoggerProvider {
     let authenticationEnvironment: AuthenticationEnvironment?
     let authorizationEnvironment: AuthorizationEnvironment?
     let credentialsClient: CredentialStoreStateBehavior
-    let authPasswordlessClient: AuthPasswordlessBehavior?
     let logger: Logger
 }
 
@@ -40,6 +39,13 @@ extension AuthEnvironment: AuthenticationEnvironment {
             fatalError("Could not find authentication environment")
         }
         return authNEnv.srpSignInEnvironment
+    }
+    
+    var authPasswordlessEnvironment: AuthPasswordlessEnvironment? {
+        guard let environment = authenticationEnvironment else {
+            fatalError("Could not find authentication environment")
+        }
+        return environment.authPasswordlessEnvironment
     }
 }
 
