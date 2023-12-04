@@ -196,11 +196,11 @@ class StorageTransferDatabaseTests: XCTestCase {
                 subTask.uploadPart = .pending(bytes: Bytes.megabytes(5).bytes)
                 if index == 0 {
                     parts[index] = .inProgress(bytes: part.bytes,
-                                               bytesTransferred: Int(Double(part.bytes) * 0.75),
+                                               bytesTransferred: UInt64(Double(part.bytes) * 0.75),
                                                taskIdentifier: sessionTask.taskIdentifier)
                 } else if index == 1 {
                     parts[index] = .inProgress(bytes: part.bytes,
-                                               bytesTransferred: Int(Double(part.bytes) * 0.25),
+                                               bytesTransferred: UInt64(Double(part.bytes) * 0.25),
                                                taskIdentifier: sessionTask.taskIdentifier)
                 }
             } else {

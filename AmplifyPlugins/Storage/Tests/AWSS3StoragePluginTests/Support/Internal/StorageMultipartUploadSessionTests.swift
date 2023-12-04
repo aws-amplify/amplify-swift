@@ -321,7 +321,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
     // MARK: - Private -
 
     private func createFile() throws -> URL {
-        let size = minimumPartSize
+        let size = Int(minimumPartSize)
         let parts: [String] = [
             Array(repeating: "a", count: size).joined(),
             Array(repeating: "b", count: size).joined(),

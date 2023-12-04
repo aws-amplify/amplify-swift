@@ -108,8 +108,8 @@ struct StoragePersistableMultipartUpload: Codable {
 struct StoragePersistableSubTask: Codable {
     let uploadId: UploadID
     let partNumber: PartNumber
-    let bytes: Int
-    let bytesTransferred: Int
+    let bytes: UInt64
+    let bytesTransferred: UInt64
     let taskIdentifier: TaskIdentifier? // once an UploadPart starts uploading it will have a taskIdentifier
     let eTag: String?
 
