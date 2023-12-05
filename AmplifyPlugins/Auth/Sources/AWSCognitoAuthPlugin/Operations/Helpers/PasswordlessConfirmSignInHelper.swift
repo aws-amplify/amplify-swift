@@ -101,14 +101,6 @@ struct PasswordlessConfirmSignInHelper: DefaultLogger {
                 passwordlessMetadata
 
             })
-        } else if let customerMetadata = (pluginOptions as? AWSAuthConfirmSignInPasswordlessOptions)?.clientMetadata {
-            passwordlessMetadata.merge(customerMetadata, uniquingKeysWith: { passwordlessMetadata, customerMetadata in
-                // Ideally key collision won't happen, because passwordless has been namespaced
-                // if for some reason collision still happens,
-                // prioritizing passwordlessFlow keys for flow to continue without any issues.
-                passwordlessMetadata
-
-            })
         }
         return ConfirmSignInEventData(
             answer: challengeResponse,
