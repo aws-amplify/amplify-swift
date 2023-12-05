@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.23.0 (2023-12-05)
+
+### Features
+
+- **DataStore**: DisableSubscriptions flag for watchOS (#3368)
+
 ## 2.22.1 (2023-12-05)
 
 ### Bug Fixes
