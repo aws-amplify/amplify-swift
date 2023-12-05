@@ -24,7 +24,7 @@ class AWSAuthConfirmSignInWithMagicLinkTaskTests: BasePluginTest {
     override var initialState: AuthState {
         switch confirmMagicLinkDevice {
         case .local:
-            AuthState.configured(
+            return AuthState.configured(
                 AuthenticationState.signingIn(
                     .resolvingChallenge(
                         .waitingForAnswer(
@@ -42,7 +42,7 @@ class AWSAuthConfirmSignInWithMagicLinkTaskTests: BasePluginTest {
                         .apiBased(.customWithoutSRP))),
                 AuthorizationState.sessionEstablished(.testData))
         case .remote:
-            AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+            return AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
         }
     }
 
