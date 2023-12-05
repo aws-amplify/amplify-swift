@@ -8,12 +8,18 @@
 import Foundation
 
 @_spi(InternalAWSPinpoint)
-public class PinpointSession: Codable {
+public struct PinpointSession: Codable {
+    private enum State: Codable {
+        case active
+        case paused
+        case stopped
+    }
     typealias SessionId = String
 
     let sessionId: SessionId
     let startTime: Date
     private(set) var stopTime: Date?
+    private var state: State = .active
 
     init(appId: String,
          uniqueId: String) {
@@ -29,32 +35,40 @@ public class PinpointSession: Codable {
         self.sessionId = sessionId
         self.startTime = startTime
         self.stopTime = stopTime
+        if stopTime != nil {
+            state = .stopped
+        }
     }
 
     var isPaused: Bool {
-        return stopTime != nil
+        return stopTime != nil && state == .paused
+    }
+    
+    var isStopped: Bool {
+        return stopTime != nil && state == .stopped
     }
 
     var duration: Date.Millisecond? {
         /// According to Pinpoint's documentation, `duration` is only required if `stopTime` is not nil.
-        guard let endTime = stopTime else {
-            return nil
-        }
-        return endTime.millisecondsSince1970 - startTime.millisecondsSince1970
+        guard let stopTime else { return nil }
+        return stopTime.millisecondsSince1970 - startTime.millisecondsSince1970
     }
 
-    func stop() {
-        guard stopTime == nil else { return }
-        stopTime = Date()
+    mutating func stop() {
+        guard !isStopped else { return }
+        stopTime = stopTime ?? Date()
+        state = .stopped
     }
 
-    func pause() {
+    mutating func pause() {
         guard !isPaused else { return }
         stopTime = Date()
+        state = .paused
     }
 
-    func resume() {
+    mutating func resume() {
         stopTime = nil
+        state = .active
     }
 
     private static func generateSessionId(appId: String,

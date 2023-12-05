@@ -34,6 +34,7 @@ class SessionClient: SessionClientBehaviour {
     private let configuration: SessionClientConfiguration
     private let sessionClientQueue = DispatchQueue(label: Constants.queue,
                                                    attributes: .concurrent)
+    private let analyticsTaskQueue = TaskQueue()
     private let userDefaults: UserDefaultsBehaviour
     private var sessionBackgroundTimeout: TimeInterval = .zero
 
@@ -49,14 +50,16 @@ class SessionClient: SessionClientBehaviour {
         self.configuration = configuration
         self.endpointClient = endpointClient
         self.userDefaults = userDefaults
-        session = Self.retrieveStoredSession(from: userDefaults, using: archiver) ?? PinpointSession.invalid
+        session = Self.retrieveStoredSession(from: userDefaults, using: archiver) ?? .none
     }
 
     var currentSession: PinpointSession {
-        if session == PinpointSession.invalid {
-            startNewSession()
+        sessionClientQueue.sync(flags: .barrier) {
+            if session == .none {
+                startNewSession()
+            }
+            return session
         }
-        return session
     }
 
     func startPinpointSession() {
@@ -65,9 +68,11 @@ class SessionClient: SessionClientBehaviour {
             return
         }
 
+        log.verbose("Starting a new Pinpoint Session")
         sessionClientQueue.sync(flags: .barrier) {
-            if session != PinpointSession.invalid {
-                endSession()
+            if session != .none {
+                log.verbose("There is a previous session")
+                endSession(andSave: false)
             }
             startNewSession()
         }
@@ -117,10 +122,11 @@ class SessionClient: SessionClientBehaviour {
         log.info("Session Started.")
 
         // Update Endpoint and record Session Start event
-        Task {
-            try? await endpointClient.updateEndpointProfile()
-            log.verbose("Firing Session Event: Start")
-            record(eventType: Constants.Events.start)
+        analyticsTaskQueue.task { [weak self] in
+            guard let self = self else { return }
+            try? await self.endpointClient.updateEndpointProfile()
+            self.log.verbose("Firing Session Event: Start")
+            await self.record(eventType: Constants.Events.start)
         }
     }
 
@@ -134,22 +140,33 @@ class SessionClient: SessionClientBehaviour {
     }
 
     private func pauseSession() {
+        log.verbose("Attempting to pause session")
         session.pause()
         saveSession()
         log.info("Session Paused.")
-        log.verbose("Firing Session Event: Pause")
-        record(eventType: Constants.Events.pause)
+        analyticsTaskQueue.task { [weak self] in
+            guard let self = self else { return }
+            self.log.verbose("Firing Session Event: Pause")
+            await self.record(eventType: Constants.Events.pause)
+        }
     }
 
     private func resumeSession() {
+        log.verbose("Attempting to resume session")
+        if session.isStopped {
+            log.verbose("Session has been stopped. Starting a new one...")
+            startNewSession()
+            return
+        }
+
         guard session.isPaused else {
-            log.verbose("Session Resume Failed: Session is already runnning.")
+            log.verbose("Session Resume Failed: Session is not paused")
             return
         }
 
         guard !isSessionExpired(session) else {
             log.verbose("Session has expired. Starting a fresh one...")
-            endSession()
+            endSession(andSave: false)
             startNewSession()
             return
         }
@@ -157,20 +174,38 @@ class SessionClient: SessionClientBehaviour {
         session.resume()
         saveSession()
         log.info("Session Resumed.")
-
-        log.verbose("Firing Session Event: Resume")
-        record(eventType: Constants.Events.resume)
+        analyticsTaskQueue.task { [weak self] in
+            guard let self = self else { return }
+            self.log.verbose("Firing Session Event: Resume")
+            await self.record(eventType: Constants.Events.resume)
+        }
     }
 
-    private func endSession() {
+    private func endSession(andSave shouldSave: Bool = true) {
+        log.verbose("Attempting to end session")
+        guard !session.isStopped else {
+            log.verbose("Session End Failed: Session is already stopped")
+            return
+        }
         session.stop()
         log.info("Session Stopped.")
+        analyticsTaskQueue.task { [weak self, session] in
+            guard let self = self,
+                  let analyticsClient = self.analyticsClient else {
+                return
+            }
+            self.log.verbose("Removing remote global attributes")
+            await analyticsClient.removeAllRemoteGlobalAttributes()
 
-        Task {
-            log.verbose("Removing remote global attributes")
-            await analyticsClient?.removeAllRemoteGlobalAttributes()
-            log.verbose("Firing Session Event: Stop")
-            record(eventType: Constants.Events.stop)
+            self.log.verbose("Updating session for existing events")
+            try? await analyticsClient.update(session)
+
+            self.log.verbose("Firing Session Event: Stop")
+            await self.record(eventType: Constants.Events.stop)
+
+            if shouldSave {
+                self.saveSession()
+            }
         }
     }
 
@@ -183,16 +218,14 @@ class SessionClient: SessionClientBehaviour {
         return now - stopTime > sessionBackgroundTimeout
     }
 
-    private func record(eventType: String) {
+    private func record(eventType: String) async {
         guard let analyticsClient = analyticsClient else {
             log.error("Pinpoint Analytics is disabled.")
             return
         }
 
         let event = analyticsClient.createEvent(withEventType: eventType)
-        Task {
-            try? await analyticsClient.record(event)
-        }
+        try? await analyticsClient.record(event)
     }
 
     private func respond(to newState: ApplicationState) {
@@ -203,8 +236,8 @@ class SessionClient: SessionClientBehaviour {
         case .runningInBackground(let isStale):
             if isStale {
                 endSession()
-                Task {
-                    try? await analyticsClient?.submitEvents()
+                analyticsTaskQueue.task { [weak self] in
+                    _ = try? await self?.analyticsClient?.submitEvents()
                 }
             } else {
                 pauseSession()
@@ -243,5 +276,25 @@ extension SessionClient {
 }
 
 extension PinpointSession {
-    static var invalid = PinpointSession(sessionId: "InvalidId", startTime: Date(), stopTime: nil)
+    static var none = PinpointSession(sessionId: "InvalidId", startTime: Date(), stopTime: nil)
+}
+
+/// This actor allows to queue async operations to only run one at a time.
+private actor TaskQueue {
+    private var currentTask: Task<Void, Never>?
+
+    nonisolated func task(_ closure: @escaping () async -> ()) {
+        Task {
+            await addToQueue(closure)
+        }
+    }
+
+    private func addToQueue(_ closure: @escaping () async -> ()) async {
+        let newTask = Task { [currentTask] in
+            await currentTask?.value
+            await closure()
+        }
+        currentTask = newTask
+        await newTask.value
+    }
 }

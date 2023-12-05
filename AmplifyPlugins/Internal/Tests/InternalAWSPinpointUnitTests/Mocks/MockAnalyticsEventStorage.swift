@@ -75,4 +75,9 @@ class MockAnalyticsEventStorage: AnalyticsEventStorage {
     func checkDiskSize(limit: Byte) throws {
         checkDiskSizeCallCount += 1
     }
+
+    var updateSessionCount = 0
+    func updateSession(_ session: PinpointSession) throws {
+        updateSessionCount += 1
+    }
 }

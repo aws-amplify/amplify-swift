@@ -218,7 +218,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(event.eventType, SessionClient.Constants.Events.pause)
     }
 
-    func testApplicationMovedToBackground_stale_shouldRecordStopEvent_andSubmit() async {
+    func testApplicationMovedToBackground_stale_shouldRecordStopEvent_andSaveSession_andSubmitEvents() async {
         let expectationStartSession = expectation(description: "Start event for new session")
         client.startPinpointSession()
         client.startTrackingSessions(backgroundTimeout: sessionTimeout)
@@ -233,8 +233,8 @@ class SessionClientTests: XCTestCase {
         activityTracker.callback?(.runningInBackground(isStale: true))
         await fulfillment(of: [expectationStopSession, expectationSubmitEvents], timeout: 1)
 
-        XCTAssertEqual(archiver.encodeCount, 0)
-        XCTAssertEqual(userDefaults.saveCount, 0)
+        XCTAssertEqual(archiver.encodeCount, 1)
+        XCTAssertEqual(userDefaults.saveCount, 1)
         let createCount = await analyticsClient.createEventCount
         XCTAssertEqual(createCount, 1)
         let recordCount = await analyticsClient.recordCount
@@ -327,7 +327,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertNotNil(events.first(where: { $0.eventType == SessionClient.Constants.Events.start }))
     }
 #endif
-    func testApplicationTerminated_shouldRecordStopEvent() async {
+    func testApplicationTerminated_shouldRecordStopEvent_andSaveSession() async {
         let expectationStart = expectation(description: "Start event for new session")
         await analyticsClient.setRecordExpectation(expectationStart)
         client.startPinpointSession()
@@ -340,8 +340,8 @@ class SessionClientTests: XCTestCase {
         activityTracker.callback?(.terminated)
         await fulfillment(of: [expectationStop], timeout: 1)
 
-        XCTAssertEqual(archiver.encodeCount, 0)
-        XCTAssertEqual(userDefaults.saveCount, 0)
+        XCTAssertEqual(archiver.encodeCount, 1)
+        XCTAssertEqual(userDefaults.saveCount, 1)
         let createCount = await analyticsClient.createEventCount
         XCTAssertEqual(createCount, 1)
         let recordCount = await analyticsClient.recordCount
