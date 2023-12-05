@@ -27,13 +27,15 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private let completion: (Result<MutationEvent?, Error>) -> Void
     private var mutationOperation: AtomicValue<GraphQLOperation<MutationSync<AnyModel>>?>
     private weak var api: APICategoryGraphQLBehaviorExtended?
-
+    private weak var reconciliationQueue: IncomingEventReconciliationQueue?
+    
     init(dataStoreConfiguration: DataStoreConfiguration,
          mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehaviorExtended,
          storageAdapter: StorageEngineAdapter,
          graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>? = nil,
          apiError: APIError? = nil,
+         reconciliationQueue: IncomingEventReconciliationQueue? = nil,
          completion: @escaping (Result<MutationEvent?, Error>) -> Void) {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.mutationEvent = mutationEvent
@@ -41,6 +43,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         self.storageAdapter = storageAdapter
         self.graphQLResponseError = graphQLResponseError
         self.apiError = apiError
+        self.reconciliationQueue = reconciliationQueue
         self.completion = completion
         self.mutationOperation = AtomicValue(initialValue: nil)
 
@@ -311,12 +314,27 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         if case .failure(let error) = cloudResult {
             dataStoreConfiguration.errorHandler(error)
         }
-
-        if case .success(let response) = cloudResult,
-            case .failure(let error) = response {
-            dataStoreConfiguration.errorHandler(error)
+        
+        if case let .success(graphQLResponse) = cloudResult {
+            if case .failure(let error) = graphQLResponse {
+                dataStoreConfiguration.errorHandler(error)
+            } else if case let .success(graphQLResult) = graphQLResponse {
+                guard let reconciliationQueue = reconciliationQueue else {
+                    let dataStoreError = DataStoreError.configuration(
+                        "reconciliationQueue is unexpectedly nil",
+                        """
+                        The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
+                        \(AmplifyErrorMessages.reportBugToAWS())
+                        """
+                    )
+                    finish(result: .failure(dataStoreError))
+                    return
+                }
+                
+                reconciliationQueue.offer([graphQLResult], modelName: mutationEvent.modelName)
+            }
         }
-
+        
         finish(result: .success(nil))
     }
 

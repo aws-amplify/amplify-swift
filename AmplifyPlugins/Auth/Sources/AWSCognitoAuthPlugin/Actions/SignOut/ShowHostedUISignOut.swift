@@ -16,8 +16,6 @@ class ShowHostedUISignOut: NSObject, Action {
     let signOutEvent: SignOutEventData
     let signInData: SignedInData
 
-    var sessionAdapter: HostedUISessionBehavior?
-
     init(signOutEvent: SignOutEventData, signInData: SignedInData) {
         self.signInData = signInData
         self.signOutEvent = signOutEvent
@@ -44,17 +42,12 @@ class ShowHostedUISignOut: NSObject, Action {
 
         do {
             let logoutURL = try HostedUIRequestHelper.createSignOutURL(configuration: hostedUIConfig)
-            _ = try await withCheckedThrowingContinuation {
-                (continuation: CheckedContinuation<[URLQueryItem], Error>) in
-                sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
-                sessionAdapter?.showHostedUI(url: logoutURL,
-                                             callbackScheme: callbackURLScheme,
-                                             inPrivate: false,
-                                             presentationAnchor: signOutEvent.presentationAnchor) {
-                    result in
-                    continuation.resume(with: result)
-                }
-            }
+            let sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
+            _ = try await sessionAdapter.showHostedUI(
+                url: logoutURL,
+                callbackScheme: callbackURLScheme,
+                inPrivate: false,
+                presentationAnchor: signOutEvent.presentationAnchor)
 
             await sendEvent(with: nil, dispatcher: dispatcher, environment: environment)
 

@@ -107,7 +107,7 @@ extension FetchAuthSessionState: Codable {
 
 extension AuthorizationError: Codable {
     public init(from decoder: Decoder) throws {
-        self = .sessionExpired
+        self = .sessionExpired(error: NotAuthorizedException(message: "message"))
     }
 
     public func encode(to encoder: Encoder) throws {

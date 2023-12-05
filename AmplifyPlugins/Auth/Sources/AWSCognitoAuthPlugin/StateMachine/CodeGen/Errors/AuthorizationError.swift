@@ -15,14 +15,17 @@ enum AuthorizationError: Error {
     case service(error: Swift.Error)
     case invalidState(message: String)
     case sessionError(FetchSessionError, AmplifyCredentials)
-    case sessionExpired
+    case sessionExpired(error: Error)
 }
 
 extension AuthorizationError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
-        case .sessionExpired:
-            return .sessionExpired("", "", nil)
+        case .sessionExpired(let error):
+            return .sessionExpired(
+                "Session expired", 
+                "Invoke Auth.signIn to re-authenticate the user",
+                error)
         case .configuration(let message):
             return .configuration(message, "")
         case .service(let error):

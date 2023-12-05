@@ -10,7 +10,7 @@ import Foundation
 enum StorageUploadPartEvent {
     case queued(partNumber: PartNumber)
     case started(partNumber: PartNumber, taskIdentifier: TaskIdentifier)
-    case progressUpdated(partNumber: PartNumber, bytesTransferred: Int, taskIdentifier: TaskIdentifier)
+    case progressUpdated(partNumber: PartNumber, bytesTransferred: UInt64, taskIdentifier: TaskIdentifier)
     case completed(partNumber: PartNumber, eTag: String, taskIdentifier: TaskIdentifier)
     case failed(partNumber: PartNumber, error: Error)
 

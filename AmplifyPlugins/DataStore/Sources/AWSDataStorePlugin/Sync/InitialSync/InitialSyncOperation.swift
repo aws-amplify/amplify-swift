@@ -67,7 +67,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
     }
 
-    private func getLastSyncTime() -> Int? {
+    private func getLastSyncTime() -> Int64? {
         guard !isCancelled else {
             finish(result: .successfulVoid)
             return nil
@@ -109,7 +109,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
     }
 
-    private func query(lastSyncTime: Int?, nextToken: String? = nil) async {
+    private func query(lastSyncTime: Int64?, nextToken: String? = nil) async {
         guard !isCancelled else {
             finish(result: .successfulVoid)
             return
@@ -160,7 +160,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
     /// is a next token
-    private func handleQueryResults(lastSyncTime: Int?,
+    private func handleQueryResults(lastSyncTime: Int64?,
                                     graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
         guard !isCancelled else {
             finish(result: .successfulVoid)
@@ -198,7 +198,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
     }
 
-    private func updateModelSyncMetadata(lastSyncTime: Int?) {
+    private func updateModelSyncMetadata(lastSyncTime: Int64?) {
         guard !isCancelled else {
             finish(result: .successfulVoid)
             return

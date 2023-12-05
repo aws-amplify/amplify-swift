@@ -185,7 +185,7 @@ class FileSystem {
     ///   - offset: position to start reading
     ///   - length: length of the part
     ///   - completionHandler: completion handler
-    func createPartialFile(fileURL: URL, offset: Int, length: Int, completionHandler: @escaping (Result<URL, Error>) -> Void) {
+    func createPartialFile(fileURL: URL, offset: UInt64, length: UInt64, completionHandler: @escaping (Result<URL, Error>) -> Void) {
         // 4.5 MB (1 MB per part)
         // 1024 1024 1024 1024 512
 
@@ -198,8 +198,8 @@ class FileSystem {
                 defer {
                     try? fileHandle.close()
                 }
-                try fileHandle.seek(toOffset: UInt64(offset))
-                let data = fileHandle.readData(ofLength: length)
+                try fileHandle.seek(toOffset: offset)
+                let data = try fileHandle.read(bytes: length)
                 let fileURL = try self.createTemporaryFile(data: data)
                 completionHandler(.success(fileURL))
             } catch {

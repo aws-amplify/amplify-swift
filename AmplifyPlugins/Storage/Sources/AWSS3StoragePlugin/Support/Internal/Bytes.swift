@@ -16,22 +16,22 @@ enum Bytes {
     case kilobytes(Int)
     case bytes(Int)
 
-    var bytes: Int {
+    var bytes: UInt64 {
         switch self {
         case .terabytes(let tb):
-            return Int(pow(1_024.0, 4.0)) * tb
+            return UInt64(pow(1_024.0, 4.0)) * UInt64(tb)
         case .gigabytes(let gb):
-            return Int(pow(1_024.0, 3.0)) * gb
+            return UInt64(pow(1_024.0, 3.0)) * UInt64(gb)
         case .megabytes(let mb):
-            return Int(pow(1_024.0, 2.0)) * mb
+            return UInt64(pow(1_024.0, 2.0)) * UInt64(mb)
         case .kilobytes(let kb):
-            return 1_024 * kb
+            return 1_024 * UInt64(kb)
         case .bytes(let b):
-            return b
+            return UInt64(b)
         }
     }
 
-    var bits: Int {
+    var bits: UInt64 {
         return bytes * 8
     }
 }

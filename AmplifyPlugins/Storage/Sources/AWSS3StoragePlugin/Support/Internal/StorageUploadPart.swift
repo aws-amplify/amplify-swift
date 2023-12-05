@@ -28,11 +28,11 @@ let minimumPartCount = 1
 let maximumPartCount = 10_000
 
 enum StorageUploadPart {
-    case pending(bytes: Int)
-    case queued(bytes: Int)
-    case inProgress(bytes: Int, bytesTransferred: Int, taskIdentifier: TaskIdentifier)
-    case failed(bytes: Int, bytesTransferred: Int, error: Error)
-    case completed(bytes: Int, eTag: String)
+    case pending(bytes: UInt64)
+    case queued(bytes: UInt64)
+    case inProgress(bytes: UInt64, bytesTransferred: UInt64, taskIdentifier: TaskIdentifier)
+    case failed(bytes: UInt64, bytesTransferred: UInt64, error: Error)
+    case completed(bytes: UInt64, eTag: String)
 
     var isPending: Bool {
         if case .pending = self {
@@ -90,8 +90,8 @@ enum StorageUploadPart {
         return result
     }
 
-    var bytes: Int {
-        let result: Int
+    var bytes: UInt64 {
+        let result: UInt64
         switch self {
         case .pending(let bytes), .queued(let bytes):
             result = bytes
@@ -106,8 +106,8 @@ enum StorageUploadPart {
         return result
     }
 
-    var bytesTransferred: Int {
-        let result: Int
+    var bytesTransferred: UInt64 {
+        let result: UInt64
         switch self {
         case .pending, .queued, .failed:
             result = 0
@@ -157,7 +157,7 @@ struct StorageUploadPartSize {
         case exceedsSupportedFileSize
         case exceedsMaximumObjectSize
     }
-    let size: Int
+    let size: UInt64
 
     static let `default`: StorageUploadPartSize = StorageUploadPartSize()
 
@@ -167,7 +167,7 @@ struct StorageUploadPartSize {
 
     /// Creates custom part size in bytes. Throws if file part is invalid.
     /// - Parameter size: part size
-    init(size: Int) throws {
+    init(size: UInt64) throws {
         if size < minimumPartSize {
             throw Failure.belowMinimumPartSize
         } else if size > maximumPartSize {
@@ -215,8 +215,8 @@ struct StorageUploadPartSize {
         }
     }
 
-    func offset(for partNumber: PartNumber) -> Int {
-        let result = (partNumber - 1) * size
+    func offset(for partNumber: PartNumber) -> UInt64 {
+        let result = UInt64(partNumber - 1) * size
         return result
     }
 
@@ -242,7 +242,7 @@ extension Array where Element == StorageUploadPart {
             throw Failure.partCountOverUpperLimit
         }
 
-        let remainingBytes = Int(fileSize % UInt64(size))
+        let remainingBytes = fileSize % size
         logger.debug("count = \(count), remainingBytes = \(remainingBytes), size = \(size), totalBytes = \(fileSize)")
 
         self.init(repeating: .pending(bytes: size), count: count)
@@ -298,13 +298,13 @@ extension Sequence where Element == StorageUploadPart {
         filter { $0.completed }
     }
 
-    var totalBytes: Int {
+    var totalBytes: UInt64 {
         reduce(into: 0) { result, part in
             result += part.bytes
         }
     }
 
-    var bytesTransferred: Int {
+    var bytesTransferred: UInt64 {
         reduce(into: 0) { result, part in
             result += part.bytesTransferred
         }

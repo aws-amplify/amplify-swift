@@ -39,7 +39,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                modelName: testPost.modelName,
                                                deleted: false,
-                                               lastChangedAt: Int(Date().timeIntervalSince1970),
+                                               lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                version: 1)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
 
@@ -48,7 +48,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let anyPostDeleteMetadata = MutationSyncMetadata(modelId: "2",
                                                          modelName: testPost.modelName,
                                                          deleted: true,
-                                                         lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                         lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                          version: 2)
         anyPostDeletedMutationSync = MutationSync<AnyModel>(model: anyPostDelete, syncMetadata: anyPostDeleteMetadata)
         anyPostMutationEvent = MutationEvent(id: "1",
@@ -338,12 +338,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let metadata1 = MutationSyncMetadata(modelId: model1.id,
                                              modelName: model1.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let metadata2 = MutationSyncMetadata(modelId: model2.id,
                                              modelName: model2.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let remoteModel1 = MutationSync<AnyModel>(model: model1, syncMetadata: metadata1)
         let remoteModel2 = MutationSync<AnyModel>(model: model2, syncMetadata: metadata2)
@@ -491,12 +491,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let metadata1 = MutationSyncMetadata(modelId: model1.id,
                                              modelName: model1.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let metadata2 = MutationSyncMetadata(modelId: model2.id,
                                              modelName: model2.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let remoteModel1 = MutationSync<AnyModel>(model: model1, syncMetadata: metadata1)
         let remoteModel2 = MutationSync<AnyModel>(model: model2, syncMetadata: metadata2)
@@ -504,12 +504,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let localMetadata1 = MutationSyncMetadata(modelId: model1.id,
                                                   modelName: model1.modelName,
                                                   deleted: false,
-                                                  lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                  lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                   version: 3)
         let localMetadata2 = MutationSyncMetadata(modelId: model2.id,
                                                   modelName: model2.modelName,
                                                   deleted: false,
-                                                  lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                  lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                   version: 4)
         operation.publisher
             .sink { completion in
