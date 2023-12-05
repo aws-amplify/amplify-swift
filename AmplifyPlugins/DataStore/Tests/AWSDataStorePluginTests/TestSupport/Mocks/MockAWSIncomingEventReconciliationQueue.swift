@@ -13,7 +13,7 @@ import Combine
 @testable import AWSDataStorePlugin
 
 class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _, _  in
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, _, _, _ in
         MockAWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                                 api: api,
                                                 storageAdapter: storageAdapter,

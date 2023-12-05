@@ -20,7 +20,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?
 
     override func setUp() {
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)

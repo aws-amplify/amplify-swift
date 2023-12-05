@@ -36,10 +36,17 @@ class AWSDataStoreSortKeyBaseTest: XCTestCase {
     ) async throws {
         let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: "testconfiguration/\(configFile)")
         try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
+        #if os(watchOS)
+        try Amplify.add(plugin: AWSDataStorePlugin(
+            modelRegistration: models,
+            configuration: .custom(syncMaxRecords: 100, disableSubscriptions: { false })
+        ))
+        #else
         try Amplify.add(plugin: AWSDataStorePlugin(
             modelRegistration: models,
             configuration: .custom(syncMaxRecords: 100)
         ))
+        #endif
 
         Amplify.Logging.logLevel = .verbose
         try Amplify.configure(config)

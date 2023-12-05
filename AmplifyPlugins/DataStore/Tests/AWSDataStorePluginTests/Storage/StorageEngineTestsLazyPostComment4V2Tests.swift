@@ -29,7 +29,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)

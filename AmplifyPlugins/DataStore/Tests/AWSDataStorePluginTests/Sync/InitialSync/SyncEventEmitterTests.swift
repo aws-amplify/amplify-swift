@@ -56,7 +56,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                                       syncExpressions: [],
                                                                       auth: nil)
 
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)
@@ -131,7 +131,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                                       syncExpressions: [],
                                                                       auth: nil)
 
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)
@@ -229,7 +229,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                                       syncExpressions: [],
                                                                       auth: nil)
 
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)

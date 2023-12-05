@@ -37,7 +37,14 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
     func initialSyncOperation(withSyncExpression syncExpression: DataStoreSyncExpression,
                               responder: APIPluginQueryResponder) -> InitialSyncOperation {
         apiPlugin.responders[.queryRequestListener] = responder
-        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, syncExpressions: [syncExpression])
+        #if os(watchOS)
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, 
+                                                           syncExpressions: [syncExpression],
+                                                           disableSubscriptions: { false })
+        #else
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, 
+                                                           syncExpressions: [syncExpression])
+        #endif
         return InitialSyncOperation(
             modelSchema: MockSynced.schema,
             api: apiPlugin,

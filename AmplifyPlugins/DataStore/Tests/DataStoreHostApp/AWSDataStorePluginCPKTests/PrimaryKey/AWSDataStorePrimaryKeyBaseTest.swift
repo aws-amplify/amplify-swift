@@ -36,10 +36,17 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
     func setup(withModels models: AmplifyModelRegistration) {
         do {
             loadAmplifyConfig()
+            #if os(watchOS)
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: .custom(syncMaxRecords: 100, disableSubscriptions: { false })
+            ))
+            #else
             try Amplify.add(plugin: AWSDataStorePlugin(
                 modelRegistration: models,
                 configuration: .custom(syncMaxRecords: 100)
             ))
+            #endif
 
             try Amplify.add(plugin: AWSAPIPlugin(sessionFactory: AmplifyURLSessionFactory()))
 
