@@ -3,34 +3,13 @@ name: Release Amplify iOS
 
 on:
   workflow_dispatch:
-    inputs:
-      clearDays:
-        description: 'I confirm that today is either a CLEAR day or we have approval for release'
-        required: true
-        default: false
-        type: boolean
-      revertMain:
-        description: '⛔️ All previous commits to main have been reverted'
-        required: true
-        default: false
-        type: boolean
 
 permissions:
   pull-requests: write
 
 jobs:
-  validation:
-    name: Validation
-    runs-on: ubuntu-latest
-    if: inputs.clearDays == false || inputs.revertMain == false
-    steps:
-      - run: |
-          echo '❌ You need to acknowledge the input validations before releasing ❌'
-          exit 1
-
   release:
     name: Release
-    needs: validation
     runs-on: macos-12
 
     steps:
