@@ -63,11 +63,11 @@ extension APICategoryDependencyTests {
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
 
         let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
-                                              dataStoreConfiguration: .default)
+                                              dataStoreConfiguration: .testDefault())
         let validAPIPluginKey = "MockAPICategoryPlugin"
         let validAuthPluginKey = "MockAuthCategoryPlugin"
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)

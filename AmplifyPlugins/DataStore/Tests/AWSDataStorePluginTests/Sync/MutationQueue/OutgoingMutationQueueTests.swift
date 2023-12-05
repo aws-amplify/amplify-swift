@@ -25,7 +25,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         await tryOrFail {
             try setUpStorageAdapter()
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .default,
+                                                                    dataStoreConfiguration: .testDefault(),
                                                                     authModeStrategy: AWSDefaultAuthModeStrategy()))
         }
         let post = Post(title: "Post title",
@@ -190,7 +190,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         await tryOrFail {
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .default,
+                                                                    dataStoreConfiguration: .testDefault(),
                                                                     authModeStrategy: AWSDefaultAuthModeStrategy()))
             try await startAmplify()
         }

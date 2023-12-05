@@ -13,7 +13,12 @@ import AWSDataStorePlugin
 class AWSDataStorePluginAmplifyVersionableTests: XCTestCase {
 
     func testVersionExists() {
+        #if os(watchOS)
+        let plugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(),
+                                        configuration: .subscriptionsDisabled)
+        #else
         let plugin = AWSDataStorePlugin(modelRegistration: AmplifyModels())
+        #endif
         XCTAssertNotNil(plugin.version)
     }
 

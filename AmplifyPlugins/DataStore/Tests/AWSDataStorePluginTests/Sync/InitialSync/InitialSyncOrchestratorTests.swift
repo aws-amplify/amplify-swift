@@ -44,7 +44,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                    authModeStrategy: AWSDefaultAuthModeStrategy(),
                                    api: apiPlugin,
                                    reconciliationQueue: reconciliationQueue,
@@ -144,7 +144,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                    authModeStrategy: AWSDefaultAuthModeStrategy(),
                                    api: apiPlugin,
                                    reconciliationQueue: reconciliationQueue,
@@ -254,7 +254,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                       api: apiPlugin,
                                                       reconciliationQueue: reconciliationQueue,
@@ -322,7 +322,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                        authModeStrategy: AWSDefaultAuthModeStrategy(),
                                        api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
@@ -397,7 +397,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                        authModeStrategy: AWSDefaultAuthModeStrategy(),
                                        api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
@@ -441,7 +441,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         
         let orchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                    authModeStrategy: AWSDefaultAuthModeStrategy(),
                                    api: apiPlugin,
                                    reconciliationQueue: reconciliationQueue,
