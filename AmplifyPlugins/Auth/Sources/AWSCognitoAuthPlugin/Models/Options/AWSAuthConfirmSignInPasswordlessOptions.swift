@@ -6,13 +6,12 @@
 //
 import Amplify
 
-//[HS]: TODO: Make sure this is approved API for options
-public struct AWSAuthConfirmSignInWithMagicLinkOptions {
+public struct AWSAuthConfirmSignInPasswordlessOptions {
 
     /// A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.
-    public let metadata: [String: String]?
+    public let clientMetadata: [String: String]?
 
     public init(metadata: [String: String]? = nil) {
-        self.metadata = metadata
+        self.clientMetadata = metadata
     }
 }
