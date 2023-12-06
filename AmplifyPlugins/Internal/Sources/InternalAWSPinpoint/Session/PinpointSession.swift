@@ -35,8 +35,11 @@ public class PinpointSession: Codable {
         return stopTime != nil
     }
 
-    var duration: Date.Millisecond {
-        let endTime = stopTime ?? Date()
+    var duration: Date.Millisecond? {
+        /// According to Pinpoint's documentation, `duration` is only required if `stopTime` is not nil.
+        guard let endTime = stopTime else {
+            return nil
+        }
         return endTime.millisecondsSince1970 - startTime.millisecondsSince1970
     }
 

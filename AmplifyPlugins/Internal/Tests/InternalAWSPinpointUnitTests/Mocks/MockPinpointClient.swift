@@ -367,8 +367,10 @@ class MockPinpointClient: PinpointClientProtocol {
 
     var putEventsCount = 0
     var putEventsResult: Result<PutEventsOutput, Error> = .failure(CancellationError())
+    var putEventsLastInput: PutEventsInput?
     func putEvents(input: PutEventsInput) async throws -> PutEventsOutput {
         putEventsCount += 1
+        putEventsLastInput = input
         return try putEventsResult.get()
     }
 
