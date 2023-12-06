@@ -33,7 +33,7 @@ class RemoteSyncEngineTests: XCTestCase {
         do {
             remoteSyncEngine = try RemoteSyncEngine(
                 storageAdapter: storageAdapter,
-                dataStoreConfiguration: .default,
+                dataStoreConfiguration: .testDefault(),
                 outgoingMutationQueue: mockOutgoingMutationQueue,
                 initialSyncOrchestratorFactory: MockAWSInitialSyncOrchestrator.factory,
                 reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,

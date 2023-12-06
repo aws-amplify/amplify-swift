@@ -10,6 +10,8 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
+typealias DisableSubscriptions = () -> Bool
+
 // Used for testing:
 typealias IncomingEventReconciliationQueueFactory =
     ([ModelSchema],
@@ -18,7 +20,8 @@ typealias IncomingEventReconciliationQueueFactory =
     [DataStoreSyncExpression],
     AuthCategoryBehavior?,
     AuthModeStrategy,
-    ModelReconciliationQueueFactory?
+    ModelReconciliationQueueFactory?,
+    @escaping DisableSubscriptions
 ) async -> IncomingEventReconciliationQueue
 
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
@@ -48,7 +51,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior? = nil,
          authModeStrategy: AuthModeStrategy,
-         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) async {
+         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil,
+         disableSubscriptions: @escaping () -> Bool = { false } ) async {
         self.modelSchemasCount = modelSchemas.count
         self.modelReconciliationQueueSinks.set([:])
         self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.idle)
@@ -67,6 +71,19 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.connectionStatusSerialQueue
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
 
+        let subscriptionsDisabled = disableSubscriptions()
+        
+        #if targetEnvironment(simulator) && os(watchOS)
+        if !subscriptionsDisabled {
+            let message = """
+            DataStore uses subscriptions via websockets, which work on the watchOS simulator but not on the device.
+            Running DataStore on watchOS with subscriptions enabled is only possible during special circumstances
+            such as actively streaming audio. See https://github.com/aws-amplify/amplify-swift/pull/3368 for more details.
+            """
+            self.log.verbose(message)
+        }
+        #endif
+
         for modelSchema in modelSchemas {
             let modelName = modelSchema.name
             let syncExpression = syncExpressions.first(where: {
@@ -78,13 +95,13 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 continue
             }
             let queue = await self.modelReconciliationQueueFactory(modelSchema,
-                                                             storageAdapter,
-                                                             api,
-                                                             reconcileAndSaveQueue,
-                                                             modelPredicate,
-                                                             auth,
-                                                             authModeStrategy,
-                                                             nil)
+                                                                   storageAdapter,
+                                                                   api,
+                                                                   reconcileAndSaveQueue,
+                                                                   modelPredicate,
+                                                                   auth,
+                                                                   authModeStrategy,
+                                                                   subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil)
             
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue
@@ -190,14 +207,15 @@ extension AWSIncomingEventReconciliationQueue: DefaultLogger {
 
 // MARK: - Static factory
 extension AWSIncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _ in
+    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _, disableSubscriptions in
         await AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
-                                            api: api,
-                                            storageAdapter: storageAdapter,
-                                            syncExpressions: syncExpressions,
-                                            auth: auth,
-                                            authModeStrategy: authModeStrategy,
-                                            modelReconciliationQueueFactory: nil)
+                                                  api: api,
+                                                  storageAdapter: storageAdapter,
+                                                  syncExpressions: syncExpressions,
+                                                  auth: auth,
+                                                  authModeStrategy: authModeStrategy,
+                                                  modelReconciliationQueueFactory: nil,
+                                                  disableSubscriptions: disableSubscriptions)
     }
 }
 

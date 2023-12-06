@@ -62,7 +62,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         let mutationQueue = OutgoingMutationQueue(
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy()
         )
         try setUpDataStore(mutationQueue: mutationQueue)

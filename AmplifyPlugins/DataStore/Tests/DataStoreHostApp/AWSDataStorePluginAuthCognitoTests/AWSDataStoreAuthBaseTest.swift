@@ -164,8 +164,11 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
         do {
             setupCredentials(forAuthStrategy: testType)
 
+            #if os(watchOS)
+            let datastoreConfig = DataStoreConfiguration.custom(authModeStrategy: testType.authStrategy, disableSubscriptions: { false })
+            #else
             let datastoreConfig = DataStoreConfiguration.custom(authModeStrategy: testType.authStrategy)
-
+            #endif
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
                                                        configuration: datastoreConfig))
 

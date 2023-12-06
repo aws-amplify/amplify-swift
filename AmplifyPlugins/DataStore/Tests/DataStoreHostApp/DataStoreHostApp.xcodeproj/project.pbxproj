@@ -265,6 +265,7 @@
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
 		219B518628E3A7150080EDCC /* DataStoreHubEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */; };
+		21A418212B0E78F400FF89E1 /* DataStoreConnectionScenario1Tests+WatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A418202B0E78F400FF89E1 /* DataStoreConnectionScenario1Tests+WatchOS.swift */; };
 		21AA64B72AC5D78B001C6D3B /* TodoCognitoMultiOwner+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445622AB4F6C900420AF9 /* TodoCognitoMultiOwner+Schema.swift */; };
 		21AA64B82AC5D791001C6D3B /* TodoCognitoMultiOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210445612AB4F6C900420AF9 /* TodoCognitoMultiOwner.swift */; };
 		21AB5C2A297AE56D00CCA482 /* AWSDataStoreLazyLoadPostTagSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AB5C29297AE56D00CCA482 /* AWSDataStoreLazyLoadPostTagSnapshotTests.swift */; };
@@ -1724,6 +1725,7 @@
 		219253BD28BFE84000820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		21A418202B0E78F400FF89E1 /* DataStoreConnectionScenario1Tests+WatchOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreConnectionScenario1Tests+WatchOS.swift"; sourceTree = "<group>"; };
 		21AB5C29297AE56D00CCA482 /* AWSDataStoreLazyLoadPostTagSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostTagSnapshotTests.swift; sourceTree = "<group>"; };
 		21AB5C4829819BF000CCA482 /* Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nested.swift; sourceTree = "<group>"; };
 		21AB5C4929819BF000CCA482 /* NestedTypeTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NestedTypeTestModel+Schema.swift"; sourceTree = "<group>"; };
@@ -2879,6 +2881,7 @@
 				21BBF9F6289BFE3400B32A39 /* DataStoreConnectionScenario4Tests.swift */,
 				21BBF9F4289BFE3400B32A39 /* DataStoreConnectionScenario5Tests.swift */,
 				21BBF9F8289BFE3400B32A39 /* DataStoreConnectionScenario6Tests.swift */,
+				21A418202B0E78F400FF89E1 /* DataStoreConnectionScenario1Tests+WatchOS.swift */,
 			);
 			path = Connection;
 			sourceTree = "<group>";
@@ -5302,6 +5305,7 @@
 				21BBFDC7289C06E400B32A39 /* Blog6+Schema.swift in Sources */,
 				21BBFD34289C06E400B32A39 /* MenuType.swift in Sources */,
 				21BBFC0B289C037000B32A39 /* TestModelV2Registration.swift in Sources */,
+				21A418212B0E78F400FF89E1 /* DataStoreConnectionScenario1Tests+WatchOS.swift in Sources */,
 				21BBFD7A289C06E400B32A39 /* Attendee8V2+Schema.swift in Sources */,
 				21BBFD8B289C06E400B32A39 /* ListStringContainer+Schema.swift in Sources */,
 				21BBFD94289C06E400B32A39 /* NestedTypeTestModel+Schema.swift in Sources */,

@@ -41,7 +41,7 @@ class LocalSubscriptionTests: XCTestCase {
 
             let syncEngine = RemoteSyncEngine(
                 storageAdapter: storageAdapter,
-                dataStoreConfiguration: .default,
+                dataStoreConfiguration: .testDefault(),
                 authModeStrategy: AWSDefaultAuthModeStrategy(),
                 outgoingMutationQueue: outgoingMutationQueue,
                 mutationEventIngester: mutationDatabaseAdapter,
@@ -54,7 +54,7 @@ class LocalSubscriptionTests: XCTestCase {
             )
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)

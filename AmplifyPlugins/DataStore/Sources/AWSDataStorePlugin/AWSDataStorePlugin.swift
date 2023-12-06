@@ -55,7 +55,37 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    /// No-argument init that uses defaults for all providers
+    #if os(watchOS)
+    /// Initializer
+    /// - Parameters:
+    ///   - modelRegistration: Register DataStore models.
+    ///   - dataStoreConfiguration: Configuration object for DataStore
+    public init(modelRegistration: AmplifyModelRegistration,
+                configuration dataStoreConfiguration: DataStoreConfiguration) {
+        self.modelRegistration = modelRegistration
+        self.configuration = InternalDatastoreConfiguration(
+            isSyncEnabled: false,
+            validAPIPluginKey: "awsAPIPlugin",
+            validAuthPluginKey: "awsCognitoAuthPlugin",
+            pluginConfiguration: dataStoreConfiguration)
+
+        self.storageEngineBehaviorFactory =
+        StorageEngine.init(
+            isSyncEnabled:
+                dataStoreConfiguration:
+                validAPIPluginKey:
+                validAuthPluginKey:
+                modelRegistryVersion:
+                userDefault:
+        )
+        self.dataStorePublisher = DataStorePublisher()
+        self.dispatchedModelSyncedEvents = [:]
+    }
+    #else
+    /// Initializer
+    /// - Parameters:
+    ///   - modelRegistration: Register DataStore models.
+    ///   - dataStoreConfiguration: Configuration object for DataStore
     public init(modelRegistration: AmplifyModelRegistration,
                 configuration dataStoreConfiguration: DataStoreConfiguration = .default) {
         self.modelRegistration = modelRegistration
@@ -77,10 +107,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dataStorePublisher = DataStorePublisher()
         self.dispatchedModelSyncedEvents = [:]
     }
-
+    #endif
+    
     /// Internal initializer for testing
     init(modelRegistration: AmplifyModelRegistration,
-         configuration dataStoreConfiguration: DataStoreConfiguration = .default,
+         configuration dataStoreConfiguration: DataStoreConfiguration = .testDefault(),
          storageEngineBehaviorFactory: StorageEngineBehaviorFactory? = nil,
          dataStorePublisher: ModelSubcriptionBehavior,
          operationQueue: OperationQueue = OperationQueue(),

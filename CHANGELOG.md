@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.23.0 (2023-12-05)
+
+### Features
+
+- **DataStore**: DisableSubscriptions flag for watchOS (#3368)
+
+## 2.22.1 (2023-12-05)
+
+### Bug Fixes
+
+- appsync-realtime-client 3.1.2 watchOS support (#3395)
+- **storage**: Fixing watchOS crash when dealing with big files (#3389)
+- **DataStore**: Store larger than 32-bit values in Int64 over Int (#3367)
+- **Auth**: Moving HostedUI continuations to one place (#3363)
+- **DataStore**: Reconcile mutation responses from conflict handler path (#3370)
+- **Auth**: Add underlying error details to session error (#3364)
+- refactor keychain errors (#3354)
+
 ## 2.22.0 (2023-11-10)
 
 ### Features

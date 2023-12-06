@@ -43,7 +43,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -96,7 +96,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -157,7 +157,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let post = Post(title: "model1",
@@ -204,7 +204,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -260,7 +260,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -320,7 +320,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -369,7 +369,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -409,7 +409,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -455,7 +455,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let snapshots = taskRunner.sequence
@@ -497,7 +497,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: nil,
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
         let post = Post(title: "model1",
@@ -556,7 +556,7 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             sortInput: QuerySortInput.ascending(Post.keys.id).asSortDescriptors(),
             storageEngine: storageEngine,
             dataStorePublisher: dataStorePublisher,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             dispatchedModelSyncedEvent: AtomicValue(initialValue: true),
             dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
 

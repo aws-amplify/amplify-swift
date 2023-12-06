@@ -21,7 +21,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
     var didCreate: ((StorageMultipartUploadSession) -> Void)?
     var didStartPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Void)?
-    var didTransferBytesForPartUpload: ((StorageMultipartUploadSession, PartNumber, Int) -> Void)?
+    var didTransferBytesForPartUpload: ((StorageMultipartUploadSession, PartNumber, UInt64) -> Void)?
     var shouldFailPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Bool)?
     var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
     var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?

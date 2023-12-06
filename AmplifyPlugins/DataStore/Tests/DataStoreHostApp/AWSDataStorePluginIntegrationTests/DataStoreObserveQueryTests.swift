@@ -164,18 +164,30 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testInitialSyncWithPredicate() async throws {
         let startTime = Temporal.DateTime.now()
+        #if os(watchOS)
+        let configuration: DataStoreConfiguration = .custom(
+            syncMaxRecords: 100,
+            syncExpressions: [
+                DataStoreSyncExpression(
+                    modelSchema: Post.schema,
+                    modelPredicate: { Post.keys.createdAt.ge(startTime) }
+                )
+            ],
+            disableSubscriptions: { false })
+        #else
+        let configuration: DataStoreConfiguration = .custom(
+            syncMaxRecords: 100,
+            syncExpressions: [
+                DataStoreSyncExpression(
+                    modelSchema: Post.schema,
+                    modelPredicate: { Post.keys.createdAt.ge(startTime) }
+                )
+            ])
+        #endif
         await setUp(
             withModels: TestModelRegistration(),
             logLevel: .verbose,
-            dataStoreConfiguration: .custom(
-                syncMaxRecords: 100,
-                syncExpressions: [
-                    DataStoreSyncExpression(
-                        modelSchema: Post.schema,
-                        modelPredicate: { Post.keys.createdAt.ge(startTime) }
-                    )
-                ]
-            )
+            dataStoreConfiguration: configuration
         )
         try startAmplify()
 

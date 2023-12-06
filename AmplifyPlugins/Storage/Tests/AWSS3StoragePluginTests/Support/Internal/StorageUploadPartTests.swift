@@ -15,9 +15,9 @@ class StorageUploadPartTests: XCTestCase {
     func testUploadPartCreation() throws {
         // Creates an array of upload parts with 21 parts
         // where the last part is 512 bytes.
-        let lastPartSize = 512
+        let lastPartSize: UInt64 = 512
         let partSize: StorageUploadPartSize = .default
-        let fileSize: UInt64 = UInt64(partSize.size * 20 + lastPartSize)
+        let fileSize = partSize.size * 20 + lastPartSize
         let parts = try StorageUploadParts(fileSize: fileSize, partSize: partSize)
         XCTAssertEqual(parts.count, 21)
         XCTAssertEqual(parts.pending.count, parts.count)
@@ -43,8 +43,8 @@ class StorageUploadPartTests: XCTestCase {
         XCTAssertEqual(parts.inProgress.count, parts.count)
         XCTAssertEqual(parts.failed.count, 0)
         XCTAssertEqual(parts.completed.count, 0)
-        XCTAssertEqual(parts.totalBytes, 100 * parts.count)
-        XCTAssertEqual(parts.bytesTransferred, 50 * parts.count)
+        XCTAssertEqual(parts.totalBytes, UInt64(100 * parts.count))
+        XCTAssertEqual(parts.bytesTransferred, UInt64(50 * parts.count))
         XCTAssertEqual(parts.percentTransferred, 0.5)
     }
 

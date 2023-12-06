@@ -40,10 +40,17 @@ class AWSDataStoreTimeSortKeyTest: XCTestCase {
         try Amplify.add(plugin: AWSAPIPlugin(
             sessionFactory: AmplifyURLSessionFactory())
         )
+        #if os(watchOS)
+        try Amplify.add(plugin: AWSDataStorePlugin(
+            modelRegistration: TestModels(),
+            configuration: .custom(syncMaxRecords: 100, disableSubscriptions: { false })
+        ))
+        #else
         try Amplify.add(plugin: AWSDataStorePlugin(
             modelRegistration: TestModels(),
             configuration: .custom(syncMaxRecords: 100)
         ))
+        #endif
         Amplify.Logging.logLevel = .verbose
         try Amplify.configure(config)
     }

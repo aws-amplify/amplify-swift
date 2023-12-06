@@ -86,7 +86,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                   authModeStrategy: resolvedAuthStrategy)
 
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:)
+        AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:disableSubscriptions:)
 
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:)
@@ -289,7 +289,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                                                dataStoreConfiguration.syncExpressions,
                                                                auth,
                                                                authModeStrategy,
-                                                               nil)
+                                                               nil,
+                                                               dataStoreConfiguration.disableSubscriptions)
         reconciliationQueueSink = reconciliationQueue?
             .publisher
             .sink(
