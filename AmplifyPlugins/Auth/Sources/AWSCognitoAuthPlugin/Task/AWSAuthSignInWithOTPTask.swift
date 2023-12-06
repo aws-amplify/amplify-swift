@@ -29,8 +29,9 @@ class AWSAuthSignInWithOTPTask: AuthSignInWithOTPTask, DefaultLogger {
             authStateMachine: authStateMachine,
             username: request.username,
             // NOTE: answer is not applicable in this scenario
-            // because this event is only responsible for initializing the passwordless workflow
-            challengeAnswer: "",
+            // because this event is only responsible for initializing the passwordless OTP workflow
+            // But since Cognito needs a value for challenge answer, we are sending it as "<N/A>"
+            challengeAnswer: "<N/A>",
             signInRequestMetadata: .init(
                 signInMethod: .otp,
                 action: .request,
