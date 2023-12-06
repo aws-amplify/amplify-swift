@@ -213,8 +213,8 @@ struct PasswordlessSignInHelper: DefaultLogger {
         } else if let options = pluginOptions as? AWSAuthSignInPasswordlessOptions,
                   let clientMetadata = options.clientMetadata {
             return clientMetadata
-        } else if let options = pluginOptions as? AWSAuthConfirmSignInWithMagicLinkOptions,
-                  let clientMetadata = options.metadata {
+        } else if let options = pluginOptions as? AWSAuthConfirmSignInPasswordlessOptions,
+                  let clientMetadata = options.clientMetadata {
             return clientMetadata
         }
         return [:]

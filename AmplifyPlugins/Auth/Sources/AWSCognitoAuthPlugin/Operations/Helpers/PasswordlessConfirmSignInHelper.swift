@@ -93,15 +93,7 @@ struct PasswordlessConfirmSignInHelper: DefaultLogger {
 
     private func createConfirmSignInEventData() -> ConfirmSignInEventData {
         var passwordlessMetadata = confirmSignInRequestMetadata.toDictionary()
-        if let customerMetadata = (pluginOptions as? AWSAuthConfirmSignInWithOTPOptions)?.metadata {
-            passwordlessMetadata.merge(customerMetadata, uniquingKeysWith: { passwordlessMetadata, customerMetadata in
-                // Ideally key collision won't happen, because passwordless has been namespaced
-                // if for some reason collision still happens,
-                // prioritizing passwordlessFlow keys for flow to continue without any issues.
-                passwordlessMetadata
-
-            })
-        } else if let customerMetadata = (pluginOptions as? AWSAuthConfirmSignInWithMagicLinkOptions)?.metadata {
+        if let customerMetadata = (pluginOptions as? AWSAuthConfirmSignInPasswordlessOptions)?.clientMetadata {
             passwordlessMetadata.merge(customerMetadata, uniquingKeysWith: { passwordlessMetadata, customerMetadata in
                 // Ideally key collision won't happen, because passwordless has been namespaced
                 // if for some reason collision still happens,

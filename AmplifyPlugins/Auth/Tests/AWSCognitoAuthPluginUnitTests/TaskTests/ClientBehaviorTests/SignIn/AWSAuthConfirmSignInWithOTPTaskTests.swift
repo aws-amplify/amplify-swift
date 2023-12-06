@@ -60,7 +60,7 @@ class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
             })
 
         do {
-            let confirmSignInOptions = AWSAuthConfirmSignInWithOTPOptions(
+            let confirmSignInOptions = AWSAuthConfirmSignInPasswordlessOptions(
                 metadata: customerMetadata)
             let option = AuthConfirmSignInWithOTPRequest.Options(pluginOptions: confirmSignInOptions)
             let confirmSignInResult = try await plugin.confirmSignInWithOTP(
