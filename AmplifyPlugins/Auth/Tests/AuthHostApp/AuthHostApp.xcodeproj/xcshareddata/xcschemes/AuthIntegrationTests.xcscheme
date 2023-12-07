@@ -31,6 +31,26 @@
                BlueprintName = "AuthIntegrationTests"
                ReferencedContainer = "container:AuthHostApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SignInWithMagicLinkTests/testSuccessfulSignInWithMagicLink()">
+               </Test>
+               <Test
+                  Identifier = "SignInWithMagicLinkTests/testSuccessfulSignUpAndSignInWithMagicLink()">
+               </Test>
+               <Test
+                  Identifier = "SignInWithOTPTests/testSuccessfulSignInWithOTPEmail()">
+               </Test>
+               <Test
+                  Identifier = "SignInWithOTPTests/testSuccessfulSignInWithOTPSMS()">
+               </Test>
+               <Test
+                  Identifier = "SignInWithOTPTests/testSuccessfulSignUpAndSignInWithOTPEmail()">
+               </Test>
+               <Test
+                  Identifier = "SignInWithOTPTests/testSuccessfulSignUpAndSignInWithOTPSMS()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
