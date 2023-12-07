@@ -27,10 +27,19 @@ extension AuthCategory: AuthCategoryUserBehavior {
             try await plugin.update(userAttributes: userAttributes, options: options)
     }
 
-    public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
-                                       options: AuthAttributeResendConfirmationCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
+    @available(*, deprecated, renamed: "sendVerificationCode(forUserAttributeKey:options:)")
+    public func resendConfirmationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthAttributeResendConfirmationCodeRequest.Options? = nil
+    ) async throws -> AuthCodeDeliveryDetails {
         try await plugin.resendConfirmationCode(forUserAttributeKey: userAttributeKey, options: options)
+    }
 
+    public func sendVerificationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil
+    ) async throws -> AuthCodeDeliveryDetails {
+        try await plugin.sendVerificationCode(forUserAttributeKey: userAttributeKey, options: options)
     }
 
     public func confirm(userAttribute: AuthUserAttributeKey,
