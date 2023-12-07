@@ -190,4 +190,50 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         }
     }
 
+    /// Test Auth configuration with valid config for user pool and identity pool, with network preferences
+    ///
+    /// - Given: Given valid config for user pool and identity pool, and network preferences
+    /// - When:
+    ///    - I configure auth with the given configuration and network preferences
+    /// - Then:
+    ///    - I should not get any error while configuring auth
+    ///
+    func testConfigWithUserPoolAndIdentityPoolWithNetworkPreferences() throws {
+        let plugin = AWSCognitoAuthPlugin(
+            networkPreferences: .init(
+                maxRetryCount: 2,
+                timeoutIntervalForRequest: 60,
+                timeoutIntervalForResource: 60))
+        try Amplify.add(plugin: plugin)
+
+        let categoryConfig = AuthCategoryConfiguration(plugins: [
+            "awsCognitoAuthPlugin": [
+                "CredentialsProvider": ["CognitoIdentity": ["Default":
+                                                                ["PoolId": "xx",
+                                                                 "Region": "us-east-1"]
+                                                           ]],
+                "CognitoUserPool": ["Default": [
+                    "PoolId": "xx",
+                    "Region": "us-east-1",
+                    "AppClientId": "xx",
+                    "AppClientSecret": "xx"]]
+            ]
+        ])
+        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+            
+            let escapeHatch = plugin.getEscapeHatch()
+            guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = escapeHatch else {
+                XCTFail("Expected .userPool, got \(escapeHatch)")
+                return
+            }
+            XCTAssertNotNil(userPoolClient)
+            XCTAssertNotNil(identityPoolClient)
+
+        } catch {
+            XCTFail("Should not throw error. \(error)")
+        }
+    }
+
 }

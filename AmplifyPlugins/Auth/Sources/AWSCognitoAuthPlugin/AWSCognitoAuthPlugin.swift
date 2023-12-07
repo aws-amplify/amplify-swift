@@ -32,6 +32,9 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var httpClientEngineProxy: HttpClientEngineProxy?
 
+    /// The user network preferences for timeout and retry
+    let networkPreferences: AWSCognitoNetworkPreferences?
+
     @_spi(InternalAmplifyConfiguration)
     internal(set) public var jsonConfiguration: JSONValue?
 
@@ -42,5 +45,13 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     /// Instantiates an instance of the AWSCognitoAuthPlugin.
     public init() {
+        self.networkPreferences = nil
+    }
+
+    /// Instantiates an instance of the AWSCognitoAuthPlugin with custom network preferences
+    /// - Parameters:
+    ///   - networkPreferences: network preferences
+    public init(networkPreferences: AWSCognitoNetworkPreferences) {
+        self.networkPreferences = networkPreferences
     }
 }
