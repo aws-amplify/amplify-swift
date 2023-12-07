@@ -9,12 +9,16 @@
 import Foundation
 
 extension TimeZone {
+    private static let iso8601TimeZoneHHColonMMColonSSRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}:\\d{2}:\\d{2}$")
     private static let iso8601TimeZoneHHColonMMRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}:\\d{2}$")
     private static let iso8601TimeZoneHHMMRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}\\d{2}$")
     private static let iso8601TimeZoneHHRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}$")
 
+    /// ±hh:mm:ss is not a standard of ISO8601 date format, but it's supported by AWSDateTime.
+    /// https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html 
     private enum ISO8601TimeZonePart {
         case utc
+        case hhmmss(hours: Int, minutes: Int, seconds: Int)
         case hhmm(hours: Int, minutes: Int)
         case hh(hours: Int)
 
@@ -23,6 +27,17 @@ extension TimeZone {
                 return regex.flatMap {
                     $0.firstMatch(in: str, range: NSRange(location: 0, length: str.count))
                 } != nil
+            }
+
+            // <time>±hh:mm:ss
+            func suffixHHColonMMColonSS() -> String? {
+                if iso8601DateString.count > 9 {
+                    let tz = String(iso8601DateString.dropFirst(iso8601DateString.count - 9))
+                    if hasMatch(regex: TimeZone.iso8601TimeZoneHHColonMMColonSSRegex, str: tz) {
+                        return tz
+                    }
+                }
+                return nil
             }
 
             // <time>±hh:mm
@@ -86,6 +101,15 @@ extension TimeZone {
                 return
             }
 
+            if let tz = suffixHHColonMMColonSS(),
+               let hours = Int(tz.dropLast(6)),
+               let minutes = Int(tz.dropFirst(4).dropLast(3)),
+               let seconds = Int(tz.dropFirst(7))
+            {
+                self = .hhmmss(hours: hours, minutes: minutes, seconds: seconds)
+                return
+            }
+
             return nil
         }
     }
@@ -101,6 +125,10 @@ extension TimeZone {
         case let .some(.hhmm(hours: hours, minutes: minutes)):
             self.init(secondsFromGMT: hours * 60 * 60 +
                       (hours > 0 ? 1 : -1) * minutes * 60)
+        case let .some(.hhmmss(hours: hours, minutes: minutes, seconds: seconds)):
+            self.init(secondsFromGMT: hours * 60 * 60 +
+                      (hours > 0 ? 1 : -1) * minutes * 60 +
+                      (hours > 0 ? 1 : -1) * seconds)
         case .none:
             return nil
         }
