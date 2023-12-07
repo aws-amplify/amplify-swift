@@ -10,7 +10,14 @@ import AWSPluginsCore
 import Foundation
 
 extension PinpointEvent {
-    var clientTypeSession: PinpointClientTypes.Session {
+    var clientTypeSession: PinpointClientTypes.Session? {
+    #if os(watchOS)
+        // If the session duration cannot be represented by Int, return a nil session instead.
+        // This is extremely unlikely to happen since a session's stopTime is set when the app is closed
+        if let duration = session.duration, duration > Int.max {
+            return nil
+        }
+    #endif
         return PinpointClientTypes.Session(duration: Int(session.duration),
                                            id: session.sessionId,
                                            startTimestamp: session.startTime.asISO8601String,
@@ -46,5 +53,14 @@ extension Bundle {
 
     var appVersion: String {
         object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+    }
+}
+
+private extension Int {
+    init?(_ value: Int64?) {
+        guard let value = value else {
+            return nil
+        }
+        self.init(value)
     }
 }
