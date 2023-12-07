@@ -15,7 +15,8 @@ class AWSAuthBaseTest: XCTestCase {
 
     var defaultTestEmail = "test-\(UUID().uuidString)@amazon.com"
     var defaultTestPassword = UUID().uuidString
-
+    var defaultRedirectURL = "https://www.amplify-passwordless.com/sign-in-link/##code##"
+    
     var randomEmail: String {
         "test-\(UUID().uuidString)@amazon.com"
     }
