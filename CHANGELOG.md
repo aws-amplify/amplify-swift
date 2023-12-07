@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.24.0 (2023-12-07)
+
+### Features
+
+- **Auth**: Adding network preferences (#3379)
+
+### Bug Fixes
+
+- **Analytics**: Fixing session duration being reported for non-stopped sessions. (#3403)
+
 ## 2.23.0 (2023-12-05)
 
 ### Features
