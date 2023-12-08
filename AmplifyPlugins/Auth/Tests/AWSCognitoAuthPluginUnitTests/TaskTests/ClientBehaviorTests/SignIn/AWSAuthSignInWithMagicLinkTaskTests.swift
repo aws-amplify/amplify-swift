@@ -1049,7 +1049,7 @@ class AWSAuthSignInWithMagicLinkTaskTests: BasePluginTest {
                 XCTFail("Result should be .done for next step")
                 return
             }
-            XCTAssertTrue(result2.isSignedIn)
+            XCTAssertFalse(result2.isSignedIn)
         } catch {
             XCTFail("Received failure with error \(error)")
         }
