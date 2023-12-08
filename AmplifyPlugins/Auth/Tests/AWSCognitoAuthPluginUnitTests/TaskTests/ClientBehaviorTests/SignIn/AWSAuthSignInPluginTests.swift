@@ -878,7 +878,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             XCTFail("Should not produce result - \(result)")
         } catch {
             guard case AuthError.configuration = error else {
-                XCTFail("Should produce configuration intead produced \(error)")
+                XCTFail("Should produce configuration instead produced \(error)")
                 return
             }
         }

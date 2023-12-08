@@ -691,7 +691,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
             XCTFail("Should not produce result - \(result)")
         } catch {
             guard case AuthError.configuration = error else {
-                XCTFail("Should produce configuration intead produced \(error)")
+                XCTFail("Should produce configuration instead produced \(error)")
                 return
             }
         }
@@ -1032,16 +1032,15 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
                     ],
                     session: "someSession")
             }, mockRespondToAuthChallengeResponse: { _ in
-                RespondToAuthChallengeOutput(
-                    authenticationResult: .init(
-                        accessToken: Defaults.validAccessToken,
-                        expiresIn: 300,
-                        idToken: "idToken",
-                        newDeviceMetadata: nil,
-                        refreshToken: "refreshToken",
-                        tokenType: ""),
-                    challengeName: .none,
-                    challengeParameters: [:],
+                return RespondToAuthChallengeOutput(
+                    authenticationResult: .none,
+                    challengeName: .customChallenge,
+                    challengeParameters: [
+                        "nextStep": "PROVIDE_CHALLENGE_RESPONSE",
+                        "attributeName": "email",
+                        "deliveryMedium": "EMAIL",
+                        "destination": "S***@g***"
+                    ],
                     session: "session")
             })
             let result2 = try await plugin.signInWithOTP(
@@ -1049,7 +1048,7 @@ class AWSAuthSignInWithOTPTaskTests: BasePluginTest {
                 flow: .signIn,
                 destination: .email,
                 options: options)
-            guard case .done =  result2.nextStep else {
+            guard case .confirmSignInWithOTP =  result2.nextStep else {
                 XCTFail("Result should be .done for next step")
                 return
             }

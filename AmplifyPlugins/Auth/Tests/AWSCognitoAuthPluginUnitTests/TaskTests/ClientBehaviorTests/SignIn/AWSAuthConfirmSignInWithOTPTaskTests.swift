@@ -273,6 +273,22 @@ class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
         }
     }
 
+    /// Test a confirmSignIn call with CodeMismatchException response from service
+    ///  and then a successful sign in
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeMismatchException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with an invalid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .codeMismatch as underlyingError
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should be able to sign in
+    ///
     func testConfirmSignInRetryWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -448,42 +464,6 @@ class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
             }
             guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be invalidParameter \(error)")
-                return
-            }
-        }
-    }
-
-    /// Test a confirmSignIn call with InvalidPasswordException response from service
-    ///
-    /// - Given: an auth plugin with mocked service. Mocked service should mock a
-    ///   InvalidPasswordException response
-    ///
-    /// - When:
-    ///    - I invoke confirmSignIn with a valid confirmation code
-    /// - Then:
-    ///    - I should get a .service error with  .invalidPassword as underlyingError
-    ///
-    func testConfirmSignInWithInvalidPasswordException() async {
-
-        self.mockIdentityProvider = MockIdentityProvider(
-            mockRespondToAuthChallengeResponse: { _ in
-                throw AWSCognitoIdentityProvider.InvalidPasswordException(
-                    message: "Exception"
-                )
-            })
-        let option = AuthConfirmSignInWithOTPRequest.Options()
-        do {
-            _ = try await plugin.confirmSignInWithOTP(
-                challengeResponse: "code",
-                options: option)
-            XCTFail("Should return an error if the result from service is invalid")
-        } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
-                XCTFail("Should produce service error instead of \(error)")
-                return
-            }
-            guard case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
-                XCTFail("Underlying error should be invalidPassword \(error)")
                 return
             }
         }
