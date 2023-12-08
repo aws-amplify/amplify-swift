@@ -9,9 +9,17 @@
 import Foundation
 
 extension TimeZone {
+    /// Regex to match timezone string with format `±hh:mm:ss`.
+    /// - Note:
+    ///   This format is not a standard of ISO8601 date formate. It's supported by `AWSDateTime` exclusively.
+    ///
+    /// reference: https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html#graph-ql-aws-appsync-scalars
     private static let iso8601TimeZoneHHColonMMColonSSRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}:\\d{2}:\\d{2}$")
+    /// Regex to match timezone string with format `±hh:mm`.
     private static let iso8601TimeZoneHHColonMMRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}:\\d{2}$")
+    /// Regex to match timezone string with format `±hhmm`.
     private static let iso8601TimeZoneHHMMRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}\\d{2}$")
+    /// Regex to match timezone string with format `±hh`.
     private static let iso8601TimeZoneHHRegex = try? NSRegularExpression(pattern: "^[+-]\\d{2}$")
 
     /// ±hh:mm:ss is not a standard of ISO8601 date format, but it's supported by AWSDateTime.
