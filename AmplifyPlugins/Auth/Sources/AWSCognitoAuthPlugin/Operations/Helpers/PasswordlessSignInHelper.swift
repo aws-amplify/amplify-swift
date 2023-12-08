@@ -137,15 +137,8 @@ struct PasswordlessSignInHelper: DefaultLogger {
             return nil
 
         case .provideChallengeResponse:
-            // Ask the customer for the next step
-            switch signInRequestMetadata.signInMethod{
-            case .otp:
-                return .init(nextStep: .confirmSignInWithOTP(
-                    getCodeDeliveryDetails(parameters: challengeParams ?? [:]), nil))
-            case .magicLink:
-                return .init(nextStep: .confirmSignInWithMagicLink(
-                    getCodeDeliveryDetails(parameters: challengeParams ?? [:]), nil))
-            }
+            return try PasswordlessHelper.getResultForChallengeParams(
+                challengeParams, signInMethod: signInRequestMetadata.signInMethod)
         }
     }
 
@@ -218,30 +211,6 @@ struct PasswordlessSignInHelper: DefaultLogger {
             return clientMetadata
         }
         return [:]
-    }
-
-    private func getCodeDeliveryDetails(parameters: [String: String]) -> AuthCodeDeliveryDetails {
-
-        var deliveryDestination = DeliveryDestination.unknown(nil)
-        var attribute: AuthUserAttributeKey? = nil
-
-        // Retrieve Delivery medium and destination
-        let medium = parameters["deliveryMedium"]
-        let destination = parameters["destination"]
-        if medium == "SMS" {
-            deliveryDestination = .sms(destination)
-        } else if medium == "EMAIL" {
-            deliveryDestination = .email(destination)
-        }
-
-        // Retrieve attribute name
-        if let attributeName = parameters["attributeName"] {
-            attribute = AuthUserAttributeKey(rawValue: attributeName)
-        }
-
-        return AuthCodeDeliveryDetails(
-            destination: deliveryDestination,
-            attributeKey: attribute)
     }
 
     // MARK: Sign In Cancellation
