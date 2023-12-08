@@ -20,7 +20,7 @@ import Foundation
 /// - `Temporal.Time`
 /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
 ///   by host applications. The behavior of this may change without warning.
-public protocol Persistable {}
+public protocol Persistable: Encodable {}
 
 extension Bool: Persistable {}
 extension Double: Persistable {}
