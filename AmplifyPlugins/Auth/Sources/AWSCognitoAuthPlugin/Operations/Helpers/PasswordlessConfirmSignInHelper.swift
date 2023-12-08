@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 
 struct PasswordlessConfirmSignInHelper: DefaultLogger {
 
@@ -73,7 +74,7 @@ struct PasswordlessConfirmSignInHelper: DefaultLogger {
                 guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
                     continue
                 }
-                return result
+                return try await parseAndValidate(signInResult: result)
             case .notConfigured:
                 throw AuthError.configuration(
                     "UserPool configuration is missing",
@@ -106,4 +107,40 @@ struct PasswordlessConfirmSignInHelper: DefaultLogger {
             answer: challengeResponse,
             metadata: passwordlessMetadata)
     }
+
+    private func parseAndValidate(signInResult: AuthSignInResult) async throws -> AuthSignInResult {
+
+        guard case .confirmSignInWithCustomChallenge(let challengeParams) = signInResult.nextStep else {
+            log.error("Did not receive custom auth challenge as a next Step instead received: \(signInResult)")
+            throw AuthError.service(
+                "Did not receive custom auth challenge as a next Step.",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS(), nil)
+        }
+        guard  let nextStepString = challengeParams?["nextStep"] else {
+            log.error("Did not receive a valid next step. Received Challenge Params:  \(challengeParams ?? [:])")
+            throw AuthError.service(
+                "Did not receive a valid next step for Confirm Passwordless flow.",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS(), nil)
+        }
+
+        guard let nextStep = PasswordlessCustomAuthNextStep(rawValue: nextStepString) else {
+            log.error("Invalid next step. Next Step\(nextStepString)")
+            throw AuthError.service(
+                "Did not receive a valid next step for Confirm Passwordless flow.",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS(), nil)
+        }
+
+        switch nextStep {
+        case .provideAuthParameters:
+            log.error("This flow is not supported during confirm sign in")
+            throw AuthError.service(
+                "Did not receive a valid next step for Confirm Passwordless flow. \(nextStep)",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS(), nil)
+
+        case .provideChallengeResponse:
+            return try PasswordlessHelper.getResultForChallengeParams(
+                challengeParams, signInMethod: confirmSignInRequestMetadata.signInMethod)
+        }
+    }
+
 }
