@@ -171,11 +171,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///
     /// - Given: A confirmed user, with email added to the user's attributes (sending first confirmation code)
     /// - When:
-    ///    - I invoke Amplify.Auth.resendConfirmationCode for email
+    ///    - I invoke Amplify.Auth.sendVerificationCode for email
     /// - Then:
     ///    - The request should be successful and the email specified should receive a second confirmation code
     ///
-    func testSuccessfulResendConfirmationCodeWithUpdatedEmail() async throws {
+    func testSuccessfulSendVerificationCodeWithUpdatedEmail() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let updatedEmail = "\(username)@amazon.com"
@@ -186,9 +186,9 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         _ = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail))
-        let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["mydata": "myvalue"])
-        let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = try await Amplify.Auth.resendConfirmationCode(forUserAttributeKey: .email, options: options)
+        let pluginOptions = AWSSendUserAttributeVerificationCodeOptions(metadata: ["mydata": "myvalue"])
+        let options = AuthSendUserAttributeVerificationCodeRequest.Options(pluginOptions: pluginOptions)
+        _ = try await Amplify.Auth.sendVerificationCode(forUserAttributeKey: .email, options: options)
     }
 
     /// Test resending code for the user's updated email attribute.
@@ -199,11 +199,11 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///
     /// - Given: A confirmed user, with email added to the user's attributes (sending first confirmation code)
     /// - When:
-    ///    - I invoke Amplify.Auth.resendConfirmationCode for email
+    ///    - I invoke Amplify.Auth.sendVerificationCode for email
     /// - Then:
     ///    - The request should be successful and the email specified should receive a second confirmation code
     ///
-    func testSuccessfulResendConfirmationCode() async throws {
+    func testSuccessfulSendVerificationCode() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
@@ -212,9 +212,9 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["mydata": "myvalue"])
-        let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = try await Amplify.Auth.resendConfirmationCode(forUserAttributeKey: .email, options: options)
+        let pluginOptions = AWSSendUserAttributeVerificationCodeOptions(metadata: ["mydata": "myvalue"])
+        let options = AuthSendUserAttributeVerificationCodeRequest.Options(pluginOptions: pluginOptions)
+        _ = try await Amplify.Auth.sendVerificationCode(forUserAttributeKey: .email, options: options)
     }
 
     /// Test changing/updating users password.

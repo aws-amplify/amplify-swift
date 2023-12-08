@@ -96,7 +96,13 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
         async throws -> AuthCodeDeliveryDetails {
             fatalError()
+    }
 
+    public func sendVerificationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil)
+    async throws -> AuthCodeDeliveryDetails {
+        fatalError()
     }
 
     public func setUpTOTP() async throws -> TOTPSetupDetails {

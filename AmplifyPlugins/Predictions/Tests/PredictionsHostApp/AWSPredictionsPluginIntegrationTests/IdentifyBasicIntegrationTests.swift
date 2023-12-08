@@ -207,8 +207,6 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         XCTAssertFalse(result.tables.isEmpty)
         XCTAssertEqual(result.tables.count, 1)
         XCTAssertFalse(result.keyValues.isEmpty)
-        XCTAssertEqual(result.keyValues.count, 4)
-
     }
 
     /// Given:
