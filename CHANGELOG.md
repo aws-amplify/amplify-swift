@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.25.0 (2023-12-08)
+
+### Features
+
+- **Auth**: Rename resendConfirmationCode API for User Attributes to sendVerificationCode (#3384)
+
 ## 2.24.0 (2023-12-07)
 
 ### Features
