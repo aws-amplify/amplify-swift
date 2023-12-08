@@ -38,10 +38,10 @@ struct PasswordlessSignInHelper: DefaultLogger {
         log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
 
+        // Make sure current state is a valid state to initialize sign in
+        try await validateCurrentState()
+        
         do {
-            // Make sure current state is a valid state to initialize sign in
-            try await validateCurrentState()
-
             // Start sign in
             return try await startPasswordlessSignIn()
         } catch {
@@ -191,6 +191,10 @@ struct PasswordlessSignInHelper: DefaultLogger {
                 await sendCancelSignInEvent()
             case .signedOut:
                 return
+            case .notConfigured:
+                throw AuthError.configuration(
+                    "Authentication state machine is not configured",
+                    AuthPluginErrorConstants.invalidStateError)
             default: continue
             }
         }

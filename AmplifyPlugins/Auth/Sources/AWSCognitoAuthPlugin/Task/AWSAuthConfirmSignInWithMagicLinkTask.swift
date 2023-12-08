@@ -19,6 +19,9 @@ class AWSAuthConfirmSignInWithMagicLinkTask: AuthConfirmSignInWithMagicLinkTask,
     init(_ request: AuthConfirmSignInWithMagicLinkRequest,
          stateMachine: AuthStateMachine) throws {
 
+        if let validationError = request.hasError() {
+            throw validationError
+        }
         let username = try MagicLinkTokenParser.extractUserName(from: request.challengeResponse)
         passwordlessSignInHelper = PasswordlessSignInHelper(
             authStateMachine: stateMachine,
