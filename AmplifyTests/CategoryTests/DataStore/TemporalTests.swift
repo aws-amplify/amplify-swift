@@ -67,6 +67,8 @@ class TemporalTests: XCTestCase {
             XCTAssertEqual(datetime5.iso8601String, "2023-11-30T11:03:42.000+08:00")
             let datetime6 = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03-08:00:21")
             XCTAssertEqual(datetime6.iso8601String, "2023-11-30T11:04:24.000-08:00")
+            let datetime7 = try Temporal.DateTime(iso8601String: "2023-11-30T14:09:27.128Z")
+            XCTAssertEqual(datetime7.iso8601String, "2023-11-30T14:09:27.128Z")
             if #available(iOS 15.0, tvOS 15.0, *) {
                 let now = Date.now
                 let dateFormatter = DateFormatter()
