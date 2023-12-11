@@ -27,7 +27,9 @@ class InitialSyncOperationTests: XCTestCase {
     func testFullSyncWhenLastSyncPredicateNilAndCurrentSyncPredicateNonNil() {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = nil
-        let currentSyncPredicate = DataStoreConfiguration.custom(
+        let currentSyncPredicate: DataStoreConfiguration
+        #if os(watchOS)
+        currentSyncPredicate = DataStoreConfiguration.custom(
             syncExpressions: [
                 .syncExpression(
                     MockSynced.schema,
@@ -36,6 +38,17 @@ class InitialSyncOperationTests: XCTestCase {
             ],
             disableSubscriptions: { false }
         )
+        #else
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ]
+        )
+        #endif
+
         let expectedSyncType = SyncType.fullSync
         let expectedLastSync: Int64? = nil
 
@@ -82,7 +95,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: nil,
             reconciliationQueue: nil,
             storageAdapter: nil,
-            dataStoreConfiguration: .custom(disableSubscriptions: { false }),
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
         let sink = operation
             .publisher
@@ -110,7 +123,9 @@ class InitialSyncOperationTests: XCTestCase {
     func testFullSyncWhenLastSyncPredicateDifferentFromCurrentSyncPredicate() {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = "non nil different from current predicate"
-        let currentSyncPredicate = DataStoreConfiguration.custom(
+        let currentSyncPredicate: DataStoreConfiguration
+        #if os(watchOS)
+        currentSyncPredicate = DataStoreConfiguration.custom(
             syncExpressions: [
                 .syncExpression(
                     MockSynced.schema,
@@ -119,6 +134,17 @@ class InitialSyncOperationTests: XCTestCase {
             ],
             disableSubscriptions: { false }
         )
+        #else
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ]
+        )
+        #endif
+
         let expectedSyncType = SyncType.fullSync
         let expectedLastSync: Int64? = nil
 
@@ -157,7 +183,9 @@ class InitialSyncOperationTests: XCTestCase {
         let startDateSeconds = (Int64(Date().timeIntervalSince1970) - 100)
         let lastSyncTime: Int64 = startDateSeconds * 1_000
         let lastSyncPredicate: String? = "{\"field\":\"id\",\"operator\":{\"type\":\"equals\",\"value\":\"123\"}}"
-        let currentSyncPredicate = DataStoreConfiguration.custom(
+        let currentSyncPredicate: DataStoreConfiguration
+        #if os(watchOS)
+        currentSyncPredicate = DataStoreConfiguration.custom(
             syncExpressions: [
                 .syncExpression(
                     MockSynced.schema,
@@ -166,6 +194,17 @@ class InitialSyncOperationTests: XCTestCase {
             ],
             disableSubscriptions: { false }
         )
+        #else
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ]
+        )
+        #endif
+
         let expectedSyncType = SyncType.deltaSync
         let expectedLastSync: Int64? = lastSyncTime
 
