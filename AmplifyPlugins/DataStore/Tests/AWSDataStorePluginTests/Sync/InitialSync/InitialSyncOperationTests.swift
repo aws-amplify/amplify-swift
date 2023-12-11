@@ -23,17 +23,22 @@ class InitialSyncOperationTests: XCTestCase {
     }
 
     // MARK: - GetLastSyncTime
-    
+
     func testFullSyncWhenLastSyncPredicateNilAndCurrentSyncPredicateNonNil() {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = nil
         let currentSyncPredicate = DataStoreConfiguration.custom(
             syncExpressions: [
-                .syncExpression(MockSynced.schema,
-                                where: { MockSynced.keys.id.eq("123")})])
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ],
+            disableSubscriptions: { false }
+        )
         let expectedSyncType = SyncType.fullSync
         let expectedLastSync: Int64? = nil
-        
+
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let operation = InitialSyncOperation(
             modelSchema: MockSynced.schema,
@@ -60,25 +65,24 @@ class InitialSyncOperationTests: XCTestCase {
                                                             lastSync: lastSyncTime,
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
-    
+
         waitForExpectations(timeout: 1)
         sink.cancel()
     }
-    
+
     func testFullSyncWhenLastSyncPredicateNonNilAndCurrentSyncPredicateNil() {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = "non nil"
-        let currentSyncPredicate = DataStoreConfiguration.default
         let expectedSyncType = SyncType.fullSync
         let expectedLastSync: Int64? = nil
-        
+
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let operation = InitialSyncOperation(
             modelSchema: MockSynced.schema,
             api: nil,
             reconciliationQueue: nil,
             storageAdapter: nil,
-            dataStoreConfiguration: currentSyncPredicate,
+            dataStoreConfiguration: .custom(disableSubscriptions: { false }),
             authModeStrategy: AWSDefaultAuthModeStrategy())
         let sink = operation
             .publisher
@@ -98,21 +102,26 @@ class InitialSyncOperationTests: XCTestCase {
                                                             lastSync: lastSyncTime,
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
-    
+
         waitForExpectations(timeout: 1)
         sink.cancel()
     }
-    
+
     func testFullSyncWhenLastSyncPredicateDifferentFromCurrentSyncPredicate() {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = "non nil different from current predicate"
         let currentSyncPredicate = DataStoreConfiguration.custom(
             syncExpressions: [
-                .syncExpression(MockSynced.schema,
-                                where: { MockSynced.keys.id.eq("123")})])
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ],
+            disableSubscriptions: { false }
+        )
         let expectedSyncType = SyncType.fullSync
         let expectedLastSync: Int64? = nil
-        
+
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let operation = InitialSyncOperation(
             modelSchema: MockSynced.schema,
@@ -139,22 +148,27 @@ class InitialSyncOperationTests: XCTestCase {
                                                             lastSync: lastSyncTime,
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
-    
+
         waitForExpectations(timeout: 1)
         sink.cancel()
     }
-    
+
     func testDeltaSyncWhenLastSyncPredicateSameAsCurrentSyncPredicate() {
         let startDateSeconds = (Int64(Date().timeIntervalSince1970) - 100)
         let lastSyncTime: Int64 = startDateSeconds * 1_000
         let lastSyncPredicate: String? = "{\"field\":\"id\",\"operator\":{\"type\":\"equals\",\"value\":\"123\"}}"
         let currentSyncPredicate = DataStoreConfiguration.custom(
             syncExpressions: [
-                .syncExpression(MockSynced.schema,
-                                where: { MockSynced.keys.id.eq("123")})])
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ],
+            disableSubscriptions: { false }
+        )
         let expectedSyncType = SyncType.deltaSync
         let expectedLastSync: Int64? = lastSyncTime
-        
+
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
         let operation = InitialSyncOperation(
             modelSchema: MockSynced.schema,
@@ -181,13 +195,13 @@ class InitialSyncOperationTests: XCTestCase {
                                                             lastSync: lastSyncTime,
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
-    
+
         waitForExpectations(timeout: 1)
         sink.cancel()
     }
-    
+
     // MARK: - `main()` tests
-    
+
     /// - Given: An InitialSyncOperation
     /// - When:
     ///    - I invoke main()
