@@ -31,4 +31,7 @@ protocol StorageEngineBehavior: AnyObject, ModelStorageBehavior {
     func startSync() -> Result<SyncEngineInitResult, DataStoreError>
     func stopSync(completion: @escaping DataStoreCallback<Void>)
     func clear(completion: @escaping DataStoreCallback<Void>)
+
+    /// expresses whether the conforming type is syncing from a remote source.
+    var syncsFromRemote: Bool { get }
 }
