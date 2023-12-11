@@ -99,14 +99,4 @@ class AWSMutationEventIngesterTests: XCTestCase {
         await fulfillment(of: [mutationEventQueryCompleted], timeout: 1.0)
 
     }
-
-    /// - Given: A sync-configured DataStore
-    /// - When:
-    ///    - I invoke `save()`
-    ///    - The MutationIngester encounters an error
-    /// - Then:
-    ///    - The entire `save()` operation fails
-    func testMutationQueueFailureCausesSaveFailure() throws {
-        throw XCTSkip("Not yet implemented")
-    }
 }

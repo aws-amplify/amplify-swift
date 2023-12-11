@@ -12,31 +12,9 @@ import XCTest
 
 class AWSRESTOperationTests: OperationTestBase {
 
-    func testRESTOperationSuccess() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    func testRESTOperationValidationError() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    func testRESTOperationEndpointConfigurationError() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    func testRESTOperationConstructURLFailure() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    func testRESTOperationInterceptorError() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    // TODO: Fix this test
     func testGetReturnsOperation() throws {
         try setUpPlugin(endpointType: .rest)
 
-        // Use this as a semaphore to ensure the task is cleaned up before proceeding to the next test
         let listenerWasInvoked = expectation(description: "Listener was invoked")
         let request = RESTRequest(apiName: "Valid", path: "/path")
         let operation = apiPlugin.get(request: request) { _ in listenerWasInvoked.fulfill() }

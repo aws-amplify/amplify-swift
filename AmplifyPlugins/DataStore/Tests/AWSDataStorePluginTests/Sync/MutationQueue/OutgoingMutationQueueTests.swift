@@ -102,15 +102,6 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
     /// - Given: A sync-configured DataStore
     /// - When:
-    ///    - I invoke DataStore.delete()
-    /// - Then:
-    ///    - The mutation queue writes events
-    func testMutationQueueStoresDeleteEvents() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    /// - Given: A sync-configured DataStore
-    /// - When:
     ///    - I start syncing with mutation events already in the database
     /// - Then:
     ///    - The mutation queue delivers the first previously loaded event
@@ -209,33 +200,4 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         Amplify.Hub.removeListener(hubListener)
     }
-
-    /// - Given: A sync-configured DataStore
-    /// - When:
-    ///    - I start syncing with mutation events already in the database
-    ///    - I add mutations before the pending mutations have been processed
-    /// - Then:
-    ///    - The mutation queue delivers events in FIFO order
-    func testMutationQueueDeliversPendingMutationsFirst() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    /// - Given: A sync-configured DataStore
-    /// - When:
-    ///    - I successfully process a mutation
-    /// - Then:
-    ///    - The mutation queue deletes the event from its persistent store
-    func testMutationQueueDequeuesSavedEvents() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
-    /// - Given: A sync-configured DataStore
-    /// - When:
-    ///    - I successfully process a mutation
-    /// - Then:
-    ///    - The mutation listener is unsubscribed from Hub
-    func testLocalMutationUnsubcsribesFromCloud() throws {
-        throw XCTSkip("Not yet implemented")
-    }
-
 }

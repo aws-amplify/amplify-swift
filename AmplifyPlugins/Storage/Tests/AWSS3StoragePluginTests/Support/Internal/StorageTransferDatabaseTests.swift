@@ -160,13 +160,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         XCTAssertNotNil(loadedTask.multipartUpload)
     }
 
-    let disabledForGitHubActions = true
-
     func testStoringAndLoadingInProgressMultipartUploadTask() async throws {
-        guard !disabledForGitHubActions else  {
-            throw XCTSkip("Disables test which only fails with GitHub Actions")
-        }
-
         let uploadId = UUID().uuidString
 
         let originalTask = createTask(transferType: .multiPartUpload(onEvent: mockMultiPartUploadEvent))
