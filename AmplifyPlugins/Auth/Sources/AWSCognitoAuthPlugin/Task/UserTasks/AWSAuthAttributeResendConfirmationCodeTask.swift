@@ -10,7 +10,7 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmationCodeTask {
+class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmationCodeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let request: AuthAttributeResendConfirmationCodeRequest

@@ -10,7 +10,7 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-class AWSAuthUpdateUserAttributesTask: AuthUpdateUserAttributesTask {
+class AWSAuthUpdateUserAttributesTask: AuthUpdateUserAttributesTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let request: AuthUpdateUserAttributesRequest
