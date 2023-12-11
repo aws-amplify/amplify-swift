@@ -130,4 +130,774 @@ class AWSAuthConfirmSignInWithOTPTaskTests: BasePluginTest {
         }
     }
 
+    /// Test a confirmSignIn call with an empty confirmation code
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
+    /// - When:
+    ///    - I invoke confirmSignIn with an empty confirmation code
+    /// - Then:
+    ///    - I should get an .validation error
+    ///
+    func testConfirmSignInWithEmptyResponse() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                XCTFail("Cognito service should not be called")
+                return .testData()
+            })
+
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+        _ = try await plugin.confirmSignInWithOTP(
+            challengeResponse: "",
+            options: option)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with an empty confirmation code followed by a second valid confirmSignIn call
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successful response
+    /// - When:
+    ///    - I invoke second confirmSignIn after confirmSignIn with an empty confirmation code
+    /// - Then:
+    ///    - I should get a successful result with .done as the next step
+    ///
+    func testSuccessfullyConfirmSignInAfterAFailedConfirmSignIn() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                return .testData()
+            })
+
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "",
+                options: option)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
+            }
+
+            do {
+                let result = try await plugin.confirmSignInWithOTP(
+                    challengeResponse: "code",
+                    options: option)
+                XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+    }
+
+    // MARK: Service error handling test
+
+    /// Test a confirmSignIn call with aliasExistsException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   aliasExistsException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .aliasExists as underlyingError
+    ///
+    func testConfirmSignInWithAliasExistsException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.AliasExistsException(
+                    message: "Exception"
+                )
+            })
+
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            XCTAssertEqual(underlyingError as? AWSCognitoAuthError, .aliasExists)
+        }
+    }
+
+    /// Test a confirmSignIn call with CodeMismatchException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeMismatchException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .codeMismatch as underlyingError
+    ///
+    func testConfirmSignInWithCodeMismatchException() async {
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                return RespondToAuthChallengeOutput(
+                    authenticationResult: .none,
+                    challengeName: .customChallenge,
+                    challengeParameters: [
+                        "nextStep": "PROVIDE_CHALLENGE_RESPONSE",
+                        "errorCode": "CodeMismatchException"
+                    ],
+                    session: "session")
+            })
+
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeMismatch \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with CodeMismatchException response from service
+    ///  and then a successful sign in
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeMismatchException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with an invalid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .codeMismatch as underlyingError
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should be able to sign in
+    ///
+    func testConfirmSignInRetryWithCodeMismatchException() async {
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                return RespondToAuthChallengeOutput(
+                    authenticationResult: .none,
+                    challengeName: .customChallenge,
+                    challengeParameters: [
+                        "nextStep": "PROVIDE_CHALLENGE_RESPONSE",
+                        "errorCode": "CodeMismatchException"
+                    ],
+                    session: "session")
+            })
+
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeMismatch \(error)")
+                return
+            }
+
+            self.mockIdentityProvider = MockIdentityProvider(
+                mockRespondToAuthChallengeResponse: { _ in
+                    return .testData()
+                })
+            do {
+                let confirmSignInResult = try await plugin.confirmSignInWithOTP(
+                    challengeResponse: "code",
+                    options: option)
+                XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
+
+        }
+    }
+
+    /// Test a confirmSignIn call with CodeExpiredException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeExpiredException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .codeExpired as underlyingError
+    ///
+    func testConfirmSignInWithExpiredCodeException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.ExpiredCodeException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeExpired \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with InternalErrorException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get an .unknown error
+    ///
+    func testConfirmSignInWithInternalErrorException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.InternalErrorException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce an unknown error instead of \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with InvalidLambdaResponseException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   InvalidLambdaResponseException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .lambda as underlyingError
+    ///
+    func testConfirmSignInWithInvalidLambdaResponseException() async {
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.InvalidLambdaResponseException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with InvalidParameterException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   InvalidParameterException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with  .invalidParameter as underlyingError
+    ///
+    func testConfirmSignInWithInvalidParameterException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.InvalidParameterException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with InvalidSmsRoleAccessPolicy response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   InvalidSmsRoleAccessPolicyException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with  .smsRole as underlyingError
+    ///
+    func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.InvalidSmsRoleAccessPolicyException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidPassword \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with InvalidSmsRoleTrustRelationship response from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   CodeDeliveryFailureException response
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with  .smsRole as underlyingError
+    ///
+    func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.InvalidSmsRoleTrustRelationshipException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidPassword \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn with User pool configuration from service
+    ///
+    /// - Given: an auth plugin with mocked service with no User Pool configuration
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .configuration error
+    ///
+    func testConfirmSignInWithInvalidUserPoolConfigurationException() async {
+        let identityPoolConfigData = Defaults.makeIdentityConfigData()
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: identityPoolConfigData,
+            cognitoIdentityFactory: Defaults.makeIdentity)
+        let environment = AuthEnvironment(
+            configuration: .identityPools(identityPoolConfigData),
+            userPoolConfigData: nil,
+            identityPoolConfigData: identityPoolConfigData,
+            authenticationEnvironment: nil,
+            authorizationEnvironment: authorizationEnvironment,
+            credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
+        let stateMachine = Defaults.authStateMachineWith(environment: environment,
+                                                         initialState: .notConfigured)
+        let plugin = AWSCognitoAuthPlugin()
+        plugin.configure(
+            authConfiguration: .identityPools(identityPoolConfigData),
+            authEnvironment: environment,
+            authStateMachine: stateMachine,
+            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler())
+
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.configuration(_, _, _) = error else {
+                XCTFail("Should produce configuration instead produced \(error)")
+                return
+            }
+        }
+
+    }
+
+    /// Test a confirmSignIn with MFAMethodNotFoundException from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   MFAMethodNotFoundException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with  .mfaMethodNotFound as underlyingError
+    ///
+    func testCofirmSignInWithMFAMethodNotFoundException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.MFAMethodNotFoundException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be mfaMethodNotFound \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with NotAuthorizedException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   NotAuthorizedException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .notAuthorized error
+    ///
+    func testConfirmSignInWithNotAuthorizedException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.NotAuthorizedException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn with PasswordResetRequiredException from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   PasswordResetRequiredException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .resetPassword as next step
+    ///
+    func testConfirmSignInWithPasswordResetRequiredException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.PasswordResetRequiredException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("`confirmSignInWithOTP` Should not succeed")
+        }
+        catch {
+            guard case AuthError.service(_, _, _) = error else {
+                XCTFail("Should produce service error but instead produced \(error)")
+                return
+            }
+        }
+    }
+
+
+    /// Test a confirmSignIn call with SoftwareTokenMFANotFoundException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   SoftwareTokenMFANotFoundException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .softwareTokenMFANotEnabled as underlyingError
+    ///
+    func testConfirmSignInWithSoftwareTokenMFANotFoundException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.SoftwareTokenMFANotFoundException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with TooManyRequestsException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   TooManyRequestsException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .requestLimitExceeded as underlyingError
+    ///
+    func testConfirmSignInWithTooManyRequestsException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.TooManyRequestsException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with UnexpectedLambdaException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   UnexpectedLambdaException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .lambda as underlyingError
+    ///
+    func testConfirmSignInWithUnexpectedLambdaException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.UnexpectedLambdaException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with UserLambdaValidationException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   UserLambdaValidationException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .service error with .lambda as underlyingError
+    ///
+    func testConfirmSignInWithUserLambdaValidationException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.UserLambdaValidationException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with UserNotConfirmedException response from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   UserNotConfirmedException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get .confirmSignUp as next step
+    ///
+    func testConfirmSignInWithUserNotConfirmedException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.UserNotConfirmedException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("`confirmSignInWithOTP` Should not succeed")
+        }
+        catch {
+            guard case AuthError.service(_, _, _) = error else {
+                XCTFail("Should produce service error but instead produced \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a confirmSignIn call with UserNotFound response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   UserNotFoundException response
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .userNotFound error
+    ///
+    func testConfirmSignInWithUserNotFoundException() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw AWSCognitoIdentityProvider.UserNotFoundException(
+                    message: "Exception"
+                )
+            })
+        let option = AuthConfirmSignInWithOTPRequest.Options()
+        do {
+            _ = try await plugin.confirmSignInWithOTP(
+                challengeResponse: "code",
+                options: option)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
+            }
+        }
+    }
 }

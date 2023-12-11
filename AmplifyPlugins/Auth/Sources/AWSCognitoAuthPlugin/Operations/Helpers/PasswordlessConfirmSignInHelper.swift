@@ -33,12 +33,18 @@ struct PasswordlessConfirmSignInHelper: DefaultLogger {
         log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
 
+        guard case .configured(let authNState, _) = await authStateMachine.currentState,
+              authNState != .notConfigured else {
+            throw AuthError.configuration(
+                "Authentication state machine is not configured",
+                AuthPluginErrorConstants.invalidStateError)
+        }
+
         let invalidStateError = AuthError.invalidState(
             "User is not attempting signIn operation",
             AuthPluginErrorConstants.invalidStateError, nil)
 
-        guard case .configured(let authNState, _) = await authStateMachine.currentState,
-              case .signingIn(let signInState) = authNState else {
+        guard case .signingIn(let signInState) = authNState else {
             throw invalidStateError
         }
 
@@ -132,7 +138,7 @@ struct PasswordlessConfirmSignInHelper: DefaultLogger {
 
         switch nextStep {
         case .provideAuthParameters:
-            log.error("This flow is not supported during confirm sign in")
+            log.error("`provideAuthParameters` next step is not supported during confirm sign in")
             throw AuthError.service(
                 "Did not receive a valid next step for Confirm Passwordless flow. \(nextStep)",
                 AmplifyErrorMessages.shouldNotHappenReportBugToAWS(), nil)
