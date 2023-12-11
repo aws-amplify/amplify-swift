@@ -33,6 +33,6 @@ extension TemporalSpec {
                 """
             )
         }
-        return Self.init(date)
+        return Self.init(date, timeZone: timeZone)
     }
 }

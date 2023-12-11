@@ -42,6 +42,50 @@ class TemporalTests: XCTestCase {
         }
     }
 
+    /// - Given: a `DateTime` string in ISO8601 format
+    /// - When:
+    ///   - the input has time zone info
+    /// - Then:
+    ///   - DateTime should be parsed correctly with time zone info
+    ///   - Date should be parsed with utc time zone
+    ///   - Time should be parsed with utc time zone
+    func testConvertToIso8601String() {
+        do {
+            let datetime = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03-08:00")
+            XCTAssertEqual(datetime.iso8601String, "2023-11-30T11:04:03.000-08:00")
+            let datetime0 = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03+08:00")
+            XCTAssertEqual(datetime0.iso8601String, "2023-11-30T11:04:03.000+08:00")
+            let datetime1 = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03.322-0800")
+            XCTAssertEqual(datetime1.iso8601String, "2023-11-30T11:04:03.322-08:00")
+            let datetime2 = try Temporal.DateTime(iso8601String: "2023-11-30T14:09:27.128-0830")
+            XCTAssertEqual(datetime2.iso8601String, "2023-11-30T14:09:27.128-08:30")
+            let datetime3 = try Temporal.DateTime(iso8601String: "2023-11-30T14:09:27.128-0339")
+            XCTAssertEqual(datetime3.iso8601String, "2023-11-30T14:09:27.128-03:39")
+            let datetime4 = try Temporal.DateTime(iso8601String: "2023-11-30T14:09:27.128-0000")
+            XCTAssertEqual(datetime4.iso8601String, "2023-11-30T14:09:27.128Z")
+            let datetime5 = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03+08:00:21")
+            XCTAssertEqual(datetime5.iso8601String, "2023-11-30T11:03:42.000+08:00")
+            let datetime6 = try Temporal.DateTime(iso8601String: "2023-11-30T11:04:03-08:00:21")
+            XCTAssertEqual(datetime6.iso8601String, "2023-11-30T11:04:24.000-08:00")
+            let datetime7 = try Temporal.DateTime(iso8601String: "2023-11-30T14:09:27.128Z")
+            XCTAssertEqual(datetime7.iso8601String, "2023-11-30T14:09:27.128Z")
+            if #available(iOS 15.0, tvOS 15.0, *) {
+                let now = Date.now
+                let dateFormatter = DateFormatter()
+                dateFormatter.timeZone = .init(abbreviation: "HKT")
+                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                let datetime7 = Temporal.DateTime(now, timeZone: .init(abbreviation: "HKT"))
+                XCTAssertEqual(datetime7.iso8601String, "\(dateFormatter.string(from: now))+08:00")
+            }
+            let date = try Temporal.Date(iso8601String: "2023-11-30-08:00")
+            XCTAssertEqual(date.iso8601String, "2023-11-30Z")
+            let time = try Temporal.Time(iso8601String: "11:00:00.000-08:00")
+            XCTAssertEqual(time.iso8601String, "19:00:00.000Z")
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
     /// - Given: a `DateTime` string
     /// - When:
     ///   - the input format is `yyyy-MM-dd'T'HH:mm:ss'Z'`
@@ -144,7 +188,7 @@ class TemporalTests: XCTestCase {
     func testFullDateTimeParsingOnPST() {
         do {
             let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00.180-08:00")
-            XCTAssertEqual(datetime.iso8601String, "2020-01-20T16:00:00.180Z")
+            XCTAssertEqual(datetime.iso8601String, "2020-01-20T08:00:00.180-08:00")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-20T08:00")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20T16:00")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .medium, timeZone: pst), "2020-01-20T08:00:00")

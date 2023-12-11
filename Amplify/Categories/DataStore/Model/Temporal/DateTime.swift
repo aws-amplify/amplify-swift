@@ -15,26 +15,32 @@ extension Temporal {
     ///  * `.long` => `yyyy-MM-dd'T'HH:mm:ssZZZZZ`
     ///  * `.full` => `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`
     public struct DateTime: TemporalSpec {
+
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 
         // Inherits documentation from `TemporalSpec`
+        public let timeZone: TimeZone?
+
+        // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
-            Temporal.DateTime(Foundation.Date())
+            Temporal.DateTime(Foundation.Date(), timeZone: .utc)
         }
 
         /// `Temporal.Time` of this `Temporal.DateTime`.
         public var time: Time {
-            Time(foundationDate)
+            Time(foundationDate, timeZone: timeZone)
         }
 
         // Inherits documentation from `TemporalSpec`
-        public init(_ date: Foundation.Date) {
+        public init(_ date: Foundation.Date, timeZone: TimeZone? = .utc) {
             let calendar = Temporal.iso8601Calendar
             let components = calendar.dateComponents(
                 DateTime.iso8601DateComponents,
                 from: date
             )
+
+            self.timeZone = timeZone
 
             foundationDate = calendar
                 .date(from: components) ?? date
@@ -57,3 +63,5 @@ extension Temporal {
 
 // Allow date unit and time unit operations on `Temporal.DateTime`
 extension Temporal.DateTime: DateUnitOperable, TimeUnitOperable {}
+
+extension Temporal.DateTime: Sendable { }

@@ -12,7 +12,7 @@ import Foundation
 @usableFromInline
 internal struct SpecBasedDateConverting<Spec: TemporalSpec> {
     @usableFromInline
-    internal typealias DateConverter = (_ string: String, _ format: TemporalFormat?) throws -> Date
+    internal typealias DateConverter = (_ string: String, _ format: TemporalFormat?) throws -> (Date, TimeZone)
 
     @usableFromInline
     internal let convert: DateConverter
@@ -28,19 +28,21 @@ internal struct SpecBasedDateConverting<Spec: TemporalSpec> {
     internal static func `default`(
         iso8601String: String,
         format: TemporalFormat? = nil
-    ) throws -> Date {
+    ) throws -> (Date, TimeZone) {
         let date: Foundation.Date
+        let tz: TimeZone = TimeZone(iso8601DateString: iso8601String) ?? .utc
         if let format = format {
             date = try Temporal.date(
                 from: iso8601String,
                 with: [format(for: Spec.self)]
             )
+
         } else {
             date = try Temporal.date(
                 from: iso8601String,
                 with: TemporalFormat.sortedFormats(for: Spec.self)
             )
         }
-        return date
+        return (date, tz)
     }
 }

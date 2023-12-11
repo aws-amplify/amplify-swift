@@ -15,11 +15,13 @@ import Foundation
 extension TemporalSpec where Self: Comparable {
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.iso8601String == rhs.iso8601String
+        return lhs.iso8601FormattedString(format: .full, timeZone: .utc)
+            == rhs.iso8601FormattedString(format: .full, timeZone: .utc)
     }
 
     public static func < (lhs: Self, rhs: Self) -> Bool {
-        return lhs.iso8601String < rhs.iso8601String
+        return lhs.iso8601FormattedString(format: .full, timeZone: .utc)
+             < rhs.iso8601FormattedString(format: .full, timeZone: .utc)
     }
 }
 
