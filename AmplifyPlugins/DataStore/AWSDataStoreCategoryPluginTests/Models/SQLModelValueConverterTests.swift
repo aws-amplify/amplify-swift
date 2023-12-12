@@ -52,7 +52,7 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
     ///     - bool must be `Int` (1 or 0)
     ///     - the remaining types should not change
     func testModelWithEveryTypeConversionToBindings() {
-        let nonModelJSON = "{\"someString\":\"string\",\"someEnum\":\"foo\"}"
+        let nonModelJSON = "{\"someEnum\":\"foo\",\"someString\":\"string\"}"
         let example = exampleModel
 
         // convert model to SQLite Bindings
