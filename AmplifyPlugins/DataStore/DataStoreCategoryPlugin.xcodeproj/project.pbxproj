@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -241,8 +241,6 @@
 		9728F2B02683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */; };
 		973AF1AF26E016EC00BED353 /* ModelCompareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973AF1AE26E016EC00BED353 /* ModelCompareTests.swift */; };
 		97406B382666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */; };
-		97DB735426B49ED6004708B8 /* MutationEvent+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB735326B49ED6004708B8 /* MutationEvent+Extensions.swift */; };
-		97DB735B26B4A229004708B8 /* MutationEventExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB735A26B4A229004708B8 /* MutationEventExtensionsTests.swift */; };
 		97ED948A26DEC90A0025FA43 /* Model+Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97ED948926DEC90A0025FA43 /* Model+Compare.swift */; };
 		97F793BC27AC934D000153D6 /* SQLStatement+CreateIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793BB27AC934D000153D6 /* SQLStatement+CreateIndex.swift */; };
 		97F793DC27BC7882000153D6 /* StorageEngineTestsSQLiteIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F793DB27BC7882000153D6 /* StorageEngineTestsSQLiteIndex.swift */; };
@@ -698,8 +696,6 @@
 		9728F2AF2683D98D00A506A8 /* DataStoreConsecutiveUpdatesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConsecutiveUpdatesTests.swift; sourceTree = "<group>"; };
 		973AF1AE26E016EC00BED353 /* ModelCompareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCompareTests.swift; sourceTree = "<group>"; };
 		97406B372666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
-		97DB735326B49ED6004708B8 /* MutationEvent+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Extensions.swift"; sourceTree = "<group>"; };
-		97DB735A26B4A229004708B8 /* MutationEventExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventExtensionsTests.swift; sourceTree = "<group>"; };
 		97ED948926DEC90A0025FA43 /* Model+Compare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Compare.swift"; sourceTree = "<group>"; };
 		97F793BB27AC934D000153D6 /* SQLStatement+CreateIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SQLStatement+CreateIndex.swift"; sourceTree = "<group>"; };
 		97F793DB27BC7882000153D6 /* StorageEngineTestsSQLiteIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsSQLiteIndex.swift; sourceTree = "<group>"; };
@@ -1139,7 +1135,6 @@
 			children = (
 				210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */,
 				214B6B67264B157500A9311D /* StopwatchTests.swift */,
-				97DB735A26B4A229004708B8 /* MutationEventExtensionsTests.swift */,
 				973AF1AE26E016EC00BED353 /* ModelCompareTests.swift */,
 			);
 			path = Support;
@@ -1605,7 +1600,6 @@
 				FA8F4D212395B11700861D91 /* MutationEvent+Query.swift */,
 				FA3841E823889D440070AD5B /* StateMachine.swift */,
 				214B6B64264B0D6700A9311D /* Stopwatch.swift */,
-				97DB735326B49ED6004708B8 /* MutationEvent+Extensions.swift */,
 				212B4685269FB10500A0AEE7 /* SQLiteResultError.swift */,
 				97ED948926DEC90A0025FA43 /* Model+Compare.swift */,
 			);
@@ -2672,7 +2666,6 @@
 				FACBA78F23949C75006349C8 /* AWSMutationDatabaseAdapter.swift in Sources */,
 				FA55A54D2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift in Sources */,
 				D88666A425070FC6000F7A14 /* OutboxMutationEvent.swift in Sources */,
-				97DB735426B49ED6004708B8 /* MutationEvent+Extensions.swift in Sources */,
 				2102DD47260D87BC00B80FE2 /* ReconcileAndLocalSaveQueue.swift in Sources */,
 				2149E5CE2388684F00873955 /* SQLStatement+CreateTable.swift in Sources */,
 				6B3CC68023F87FA10008ECBC /* RemoteSyncEngine+Retryable.swift in Sources */,
@@ -2727,7 +2720,6 @@
 				6B7743E9259071F5001469F5 /* MockRemoteSyncEngine.swift in Sources */,
 				97F793DC27BC7882000153D6 /* StorageEngineTestsSQLiteIndex.swift in Sources */,
 				FAE4146C239AA40600CE94C2 /* MockSQLiteStorageEngineAdapter.swift in Sources */,
-				97DB735B26B4A229004708B8 /* MutationEventExtensionsTests.swift in Sources */,
 				B4D9B9E424DF90CD0049484F /* DynamicModel.swift in Sources */,
 				B912D1BA242984D10028F05C /* QueryPaginationInputTests.swift in Sources */,
 				FA8D932F239EA5C4001ED336 /* NoOpInitialSyncOrchestrator.swift in Sources */,

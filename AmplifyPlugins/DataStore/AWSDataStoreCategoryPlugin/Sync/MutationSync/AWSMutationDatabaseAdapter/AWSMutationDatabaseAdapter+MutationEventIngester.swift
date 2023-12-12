@@ -34,22 +34,6 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     func resolveConflictsThenSave(mutationEvent: MutationEvent,
                                   storageAdapter: StorageEngineAdapter,
                                   completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
-
-        // We don't want to query MutationSync<AnyModel> because a) we already have the model, and b) delete mutations
-        // are submitted *after* the delete has already been applied to the local data store, meaning there is no model
-        // to query.
-        var mutationEvent = mutationEvent
-        do {
-            // swiftlint:disable:next todo
-            // TODO: Refactor this so that it's clear that the storage engine is not responsible for setting the version
-            // perhaps as simple as renaming to `submit(unversionedMutationEvent:)` or similar
-            let syncMetadata = try storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId,
-                                                                               modelName: mutationEvent.modelName)
-            mutationEvent.version = syncMetadata?.version
-        } catch {
-            completionPromise(.failure(DataStoreError(error: error)))
-        }
-
         MutationEvent.pendingMutationEvents(
             forMutationEvent: mutationEvent,
             storageAdapter: storageAdapter) { result in
@@ -200,8 +184,6 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             updatedMutationType = originalEvent.mutationType
         }
         resolvedEvent.mutationType = updatedMutationType
-
-        resolvedEvent.version = candidate.version
 
         return resolvedEvent
     }

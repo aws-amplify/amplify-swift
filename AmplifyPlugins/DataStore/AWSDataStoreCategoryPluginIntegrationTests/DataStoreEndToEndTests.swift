@@ -302,7 +302,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             } else if payload.eventName == HubPayload.EventName.DataStore.conditionalSaveFailed {
                 if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                     XCTAssertEqual(post.title, updatedPost.title)
-                    XCTAssertEqual(mutationEvent.version, 1)
+                    XCTAssertEqual(mutationEvent.version, nil)
                     conditionalReceived.fulfill()
                     return
                 }

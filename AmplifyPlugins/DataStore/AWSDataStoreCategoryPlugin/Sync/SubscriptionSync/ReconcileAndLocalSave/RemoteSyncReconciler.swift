@@ -17,6 +17,21 @@ struct RemoteSyncReconciler {
         case create(RemoteModel)
         case update(RemoteModel)
         case delete(RemoteModel)
+
+        var remoteModel: RemoteModel {
+            switch self {
+            case .create(let model), .update(let model), .delete(let model):
+                return model
+            }
+        }
+
+        var mutationType: MutationEvent.MutationType {
+            switch self {
+            case .create: return .create
+            case .update: return .update
+            case .delete: return .delete
+            }
+        }
     }
 
     /// Filter the incoming `remoteModels` against the pending mutations.
