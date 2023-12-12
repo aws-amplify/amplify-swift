@@ -1,0 +1,25 @@
+name: Update labels as needed on new issue comment from customer
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+
+jobs:
+  remove-pending-response:
+    runs-on: ubuntu-latest
+
+    # Exclude comments in PRs and comments made from maintainers
+    if: ${{ !github.event.issue.pull_request && contains(github.event.issue.labels.*.name, 'pending-response') && !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) }}
+
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: Remove pending-response label
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue edit $ISSUE_NUMBER --remove-label "pending-response"
