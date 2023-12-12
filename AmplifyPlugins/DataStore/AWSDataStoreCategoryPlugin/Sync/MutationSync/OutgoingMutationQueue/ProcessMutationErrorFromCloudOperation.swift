@@ -30,7 +30,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private var mutationOperation: AtomicValue<GraphQLOperation<MutationSync<AnyModel>>?>
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
-    
+
     init(dataStoreConfiguration: DataStoreConfiguration,
          mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
@@ -334,7 +334,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                     finish(result: .failure(dataStoreError))
                     return
                 }
-                
+
                 reconciliationQueue.offer([graphQLResult], modelName: mutationEvent.modelName)
             }
         }
