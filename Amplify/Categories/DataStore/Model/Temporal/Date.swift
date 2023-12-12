@@ -22,12 +22,15 @@ extension Temporal {
         public let foundationDate: Foundation.Date
 
         // Inherits documentation from `TemporalSpec`
+        public let timeZone: TimeZone? = .utc
+
+        // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
-            Temporal.Date(Foundation.Date())
+            Temporal.Date(Foundation.Date(), timeZone: .utc)
         }
 
         // Inherits documentation from `TemporalSpec`
-        public init(_ date: Foundation.Date) {
+        public init(_ date: Foundation.Date, timeZone: TimeZone?) {
             self.foundationDate = Temporal
                 .iso8601Calendar
                 .startOfDay(for: date)

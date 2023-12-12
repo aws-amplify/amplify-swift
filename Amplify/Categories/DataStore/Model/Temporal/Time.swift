@@ -19,12 +19,15 @@ extension Temporal {
         public let foundationDate: Foundation.Date
 
         // Inherits documentation from `TemporalSpec`
+        public let timeZone: TimeZone? = .utc
+
+        // Inherits documentation from `TemporalSpec`
         public static func now() -> Self {
-            Temporal.Time(Foundation.Date())
+            Temporal.Time(Foundation.Date(), timeZone: .utc)
         }
 
         // Inherits documentation from `TemporalSpec`
-        public init(_ date: Foundation.Date) {
+        public init(_ date: Foundation.Date, timeZone: TimeZone?) {
             // Sets the date to a fixed instant so time-only operations are safe
             let calendar = Temporal.iso8601Calendar
             var components = calendar.dateComponents(
