@@ -26,7 +26,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     var localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
     let queue = OperationQueue()
     let reconciliationQueue = MockReconciliationQueue()
-    
+
     override func setUp() {
         tryOrFail {
             try setUpWithAPI()

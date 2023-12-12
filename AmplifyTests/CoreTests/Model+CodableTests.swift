@@ -11,11 +11,11 @@ import AmplifyTestCommon
 
 class ModelCodableTests: XCTestCase {
     let postJSONWithFractionalSeconds = """
-    {"id":"post-1","title":"title","content":"content","comments":[],"createdAt":"1970-01-12T13:46:40.123Z"}
+    {"comments":[],"content":"content","createdAt":"1970-01-12T13:46:40.123Z","id":"post-1","title":"title"}
     """
 
     let postJSONWithoutFractionalSeconds = """
-    {"id":"post-1","title":"title","content":"content","comments":[],"createdAt":"1970-01-12T13:46:40Z"}
+    {"comments":[],"content":"content","createdAt":"1970-01-12T13:46:40Z","id":"post-1","title":"title"}
     """
 
     override func setUp() {
