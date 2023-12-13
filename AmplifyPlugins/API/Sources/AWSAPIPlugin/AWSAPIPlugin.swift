@@ -9,7 +9,32 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
+public struct AWSAPIPluginConfiguration: PluginConfiguration {
+    public var categoryKey: AmplifyConfiguration.CodingKeys { .api }
+    
+    public var pluginKey: String { "awsAPIPlugin" }
+    
+    public var jsonConfig: JSONValue {
+        var config = ["endpointType": JSONValue.string(endpointType),
+                      "region": JSONValue.string(region),
+                      "authorizationType": JSONValue.string(authorizationType)]
+        if let apiKey = apiKey {
+            config.updateValue(JSONValue.string(apiKey), forKey: "apiKey")
+        }
+        let jsonConfig: [String: JSONValue] = [apiName: JSONValue.object(config)]
+        return .object(jsonConfig)
+    }
+    
+    var apiName: String
+    var endpointType: String
+    var region: String
+    var authorizationType: String
+    var apiKey: String?
+}
+
 final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQLBehaviorExtended, AWSAPIAuthInformation {
+    public var pluginConfiguration: PluginConfiguration?
+    
     /// The unique key of the plugin within the API category.
     public var key: PluginKey {
         return "awsAPIPlugin"
@@ -46,6 +71,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQL
     let reachabilityMapLock: NSLock
 
     public init(
+        configuration: AWSAPIPluginConfiguration? = nil,
         modelRegistration: AmplifyModelRegistration? = nil,
         sessionFactory: URLSessionBehaviorFactory? = nil,
         apiAuthProviderFactory: APIAuthProviderFactory? = nil
@@ -63,6 +89,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQL
         let sessionFactory = sessionFactory
             ?? URLSessionFactory.makeDefault()
         self.session = sessionFactory.makeSession(withDelegate: self)
+        self.pluginConfiguration = configuration
     }
 }
 

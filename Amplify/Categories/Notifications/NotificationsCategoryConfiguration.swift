@@ -10,7 +10,7 @@ import Foundation
 /// The configuration for the Notifications category
 public struct NotificationsCategoryConfiguration: CategoryConfiguration {    
     /// Plugins
-    public let plugins: [String: JSONValue]
+    public var plugins: [String: JSONValue]
 
     /// Initializer
     /// - Parameter plugins: Plugins

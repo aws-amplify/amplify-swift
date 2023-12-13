@@ -8,8 +8,14 @@
 import Foundation
 
 extension AmplifyConfiguration {
-    init(bundle: Bundle) throws {
+    init(bundle: Bundle, withOverride configuration: AmplifyConfiguration? = nil) throws {
         guard let path = bundle.path(forResource: "amplifyconfiguration", ofType: "json") else {
+            
+            if let configuration = configuration {
+                self = configuration
+                return
+            }
+            
             throw ConfigurationError.invalidAmplifyConfigurationFile(
                 """
                 Could not load default `amplifyconfiguration.json` file
@@ -24,11 +30,10 @@ extension AmplifyConfiguration {
         }
 
         let url = URL(fileURLWithPath: path)
-
-        self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url)
+        self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url, withOverride: configuration)
     }
 
-    static func loadAmplifyConfiguration(from url: URL) throws -> AmplifyConfiguration {
+    static func loadAmplifyConfiguration(from url: URL, withOverride configuration: AmplifyConfiguration? = nil) throws -> AmplifyConfiguration {
         let fileData: Data
         do {
             fileData = try Data(contentsOf: url)
@@ -47,7 +52,56 @@ extension AmplifyConfiguration {
             )
         }
 
-        return try decodeAmplifyConfiguration(from: fileData)
+        var decodedConfiguration = try decodeAmplifyConfiguration(from: fileData)
+        if let configuration = configuration {
+            // Got both `configuration` and `configurationFromBundle`, merge the configuration here.
+            
+            // The logic is two parts- merge and overwrite. Overwrite matters depending on which configuration is modified
+            // if the `configurationFromBundle` is modified with the in-memory configuration, then the in-memory configuration
+            // overwrites keys in the configuration from bundle, thus, the in-memory config takes precedent over the
+            // configuration file.
+                
+            configuration.analytics?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.analytics?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.api?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.api?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.auth?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.auth?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.dataStore?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.dataStore?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.geo?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.geo?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.hub?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.hub?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.logging?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.logging?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.notifications?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.notifications?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.predictions?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.predictions?.plugins.updateValue(config, forKey: pluginKey)
+            })
+            
+            configuration.storage?.plugins.forEach({ (pluginKey, config) in
+                decodedConfiguration.storage?.plugins.updateValue(config, forKey: pluginKey)
+            })
+        }
+        return decodedConfiguration
     }
 
     static func decodeAmplifyConfiguration(from data: Data) throws -> AmplifyConfiguration {

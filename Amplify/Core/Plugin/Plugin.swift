@@ -23,6 +23,12 @@ public protocol Plugin: CategoryTypeable, Resettable {
     func configure(using configuration: Any?) throws
 }
 
+public protocol PluginConfiguration {
+    var categoryKey: AmplifyConfiguration.CodingKeys { get }
+    var pluginKey: String { get }
+    var jsonConfig: JSONValue { get }
+}
+
 /// Convenience typealias to clarify when Strings are being used as plugin keys
 public typealias PluginKey = String
 

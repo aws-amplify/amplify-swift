@@ -22,6 +22,8 @@ import Foundation
 /// Instead, messages and listener states are guaranteed to be independently self-consistent. Callers can use
 /// `hasListener(withToken:)` to check that a listener has been registered.
 final public class AWSHubPlugin: HubCategoryPlugin {
+    public var pluginConfiguration: PluginConfiguration?
+    
     /// Convenience property. Each instance of `AWSHubPlugin` has the same key
     public static var key: String {
         return "awsHubPlugin"

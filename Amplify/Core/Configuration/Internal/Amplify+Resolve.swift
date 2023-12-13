@@ -10,11 +10,7 @@ import Foundation
 extension Amplify {
 
     static func resolve(configuration: AmplifyConfiguration? = nil) throws -> AmplifyConfiguration {
-        if let configuration = configuration {
-            return configuration
-        }
-
-        return try AmplifyConfiguration(bundle: Bundle.main)
+        return try AmplifyConfiguration(bundle: Bundle.main, withOverride: configuration)
     }
 
 }

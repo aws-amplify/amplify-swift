@@ -59,13 +59,21 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
                 logLevel: .error
             )
             apiPlugin.configure(using: dependencies)
+            
         } catch {
             XCTFail("Failed to create endpoint config")
         }
 
         await Amplify.reset()
 
-        let config = AmplifyConfiguration()
+        let config = AmplifyConfiguration(
+            api: .init(plugins: [
+                "awsAPIPlugin": .object([
+                    "[API Name": .object([
+                        "endpointType": "GraphQL",
+                        "endpoint":"[APPSYNC ENDPOINT]",
+                        "region": "[REGION]",
+                        "authorizationType": "[AUTHORIZATION TYPE]"])])]))
         do {
             try Amplify.configure(config)
         } catch {

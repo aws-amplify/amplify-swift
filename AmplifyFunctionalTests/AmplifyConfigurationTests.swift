@@ -46,5 +46,19 @@ class AmplifyConfigurationTests: XCTestCase {
             }
         }
     }
+    
+    func testConfigReadFromFileMergeWithInMemoryConfiguration() throws {
+        let plugin = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        
+        // Assert that we've set up the file in the bundle.
+        var amplifyConfiguration = try Amplify.resolve(configuration: nil)
+        XCTAssertNotNil(amplifyConfiguration)
+        
+        
+        try Amplify.configure()
+        XCTAssertNotNil(try Amplify.Storage.getPlugin(for: plugin.key))
+        XCTAssertNoThrow(Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil))
+    }
 
 }

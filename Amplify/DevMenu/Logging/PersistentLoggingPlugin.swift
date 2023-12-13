@@ -10,7 +10,8 @@ import Foundation
 
 /// `LoggingCategoryPlugin` that wraps another`LoggingCategoryPlugin` and saves the logs in memory
 public class PersistentLoggingPlugin: LoggingCategoryPlugin {
-
+    public var pluginConfiguration: PluginConfiguration?
+    
     var plugin: LoggingCategoryPlugin
     var persistentLogWrapper: PersistentLogWrapper?
 

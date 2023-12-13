@@ -11,7 +11,7 @@ import Foundation
 public struct GeoCategoryConfiguration: CategoryConfiguration {
 
     /// Dictionary of plugin keys to plugin configurations
-    public let plugins: [String: JSONValue]
+    public var plugins: [String: JSONValue]
 
     /// Initializer
     /// - Parameter plugins: Plugin configuration dictionary

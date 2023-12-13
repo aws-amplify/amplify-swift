@@ -108,6 +108,113 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
         }
     }
 
+    /// Given: An `amplifyconfiguration.json` file with valid JSON in the AmplifyConfiguration structure
+    /// When: Amplify.configure(configurationFile:) is invoked
+    /// Then: The system returns an AmplifyConfiguration object with populated members
+    func testValidAmplifyConfiguration() throws {
+        let configFilePath = AmplifyConfigurationInitializationTests
+            .tempDir
+            .appendingPathComponent("amplifyconfiguration.json")
+
+        let json = """
+        {
+            "api": {
+                "plugins": {
+                    "awsAPIPlugin": {
+                        "[API NAME]": {
+                            "endpointType": "GraphQL",
+                            "endpoint": "[APPSYNC ENDPOINT]",
+                            "region": "[REGION]",
+                            "authorizationType": "[AUTHORIZATION TYPE]"
+                        }
+                    }
+                }
+            }
+        }
+        """
+        let configData = json.data(using: .utf8)!
+        try configData.write(to: configFilePath)
+
+        let amplifyConfig = try AmplifyConfiguration(configurationFile: configFilePath)
+
+        // Use the `allCases` enum to ensure we catch newly-added categories
+        for categoryType in CategoryType.allCases {
+            switch categoryType {
+            case .analytics:
+                XCTAssertNil(amplifyConfig.analytics)
+            case .api:
+                XCTAssertNotNil(amplifyConfig.api)
+            case .auth:
+                XCTAssertNil(amplifyConfig.auth)
+            case .dataStore:
+                // TODO assert
+                XCTAssert(true)
+            case .geo:
+                XCTAssertNil(amplifyConfig.geo)
+            case .hub:
+                XCTAssertNil(amplifyConfig.hub)
+            case .logging:
+                XCTAssertNil(amplifyConfig.logging)
+            case .predictions:
+                XCTAssertNil(amplifyConfig.predictions)
+            case .pushNotifications:
+                XCTAssertNil(amplifyConfig.notifications)
+            case .storage:
+                XCTAssertNil(amplifyConfig.storage)
+            }
+        }
+    }
+    
+    /// Given: An `amplifyconfiguration.json` file and in-memory configuration object
+    /// When: Amplify.configure(config) is invoked
+    /// Then: The system returns a merged Configuration object with populated members
+    func testValidAmplifyConfigurationMergeWithInMemory() throws {
+        let configFilePath = AmplifyConfigurationInitializationTests
+            .tempDir
+            .appendingPathComponent("amplifyconfiguration.json")
+
+        let json = """
+        {
+            "api": {
+                "plugins": {
+                    "awsAPIPlugin": {
+                        "[API NAME]": {
+                            "endpointType": "GraphQL",
+                            "endpoint": "[APPSYNC ENDPOINT]",
+                            "region": "[REGION]",
+                            "authorizationType": "[AUTHORIZATION TYPE]"
+                        }
+                    }
+                }
+            }
+        }
+        """
+        let configData = json.data(using: .utf8)!
+        try configData.write(to: configFilePath)
+
+        let configOverride = AmplifyConfiguration(
+            api: .init(plugins: [
+                "awsAPIPlugin": .object([
+                    "[API Name]": .object([
+                        "endpointType": "Override",
+                        "endpoint":"Override",
+                        "region": "Override",
+                        "authorizationType": "Override"])])]))
+        let amplifyConfig = try AmplifyConfiguration(configurationFile: configFilePath, withOverride: configOverride)
+
+        // Use the `allCases` enum to ensure we catch newly-added categories
+        for categoryType in CategoryType.allCases {
+            switch categoryType {
+            case .api:
+                XCTAssertNotNil(amplifyConfig.api)
+                // TODO: Assert overrides on merged data.
+                print(amplifyConfig.api)
+            default:
+                break
+            }
+        }
+    }
+
     /// Given: An `amplifyconfiguration.json` file with valid JSON data, but not in the AmplifyConfiguration structure
     /// When: Amplify.configure(configurationFile:) is invoked
     /// Then: The system returns an AmplifyConfiguration object with no populated members

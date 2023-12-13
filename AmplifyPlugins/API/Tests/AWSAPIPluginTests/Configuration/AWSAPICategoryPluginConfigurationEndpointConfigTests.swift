@@ -19,6 +19,18 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     let restAPI = "restAPI"
     let restAPI2 = "restAPI2"
 
+    func testAmplifyPluginConfigBuilder() throws {
+        let config = try Amplify.configure {
+            AWSAPIPluginConfiguration(
+                apiName: "apiName",
+                endpointType: "endpointType",
+                region: "region",
+                authorizationType: "authType")
+        }
+        // TODO assert config has api configuration
+        print(config)
+    }
+    
     func testGetConfigAPIName() throws {
         let endpointConfig = [graphQLAPI: try getEndpointConfig(apiName: graphQLAPI, endpointType: .graphQL)]
 

@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Tag: AmplifyConfiguration
 public struct AmplifyConfiguration: Codable {
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case analytics
         case api
         case auth
@@ -27,34 +27,34 @@ public struct AmplifyConfiguration: Codable {
     }
 
     /// Configurations for the Amplify Analytics category
-    let analytics: AnalyticsCategoryConfiguration?
+    var analytics: AnalyticsCategoryConfiguration?
 
     /// Configurations for the Amplify API category
-    let api: APICategoryConfiguration?
+    var api: APICategoryConfiguration?
 
     /// Configurations for the Amplify Auth category
-    let auth: AuthCategoryConfiguration?
+    var auth: AuthCategoryConfiguration?
 
     /// Configurations for the Amplify DataStore category
-    let dataStore: DataStoreCategoryConfiguration?
+    var dataStore: DataStoreCategoryConfiguration?
 
     /// Configurations for the Amplify Geo category
-    let geo: GeoCategoryConfiguration?
+    var geo: GeoCategoryConfiguration?
 
     /// Configurations for the Amplify Hub category
-    let hub: HubCategoryConfiguration?
+    var hub: HubCategoryConfiguration?
 
     /// Configurations for the Amplify Logging category
-    let logging: LoggingCategoryConfiguration?
+    var logging: LoggingCategoryConfiguration?
 
     /// Configurations for the Amplify Notifications category
-    let notifications: NotificationsCategoryConfiguration?
+    var notifications: NotificationsCategoryConfiguration?
 
     /// Configurations for the Amplify Predictions category
-    let predictions: PredictionsCategoryConfiguration?
+    var predictions: PredictionsCategoryConfiguration?
 
     /// Configurations for the Amplify Storage category
-    let storage: StorageCategoryConfiguration?
+    var storage: StorageCategoryConfiguration?
 
     /// - Tag: Amplify.init
     public init(analytics: AnalyticsCategoryConfiguration? = nil,
@@ -79,19 +79,88 @@ public struct AmplifyConfiguration: Codable {
         self.storage = storage
     }
 
+    @resultBuilder
+    public struct Builder {
+        public static func buildBlock(_ pluginConfigurations: PluginConfiguration...) -> [PluginConfiguration] {
+            pluginConfigurations
+        }
+    }
+    
     /// Initialize `AmplifyConfiguration` by loading it from a URL representing the configuration file.
     ///
     /// - Tag: Amplify.configureWithConfigurationFile
-    public init(configurationFile url: URL) throws {
-        self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url)
+    public init(configurationFile url: URL, withOverride configuration: AmplifyConfiguration? = nil) throws {
+        self = try AmplifyConfiguration.loadAmplifyConfiguration(from: url, withOverride: configuration)
     }
-
 }
 
 // MARK: - Configure
 
 extension Amplify {
 
+    @discardableResult
+    public static func configure(@AmplifyConfiguration.Builder builder: () -> [PluginConfiguration]) throws -> AmplifyConfiguration? {
+        
+        var configuration = AmplifyConfiguration()
+        let pluginConfigurations = builder()
+        pluginConfigurations.forEach { config in
+            switch config.categoryKey {
+            case .analytics:
+                if configuration.analytics == nil {
+                    configuration.analytics = AnalyticsCategoryConfiguration()
+                }
+                configuration.analytics?.plugins[config.pluginKey] = config.jsonConfig
+            case .api:
+                if configuration.api == nil {
+                    configuration.api = APICategoryConfiguration()
+                }
+                configuration.api?.plugins[config.pluginKey] = config.jsonConfig
+            case .auth:
+                if configuration.auth == nil {
+                    configuration.auth = AuthCategoryConfiguration()
+                }
+                configuration.auth?.plugins[config.pluginKey] = config.jsonConfig
+            case .dataStore:
+                if configuration.dataStore == nil {
+                    configuration.dataStore = DataStoreCategoryConfiguration()
+                }
+                configuration.dataStore?.plugins[config.pluginKey] = config.jsonConfig
+            case .geo:
+                if configuration.geo == nil {
+                    configuration.geo = GeoCategoryConfiguration()
+                }
+                configuration.geo?.plugins[config.pluginKey] = config.jsonConfig
+            case .hub:
+                if configuration.hub == nil {
+                    configuration.hub = HubCategoryConfiguration()
+                }
+                configuration.hub?.plugins[config.pluginKey] = config.jsonConfig
+            case .logging:
+                if configuration.logging == nil {
+                    configuration.logging = LoggingCategoryConfiguration()
+                }
+                configuration.logging?.plugins[config.pluginKey] = config.jsonConfig
+            case .notifications:
+                if configuration.notifications == nil {
+                    configuration.notifications = NotificationsCategoryConfiguration()
+                }
+                configuration.notifications?.plugins[config.pluginKey] = config.jsonConfig
+            case .predictions:
+                if configuration.predictions == nil {
+                    configuration.predictions = PredictionsCategoryConfiguration()
+                }
+                configuration.predictions?.plugins[config.pluginKey] = config.jsonConfig
+            case .storage:
+                if configuration.storage == nil {
+                    configuration.storage = StorageCategoryConfiguration()
+                }
+                configuration.storage?.plugins[config.pluginKey] = config.jsonConfig
+            }
+        }
+        
+        return try configure(configuration)
+    }
+    
     /// Configures Amplify with the specified configuration.
     ///
     /// This method must be invoked after registering plugins, and before using any Amplify category. It must not be
@@ -109,7 +178,8 @@ extension Amplify {
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     ///
     /// - Tag: Amplify.configure
-    public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
+    @discardableResult
+    public static func configure(_ configuration: AmplifyConfiguration? = nil) throws -> AmplifyConfiguration? {
         log.info("Configuring")
         log.debug("Configuration: \(String(describing: configuration))")
         guard !isConfigured else {
@@ -129,7 +199,7 @@ extension Amplify {
             log.info("Failed to find Amplify configuration.")
             if isRunningForSwiftUIPreviews {
                 log.info("Running for SwiftUI previews with no configuration file present, skipping configuration.")
-                return
+                return nil
             } else {
                 throw error
             }
@@ -171,6 +241,7 @@ extension Amplify {
         isConfigured = true
 
         notifyAllHubChannels()
+        return resolvedConfiguration
     }
 
     /// Notifies all hub channels that Amplify is configured, in case any plugins need to be notified of the end of the

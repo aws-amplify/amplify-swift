@@ -11,7 +11,7 @@ import Foundation
 public struct APICategoryConfiguration: CategoryConfiguration {
 
     /// Plugin keys to plugin configuration
-    public let plugins: [String: JSONValue]
+    public var plugins: [String: JSONValue]
 
     /// Initializer for API configuration
     ///

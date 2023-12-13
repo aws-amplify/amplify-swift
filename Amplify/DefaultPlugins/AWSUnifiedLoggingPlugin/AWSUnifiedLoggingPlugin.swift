@@ -10,6 +10,7 @@ import os.log
 
 /// A Logging category plugin that forwards calls to the OS's Unified Logging system
 final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
+    public var pluginConfiguration: PluginConfiguration?
 
     /// Convenience property. Each instance of `AWSUnifiedLoggingPlugin` has the same key
     public static var key: String {

@@ -21,6 +21,11 @@ public extension AWSAPIPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
     func configure(using configuration: Any?) throws {
 
+        if let pluginConfiguration = pluginConfiguration as? AWSAPIPluginConfiguration {
+            print("Overriding configuration with local configuration")
+            // translate `pluginConfiguration` to the internal ConfigurationDependencies.
+        }
+        
         guard let jsonValue = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError(
                 "Could not cast incoming configuration to JSONValue",
@@ -33,6 +38,7 @@ public extension AWSAPIPlugin {
             )
         }
 
+        // example, can turn 
         let dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
                                                          apiAuthProviderFactory: authProviderFactory)
         configure(using: dependencies)

@@ -8,7 +8,7 @@
 import Foundation
 
 public struct HubCategoryConfiguration: CategoryConfiguration {
-    public let plugins: [String: JSONValue]
+    public var plugins: [String: JSONValue]
 
     public init(plugins: [String: JSONValue] = [:]) {
         self.plugins = plugins
