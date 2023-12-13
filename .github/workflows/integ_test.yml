@@ -1,5 +1,6 @@
 name: Integration Tests
 on:
+  workflow_call:
   push:
     branches: [v1]
 

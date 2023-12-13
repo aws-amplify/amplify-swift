@@ -25,6 +25,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     var storageAdapter: StorageEngineAdapter!
     var localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
     let queue = OperationQueue()
+    let reconciliationQueue = MockReconciliationQueue()
 
     override func setUp() {
         tryOrFail {
@@ -585,6 +586,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
+                                                               reconciliationQueue: reconciliationQueue,
                                                                completion: completion)
 
         queue.addOperation(operation)
@@ -662,6 +664,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
+                                                               reconciliationQueue: reconciliationQueue,
                                                                completion: completion)
 
         queue.addOperation(operation)
@@ -956,6 +959,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
+                                                               reconciliationQueue: reconciliationQueue,
                                                                completion: completion)
 
         queue.addOperation(operation)
@@ -1035,6 +1039,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
+                                                               reconciliationQueue: reconciliationQueue,
                                                                completion: completion)
         queue.addOperation(operation)
 

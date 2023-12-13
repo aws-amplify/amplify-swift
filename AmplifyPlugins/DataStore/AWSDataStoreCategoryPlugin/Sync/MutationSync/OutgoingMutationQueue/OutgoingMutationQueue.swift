@@ -285,7 +285,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             api: api,
             storageAdapter: storageAdapter,
             graphQLResponseError: graphQLResponseError,
-            apiError: apiError
+            apiError: apiError,
+            reconciliationQueue: reconciliationQueue
         ) { [weak self] result in
             guard let self = self else {
                 return

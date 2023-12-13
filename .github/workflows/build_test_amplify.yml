@@ -1,0 +1,34 @@
+name: Build Test Amplify
+on:
+  workflow_call:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - v1
+      - release-v1
+
+permissions:
+    contents: read
+
+jobs:
+  build-test-amplify:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+      - name: Build Test Amplify
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: .
+          workspace: Amplify.xcworkspace
+          scheme: Amplify
+
+  build-amplify-spm:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+      - name: Build Amplify for SPM
+        run: xcodebuild build-for-testing -scheme Amplify-Package -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13,OS=latest' | xcpretty
