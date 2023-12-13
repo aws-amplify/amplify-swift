@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.30.5 (2023-12-13)
+
+### Bug Fixes
+
+- **datastore**: configure json encoder with sorted key (#3418)
+- **DataStore**: Reconcile mutation responses from conflict handler path (#3372)
+
 ## 1.30.4 (2023-06-29)
 
 ### Bug Fixes
