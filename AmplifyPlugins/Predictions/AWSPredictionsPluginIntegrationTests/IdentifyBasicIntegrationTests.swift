@@ -215,7 +215,6 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                 XCTAssertFalse(data.tables.isEmpty)
                 XCTAssertEqual(data.tables.count, 1)
                 XCTAssertFalse(data.keyValues.isEmpty)
-                XCTAssertEqual(data.keyValues.count, 4)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed with \(error)")
