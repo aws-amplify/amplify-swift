@@ -74,6 +74,12 @@ extension StorageEngine {
         }
     }
 
+    /// Expresses whether the `StorageEngine` syncs from a remote source
+    /// based on whether the `AWSAPIPlugin` is present.
+    var syncsFromRemote: Bool {
+        tryGetAPIPlugin() != nil
+    }
+
     private func tryGetAPIPlugin() -> APICategoryPlugin? {
         do {
             return try Amplify.API.getPlugin(for: validAPIPluginKey)

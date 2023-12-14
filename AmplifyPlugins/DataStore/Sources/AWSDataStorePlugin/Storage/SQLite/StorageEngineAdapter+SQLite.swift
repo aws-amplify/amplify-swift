@@ -117,8 +117,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
             storageAdapter: self,
             modelSchemas: modelSchemas)
-        let modelMigration = MutationSyncMetadataMigration(delegate: delegate)
-        let modelMigrations = ModelMigrations(modelMigrations: [modelMigration])
+        let mutationSyncMetadataMigration = MutationSyncMetadataMigration(delegate: delegate)
+        
+        let modelSyncMetadataMigration = ModelSyncMetadataMigration(storageAdapter: self)
+        
+        let modelMigrations = ModelMigrations(modelMigrations: [mutationSyncMetadataMigration,
+                                                                modelSyncMetadataMigration])
         do {
             try modelMigrations.apply()
         } catch {

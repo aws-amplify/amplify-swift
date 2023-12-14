@@ -25,14 +25,17 @@ protocol AmplifyAuthTask {
 
 }
 
-extension AmplifyAuthTask {
+extension AmplifyAuthTask where Self: DefaultLogger {
     var value: Success {
         get async throws {
             do {
+                log.info("Starting execution for \(eventName)")
                 let valueReturned = try await execute()
+                log.info("Successfully completed execution for \(eventName) with result:\n\(prettify(valueReturned))")
                 dispatch(result: .success(valueReturned))
                 return valueReturned
             } catch let error as Failure {
+                log.error("Failed execution for \(eventName) with error:\n\(prettify(error))")
                 dispatch(result: .failure(error))
                 throw error
             }
@@ -43,5 +46,11 @@ extension AmplifyAuthTask {
         let channel = HubChannel(from: .auth)
         let payload = HubPayload(eventName: eventName, context: nil, data: result)
         Amplify.Hub.dispatch(to: channel, payload: payload)
+    }
+
+    private func prettify<T>(_ value: T) -> String {
+        var result = ""
+        dump(value, to: &result)
+        return result
     }
 }
