@@ -27,8 +27,44 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
                 region: "region",
                 authorizationType: "authType")
         }
-        // TODO assert config has api configuration
-        print(config)
+        let config2 = try Amplify.configure(mergeStrategy: .throwOnConflict) {
+            AWSAPIPluginConfiguration(
+                apiName: "apiName",
+                endpointType: "endpointType",
+                region: "region",
+                authorizationType: "authType")
+        }
+        let config3 = try Amplify.configure(mergeStrategy: .overwriteOnConflict) {
+            AWSAPIPluginConfiguration(
+                apiName: "apiName",
+                endpointType: "endpointType",
+                region: "region",
+                authorizationType: "authType")
+        }
+    }
+    
+    func codeSnippets() throws {
+        // uses `amplifyconfiguration.json`
+        try Amplify.configure()
+
+        let configuration = AmplifyConfiguration(
+            api: .init(plugins: [
+                "awsAPIPlugin": .object([
+                    "[API Name]": .object([
+                        "endpointType": "GraphQL",
+                        "endpoint":"[APPSYNC ENDPOINT]",
+                        "region": "[REGION]",
+                        "authorizationType": "[AUTHORIZATION TYPE]"])])]))
+        // uses `configuration`, ignores `amplifyconfiguration.json
+        try Amplify.configure(configuration)
+        
+        // try to load `amplifyconfiguration.json`, merge the two, throw if conflict
+        try Amplify.configure(configuration, mergeStrategy: .throwOnConflict)
+        
+        // try to load `amplifyconfiguration.json`, merge the two, overwrite it if conflict
+        try Amplify.configure(configuration, mergeStrategy: .overwriteOnConflict)
+        
+        
     }
     
     func testGetConfigAPIName() throws {

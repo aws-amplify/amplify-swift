@@ -96,10 +96,16 @@ public struct AmplifyConfiguration: Codable {
 
 // MARK: - Configure
 
+public enum ConfigurationMergeStrategy {
+    case throwOnConflict
+    case overwriteOnConflict
+}
+
 extension Amplify {
 
     @discardableResult
-    public static func configure(@AmplifyConfiguration.Builder builder: () -> [PluginConfiguration]) throws -> AmplifyConfiguration? {
+    public static func configure(mergeStrategy: ConfigurationMergeStrategy? = nil,
+                                 @AmplifyConfiguration.Builder builder: () -> [PluginConfiguration]) throws -> AmplifyConfiguration? {
         
         var configuration = AmplifyConfiguration()
         let pluginConfigurations = builder()
@@ -161,6 +167,35 @@ extension Amplify {
         return try configure(configuration)
     }
     
+    @discardableResult
+    public static func configure() throws -> AmplifyConfiguration? {
+        log.info("Configuring")
+        guard !isConfigured else {
+            let error = ConfigurationError.amplifyAlreadyConfigured(
+                "Amplify has already been configured.",
+                """
+                Remove the duplicate call to `Amplify.configure()`
+                """
+            )
+            throw error
+        }
+
+        let resolvedConfiguration: AmplifyConfiguration
+        do {
+            resolvedConfiguration = try Amplify.resolve(configuration: nil)
+        } catch {
+            log.info("Failed to find Amplify configuration.")
+            if isRunningForSwiftUIPreviews {
+                log.info("Running for SwiftUI previews with no configuration file present, skipping configuration.")
+                return nil
+            } else {
+                throw error
+            }
+        }
+
+        return try configure(resolvedConfiguration)
+    }
+    
     /// Configures Amplify with the specified configuration.
     ///
     /// This method must be invoked after registering plugins, and before using any Amplify category. It must not be
@@ -179,7 +214,8 @@ extension Amplify {
     ///
     /// - Tag: Amplify.configure
     @discardableResult
-    public static func configure(_ configuration: AmplifyConfiguration? = nil) throws -> AmplifyConfiguration? {
+    public static func configure(_ configuration: AmplifyConfiguration,
+                                 mergeStrategy: ConfigurationMergeStrategy? = nil) throws -> AmplifyConfiguration? {
         log.info("Configuring")
         log.debug("Configuration: \(String(describing: configuration))")
         guard !isConfigured else {
