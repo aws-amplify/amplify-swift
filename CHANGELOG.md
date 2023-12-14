@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.25.1 (2023-12-14)
+
+### Bug Fixes
+
+- **datastore**: store time zone info in Temporal.DateTime (#3393)
+- **Auth**: add DefaultLogger conformance to remaining auth task (#3413)
+- **datastore**: observequery local only collect (#3214)
+- **Auth**: Add logging to Amplify Auth tasks (#3365)
+- **datastore**: full sync when sync predicate changes (#2757)
+
 ## 2.25.0 (2023-12-08)
 
 ### Features
