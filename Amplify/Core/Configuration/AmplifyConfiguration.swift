@@ -86,6 +86,13 @@ public struct AmplifyConfiguration: Codable {
         }
     }
     
+    @resultBuilder
+    public struct Builder2 {
+        public static func buildBlock(_ plugins: Plugin...) -> [Plugin] {
+            plugins
+        }
+    }
+    
     /// Initialize `AmplifyConfiguration` by loading it from a URL representing the configuration file.
     ///
     /// - Tag: Amplify.configureWithConfigurationFile
@@ -103,6 +110,16 @@ public enum ConfigurationMergeStrategy {
 
 extension Amplify {
 
+    // It is up to the plugins to overwrite any configuration passed in.
+    public static func configure2(@AmplifyConfiguration.Builder2 builder2: () -> [Plugin]) throws {
+        let plugins = builder2()
+        try plugins.forEach { plugin in
+            try add(plugin: plugin)
+        }
+        
+        try configure()
+    }
+    
     @discardableResult
     public static func configure(mergeStrategy: ConfigurationMergeStrategy? = nil,
                                  @AmplifyConfiguration.Builder builder: () -> [PluginConfiguration]) throws -> AmplifyConfiguration? {

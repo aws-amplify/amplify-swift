@@ -19,6 +19,21 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     let restAPI = "restAPI"
     let restAPI2 = "restAPI2"
 
+    
+    func testAmplifyNewConfigure() throws {
+        let apiPlugin = AWSAPIPlugin(configuration: .init(
+            apiName: "apiName",
+            endpointType: "endpoint",
+            region: "Region",
+            authorizationType: "authtype"))
+        
+        // Amplify.configure2 will attempt to read the configuration like usual.
+        // Each plugin's configuration will
+        try Amplify.configure2 {
+            apiPlugin
+        }
+    }
+    
     func testAmplifyPluginConfigBuilder() throws {
         let config = try Amplify.configure {
             AWSAPIPluginConfiguration(
@@ -47,6 +62,7 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
         // uses `amplifyconfiguration.json`
         try Amplify.configure()
 
+        
         let configuration = AmplifyConfiguration(
             api: .init(plugins: [
                 "awsAPIPlugin": .object([

@@ -20,10 +20,12 @@ public extension AWSAPIPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
     func configure(using configuration: Any?) throws {
-
+        let jsonValue: JSONValue
         if let pluginConfiguration = pluginConfiguration as? AWSAPIPluginConfiguration {
             print("Overriding configuration with local configuration")
             // translate `pluginConfiguration` to the internal ConfigurationDependencies.
+            
+            jsonValue = pluginConfiguration.jsonConfig
         }
         
         guard let jsonValue = configuration as? JSONValue else {
