@@ -19,6 +19,29 @@ public struct AWSAPICategoryPluginConfiguration {
     private var apiAuthProviderFactory: APIAuthProviderFactory?
     private var authService: AWSAuthServiceBehavior?
 
+    init(configuration: AWSAPIPluginConfiguration,
+         apiAuthProviderFactory: APIAuthProviderFactory,
+         authService: AWSAuthServiceBehavior) throws {
+        
+        var endpoints: [APIEndpointName: EndpointConfig] = [:]
+        
+        try configuration.apis.forEach { config in
+            let endpointConfig = try EndpointConfig(configuration: config,
+                                                    apiAuthProviderFactory: apiAuthProviderFactory,
+                                                    authService: authService)
+            endpoints.updateValue(endpointConfig, forKey: config.apiName)
+        }
+          
+        let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(forEndpoints: endpoints,
+                                                                                  apiAuthProviderFactory: apiAuthProviderFactory,
+                                                                                  authService: authService)
+
+        self.init(endpoints: endpoints,
+                  interceptors: interceptors,
+                  apiAuthProviderFactory: apiAuthProviderFactory,
+                  authService: authService)
+    }
+    
     init(jsonValue: JSONValue,
          apiAuthProviderFactory: APIAuthProviderFactory,
          authService: AWSAuthServiceBehavior) throws {

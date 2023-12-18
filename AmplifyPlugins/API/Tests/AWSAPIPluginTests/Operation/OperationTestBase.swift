@@ -25,7 +25,7 @@ class OperationTestBase: XCTestCase {
     func setUpPlugin(
         sessionFactory: URLSessionBehaviorFactory? = nil,
         subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil,
-        endpointType: AWSAPICategoryPluginEndpointType
+        endpointType: AWSAPIPluginEndpointType
     ) throws {
         apiPlugin = AWSAPIPlugin(sessionFactory: sessionFactory)
 
@@ -50,7 +50,7 @@ class OperationTestBase: XCTestCase {
 
     func setUpPluginForSingleResponse(
         sending data: Data,
-        for endpointType: AWSAPICategoryPluginEndpointType
+        for endpointType: AWSAPIPluginEndpointType
     ) throws {
         let task = try makeSingleValueSuccessMockTask(sending: data)
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
@@ -58,7 +58,7 @@ class OperationTestBase: XCTestCase {
         try setUpPlugin(sessionFactory: sessionFactory, endpointType: endpointType)
     }
 
-    func setUpPluginForSingleError(for endpointType: AWSAPICategoryPluginEndpointType) throws {
+    func setUpPluginForSingleError(for endpointType: AWSAPIPluginEndpointType) throws {
         let task = try makeSingleValueErrorMockTask()
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
         let sessionFactory = MockSessionFactory(returning: mockSession)

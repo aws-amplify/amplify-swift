@@ -16,6 +16,29 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(apiPlugin.key, "awsAPIPlugin")
     }
 
+    func testExplicitConfiguration() throws {
+        let configuration = AWSAPIPluginConfiguration(
+            .init(apiName: "Test",
+                  endpoint: "http://www.example.com",
+                  endpointType: .rest,
+                  region: "us-east-1",
+                  authorizationType: .apiKey,
+                  apiKey: "key"),
+            .init(apiName: "TEST2",
+                  endpoint: "http://www.example.com",
+                  endpointType: .graphQL,
+                  region: "us-east-2",
+                  authorizationType: .amazonCognitoUserPools))
+        
+        let apiPlugin = AWSAPIPlugin(configuration: configuration)
+
+        do {
+            try apiPlugin.configure(using: nil)
+        } catch {
+            XCTFail("Failed to configure api plugin: \(error)")
+        }
+    }
+    
     func testConfigureSuccess() throws {
         let apiPlugin = AWSAPIPlugin()
         let apiPluginConfig: JSONValue = [

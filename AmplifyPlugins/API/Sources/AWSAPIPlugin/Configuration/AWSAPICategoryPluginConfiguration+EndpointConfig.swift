@@ -23,10 +23,36 @@ public extension AWSAPICategoryPluginConfiguration {
         // default authorization configuration
         let authorizationConfiguration: AWSAuthorizationConfiguration
 
-        let endpointType: AWSAPICategoryPluginEndpointType
+        let endpointType: AWSAPIPluginEndpointType
 
         var apiKey: String?
 
+        public init(configuration: AWSAPIPluginConfiguration.API,
+                    apiAuthProviderFactory: APIAuthProviderFactory,
+                    authService: AWSAuthServiceBehavior? = nil) throws {
+            
+            guard let baseURL = URL(string: configuration.endpoint) else {
+                throw PluginError.pluginConfigurationError(
+                    "Could not convert `\(configuration.endpoint)` to a URL",
+                    """
+                    The "endpoint" value in the specified configuration cannot be converted to a URL. Review the \
+                    configuration and ensure it contains the expected values:
+                    \(configuration.endpoint)
+                    """
+                )
+            }
+
+            try self.init(name: configuration.apiName,
+                          baseURL: baseURL,
+                          region: configuration.region,
+                          authorizationType: configuration.authorizationType,
+                          endpointType: configuration.endpointType,
+                          apiKey: configuration.apiKey,
+                          apiAuthProviderFactory: apiAuthProviderFactory,
+                          authService: authService)
+            
+        }
+        
         public init(name: String,
                     jsonValue: JSONValue,
                     apiAuthProviderFactory: APIAuthProviderFactory,
@@ -63,7 +89,7 @@ public extension AWSAPICategoryPluginConfiguration {
              baseURL: URL,
              region: AWSRegionType?,
              authorizationType: AWSAuthorizationType,
-             endpointType: AWSAPICategoryPluginEndpointType,
+             endpointType: AWSAPIPluginEndpointType,
              apiKey: String? = nil,
              apiAuthProviderFactory: APIAuthProviderFactory,
              authService: AWSAuthServiceBehavior? = nil) throws {
@@ -113,7 +139,7 @@ public extension AWSAPICategoryPluginConfiguration {
         }
 
         private static func getEndpointType(from endpointJSON: [String: JSONValue]) throws ->
-            AWSAPICategoryPluginEndpointType {
+            AWSAPIPluginEndpointType {
 
             guard case .string(let endpointTypeValue) = endpointJSON["endpointType"] else {
                 throw PluginError.pluginConfigurationError(
@@ -126,7 +152,7 @@ public extension AWSAPICategoryPluginConfiguration {
                 )
             }
 
-            let endpointTypeOptional = AWSAPICategoryPluginEndpointType(rawValue: endpointTypeValue)
+            let endpointTypeOptional = AWSAPIPluginEndpointType(rawValue: endpointTypeValue)
 
             guard let endpointType = endpointTypeOptional else {
                 throw PluginError.pluginConfigurationError(
@@ -201,7 +227,7 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
     /// 3. If nothing is specified, return the endpoint only if there is a single one, with GraphQL taking precedent
     /// over REST.
     func getConfig(for apiName: String? = nil,
-                   endpointType: AWSAPICategoryPluginEndpointType? = nil) throws ->
+                   endpointType: AWSAPIPluginEndpointType? = nil) throws ->
         AWSAPICategoryPluginConfiguration.EndpointConfig {
         if let apiName = apiName {
             return try getConfig(for: apiName)
@@ -231,7 +257,7 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
     }
 
     /// Retrieve the endpoint configuration when there is only one endpoint of the specified `endpointType`
-    private func getConfig(for endpointType: AWSAPICategoryPluginEndpointType) throws ->
+    private func getConfig(for endpointType: AWSAPIPluginEndpointType) throws ->
         AWSAPICategoryPluginConfiguration.EndpointConfig {
             let apiForEndpointType = filter { (_, endpointConfig) -> Bool in
                 return endpointConfig.endpointType == endpointType

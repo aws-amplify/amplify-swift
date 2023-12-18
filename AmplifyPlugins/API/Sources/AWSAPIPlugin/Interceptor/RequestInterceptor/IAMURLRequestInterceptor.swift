@@ -15,12 +15,12 @@ typealias AWSRegionType = String
 struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let iamCredentialsProvider: IAMCredentialsProvider
     let region: AWSRegionType
-    let endpointType: AWSAPICategoryPluginEndpointType
+    let endpointType: AWSAPIPluginEndpointType
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
     init(iamCredentialsProvider: IAMCredentialsProvider,
          region: AWSRegionType,
-         endpointType: AWSAPICategoryPluginEndpointType) {
+         endpointType: AWSAPIPluginEndpointType) {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
         self.endpointType = endpointType

@@ -45,7 +45,7 @@ struct AWSAPIEndpointInterceptors {
     }
 
     /// Initialize authorization interceptors
-    mutating func addAuthInterceptorsToEndpoint(endpointType: AWSAPICategoryPluginEndpointType,
+    mutating func addAuthInterceptorsToEndpoint(endpointType: AWSAPIPluginEndpointType,
                                                 authConfiguration: AWSAuthorizationConfiguration) throws {
         switch authConfiguration {
         case .none:

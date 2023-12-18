@@ -20,21 +20,27 @@ public extension AWSAPIPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
     func configure(using configuration: Any?) throws {
-
-        guard let jsonValue = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(
-                "Could not cast incoming configuration to JSONValue",
-                """
-                The specified configuration is either nil, or not convertible to a JSONValue. Review the configuration \
-                and ensure it contains the expected values, and does not use any types that aren't convertible to a \
-                corresponding JSONValue:
-                \(String(describing: configuration))
-                """
-            )
-        }
-
-        let dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
+        
+        let dependencies: ConfigurationDependencies
+        if let configuration = self.configuration {
+            dependencies = try ConfigurationDependencies(configuration: configuration,
                                                          apiAuthProviderFactory: authProviderFactory)
+        } else {
+            guard let jsonValue = configuration as? JSONValue else {
+                throw PluginError.pluginConfigurationError(
+                    "Could not cast incoming configuration to JSONValue",
+                    """
+                    The specified configuration is either nil, or not convertible to a JSONValue. Review the configuration \
+                    and ensure it contains the expected values, and does not use any types that aren't convertible to a \
+                    corresponding JSONValue:
+                    \(String(describing: configuration))
+                    """
+                )
+            }
+            dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
+                                                         apiAuthProviderFactory: authProviderFactory)
+            
+        }
         configure(using: dependencies)
 
         // Initialize SwiftSDK's CRT dependency for SigV4 signing functionality
@@ -56,6 +62,33 @@ extension AWSAPIPlugin {
         let subscriptionConnectionFactory: SubscriptionConnectionFactory
         let logLevel: Amplify.LogLevel
 
+        init(configuration: AWSAPIPluginConfiguration,
+             apiAuthProviderFactory: APIAuthProviderFactory,
+             authService: AWSAuthServiceBehavior? = nil,
+             subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil,
+             logLevel: Amplify.LogLevel? = nil) throws {
+            let authService = authService
+                ?? AWSAuthService()
+
+            let pluginConfig = try AWSAPICategoryPluginConfiguration(
+                configuration: configuration,
+                apiAuthProviderFactory: apiAuthProviderFactory,
+                authService: authService
+            )
+
+            let subscriptionConnectionFactory = subscriptionConnectionFactory
+                ?? AWSSubscriptionConnectionFactory()
+
+            let logLevel = logLevel ?? Amplify.Logging.logLevel
+
+            self.init(
+                pluginConfig: pluginConfig,
+                authService: authService,
+                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                logLevel: logLevel
+            )
+        }
+        
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,

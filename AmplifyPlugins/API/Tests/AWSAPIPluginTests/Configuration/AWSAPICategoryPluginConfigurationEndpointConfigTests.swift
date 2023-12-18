@@ -145,7 +145,7 @@ class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
 
     // MARK: - Helpers
 
-    func getEndpointConfig(apiName: String, endpointType: AWSAPICategoryPluginEndpointType) throws ->
+    func getEndpointConfig(apiName: String, endpointType: AWSAPIPluginEndpointType) throws ->
     AWSAPICategoryPluginConfiguration.EndpointConfig {
         try AWSAPICategoryPluginConfiguration.EndpointConfig(
             name: apiName,

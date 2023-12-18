@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AWSAPICategoryPluginEndpointType: String {
+public enum AWSAPIPluginEndpointType: String, Codable {
     case rest = "REST"
     case graphQL = "GraphQL"
 }
