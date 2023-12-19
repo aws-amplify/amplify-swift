@@ -66,11 +66,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         }
 
         let key = UUID().uuidString
-        guard let dataInput = UUID().uuidString.data(using: .utf8) else {
-            XCTFail("Failed to create test data")
-            return
-        }
-
+        let dataInput = Data(UUID().uuidString.utf8)
         do {
             logger.debug("Upload [\(accessLevel)]")
             let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
@@ -122,10 +118,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             logger.debug("Testing storage access level: \(accessLevel)")
 
             let key = UUID().uuidString
-            guard let dataInput = UUID().uuidString.data(using: .utf8) else {
-                XCTFail("Failed to create test data")
-                return
-            }
+            let dataInput = Data(UUID().uuidString.utf8)
             logger.debug("Upload [\(accessLevel)]")
             let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
@@ -190,7 +183,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
                     logger.debug("Uploading as user1 with \(testRun.accessLevel) access level")
                     let options = StorageUploadDataRequest.Options(accessLevel: testRun.accessLevel)
-                    _ = try await Amplify.Storage.uploadData(key: testRun.key, data: testRun.key.data(using: .utf8)!, options: options).value
+                    _ = try await Amplify.Storage.uploadData(key: testRun.key, data: Data(testRun.key.utf8), options: options).value
 
                     logger.debug("Getting list as user1")
                     let listOptions1 = StorageListRequest.Options(accessLevel: testRun.accessLevel,

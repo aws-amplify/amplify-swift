@@ -166,10 +166,7 @@ class FileSystemTests: XCTestCase {
 
         let fs = FileSystem()
 
-        guard let data = string.data(using: .utf8) else {
-            XCTFail("Failed to create data for file")
-            return
-        }
+        let data = Data(string.utf8)
         let fileURL = try fs.createTemporaryFile(data: data)
         defer {
             fs.removeFileIfExists(fileURL: fileURL)

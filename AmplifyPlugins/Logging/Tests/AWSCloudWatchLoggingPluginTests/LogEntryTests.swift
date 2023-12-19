@@ -63,7 +63,7 @@ final class LogEntryTests: XCTestCase {
             "message": "\(message)"
         }
         """
-        let encoded = try XCTUnwrap(json.data(using: .utf8))
+        let encoded = Data(json.utf8)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
         let decoded = try decoder.decode(LogEntry.self, from: encoded)

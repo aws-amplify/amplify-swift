@@ -33,14 +33,7 @@ extension Model where Self: Codable {
             resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         }
 
-        guard let data = json.data(using: .utf8) else {
-            throw DataStoreError.decodingError(
-                "Invalid JSON string. Could not convert the passed JSON string into a UTF-8 Data object",
-                "Ensure the JSON doesn't contain any invalid UTF-8 data:\n\n\(json)"
-            )
-        }
-
-        return try resolvedDecoder.decode(Self.self, from: data)
+        return try resolvedDecoder.decode(Self.self, from: Data(json.utf8))
     }
 
     /// De-serialize a `Dictionary` into an instance of the concrete type that conforms

@@ -20,7 +20,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
     ///    - I should get a valid configuration object
     ///
     func testConfiguration() {
-        let inputJsonData = """
+        let inputJsonData = Data("""
         {
         "defaultRegion": "us-west-2",
         "convert": {
@@ -65,7 +65,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             }
         }
         }
-        """.data(using: .utf8)!
+        """.utf8)
         do {
             let configuration = try JSONDecoder().decode(PredictionsPluginConfiguration.self, from: inputJsonData)
             XCTAssertNotNil(configuration, "Configuration should not be nil")
@@ -89,7 +89,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
     ///    - I should get a valid configuration object
     ///
     func testConfigurationWithOnlyConvert() {
-        let inputJsonData = """
+        let inputJsonData = Data("""
         {
         "defaultRegion": "us-west-2",
         "convert": {
@@ -109,7 +109,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             }
         }
         }
-        """.data(using: .utf8)!
+        """.utf8)
         do {
             let configuration = try JSONDecoder().decode(PredictionsPluginConfiguration.self, from: inputJsonData)
             XCTAssertNotNil(configuration, "Configuration should not be nil")
@@ -127,7 +127,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
     ///    - I should get an error
     ///
     func testNoRegionUnderSubsection() {
-        let inputJsonData = """
+        let inputJsonData = Data("""
         {
         "defaultRegion": "us-west-2",
         "convert": {
@@ -137,7 +137,7 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             }
         }
         }
-        """.data(using: .utf8)!
+        """.utf8)
         do {
             _ = try JSONDecoder().decode(PredictionsPluginConfiguration.self, from: inputJsonData)
             XCTFail("Should throw an error because region is not present")
@@ -155,11 +155,11 @@ class PredictionsPluginConfigurationTests: XCTestCase {
     ///    - I should get a valid configuration object
     ///
     func testConfigurationWithNoSubsections() {
-        let inputJsonData = """
+        let inputJsonData = Data("""
         {
         "defaultRegion": "us-west-2"
         }
-        """.data(using: .utf8)!
+        """.utf8)
         do {
             let configuration = try JSONDecoder().decode(PredictionsPluginConfiguration.self, from: inputJsonData)
             XCTAssertNotNil(configuration, "Configuration should not be nil")

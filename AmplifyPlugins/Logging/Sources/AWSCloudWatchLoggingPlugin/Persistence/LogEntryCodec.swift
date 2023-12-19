@@ -35,9 +35,7 @@ struct LogEntryCodec {
     
     func decode(string: String) throws -> LogEntry? {
         let trimmed = string.trim()
-        guard let data = trimmed.data(using: .utf8) else {
-            throw DecodingError.stringNotUtf8(string)
-        }
+        let data = Data(trimmed.utf8)
         return try decode(data: data)
     }
     

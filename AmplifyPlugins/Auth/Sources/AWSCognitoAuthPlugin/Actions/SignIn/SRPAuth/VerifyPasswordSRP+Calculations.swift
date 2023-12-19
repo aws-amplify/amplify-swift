@@ -93,10 +93,10 @@ extension VerifyPasswordSRP {
                            serviceSecretBlock: Data) -> Data {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
-        hmac.update(data: poolName.data(using: .utf8)!)
-        hmac.update(data: srpUserName.data(using: .utf8)!)
+        hmac.update(data: Data(poolName.utf8))
+        hmac.update(data: Data(srpUserName.utf8))
         hmac.update(data: serviceSecretBlock)
-        hmac.update(data: srpTimeStamp.data(using: .utf8)!)
+        hmac.update(data: Data(srpTimeStamp.utf8))
         return Data(hmac.finalize())
     }
 }

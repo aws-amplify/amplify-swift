@@ -338,7 +338,7 @@ class AWSS3StorageServiceTests: XCTestCase {
     /// When: upload is invoked
     /// Then: A .failed event is dispatched with an .unknown error
     func testUpload_withoutPreSignedURL_shouldSendFailEvent() {
-        let data = "someData".data(using: .utf8)!
+        let data = Data("someData".utf8)
         let expectation = self.expectation(description: "Upload")
         service.upload(
             serviceKey: "key",
@@ -364,7 +364,7 @@ class AWSS3StorageServiceTests: XCTestCase {
     /// When: upload is invoked
     /// Then: An .initiated event is dispatched
     func testUpload_withPreSignedURL_shouldSendInitiatedEvent() {
-        let data = "someData".data(using: .utf8)!
+        let data = Data("someData".utf8)
         let expectation = self.expectation(description: "Upload")
         service.preSignedURLBuilder = MockAWSS3PreSignedURLBuilder()
         service.upload(

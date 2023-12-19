@@ -16,7 +16,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
 
     func testMutateSucceeds() throws {
         let testJSONData: JSONValue = ["foo": true]
-        let sentData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
+        let sentData = Data(#"{"data": {"foo": true}}"#.utf8)
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
 
         let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
@@ -52,7 +52,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
     }
 
     func testMutateHandlesResponseError() throws {
-        let sentData = #"{"data": {"foo": true}, "errors": []}"# .data(using: .utf8)!
+        let sentData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
 
         let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)

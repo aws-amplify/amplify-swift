@@ -15,7 +15,7 @@ class FileHandleTests: XCTestCase {
     /// Then: Only `bytesReadLimit` bytes will be read at a time, but all `bytes` will be read and returned
     func testRead_withBytesHigherThanLimit_shouldSucceedByReadingMultipleTimes() throws {
         let sourceString = "012345678910" // 11 bytes
-        let sourceData = sourceString.data(using: .utf8)!
+        let sourceData = Data(sourceString.utf8)
         let sourceFile = try createFile(from: sourceData)
         XCTAssertEqual(try StorageRequestUtils.getSize(sourceFile), UInt64(sourceString.count))
         

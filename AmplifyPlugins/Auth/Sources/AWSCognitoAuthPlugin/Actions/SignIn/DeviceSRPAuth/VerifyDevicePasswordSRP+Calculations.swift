@@ -86,10 +86,10 @@ extension VerifyDevicePasswordSRP {
                            serviceSecretBlock: Data) -> Data {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
-        hmac.update(data: deviceGroupKey.data(using: .utf8)!)
-        hmac.update(data: deviceKey.data(using: .utf8)!)
+        hmac.update(data: Data(deviceGroupKey.utf8))
+        hmac.update(data: Data(deviceKey.utf8))
         hmac.update(data: serviceSecretBlock)
-        hmac.update(data: srpTimeStamp.data(using: .utf8)!)
+        hmac.update(data: Data(srpTimeStamp.utf8))
         return Data(hmac.finalize())
     }
 }

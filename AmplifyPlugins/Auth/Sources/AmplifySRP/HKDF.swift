@@ -23,7 +23,7 @@ public enum HMACKeyDerivationFunction {
                                 outputLength: outputLength)
         } else {
             let pseudoRandomKey = extractPseudoRandomKey(salt: salt, inputKeyMaterial: keyingMaterial)
-            return expand(pseudoRandomKey: pseudoRandomKey, info: info?.data(using: .utf8), outputLength: outputLength)
+            return expand(pseudoRandomKey: pseudoRandomKey, info: info.map { Data($0.utf8) }, outputLength: outputLength)
         }
     }
 
@@ -34,11 +34,10 @@ public enum HMACKeyDerivationFunction {
                              outputLength: Int) -> Data {
         let key = SymmetricKey(data: keyingMaterial)
         var hkdf: SymmetricKey
-        if let infoData = info?.data(using: .utf8) {
+        if let info {
             hkdf = HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
-                                          salt: salt, info: infoData,
+                                          salt: salt, info: Data(info.utf8),
                                           outputByteCount: outputLength)
-
         } else {
             hkdf = HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
                                           salt: salt,

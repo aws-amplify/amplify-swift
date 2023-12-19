@@ -103,9 +103,7 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
         }
         let key = SymmetricKey(data: keyData)
         let content = "\(Self.asfVersion)\(contextJson)"
-        guard let  data = content.data(using: .utf8) else {
-            throw ASFError.hashData
-        }
+        let data = Data(content.utf8)
         let hmac = HMAC<SHA256>.authenticationCode(for: data, using: key)
         let hmacData = Data(hmac)
         return hmacData.base64EncodedString()
@@ -121,9 +119,7 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
             throw ASFError.stringConversion
         }
-        guard let data = jsonString.data(using: .utf8) else {
-            throw ASFError.dataConversion
-        }
+        let data = Data(jsonString.utf8)
         return data.base64EncodedString()
     }
 }

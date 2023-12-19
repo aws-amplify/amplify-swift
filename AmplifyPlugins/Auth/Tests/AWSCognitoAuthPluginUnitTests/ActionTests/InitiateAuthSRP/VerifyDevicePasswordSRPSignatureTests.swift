@@ -119,7 +119,7 @@ class VerifyDevicePasswordSRPSignatureTests: XCTestCase {
             deviceKey: "deviceKey",
             deviceSecret: "deviceSecret",
             saltHex: "saltHex",
-            secretBlock: "secretBlock".data(using: .utf8) ?? Data(),
+            secretBlock: Data("secretBlock".utf8),
             serverPublicBHexString: "serverPublicBHexString",
             srpClient: srpClient
         )
@@ -136,7 +136,7 @@ private class MockSRPClientBehavior: SRPClientBehavior {
         return "UHexValue"
     }
 
-    static var authenticationKey: Result<Data, Error> = .success("AuthenticationKey".data(using: .utf8)!)
+    static var authenticationKey: Result<Data, Error> = .success(Data("AuthenticationKey".utf8))
     static func generateAuthenticationKey(
         sharedSecretHexValue: String,
         uHexValue: String
@@ -145,7 +145,7 @@ private class MockSRPClientBehavior: SRPClientBehavior {
     }
     
     static func reset() {
-        authenticationKey = .success("AuthenticationKey".data(using: .utf8)!)
+        authenticationKey = .success(Data("AuthenticationKey".utf8))
     }
     
     func generateClientKeyPair() -> SRPKeys {
