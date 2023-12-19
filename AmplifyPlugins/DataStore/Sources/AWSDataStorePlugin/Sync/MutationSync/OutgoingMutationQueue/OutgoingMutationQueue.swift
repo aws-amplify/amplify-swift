@@ -138,7 +138,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         self.api = api
         self.reconciliationQueue = reconciliationQueue
 
-        queryMutationEventsFromStorage {
+        queryMutationEventsFromStorage { [weak self] in
+            guard let self = self else { return }
+            
             self.operationQueue.isSuspended = false
             // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
             mutationEventPublisher.publisher.subscribe(self)
@@ -319,7 +321,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.dispatchOutboxMutationProcessedEvent(mutationEvent: mutationEvent,
                                                           mutationSync: mutationSync)
             }
-            self.queryMutationEventsFromStorage {
+            self.queryMutationEventsFromStorage { [weak self] in
+                guard let self = self else { return }
                 self.stateMachine.notify(action: .processedEvent)
             }
         }
@@ -333,7 +336,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                              predicate: predicate,
                              sort: nil,
                              paginationInput: nil,
-                             eagerLoad: true) { result in
+                             eagerLoad: true) { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let events):
                 self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)
