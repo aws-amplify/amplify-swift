@@ -70,9 +70,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         self.stateMachineSink = self.stateMachine
             .$state
             .sink { [weak self] newState in
-                guard let self = self else {
-                    return
-                }
+                guard let self else { return }
+                
                 self.log.verbose("New state: \(newState)")
                 self.mutationDispatchQueue.async {
                     self.respond(to: newState)
@@ -322,7 +321,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                           mutationSync: mutationSync)
             }
             self.queryMutationEventsFromStorage { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.stateMachine.notify(action: .processedEvent)
             }
         }
@@ -337,7 +336,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                              sort: nil,
                              paginationInput: nil,
                              eagerLoad: true) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             
             switch result {
             case .success(let events):
