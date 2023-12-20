@@ -8,6 +8,7 @@
 import Foundation
 
 extension Predictions {
+    // swiftlint:disable file_length type_body_length
     public struct Language: Equatable, Decodable {
         public let code: String
 
@@ -2404,3 +2405,4 @@ extension Predictions.Language {
         self = .init(code: languageCode)
     }
 }
+// swiftlint:enable file_length type_body_length

@@ -34,6 +34,7 @@ struct LazyReferenceModelIdentifier: ModelIdentifierProtocol {
     var fields: [(name: String, value: Persistable)]
 }
 
+// swiftlint: disable identifier_name
 /// This class represents a lazy reference to a `Model`, meaning that the reference
 /// may or may not exist at instantiation time.
 ///
@@ -100,8 +101,7 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
             if let element = try? ModelType(from: decoder) {
                 self.init(element)
                 return
-            }
-            else {
+            } else {
                 let identifiers = try ModelType.schema.lazyReferenceIdentifiers(from: object)
                 self.init(identifiers: identifiers)
                 return

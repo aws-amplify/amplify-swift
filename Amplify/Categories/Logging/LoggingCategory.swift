@@ -57,7 +57,7 @@ final public class LoggingCategory: Category {
     /// For any external cases, Logging is always ready to be used. Internal configuration state is tracked via a
     /// different mechanism
     var isConfigured: Bool {
-        return plugins.count > 0
+        return !plugins.isEmpty
     }
 
     var plugins: [PluginKey: LoggingCategoryPlugin] = Amplify.getLoggingCategoryPluginLookup(loggingPlugin: AWSUnifiedLoggingPlugin())

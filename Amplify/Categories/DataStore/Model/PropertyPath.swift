@@ -32,7 +32,7 @@ public protocol PropertyPath {
 /// i.e. a `struct` representing another `Model`.
 ///
 /// - SeeAlso: `ModelPath`
-public protocol PropertyContainerPath : PropertyPath {
+public protocol PropertyContainerPath: PropertyPath {
 
     /// 
     func getKeyPath() -> String
@@ -80,7 +80,7 @@ public struct FieldPath<ValueType>: PropertyPath {
 ///   var blog: ModelPath<Blog> { BlogModelPath(name: "blog", parent: self) }
 /// }
 /// ```
-open class ModelPath<ModelType: Model> : PropertyContainerPath {
+open class ModelPath<ModelType: Model>: PropertyContainerPath {
 
     private let metadata: PropertyPathMetadata
 

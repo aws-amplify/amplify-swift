@@ -8,6 +8,7 @@
 import Foundation
 import Security
 
+// swiftlint:disable identifier_name
 public protocol KeychainStoreBehavior {
 
     @_spi(KeychainStore)
@@ -239,3 +240,4 @@ extension KeychainStore {
         static let UseDataProtectionKeyChain = String(kSecUseDataProtectionKeychain)
     }
 }
+// swiftlint:enable identifier_name

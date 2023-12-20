@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// swiftlint:disable type_name
 /// Protocol used as a marker to detect when the type is a `LazyReference`.
 /// Used to retrieve either the `reference` or the `identifiers` of the Model directly, without having load a not
 /// loaded LazyReference. This is useful when translating the model object over to the payload required for the
@@ -18,13 +18,14 @@ import Foundation
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public protocol _LazyReferenceValue {
-    var _state: _LazyReferenceValueState { get }
+    var _state: _LazyReferenceValueState { get } // swiftlint:disable:this identifier_name
 }
 
 public enum _LazyReferenceValueState {
     case notLoaded(identifiers: [LazyReferenceIdentifier]?)
     case loaded(model: Model?)
 }
+// swiftlint:enable type_name
 
 /// State of the ModelProvider
 ///

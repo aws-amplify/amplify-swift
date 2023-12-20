@@ -93,8 +93,10 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         if !primaryKeysOnly || graphQLType == .mutation {
             // Continue to add version fields for all levels, for backwards compatibility
             // Reduce the selection set only when the type is "subscription" and "query"
-            // (specifically for syncQuery). Selection set for mutation should not be reduced because it needs to be the full selection set to send mutation events to older iOS clients, which do not have the reduced subscription
-            // selection set. subscriptions and sync query is to receive data, so it can be reduced to allow decoding to the
+            // (specifically for syncQuery). Selection set for mutation should not be reduced 
+            // because it needs to be the full selection set to send mutation events to older iOS clients,
+            // which do not have the reduced subscription selection set.
+            // subscriptions and sync query is to receive data, so it can be reduced to allow decoding to the
             // LazyReference type.
             selectionSet.children.forEach { child in
                 addConflictResolution(selectionSet: child,

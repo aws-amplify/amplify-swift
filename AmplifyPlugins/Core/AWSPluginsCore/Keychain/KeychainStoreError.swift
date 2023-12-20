@@ -78,7 +78,9 @@ extension KeychainStoreError: AmplifyError {
             }
             return """
             To use Auth in a macOS project, you'll need to enable the Keychain Sharing capability.
-            This capability is required because Auth uses the Data Protection Keychain on macOS as a platform best practice. See TN3137: macOS keychain APIs and implementations for more information on how Keychain works on macOS and the Keychain Sharing entitlement.
+            This capability is required because Auth uses the Data Protection Keychain on macOS as 
+            a platform best practice. See TN3137: macOS keychain APIs and implementations for more
+            information on how Keychain works on macOS and the Keychain Sharing entitlement.
             For more information on adding capabilities to your application, see Xcode Capabilities.
             """
 #else
