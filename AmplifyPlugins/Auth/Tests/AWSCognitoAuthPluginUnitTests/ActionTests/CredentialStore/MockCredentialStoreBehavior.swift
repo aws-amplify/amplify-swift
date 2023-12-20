@@ -28,7 +28,7 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
     }
 
     func _getData(_ key: String) throws -> Data {
-        return data.data(using: .utf8)!
+        return Data(data.utf8)
     }
 
     func _set(_ value: String, key: String) throws { }

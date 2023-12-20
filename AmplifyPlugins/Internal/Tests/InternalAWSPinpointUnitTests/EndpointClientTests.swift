@@ -56,10 +56,10 @@ class EndpointClientTests: XCTestCase {
                                                             endpointId: "oldEndpoint",
                                                             deviceToken: "oldToken",
                                                             demographic: oldDemographic)
-        let newToken = "newToken".data(using: .utf8)
+        let newToken = Data("newToken".utf8)
         do {
             try keychain._set(Data(), key: EndpointClient.Constants.endpointProfileKey)
-            try keychain._set(newToken!, key: EndpointClient.Constants.deviceTokenKey)
+            try keychain._set(newToken, key: EndpointClient.Constants.deviceTokenKey)
         } catch {
             XCTFail("Fail to setup test data")
         }
@@ -78,7 +78,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertTrue(endpointProfile === storedEndpointProfile, "Expected stored PinpointEndpointProfile object")
         XCTAssertEqual(endpointProfile.applicationId, currentApplicationId)
         XCTAssertEqual(endpointProfile.endpointId, currentEndpointId)
-        XCTAssertEqual(endpointProfile.deviceToken, newToken?.asHexString())
+        XCTAssertEqual(endpointProfile.deviceToken, newToken.asHexString())
         XCTAssertNotEqual(endpointProfile.demographic, oldDemographic)
         XCTAssertEqual(endpointProfile.demographic.appVersion, endpointInformation.appVersion)
         XCTAssertEqual(endpointProfile.demographic.make, "apple")
@@ -198,9 +198,9 @@ class EndpointClientTests: XCTestCase {
 
     @discardableResult
     private func storeToken(_ deviceToken: String) -> Data? {
-        let newToken = Data(hexString: deviceToken) ?? deviceToken.data(using: .utf8)
+        let newToken = Data(hexString: deviceToken) ?? Data(deviceToken.utf8)
         do {
-            try keychain._set(newToken!, key: EndpointClient.Constants.deviceTokenKey)
+            try keychain._set(newToken, key: EndpointClient.Constants.deviceTokenKey)
         } catch {
             XCTFail("Fail to setup test data")
         }

@@ -47,11 +47,7 @@ class MutationSyncMetadataTests: XCTestCase {
     func testDecodeMutationSync() {
         do {
             let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
-
-            guard let data = postSyncJSON.data(using: .utf8) else {
-                XCTFail("JSON could not be converted into data")
-                return
-            }
+            let data = Data(postSyncJSON.utf8)
             let mutationSync = try decoder.decode(MutationSync<Post>.self, from: data)
             let model = mutationSync.model
             XCTAssertEqual(model.id, "post-id")
@@ -75,11 +71,7 @@ class MutationSyncMetadataTests: XCTestCase {
     func testDecodeAnyModelMutationSync() {
         do {
             let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
-
-            guard let data = postSyncJSON.data(using: .utf8) else {
-                XCTFail("JSON could not be converted into data")
-                return
-            }
+            let data = Data(postSyncJSON.utf8)
             let mutationSync = try decoder.decode(MutationSync<AnyModel>.self, from: data)
             let model = mutationSync.model
             XCTAssertEqual(model.id, "post-id")

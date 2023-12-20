@@ -36,11 +36,10 @@ class HostedUIRequestHelperTests: XCTestCase {
     }
 
     private var encodedSecret: String? {
-        guard let clientSecret = configuration.clientSecret,
-              let value = "\(configuration.clientId):\(clientSecret)".data(using: .utf8) else {
+        guard let clientSecret = configuration.clientSecret else {
             return nil
         }
-
+        let value = Data("\(configuration.clientId):\(clientSecret)".utf8)
         return value.base64EncodedString()
     }
 

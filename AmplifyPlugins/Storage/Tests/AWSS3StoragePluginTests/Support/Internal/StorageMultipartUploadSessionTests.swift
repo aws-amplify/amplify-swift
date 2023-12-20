@@ -332,11 +332,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         ]
         let string = parts.joined()
 
-        guard let data = string.data(using: .utf8) else {
-            XCTFail("Failed to create data for file")
-            throw Failure.unableToCreateData
-        }
-
+        let data = Data(string.utf8)
         let fileURL = try FileSystem.default.createTemporaryFile(data: data)
         return fileURL
     }

@@ -11,7 +11,7 @@ import XCTest
 class AWSHTTPURLResponseTests: XCTestCase {
 
     func testAWSHTTPURLResponse() throws {
-        let body = "responseBody".data(using: .utf8)
+        let body = Data("responseBody".utf8)
         let httpResponse = HTTPURLResponse(url: URL(string: "dummyString")!,
                                            statusCode: 200,
                                            httpVersion: "1.1",
@@ -35,7 +35,7 @@ class AWSHTTPURLResponseTests: XCTestCase {
     }
 
     func testAWSHTTPURLResponseNSCoding() {
-        let body = "responseBody".data(using: .utf8)
+        let body = Data("responseBody".utf8)
         let httpResponse = HTTPURLResponse(url: URL(string: "dummyString")!,
                                            statusCode: 200,
                                            httpVersion: "1.1",

@@ -1220,9 +1220,7 @@ extension ProcessMutationErrorFromCloudOperationTests {
                                          version: Int = 1,
                                          errorType: AppSyncErrorType? = .conflictUnhandled)
         throws -> GraphQLResponseError<MutationSync<AnyModel>>? {
-        guard let data = try post.toJSON().data(using: .utf8) else {
-            return nil
-        }
+        let data = Data(try post.toJSON().utf8)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         let remoteData = try decoder.decode(JSONValue.self, from: data)
