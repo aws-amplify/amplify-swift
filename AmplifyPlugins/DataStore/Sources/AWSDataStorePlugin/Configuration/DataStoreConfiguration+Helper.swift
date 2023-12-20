@@ -90,7 +90,7 @@ extension DataStoreConfiguration {
     /// enabled is only possible during special circumstances such as actively streaming audio.
     /// See https://github.com/aws-amplify/amplify-swift/pull/3368 for more details.
     public static var subscriptionsDisabled: DataStoreConfiguration {
-        .custom(disableSubscriptions: { false })
+        .custom(disableSubscriptions: { true })
     }
     #else
     /// The default configuration.
