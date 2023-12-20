@@ -14,7 +14,13 @@ class AWSDataStorePluginConfigurationTests: XCTestCase {
     override func setUp() async throws {
         await Amplify.reset()
     }
-
+    
+    #if os(watchOS)
+    func testSubscriptionDisabledTrue() throws {
+        XCTAssertTrue(DataStoreConfiguration.subscriptionsDisabled.disableSubscriptions())
+    }
+    #endif
+    
     func testDoesNotThrowOnMissingConfig() throws {
         #if os(watchOS)
         let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
@@ -33,5 +39,5 @@ class AWSDataStorePluginConfigurationTests: XCTestCase {
             XCTFail("Should not throw even if not supplied with a plugin-specific config.")
         }
     }
-
+    
 }
