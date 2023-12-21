@@ -44,8 +44,10 @@ extension Amplify {
         return loggingPlugin
 #endif
     }
-    
-    static func getLoggingCategoryPluginLookup(loggingPlugin: LoggingCategoryPlugin) -> [PluginKey: LoggingCategoryPlugin] {
+
+    static func getLoggingCategoryPluginLookup(
+        loggingPlugin: LoggingCategoryPlugin
+    ) -> [PluginKey: LoggingCategoryPlugin] {
 #if os(iOS)
 #if DEBUG
         if isDevMenuEnabled() {

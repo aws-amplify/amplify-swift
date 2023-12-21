@@ -10,8 +10,6 @@ import Foundation
 // Credit: Dave DeLong
 // https://forums.swift.org/t/introducing-namespacing-for-common-swift-error-scenarios/10773
 
-import Foundation
-
 /// An umbrella type supplying static members to handle common
 /// and conventional exit scenarios.
 public enum Fatal {

@@ -42,7 +42,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
 
         return identityId ?? "IdentityId"
     }
-    
+
     public func getUserPoolAccessToken() async throws -> String {
         interactions.append(#function)
         if let error = getTokenError {

@@ -57,7 +57,7 @@ public enum CategoryType: String {
     ///
     /// - Tag: CategoryType.predictions
     case predictions
-    
+
     /// Push Notifications
     ///
     /// - Tag: CategoryType.pushNotifications

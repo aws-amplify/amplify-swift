@@ -9,7 +9,7 @@
 import Combine
 
 public extension Amplify {
-    
+
     /// Get Combine Publishers for Amplify APIs.
     ///
     /// Provides static methods to create Combine Publishers from Tasks and
@@ -78,7 +78,7 @@ public extension Amplify {
             .handleEvents(receiveCancel: { task.cancel() })
             .eraseToAnyPublisher()
         }
-        
+
         /// Create a Combine Publisher for a given AsyncSequence.
         ///
         /// Example Usage

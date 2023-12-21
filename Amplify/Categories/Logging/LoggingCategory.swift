@@ -19,7 +19,7 @@ final public class LoggingCategory: Category {
         /// After a custom plugin is added and `configure` is invoked
         case configured
     }
-    
+
     let lock: NSLocking = NSLock()
 
     public let categoryType = CategoryType.logging

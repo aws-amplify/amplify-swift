@@ -33,7 +33,7 @@ public protocol APICategoryGraphQLCallbackBehavior {
     @discardableResult
     func mutate<R: Decodable>(request: GraphQLRequest<R>,
                               listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>
-    
+
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
                                  completionListener: GraphQLSubscriptionOperation<R>.ResultListener?)

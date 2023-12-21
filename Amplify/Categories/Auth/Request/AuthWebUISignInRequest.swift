@@ -21,7 +21,7 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
 
     /// Presentation anchor on which the webUI is displayed
     public let presentationAnchor: AuthUIPresentationAnchor?
-    
+
     public init(presentationAnchor: AuthUIPresentationAnchor?,
                 authProvider: AuthProvider? = nil,
                 options: Options) {
@@ -37,7 +37,7 @@ public extension AuthWebUISignInRequest {
 
         /// Scopes to be defined for the sign in user
         public let scopes: [String]?
-        
+
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying auth plugin functionality. See plugin documentation for expected
         /// key/values

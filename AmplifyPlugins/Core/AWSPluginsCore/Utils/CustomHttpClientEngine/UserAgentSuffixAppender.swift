@@ -10,7 +10,7 @@ import ClientRuntime
 @_spi(InternalAmplifyPluginExtension)
 public class UserAgentSuffixAppender: AWSPluginExtension {
     @_spi(InternalHttpEngineProxy)
-    public var target: HttpClientEngine? = nil
+    public var target: HttpClientEngine?
     public let suffix: String
     private let userAgentKey = "User-Agent"
 

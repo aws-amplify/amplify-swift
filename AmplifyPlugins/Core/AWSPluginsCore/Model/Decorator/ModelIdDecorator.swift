@@ -14,7 +14,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
     private var identifierFields = [(name: String, value: GraphQLDocumentValueRepresentable, type: String)]()
 
     public init(model: Model, schema: ModelSchema) {
-        
+
         var firstField = true
         self.identifierFields = model.identifier(schema: schema).fields.compactMap { fieldName, _ in
             guard let value = model.graphQLInputForPrimaryKey(modelFieldName: fieldName,
@@ -29,7 +29,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             }
         }
     }
-    
+
     public init(identifierFields: [(name: String, value: Persistable)]) {
         var firstField = true
         identifierFields.forEach { name, value in
@@ -37,7 +37,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             firstField = false
         }
     }
-    
+
     public init(identifiers: [LazyReferenceIdentifier]) {
         var firstField = true
         identifiers.forEach({ identifier in

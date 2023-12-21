@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Foundation
 
 extension TimeZone {
@@ -98,13 +97,12 @@ private enum ISO8601TimeZoneFormat {
     }
 }
 
-fileprivate enum ISO8601TimeZonePart {
+private enum ISO8601TimeZonePart {
     case utc
     case hh(hours: Int)
     case hhmm(hours: Int, minutes: Int)
     case hh_mm(hours: Int, minuts: Int)
     case hh_mm_ss(hours: Int, minutes: Int, seconds: Int)
-
 
     static func from(iso8601DateString: String) -> ISO8601TimeZonePart? {
         return tryExtract(from: iso8601DateString, with: .utc)
@@ -116,7 +114,7 @@ fileprivate enum ISO8601TimeZonePart {
     }
 }
 
-fileprivate func tryExtract(
+private func tryExtract(
     from dateString: String,
     with format: ISO8601TimeZoneFormat
 ) -> ISO8601TimeZonePart? {

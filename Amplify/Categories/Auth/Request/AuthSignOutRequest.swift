@@ -52,7 +52,6 @@ public extension AuthSignOutRequest {
 #endif
     }
 
-
 }
 
 #if os(iOS) || os(macOS)

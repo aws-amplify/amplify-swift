@@ -17,7 +17,7 @@ public protocol AWSAuthServiceBehavior: AnyObject {
 
     /// Retrieves the identity identifier of for the Auth service
     func getIdentityID() async throws -> String
-    
+
     /// Retrieves the token from the Auth token provider
     func getUserPoolAccessToken() async throws -> String
 }

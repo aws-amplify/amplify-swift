@@ -56,12 +56,12 @@ protocol ModelGraphQLRequestFactory {
                               byIdentifier id: String,
                               includes: IncludedAssociations<M>) -> GraphQLRequest<M?>
         where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
-    
+
     static func get<M: Model>(_ modelType: M.Type,
                               byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
                               includes: IncludedAssociations<M>) -> GraphQLRequest<M?>
         where M: ModelIdentifiable
-    
+
     // MARK: Mutation
 
     /// Creates a `GraphQLRequest` that represents a mutation of a given `type` for a `model` instance.
@@ -181,7 +181,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
         mutation(of: model, modelSchema: model.schema, where: predicate, includes: includes, type: type)
     }
-    
+
     public static func mutation<M: Model>(of model: M,
                                           modelSchema: ModelSchema,
                                           where predicate: QueryPredicate? = nil,
@@ -190,12 +190,12 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
-        
+
         if let modelPath = M.rootPath as? ModelPath<M> {
             let associations = includes(modelPath)
             documentBuilder.add(decorator: IncludeAssociationDecorator(associations))
         }
-        
+
         switch type {
         case .create:
             documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
@@ -239,14 +239,14 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                   responseType: M?.self,
                                   decodePath: document.name)
     }
-    
+
     public static func get<M: Model>(_ modelType: M.Type,
                                      byIdentifier id: String,
                                      includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?>
     where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
         return .get(modelType, byId: id, includes: includes)
     }
-    
+
     public static func get<M: Model>(_ modelType: M.Type,
                                      byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
                                      includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?>
@@ -254,20 +254,20 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
             var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                    operationType: .query)
             documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-            
+
             if let modelPath = modelType.rootPath as? ModelPath<M> {
                 let associations = includes(modelPath)
                 documentBuilder.add(decorator: IncludeAssociationDecorator(associations))
             }
             documentBuilder.add(decorator: ModelIdDecorator(identifierFields: id.fields))
             let document = documentBuilder.build()
-            
+
             return GraphQLRequest<M?>(document: document.stringValue,
                                       variables: document.variables,
                                       responseType: M?.self,
                                       decodePath: document.name)
     }
-    
+
     public static func list<M: Model>(_ modelType: M.Type,
                                       where predicate: QueryPredicate? = nil,
                                       includes: IncludedAssociations<M> = { _ in [] },

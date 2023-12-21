@@ -18,7 +18,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
     private let lastSync: Int64?
     private let graphQLType: GraphQLOperationType
     private var primaryKeysOnly: Bool
-    
+
     public init(version: Int? = nil,
                 lastSync: Int64? = nil,
                 graphQLType: GraphQLOperationType,

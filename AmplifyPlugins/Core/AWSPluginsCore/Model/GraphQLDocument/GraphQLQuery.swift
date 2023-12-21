@@ -20,7 +20,7 @@ public struct GraphQLQuery: SingleDirectiveGraphQLDocument {
         self.inputs = inputs
         self.selectionSet = selectionSet
     }
-    
+
     @available(*, deprecated, message: """
     Init with modelType is deprecated, use init with modelSchema instead.
     """)

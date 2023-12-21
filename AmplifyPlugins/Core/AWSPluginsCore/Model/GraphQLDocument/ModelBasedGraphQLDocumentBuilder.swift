@@ -36,7 +36,7 @@ public struct ModelBasedGraphQLDocumentBuilder {
         if primaryKeysOnly && ModelRegistry.modelType(from: modelSchema.name)?.rootPath == nil {
             primaryKeysOnly = false
         }
-        
+
         switch operationType {
         case .query:
             self.document = GraphQLQuery(modelSchema: modelSchema, primaryKeysOnly: primaryKeysOnly)

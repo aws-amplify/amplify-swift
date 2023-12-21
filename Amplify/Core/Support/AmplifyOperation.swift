@@ -61,7 +61,6 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
     var resultPromise: Future<Success, Failure>.Promise!
 #endif
 
-
     /// Creates an AmplifyOperation for the specified reequest.
     ///
     /// ## Events

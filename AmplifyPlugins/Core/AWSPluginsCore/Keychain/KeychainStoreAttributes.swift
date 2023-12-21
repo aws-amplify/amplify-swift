@@ -12,7 +12,7 @@ struct KeychainStoreAttributes {
     var itemClass: String = KeychainStore.Constants.ClassGenericPassword
     var service: String
     var accessGroup: String?
-    
+
 }
 
 extension KeychainStoreAttributes {
@@ -23,7 +23,7 @@ extension KeychainStoreAttributes {
             KeychainStore.Constants.AttributeService: service,
             KeychainStore.Constants.UseDataProtectionKeyChain: kCFBooleanTrue
         ]
-        
+
         if let accessGroup = accessGroup {
             query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
         }
