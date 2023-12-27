@@ -63,11 +63,7 @@ class PaginatedListTests: XCTestCase {
     func testDecodePaginatedList() {
         do {
             let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
-
-            guard let data = syncQueryJSON.data(using: .utf8) else {
-                XCTFail("JSON could not be converted into data")
-                return
-            }
+            let data = Data(syncQueryJSON.utf8)
             let paginatedList = try decoder.decode(PaginatedList<Post>.self, from: data)
             XCTAssertNotNil(paginatedList)
             XCTAssertNotNil(paginatedList.startedAt)
@@ -85,11 +81,7 @@ class PaginatedListTests: XCTestCase {
     func testDecodePaginatedListFromEmptyItems() {
         do {
             let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
-
-            guard let data = emptyItemsSyncQueryJSON.data(using: .utf8) else {
-                XCTFail("JSON could not be converted into data")
-                return
-            }
+            let data = Data(emptyItemsSyncQueryJSON.utf8)
             let paginatedList = try decoder.decode(PaginatedList<Post>.self, from: data)
             XCTAssertNotNil(paginatedList)
             XCTAssertNotNil(paginatedList.startedAt)

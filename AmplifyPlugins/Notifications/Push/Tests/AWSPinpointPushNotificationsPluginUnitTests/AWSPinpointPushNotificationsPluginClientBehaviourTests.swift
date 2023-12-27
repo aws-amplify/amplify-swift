@@ -135,7 +135,7 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
     
     // MARK: - Register Device tests
     func testRegisterDevice_shouldUpdateDeviceToken() async throws {
-        let apnsToken = "apnsToken".data(using: .utf8)!
+        let apnsToken = Data("apnsToken".utf8)
         try await plugin.registerDevice(apnsToken: apnsToken)
         
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)

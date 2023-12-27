@@ -22,7 +22,7 @@ class AmplifyConfigurationInitFromFileTests: XCTestCase {
         }
         """
 
-        let configData = configString.data(using: .utf8)!
+        let configData = Data(configString.utf8)
         let configURL = FileManager
             .default
             .temporaryDirectory

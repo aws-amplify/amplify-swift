@@ -97,7 +97,7 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
             .appendingPathComponent("amplifyconfiguration.json")
 
         let poorlyFormedJSON = #"{"foo"}"#
-        let configData = poorlyFormedJSON.data(using: .utf8)!
+        let configData = Data(poorlyFormedJSON.utf8)
         try configData.write(to: configFilePath)
 
         XCTAssertThrowsError(try AmplifyConfiguration(configurationFile: configFilePath)) { error in
@@ -117,7 +117,7 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
             .appendingPathComponent("amplifyconfiguration.json")
 
         let poorlyFormedJSON = #"{"foo": true}"#
-        let configData = poorlyFormedJSON.data(using: .utf8)!
+        let configData = Data(poorlyFormedJSON.utf8)
         try configData.write(to: configFilePath)
 
         let amplifyConfig = try AmplifyConfiguration(configurationFile: configFilePath)

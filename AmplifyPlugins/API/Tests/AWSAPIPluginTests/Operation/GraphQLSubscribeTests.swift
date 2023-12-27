@@ -64,7 +64,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The completion handler is invoked with a normal termination
     func testHappyPath() throws {
         let testJSON: JSONValue = ["foo": true]
-        let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
+        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -152,7 +152,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The value handler is invoked with a disconnection message
     /// - The completion handler is invoked with a normal termination
     func testDecodingError() throws {
-        let testData = #"{"data": {"foo": true}, "errors": []}"# .data(using: .utf8)!
+        let testData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -173,7 +173,7 @@ class GraphQLSubscribeTests: OperationTestBase {
 
     func testMultipleSuccessValues() throws {
         let testJSON: JSONValue = ["foo": true]
-        let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
+        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -195,8 +195,8 @@ class GraphQLSubscribeTests: OperationTestBase {
     }
 
     func testMixedSuccessAndErrorValues() throws {
-        let successfulTestData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
-        let invalidTestData = #"{"data": {"foo": true}, "errors": []}"# .data(using: .utf8)!
+        let successfulTestData = Data(#"{"data": {"foo": true}}"#.utf8)
+        let invalidTestData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true

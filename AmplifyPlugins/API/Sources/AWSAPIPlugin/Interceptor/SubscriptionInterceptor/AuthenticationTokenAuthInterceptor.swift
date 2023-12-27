@@ -55,8 +55,8 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptorAsync {
         let authHeader = TokenAuthHeader(token: authToken, host: host)
         let base64Auth = AppSyncJSONHelper.base64AuthenticationBlob(authHeader)
 
-        let payloadData = SubscriptionConstants.emptyPayload.data(using: .utf8)
-        let payloadBase64 = payloadData?.base64EncodedString()
+        let payloadData = Data(SubscriptionConstants.emptyPayload.utf8)
+        let payloadBase64 = payloadData.base64EncodedString()
 
         guard var urlComponents = URLComponents(url: request.url, resolvingAgainstBaseURL: false) else {
             return request

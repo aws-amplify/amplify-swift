@@ -48,7 +48,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
     ///
     func testUploadListDownload() async throws {
         let key = UUID().uuidString
-        let data = key.data(using: .utf8)!
+        let data = Data(key.utf8)
         let uploadCompleted = expectation(description: "upload completed")
         Task {
             do {
@@ -88,7 +88,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
     ///
     func testUploadRemoveDownload() async {
         let key = UUID().uuidString
-        let data = key.data(using: .utf8)!
+        let data = Data(key.utf8)
         let done = expectation(description: "done")
 
         Task {

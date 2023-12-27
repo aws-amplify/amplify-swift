@@ -54,8 +54,8 @@ class IAMAuthInterceptor: AuthInterceptorAsync {
         }
         let base64Auth = AppSyncJSONHelper.base64AuthenticationBlob(authHeader)
 
-        let payloadData = payloadString.data(using: .utf8)
-        let payloadBase64 = payloadData?.base64EncodedString()
+        let payloadData = Data(payloadString.utf8)
+        let payloadBase64 = payloadData.base64EncodedString()
 
         guard var urlComponents = URLComponents(url: request.url, resolvingAgainstBaseURL: false) else {
             return request
@@ -91,7 +91,7 @@ class IAMAuthInterceptor: AuthInterceptorAsync {
             .withHeader(name: RealtimeProviderConstants.contentEncodingKey, value: RealtimeProviderConstants.iamEncoding)
             .withHeader(name: URLRequestConstants.Header.contentType, value: RealtimeProviderConstants.iamConentType)
             .withHeader(name: URLRequestConstants.Header.host, value: host)
-            .withBody(.data(payload.data(using: .utf8)))
+            .withBody(.data(Data(payload.utf8)))
 
         /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
         /// the request headers as authorization and security token.

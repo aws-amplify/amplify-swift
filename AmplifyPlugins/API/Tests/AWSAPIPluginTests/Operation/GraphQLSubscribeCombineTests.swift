@@ -72,7 +72,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         let testJSON: JSONValue = ["foo": true]
-        let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
+        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
 
         try await subscribe(expecting: testJSON)
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
@@ -117,7 +117,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
     }
 
     func testDecodingError() async throws {
-        let testData = #"{"data": {"foo": true}, "errors": []}"# .data(using: .utf8)!
+        let testData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
         receivedCompletionFailure.isInverted = true
         receivedDataValueSuccess.isInverted = true
 
@@ -134,7 +134,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
 
     func testMultipleSuccessValues() async throws {
         let testJSON: JSONValue = ["foo": true]
-        let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
+        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
         receivedCompletionFailure.isInverted = true
         receivedDataValueError.isInverted = true
         receivedDataValueSuccess.expectedFulfillmentCount = 2
@@ -152,8 +152,8 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
     }
 
     func testMixedSuccessAndErrorValues() async throws {
-        let successfulTestData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
-        let invalidTestData = #"{"data": {"foo": true}, "errors": []}"# .data(using: .utf8)!
+        let successfulTestData = Data(#"{"data": {"foo": true}}"#.utf8)
+        let invalidTestData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
         receivedCompletionFailure.isInverted = true
         receivedDataValueSuccess.expectedFulfillmentCount = 2
 

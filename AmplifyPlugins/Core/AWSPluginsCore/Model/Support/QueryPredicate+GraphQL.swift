@@ -58,8 +58,8 @@ public struct GraphQLFilterConverter {
 
     /// Deserialize the JSON string converted with `GraphQLFilterConverter.toJSON()` to `GraphQLFilter`
     public static func fromJSON(_ value: String) throws -> GraphQLFilter {
-        guard let data = value.data(using: .utf8),
-            let filter = try JSONSerialization.jsonObject(with: data) as? GraphQLFilter else {
+        let data = Data(value.utf8)
+        guard let filter = try JSONSerialization.jsonObject(with: data) as? GraphQLFilter else {
             return Fatal.preconditionFailure("Could not serialize to GraphQLFilter from: \(self))")
         }
 

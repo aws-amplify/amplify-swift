@@ -177,7 +177,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         for _ in 1 ... 20 {
             testLargeDataString += testLargeDataString
         }
-        let testLargeData = testLargeDataString.data(using: .utf8)!
+        let testLargeData = Data(testLargeDataString.utf8)
         XCTAssertTrue(testLargeData.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold,
                       "Could not create data object greater than MultiPartUploadSizeThreshold")
         let expectedUploadSource = UploadSource.data(testLargeData)

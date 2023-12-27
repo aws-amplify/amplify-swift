@@ -448,8 +448,8 @@ class StorageTransferTaskTests: XCTestCase {
             sessionTask: nil,
             proxyStorageTask: nil
         )
-        task.responseData = "Test".data(using: .utf8)
-        
+        task.responseData = Data("Test".utf8)
+
         XCTAssertEqual(task.responseText, "Test")
     }
     

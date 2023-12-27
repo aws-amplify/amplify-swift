@@ -48,7 +48,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
     }
 
     func testPluginDownloadDataAsync() async throws {
-        let input = "AWS".data(using: .utf8)!
+        let input = Data("AWS".utf8)
         storageService.storageServiceDownloadEvents = [.completed(input)]
 
         let task = storagePlugin.downloadData(key: testKey, options: nil)
