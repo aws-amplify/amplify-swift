@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.25.2 (2023-12-27)
+
+### Bug Fixes
+
+- **DataStore**: watchOS subscription disabled configuration value (#3432)
+- use non-failable UTF8View Data init when converting from String (#3430)
+- **DataStore**: Add 'weak self' to prevent retain cycles in OutgoingMutationQueue (#3429)
+
 ## 2.25.1 (2023-12-14)
 
 ### Bug Fixes
