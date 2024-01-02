@@ -16,30 +16,23 @@ struct RemoteSyncReconciler {
         case create(RemoteModel)
         case update(RemoteModel)
         case delete(RemoteModel)
-    }
 
-    /// Filter the incoming `remoteModels` against the pending mutations.
-    /// If there is a matching pending mutation, drop the remote model.
-    ///
-    /// - Parameters:
-    ///   - remoteModels: models retrieved from the remote store
-    ///   - pendingMutations: pending mutations from the outbox
-    /// - Returns: remote models to be applied
-    static func filter(_ remoteModels: [RemoteModel],
-                       pendingMutations: [MutationEvent]) -> [RemoteModel] {
-        guard !pendingMutations.isEmpty else {
-            return remoteModels
+        var remoteModel: RemoteModel {
+            switch self {
+            case .create(let model), .update(let model), .delete(let model):
+                return model
+            }
         }
 
-        let pendingMutationModelIdsArr = pendingMutations.map { mutationEvent in
-            mutationEvent.modelId
-        }
-        let pendingMutationModelIds = Set(pendingMutationModelIdsArr)
-
-        return remoteModels.filter { remoteModel in
-            !pendingMutationModelIds.contains(remoteModel.model.identifier)
+        var mutationType: MutationEvent.MutationType {
+            switch self {
+            case .create: return .create
+            case .update: return .update
+            case .delete: return .delete
+            }
         }
     }
+
 
     /// Reconciles the incoming `remoteModels` against the local metadata to get the disposition
     ///

@@ -314,23 +314,25 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     // MARK: - reconcile(remoteModels:pendingMutations)
 
-    func testReconcilePendingMutations_emptyModels() {
-        let result = operation.reconcile([], pendingMutations: [anyPostMutationEvent])
-
-        XCTAssertTrue(result.isEmpty)
+    func testSeparateDispositions_emptyModels() {
+        let result = operation.separateDispositions(pendingMutations: [], dispositions: [])
+        XCTAssertTrue(result.0.isEmpty)
+        XCTAssertTrue(result.1.isEmpty)
     }
 
     func testReconcilePendingMutations_emptyPendingMutations() {
-        let result = operation.reconcile([anyPostMutationSync], pendingMutations: [])
+        let result = operation.separateDispositions(pendingMutations: [], dispositions: [.update(anyPostMutationSync)])
 
-        guard let remoteModelToApply = result.first else {
+        guard let remoteModelToApply = result.0.first else {
             XCTFail("Missing models to apply")
             return
         }
-        XCTAssertEqual(remoteModelToApply.model.id, anyPostMutationSync.model.id)
+
+        XCTAssertTrue(result.1.isEmpty)
+        XCTAssertEqual(remoteModelToApply.remoteModel.model.id, anyPostMutationSync.model.id)
     }
 
-    func testReconcilePendingMutations_notifyDropped() {
+    func testSeparateDispositions_notifyDropped () async {
         let expect = expectation(description: "notify dropped twice")
         expect.expectedFulfillmentCount = 2
         let model1 = AnyModel(Post(title: "post1", content: "content", createdAt: .now()))
@@ -377,11 +379,15 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        let result = operation.reconcile([remoteModel1, remoteModel2],
-                                         pendingMutations: [mutationEvent1, mutationEvent2])
+        let result = operation.separateDispositions(
+            pendingMutations: [mutationEvent1, mutationEvent2],
+            dispositions: [.update(remoteModel1), .update(remoteModel2)]
+        )
 
-        XCTAssertTrue(result.isEmpty)
-        waitForExpectations(timeout: 1)
+        XCTAssertTrue(result.0.isEmpty)
+        XCTAssertEqual(result.1, [.update(remoteModel1), .update(remoteModel2)])
+
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     // MARK: - queryLocalMetadata
