@@ -10,6 +10,7 @@ import AWSCognitoIdentityProvider
 
 extension RespondToAuthChallengeInput {
 
+    // swiftlint:disable:next function_parameter_count
     static func passwordVerifier(username: String,
                                  stateData: SRPStateData,
                                  session: String?,
@@ -36,6 +37,7 @@ extension RespondToAuthChallengeInput {
             environment: environment)
     }
 
+    // swiftlint:disable:next function_parameter_count
     static func deviceSRP(username: String,
                           environment: UserPoolEnvironment,
                           deviceMetadata: DeviceMetadata,
@@ -83,6 +85,7 @@ extension RespondToAuthChallengeInput {
             environment: environment)
     }
 
+    // swiftlint:disable:next function_parameter_count
     static func verifyChallenge(
         username: String,
         challengeType: CognitoIdentityProviderClientTypes.ChallengeNameType,

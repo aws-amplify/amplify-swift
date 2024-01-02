@@ -7,6 +7,7 @@
 
 import Amplify
 
+// swiftlint:disable:next line_length
 protocol AuthSendUserAttributeVerificationCodeTask: AmplifyAuthTask where Request == AuthSendUserAttributeVerificationCodeRequest, Success == AuthCodeDeliveryDetails, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {

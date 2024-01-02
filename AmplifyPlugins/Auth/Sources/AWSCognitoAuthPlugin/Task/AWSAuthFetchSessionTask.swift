@@ -32,5 +32,5 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
         return try await fetchAuthSessionHelper.fetch(authStateMachine,
                                                       forceRefresh: doesNeedForceRefresh)
     }
-    
+
 }

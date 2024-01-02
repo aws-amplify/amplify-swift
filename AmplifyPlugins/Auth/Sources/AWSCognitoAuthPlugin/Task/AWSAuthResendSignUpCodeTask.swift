@@ -93,5 +93,5 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger {
 
         return deliveryDetails
     }
-    
+
 }

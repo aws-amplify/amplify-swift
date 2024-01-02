@@ -69,7 +69,7 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
     #else
         presentationAnchor = nil
     #endif
-        
+
         let signOutData = SignOutEventData(
             globalSignOut: request.options.globalSignOut,
             presentationAnchor: presentationAnchor

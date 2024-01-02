@@ -7,12 +7,14 @@
 
 extension AuthenticationState {
 
+    // swiftlint:disable:next nesting
     struct Resolver: StateMachineResolver {
         typealias StateType = AuthenticationState
         let defaultState = AuthenticationState.notConfigured
 
         init() { }
 
+        // swiftlint:disable:next cyclomatic_complexity
         func resolve(
             oldState: StateType,
             byApplying event: StateMachineEvent

@@ -51,5 +51,5 @@ public extension AWSCognitoAuthPlugin {
             userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await task.value
     }
-    
+
 }

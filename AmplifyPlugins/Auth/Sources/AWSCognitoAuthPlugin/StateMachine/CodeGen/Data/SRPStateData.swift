@@ -15,22 +15,6 @@ struct SRPStateData {
     let srpKeyPair: SRPKeys
     let clientTimestamp: Date
 
-    init(
-        username: String,
-        password: String,
-        NHexValue: String,
-        gHexValue: String,
-        srpKeyPair: SRPKeys,
-        clientTimestamp: Date
-    ) {
-        self.username = username
-        self.password = password
-        self.NHexValue = NHexValue
-        self.gHexValue = gHexValue
-        self.srpKeyPair = srpKeyPair
-        self.clientTimestamp = clientTimestamp
-    }
-
 }
 
 extension SRPStateData: Equatable {

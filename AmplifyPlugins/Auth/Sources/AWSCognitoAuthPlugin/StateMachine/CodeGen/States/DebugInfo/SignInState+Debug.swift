@@ -47,7 +47,7 @@ extension SignInState: CustomDebugDictionaryConvertible {
         case .resolvingTOTPSetup(let signInTOTPSetupState, let signInEventData):
             additionalMetadataDictionary = [
                 "SignInTOTPSetupState": signInTOTPSetupState.debugDictionary,
-                "SignInEventData" : signInEventData.debugDictionary]
+                "SignInEventData": signInEventData.debugDictionary]
         case .error:
             additionalMetadataDictionary = [:]
         }

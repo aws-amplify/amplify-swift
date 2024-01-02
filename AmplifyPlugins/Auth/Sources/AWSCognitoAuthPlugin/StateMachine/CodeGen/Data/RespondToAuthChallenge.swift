@@ -53,7 +53,7 @@ extension RespondToAuthChallenge {
               let mfaTypesArray = try? JSONDecoder().decode(
                 [String].self,
                 from: Data(mfaTypeParameters.utf8)
-              ) 
+              )
         else { return .init() }
 
         let mfaTypes = mfaTypesArray.compactMap(MFAType.init(rawValue:))

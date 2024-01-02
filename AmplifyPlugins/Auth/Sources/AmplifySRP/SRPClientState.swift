@@ -11,6 +11,7 @@ import AmplifyBigInteger
 
 public typealias BigInt = AmplifyBigInt
 
+// swiftlint:disable identifier_name
 public struct SRPClientState {
 
     public let privateA: BigInt
@@ -106,5 +107,5 @@ public struct SRPClientState {
 
             return (salt, passwordVerifier)
         }
-
+// swiftlint:enable identifier_name
 }
