@@ -43,7 +43,6 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
                         return
                     }
 
-
                     continuation.resume(with: .success(result))
 
                 }

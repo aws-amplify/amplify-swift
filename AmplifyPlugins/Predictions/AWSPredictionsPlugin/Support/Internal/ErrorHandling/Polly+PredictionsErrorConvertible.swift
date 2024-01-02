@@ -34,12 +34,21 @@ extension AWSPolly.TextLengthExceededException: PredictionsErrorConvertible {
 
 extension AWSPolly.LexiconNotFoundException: PredictionsErrorConvertible {
     var predictionsError: PredictionsError {
-        .service(
-            .init(
-                description: "Amazon Polly can't find the specified lexicon. This could be caused by a lexicon that is missing, its name is misspelled or specifying a lexicon that is in a different region.",
-                recoverySuggestion: "Verify that the lexicon exists, is in the region (see ListLexicons) and that you spelled its name is spelled correctly. Then try again.",
-                underlyingError: self
-            )
+        let description = """
+                Amazon Polly can't find the specified lexicon.
+                This could be caused by a lexicon that is missing,
+                its name is misspelled or specifying a lexicon that is in a different region.
+                """
+        let recoverySuggestion = """
+                Verify that the lexicon exists, is in the region (see ListLexicons) and
+                that you spelled its name is spelled correctly. Then try again.
+                """
+        return .service(
+                .init(
+                    description: description,
+                    recoverySuggestion: recoverySuggestion,
+                    underlyingError: self
+                )
         )
     }
 }

@@ -9,7 +9,6 @@ import AWSTextract
 import Amplify
 import ClientRuntime
 
-
 extension AWSTextract.HumanLoopQuotaExceededException: PredictionsErrorConvertible {
     var predictionsError: PredictionsError {
         .service(
@@ -88,7 +87,6 @@ extension AWSTextract.ProvisionedThroughputExceededException: PredictionsErrorCo
     }
 }
 
-
 extension AWSTextract.BadDocumentException: PredictionsErrorConvertible {
     var predictionsError: PredictionsError {
         .service(
@@ -114,7 +112,6 @@ extension AWSTextract.DocumentTooLargeException: PredictionsErrorConvertible {
         )
     }
 }
-
 
 extension AWSTextract.UnsupportedDocumentException: PredictionsErrorConvertible {
     var predictionsError: PredictionsError {

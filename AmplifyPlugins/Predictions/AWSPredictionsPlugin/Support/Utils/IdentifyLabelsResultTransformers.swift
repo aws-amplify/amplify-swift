@@ -9,7 +9,7 @@ import Foundation
 import AWSRekognition
 import Amplify
 
-enum IdentifyLabelsResultTransformers { 
+enum IdentifyLabelsResultTransformers {
     static func processLabels(
         _ rekognitionLabels: [RekognitionClientTypes.Label]
     ) -> [Predictions.Label] {

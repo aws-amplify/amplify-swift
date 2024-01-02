@@ -47,6 +47,8 @@ extension SigV4Signer {
         return Data(signature)
     }
 
+    // swiftlint:disable identifier_name
+
     // Generate a StringToSign for a AWS4-HMAC-SHA256-PAYLOAD
     // type request, which includes the previous signature.
     func _stringToSignWithPreviousSignature(
@@ -86,4 +88,5 @@ extension SigV4Signer {
         data.append(contentsOf: headerValueBytes)
         return data
     }
+    // swiftlint:enable identifier_name
 }

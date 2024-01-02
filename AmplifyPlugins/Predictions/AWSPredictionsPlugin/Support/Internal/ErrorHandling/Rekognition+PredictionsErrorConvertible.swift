@@ -9,7 +9,6 @@ import AWSRekognition
 import Amplify
 import ClientRuntime
 
-
 extension AWSRekognition.HumanLoopQuotaExceededException: PredictionsErrorConvertible {
     var predictionsError: PredictionsError {
         .service(
