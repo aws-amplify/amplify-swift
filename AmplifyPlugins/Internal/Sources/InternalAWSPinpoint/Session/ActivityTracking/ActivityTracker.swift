@@ -55,14 +55,14 @@ extension ApplicationState: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    
+
     public var log: Logger {
         Self.log
     }
 }
 
 protocol ActivityTrackerBehaviour: AnyObject {
-    var backgroundTrackingTimeout: TimeInterval { set get }
+    var backgroundTrackingTimeout: TimeInterval { get set }
     func beginActivityTracking(_ listener: @escaping (ApplicationState) -> Void)
 }
 

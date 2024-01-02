@@ -14,7 +14,7 @@ extension PutEventsOutput: AmplifyStringConvertible {
     enum CodingKeys: Swift.String, Swift.CodingKey {
         case eventsResponse = "EventsResponse"
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var encodeContainer = encoder.container(keyedBy: CodingKeys.self)
         if let eventsResponse = self.eventsResponse {

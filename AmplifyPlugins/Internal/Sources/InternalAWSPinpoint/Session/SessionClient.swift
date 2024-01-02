@@ -72,7 +72,7 @@ class SessionClient: SessionClientBehaviour {
             startNewSession()
         }
     }
-    
+
     func startTrackingSessions(backgroundTimeout: TimeInterval) {
         sessionBackgroundTimeout = backgroundTimeout
         activityTracker.backgroundTrackingTimeout = backgroundTimeout

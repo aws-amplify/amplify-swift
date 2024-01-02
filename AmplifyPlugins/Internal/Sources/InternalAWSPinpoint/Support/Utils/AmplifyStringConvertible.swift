@@ -16,7 +16,7 @@ extension AmplifyStringConvertible {
         encoder.dateEncodingStrategy = .iso8601
         return encoder
     }
-    
+
     public var description: String {
         if let data = try? Self.jsonEncoder.encode(self),
            let result = String(data: data, encoding: .utf8) {

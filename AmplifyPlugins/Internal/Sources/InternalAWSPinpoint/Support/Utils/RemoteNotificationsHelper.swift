@@ -52,4 +52,3 @@ public struct AmplifyRemoteNotificationsHelper: RemoteNotificationsBehaviour {
         await AUNotificationPermissions.registerForRemoteNotifications()
     }
 }
-
