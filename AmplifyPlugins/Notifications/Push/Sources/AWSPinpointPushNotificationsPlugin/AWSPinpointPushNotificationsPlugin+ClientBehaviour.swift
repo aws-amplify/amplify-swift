@@ -85,7 +85,9 @@ extension AWSPinpointPushNotificationsPlugin {
         guard let payload = userInfo.payload else {
             log.error(
                 """
-                No valid Pinpoint Push payload found. The recordNotification API only supports Pinpoint Campaigns and Journeys. Test messages will not be recorded.
+                No valid Pinpoint Push payload found.
+                The recordNotification API only supports Pinpoint Campaigns and Journeys.
+                Test messages will not be recorded.
                 """
             )
             return
@@ -140,7 +142,7 @@ extension AWSPinpointPushNotificationsPlugin {
     #elseif canImport(UIKit)
         let application = UIApplication.shared
     #endif
-        
+
     #if canImport(UIKit) || canImport(WatchKit)
         switch application.applicationState {
         case .background:
