@@ -31,7 +31,7 @@ extension GraphQLRequest {
                                             responseType: responseType.self,
                                             decodePath: document.name)
     }
-    
+
     static func getRequest<M: Model>(_ modelType: M.Type,
                                      byIdentifiers identifiers: [LazyReferenceIdentifier],
                                      apiName: String?) -> GraphQLRequest<M?> {
@@ -39,9 +39,9 @@ extension GraphQLRequest {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(identifiers: identifiers))
-        
+
         let document = documentBuilder.build()
-        
+
         return GraphQLRequest<M?>(apiName: apiName,
                                   document: document.stringValue,
                                   variables: document.variables,

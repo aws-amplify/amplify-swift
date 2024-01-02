@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Foundation
 
 extension GraphQLResponseDecoder {
-    
+
     /*
      The sequence of `responseType` checking attempts to decode to specific types before falling back to (5)
      serializing the data and letting the default decode run its course (6).
@@ -39,7 +39,7 @@ extension GraphQLResponseDecoder {
             graphQLData = graphQLDataWithTypeName
         }
         let serializedJSON: Data
-        
+
         if request.responseType == AnyModel.self { // 2
             let anyModel = try AnyModel(modelJSON: graphQLData)
             serializedJSON = try encoder.encode(anyModel)
@@ -89,7 +89,7 @@ extension GraphQLResponseDecoder {
         let variablesData = try JSONSerialization.data(withJSONObject: variables)
         return try decoder.decode([String: JSONValue].self, from: variablesData)
     }
-    
+
     // The Swift DataStore plugin has a dependency on using `__typename` from the response data.
     // For example, DataStore will use the type `MutationSync<AnyModel>` to decode the model with sync metadata by
     // pulling out the modelName from `__typename` and use that to decode to the actual model type.
