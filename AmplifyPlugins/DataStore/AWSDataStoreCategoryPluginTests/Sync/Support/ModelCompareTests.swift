@@ -211,8 +211,8 @@ class ModelCompareTests: BaseDataStoreTests {
         let name = "QPredGenName"
         let formatter = DateFormatter()
         formatter.dateFormat = TemporalFormat.short.dateFormat
-        let dateTime1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!)
-        let dateTime2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!)
+        let dateTime1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!, timeZone: .utc)
+        let dateTime2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!, timeZone: .utc)
         let qPredGen1 = QPredGen(id: id, name: name, myDateTime: dateTime1)
         let qPredGen2 = QPredGen(id: id, name: name, myDateTime: dateTime2)
         XCTAssertFalse(QPredGen.schema.compare(qPredGen1, qPredGen2))
@@ -340,8 +340,8 @@ class ModelCompareTests: BaseDataStoreTests {
         let artist = "Artist"
         let formatter = DateFormatter()
         formatter.dateFormat = TemporalFormat.short.dateFormat
-        let createdAt1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!)
-        let createdAt2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!)
+        let createdAt1 = Temporal.DateTime(formatter.date(from: "2021-09-01")!, timeZone: .utc)
+        let createdAt2 = Temporal.DateTime(formatter.date(from: "2020-09-01")!, timeZone: .utc)
         let recordCover1 = RecordCover(id: id, artist: artist, createdAt: createdAt1)
         let recordCover2 = RecordCover(id: id, artist: artist, createdAt: createdAt2)
         XCTAssertTrue(RecordCover.schema.compare(recordCover1, recordCover2))
