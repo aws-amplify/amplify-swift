@@ -16,7 +16,7 @@ struct InternalDatastoreConfiguration {
     /// Configuration of the query against the local storage, whether it should load
     /// the belongs-to/has-one associations or not.
     ///
-    ///`isEagerLoad` is true by default, unless the models contain the rootPath
+    /// `isEagerLoad` is true by default, unless the models contain the rootPath
     /// which is indication of the codegen that supports for lazy loading.
     var isEagerLoad: Bool = true
 
@@ -30,12 +30,12 @@ struct InternalDatastoreConfiguration {
 
     /// Configuration provided during Datastore initialization, this is a `public` configuration.
     let pluginConfiguration: DataStoreConfiguration
-    
-    mutating func updateIsSyncEnabled(_ isEnabled: Bool)  {
+
+    mutating func updateIsSyncEnabled(_ isEnabled: Bool) {
         self.isSyncEnabled = isEnabled
     }
 
-    mutating func updateIsEagerLoad(modelSchema: ModelSchema)  {
+    mutating func updateIsEagerLoad(modelSchema: ModelSchema) {
         guard isEagerLoad else {
             return
         }

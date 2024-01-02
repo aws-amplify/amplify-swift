@@ -22,7 +22,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?
-    
+
     var dataStoreStateSubject = PassthroughSubject<DataStoreState, DataStoreError>()
 
     var dispatchedModelSyncedEvents: [ModelName: AtomicValue<Bool>]
@@ -108,7 +108,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dispatchedModelSyncedEvents = [:]
     }
     #endif
-    
+
     /// Internal initializer for testing
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .testDefault(),
@@ -142,7 +142,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// them to `StorageEngine.setUp(modelSchemas:)`
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
-        
+
         for modelSchema in ModelRegistry.modelSchemas {
             dispatchedModelSyncedEvents[modelSchema.name] = AtomicValue(initialValue: false)
             configuration.updateIsEagerLoad(modelSchema: modelSchema)
@@ -151,7 +151,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
         ModelProviderRegistry.registerDecoder(DataStoreModelDecoder.self)
     }
-    
+
     /// Initializes the underlying storage engine
     /// - Returns: success if the engine is successfully initialized or
     ///            a failure with a DataStoreError

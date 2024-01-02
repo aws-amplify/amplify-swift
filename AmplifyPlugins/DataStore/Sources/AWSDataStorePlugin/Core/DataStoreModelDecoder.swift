@@ -10,14 +10,14 @@ import Amplify
 import SQLite
 
 public struct DataStoreModelDecoder: ModelProviderDecoder {
-    
+
     public static let DataStoreSource = "DataStore"
-    
+
     /// Metadata that contains the foreign key value of a parent model, which is the primary key of the model to be loaded.
     struct Metadata: Codable {
         let identifiers: [LazyReferenceIdentifier]
         let source: String
-        
+
         init(identifiers: [LazyReferenceIdentifier], source: String = DataStoreSource) {
             self.identifiers = identifiers
             self.source = source
@@ -27,7 +27,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
             try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self))
         }
     }
-    
+
     /// Create a SQLite payload that is capable of initializting a LazyReference, by decoding to `DataStoreModelDecoder.Metadata`.
     static func lazyInit(identifiers: [LazyReferenceIdentifier]) -> Metadata? {
         if identifiers.isEmpty {
@@ -35,7 +35,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         }
         return Metadata(identifiers: identifiers)
     }
-    
+
     public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
         if let metadata = try? DataStoreModelDecoder.Metadata(from: decoder) {
             if metadata.source == DataStoreSource {
@@ -44,11 +44,11 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
                 return nil
             }
         }
-        
+
         if let model = try? ModelType.init(from: decoder) {
             return DataStoreModelProvider(model: model).eraseToAnyModelProvider()
         }
-        
+
         return nil
     }
 }

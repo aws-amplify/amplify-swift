@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+// swiftlint:disable type_body_length file_length
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
 class ReconcileAndLocalSaveOperation: AsynchronousOperation {
@@ -42,7 +43,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 
     var isEagerLoad: Bool = true
-    
+
     init(modelSchema: ModelSchema,
          remoteModels: [RemoteModel],
          storageAdapter: StorageEngineAdapter?,
@@ -56,13 +57,13 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
 
         self.cancellables = Set<AnyCancellable>()
-        
+
         // `isEagerLoad` is true by default, unless the models contain the rootPath
         // which is indication that codegenerated model types support for lazy loading.
         if isEagerLoad && ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil {
             self.isEagerLoad = false
         }
-        
+
         super.init()
 
         self.stateMachineSink = self.stateMachine
@@ -469,3 +470,4 @@ enum ReconcileAndLocalSaveOperationEvent {
     case mutationEvent(MutationEvent)
     case mutationEventDropped(modelName: String, error: DataStoreError? = nil)
 }
+// swiftlint:enable type_body_length file_length

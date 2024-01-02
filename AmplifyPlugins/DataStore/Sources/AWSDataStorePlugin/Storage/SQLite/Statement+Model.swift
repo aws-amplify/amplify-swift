@@ -53,7 +53,6 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: .dataStore)
     }
 
-
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement,
@@ -173,8 +172,7 @@ extension Statement: StatementModelConvertible {
 
     private func convertCollection(field: ModelField, schema: ModelSchema, from element: Element, path: [String]) -> Any? {
         if field.isArray && field.hasAssociation,
-           case let .some(.hasMany(associatedFieldName: associatedFieldName, associatedFieldNames: associatedFieldNames)) = field.association
-        {
+           case let .some(.hasMany(associatedFieldName: associatedFieldName, associatedFieldNames: associatedFieldNames)) = field.association {
             // Construct the lazy list based on the field reference name and `@@primarykey` or primary key field of the parent
             if associatedFieldNames.count <= 1, let associatedFieldName = associatedFieldName {
                 let primaryKeyName = schema.primaryKey.isCompositeKey
@@ -221,12 +219,11 @@ extension Statement: StatementModelConvertible {
 
     private func schemeMetadata(schema: ModelSchema, element: Element, path: [String]) -> ModelValues {
         var metadata = [
-            "__typename": schema.name,
+            "__typename": schema.name
         ]
 
         if schema.primaryKey.isCompositeKey,
-           let compositeKey = getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName])
-        {
+           let compositeKey = getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName]) {
             metadata.updateValue(String(describing: compositeKey), forKey: ModelIdentifierFormat.Custom.sqlColumnName)
         }
 

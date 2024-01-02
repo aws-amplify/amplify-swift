@@ -47,7 +47,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
-            
+
             self.authTypesIterator = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                    operation: mutationType.toModelOperation())
         }

@@ -29,13 +29,13 @@ final class InitialSyncOperation: AsynchronousOperation {
     private var syncPageSize: UInt {
         return dataStoreConfiguration.syncPageSize
     }
-    
+
     private var syncPredicate: QueryPredicate? {
         return dataStoreConfiguration.syncExpressions.first {
             $0.modelSchema.name == self.modelSchema.name
         }?.modelPredicate()
     }
-    
+
     private var syncPredicateString: String? {
         guard let syncPredicate = syncPredicate,
               let data = try? syncPredicateEncoder.encode(syncPredicate) else {
@@ -43,18 +43,18 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
         return String(data: data, encoding: .utf8)
     }
-    
+
     private lazy var _syncPredicateEncoder: JSONEncoder = {
         var encoder = JSONEncoder()
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
         encoder.outputFormatting = [.sortedKeys]
         return encoder
     }()
-    
+
     var syncPredicateEncoder: JSONEncoder {
         _syncPredicateEncoder
     }
-    
+
     private let initialSyncOperationTopic: PassthroughSubject<InitialSyncOperationEvent, DataStoreError>
     var publisher: AnyPublisher<InitialSyncOperationEvent, DataStoreError> {
         return initialSyncOperationTopic.eraseToAnyPublisher()
@@ -110,7 +110,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return nil
         }
     }
-    
+
     /// Retrieve the lastSync time for the request before performing the query operation.
     ///
     /// - Parameter lastSyncMetadata: Retrieved persisted sync metadata for this model
@@ -129,7 +129,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         initialSyncOperationTopic.send(.started(modelName: modelSchema.name, syncType: syncType))
         return lastSyncTime
     }
-    
+
     private func syncPredicateChanged(_ lastSyncPredicate: String?, _ currentSyncPredicate: String?) -> Bool {
         switch (lastSyncPredicate, currentSyncPredicate) {
         case (.some, .some):
@@ -140,7 +140,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return false
         }
     }
-    
+
     private func getLastSyncTime(lastSync: Int64?) -> Int64? {
         guard let lastSync = lastSync else {
             return nil
@@ -174,7 +174,7 @@ final class InitialSyncOperation: AsynchronousOperation {
                 if self.isAuthSignedOutError(apiError: apiError) {
                     self.log.error("Sync for \(self.modelSchema.name) failed due to signed out error \(apiError.errorDescription)")
                 }
-                
+
                 // TODO: Retry query on error
                 let error = DataStoreError.api(apiError)
                 self.dataStoreConfiguration.errorHandler(error)
@@ -250,7 +250,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             finish(result: .failure(DataStoreError.nilStorageAdapter()))
             return
         }
-        
+
         let syncMetadata = ModelSyncMetadata(id: modelSchema.name,
                                              lastSync: lastSyncTime,
                                              syncPredicate: syncPredicateString)
