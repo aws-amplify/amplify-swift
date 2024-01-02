@@ -135,7 +135,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
                 return
             }
 
-            if mutationEvent.version == 1 {
+            if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {
                 XCTAssertEqual(post, newPost)
             }
 
