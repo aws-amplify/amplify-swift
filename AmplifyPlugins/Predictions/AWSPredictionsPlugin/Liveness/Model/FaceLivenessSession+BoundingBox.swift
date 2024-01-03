@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable identifier_name
 extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
     public struct BoundingBox: Codable {
@@ -28,3 +29,4 @@ extension FaceLivenessSession {
         }
     }
 }
+// swiftlint:enable identifier_name

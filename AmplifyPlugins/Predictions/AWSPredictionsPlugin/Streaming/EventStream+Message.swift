@@ -61,5 +61,3 @@ extension EventStream {
         let messageCRC: Int32
     }
 }
-
-

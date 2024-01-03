@@ -66,8 +66,6 @@ class IdentifyMultiService<Output> {
         }
     }
 
-
-
     func offlineResult() async throws -> Output {
         guard let offlineService = coreMLService else {
             throw PredictionsError.client(.offlineIdentityServiceUnavailable)
@@ -169,7 +167,6 @@ class IdentifyMultiService<Output> {
         )
     }
 }
-
 
 extension Predictions.Label: Hashable {
     public static func == (lhs: Predictions.Label, rhs: Predictions.Label) -> Bool {

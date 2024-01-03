@@ -78,7 +78,6 @@ extension EventStream {
             return message
         }
 
-
         private func headers(from data: Data) throws -> [Header] {
             // Create a mutable slice of the entire (`UnboundedRange_`)
             // data provided for decoding.
@@ -92,7 +91,7 @@ extension EventStream {
             // If the data is malformed, we'll hit an error
             // in one of the decoding processes. Therefore
             // there's no risk of an infinite while loop here.
-            while data.count > 0 {
+            while !data.isEmpty {
                 // Despite this being a single byte (UInt8), we're converted it
                 // to an Int to prevent the need for multiple transformations.
                 // It's data representation is unimportant for the decoding
@@ -166,7 +165,6 @@ fileprivate extension Data {
         self.withUnsafeBytes { $0.load(as: type) }.bigEndian
     }
 }
-
 
 /**
  Time Profiling
