@@ -129,7 +129,12 @@ class AWSS3Adapter: AWSS3Behavior {
                 S3ClientTypes.CompletedPart(eTag: $0.eTag, partNumber: $0.partNumber)
             }
             let completedMultipartUpload = S3ClientTypes.CompletedMultipartUpload(parts: parts)
-            let input = CompleteMultipartUploadInput(bucket: request.bucket, key: request.key, multipartUpload: completedMultipartUpload, uploadId: request.uploadId)
+            let input = CompleteMultipartUploadInput(
+                bucket: request.bucket,
+                key: request.key,
+                multipartUpload: completedMultipartUpload,
+                uploadId: request.uploadId
+            )
             do {
                 let response = try await awsS3.completeMultipartUpload(input: input)
                 guard let eTag = response.eTag else {

@@ -43,7 +43,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     let requestHeaders: RequestHeaders?
     weak var session: StorageMultipartUploadSession?
     let metadata: [String: String]?
-    
+
     init(serviceProxy: StorageServiceProxy,
          fileSystem: FileSystem = .default,
          bucket: String,
