@@ -82,7 +82,7 @@ extension Model {
                     existingFieldOptionalValue = self[internalFieldName]
                 }
             }
-            
+
             guard let existingFieldValue = existingFieldOptionalValue else {
                 return nil
             }
@@ -146,7 +146,6 @@ extension Model {
 
         return values
     }
-
 
     /// Given a serialized JSON model, returns the serialized value of its primary key.
     /// The returned value is either the value of the field or the serialization of multiple values in case of a composite PK.

@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+// swiftlint:disable type_body_length file_length
 class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     weak var storageAdapter: StorageEngineAdapter?
@@ -84,10 +85,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             OutgoingMutationQueue(storageAdapter: storageAdapter,
                                   dataStoreConfiguration: dataStoreConfiguration,
                                   authModeStrategy: resolvedAuthStrategy)
-
+        // swiftlint:disable line_length
         let reconciliationQueueFactory = reconciliationQueueFactory ??
         AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:disableSubscriptions:)
-
+        // swiftlint:enable line_length
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:)
 
@@ -245,7 +246,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
     }
 
-    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
+    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
         mutationEventIngester.submit(mutationEvent: mutationEvent, completion: completion)
     }
 
@@ -278,7 +279,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             }
         }
     }
-    
+
     private func initializeSubscriptions(api: APICategoryGraphQLBehaviorExtended,
                                          storageAdapter: StorageEngineAdapter) async {
         log.debug("[InitializeSubscription] \(#function)")
@@ -448,3 +449,4 @@ extension RemoteSyncEngine: Resettable {
         }
     }
 }
+// swiftlint:enable type_body_length file_length
