@@ -51,7 +51,7 @@ extension Amplify {
         ModelListDecoderRegistry.reset()
         ModelProviderRegistry.reset()
         log.verbose("Resetting ModelRegistry, ModelListDecoderRegistry, ModelProviderRegistry finished")
-        
+
 #if os(iOS)
         await MainActor.run {
             devMenu = nil

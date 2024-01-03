@@ -40,7 +40,7 @@ public protocol ModelListProvider {
     associatedtype Element: Model
 
     func getState() -> ModelListProviderState<Element>
-    
+
     ///  Retrieve the array of `Element` from the data source asychronously.
     func load() async throws -> [Element]
 
@@ -52,7 +52,7 @@ public protocol ModelListProvider {
     /// Asynchronously retrieve the next page as a new in-memory List object. Returns a failure if there
     /// is no next page of results. You can validate whether the list has another page with `hasNextPage()`.
     func getNextPage() async throws -> List<Element>
-    
+
     /// Custom encoder
     func encode(to encoder: Encoder) throws
 }
@@ -67,7 +67,7 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     private let hasNextPageClosure: () -> Bool
     private let getNextPageAsync: () async throws -> List<Element>
     private let encodeClosure: (Encoder) throws -> Void
-    
+
     public init<Provider: ModelListProvider>(
         provider: Provider
     ) where Provider.Element == Self.Element {
@@ -81,7 +81,7 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     public func getState() -> ModelListProviderState<Element> {
         getStateClosure()
     }
-    
+
     public func load() async throws -> [Element] {
         try await loadAsync()
     }
@@ -93,7 +93,7 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     public func getNextPage() async throws -> List<Element> {
         try await getNextPageAsync()
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         try encodeClosure(encoder)
     }

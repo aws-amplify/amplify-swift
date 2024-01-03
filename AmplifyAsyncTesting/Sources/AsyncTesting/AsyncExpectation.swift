@@ -33,11 +33,11 @@ public actor AsyncExpectation {
     public var isFulfilled: Bool {
         state == .fulfilled
     }
-    
+
     public func setShouldTrigger(_ shouldTrigger: Bool) {
         self.isInverted = !shouldTrigger
     }
-    
+
     public func setExpectedFulfillmentCount(_ count: Int) {
         self.expectedFulfillmentCount = count
     }

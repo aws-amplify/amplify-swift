@@ -15,7 +15,7 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let model: Model
     private let mutationType: GraphQLMutationType
-    
+
     public init(model: Model, mutationType: GraphQLMutationType) {
         self.model = model
         self.mutationType = mutationType

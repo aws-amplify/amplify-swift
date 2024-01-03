@@ -9,11 +9,16 @@ import Foundation
 
 extension AuthCategory: AuthCategoryDeviceBehavior {
 
-    public func fetchDevices( options: AuthFetchDevicesRequest.Options? = nil) async throws -> [AuthDevice] {
+    public func fetchDevices(
+        options: AuthFetchDevicesRequest.Options? = nil
+    ) async throws -> [AuthDevice] {
         return try await plugin.fetchDevices(options: options)
     }
 
-    public func forgetDevice( _ device: AuthDevice? = nil, options: AuthForgetDeviceRequest.Options? = nil) async throws {
+    public func forgetDevice(
+        _ device: AuthDevice? = nil,
+        options: AuthForgetDeviceRequest.Options? = nil
+    ) async throws {
         try await plugin.forgetDevice(device, options: options)
     }
 

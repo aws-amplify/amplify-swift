@@ -13,7 +13,7 @@ public protocol AuthAWSCredentialsProvider {
     func getAWSCredentials() -> Result<AWSCredentials, AuthError>
 }
 
-public extension AuthAWSCredentialsProvider where Self:AWSAuthSessionBehavior {
+public extension AuthAWSCredentialsProvider where Self: AWSAuthSessionBehavior {
     /// Return the most recent Result of fetching the AWS Credentials. If the temporary credentials are expired, returns
     /// a `AuthError.sessionExpired` failure.
     func getAWSCredentials() -> Result<AWSCredentials, AuthError> {

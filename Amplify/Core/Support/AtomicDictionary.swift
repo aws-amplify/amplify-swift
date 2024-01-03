@@ -46,7 +46,7 @@ public final class AtomicDictionary<Key: Hashable, Value> {
     public func set(value: Value, forKey key: Key) {
         lock.execute { self.value[key] = value }
     }
-    
+
     public subscript(key: Key) -> Value? {
         get {
             getValue(forKey: key)
@@ -70,7 +70,7 @@ extension AtomicDictionary: ExpressibleByDictionaryLiteral {
 
 extension AtomicDictionary: Sequence {
     typealias Iterator = DictionaryIterator
-        
+
     public func makeIterator() -> DictionaryIterator<Key, Value> {
         lock.execute {
             value.makeIterator()

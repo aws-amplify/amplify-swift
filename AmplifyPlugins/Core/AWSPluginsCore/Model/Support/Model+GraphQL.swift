@@ -39,7 +39,7 @@ extension Model {
 
         for (modelField, modelFieldValue) in fields {
             let name = modelField.name
-            
+
             guard let value = modelFieldValue else {
                 // Scenario: When there is no model field value, set `nil` for removal of values or deassociation.
                 // 1. It is unnessessary to set `nil` values for create mutations.
@@ -68,7 +68,7 @@ extension Model {
                     // 3. Set field values to `nil` for removal of values.
                     input.updateValue(nil, forKey: name)
                 }
-                
+
                 continue
             }
 

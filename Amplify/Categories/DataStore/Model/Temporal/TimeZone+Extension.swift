@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Foundation
 
 extension TimeZone {
@@ -31,7 +30,7 @@ extension TimeZone {
     }
 }
 
-
+// swiftlint:disable identifier_name
 /// ISO8601 Time Zone formats
 /// - Note:
 ///   `±hh:mm:ss` is not a standard of ISO8601 date formate. It's supported by `AWSDateTime` exclusively.
@@ -39,7 +38,7 @@ extension TimeZone {
 /// references:
 ///   https://en.wikipedia.org/wiki/ISO_8601#Time_zone_designators
 ///   https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html#graph-ql-aws-appsync-scalars
-fileprivate enum ISO8601TimeZoneFormat {
+private enum ISO8601TimeZoneFormat {
     case utc, hh, hhmm, hh_mm, hh_mm_ss
 
     var format: String {
@@ -98,13 +97,12 @@ fileprivate enum ISO8601TimeZoneFormat {
     }
 }
 
-fileprivate enum ISO8601TimeZonePart {
+private enum ISO8601TimeZonePart {
     case utc
     case hh(hours: Int)
     case hhmm(hours: Int, minutes: Int)
     case hh_mm(hours: Int, minuts: Int)
     case hh_mm_ss(hours: Int, minutes: Int, seconds: Int)
-
 
     static func from(iso8601DateString: String) -> ISO8601TimeZonePart? {
         return tryExtract(from: iso8601DateString, with: .utc)
@@ -116,7 +114,7 @@ fileprivate enum ISO8601TimeZonePart {
     }
 }
 
-fileprivate func tryExtract(
+private func tryExtract(
     from dateString: String,
     with format: ISO8601TimeZoneFormat
 ) -> ISO8601TimeZonePart? {
@@ -148,3 +146,4 @@ fileprivate func tryExtract(
     case .hh_mm_ss: return .hh_mm_ss(hours: parts[0], minutes: parts[1], seconds: parts[2])
     }
 }
+// swiftlint:enable identifier_name

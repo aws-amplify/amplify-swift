@@ -98,8 +98,14 @@ public enum ModelAssociation {
         return .belongsTo(associatedFieldName: nil, targetNames: targetNames)
     }
 
-    public static func hasMany(associatedWith: CodingKey? = nil, associatedFields: [CodingKey] = []) -> ModelAssociation {
-        return .hasMany(associatedFieldName: associatedWith?.stringValue, associatedFieldNames: associatedFields.map { $0.stringValue })
+    public static func hasMany(
+        associatedWith: CodingKey? = nil,
+        associatedFields: [CodingKey] = []
+    ) -> ModelAssociation {
+        return .hasMany(
+            associatedFieldName: associatedWith?.stringValue,
+            associatedFieldNames: associatedFields.map { $0.stringValue }
+        )
     }
 
     @available(*, deprecated, message: "Use hasOne(associatedWith:targetNames:)")
@@ -230,7 +236,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var _isBelongsToOrHasOne: Bool {
+    public var _isBelongsToOrHasOne: Bool { // swiftlint:disable:this identifier_name
         switch association {
         case .belongsTo, .hasOne:
             return true

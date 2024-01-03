@@ -44,7 +44,7 @@ protocol ModelSyncGraphQLRequestFactory {
                              subscriptionType: GraphQLSubscriptionType,
                              claims: IdentityClaimsDictionary,
                              authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
-    
+
     static func syncQuery(modelSchema: ModelSchema,
                           where predicate: QueryPredicate?,
                           limit: Int?,
@@ -210,7 +210,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   decodePath: document.name,
                                                   options: requestOptions)
     }
-    
+
     public static func syncQuery(modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,

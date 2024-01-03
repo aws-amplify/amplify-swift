@@ -32,7 +32,7 @@ public protocol PropertyPath {
 /// i.e. a `struct` representing another `Model`.
 ///
 /// - SeeAlso: `ModelPath`
-public protocol PropertyContainerPath : PropertyPath {
+public protocol PropertyContainerPath: PropertyPath {
 
     /// 
     func getKeyPath() -> String
@@ -43,7 +43,7 @@ public protocol PropertyContainerPath : PropertyPath {
 }
 
 extension PropertyContainerPath {
-    
+
     public func getKeyPath() -> String {
         var metadata = getMetadata()
         var path = [String]()
@@ -80,7 +80,7 @@ public struct FieldPath<ValueType>: PropertyPath {
 ///   var blog: ModelPath<Blog> { BlogModelPath(name: "blog", parent: self) }
 /// }
 /// ```
-open class ModelPath<ModelType: Model> : PropertyContainerPath {
+open class ModelPath<ModelType: Model>: PropertyContainerPath {
 
     private let metadata: PropertyPathMetadata
 
@@ -123,11 +123,11 @@ open class ModelPath<ModelType: Model> : PropertyContainerPath {
     public func time(_ name: String) -> FieldPath<Temporal.Time> {
         FieldPath(name: name, parent: self)
     }
-    
+
     public func int(_ name: String) -> FieldPath<Int> {
         FieldPath(name: name, parent: self)
     }
-    
+
     public func double(_ name: String) -> FieldPath<Double> {
         FieldPath(name: name, parent: self)
     }

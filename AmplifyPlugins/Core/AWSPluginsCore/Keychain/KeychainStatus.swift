@@ -46,7 +46,10 @@ extension KeychainStatus: CustomStringConvertible {
         case .itemNotFound:
             return "The specified item could not be found in the keychain."
         case .missingEntitlement:
-            return "Internal error when a required entitlement isn't present, client has neither application-identifier nor keychain-access-groups entitlements."
+            return """
+            Internal error when a required entitlement isn't present,
+            client has neither application-identifier nor keychain-access-groups entitlements.
+            """
         case .unexpectedError(let status):
             return "Unexpected error has occurred with status: \(status)."
         }

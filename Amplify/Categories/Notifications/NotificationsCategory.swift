@@ -11,7 +11,7 @@ import Foundation
 public final class NotificationsCategory {
 
     /// The Push Notifications category
-    public internal(set) var Push = PushNotificationsCategory()
+    public internal(set) var Push = PushNotificationsCategory() // swiftlint:disable:this identifier_name
 
     /// The current available subcategories that have been configured
     var subcategories: [NotificationsSubcategoryBehaviour] {

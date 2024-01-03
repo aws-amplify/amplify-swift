@@ -39,7 +39,7 @@ public protocol DataStoreBaseBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           where predicate: QueryPredicate?) async throws
-    
+
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: String,
                           where predicate: QueryPredicate?) async throws where M: ModelIdentifiable,
@@ -82,7 +82,7 @@ public protocol DataStoreSubscribeBehavior {
     /// Returns an AmplifyAsyncThrowingSequence for model changes (create, updates, delete)
     /// - Parameter modelType: The model type to observe
     func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent>
-    
+
     /// Returns a Publisher for query snapshots.
     ///
     /// - Parameters:

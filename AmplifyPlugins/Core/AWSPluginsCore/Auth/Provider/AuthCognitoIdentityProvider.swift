@@ -15,7 +15,7 @@ public protocol AuthCognitoIdentityProvider {
     func getUserSub() -> Result<String, AuthError>
 }
 
-public extension AuthCognitoIdentityProvider where Self:AWSAuthSessionBehavior {
+public extension AuthCognitoIdentityProvider where Self: AWSAuthSessionBehavior {
     func getIdentityId() -> Result<String, AuthError> {
         identityIdResult
     }

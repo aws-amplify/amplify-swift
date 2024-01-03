@@ -16,5 +16,5 @@ public extension AsyncSequence {
           try await block(element)
         }
       }
-    
+
 }
