@@ -45,7 +45,7 @@ public struct AWSPinpointErrorConstants {
         "Region is empty",
         "Ensure should not be empty"
     )
-    
+
     public static let deviceOffline: AWSPinpointErrorString = (
         "The device does not have internet access. Please ensure the device is online and try again.",
         ""

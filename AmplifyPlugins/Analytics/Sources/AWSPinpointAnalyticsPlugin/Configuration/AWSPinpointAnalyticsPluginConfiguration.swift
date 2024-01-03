@@ -35,7 +35,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     let autoFlushEventsInterval: Int
     let trackAppSessions: Bool
     let autoSessionTrackingInterval: Int
-    
+
     private static let logger = Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: Self.self))
 
     init(_ configuration: JSONValue) throws {
@@ -52,13 +52,13 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
                 AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.recoverySuggestion
             )
         }
-        
+
         let pluginConfiguration = try AWSPinpointPluginConfiguration(pinpointAnalyticsConfig)
-        
+
         let autoFlushEventsInterval = try Self.getAutoFlushEventsInterval(configObject)
         let trackAppSessions = try Self.getTrackAppSessions(configObject)
         let autoSessionTrackingInterval = try Self.getAutoSessionTrackingInterval(configObject)
-        
+
         // Warn users in case they set different regions between pinpointTargeting and pinpointAnalytics
         if let pinpointTargetingJson = configObject[Self.pinpointTargetingConfigKey],
            let pinpointTargetingConfig = try? AWSPinpointPluginConfiguration(pinpointTargetingJson),

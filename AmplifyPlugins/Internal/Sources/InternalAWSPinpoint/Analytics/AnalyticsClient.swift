@@ -71,21 +71,20 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         self.eventRecorder = eventRecorder
         self.sessionProvider = sessionProvider
     }
-    
+
     // Actors no longer use 'convenience' for inits. This is a warning in swift 5.7 and an error in swift 6+.
     // However, 'convenience' is required to build with swift <5.7
 #if swift(>=5.7)
     init(applicationId: String,
          pinpointClient: PinpointClientProtocol,
          endpointClient: EndpointClientBehaviour,
-         sessionProvider: @escaping SessionProvider) throws
-    {
+         sessionProvider: @escaping SessionProvider) throws {
         let dbAdapter = try SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix,
                                                       databaseName: applicationId)
         let eventRecorder = try EventRecorder(appId: applicationId,
                                               storage: AnalyticsEventSQLStorage(dbAdapter: dbAdapter),
                                               pinpointClient: pinpointClient, endpointClient: endpointClient)
-        
+
         self.init(eventRecorder: eventRecorder, sessionProvider: sessionProvider)
     }
 #else
@@ -98,11 +97,11 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         let eventRecorder = try EventRecorder(appId: applicationId,
                                               storage: AnalyticsEventSQLStorage(dbAdapter: dbAdapter),
                                               pinpointClient: pinpointClient, endpointClient: endpointClient)
-        
+
         self.init(eventRecorder: eventRecorder, sessionProvider: sessionProvider)
     }
 #endif
-    
+
     nonisolated var pinpointClient: PinpointClientProtocol {
         return eventRecorder.pinpointClient
     }
@@ -278,7 +277,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
             automaticSubmitEventsTimer = nil
             return
         }
-        
+
         log.info("Enabling Automatic Submission of Events after \(interval) seconds.")
         automaticSubmitEventsTimer = RepeatingTimer.createRepeatingTimer(
             timeInterval: automaticSubmitEventsInterval,
@@ -302,7 +301,7 @@ extension AnalyticsClient: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    
+
     public nonisolated var log: Logger {
         Self.log
     }

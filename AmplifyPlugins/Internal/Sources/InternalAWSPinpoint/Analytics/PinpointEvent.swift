@@ -93,7 +93,7 @@ extension PinpointEvent: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    
+
     public var log: Logger {
         Self.log
     }
@@ -117,12 +117,12 @@ extension PinpointEvent: CustomStringConvertible {
         """
         return string
     }
-    
+
     private func string(from dictionary: AnalyticsProperties) -> String {
         if dictionary.isEmpty {
             return "[:]"
         }
-        
+
         var string = ""
         for (key, value) in dictionary.sorted(by: { $0.key < $1.key}) {
             string += "\n\t\t\"\(key)\": \"\(value)\""
