@@ -16,7 +16,7 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
     init(tokenAuthProvider: AmplifyAuthTokenProvider) {
         self.wrappedAuthTokenProvider = tokenAuthProvider
     }
-    
+
     func getUserPoolAccessToken() async throws -> String {
         try await wrappedAuthTokenProvider.getLatestAuthToken()
     }

@@ -92,7 +92,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             return .loaded(elements)
         }
     }
-    
+
     public func load() async throws -> [Element] {
         switch loadedState {
         case .loaded(let elements, _, _):
@@ -101,7 +101,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             return try await load(associatedIdentifiers: associatedIdentifiers, associatedFields: associatedFields)
         }
     }
-    
+
     //// Internal `load` to perform the retrieval of the first page and storing it in memory
     func load(associatedIdentifiers: [String],
               associatedFields: [String]) async throws -> [Element] {
@@ -113,7 +113,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             filter = predicate.graphQLFilter(for: Element.schema)
         } else {
             var queryPredicates: [QueryPredicateOperation] = []
-            
+
             let columnNames = columnNames(fields: associatedFields, Element.schema)
             let predicateValues = zip(columnNames, associatedIdentifiers)
             for (identifierName, identifierValue) in predicateValues {
@@ -123,8 +123,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             let groupedQueryPredicates = QueryPredicateGroup(type: .and, predicates: queryPredicates)
             filter = groupedQueryPredicates.graphQLFilter(for: Element.schema)
         }
-        
-        
+
         let request = GraphQLRequest<JSONValue>.listQuery(responseType: JSONValue.self,
                                                           modelSchema: Element.schema,
                                                           filter: filter,
@@ -142,7 +141,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                                             AWSAppSyncListResponse from: \(graphQLData)
                                             """, "", nil)
                 }
-                
+
                 self.loadedState = .loaded(elements: listResponse.items,
                                            nextToken: listResponse.nextToken,
                                            filter: filter)
@@ -163,7 +162,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             throw error
         }
     }
-    
+
     public func hasNextPage() -> Bool {
         switch loadedState {
         case .loaded(_, let nextToken, _):
@@ -172,7 +171,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             return false
         }
     }
-    
+
     public func getNextPage() async throws -> List<Element> {
         guard case .loaded(_, let nextTokenOptional, let filter) = loadedState else {
             throw CoreError.clientValidation("""
@@ -219,7 +218,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             throw error
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded(let associatedIdentifiers, let associatedFields):
@@ -239,9 +238,9 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             try elements.encode(to: encoder)
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     /// Retrieve the column names for the specified field `field` for this schema.
     func columnNames(fields: [String], _ modelSchema: ModelSchema) -> [String] {
         // Associated field names have already been resolved from the parent model's has-many targetNames
@@ -257,14 +256,14 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         case .belongsTo(_, let targetNames), .hasOne(_, let targetNames):
             guard !targetNames.isEmpty else {
                 return [defaultFieldName]
-                
+
             }
             return targetNames
         default:
             return fields
         }
     }
-    
+
 }
 
 extension AppSyncListProvider: DefaultLogger {

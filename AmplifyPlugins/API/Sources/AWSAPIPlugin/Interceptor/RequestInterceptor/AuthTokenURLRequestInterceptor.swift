@@ -10,9 +10,9 @@ import AWSPluginsCore
 import Foundation
 
 struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
-    
+
     static let AWSDateISO8601DateFormat2 = "yyyyMMdd'T'HHmmss'Z'"
-    
+
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
     let authTokenProvider: AuthTokenProvider
 
@@ -34,14 +34,14 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
                                 forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
         mutableRequest.addValue(userAgent,
                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
-        
+
         let token: String
         do {
             token = try await authTokenProvider.getUserPoolAccessToken()
         } catch {
             throw APIError.operationError("Failed to retrieve authorization token.", "", error)
         }
-        
+
         mutableRequest.setValue(token, forHTTPHeaderField: "authorization")
         return mutableRequest as URLRequest
     }

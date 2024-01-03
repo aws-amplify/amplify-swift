@@ -23,7 +23,7 @@ public extension AWSAPIPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func get(request: RESTRequest) async throws -> RESTTask.Success {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .get)
@@ -52,7 +52,7 @@ public extension AWSAPIPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func put(request: RESTRequest) async throws -> RESTTask.Success {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .put)
@@ -81,7 +81,7 @@ public extension AWSAPIPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func post(request: RESTRequest) async throws -> RESTTask.Success {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .post)
@@ -109,7 +109,7 @@ public extension AWSAPIPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func patch(request: RESTRequest) async throws -> RESTTask.Success {
         let operationRequest = RESTOperationRequest(request: request, operationType: .patch)
 
@@ -137,7 +137,7 @@ public extension AWSAPIPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func delete(request: RESTRequest) async throws -> RESTTask.Success {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .delete)
@@ -166,7 +166,7 @@ public extension AWSAPIPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func head(request: RESTRequest) async throws -> RESTTask.Success {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .head)
