@@ -70,7 +70,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
 #if os(iOS) || os(macOS)
     var authenticationSessionFactory = ASWebAuthenticationSession.init(url:callbackURLScheme:completionHandler:)
-    
+
     private func createAuthenticationSession(
         url: URL,
         callbackURLScheme: String?,

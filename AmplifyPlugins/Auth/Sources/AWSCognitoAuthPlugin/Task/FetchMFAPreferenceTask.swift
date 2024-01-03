@@ -56,8 +56,8 @@ class FetchMFAPreferenceTask: AuthFetchMFAPreferenceTask, DefaultLogger {
         let input = GetUserInput(accessToken: accessToken)
         let result = try await userPoolService.getUser(input: input)
 
-        var enabledList: Set<MFAType>? = nil
-        var preferred: MFAType? = nil
+        var enabledList: Set<MFAType>?
+        var preferred: MFAType?
 
         for mfaValue in result.userMFASettingList ?? [] {
 

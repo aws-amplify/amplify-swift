@@ -31,7 +31,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
     func execute() async throws -> AuthSignInResult {
         log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
-        //Check if we have a user pool configuration
+        // Check if we have a user pool configuration
         guard let userPoolConfiguration = authConfiguration.getUserPoolConfiguration() else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthError.configuration(

@@ -46,6 +46,6 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger {
 
         }
     }
-    
+
 }
 #endif

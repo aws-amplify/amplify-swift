@@ -8,11 +8,13 @@ import Foundation
 
 extension SignInState {
 
+    // swiftlint:disable:next nesting
     struct Resolver: StateMachineResolver {
 
         typealias StateType = SignInState
         let defaultState = SignInState.notStarted
 
+        // swiftlint:disable:next cyclomatic_complexity function_body_length
         func resolve(
             oldState: SignInState,
             byApplying event: StateMachineEvent)
@@ -296,7 +298,6 @@ extension SignInState {
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
 
-
             case .resolvingTOTPSetup(let setUpTOTPState, let signInEventData):
 
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
@@ -340,7 +341,6 @@ extension SignInState {
                     resolution.newState,
                     signInEventData)
                 return .init(newState: settingUpTOTPState, actions: resolution.actions)
-
 
             case .resolvingDeviceSrpa(let deviceSrpState):
                 let signInMethod = SignInMethod.apiBased(.userSRP)

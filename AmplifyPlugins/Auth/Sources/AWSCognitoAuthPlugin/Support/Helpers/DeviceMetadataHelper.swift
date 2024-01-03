@@ -20,12 +20,10 @@ struct DeviceMetadataHelper {
                 if case .deviceMetadata(let fetchedMetadata, _) = data {
                     return fetchedMetadata
                 }
-            }
-            catch KeychainStoreError.itemNotFound {
+            } catch KeychainStoreError.itemNotFound {
                 let logger = (environment as? LoggerProvider)?.logger
                 logger?.info("No existing device metadata found. \(environment)")
-            }
-            catch {
+            } catch {
                 let logger = (environment as? LoggerProvider)?.logger
                 logger?.error("Unable to fetch device metadata with error: \(error)")
             }

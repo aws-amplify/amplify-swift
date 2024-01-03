@@ -108,7 +108,7 @@ extension AWSCognitoAuthPlugin {
             }
 
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
-                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase:  Int(maxRetryUnwrapped))
+                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
 
             return CognitoIdentityProviderClient(config: configuration)
@@ -131,7 +131,7 @@ extension AWSCognitoAuthPlugin {
             }
 
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
-                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase:  Int(maxRetryUnwrapped))
+                configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
 
             return CognitoIdentityClient(config: configuration)

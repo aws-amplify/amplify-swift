@@ -42,7 +42,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             _ = try await client.confirmSignUp(input: input)
             log.verbose("Received success")
             return AuthSignUpResult(.done, userID: nil)
-        }  catch let error as AuthErrorConvertible {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch {
             throw AuthError.configuration(
@@ -52,5 +52,4 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             )
         }
     }
-    
 }

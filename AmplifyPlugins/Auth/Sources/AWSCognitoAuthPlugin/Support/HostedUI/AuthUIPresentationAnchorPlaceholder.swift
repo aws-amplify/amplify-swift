@@ -15,9 +15,9 @@ typealias AuthUIPresentationAnchor = AuthUIPresentationAnchorPlaceholder
 /// It cannot be initialized and exists strictly to facilitate cross-platform compilation without requiring compiler
 /// checks thorughout the codebase.
 class AuthUIPresentationAnchorPlaceholder: Equatable {
-    
+
     private init() {}
-    
+
     public static func == (lhs: AuthUIPresentationAnchorPlaceholder,
                            rhs: AuthUIPresentationAnchorPlaceholder) -> Bool {
         true

@@ -67,5 +67,4 @@ extension SetUpTOTPEvent.EventType: Equatable {
         }
     }
 
-
 }

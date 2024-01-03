@@ -19,11 +19,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
                                            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await taskQueue.sync {
             return try await task.value
-        } as! [AuthDevice]
+        } as! [AuthDevice] // swiftlint:disable:this force_cast
     }
 
-    public func forgetDevice(_ device: AuthDevice? = nil,
-                              options: AuthForgetDeviceRequest.Options? = nil) async throws {
+    public func forgetDevice(
+        _ device: AuthDevice? = nil,
+        options: AuthForgetDeviceRequest.Options? = nil
+    ) async throws {
         let options = options ?? AuthForgetDeviceRequest.Options()
         let request = AuthForgetDeviceRequest(device: device, options: options)
         let task = AWSAuthForgetDeviceTask(request,

@@ -13,7 +13,7 @@ struct AmplifySRPClient: SRPClientBehavior {
 
     let commonState: SRPCommonState
     let client: SRPClientState
-
+    // swiftlint:disable identifier_name
     init(NHexValue: String, gHexValue: String) throws {
         guard let N = BigInt(NHexValue, radix: 16),
               let g = BigInt(gHexValue, radix: 16)
@@ -36,6 +36,7 @@ struct AmplifySRPClient: SRPClientBehavior {
         return srpKeys
     }
 
+    // swiftlint:disable:next function_parameter_count
     func calculateSharedSecret(username: String,
                                password: String,
                                saltHexValue: String,
@@ -120,5 +121,5 @@ struct AmplifySRPClient: SRPClientBehavior {
 
             return (saltData, verifierData)
         }
-
+    // swiftlint:enable identifier_name
 }

@@ -46,7 +46,7 @@ class VerifyTOTPSetupTask: AuthVerifyTOTPSetupTask, DefaultLogger {
         }
     }
 
-    func verifyTOTPSetup(with accessToken: String, userCode: String) async throws  {
+    func verifyTOTPSetup(with accessToken: String, userCode: String) async throws {
         let userPoolService = try userPoolFactory()
         let friendlyDeviceName = (request.options.pluginOptions as? VerifyTOTPSetupOptions)?.friendlyDeviceName
         let input = VerifySoftwareTokenInput(

@@ -11,12 +11,6 @@ struct IdentityPoolConfigurationData: Equatable {
     let poolId: String
     let region: String
 
-    init(poolId: String,
-                region: String) {
-        self.poolId = poolId
-        self.region = region
-    }
-
 }
 
 extension IdentityPoolConfigurationData: Codable { }

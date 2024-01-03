@@ -19,6 +19,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
     @available(*, deprecated, message: "Use of `expiration` is deprecated, use `exp` claim in the `idToken` or `accessToken` for expiries")
     public let expiration: Date
 
+    // swiftlint:disable:next line_length
     @available(*, deprecated, message: "Use of `init(idToken,accessToken,refreshToken:expiresIn)` is deprecated, use `exp` claim in the `idToken` or `accessToken` instead")
     public init(idToken: String,
                 accessToken: String,
@@ -30,6 +31,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
         self.expiration = Date().addingTimeInterval(TimeInterval(expiresIn))
     }
 
+    // swiftlint:disable:next line_length
     @available(*, deprecated, message: "Use of `init(idToken,accessToken,refreshToken:expiration)` is deprecated, use `exp` claim in the `idToken` or `accessToken` instead")
     public init(idToken: String,
                 accessToken: String,
@@ -71,7 +73,7 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
             self.expiration = Date(timeIntervalSince1970: TimeInterval(expirationDoubleValue))
         }
     }
-    
+
 }
 
 extension AWSCognitoUserPoolTokens: Equatable { }
