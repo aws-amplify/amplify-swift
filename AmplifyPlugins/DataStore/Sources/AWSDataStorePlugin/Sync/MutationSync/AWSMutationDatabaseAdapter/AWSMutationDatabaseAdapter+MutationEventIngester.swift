@@ -32,7 +32,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     /// rejects the event with an error
     func resolveConflictsThenSave(mutationEvent: MutationEvent,
                                   storageAdapter: StorageEngineAdapter,
-                                  completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
+                                  completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
         MutationEvent.pendingMutationEvents(
             forMutationEvent: mutationEvent,
             storageAdapter: storageAdapter) { result in

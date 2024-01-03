@@ -496,7 +496,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 .collect()
                 .sink(receiveCompletion: { _ in
                     promise(.successfulVoid)
-                }, receiveValue:  { _ in  })
+                }, receiveValue: { _ in  })
                 .store(in: &self.cancellables)
         }
     }
