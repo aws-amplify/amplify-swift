@@ -9,7 +9,7 @@ import AmplifyUtilsNotifications
 import Foundation
 
 extension AWSPinpointPushNotificationsPlugin {
-    
+
 #if !os(tvOS)
     /// Service Extension that can handle AWS Pinpoint rich notifications.
     public typealias ServiceExtension = AUNotificationService
