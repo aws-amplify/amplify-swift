@@ -16,7 +16,7 @@ public struct UserLogLevel: Codable {
         self.defaultLogLevel = defaultLogLevel
         self.categoryLogLevel = categoryLogLevel
     }
-    
+
     public let defaultLogLevel: LogLevel
     public let categoryLogLevel: [String: LogLevel]
 }

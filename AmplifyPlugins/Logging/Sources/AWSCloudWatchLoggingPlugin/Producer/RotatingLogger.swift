@@ -10,9 +10,9 @@ import Combine
 import Foundation
 
 final class RotatingLogger {
-    
+
     var logLevel: Amplify.LogLevel
-    
+
     private let category: String
     private let namespace: String?
     private let actor: LogActor
@@ -37,29 +37,29 @@ final class RotatingLogger {
         self.batchSubject = PassthroughSubject()
         self.logLevel = logLevel
     }
-    
+
     /// Attempts to flush the contents of the log to disk.
     func synchronize() async throws {
         try await actor.synchronize()
     }
-    
+
     func getLogBatches() async throws -> [RotatingLogBatch] {
         let logs = try await actor.getLogs()
         return logs.map({RotatingLogBatch(url: $0)})
     }
-    
+
     func resetLogs() async throws {
         try await actor.deleteLogs()
     }
-    
+
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
         try await setupSubscription()
         let entry = LogEntry(category: self.category, namespace: self.namespace, level: level, message: message())
         try await self.actor.record(entry)
     }
-    
+
     private func setupSubscription() async throws {
-        if (rotationSubscription == nil) {
+        if rotationSubscription == nil {
             let rotationPublisher = await self.actor.rotationPublisher()
             rotationSubscription = rotationPublisher.sink { [weak self] url in
                 guard let self = self else { return }
@@ -72,7 +72,7 @@ final class RotatingLogger {
         let payload = message()
         Task {
             do {
-                try await self.record(level: level, message:payload)
+                try await self.record(level: level, message: payload)
             } catch {
                 let payload = HubPayload(
                     eventName: HubPayload.EventName.Logging.writeLogFailure,
@@ -91,28 +91,28 @@ extension RotatingLogger: LogBatchProducer {
 }
 
 extension RotatingLogger: Logger {
-    
+
     func error(_ message: @autoclosure () -> String) {
         _record(level: .error, message: message())
     }
-    
+
     func error(error: Error) {
         let message = String(describing: error)
         _record(level: .error, message: message)
     }
-    
+
     func warn(_ message: @autoclosure () -> String) {
         _record(level: .warn, message: message())
     }
-    
+
     func info(_ message: @autoclosure () -> String) {
         _record(level: .info, message: message())
     }
-    
+
     func debug(_ message: @autoclosure () -> String) {
         _record(level: .debug, message: message())
     }
-    
+
     func verbose(_ message: @autoclosure () -> String) {
         _record(level: .verbose, message: message())
     }

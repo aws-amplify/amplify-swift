@@ -35,7 +35,7 @@ final class AWSCloudWatchLoggingCategoryClient {
     private var userIdentifier: String?
     private var authSubscription: AnyCancellable? { willSet { authSubscription?.cancel() } }
     private let networkMonitor: LoggingNetworkMonitor
-    
+
     init(
         enable: Bool,
         credentialsProvider: CredentialsProviding,
@@ -62,7 +62,7 @@ final class AWSCloudWatchLoggingCategoryClient {
             self?.handle(payload: payload)
         }
     }
-    
+
     func takeUserIdentifierFromCurrentUser() {
         Task {
             do {
@@ -74,7 +74,7 @@ final class AWSCloudWatchLoggingCategoryClient {
             self.updateSessionControllers()
         }
     }
-    
+
     private func updateSessionControllers() {
         lock.execute {
             for controller in loggersByKey.values {
@@ -82,7 +82,7 @@ final class AWSCloudWatchLoggingCategoryClient {
             }
         }
     }
-    
+
     private func handle(payload: HubPayload) {
         enum CognitoEventName: String {
             case signInAPI = "Auth.signInAPI"
@@ -98,15 +98,15 @@ final class AWSCloudWatchLoggingCategoryClient {
             break
         }
     }
-    
+
     /// - Tag: CloudWatchLoggingCategoryClient.reset
     func reset() async {
         lock.execute {
             loggersByKey = [:]
         }
     }
-    
-    func getLoggerSessionController(forCategory category: String,  logLevel: LogLevel) -> AWSCloudWatchLoggingSessionController? {
+
+    func getLoggerSessionController(forCategory category: String, logLevel: LogLevel) -> AWSCloudWatchLoggingSessionController? {
         let key = LoggerKey(category: category, logLevel: logLevel)
         if let existing = loggersByKey[key] {
             return existing
@@ -124,7 +124,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
             }
         }
     }
-    
+
     func disable() {
         enabled = false
         lock.execute {
@@ -133,19 +133,18 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
             }
         }
     }
-    
+
     var `default`: Logger {
         return self.logger(forCategory: "Amplify")
     }
-    
+
     func logger(forCategory category: String, namespace: String?, logLevel: Amplify.LogLevel) -> Logger {
         return lock.execute {
             let key = LoggerKey(category: category, logLevel: logLevel)
             if let existing = loggersByKey[key] {
                 return existing
             }
-            
-            
+
             let controller = AWSCloudWatchLoggingSessionController(credentialsProvider: credentialsProvider,
                                                                    authentication: authentication,
                                                                    logFilter: self.logFilter,
@@ -164,25 +163,25 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
             return controller
         }
     }
-    
+
     func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
         return self.logger(forCategory: category, namespace: nil, logLevel: logLevel)
     }
-    
+
     func logger(forCategory category: String) -> Logger {
         let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: self.userIdentifier)
         return self.logger(forCategory: category, namespace: nil, logLevel: defaultLogLevel)
     }
-    
+
     func logger(forNamespace namespace: String) -> Logger {
         self.logger(forCategory: namespace)
     }
-    
+
     func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
         let defaultLogLevel = logFilter.getDefaultLogLevel(forCategory: category, userIdentifier: self.userIdentifier)
         return self.logger(forCategory: category, namespace: namespace, logLevel: defaultLogLevel)
     }
-    
+
     func getInternalClient() -> CloudWatchLogsClientProtocol {
         guard let client = loggersByKey.first(where: { $0.value.client != nil })?.value.client else {
             return Fatal.preconditionFailure(
@@ -194,7 +193,7 @@ extension AWSCloudWatchLoggingCategoryClient: LoggingCategoryClientBehavior {
         }
         return client
     }
-    
+
     func flushLogs() async throws {
         guard enabled else { return }
         for logger in loggersByKey.values {
