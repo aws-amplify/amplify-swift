@@ -75,7 +75,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertNotNil(keychain.dataValues[EndpointClient.Constants.endpointProfileKey])
         XCTAssertNotNil(keychain.dataValues[EndpointClient.Constants.deviceTokenKey])
         XCTAssertEqual(archiver.decodeCount, 1)
-        XCTAssertTrue(endpointProfile === storedEndpointProfile, "Expected stored PinpointEndpointProfile object")
+        XCTAssertNotEqual(endpointProfile, storedEndpointProfile, "Expected updated PinpointEndpointProfile object")
         XCTAssertEqual(endpointProfile.applicationId, currentApplicationId)
         XCTAssertEqual(endpointProfile.endpointId, currentEndpointId)
         XCTAssertEqual(endpointProfile.deviceToken, newToken.asHexString())
@@ -104,7 +104,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.endpointProfileKey], 1)
         XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
         XCTAssertEqual(archiver.decodeCount, 0)
-        XCTAssertFalse(endpointProfile === storedEndpointProfile, "Expected new PinpointEndpointProfile object")
+        XCTAssertNotEqual(endpointProfile, storedEndpointProfile, "Expected new PinpointEndpointProfile object")
         XCTAssertEqual(endpointProfile.applicationId, currentApplicationId)
         XCTAssertEqual(endpointProfile.endpointId, currentEndpointId)
         XCTAssertEqual(endpointProfile.deviceToken, newToken?.asHexString())
@@ -128,7 +128,7 @@ class EndpointClientTests: XCTestCase {
     func testUpdateEndpointProfile_withAPNsToken_withoutStoredToken_shouldSaveToken() async {
         keychain.resetCounters()
 
-        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
+        var endpoint = PinpointEndpointProfile(applicationId: "applicationId",
                                                endpointId: "endpointId")
         endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
         try? await endpointClient.updateEndpointProfile(with: endpoint)
@@ -142,7 +142,7 @@ class EndpointClientTests: XCTestCase {
         storeToken("oldToken")
         keychain.resetCounters()
 
-        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
+        var endpoint = PinpointEndpointProfile(applicationId: "applicationId",
                                                endpointId: "endpointId")
         endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
         try? await endpointClient.updateEndpointProfile(with: endpoint)
@@ -156,7 +156,7 @@ class EndpointClientTests: XCTestCase {
         storeToken(newTokenHex)
         keychain.resetCounters()
 
-        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
+        var endpoint = PinpointEndpointProfile(applicationId: "applicationId",
                                                endpointId: "endpointId")
         endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
         try? await endpointClient.updateEndpointProfile(with: endpoint)

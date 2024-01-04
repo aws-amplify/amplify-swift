@@ -20,7 +20,7 @@ import AppKit
 
 extension AWSPinpointPushNotificationsPlugin {
     public func identifyUser(userId: String, userProfile: UserProfile?) async throws {
-        let currentEndpointProfile = await pinpoint.currentEndpointProfile()
+        var currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.addUserId(userId)
         if let userProfile = userProfile {
             currentEndpointProfile.addUserProfile(userProfile)
@@ -30,7 +30,7 @@ extension AWSPinpointPushNotificationsPlugin {
     }
 
     public func registerDevice(apnsToken: Data) async throws {
-        let currentEndpointProfile = await pinpoint.currentEndpointProfile()
+        var currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.setAPNsToken(apnsToken)
         do {
             try await pinpoint.updateEndpoint(with: currentEndpointProfile,
