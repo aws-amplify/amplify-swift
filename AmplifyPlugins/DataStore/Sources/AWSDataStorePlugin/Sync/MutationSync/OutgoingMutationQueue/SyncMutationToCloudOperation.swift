@@ -103,6 +103,18 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
         }
     }
 
+    /// Always retrieve and use the largest version when available. The source of the version comes
+    /// from either the MutationEvent itself, which represents the queue request, or the persisted version
+    /// from the metadata table.
+    ///
+    /// **Version in the Mutation Event**. If there are mulitple mutation events pending, each outgoing
+    /// mutation processing will result in synchronously updating the pending mutation's version
+    /// before enqueuing the mutation response for reconciliation.
+    ///
+    /// **Version persisted in the metadata table**: Reconciliation will persist the latest version in the
+    /// metadata table. In cases of quick consecutive updates, the MutationEvent's version could
+    /// be greater than the persisted since the MutationEvent is updated from the original thread that
+    /// processed the outgoing mutation.
     private func getLatestVersion(_ mutationEvent: MutationEvent) -> Int? {
         let latestSyncedMetadataVersion = getLatestSyncMetadata()?.version
         let mutationEventVersion = mutationEvent.version
