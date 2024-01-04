@@ -83,8 +83,10 @@ extension StorageEngine {
         }
     }
 
-    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin,
-                                   authModeStrategy: AuthModeStrategyType) -> Bool {
+    static func requiresAuthPlugin(
+        _ apiPlugin: APICategoryPlugin,
+        authModeStrategy: AuthModeStrategyType
+    ) -> Bool {
         let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains { schema in
             guard schema.isSyncable  else {
                 return false
@@ -97,9 +99,11 @@ extension StorageEngine {
         return modelsRequireAuthPlugin
     }
 
-    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin,
-                                   authRules: [AuthRule],
-                                   authModeStrategy: AuthModeStrategyType) -> Bool {
+    static func requiresAuthPlugin(
+        _ apiPlugin: APICategoryPlugin,
+        authRules: [AuthRule],
+        authModeStrategy: AuthModeStrategyType
+    ) -> Bool {
         switch authModeStrategy {
         case .default:
             if authRules.isEmpty {
