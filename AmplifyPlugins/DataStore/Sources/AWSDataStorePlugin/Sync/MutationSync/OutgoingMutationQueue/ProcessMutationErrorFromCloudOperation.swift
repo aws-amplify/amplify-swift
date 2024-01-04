@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+// swiftlint:disable type_body_length file_length
 /// Checks the GraphQL error response for specific error scenarios related to data synchronziation to the local store.
 /// 1. When there is an APIError which is for an unauthenticated user, call the error handler.
 /// 2. When there is a "conditional request failed" error, then emit to the Hub a 'conditionalSaveFailed' event.
@@ -28,7 +29,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private var mutationOperation: AtomicValue<GraphQLOperation<MutationSync<AnyModel>>?>
     private weak var api: APICategoryGraphQLBehaviorExtended?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
-    
+
     init(dataStoreConfiguration: DataStoreConfiguration,
          mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehaviorExtended,
@@ -314,7 +315,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         if case .failure(let error) = cloudResult {
             dataStoreConfiguration.errorHandler(error)
         }
-        
+
         if case let .success(graphQLResponse) = cloudResult {
             if case .failure(let error) = graphQLResponse {
                 dataStoreConfiguration.errorHandler(error)
@@ -330,11 +331,11 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                     finish(result: .failure(dataStoreError))
                     return
                 }
-                
+
                 reconciliationQueue.offer([graphQLResult], modelName: mutationEvent.modelName)
             }
         }
-        
+
         finish(result: .success(nil))
     }
 
@@ -357,7 +358,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         }
 
         let identifier = remoteModel.model.identifier(schema: modelSchema)
-        
+
         storageAdapter.delete(untypedModelType: modelType,
                               modelSchema: modelSchema,
                               withIdentifier: identifier,
@@ -471,3 +472,4 @@ extension ProcessMutationErrorFromCloudOperation: DefaultLogger {
         Self.log
     }
 }
+// swiftlint:enable type_body_length file_length

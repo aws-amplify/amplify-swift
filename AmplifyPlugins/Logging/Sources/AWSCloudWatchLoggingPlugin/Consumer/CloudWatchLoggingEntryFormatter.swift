@@ -32,6 +32,6 @@ struct CloudWatchLoggingEntryFormatter {
             return "\(entry.logLevelName)/\(entry.category): \(namespace): \(entry.message)"
         } else {
             return "\(entry.logLevelName)/\(entry.category): \(entry.message)"
-        }        
+        }
     }
 }

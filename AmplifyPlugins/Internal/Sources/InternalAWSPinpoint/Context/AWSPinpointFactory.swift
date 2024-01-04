@@ -15,15 +15,15 @@ public class AWSPinpointFactory {
         let appId: String
         let region: String
     }
-    
+
     private static var instances: AtomicDictionary<PinpointContextKey, PinpointContext> = [:]
-    
+
     private init() {}
-    
+
     static var credentialsProvider = AWSAuthService().getCredentialsProvider()
 
     static var provisioningProfileReader: ProvisioningProfileReader = .default
-    
+
     public static func sharedPinpoint(appId: String,
                                       region: String) throws -> AWSPinpointBehavior {
         let key = PinpointContextKey(appId: appId, region: region)
@@ -49,10 +49,9 @@ public class AWSPinpointFactory {
             credentialsProvider: credentialsProvider,
             isDebug: isDebug
         )
-        
+
         let pinpointContext = try PinpointContext(with: configuration)
         instances[key] = pinpointContext
         return pinpointContext
     }
 }
-

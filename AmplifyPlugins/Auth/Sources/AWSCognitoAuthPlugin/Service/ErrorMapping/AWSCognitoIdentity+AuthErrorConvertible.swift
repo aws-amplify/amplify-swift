@@ -102,7 +102,6 @@ extension AWSCognitoIdentity.TooManyRequestsException: AuthErrorConvertible {
     }
 }
 
-
 extension AWSCognitoIdentity.LimitExceededException: AuthErrorConvertible {
     var fallbackDescription: String { "Too many requests error." }
 

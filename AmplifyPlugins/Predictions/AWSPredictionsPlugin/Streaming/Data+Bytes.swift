@@ -30,7 +30,6 @@ extension Data {
         return first
     }
 
-
     /// Retrieves and removes `n` bytes of `Data`, where `n` = `count` argument
     ///
     ///   `Data` self-slices, meaning `Data.SubSequence == Data` [[reference](https://developer.apple.com/documentation/foundation/data/subsequence)]

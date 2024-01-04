@@ -10,6 +10,7 @@ import CryptoKit
 
 extension VerifyDevicePasswordSRP {
 
+    // swiftlint:disable:next function_parameter_count identifier_name
     func signature(deviceGroupKey: String,
                    deviceKey: String,
                    deviceSecret: String,
@@ -28,6 +29,7 @@ extension VerifyDevicePasswordSRP {
         do {
             let dateStr = stateData.clientTimestamp.utcString
             let clientClass = type(of: srpClient)
+            // swiftlint:disable:next identifier_name
             let u = try clientClass.calculateUHexValue(
                 clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
                 serverPublicKeyHexValue: serverPublicBHexString)

@@ -28,7 +28,7 @@ public enum AuthUserAttributeKey {
 
     /// Attribute key for user's email
     case email
-    
+
     /// Attribute key for user's email verfication status
     case emailVerified
 
@@ -55,7 +55,7 @@ public enum AuthUserAttributeKey {
 
     /// Attribute key for user's phone number
     case phoneNumber
-    
+
     /// Attribute key for user's phone number verficiation status
     case phoneNumberVerified
 
@@ -64,19 +64,19 @@ public enum AuthUserAttributeKey {
 
     /// Attribute key for user's preferred user name
     case preferredUsername
-    
+
     /// Attribute key for user's profile
     case profile
-    
+
     /// Attribute key for user's identifier
     case sub
-    
+
     /// Attribute key for time of user's information last updated
     case updatedAt
-    
+
     /// Attribute key for user's web page
     case website
-    
+
     /// Attribute key for user's time zone
     case zoneInfo
 
@@ -90,4 +90,3 @@ public enum AuthUserAttributeKey {
 extension AuthUserAttributeKey: Hashable {}
 
 extension AuthUserAttributeKey: Equatable {}
-

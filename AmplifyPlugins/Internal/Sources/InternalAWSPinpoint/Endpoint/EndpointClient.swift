@@ -207,7 +207,7 @@ actor EndpointClient: EndpointClientBehaviour {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.endpointProfileKey)")
             }
         }
-        
+
         let keychainTokenData = try? keychain._getData(Constants.deviceTokenKey)
         if let tokenData = userDefaults.data(forKey: Constants.deviceTokenKey), keychainTokenData == nil {
             do {

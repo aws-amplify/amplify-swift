@@ -11,23 +11,23 @@ import AWSPluginsCore
 import AWSClientRuntime
 import ClientRuntime
 
-public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {    
+public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsProvider {
     public let refreshIntervalInSeconds: Int
     private let endpoint: URL
     private let credentialProvider: CredentialsProviding?
     private let region: String
     private let loggingConstraintsLocalStore: LoggingConstraintsLocalStore = UserDefaults.standard
-    
+
     private var loggingConstraint: LoggingConstraints? {
         return loggingConstraintsLocalStore.getLocalLoggingConstraints()
     }
-    
+
     private var refreshTimer: DispatchSourceTimer? {
         willSet {
             refreshTimer?.cancel()
         }
     }
-    
+
     public init(
          endpoint: URL,
          region: String,
@@ -44,26 +44,26 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         self.refreshIntervalInSeconds = refreshIntervalInSeconds
         self.setupAutomaticRefreshInterval()
     }
-    
+
     public func fetchLoggingConstraints() async throws -> LoggingConstraints {
         var url = URLRequest(url: endpoint)
         if let etag = loggingConstraintsLocalStore.getLocalLoggingConstraintsEtag() {
             url.setValue(etag, forHTTPHeaderField: "If-None-Match")
         }
         let signedRequest = try await sigV4Sign(url, region: region)
-        let (data,response) = try await URLSession.shared.data(for: signedRequest)
+        let (data, response) = try await URLSession.shared.data(for: signedRequest)
         if (response as? HTTPURLResponse)?.statusCode == 304, let cachedValue = self.loggingConstraint {
             return cachedValue
         }
         let loggingConstraint = try JSONDecoder().decode(LoggingConstraints.self, from: data)
         loggingConstraintsLocalStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraint)
-        
+
         if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "If-None-Match") {
             loggingConstraintsLocalStore.setLocalLoggingConstraintsEtag(etag: etag)
         }
         return loggingConstraint
     }
-    
+
     func sigV4Sign(_ request: URLRequest, region: String) async throws -> URLRequest {
         var request = request
         guard let url = request.url else {
@@ -72,7 +72,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         guard let host = url.host else {
             throw APIError.unknown("Could not get host from mutable request", "")
         }
-        
+
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(host, forHTTPHeaderField: "host")
 
@@ -92,11 +92,11 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             .withProtocol(.https)
             .withHeaders(.init(request.allHTTPHeaderFields ?? [:]))
             .withBody(.data(request.httpBody))
-        
+
         guard let credentialProvider = self.credentialProvider else {
             return request
         }
-        
+
         guard let urlRequest = try await AmplifyAWSSignatureV4Signer().sigV4SignedRequest(
             requestBuilder: requestBuilder,
             credentialsProvider: credentialProvider,
@@ -113,7 +113,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
 
         return request
     }
-    
+
     func refresh() {
         Task {
             do {
@@ -123,13 +123,13 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
             }
         }
     }
-    
+
     func setupAutomaticRefreshInterval() {
         guard refreshIntervalInSeconds != .zero else {
             refreshTimer = nil
             return
         }
-        
+
         refreshTimer = Self.createRepeatingTimer(
             timeInterval: TimeInterval(self.refreshIntervalInSeconds),
             eventHandler: { [weak self] in

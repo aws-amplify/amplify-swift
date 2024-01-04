@@ -198,7 +198,7 @@ private extension AuthRules {
             return authType == provider.toAWSAuthorizationType()
         }
     }
-    
+
     func filterBy(ownerFieldType: ModelFieldType,
                   modelSchema: ModelSchema) -> AuthRules {
         return filter {

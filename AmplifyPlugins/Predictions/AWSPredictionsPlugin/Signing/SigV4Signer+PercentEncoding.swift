@@ -17,18 +17,18 @@ extension SigV4Signer {
         }
 
         static let query = PercentEncoding(
-            allowedCharacters: CharacterSet(charactersIn:"/;+").inverted
+            allowedCharacters: CharacterSet(charactersIn: "/;+").inverted
         )
 
         static let uri = PercentEncoding(
             allowedCharacters: CharacterSet(
-                charactersIn:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+                charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
             )
         )
 
         static let uriWithSlash = PercentEncoding(
             allowedCharacters: CharacterSet(
-                charactersIn:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~/"
+                charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~/"
             )
         )
     }

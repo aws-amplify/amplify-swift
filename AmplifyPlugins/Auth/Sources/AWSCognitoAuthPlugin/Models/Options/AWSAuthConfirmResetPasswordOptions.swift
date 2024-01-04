@@ -15,4 +15,3 @@ public struct AWSAuthConfirmResetPasswordOptions {
         self.metadata = metadata
     }
 }
-

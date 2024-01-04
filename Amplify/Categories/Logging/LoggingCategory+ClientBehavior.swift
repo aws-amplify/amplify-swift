@@ -37,28 +37,28 @@ extension LoggingCategory: LoggingCategoryClientBehavior {
         }
         return BroadcastLogger(targets: targets)
     }
-    
+
     public func enable() {
         for plugin in plugins.values {
             plugin.enable()
         }
     }
-    
+
     public func disable() {
         for plugin in plugins.values {
             plugin.disable()
         }
     }
-    
+
     public func logger(forNamespace namespace: String) -> Logger {
         var targets = [Logger]()
         for plugin in plugins.values {
             targets.append(plugin.logger(forNamespace: namespace))
         }
         return BroadcastLogger(targets: targets)
-        
+
     }
-    
+
     public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
         var targets = [Logger]()
         for plugin in plugins.values {

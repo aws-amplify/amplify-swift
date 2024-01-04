@@ -86,7 +86,7 @@ final class AsyncExpectationTests: XCTestCase {
         let delay = 0.01
         let notYetDone = asyncExpectation(description: "not yet done", isInverted: true)
         let done = asyncExpectation(description: "done")
-        
+
         let task = Task {
             await AsyncRunner().run()
             XCTAssertTrue(Task.isCancelled)

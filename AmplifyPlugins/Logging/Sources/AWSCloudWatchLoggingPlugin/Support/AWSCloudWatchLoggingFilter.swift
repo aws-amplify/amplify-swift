@@ -35,13 +35,13 @@ class AWSCloudWatchLoggingFilter: AWSCloudWatchLoggingFilterBehavior {
             }
             return logLevel.rawValue <= userConstraints.defaultLogLevel.rawValue && userConstraints.defaultLogLevel != .none
         }
-        
+
         // 2. look for category constraint, is category and log level enabled
         if let categoryLogLevel = loggingConstraints.categoryLogLevel?.first(where: { $0.key.lowercased() == loweredCasedCategory })?.value {
-            
+
             return logLevel.rawValue <= categoryLogLevel.rawValue && categoryLogLevel != .none
         }
-        
+
         // 3. look for default constraint
         return logLevel.rawValue <= loggingConstraints.defaultLogLevel.rawValue && loggingConstraints.defaultLogLevel != .none
     }
@@ -51,18 +51,18 @@ class AWSCloudWatchLoggingFilter: AWSCloudWatchLoggingFilterBehavior {
     /// - Returns: the default LogLevel
     func getDefaultLogLevel(forCategory category: String, userIdentifier: String?) -> LogLevel {
         let loweredCasedCategory = category.lowercased()
-        
+
         if let userConstraints = loggingConstraints.userLogLevel?.first(where: { $0.key == userIdentifier })?.value {
             if let categoryLogLevel = userConstraints.categoryLogLevel.first(where: { $0.key.lowercased() == loweredCasedCategory })?.value {
                 return categoryLogLevel
             }
             return userConstraints.defaultLogLevel
         }
-        
+
         if let categoryLogLevel = loggingConstraints.categoryLogLevel?.first(where: { $0.key.lowercased() == loweredCasedCategory })?.value {
             return categoryLogLevel
         }
-        
+
         return loggingConstraints.defaultLogLevel
     }
 }

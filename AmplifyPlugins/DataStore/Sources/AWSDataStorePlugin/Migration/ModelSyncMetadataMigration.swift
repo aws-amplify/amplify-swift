@@ -11,17 +11,17 @@ import SQLite
 import AWSPluginsCore
 
 class ModelSyncMetadataMigration: ModelMigration {
-    
+
     weak var storageAdapter: SQLiteStorageEngineAdapter?
-    
+
     func apply() throws {
         try performModelMetadataSyncPredicateUpgrade()
     }
-    
+
     init(storageAdapter: SQLiteStorageEngineAdapter? = nil) {
         self.storageAdapter = storageAdapter
     }
-    
+
     /// Add the new syncPredicate column for the ModelSyncMetadata system table.
     ///
     /// ModelSyncMetadata's syncPredicate column was added in Amplify version 2.22.0 to
@@ -47,7 +47,7 @@ class ModelSyncMetadataMigration: ModelMigration {
                 log.debug("Detected ModelSyncMetadata table has syncPredicate column. No migration needed")
                 return false
             }
-            
+
             log.debug("Detected ModelSyncMetadata table exists without syncPredicate column.")
             guard let storageAdapter = storageAdapter else {
                 log.debug("Missing SQLiteStorageEngineAdapter for model migration")
@@ -75,7 +75,7 @@ class ModelSyncMetadataMigration: ModelMigration {
         guard let connection = storageAdapter.connection else {
             throw DataStoreError.nilSQLiteConnection()
         }
-        
+
         let tableInfoStatement = TableInfoStatement(modelSchema: modelSchema)
         do {
             let existingColumns = try connection.prepare(tableInfoStatement.stringValue).run()

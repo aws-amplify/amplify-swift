@@ -9,6 +9,7 @@ import Foundation
 import Amplify
 import AuthenticationServices
 
+// swiftlint:disable force_cast
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func signUp(username: String,
@@ -27,7 +28,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpRequest.Options?)
-    async throws-> AuthSignUpResult {
+    async throws -> AuthSignUpResult {
         let options = options ?? AuthConfirmSignUpRequest.Options()
         let request = AuthConfirmSignUpRequest(username: username,
                                                code: confirmationCode,
@@ -176,7 +177,6 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         } as! TOTPSetupDetails
     }
 
-
     public func verifyTOTPSetup(
         code: String,
         options: VerifyTOTPSetupRequest.Options?
@@ -194,3 +194,4 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         }
     }
 }
+// swiftlint:enable force_cast

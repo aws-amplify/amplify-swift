@@ -9,9 +9,9 @@ import os.log
 
 final class OSLogWrapper: Logger {
     private let osLog: OSLog
-    
+
     var enabled: Bool = true
-    
+
     var getLogLevel: () -> LogLevel
 
     public var logLevel: LogLevel {

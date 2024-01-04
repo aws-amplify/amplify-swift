@@ -18,7 +18,7 @@ public struct LoggingConstraints: Codable {
         self.categoryLogLevel = categoryLogLevel
         self.userLogLevel = userLogLevel
     }
-    
+
     public let defaultLogLevel: LogLevel
     public let categoryLogLevel: [String: LogLevel]?
     public let userLogLevel: [String: UserLogLevel]?

@@ -15,7 +15,7 @@ public extension Amplify {
         case debug
         case verbose
         case none
-        
+
         public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             if let rawString = try? container.decode(String.self).lowercased() {

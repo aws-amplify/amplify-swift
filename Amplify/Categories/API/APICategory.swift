@@ -11,7 +11,7 @@ final public class APICategory: Category {
     public var categoryType: CategoryType {
         .api
     }
-    
+
     var plugins = [PluginKey: APICategoryPlugin]()
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
@@ -49,7 +49,7 @@ final public class APICategory: Category {
     public var isConfigured = false
 
     // MARK: - Plugin handling
-    
+
     /// Adds `plugin` to the list of Plugins that implement functionality for this category.
     ///
     /// - Parameter plugin: The Plugin to add

@@ -135,7 +135,7 @@ extension AWSPinpointAnalyticsPlugin {
             globalProperties.removeAll()
             return
         }
-        
+
         for key in keys {
             if let value = globalProperties[key] {
                 await pinpoint.removeGlobalProperty(value, forKey: key)

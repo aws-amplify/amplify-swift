@@ -28,7 +28,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     init(_ elements: [Element]) {
         self.loadedState = .loaded(elements)
     }
-    
+
     public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
         case .notLoaded(let associatedIdentifiers, let associatedFields):
@@ -37,7 +37,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
             return .loaded(elements)
         }
     }
-    
+
     public func load() async throws -> [Element] {
         switch loadedState {
         case .loaded(let elements):
@@ -59,7 +59,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                 self.log.verbose("Loading List of \(Element.schema.name) by \(associatedFields) == \(associatedIdentifiers) ")
                 predicate = QueryPredicateGroup(type: .and, predicates: queryPredicates)
             }
-            
+
             do {
                 let elements = try await Amplify.DataStore.query(Element.self, where: predicate)
                 self.loadedState = .loaded(elements)
@@ -71,7 +71,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                                               error)
             } catch {
                 throw error
-                
+
             }
         }
     }
@@ -79,13 +79,13 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     public func hasNextPage() -> Bool {
         false
     }
-    
+
     public func getNextPage() async throws -> List<Element> {
         throw CoreError.clientValidation("There is no next page.",
                                          "Only call `getNextPage()` when `hasNextPage()` is true.",
                                          nil)
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded(let associatedIdentifiers,

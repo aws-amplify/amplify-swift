@@ -14,6 +14,7 @@ extension RefreshSessionState {
 
         var defaultState: RefreshSessionState = .notStarted
 
+        // swiftlint:disable:next cyclomatic_complexity
         func resolve(oldState: RefreshSessionState,
                      byApplying event: StateMachineEvent) -> StateResolution<RefreshSessionState> {
 

@@ -123,6 +123,8 @@ struct SigV4Signer {
     // e.g. "us-east-1"
     let region: String
 
+    // swiftlint:disable identifier_name
+
     // Reference type storage that holds the
     // previous signature (if it exists) to use
     // in subsequent signing requests as needed.
@@ -397,3 +399,4 @@ struct SigV4Signer {
         return hash
     }
 }
+// swiftlint:enable identifier_name

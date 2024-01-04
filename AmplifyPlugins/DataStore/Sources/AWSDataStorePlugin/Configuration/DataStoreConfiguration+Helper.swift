@@ -83,7 +83,7 @@ extension DataStoreConfiguration {
                                       authModeStrategy: authModeStrategy)
     }
     #endif
-    
+
     #if os(watchOS)
     /// Default configuration with subscriptions disabled for watchOS. DataStore uses subscriptions via websockets,
     /// which work on the watchOS simulator but not on the device. Running DataStore on watchOS with subscriptions
@@ -98,7 +98,7 @@ extension DataStoreConfiguration {
         .custom()
     }
     #endif
-    
+
     #if os(watchOS)
     /// Internal method for testing
     static func testDefault(disableSubscriptions: @escaping () -> Bool = { false }) -> DataStoreConfiguration {

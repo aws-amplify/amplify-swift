@@ -18,7 +18,7 @@ public enum QueryOperator: Encodable {
     case notContains(_ value: String)
     case between(start: Persistable, end: Persistable)
     case beginsWith(_ value: String)
-    
+
     public func evaluate(target: Any) -> Bool {
         switch self {
         case .notEqual(let predicateValue):
@@ -51,17 +51,17 @@ public enum QueryOperator: Encodable {
         }
         return false
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case type
         case value
         case start
         case end
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         switch self {
         case .notEqual(let value):
             try container.encode("notEqual", forKey: .type)
@@ -76,32 +76,32 @@ public enum QueryOperator: Encodable {
         case .lessOrEqual(let value):
             try container.encode("lessOrEqual", forKey: .type)
             try container.encode(value, forKey: .value)
-            
+
         case .lessThan(let value):
             try container.encode("lessThan", forKey: .type)
             try container.encode(value, forKey: .value)
-            
+
         case .greaterOrEqual(let value):
             try container.encode("greaterOrEqual", forKey: .type)
             try container.encode(value, forKey: .value)
-            
+
         case .greaterThan(let value):
             try container.encode("greaterThan", forKey: .type)
             try container.encode(value, forKey: .value)
-            
+
         case .contains(let value):
             try container.encode("contains", forKey: .type)
             try container.encode(value, forKey: .value)
-            
+
         case .notContains(let value):
             try container.encode("notContains", forKey: .type)
             try container.encode(value, forKey: .value)
-            
+
         case .between(let start, let end):
             try container.encode("between", forKey: .type)
             try container.encode(start, forKey: .start)
             try container.encode(end, forKey: .end)
-            
+
         case .beginsWith(let value):
             try container.encode("beginsWith", forKey: .type)
             try container.encode(value, forKey: .value)

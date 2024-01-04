@@ -20,7 +20,6 @@ extension AWSTranslate.InternalServerException: PredictionsErrorConvertible {
     }
 }
 
-
 extension AWSTranslate.InvalidRequestException: PredictionsErrorConvertible {
     var predictionsError: PredictionsError {
         .service(.invalidRequest)

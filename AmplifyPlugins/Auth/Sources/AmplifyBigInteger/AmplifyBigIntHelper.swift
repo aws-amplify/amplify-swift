@@ -21,8 +21,8 @@ public enum AmplifyBigIntHelper {
         if byteCount > 1 && bytesArray[0] == 1 {
             var invertedBytes = [UInt8](repeating: 0, count: bytesArray.count)
             invertedBytes[0] = ~invertedBytes[0]
-            for i in 1 ..< bytesArray.count {
-                invertedBytes[i] = ~bytesArray[i]
+            for index in 1 ..< bytesArray.count {
+                invertedBytes[index] = ~bytesArray[index]
             }
             let unsignedInvertedBytes = AmplifyBigInt(unsignedData: invertedBytes)
             let twosComplementNum = unsignedInvertedBytes + AmplifyBigInt(1)

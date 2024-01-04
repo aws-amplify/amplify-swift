@@ -71,7 +71,7 @@ public struct DataStoreConfiguration {
     public var authModeStrategyType: AuthModeStrategyType
 
     public let disableSubscriptions: () -> Bool
-    
+
     #if os(watchOS)
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,

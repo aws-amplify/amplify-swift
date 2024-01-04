@@ -16,7 +16,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 
     public var request: GraphQLOperationRequest<R>
     public var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
-    
+
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
@@ -28,7 +28,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     private var running = false
 
     private let subscriptionQueue = DispatchQueue(label: "AWSGraphQLSubscriptionOperation.subscriptionQueue")
-    
+
     init(request: Request,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          subscriptionConnectionFactory: SubscriptionConnectionFactory,
@@ -40,7 +40,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
     }
-    
+
     public func cancel() {
         subscriptionQueue.sync {
             if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
@@ -50,7 +50,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             }
         }
     }
-    
+
     public func run() async throws {
         guard !running else { return }
         running = true
@@ -116,9 +116,9 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         urlRequest.setValue(userAgent, forHTTPHeaderField: URLRequestConstants.Header.userAgent)
         return urlRequest
     }
-    
+
     // MARK: - Subscription callbacks
-    
+
     private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {
         switch event {
         case .connection(let subscriptionConnectionEvent):
@@ -166,7 +166,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
             // leave the subscription alive.
             // see https://github.com/aws-amplify/amplify-swift/issues/2577
-            
+
             fail(APIError.operationError("Failed to deserialize", "", error))
         }
     }
@@ -204,7 +204,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
-    
+
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
     var apiAuthProviderFactory: APIAuthProviderFactory
@@ -318,7 +318,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     }
 
     // MARK: - Subscription callbacks
-    
+
     private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {
         switch event {
         case .connection(let subscriptionConnectionEvent):

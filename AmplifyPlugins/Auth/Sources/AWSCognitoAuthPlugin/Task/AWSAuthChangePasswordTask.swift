@@ -57,5 +57,5 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
                                         proposedPassword: request.newPassword)
         _ = try await userPoolService.changePassword(input: input)
     }
-    
+
 }

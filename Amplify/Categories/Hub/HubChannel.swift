@@ -25,7 +25,7 @@ public enum HubChannel {
     case logging
 
     case predictions
-    
+
     case pushNotifications
 
     case storage

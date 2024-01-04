@@ -27,13 +27,13 @@ public protocol APICategoryRESTBehavior {
     /// - Parameter request: Contains information such as path, query parameters, body.
     /// - Returns: An operation that can be observed for its value
     func post(request: RESTRequest) async throws -> RESTTask.Success
-    
+
     /// Perform an HTTP DELETE operation
     ///
     /// - Parameter request: Contains information such as path, query parameters, body.
     /// - Returns: An operation that can be observed for its value
     func delete(request: RESTRequest) async throws -> RESTTask.Success
-    
+
     /// Perform an HTTP HEAD operation
     ///
     /// - Parameter request: Contains information such as path, query parameters, body.

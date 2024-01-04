@@ -24,7 +24,11 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: username to signUp
     ///   - password: password as per the password policy of the provider
     ///   - options: Parameters specific to plugin behavior
-    func signUp(username: String, password: String?, options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult
+    func signUp(
+        username: String,
+        password: String?,
+        options: AuthSignUpRequest.Options?
+    ) async throws -> AuthSignUpResult
 
     /// Confirms the `signUp` operation.
     ///
@@ -44,7 +48,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - username: Username of the user to be confirmed.
     ///   - options: Parameters specific to plugin behavior.
-    func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options?) async throws -> AuthCodeDeliveryDetails
+    func resendSignUpCode(
+        for username: String,
+        options: AuthResendSignUpCodeRequest.Options?
+    ) async throws -> AuthCodeDeliveryDetails
 
     /// SignIn to the authentication provider
     ///
@@ -90,7 +97,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - challengeResponse: Challenge response required to confirm the next step in signIn flow
     ///   - options: Parameters specific to plugin behavior.
-    func confirmSignIn(challengeResponse: String, options: AuthConfirmSignInRequest.Options?) async throws -> AuthSignInResult
+    func confirmSignIn(
+        challengeResponse: String,
+        options: AuthConfirmSignInRequest.Options?
+    ) async throws -> AuthSignInResult
 
     /// Sign out the currently logged-in user.
     ///
@@ -122,12 +132,18 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - newPassword: new password for the user
     ///   - confirmationCode: Received confirmation code
     ///   - options: Parameters specific to plugin behavior
-    func confirmResetPassword(for username: String, with newPassword: String, confirmationCode: String, options: AuthConfirmResetPasswordRequest.Options?) async throws
+    func confirmResetPassword(
+        for username: String,
+        with newPassword: String,
+        confirmationCode: String,
+        options: AuthConfirmResetPasswordRequest.Options?
+    ) async throws
 
     /// Initiates TOTP Setup
     /// 
     /// Invoke this operation to setup TOTP for the user while signed in.
-    /// Calling this method will initiate TOTP setup process and returns a shared secret that can be used to generate QR code. 
+    /// Calling this method will initiate TOTP setup process and 
+    /// returns a shared secret that can be used to generate QR code. 
     /// The setup details also contains a URI generator helper that can be used to retireve a TOTP Setup URI.
     ///
     func setUpTOTP() async throws -> TOTPSetupDetails
@@ -135,7 +151,8 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// Verifies TOTP Setup
     ///
     /// Invoke this operation to verify TOTP setup for the user while signed in.
-    /// Calling this method with the verification code from the associated Authenticator app will complete the TOTP setup process.
+    /// Calling this method with the verification code from the associated Authenticator app
+    /// will complete the TOTP setup process.
     ///
     /// - Parameters:
     ///   - code: verification code from the associated Authenticator app

@@ -16,7 +16,7 @@ public struct DefaultRemoteConfiguration: Codable {
         self.endpoint = endpoint
         self.refreshIntervalInSeconds = refreshIntervalInSeconds
     }
-    
+
     public let endpoint: URL
     public let refreshIntervalInSeconds: Int
 }

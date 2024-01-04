@@ -9,6 +9,7 @@ import Foundation
 import CommonCrypto
 import CryptoKit
 
+// swiftlint:disable identifier_name
 // https://tools.ietf.org/html/rfc5869
 public enum HMACKeyDerivationFunction {
 
@@ -28,10 +29,12 @@ public enum HMACKeyDerivationFunction {
     }
 
     @available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *)
-    private static func generateHKDF(keyingMaterial: Data,
-                             salt: Data,
-                             info: String?,
-                             outputLength: Int) -> Data {
+    private static func generateHKDF(
+        keyingMaterial: Data,
+        salt: Data,
+        info: String?,
+        outputLength: Int
+    ) -> Data {
         let key = SymmetricKey(data: keyingMaterial)
         var hkdf: SymmetricKey
         if let info {
@@ -83,3 +86,4 @@ public enum HMACKeyDerivationFunction {
         return Data(hmacFinal)
     }
 }
+// swiftlint:enable identifier_name

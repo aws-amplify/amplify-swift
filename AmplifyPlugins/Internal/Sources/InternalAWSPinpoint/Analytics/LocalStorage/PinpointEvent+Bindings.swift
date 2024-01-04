@@ -75,7 +75,7 @@ extension PinpointEvent {
         guard let eventId = element[EventPropertyIndex.id] as? String else {
             return nil
         }
-       
+
         var retryCount = 0
         if let retryCountInt = element[EventPropertyIndex.retryCount] as? Int64 {
             retryCount = Int(retryCountInt)

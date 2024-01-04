@@ -26,13 +26,13 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
 
     /// The current state of lazily loaded list
     var loadedState: LoadedState
-    
+
     /// Boolean property to check if list is loaded
     public var isLoaded: Bool {
         if case .loaded = loadedState {
             return true
         }
-        
+
         return false
     }
 
@@ -69,7 +69,6 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
             }
         }
     }
-
 
     // MARK: - Initializers
 

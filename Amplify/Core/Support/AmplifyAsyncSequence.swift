@@ -13,8 +13,8 @@ public class AmplifyAsyncSequence<Element: Sendable>: AsyncSequence, Cancellable
     public typealias Iterator = AsyncStream<Element>.Iterator
     private var asyncStream: AsyncStream<Element>! = nil
     private var continuation: AsyncStream<Element>.Continuation! = nil
-    private var parent: Cancellable? = nil
-    
+    private var parent: Cancellable?
+
     public private(set) var isCancelled: Bool = false
 
     public init(parent: Cancellable? = nil,

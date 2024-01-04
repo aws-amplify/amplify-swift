@@ -41,5 +41,5 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
         log.verbose("Cleared federation")
         return
     }
-    
+
 }

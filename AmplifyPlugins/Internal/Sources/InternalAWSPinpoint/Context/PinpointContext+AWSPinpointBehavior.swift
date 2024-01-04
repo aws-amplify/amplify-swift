@@ -44,7 +44,7 @@ extension PinpointContext: AWSPinpointBehavior {
             await analyticsClient.removeGlobalMetric(forKey: forKey)
         }
     }
-    
+
     func addGlobalProperty(_ value: AnalyticsPropertyValue, forKey: String) async {
         if let value = value as? String {
             await analyticsClient.addGlobalAttribute(value, forKey: forKey)
@@ -57,17 +57,17 @@ extension PinpointContext: AWSPinpointBehavior {
         }
     }
 
-    func setRemoteGlobalAttributes(_ attributes: [String : String]) async {
+    func setRemoteGlobalAttributes(_ attributes: [String: String]) async {
         await analyticsClient.setRemoteGlobalAttributes(attributes)
     }
-    
+
     func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
                                           onSubmit: AnalyticsClientBehaviour.SubmitResult?) {
         Task {
             await analyticsClient.setAutomaticSubmitEventsInterval(interval, onSubmit: onSubmit)
         }
     }
-    
+
     func startTrackingSessions(backgroundTimeout: TimeInterval) {
         sessionClient.startTrackingSessions(backgroundTimeout: backgroundTimeout)
     }

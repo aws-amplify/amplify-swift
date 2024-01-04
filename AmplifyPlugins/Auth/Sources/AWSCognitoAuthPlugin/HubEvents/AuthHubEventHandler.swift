@@ -67,7 +67,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 }
                 self?.handleSignInEvent(result)
         #endif
-                
+
             case HubPayload.EventName.Auth.deleteUserAPI:
                 guard let event = payload.data as? AWSAuthDeleteUserTask.AmplifyAuthTaskResult,
                       case .success = event else {

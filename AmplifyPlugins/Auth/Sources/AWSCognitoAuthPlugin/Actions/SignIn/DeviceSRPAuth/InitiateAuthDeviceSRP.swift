@@ -86,7 +86,10 @@ struct InitiateAuthDeviceSRP: Action {
         _ response: SignInResponseBehavior,
         with stateData: SRPStateData) -> StateMachineEvent {
             guard case .devicePasswordVerifier = response.challengeName else {
-                let message = "Unsupported challenge response during DeviceSRPAuth \(response.challengeName ?? .sdkUnknown("Response did not contain challenge info"))"
+                let message = """
+                Unsupported challenge response during DeviceSRPAuth
+                \(response.challengeName ?? .sdkUnknown("Response did not contain challenge info"))
+                """
                 let error = SignInError.unknown(message: message)
                 return SignInEvent(eventType: .throwAuthError(error))
             }
@@ -99,7 +102,7 @@ extension InitiateAuthDeviceSRP: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
-    
+
     public var log: Logger {
         Self.log
     }

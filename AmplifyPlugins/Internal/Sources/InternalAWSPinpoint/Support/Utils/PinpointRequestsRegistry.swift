@@ -29,11 +29,11 @@ import AWSPluginsCore
         )
     }
 
-    fileprivate func sources(for api: API) -> Set<AWSPinpointSource> {
+    func sources(for api: API) -> Set<AWSPinpointSource> {
         return pendingRequests[api, default: []]
     }
 
-    fileprivate func unregisterSources(for api: API) {
+    func unregisterSources(for api: API) {
         pendingRequests[api] = nil
     }
 
