@@ -262,7 +262,13 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 return
             }
             reconciliationQueue.offer([mutationSync], modelName: mutationEvent.modelName)
-            completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
+            MutationEvent.reconcilePendingMutationEventsVersion(
+                sent: mutationEvent,
+                received: mutationSync,
+                storageAdapter: storageAdapter
+            ) { _ in
+                self.completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
+            }
         } else {
             completeProcessingEvent(mutationEvent)
         }
