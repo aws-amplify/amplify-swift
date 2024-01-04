@@ -98,8 +98,10 @@ extension StorageEngine {
         }
     }
 
-    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin, 
-                                   authModeStrategy: AuthModeStrategyType) -> Bool {
+    static func requiresAuthPlugin(
+        _ apiPlugin: APICategoryPlugin,
+        authModeStrategy: AuthModeStrategyType
+    ) -> Bool {
         let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains { schema in
             guard schema.isSyncable  else {
                 return false
@@ -112,9 +114,11 @@ extension StorageEngine {
         return modelsRequireAuthPlugin
     }
 
-    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin, 
-                                   authRules: [AuthRule],
-                                   authModeStrategy: AuthModeStrategyType) -> Bool {
+    static func requiresAuthPlugin(
+        _ apiPlugin: APICategoryPlugin,
+        authRules: [AuthRule],
+        authModeStrategy: AuthModeStrategyType
+    ) -> Bool {
         switch authModeStrategy {
         case .default:
             if authRules.isEmpty {
@@ -134,7 +138,7 @@ extension StorageEngine {
                 return rulesRequireAuthPlugin
             }
         }
-        
+
         // Fall back to the endpoint's auth type if a determination cannot be made from the auth rules. This can
         // occur for older generation of the auth rules which do not have provider information such as the initial
         // single auth rule use cases. The auth type from the API is used to determine whether or not the auth
@@ -146,7 +150,7 @@ extension StorageEngine {
                 log.error(error: error)
             }
         }
-        
+
         log.warn("""
             Could not determine whether the auth plugin is required or not. The auth rules present
             may be missing provider information. When this happens, the API Plugin is used to determine
