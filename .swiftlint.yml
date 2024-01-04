@@ -54,3 +54,5 @@ statement_position:
   severity: error
 todo: warning
 trailing_semicolon: error
+non_optional_string_data_conversion: 
+  severity: error
