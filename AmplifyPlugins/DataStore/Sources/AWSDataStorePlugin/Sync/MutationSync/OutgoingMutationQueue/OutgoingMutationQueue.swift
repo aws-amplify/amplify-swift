@@ -249,16 +249,22 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             guard let reconciliationQueue = reconciliationQueue else {
                 let dataStoreError = DataStoreError.configuration(
                     "reconciliationQueue is unexpectedly nil",
-                                """
-                                The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
-                                \(AmplifyErrorMessages.reportBugToAWS())
-                                """
+                    """
+                    The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
+                    \(AmplifyErrorMessages.reportBugToAWS())
+                    """
                 )
                 stateMachine.notify(action: .errored(dataStoreError))
                 return
             }
             reconciliationQueue.offer([mutationSync], modelName: mutationEvent.modelName)
-            completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
+            MutationEvent.reconcilePendingMutationEventsVersion(
+                sent: mutationEvent,
+                received: mutationSync,
+                storageAdapter: storageAdapter
+            ) { _ in
+                self.completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
+            }
         } else {
             completeProcessingEvent(mutationEvent)
         }

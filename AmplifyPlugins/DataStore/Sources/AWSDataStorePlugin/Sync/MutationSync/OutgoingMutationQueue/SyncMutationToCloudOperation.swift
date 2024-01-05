@@ -103,6 +103,33 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
         }
     }
 
+    /// Always retrieve and use the largest version when available. The source of the version comes
+    /// from either the MutationEvent itself, which represents the queue request, or the persisted version
+    /// from the metadata table.
+    ///
+    /// **Version in the Mutation Event**. If there are mulitple mutation events pending, each outgoing
+    /// mutation processing will result in synchronously updating the pending mutation's version
+    /// before enqueuing the mutation response for reconciliation.
+    ///
+    /// **Version persisted in the metadata table**: Reconciliation will persist the latest version in the
+    /// metadata table. In cases of quick consecutive updates, the MutationEvent's version could
+    /// be greater than the persisted since the MutationEvent is updated from the original thread that
+    /// processed the outgoing mutation.
+    private func getLatestVersion(_ mutationEvent: MutationEvent) -> Int? {
+        let latestSyncedMetadataVersion = getLatestSyncMetadata()?.version
+        let mutationEventVersion = mutationEvent.version
+        switch (latestSyncedMetadataVersion, mutationEventVersion) {
+        case let (.some(syncedVersion), .some(version)):
+            return max(syncedVersion, version)
+        case let (.some(syncedVersion), .none):
+            return syncedVersion
+        case let (.none, .some(version)):
+            return version
+        case (.none, .none):
+            return nil
+        }
+    }
+
     /// Creates a GraphQLRequest based on given `mutationType`
     /// - Parameters:
     ///   - mutationType: mutation type
@@ -112,7 +139,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
         mutationType: GraphQLMutationType,
         authType: AWSAuthorizationType? = nil
     ) -> GraphQLRequest<MutationSync<AnyModel>>? {
-        let latestSyncMetadata = getLatestSyncMetadata()
+        let version = getLatestVersion(mutationEvent)
         var request: GraphQLRequest<MutationSync<AnyModel>>
 
         do {
@@ -133,7 +160,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: model,
                                                                             modelSchema: modelSchema,
                                                                             where: graphQLFilter,
-                                                                            version: latestSyncMetadata?.version)
+                                                                            version: version)
             case .update:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -145,7 +172,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
                                                                             modelSchema: modelSchema,
                                                                             where: graphQLFilter,
-                                                                            version: latestSyncMetadata?.version)
+                                                                            version: version)
             case .create:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -156,7 +183,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 }
                 request = GraphQLRequest<MutationSyncResult>.createMutation(of: model,
                                                                             modelSchema: modelSchema,
-                                                                            version: latestSyncMetadata?.version)
+                                                                            version: version)
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
