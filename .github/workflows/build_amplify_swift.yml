@@ -5,6 +5,14 @@ on:
       platform:
         type: string
         required: true
+      
+      xcode-version:
+        type: string
+        default: '14.3'
+
+      os-runner:
+        type: string
+        default: 'macos-13'
 
 permissions:
     contents: read
@@ -13,7 +21,7 @@ permissions:
 jobs:
   build-amplify-swift:
     name: Build Amplify-Package | ${{ inputs.platform }}
-    runs-on: macos-13
+    runs-on: ${{ inputs.os-runner }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -25,7 +33,7 @@ jobs:
         uses: ./.github/composite_actions/get_platform_parameters
         with:
           platform: ${{ inputs.platform }}
-          xcode_version: '14.3'
+          xcode_version: ${{ inputs.xcode-version }}
       
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
@@ -55,7 +63,7 @@ jobs:
           scheme: Amplify-Package
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_14.3.app
+          xcode_path: /Applications/Xcode_${{ inputs.xcode-version }}.app
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
