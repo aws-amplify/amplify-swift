@@ -24,7 +24,7 @@ class ModelCodableTests: XCTestCase {
     }
 
     func testToJSON() {
-        let createdAt = Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000.123))
+        let createdAt = Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000.123), timeZone: .utc)
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -37,7 +37,7 @@ class ModelCodableTests: XCTestCase {
         XCTAssertEqual(post?.id, "post-1")
         XCTAssertEqual(post?.title, "title")
         XCTAssertEqual(post?.content, "content")
-        XCTAssertEqual(post?.createdAt, Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000.123)))
+        XCTAssertEqual(post?.createdAt, Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000.123), timeZone: .utc))
     }
 
     func testDecodeWithoutFractionalSeconds() {
@@ -45,6 +45,6 @@ class ModelCodableTests: XCTestCase {
         XCTAssertEqual(post?.id, "post-1")
         XCTAssertEqual(post?.title, "title")
         XCTAssertEqual(post?.content, "content")
-        XCTAssertEqual(post?.createdAt, Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000)))
+        XCTAssertEqual(post?.createdAt, Temporal.DateTime(Date(timeIntervalSince1970: 1_000_000), timeZone: .utc))
     }
 }
