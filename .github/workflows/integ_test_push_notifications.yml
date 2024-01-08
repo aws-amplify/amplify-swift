@@ -42,14 +42,13 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           persist-credentials: false
-      
+
       - name: Get build parameters for ${{ matrix.platform}}
         id: platform
         uses: ./.github/composite_actions/get_platform_parameters
         with:
           platform: ${{ matrix.platform }}
-          xcode_version: '14.3'
-      
+
       - name: Create the test configuration directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
 
@@ -102,7 +101,7 @@ jobs:
           scheme: ${{ matrix.platform == 'watchOS' && 'PushNotificationWatchTests' || 'PushNotificationHostApp' }}
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_14.3.app
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
           generate_coverage: false
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -117,7 +116,7 @@ jobs:
           scheme: ${{ matrix.platform == 'watchOS' && 'PushNotificationWatchTests' || 'PushNotificationHostApp' }}
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_14.3.app
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           project_path: ./AmplifyPlugins/Notifications/Push/Tests/PushNotificationHostApp
           generate_coverage: false
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify

@@ -15,27 +15,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - os-runner: macos-12
-            xcode-version: 14.0.1
-            platform: iOS
-
-          - os-runner: macos-12
-            xcode-version: 14.0.1
-            platform: macOS
-
-          - os-runner: macos-12
-            xcode-version: 14.0.1
-            platform: tvOS
-
-          - os-runner: macos-12
-            xcode-version: 14.0.1
-            platform: watchOS
+        platform: [iOS, macOS, tvOS, watchOS]
 
     uses: ./.github/workflows/build_amplify_swift.yml
     with:
-      os-runner: ${{ matrix.os-runner }}
-      xcode-version: ${{ matrix.xcode-version }}
+      os-runner: macos-12
+      xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
       cacheable: false
 

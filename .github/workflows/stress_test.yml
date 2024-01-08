@@ -6,7 +6,7 @@ on:
 
 permissions:
     id-token: write
-    contents: read 
+    contents: read
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -29,10 +29,25 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
-  auth-stress-test:
+  get-platform-build-params:
+    runs-on: macos-13
     needs: prepare-for-test
+    outputs:
+      platform-params: ${{ steps.platform.outputs }}
+    steps:
+      - name: Get build parameters
+        id: platform
+        uses: ./.github/composite_actions/get_platform_parameters
+        with:
+          platform: 'iOS'
+
+  auth-stress-test:
+    needs: get-platform-build-params
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
+      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -54,13 +69,16 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
           scheme: AuthStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   geo-stress-test:
-    needs: prepare-for-test
+    needs: get-platform-build-params
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
+      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -82,13 +100,16 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
           scheme: GeoStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   storage-stress-test:
-    needs: prepare-for-test
+    needs: get-platform-build-params
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
+      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -110,13 +131,16 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
           scheme: StorageStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
-  
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
+
   datastore-stress-test:
-    needs: prepare-for-test
+    needs: get-platform-build-params
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
+      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -138,13 +162,16 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: DatastoreStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   graphql-api-stress-test:
-    needs: prepare-for-test
+    needs: get-platform-build-params
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
+      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -166,5 +193,5 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/API/Tests/APIHostApp
           scheme: GraphQLAPIStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'

@@ -39,7 +39,6 @@ jobs:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSS3StoragePluginIntegrationTestsWatch' || 'AWSS3StoragePluginIntegrationTests' }}
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
-      xcode_version: '14.3'
       resource_subfolder: storage
       timeout-minutes: 30
     secrets: inherit

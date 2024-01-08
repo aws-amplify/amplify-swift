@@ -36,6 +36,5 @@ jobs:
     with:
       scheme: ${{ inputs.scheme }}
       platform: ${{ matrix.platform }}
-      xcode_version: '14.3'
       generate_coverage_report: ${{ github.event_name != 'workflow_dispatch' && matrix.platform == 'iOS' && inputs.generate_coverage_report }}
       timeout-minutes: ${{ inputs.timeout-minutes }}
