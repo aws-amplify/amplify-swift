@@ -1,7 +1,7 @@
 # Version definitions
 
 # Amplify release version
-$AMPLIFY_VERSION = '1.30.5'
+$AMPLIFY_VERSION = '1.30.6'
 
 # GitHub tag name for Amplify releases
 $AMPLIFY_RELEASE_TAG = "#{$AMPLIFY_VERSION}"
