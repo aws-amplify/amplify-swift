@@ -1,5 +1,13 @@
 # Changelog
 ## Unreleased
+## 1.30.6 (2024-01-08)
+
+### Bug Fixes
+
+- **datastore-v1**: update pending mutation events version from mutation response (#3458)
+- **datastore-v1**: store time zone info in Temporal.DateTime (#3420)
+- **datastore-v1**: sync pending mutation events with latest synced metadata (#3402)
+
 ## 1.30.5 (2023-12-13)
 
 ### Bug Fixes
