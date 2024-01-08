@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.25.3 (2024-01-08)
+
+### Bug Fixes
+
+- **datastore**: update pending mutation events version from mutation response (#3452)
+- **datastore**: sync pending mutation events with latest synced metadata (#3377)
+
 ## 2.25.2 (2023-12-27)
 
 ### Bug Fixes
