@@ -9,6 +9,7 @@ import Foundation
 import CryptoKit
 import AmplifyBigInteger
 
+// swiftlint:disable identifier_name
 public struct SRPCommonState {
 
     /// Group Parameter N of SRP protocol
@@ -37,3 +38,4 @@ public struct SRPCommonState {
         return BigInt(unsignedData: hashBytes)
     }
 }
+// swiftlint:enable identifier_name

@@ -21,7 +21,6 @@ public protocol PredictionsCategoryBehavior {
         options: Predictions.Identify.Options?
     ) async throws -> Output
 
-
     ///
     /// - Parameters:
     ///   - request:

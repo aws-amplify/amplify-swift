@@ -16,9 +16,4 @@ public struct UserMFAPreference {
     /// nil if no preference
     public let preferred: MFAType?
 
-    internal init(enabled: Set<MFAType>?, preferred: MFAType?) {
-        self.enabled = enabled
-        self.preferred = preferred
-    }
-
 }

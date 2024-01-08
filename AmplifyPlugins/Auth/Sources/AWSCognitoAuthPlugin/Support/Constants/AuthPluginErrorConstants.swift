@@ -217,7 +217,10 @@ extension AuthPluginErrorConstants {
     static let confirmSignInMFASelectionResponseError: AuthPluginValidationErrorString = (
         "challengeResponse",
         "challengeResponse for MFA selection can only have SMS_MFA or SOFTWARE_TOKEN_MFA.",
-        "Make sure that a valid challenge response is passed for confirmSignIn. Try using `MFAType.totp.challengeResponse` or `MFAType.sms.challengeResponse` as the challenge response"
+        """
+        Make sure that a valid challenge response is passed for confirmSignIn.
+        Try using `MFAType.totp.challengeResponse` or `MFAType.sms.challengeResponse` as the challenge response
+        """
     )
 
     static let confirmResetPasswordUsernameError: AuthPluginValidationErrorString = (
@@ -335,7 +338,7 @@ extension AuthPluginErrorConstants {
     """
 
     static let forbiddenError: RecoverySuggestion = """
-    Check if you are allowed to make this request based on the web ACL thats associated with your user pool 
+    Check if you are allowed to make this request based on the web ACL thats associated with your user pool
     """
 
     static let concurrentModificationException: RecoverySuggestion = """

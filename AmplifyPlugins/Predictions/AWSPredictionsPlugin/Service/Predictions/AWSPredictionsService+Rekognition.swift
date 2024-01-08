@@ -15,7 +15,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     func detectLabels(
         image: URL,
         type: Predictions.LabelType
-    ) async throws -> Predictions.Identify.Labels.Result  {
+    ) async throws -> Predictions.Identify.Labels.Result {
         let imageData = try dataFromImage(url: image)
 
         switch type {
@@ -37,8 +37,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return Predictions.Identify.Labels.Result(labels: labels, unsafeContent: unsafeContent)
             } catch let error as PredictionsErrorConvertible {
                 throw error.predictionsError
-            }
-            catch {
+            } catch {
                 throw PredictionsError.unexpectedServiceErrorType(error)
             }
 
@@ -118,7 +117,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             throw PredictionsError.unknownServiceError(error)
         }
     }
-
 
     func detectPlainText(image: URL) async throws -> Predictions.Identify.Text.Result {
         let imageData = try dataFromImage(url: image)

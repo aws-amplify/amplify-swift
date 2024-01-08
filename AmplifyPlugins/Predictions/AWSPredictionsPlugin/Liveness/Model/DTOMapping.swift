@@ -77,7 +77,6 @@ func colorChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSe
     )
 }
 
-
 func sessionConfiguration(from event: ServerSessionInformationEvent) -> FaceLivenessSession.SessionConfiguration {
     .init(
         colorChallenge: colorChallenge(from: event),

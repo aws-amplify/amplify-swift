@@ -160,7 +160,6 @@ extension InvalidLambdaResponseException: AuthErrorConvertible {
     }
 }
 
-
 extension ExpiredCodeException: AuthErrorConvertible {
     var fallbackDescription: String { "Provided code has expired." }
 
@@ -256,7 +255,6 @@ extension InvalidEmailRoleAccessPolicyException: AuthErrorConvertible {
     }
 }
 
-
 extension InvalidSmsRoleAccessPolicyException: AuthErrorConvertible {
     var fallbackDescription: String { "Invalid SMS Role Access Policy error." }
 
@@ -328,7 +326,6 @@ extension AWSCognitoIdentityProvider.ConcurrentModificationException: AuthErrorC
     }
 }
 
-
 extension AWSCognitoIdentityProvider.EnableSoftwareTokenMFAException: AuthErrorConvertible {
     var fallbackDescription: String { "Unable to enable software token MFA" }
 
@@ -355,7 +352,3 @@ extension AWSClientRuntime.UnknownAWSHTTPServiceError: AuthErrorConvertible {
         )
     }
 }
-
-
-
-

@@ -17,7 +17,7 @@ extension FaceLivenessSession {
         }
     }
 }
-
+// swiftlint:disable identifier_name
 extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
     public struct DisplayColor {
@@ -47,3 +47,4 @@ extension FaceLivenessSession {
         }
     }
 }
+// swiftlint:enable identifier_name

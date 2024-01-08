@@ -13,7 +13,13 @@ enum UploadPartOutputError: ClientRuntime.HttpResponseErrorBinding {
     static func makeError(httpResponse: ClientRuntime.HttpResponse, decoder: ClientRuntime.ResponseDecoder? = nil) async throws -> Swift.Error {
         let restXMLError = try await AWSClientRuntime.RestXMLError.makeError(from: httpResponse)
         switch restXMLError.errorCode {
-            default: return try await AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(httpResponse: httpResponse, message: restXMLError.message, requestID: restXMLError.requestId, requestID2: httpResponse.requestId2, typeName: restXMLError.errorCode)
+        default: return try await AWSClientRuntime.UnknownAWSHTTPServiceError.makeError(
+            httpResponse: httpResponse,
+            message: restXMLError.message,
+            requestID: restXMLError.requestId,
+            requestID2: httpResponse.requestId2,
+            typeName: restXMLError.errorCode
+        )
         }
     }
 }
@@ -41,12 +47,26 @@ extension UploadPartInput {
                        .withSigningName(value: "s3")
                        .withSigningRegion(value: config.signingRegion)
          var operation = ClientRuntime.OperationStack<UploadPartInput, UploadPartOutput, UploadPartOutputError>(id: "uploadPart")
-         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLPathMiddleware<UploadPartInput, UploadPartOutput, UploadPartOutputError>())
+         operation.initializeStep.intercept(
+            position: .after,
+            middleware: ClientRuntime.URLPathMiddleware<UploadPartInput, UploadPartOutput, UploadPartOutputError>()
+         )
          operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLHostMiddleware<UploadPartInput, UploadPartOutput>())
-        operation.buildStep.intercept(position: .before, middleware: EndpointResolverMiddleware<UploadPartOutput, UploadPartOutputError>(endpointResolver: config.serviceSpecific.endpointResolver, endpointParams: config.endpointParams(withBucket: input.bucket)))
+         operation.buildStep.intercept(
+            position: .before,
+            middleware: EndpointResolverMiddleware<UploadPartOutput, UploadPartOutputError>(
+                endpointResolver: config.serviceSpecific.endpointResolver,
+                endpointParams: config.endpointParams(withBucket: input.bucket)
+            )
+         )
          operation.serializeStep.intercept(position: .after, middleware: UploadPartInputBodyMiddleware())
          operation.serializeStep.intercept(position: .after, middleware: QueryItemMiddleware())
-        operation.finalizeStep.intercept(position: .after, middleware: ClientRuntime.RetryMiddleware<DefaultRetryStrategy, AWSRetryErrorInfoProvider, UploadPartOutput, UploadPartOutputError>(options: config.retryStrategyOptions))
+         operation.finalizeStep.intercept(
+            position: .after,
+            middleware: ClientRuntime.RetryMiddleware<DefaultRetryStrategy, AWSRetryErrorInfoProvider, UploadPartOutput, UploadPartOutputError>(
+                options: config.retryStrategyOptions
+            )
+         )
          let sigv4Config = AWSClientRuntime.SigV4Config(
             signatureType: .requestQueryParams,
             useDoubleURIEncode: false,
@@ -54,8 +74,13 @@ extension UploadPartInput {
             unsignedBody: true,
             signingAlgorithm: .sigv4
          )
-         operation.finalizeStep.intercept(position: .before, middleware: AWSClientRuntime.SigV4Middleware<UploadPartOutput, UploadPartOutputError>(config: sigv4Config))
-         operation.deserializeStep.intercept(position: .before, middleware: ClientRuntime.LoggerMiddleware<UploadPartOutput, UploadPartOutputError>(clientLogMode: config.clientLogMode))
+         operation.finalizeStep.intercept(
+            position: .before,
+            middleware: AWSClientRuntime.SigV4Middleware<UploadPartOutput, UploadPartOutputError>(config: sigv4Config)
+         )
+         operation.deserializeStep.intercept(
+            position: .before,
+            middleware: ClientRuntime.LoggerMiddleware<UploadPartOutput, UploadPartOutputError>(clientLogMode: config.clientLogMode))
          operation.deserializeStep.intercept(position: .after, middleware: ClientRuntime.DeserializeMiddleware<UploadPartOutput, UploadPartOutputError>())
          let presignedRequestBuilder = try await operation.presignedRequest(context: context.build(), input: input, next: ClientRuntime.NoopHandler())
          guard let builtRequest = presignedRequestBuilder?.build(), let presignedURL = builtRequest.endpoint.url else {

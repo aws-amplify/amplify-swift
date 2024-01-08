@@ -12,12 +12,12 @@ extension ModelSchema {
         enum ExtractionError: Error {
             case unsupportedLazyReferenceIdentifier(name: String, value: JSONValue?)
         }
-        
+
         var identifiers = [LazyReferenceIdentifier]()
 
         for identifierField in primaryKey.fields {
             let object = modelObject[identifierField.name]
-            
+
             switch object {
             case .string(let identifierValue):
                 identifiers.append(.init(name: identifierField.name, value: identifierValue))
@@ -28,7 +28,7 @@ extension ModelSchema {
                 )
             }
         }
-        
+
         return identifiers
     }
 }

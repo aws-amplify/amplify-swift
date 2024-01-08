@@ -111,7 +111,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 authModeStrategy: authModeStrategy
             )
         }
-        
+
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
         self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents
@@ -122,7 +122,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self?.receive(receiveValue)
             })
     }
-    
+
     /// (Re)starts the incoming subscription event queue.
     func start() {
         incomingSubscriptionEventQueue.isSuspended = false
@@ -289,7 +289,7 @@ extension AWSModelReconciliationQueue {
             case .operationDisabled = AppSyncErrorType(errorMessage) {
             return true
         }
-        
+
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),

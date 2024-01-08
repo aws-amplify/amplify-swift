@@ -66,6 +66,3 @@ extension EventStream.Header {
         case uuid = 9
     }
 }
-
-
-

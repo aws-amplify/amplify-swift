@@ -11,7 +11,7 @@ import Foundation
 /// [LogFile](x-source-tag://LogFile)
 ///
 protocol LogBatchConsumer {
-    
+
     /// Processes the given [LogBatch](x-source-tag://LogBatch) and ensures to call
     /// [LogBatch.complete](x-source-tag://LogBatch.complete) on the given `batch` when
     /// done.

@@ -49,7 +49,6 @@ extension Predictions.Language {
         }
     }
 
-
     func toTranscribeLanguage() -> TranscribeStreamingClientTypes.LanguageCode {
         switch self {
         case .usEnglish,

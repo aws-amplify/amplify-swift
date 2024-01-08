@@ -8,7 +8,7 @@
 import Foundation
 
 /// The configuration for the Notifications category
-public struct NotificationsCategoryConfiguration: CategoryConfiguration {    
+public struct NotificationsCategoryConfiguration: CategoryConfiguration {
     /// Plugins
     public let plugins: [String: JSONValue]
 

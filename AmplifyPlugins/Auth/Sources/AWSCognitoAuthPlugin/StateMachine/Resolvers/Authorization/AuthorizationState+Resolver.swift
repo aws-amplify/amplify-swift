@@ -9,12 +9,14 @@ import Foundation
 
 extension AuthorizationState {
 
+    // swiftlint:disable:next type_body_length nesting
     struct Resolver: StateMachineResolver {
         typealias StateType = AuthorizationState
         let defaultState = AuthorizationState.notConfigured
 
         init() { }
 
+        // swiftlint:disable:next cyclomatic_complexity function_body_length
         func resolve(
             oldState: StateType,
             byApplying event: StateMachineEvent
@@ -247,7 +249,7 @@ extension AuthorizationState {
                 if case .sessionEstablished(let credentials) = event.isAuthorizationEvent {
                     return .init(newState: .sessionEstablished(credentials))
                 }
-                
+
                 if case .throwError(let error) = event.isAuthorizationEvent {
                     return .init(newState: .error(error))
                 }

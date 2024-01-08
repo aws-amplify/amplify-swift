@@ -44,7 +44,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         return modelSchemasCount == reconciliationQueueConnectionStatus.count
     }
     private let modelSchemasCount: Int
-    
+
     init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehaviorExtended,
          storageAdapter: StorageEngineAdapter,
@@ -52,27 +52,27 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          auth: AuthCategoryBehavior? = nil,
          authModeStrategy: AuthModeStrategy,
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil,
-         disableSubscriptions: @escaping () -> Bool = { false } ) async {
+         disableSubscriptions: @escaping () -> Bool = { false }) async {
         self.modelSchemasCount = modelSchemas.count
         self.modelReconciliationQueueSinks.set([:])
         self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.idle)
         self.reconciliationQueues.set([:])
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
-        
+
         if let modelReconciliationQueueFactory = modelReconciliationQueueFactory {
             self.modelReconciliationQueueFactory = modelReconciliationQueueFactory
         } else {
             self.modelReconciliationQueueFactory = AWSModelReconciliationQueue.init
         }
-        
+
         // TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
             = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
 
         let subscriptionsDisabled = disableSubscriptions()
-        
+
         #if targetEnvironment(simulator) && os(watchOS)
         if !subscriptionsDisabled {
             let message = """
@@ -102,7 +102,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                                    auth,
                                                                    authModeStrategy,
                                                                    subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil)
-            
+
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue
             }
@@ -207,7 +207,8 @@ extension AWSIncomingEventReconciliationQueue: DefaultLogger {
 
 // MARK: - Static factory
 extension AWSIncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _, disableSubscriptions in
+    static let factory: IncomingEventReconciliationQueueFactory = {
+        modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _, disableSubscriptions in
         await AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                                   api: api,
                                                   storageAdapter: storageAdapter,
@@ -238,7 +239,7 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
         // We're sometimes hitting a deadlock when waiting for them to finish. Commenting this out and letting
         // the tests continue onto the next works pretty well, but ideally ReconcileAndLocalSaveOperation's should 
         // always finish. We can uncomment this to explore a better fix that will still gives us test stability.
-        //reconcileAndSaveQueue.waitUntilOperationsAreFinished()
+        // reconcileAndSaveQueue.waitUntilOperationsAreFinished()
         log.verbose("Resetting reconcileAndSaveQueue: finished")
 
         log.verbose("Cancelling AWSIncomingEventReconciliationQueue")

@@ -88,11 +88,11 @@ actor EventRecorder: AnalyticsEventRecording {
             _ = try? await submissionTask?.value
             submittedEvents = []
             let eventsBatch = try getBatchRecords()
-            if eventsBatch.count > 0 {
+            if eventsBatch.isEmpty {
+                log.verbose("No events to submit")
+            } else {
                 let endpointProfile = await endpointClient.currentEndpointProfile()
                 try await processBatch(eventsBatch, endpointProfile: endpointProfile)
-            } else {
-                log.verbose("No events to submit")
             }
             return submittedEvents
         }
@@ -115,7 +115,7 @@ actor EventRecorder: AnalyticsEventRecording {
         }
         try storage.removeFailedEvents()
         let nextEventsBatch = try getBatchRecords()
-        if nextEventsBatch.count > 0 {
+        if !nextEventsBatch.isEmpty {
             try await processBatch(nextEventsBatch, endpointProfile: endpointProfile)
         }
     }
@@ -231,7 +231,7 @@ actor EventRecorder: AnalyticsEventRecording {
             throw error
         }
     }
-    
+
     private func handleError(_ error: Error, for pinpointEvents: [PinpointEvent]) {
         if isConnectivityError(error) {
             // Connectivity errors should be retried indefinitely, so we won't update the database
@@ -256,7 +256,7 @@ actor EventRecorder: AnalyticsEventRecording {
         }
         return type(of: modeledError).isRetryable
     }
-    
+
     private func errorDescription(_ error: Error) -> String {
         if isConnectivityError(error) {
             return AWSPinpointErrorConstants.deviceOffline.errorDescription
@@ -273,7 +273,7 @@ actor EventRecorder: AnalyticsEventRecording {
             return error.localizedDescription
         }
     }
-    
+
     private func isConnectivityError(_ error: Error) -> Bool {
         switch error {
         case let error as CommonRunTimeError:
@@ -291,7 +291,7 @@ actor EventRecorder: AnalyticsEventRecording {
             return false
         }
     }
-    
+
     private func deleteEvent(eventId: String) {
         retry(onErrorMessage: "Unable to delete event with id \(eventId).") {
             try storage.deleteEvent(eventId: eventId)
@@ -303,18 +303,17 @@ actor EventRecorder: AnalyticsEventRecording {
             try storage.setDirtyEvent(eventId: eventId)
         }
     }
-    
+
     private func markEventsAsDirty(_ events: [PinpointEvent]) {
         events.forEach { setDirtyEvent(eventId: $0.id) }
     }
-
 
     private func incrementEventRetry(eventId: String) {
         retry(onErrorMessage: "Unable to update retry count for event with id \(eventId).") {
             try storage.incrementEventRetry(eventId: eventId)
         }
     }
-    
+
     private func incrementRetryCounter(for events: [PinpointEvent]) {
         events.forEach { incrementEventRetry(eventId: $0.id) }
     }

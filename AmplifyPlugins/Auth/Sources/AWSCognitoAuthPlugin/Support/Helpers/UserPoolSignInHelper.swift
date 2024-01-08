@@ -100,8 +100,6 @@ struct UserPoolSignInHelper: DefaultLogger {
             return event
         }
 
-
-
     static func parseResponse(
         _ response: SignInResponseBehavior,
         for username: String,
@@ -162,11 +160,11 @@ struct UserPoolSignInHelper: DefaultLogger {
                 return SignInEvent(eventType: .throwAuthError(error))
             }
         }
-    
+
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
-    
+
     public var log: Logger {
         Self.log
     }

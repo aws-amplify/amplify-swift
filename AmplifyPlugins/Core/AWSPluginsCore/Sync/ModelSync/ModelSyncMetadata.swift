@@ -13,7 +13,7 @@ public struct ModelSyncMetadata: Model {
 
     /// The timestamp (in Unix seconds) at which the last sync was started, as reported by the service
     public var lastSync: Int64?
-    
+
     /// The sync predicate for this model, extracted out from the sync expression.
     public var syncPredicate: String?
 

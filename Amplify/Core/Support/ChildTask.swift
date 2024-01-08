@@ -12,9 +12,9 @@ import Foundation
 actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
     typealias Element = InProcess
     private let parent: Cancellable
-    private var inProcessChannel: AmplifyAsyncSequence<InProcess>? = nil
+    private var inProcessChannel: AmplifyAsyncSequence<InProcess>?
     private var valueContinuations: [CheckedContinuation<Success, Error>] = []
-    private var storedResult: Result<Success, Failure>? = nil
+    private var storedResult: Result<Success, Failure>?
     private var isCancelled = false
 
     var inProcess: AmplifyAsyncSequence<InProcess> {

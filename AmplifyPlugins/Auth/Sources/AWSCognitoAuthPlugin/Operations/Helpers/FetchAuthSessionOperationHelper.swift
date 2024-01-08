@@ -10,8 +10,6 @@ import Amplify
 
 class FetchAuthSessionOperationHelper: DefaultLogger {
 
-
-
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 
     func fetch(_ authStateMachine: AuthStateMachine,
@@ -181,7 +179,7 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
-    
+
     public var log: Logger {
         Self.log
     }

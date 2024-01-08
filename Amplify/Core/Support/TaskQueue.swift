@@ -10,7 +10,7 @@ import Foundation
 /// A helper for executing asynchronous work serially.
 public actor TaskQueue<Success> {
     private var previousTask: Task<Success, Error>?
-    
+
     public init() {}
 
     /// Serializes asynchronous requests made from an async context

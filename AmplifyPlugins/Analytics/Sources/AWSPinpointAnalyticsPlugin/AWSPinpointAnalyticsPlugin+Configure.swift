@@ -37,7 +37,7 @@ extension AWSPinpointAnalyticsPlugin {
             appId: configuration.appId,
             region: configuration.region
         )
-        
+
         let interval = TimeInterval(configuration.autoFlushEventsInterval)
         pinpoint.setAutomaticSubmitEventsInterval(interval) { result in
             switch result {
@@ -47,7 +47,7 @@ extension AWSPinpointAnalyticsPlugin {
                 Amplify.Hub.dispatchFlushEvents(AnalyticsErrorHelper.getDefaultError(error))
             }
         }
-        
+
         if configuration.trackAppSessions {
             let sessionBackgroundTimeout: TimeInterval
             if configuration.autoSessionTrackingInterval == .max {
@@ -55,10 +55,10 @@ extension AWSPinpointAnalyticsPlugin {
             } else {
                 sessionBackgroundTimeout = TimeInterval(configuration.autoSessionTrackingInterval)
             }
-            
+
             pinpoint.startTrackingSessions(backgroundTimeout: sessionBackgroundTimeout)
         }
-        
+
         let networkMonitor = NWPathMonitor()
         networkMonitor.startMonitoring(
             using: DispatchQueue(

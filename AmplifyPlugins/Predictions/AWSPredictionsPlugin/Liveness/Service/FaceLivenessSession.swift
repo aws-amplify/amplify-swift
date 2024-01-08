@@ -82,9 +82,9 @@ public final class FaceLivenessSession: LivenessService {
         let encodedPayload = eventStreamEncoder.encode(
             payload: event.payload,
             headers: [
-                ":content-type":  .string("application/json"),
+                ":content-type": .string("application/json"),
                 ":event-type": .string(event.eventTypeHeader),
-                ":message-type":  .string("event")
+                ":message-type": .string("event")
             ]
         )
 
@@ -105,7 +105,7 @@ public final class FaceLivenessSession: LivenessService {
 
         websocket.send(
             message: .data(encodedEvent),
-            onError: { error in }
+            onError: { _ in }
         )
     }
 

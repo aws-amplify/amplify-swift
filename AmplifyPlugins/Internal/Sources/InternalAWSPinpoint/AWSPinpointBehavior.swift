@@ -41,19 +41,19 @@ public protocol AWSPinpointBehavior {
     /// Records the specified `PinpointEvent` to the local storage.
     /// - Parameter event: The `PinpointEvent` to persist
     func record(_ event: PinpointEvent) async throws
-    
+
     /// Sets the interval for the automatic submission of event. If set to `TimeInterval.zero`,
     /// the automatic submission is disabled
     /// - Parameter interval: How much to wait between submissions
     /// - Parameter onSubmit: An optional callback to be run after each submission happens
     func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
                                           onSubmit: AnalyticsClientBehaviour.SubmitResult?)
-    
+
     // MARK: Session
     /// Beings automatically tracking session activity in the device.
     /// - Parameter backgroundTimeout: How much to wait after the device goes to the background before stopping the session
     func startTrackingSessions(backgroundTimeout: TimeInterval)
-    
+
     /// Submits all recorded events to Pinpoint.
     /// Events are automatically submitted when the application goes into the background.
     /// - Returns: An array of successfully submitted events.

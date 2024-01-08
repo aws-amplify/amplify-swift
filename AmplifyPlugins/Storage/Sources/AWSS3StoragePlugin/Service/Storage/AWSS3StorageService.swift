@@ -78,9 +78,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         let awsS3 = AWSS3Adapter(s3Client, config: clientConfig)
         let preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(config: clientConfig, bucket: bucket)
 
-        var _sessionConfiguration: URLSessionConfiguration
+        var sessionConfig: URLSessionConfiguration
         if let sessionConfiguration = sessionConfiguration {
-            _sessionConfiguration = sessionConfiguration
+            sessionConfig = sessionConfiguration
         } else {
             #if os(macOS)
             let sessionConfiguration = URLSessionConfiguration.default
@@ -90,16 +90,16 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
             sessionConfiguration.urlCache = nil
             sessionConfiguration.allowsCellularAccess = storageConfiguration.allowsCellularAccess
             sessionConfiguration.timeoutIntervalForResource = TimeInterval(storageConfiguration.timeoutIntervalForResource)
-            _sessionConfiguration = sessionConfiguration
+            sessionConfig = sessionConfiguration
         }
 
-        _sessionConfiguration.sharedContainerIdentifier = storageConfiguration.sharedContainerIdentifier
+        sessionConfig.sharedContainerIdentifier = storageConfiguration.sharedContainerIdentifier
 
         self.init(authService: authService,
                   storageConfiguration: storageConfiguration,
                   storageTransferDatabase: storageTransferDatabase,
                   fileSystem: fileSystem,
-                  sessionConfiguration: _sessionConfiguration,
+                  sessionConfiguration: sessionConfig,
                   logger: logger,
                   s3Client: s3Client,
                   preSignedURLBuilder: preSignedURLBuilder,
@@ -185,7 +185,12 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                                                                  bucket: pair.transferTask.bucket,
                                                                  key: pair.transferTask.key,
                                                                  uploadFile: uploadFile)
-                guard let session = StorageMultipartUploadSession(client: client, transferTask: pair.transferTask, multipartUpload: multipartUpload, logger: logger) else {
+                guard let session = StorageMultipartUploadSession(
+                    client: client,
+                    transferTask: pair.transferTask,
+                    multipartUpload: multipartUpload,
+                    logger: logger
+                ) else {
                     return
                 }
                 session.restart()

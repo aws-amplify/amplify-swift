@@ -61,10 +61,6 @@ public struct QueryField: QueryFieldOperation {
 
     public let name: String
 
-    init(name: String) {
-        self.name = name
-    }
-
     // MARK: - beginsWith
     public func beginsWith(_ value: String) -> QueryPredicateOperation {
         return QueryPredicateOperation(field: name, operator: .beginsWith(value))

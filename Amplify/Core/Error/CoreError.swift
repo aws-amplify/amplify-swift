@@ -14,7 +14,7 @@ public enum CoreError {
     ///
     /// - Tag: CoreError.listOperation
     case listOperation(ErrorDescription, RecoverySuggestion, Error? = nil)
-    
+
     /// A client side validation error occured.
     ///
     /// - Tag: CoreError.clientValidation

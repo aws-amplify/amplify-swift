@@ -47,7 +47,7 @@ extension LoggingCategory: Logger {
         for (_, plugin) in plugins {
             plugin.default.verbose(message())
         }
-        
+
     }
 
 }

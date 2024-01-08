@@ -91,7 +91,7 @@ Amplify requires Xcode 14.1 or higher to build for iOS and macOS. Building for w
 
     ```swift
     import Amplify
-    import AWSCongitoAuthPlugin
+    import AWSCognitoAuthPlugin
     import AWSAPIPlugin
     import AWSDataStorePlugin
 
@@ -99,9 +99,9 @@ Amplify requires Xcode 14.1 or higher to build for iOS and macOS. Building for w
 
     func initializeAmplify() {
         do {
-            try Amplify.add(AWSCognitoAuthPlugin())
-            try Amplify.add(AWSAPIPlugin())
-            try Amplify.add(AWSDataStorePlugin())
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSDataStorePlugin())
             // and so on ...
             try Amplify.configure()
         } catch {

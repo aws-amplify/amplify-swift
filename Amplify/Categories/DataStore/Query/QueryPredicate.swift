@@ -92,9 +92,9 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
             return !predicate.evaluate(target: target)
         }
     }
-    
+
     // MARK: - Encodable conformance
-    
+
     private enum CodingKeys: String, CodingKey {
         case type
         case predicates
@@ -111,15 +111,15 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
             try _encode(encoder)
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(type.rawValue, forKey: .type)
-        
+
         let anyPredicates = predicates.map(AnyQueryPredicate.init)
         try container.encode(anyPredicates, forKey: .predicates)
     }
-    
+
 }
 
 public class QueryPredicateOperation: QueryPredicate, Encodable {

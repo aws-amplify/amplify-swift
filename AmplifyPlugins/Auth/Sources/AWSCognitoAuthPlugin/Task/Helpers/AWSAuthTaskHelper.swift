@@ -85,13 +85,13 @@ class AWSAuthTaskHelper: DefaultLogger {
     func getCurrentUser() async throws -> AuthUser {
         await didStateMachineConfigured()
         let authState = await authStateMachine.currentState
-        
+
         guard case .configured(let authenticationState, _) = authState else {
             throw AuthError.configuration(
                 "Plugin not configured",
                 AuthPluginErrorConstants.configurationError)
         }
-        
+
         switch authenticationState {
         case .notConfigured:
             throw AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
@@ -112,7 +112,7 @@ class AWSAuthTaskHelper: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
     }
-    
+
     public var log: Logger {
         Self.log
     }

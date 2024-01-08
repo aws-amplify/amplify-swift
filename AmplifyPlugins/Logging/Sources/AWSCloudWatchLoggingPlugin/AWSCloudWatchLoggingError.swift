@@ -12,17 +12,17 @@ import Foundation
 struct AWSCloudWatchLoggingError: AmplifyError {
 
     var errorDescription: String
-    
+
     var recoverySuggestion: String
-    
+
     var underlyingError: Error?
-    
+
     init(errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion, error: Error) {
         self.errorDescription = errorDescription
         self.recoverySuggestion = recoverySuggestion
         self.underlyingError = error
     }
-    
+
     init(errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion) {
         self.errorDescription = errorDescription
         self.recoverySuggestion = recoverySuggestion

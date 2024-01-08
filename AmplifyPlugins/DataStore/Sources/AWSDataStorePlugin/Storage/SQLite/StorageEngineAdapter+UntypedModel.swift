@@ -42,7 +42,7 @@ extension SQLiteStorageEngineAdapter {
                 let statement = InsertStatement(model: untypedModel, modelSchema: modelSchema)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
-            
+
             query(modelSchema: modelSchema,
                   predicate: untypedModel.identifier(schema: modelSchema).predicate,
                   eagerLoad: eagerLoad) {
@@ -58,7 +58,7 @@ extension SQLiteStorageEngineAdapter {
                     completion(.failure(error))
                 }
             }
-            
+
         } catch {
             completion(.failure(causedBy: error))
         }

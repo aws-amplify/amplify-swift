@@ -23,7 +23,7 @@ final class OperationDisabledIncomingSubscriptionEventPublisher: IncomingSubscri
         let apiError = APIError.operationError(AppSyncErrorType.operationDisabled.rawValue, "", nil)
         let dataStoreError = DataStoreError.api(apiError, nil)
         subscriptionEventSubject.send(completion: .failure(dataStoreError))
-    
+
     }
 
     func cancel() {

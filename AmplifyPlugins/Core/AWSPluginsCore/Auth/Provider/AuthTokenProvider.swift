@@ -19,7 +19,7 @@ public struct BasicUserPoolTokenProvider: AuthTokenProvider {
     public init(authService: AWSAuthServiceBehavior) {
         self.authService = authService
     }
-    
+
     public func getUserPoolAccessToken() async throws -> String {
         try await authService.getUserPoolAccessToken()
     }

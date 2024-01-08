@@ -47,7 +47,7 @@ extension FileManager: FileManagerBehaviour, DefaultLogger {
     public var log: Logger {
         Self.log
     }
-    
+
     func createDirectory(atPath path: String, withIntermediateDirectories createIntermediates: Bool) throws {
         try createDirectory(atPath: path,
                         withIntermediateDirectories: createIntermediates,

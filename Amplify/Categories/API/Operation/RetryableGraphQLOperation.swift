@@ -116,7 +116,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
         self.operationFactory = operationFactory
         self.resultListener = resultListener
     }
-    
+
     public override func main() {
         Task {
             start(request: await requestFactory())

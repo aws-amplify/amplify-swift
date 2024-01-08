@@ -157,7 +157,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         _ = try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
             .downloadData(key: "", options: nil)
 
-        await fulfillment(of: [methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin])
+        await fulfillment(of: [methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin], timeout: 10)
     }
 
     func testPreconditionFailureInvokingWithMultiplePlugins() async throws {

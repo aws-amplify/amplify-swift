@@ -13,7 +13,7 @@ extension Predictions.Identify.Text {
         public let words: [Predictions.IdentifiedWord]?
         public let rawLineText: [String]?
         public let identifiedLines: [Predictions.IdentifiedLine]?
-        
+
         public init(
             fullText: String?,
             words: [Predictions.IdentifiedWord]?,

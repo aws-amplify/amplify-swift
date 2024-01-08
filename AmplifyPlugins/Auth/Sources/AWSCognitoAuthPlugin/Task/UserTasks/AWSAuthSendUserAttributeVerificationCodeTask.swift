@@ -39,7 +39,7 @@ class AWSAuthSendUserAttributeVerificationCodeTask: AuthSendUserAttributeVerific
             return devices
         } catch let error as AuthErrorConvertible {
             throw error.authError
-        } catch  {
+        } catch {
             throw AuthError.configuration(
                 "Unable to execute auth task",
                 AuthPluginErrorConstants.configurationError,

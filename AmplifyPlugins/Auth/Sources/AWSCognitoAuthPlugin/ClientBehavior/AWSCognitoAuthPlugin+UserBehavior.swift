@@ -8,6 +8,7 @@
 import Foundation
 import Amplify
 
+// swiftlint:disable force_cast
 public extension AWSCognitoAuthPlugin {
 
     func fetchUserAttributes(options: AuthFetchUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttribute] {
@@ -50,7 +51,11 @@ public extension AWSCognitoAuthPlugin {
         let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
         let request = AuthAttributeResendConfirmationCodeRequest(
             attributeKey: userAttributeKey, options: options)
-        let task = AWSAuthAttributeResendConfirmationCodeTask(request, authStateMachine: authStateMachine, userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        let task = AWSAuthAttributeResendConfirmationCodeTask(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory
+        )
         return try await taskQueue.sync {
             return try await task.value
         } as! AuthCodeDeliveryDetails
@@ -98,3 +103,4 @@ public extension AWSCognitoAuthPlugin {
         return try await taskHelper.getCurrentUser()
     }
 }
+// swiftlint:enable force_cast
