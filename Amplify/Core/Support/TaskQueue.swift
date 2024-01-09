@@ -10,7 +10,7 @@ import Foundation
 /// A helper for executing asynchronous work serially.
 public actor TaskQueue<Success, Failure> where Failure: Error {
     private var previousTask: Task<Success, Failure>?
-    
+
     public init() {}
 }
 
@@ -34,7 +34,7 @@ public extension TaskQueue where Failure == any Error {
         previousTask = currentTask
         return try await currentTask.value
     }
-    
+
     nonisolated func async(block: @Sendable @escaping () async throws -> Success) rethrows {
         Task {
             try await sync(block: block)
@@ -62,7 +62,7 @@ public extension TaskQueue where Failure == Never {
         previousTask = currentTask
         return await currentTask.value
     }
-    
+
     nonisolated func async(block: @Sendable @escaping () async -> Success) {
         Task {
             await sync(block: block)
