@@ -14,7 +14,7 @@ on:
         type: string
         default: 'macos-13'
 
-      cachable:
+      cacheable:
         type: boolean
         default: true
 
@@ -41,7 +41,7 @@ jobs:
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
-        if: inputs.cachable
+        if: inputs.cacheable
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -53,7 +53,7 @@ jobs:
 
       - name: Attempt to restore the build cache from main
         id: build-cache
-        if: inputs.cachable
+        if: inputs.cacheable
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -75,14 +75,14 @@ jobs:
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
 
       - name: Save the dependencies cache in main
-        if: inputs.cachable && steps.dependencies-cache.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        if: inputs.cacheable && steps.dependencies-cache.outputs.cache-hit != 'true' && github.ref_name == 'main'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: ${{ steps.dependencies-cache.outputs.cache-primary-key }}
 
       - name: Delete the old build cache
-        if: inputs.cachable && steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
+        if: inputs.cacheable && steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
@@ -90,7 +90,7 @@ jobs:
           gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
 
       - name: Save the build cache
-        if: inputs.cachable && github.ref_name == 'main'
+        if: inputs.cacheable && github.ref_name == 'main'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build

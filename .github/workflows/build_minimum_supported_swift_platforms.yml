@@ -37,7 +37,7 @@ jobs:
       os-runner: ${{ matrix.os-runner }}
       xcode-version: ${{ matrix.xcode-version }}
       platform: ${{ matrix.platform }}
-      cachable: false
+      cacheable: false
 
   confirm-pass:
     runs-on: ubuntu-latest
