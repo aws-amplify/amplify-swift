@@ -75,7 +75,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         // Remove userId from the current endpoint
         let endpointClient = endpointClient()
-        let currentProfile = await endpointClient.currentEndpointProfile()
+        var currentProfile = await endpointClient.currentEndpointProfile()
         currentProfile.addUserId("")
         try await endpointClient.updateEndpointProfile(with: currentProfile)
     }
