@@ -114,47 +114,6 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(userDefaults.saveCount, 0)
     }
 
-    func testValidateSession_withValidSession_andStoredSession_shouldReturnValidSession() async {
-        storeSession()
-        await resetCounters()
-        let session = PinpointSession(sessionId: "valid", startTime: Date(), stopTime: nil)
-        let retrievedSession = client.validateOrRetrieveSession(session)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 0)
-        XCTAssertEqual(archiver.decodeCount, 0)
-        XCTAssertEqual(retrievedSession.sessionId, "valid")
-    }
-
-    func testValidateSession_withInvalidSession_andStoredSession_shouldReturnStoredSession() async {
-        storeSession()
-        await resetCounters()
-        let session = PinpointSession(sessionId: "", startTime: Date(), stopTime: nil)
-        let retrievedSession = client.validateOrRetrieveSession(session)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 1)
-        XCTAssertEqual(archiver.decodeCount, 1)
-        XCTAssertEqual(retrievedSession.sessionId, "stored")
-    }
-
-    func testValidateSession_withInvalidSession_andWithoutStoredSession_shouldCreateDefaultSession() async {
-        await resetCounters()
-        let session = PinpointSession(sessionId: "", startTime: Date(), stopTime: nil)
-        let retrievedSession = client.validateOrRetrieveSession(session)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 1)
-        XCTAssertEqual(archiver.decodeCount, 0)
-        XCTAssertEqual(retrievedSession.sessionId, PinpointSession.Constants.defaultSessionId)
-    }
-
-    func testValidateSession_withNilSession_andWithoutStoredSession_shouldCreateDefaultSession() async {
-        await resetCounters()
-        let retrievedSession = client.validateOrRetrieveSession(nil)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 1)
-        XCTAssertEqual(archiver.decodeCount, 0)
-        XCTAssertEqual(retrievedSession.sessionId, PinpointSession.Constants.defaultSessionId)
-    }
-
     func testStartPinpointSession_shouldRecordStartEvent() async {
         await resetCounters()
         let expectationStartSession = expectation(description: "Start event for new session")

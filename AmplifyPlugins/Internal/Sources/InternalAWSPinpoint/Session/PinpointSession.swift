@@ -11,14 +11,23 @@ import Foundation
 public struct PinpointSession: Codable {
     private enum State: Codable {
         case active
-        case paused
-        case stopped
+        case paused(date: Date)
+        case stopped(date: Date)
     }
     typealias SessionId = String
 
     let sessionId: SessionId
     let startTime: Date
-    private(set) var stopTime: Date?
+    var stopTime: Date? {
+        switch state {
+        case .active:
+            return nil
+        case .paused(let stopTime),
+             .stopped(let stopTime):
+            return stopTime
+        }
+    }
+    
     private var state: State = .active
 
     init(appId: String,
@@ -26,7 +35,6 @@ public struct PinpointSession: Codable {
         sessionId = Self.generateSessionId(appId: appId,
                                            uniqueId: uniqueId)
         startTime = Date()
-        stopTime = nil
     }
 
     init(sessionId: SessionId,
@@ -34,18 +42,25 @@ public struct PinpointSession: Codable {
          stopTime: Date?) {
         self.sessionId = sessionId
         self.startTime = startTime
-        self.stopTime = stopTime
-        if stopTime != nil {
-            state = .stopped
+        if let stopTime {
+            self.state = .stopped(date: stopTime)
         }
     }
 
     var isPaused: Bool {
-        return stopTime != nil && state == .paused
+        if case .paused = state {
+            return true
+        }
+
+        return false
     }
     
     var isStopped: Bool {
-        return stopTime != nil && state == .stopped
+        if case .stopped = state {
+            return true
+        }
+
+        return false
     }
 
     var duration: Date.Millisecond? {
@@ -56,18 +71,15 @@ public struct PinpointSession: Codable {
 
     mutating func stop() {
         guard !isStopped else { return }
-        stopTime = stopTime ?? Date()
-        state = .stopped
+        state = .stopped(date: stopTime ?? Date())
     }
 
     mutating func pause() {
         guard !isPaused else { return }
-        stopTime = Date()
-        state = .paused
+        state = .paused(date: Date())
     }
 
     mutating func resume() {
-        stopTime = nil
         state = .active
     }
 

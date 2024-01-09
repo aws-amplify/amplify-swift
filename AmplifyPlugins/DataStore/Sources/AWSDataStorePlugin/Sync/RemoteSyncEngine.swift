@@ -46,7 +46,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     /// Synchronizes startup operations
-    let taskQueue = TaskQueue<Void>()
+    let taskQueue = TaskQueue<Void, Error>()
 
     // Assigned at `setUpCloudSubscriptions`
     var reconciliationQueue: IncomingEventReconciliationQueue?

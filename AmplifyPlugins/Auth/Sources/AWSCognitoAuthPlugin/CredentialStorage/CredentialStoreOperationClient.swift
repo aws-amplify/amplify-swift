@@ -23,7 +23,7 @@ class CredentialStoreOperationClient: CredentialStoreStateBehavior {
 
     // Task queue is being used to manage CRUD operations to the credential store synchronously
     // This will help us keeping the CRUD methods atomic
-    private let taskQueue = TaskQueue<CredentialStoreData?>()
+    private let taskQueue = TaskQueue<CredentialStoreData?, Error>()
 
     init(credentialStoreStateMachine: CredentialStoreStateMachine) {
         self.credentialStoreStateMachine = credentialStoreStateMachine

@@ -28,7 +28,7 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var analyticsHandler: UserPoolAnalyticsBehavior!
 
-    var taskQueue: TaskQueue<Any>!
+    var taskQueue: TaskQueue<Any, Error>!
 
     var httpClientEngineProxy: HttpClientEngineProxy?
 

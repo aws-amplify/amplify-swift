@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 
 @_spi(InternalAWSPinpoint)
@@ -14,7 +15,6 @@ public protocol SessionClientBehaviour: AnyObject {
     var analyticsClient: AnalyticsClientBehaviour? { get set }
 
     func startPinpointSession()
-    func validateOrRetrieveSession(_ session: PinpointSession?) -> PinpointSession
     func startTrackingSessions(backgroundTimeout: TimeInterval)
 }
 
@@ -34,7 +34,7 @@ class SessionClient: SessionClientBehaviour {
     private let configuration: SessionClientConfiguration
     private let sessionClientQueue = DispatchQueue(label: Constants.queue,
                                                    attributes: .concurrent)
-    private let analyticsTaskQueue = TaskQueue()
+    private let analyticsTaskQueue = TaskQueue<Void, Never>()
     private let userDefaults: UserDefaultsBehaviour
     private var sessionBackgroundTimeout: TimeInterval = .zero
 
@@ -82,26 +82,12 @@ class SessionClient: SessionClientBehaviour {
         sessionBackgroundTimeout = backgroundTimeout
         activityTracker.backgroundTrackingTimeout = backgroundTimeout
         activityTracker.beginActivityTracking { [weak self] newState in
-            guard let self = self else { return }
+            guard let self else { return }
             self.log.verbose("New state received: \(newState)")
             self.sessionClientQueue.sync(flags: .barrier) {
                 self.respond(to: newState)
             }
         }
-    }
-
-    func validateOrRetrieveSession(_ session: PinpointSession?) -> PinpointSession {
-        if let session = session, !session.sessionId.isEmpty {
-            return session
-        }
-
-        if let storedSession = Self.retrieveStoredSession(from: userDefaults, using: archiver) {
-            return storedSession
-        }
-
-        return PinpointSession(sessionId: PinpointSession.Constants.defaultSessionId,
-                               startTime: Date(),
-                               stopTime: Date())
     }
 
     private static func retrieveStoredSession(from userDefaults: UserDefaultsBehaviour,
@@ -122,8 +108,8 @@ class SessionClient: SessionClientBehaviour {
         log.info("Session Started.")
 
         // Update Endpoint and record Session Start event
-        analyticsTaskQueue.task { [weak self] in
-            guard let self = self else { return }
+        analyticsTaskQueue.async { [weak self] in
+            guard let self else { return }
             try? await self.endpointClient.updateEndpointProfile()
             self.log.verbose("Firing Session Event: Start")
             await self.record(eventType: Constants.Events.start)
@@ -144,8 +130,8 @@ class SessionClient: SessionClientBehaviour {
         session.pause()
         saveSession()
         log.info("Session Paused.")
-        analyticsTaskQueue.task { [weak self] in
-            guard let self = self else { return }
+        analyticsTaskQueue.async { [weak self] in
+            guard let self else { return }
             self.log.verbose("Firing Session Event: Pause")
             await self.record(eventType: Constants.Events.pause)
         }
@@ -174,8 +160,8 @@ class SessionClient: SessionClientBehaviour {
         session.resume()
         saveSession()
         log.info("Session Resumed.")
-        analyticsTaskQueue.task { [weak self] in
-            guard let self = self else { return }
+        analyticsTaskQueue.async { [weak self] in
+            guard let self else { return }
             self.log.verbose("Firing Session Event: Resume")
             await self.record(eventType: Constants.Events.resume)
         }
@@ -189,7 +175,7 @@ class SessionClient: SessionClientBehaviour {
         }
         session.stop()
         log.info("Session Stopped.")
-        analyticsTaskQueue.task { [weak self, session] in
+        analyticsTaskQueue.async { [weak self, session] in
             guard let self = self,
                   let analyticsClient = self.analyticsClient else {
                 return
@@ -236,7 +222,7 @@ class SessionClient: SessionClientBehaviour {
         case .runningInBackground(let isStale):
             if isStale {
                 endSession()
-                analyticsTaskQueue.task { [weak self] in
+                analyticsTaskQueue.async { [weak self] in
                     _ = try? await self?.analyticsClient?.submitEvents()
                 }
             } else {
@@ -277,24 +263,4 @@ extension SessionClient {
 
 extension PinpointSession {
     static var none = PinpointSession(sessionId: "InvalidId", startTime: Date(), stopTime: nil)
-}
-
-/// This actor allows to queue async operations to only run one at a time.
-private actor TaskQueue {
-    private var currentTask: Task<Void, Never>?
-
-    nonisolated func task(_ closure: @escaping () async -> ()) {
-        Task {
-            await addToQueue(closure)
-        }
-    }
-
-    private func addToQueue(_ closure: @escaping () async -> ()) async {
-        let newTask = Task { [currentTask] in
-            await currentTask?.value
-            await closure()
-        }
-        currentTask = newTask
-        await newTask.value
-    }
 }
