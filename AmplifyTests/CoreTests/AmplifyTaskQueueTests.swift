@@ -47,7 +47,7 @@ final class AmplifyTaskQueueTests: XCTestCase {
         let expectation2 = expectation(description: "expectation2")
         let expectation3 = expectation(description: "expectation3")
 
-        let taskQueue = TaskQueue<Void, Error>()
+        let taskQueue = TaskQueue<Void>()
         try await taskQueue.sync {
             try await Task.sleep(nanoseconds: 1)
             expectation1.fulfill()

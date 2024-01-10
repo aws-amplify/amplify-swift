@@ -34,7 +34,7 @@ class SessionClient: SessionClientBehaviour {
     private let configuration: SessionClientConfiguration
     private let sessionClientQueue = DispatchQueue(label: Constants.queue,
                                                    attributes: .concurrent)
-    private let analyticsTaskQueue = TaskQueue<Void, Never>()
+    private let analyticsTaskQueue = TaskQueue<Void>()
     private let userDefaults: UserDefaultsBehaviour
     private var sessionBackgroundTimeout: TimeInterval = .zero
 
