@@ -102,6 +102,11 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         return []
     }
 
+    var updateSessionCount = 0
+    func update(_ session: InternalAWSPinpoint.PinpointSession) async throws {
+        updateSessionCount += 1
+    }
+
     func resetCounters() {
         recordCount = 0
         submitEventsCount = 0

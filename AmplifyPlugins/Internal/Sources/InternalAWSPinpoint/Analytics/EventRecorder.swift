@@ -28,6 +28,10 @@ protocol AnalyticsEventRecording: Actor {
     func updateAttributesOfEvents(ofType: String,
                                   withSessionId: PinpointSession.SessionId,
                                   setAttributes: [String: String]) throws
+    
+    /// Updates the session information of the events that match the same sessionId.
+    /// - Parameter session: The session to update
+    func update(_ session: PinpointSession) throws
 
     /// Submit all locally stored events
     /// - Returns: A collection of events submitted to Pinpoint
@@ -76,6 +80,10 @@ actor EventRecorder: AnalyticsEventRecording {
         try storage.updateEvents(ofType: eventType,
                                       withSessionId: sessionId,
                                       setAttributes: attributes)
+    }
+
+    func update(_ session: PinpointSession) throws {
+        try storage.updateSession(session)
     }
 
     /// Submit all locally stored events in batches. If a previous submission is in progress, it waits until it's completed before proceeding.

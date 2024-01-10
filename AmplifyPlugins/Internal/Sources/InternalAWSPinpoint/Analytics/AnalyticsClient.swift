@@ -31,6 +31,7 @@ public protocol AnalyticsClientBehaviour: Actor {
                                           onSubmit: SubmitResult?)
 
     @discardableResult func submitEvents() async throws -> [PinpointEvent]
+    func update(_ session: PinpointSession) async throws
 
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
                                       with product: SKProduct) -> PinpointEvent
@@ -261,6 +262,10 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
         return try await eventRecorder.submitAllEvents()
+    }
+    
+    func update(_ session: PinpointSession) async throws {
+        try await eventRecorder.update(session)
     }
 
     func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
