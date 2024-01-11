@@ -39,9 +39,10 @@ runs:
     - id: get-xcode-version
       run: |
         LATEST_XCODE_VERSION=14.3.1
-        MINIMUM_XCODE_VERSION=14.0.1
+        MINIMUM_XCODE_VERSION=14.3
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
+        INPUT_PLATFORM=${{ inputs.platform }}
 
         case $INPUT_XCODE_VERSION in
           latest)
@@ -63,9 +64,9 @@ runs:
 
         DESTINATION_MAPPING='{
           "minimum": {
-            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.0",
-            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (2nd generation),OS=16.0",
-            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.0",
+            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.4",
+            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (3nd generation),OS=16.4",
+            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4",
             "macOS": "platform=macOS,arch=x86_64"
           },
           "latest": {

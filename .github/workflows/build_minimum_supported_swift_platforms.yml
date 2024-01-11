@@ -19,7 +19,7 @@ jobs:
 
     uses: ./.github/workflows/build_amplify_swift.yml
     with:
-      os-runner: macos-12
+      os-runner: macos-13
       xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
       cacheable: false
