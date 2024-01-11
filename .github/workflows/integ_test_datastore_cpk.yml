@@ -39,7 +39,6 @@ jobs:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSDataStorePluginCPKTestsWatch' || 'AWSDataStorePluginCPKTests' }}
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-      xcode_version: '14.3'
       resource_subfolder: datastore
       timeout-minutes: 120
     secrets: inherit

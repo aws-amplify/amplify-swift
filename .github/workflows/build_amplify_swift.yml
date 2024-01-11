@@ -8,7 +8,7 @@ on:
 
       xcode-version:
         type: string
-        default: '14.3'
+        default: 'latest'
 
       os-runner:
         type: string
@@ -43,7 +43,7 @@ jobs:
         id: dependencies-cache
         if: inputs.cacheable
         timeout-minutes: 4
-        continue-on-error: true
+        continue-on-error: ${{ inputs.cacheable }}
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -55,7 +55,7 @@ jobs:
         id: build-cache
         if: inputs.cacheable
         timeout-minutes: 4
-        continue-on-error: true
+        continue-on-error: ${{ inputs.cacheable }}
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -63,13 +63,13 @@ jobs:
 
       - name: Build Amplify for Swift
         id: build-package
-        continue-on-error: true
+        continue-on-error: ${{ inputs.cacheable }}
         uses: ./.github/composite_actions/run_xcodebuild
         with:
           scheme: Amplify-Package
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_${{ inputs.xcode-version }}.app
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
@@ -85,7 +85,7 @@ jobs:
         if: inputs.cacheable && steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
+        continue-on-error: ${{ inputs.cacheable }}
         run: |
           gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
 
