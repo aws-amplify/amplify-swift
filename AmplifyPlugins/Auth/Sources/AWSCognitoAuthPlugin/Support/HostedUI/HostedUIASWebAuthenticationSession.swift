@@ -28,11 +28,6 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in
             guard let self = self else { return }
 
-            // This is a workaround multiple calls to continuations in the ASWebAuthenticationSession
-            // which is happening due to a possible bug in the iOS platform. The idea is to null out the
-            // continuation once resumed. 
-            var nullableContinuation: CheckedContinuation<[URLQueryItem], Error>? = continuation
-
             let aswebAuthenticationSession = createAuthenticationSession(
                 url: url,
                 callbackURLScheme: callbackScheme,
@@ -48,26 +43,31 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                                 where: { $0.name == "error_description" }
                             )?.value?.trim() ?? ""
                             let message = "\(error) \(errorDescription)"
-                            nullableContinuation?.resume(
+                            continuation.resume(
                                 throwing: HostedUIError.serviceMessage(message))
                         } else {
-                            nullableContinuation?.resume(
+                            continuation.resume(
                                 returning: queryItems)
                         }
                     } else if let error = error {
-                        nullableContinuation?.resume(
+                        continuation.resume(
                             throwing: self.convertHostedUIError(error))
                     } else {
-                        nullableContinuation?.resume(
+                        continuation.resume(
                             throwing: HostedUIError.unknown)
                     }
-                    nullableContinuation = nil
                 })
             aswebAuthenticationSession.presentationContextProvider = self
             aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
 
             DispatchQueue.main.async {
-                aswebAuthenticationSession.start()
+                var canStart = true
+                if #available(macOS 10.15.4, *) {
+                    canStart = aswebAuthenticationSession.canStart
+                }
+                if canStart {
+                    aswebAuthenticationSession.start()
+                }
             }
         }
 
