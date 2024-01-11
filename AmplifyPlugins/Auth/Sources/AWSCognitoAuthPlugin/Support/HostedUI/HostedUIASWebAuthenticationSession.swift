@@ -27,6 +27,11 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
         return try await withCheckedThrowingContinuation {
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in
 
+            // This is a workaround multiple calls to continuations in the ASWebAuthenticationSession
+            // which is happening due to a possible bug in the iOS platform. The idea is to null out the
+            // continuation once resumed. 
+            var nullableContinuation: CheckedContinuation<[URLQueryItem], Error>? = continuation
+
             let aswebAuthenticationSession = createAuthenticationSession(
                 url: url,
                 callbackURLScheme: callbackScheme,
@@ -42,18 +47,20 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                                 where: { $0.name == "error_description" }
                             )?.value?.trim() ?? ""
                             let message = "\(error) \(errorDescription)"
-                            return continuation.resume(
+                            nullableContinuation?.resume(
                                 throwing: HostedUIError.serviceMessage(message))
+                        } else {
+                            nullableContinuation?.resume(
+                                returning: queryItems)
                         }
-                        return continuation.resume(
-                            returning: queryItems)
                     } else if let error = error {
-                        return continuation.resume(
+                        nullableContinuation?.resume(
                             throwing: self.convertHostedUIError(error))
                     } else {
-                        return continuation.resume(
+                        nullableContinuation?.resume(
                             throwing: HostedUIError.unknown)
                     }
+                    nullableContinuation = nil
                 })
             aswebAuthenticationSession.presentationContextProvider = self
             aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
