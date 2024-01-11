@@ -43,17 +43,17 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                                 where: { $0.name == "error_description" }
                             )?.value?.trim() ?? ""
                             let message = "\(error) \(errorDescription)"
-                            continuation.resume(
+                            return continuation.resume(
                                 throwing: HostedUIError.serviceMessage(message))
                         } else {
-                            continuation.resume(
+                            return continuation.resume(
                                 returning: queryItems)
                         }
                     } else if let error = error {
-                        continuation.resume(
+                        return continuation.resume(
                             throwing: self.convertHostedUIError(error))
                     } else {
-                        continuation.resume(
+                        return continuation.resume(
                             throwing: HostedUIError.unknown)
                     }
                 })
