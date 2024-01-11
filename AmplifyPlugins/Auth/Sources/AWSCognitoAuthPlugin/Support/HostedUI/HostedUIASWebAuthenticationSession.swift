@@ -24,8 +24,9 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
     #if os(iOS) || os(macOS)
         self.webPresentation = presentationAnchor
 
-        return try await withCheckedThrowingContinuation {
+        return try await withCheckedThrowingContinuation { [weak self]
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in
+            guard let self = self else { return }
 
             // This is a workaround multiple calls to continuations in the ASWebAuthenticationSession
             // which is happening due to a possible bug in the iOS platform. The idea is to null out the
@@ -35,8 +36,8 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
             let aswebAuthenticationSession = createAuthenticationSession(
                 url: url,
                 callbackURLScheme: callbackScheme,
-                completionHandler: { url, error in
-
+                completionHandler: { [weak self] url, error in
+                    guard let self = self else { return }
                     if let url = url {
                         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
                         let queryItems = urlComponents?.queryItems ?? []
