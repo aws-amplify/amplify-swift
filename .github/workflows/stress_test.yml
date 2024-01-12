@@ -16,6 +16,9 @@ jobs:
   prepare-for-test:
     runs-on: macos-13
     environment: IntegrationTest
+    outputs:
+      destination: ${{ steps.platform.outputs.destination }}
+      xcode-version: ${{ steps.platform.outputs.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -29,12 +32,6 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
-  get-platform-build-params:
-    runs-on: macos-13
-    needs: prepare-for-test
-    outputs:
-      platform-params: ${{ steps.platform.outputs }}
-    steps:
       - name: Get build parameters
         id: platform
         uses: ./.github/composite_actions/get_platform_parameters
@@ -42,12 +39,12 @@ jobs:
           platform: 'iOS'
 
   auth-stress-test:
-    needs: get-platform-build-params
+    needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
     env:
-      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
-      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -73,12 +70,12 @@ jobs:
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   geo-stress-test:
-    needs: get-platform-build-params
+    needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
     env:
-      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
-      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -104,12 +101,12 @@ jobs:
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   storage-stress-test:
-    needs: get-platform-build-params
+    needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
     env:
-      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
-      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -135,12 +132,12 @@ jobs:
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   datastore-stress-test:
-    needs: get-platform-build-params
+    needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
     env:
-      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
-      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -166,12 +163,12 @@ jobs:
           xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   graphql-api-stress-test:
-    needs: get-platform-build-params
+    needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
     env:
-      DESTINATION: ${{ needs.get-platform-build-params.outputs.platform-params.destination }}
-      XCODE_VERSION: ${{ needs.get-platform-build-params.outputs.platform-params.xcode-version }}
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
