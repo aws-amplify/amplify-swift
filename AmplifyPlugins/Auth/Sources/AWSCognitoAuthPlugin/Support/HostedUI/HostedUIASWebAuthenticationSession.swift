@@ -26,13 +26,13 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
         return try await withCheckedThrowingContinuation { [weak self]
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let aswebAuthenticationSession = createAuthenticationSession(
                 url: url,
                 callbackURLScheme: callbackScheme,
                 completionHandler: { [weak self] url, error in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     if let url = url {
                         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
                         let queryItems = urlComponents?.queryItems ?? []
