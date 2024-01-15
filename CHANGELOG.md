@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.25.4 (2024-01-15)
+
+### Bug Fixes
+
+- **Auth**: properly redacting session information (#3472)
+- **Auth**: Fix multiple continuation resumes in hostedUI (#3466)
+- **Analytics**: Updating session stop time for cached events. (#3405)
+- **Analytics**: Making PinpointEndpointProfile a struct. (#3457)
+
 ## 2.25.3 (2024-01-08)
 
 ### Bug Fixes
