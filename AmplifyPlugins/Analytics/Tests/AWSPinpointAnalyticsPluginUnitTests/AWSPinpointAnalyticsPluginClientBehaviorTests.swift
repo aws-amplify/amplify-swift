@@ -57,7 +57,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                plan: testPlan,
                                                location: testLocation,
                                                properties: testProperties)
-        let expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
+        var expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
                                                               endpointId: "endpointId")
         expectedEndpointProfile.addUserId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
@@ -108,7 +108,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                plan: testPlan,
                                                location: testLocation,
                                                properties: testProperties)
-        let expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
+        var expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
                                                               endpointId: "endpointId")
         expectedEndpointProfile.addUserId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)

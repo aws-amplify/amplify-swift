@@ -18,7 +18,7 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         Task {
-            let currentEndpointProfile =  await pinpoint.currentEndpointProfile()
+            var currentEndpointProfile =  await pinpoint.currentEndpointProfile()
             currentEndpointProfile.addUserId(userId)
             if let userProfile = userProfile {
                 currentEndpointProfile.addUserProfile(userProfile)

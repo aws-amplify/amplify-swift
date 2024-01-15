@@ -5,56 +5,99 @@ inputs:
     required: true
     type: string
   xcode_version:
-    description: 'The version of Xcode. Valid values are 14.3 and 15.0'
-    required: true
+    description: "The version of Xcode. Available aliases are 'latest' and 'minimum'"
+    default: 'latest'
     type: string
+  destination:
+    description: "The destination associated with the given platform and Xcode version"
+    default: ''
+    type: string
+
 outputs:
   destination:
     description: "The destination associated with the given platform and Xcode version"
-    value: ${{ steps.platform.outputs.destination }}
+    value: ${{ steps.get-destination.outputs.destination }}
   sdk:
     description: "The SDK associated with the given platform"
-    value: ${{ steps.platform.outputs.sdk }}
+    value: ${{ steps.get-sdk.outputs.sdk }}
+  xcode-version:
+    description: "The Xcode version to build with"
+    value: ${{ steps.get-xcode-version.outputs.xcode-version }}
+
 runs:
   using: "composite"
   steps:
-    - id: platform
+    - name: Validate platform
       run: |
-        PLATFORM=${{ inputs.platform }}
-        case $PLATFORM in
+        INPUT_PLATFORM=${{ inputs.platform }}
+        case $INPUT_PLATFORM in
           iOS|tvOS|watchOS|macOS) ;;
-          *) echo "Unsupported platform: $PLATFORM"; exit 1 ;;
+          *) echo "Unsupported platform: $INPUT_PLATFORM"; exit 1 ;;
         esac
+      shell: bash
 
-        XCODE_VERSION=${{ inputs.xcode_version }}
-        case $XCODE_VERSION in
-          14.3|15.0) ;;
-          *) echo "Unsupported Xcode version: $XCODE_VERSION"; exit 1 ;;
+    - id: get-xcode-version
+      run: |
+        LATEST_XCODE_VERSION=14.3.1
+        MINIMUM_XCODE_VERSION=14.0.1
+
+        INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
+
+        case $INPUT_XCODE_VERSION in
+          latest)
+            XCODE_VERSION=$LATEST_XCODE_VERSION ;;
+          minimum)
+            XCODE_VERSION=$MINIMUM_XCODE_VERSION ;;
+          *)
+            XCODE_VERSION=$INPUT_XCODE_VERSION ;;
         esac
+        echo "xcode-version=$XCODE_VERSION" >> $GITHUB_OUTPUT
+
+      shell: bash
+
+    - id: get-destination
+      run: |
+        INPUT_PLATFORM=${{ inputs.platform }}
+        INPUT_DESTINATION='${{ inputs.destination }}'
+        INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
         DESTINATION_MAPPING='{
-          "14.3": {
+          "minimum": {
+            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.0",
+            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (2nd generation),OS=16.0",
+            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.0",
+            "macOS": "platform=macOS,arch=x86_64"
+          },
+          "latest": {
             "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.4",
             "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4",
             "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4",
             "macOS": "platform=macOS,arch=x86_64"
-          },
-          "15.0": {
-            "iOS": "platform=iOS Simulator,name=iPhone 15,OS=latest",
-            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=latest",
-            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 9 (45mm),OS=latest",
-            "macOS": "platform=macOS,arch=x86_64"
           }
         }'
 
+        if [ -z "$INPUT_DESTINATION" ]; then
+          DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"$INPUT_XCODE_VERSION\".$INPUT_PLATFORM")
+        else
+          DESTINATION=$INPUT_DESTINATION
+        fi
+
+        if [ -z "$DESTINATION" ]; then
+          echo "No available destination to build for"
+          exit 1
+        fi
+        echo "destination=$DESTINATION" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - id: get-sdk
+      run: |
+        INPUT_PLATFORM=${{ inputs.platform }}
         SDK_MAPPING='{
           "iOS": "iphonesimulator",
           "tvOS": "appletvsimulator",
           "watchOS": "watchsimulator",
           "macOS": "macosx"
         }'
-
-        echo "destination=$(echo $DESTINATION_MAPPING | jq -r ."\"$XCODE_VERSION\"".$PLATFORM)" >> $GITHUB_OUTPUT
-        echo "sdk=$(echo $SDK_MAPPING | jq -r .$PLATFORM)" >> $GITHUB_OUTPUT
+        echo "sdk=$(echo $SDK_MAPPING | jq -r .$INPUT_PLATFORM)" >> $GITHUB_OUTPUT
       shell: bash
 

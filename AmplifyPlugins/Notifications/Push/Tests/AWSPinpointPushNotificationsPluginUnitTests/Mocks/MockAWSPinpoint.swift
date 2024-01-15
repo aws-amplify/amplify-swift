@@ -43,7 +43,7 @@ class MockAWSPinpoint: AWSPinpointBehavior {
     )
     func currentEndpointProfile() async -> PinpointEndpointProfile {
         currentEndpointProfileCount += 1
-        return mockedPinpointEndpointProfile
+        return updatedPinpointEndpointProfile ?? mockedPinpointEndpointProfile
     }
 
     var updateEndpointCount = 0

@@ -12,9 +12,8 @@ inputs:
     required: false
     type: string
   destination:
-    required: false
+    required: true
     type: string
-    default: 'platform=iOS Simulator,name=iPhone 13,OS=latest'
   sdk:
     required: false
     type: string

@@ -114,47 +114,6 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(userDefaults.saveCount, 0)
     }
 
-    func testValidateSession_withValidSession_andStoredSession_shouldReturnValidSession() async {
-        storeSession()
-        await resetCounters()
-        let session = PinpointSession(sessionId: "valid", startTime: Date(), stopTime: nil)
-        let retrievedSession = client.validateOrRetrieveSession(session)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 0)
-        XCTAssertEqual(archiver.decodeCount, 0)
-        XCTAssertEqual(retrievedSession.sessionId, "valid")
-    }
-
-    func testValidateSession_withInvalidSession_andStoredSession_shouldReturnStoredSession() async {
-        storeSession()
-        await resetCounters()
-        let session = PinpointSession(sessionId: "", startTime: Date(), stopTime: nil)
-        let retrievedSession = client.validateOrRetrieveSession(session)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 1)
-        XCTAssertEqual(archiver.decodeCount, 1)
-        XCTAssertEqual(retrievedSession.sessionId, "stored")
-    }
-
-    func testValidateSession_withInvalidSession_andWithoutStoredSession_shouldCreateDefaultSession() async {
-        await resetCounters()
-        let session = PinpointSession(sessionId: "", startTime: Date(), stopTime: nil)
-        let retrievedSession = client.validateOrRetrieveSession(session)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 1)
-        XCTAssertEqual(archiver.decodeCount, 0)
-        XCTAssertEqual(retrievedSession.sessionId, PinpointSession.Constants.defaultSessionId)
-    }
-
-    func testValidateSession_withNilSession_andWithoutStoredSession_shouldCreateDefaultSession() async {
-        await resetCounters()
-        let retrievedSession = client.validateOrRetrieveSession(nil)
-
-        XCTAssertEqual(userDefaults.dataForKeyCount, 1)
-        XCTAssertEqual(archiver.decodeCount, 0)
-        XCTAssertEqual(retrievedSession.sessionId, PinpointSession.Constants.defaultSessionId)
-    }
-
     func testStartPinpointSession_shouldRecordStartEvent() async {
         await resetCounters()
         let expectationStartSession = expectation(description: "Start event for new session")
@@ -218,7 +177,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(event.eventType, SessionClient.Constants.Events.pause)
     }
 
-    func testApplicationMovedToBackground_stale_shouldRecordStopEvent_andSubmit() async {
+    func testApplicationMovedToBackground_stale_shouldRecordStopEvent_andSaveSession_andSubmitEvents() async {
         let expectationStartSession = expectation(description: "Start event for new session")
         client.startPinpointSession()
         client.startTrackingSessions(backgroundTimeout: sessionTimeout)
@@ -233,8 +192,8 @@ class SessionClientTests: XCTestCase {
         activityTracker.callback?(.runningInBackground(isStale: true))
         await fulfillment(of: [expectationStopSession, expectationSubmitEvents], timeout: 1)
 
-        XCTAssertEqual(archiver.encodeCount, 0)
-        XCTAssertEqual(userDefaults.saveCount, 0)
+        XCTAssertEqual(archiver.encodeCount, 1)
+        XCTAssertEqual(userDefaults.saveCount, 1)
         let createCount = await analyticsClient.createEventCount
         XCTAssertEqual(createCount, 1)
         let recordCount = await analyticsClient.recordCount
@@ -327,7 +286,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertNotNil(events.first(where: { $0.eventType == SessionClient.Constants.Events.start }))
     }
 #endif
-    func testApplicationTerminated_shouldRecordStopEvent() async {
+    func testApplicationTerminated_shouldRecordStopEvent_andSaveSession() async {
         let expectationStart = expectation(description: "Start event for new session")
         await analyticsClient.setRecordExpectation(expectationStart)
         client.startPinpointSession()
@@ -340,8 +299,8 @@ class SessionClientTests: XCTestCase {
         activityTracker.callback?(.terminated)
         await fulfillment(of: [expectationStop], timeout: 1)
 
-        XCTAssertEqual(archiver.encodeCount, 0)
-        XCTAssertEqual(userDefaults.saveCount, 0)
+        XCTAssertEqual(archiver.encodeCount, 1)
+        XCTAssertEqual(userDefaults.saveCount, 1)
         let createCount = await analyticsClient.createEventCount
         XCTAssertEqual(createCount, 1)
         let recordCount = await analyticsClient.recordCount

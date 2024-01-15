@@ -115,6 +115,22 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
             sessionId,
             eventType])
     }
+    
+    func updateSession(_ session: PinpointSession) throws {
+        let updateStatement = """
+        UPDATE Event
+        SET sessionStartTime = ?, sessionStopTime = ?
+        WHERE sessionId = ?
+        """
+        _ = try dbAdapter.executeQuery(
+            updateStatement,
+            [
+                session.startTime.asISO8601String,
+                session.stopTime?.asISO8601String,
+                session.sessionId
+            ]
+        )
+    }
 
     /// Get the oldest event with limit
     /// - Parameter limit: The number of query result to limit

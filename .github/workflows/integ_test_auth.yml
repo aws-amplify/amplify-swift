@@ -44,7 +44,6 @@ jobs:
       scheme: ${{ matrix.platform == 'watchOS' && 'AuthIntegrationTestsWatch' || 'AuthIntegrationTests' }}
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
-      xcode_version: '14.3'
       resource_subfolder: auth
       timeout-minutes: 30
     secrets: inherit
@@ -56,7 +55,6 @@ jobs:
       scheme: AuthHostedUIApp
       platform: iOS
       project_path: ./AmplifyPlugins/Auth/Tests/AuthHostedUIApp/
-      xcode_version: '14.3'
       resource_subfolder: auth
       timeout-minutes: 30
     secrets: inherit
