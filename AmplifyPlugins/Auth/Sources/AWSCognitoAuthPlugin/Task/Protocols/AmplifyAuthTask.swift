@@ -31,7 +31,7 @@ extension AmplifyAuthTask where Self: DefaultLogger {
             do {
                 log.info("Starting execution for \(eventName)")
                 let valueReturned = try await execute()
-                log.info("Successfully completed execution for \(eventName) with result:\n\(valueReturned))")
+                log.info("Successfully completed execution for \(eventName) with result:\n\(valueReturned)")
                 dispatch(result: .success(valueReturned))
                 return valueReturned
             } catch let error as Failure {
