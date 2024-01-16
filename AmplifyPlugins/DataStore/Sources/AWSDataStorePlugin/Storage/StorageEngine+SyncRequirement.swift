@@ -130,7 +130,7 @@ extension StorageEngine {
             // then immediately fall back to using the default auth type configured on the APIPlugin because
             // we do not have enough information to know which provider to use to make the determination.
             if authRules.count == 1,
-                let singleAuthRule = authRules.first,
+               let singleAuthRule = authRules.first,
                let ruleRequireAuthPlugin = singleAuthRule.requiresAuthPlugin {
                 return ruleRequireAuthPlugin
             }
