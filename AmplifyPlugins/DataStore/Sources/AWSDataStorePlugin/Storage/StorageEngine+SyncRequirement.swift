@@ -36,7 +36,8 @@ extension StorageEngine {
 
             let authPluginRequired = StorageEngine.requiresAuthPlugin(
                 api,
-                authModeStrategy: dataStoreConfiguration.authModeStrategyType)
+                authModeStrategy: dataStoreConfiguration.authModeStrategyType
+            )
             guard authPluginRequired else {
                 syncEngine.start(api: apiGraphQL, auth: nil)
                 return .success(.successfullyInitialized)
