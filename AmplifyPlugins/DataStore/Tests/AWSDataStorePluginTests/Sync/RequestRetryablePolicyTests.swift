@@ -210,6 +210,17 @@ class RequestRetryablePolicyTests: XCTestCase {
         XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
 
+    func testSecureConnectionFailedError() {
+        let retryableErrorCode = URLError.init(.secureConnectionFailed)
+
+        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
+                                                         httpURLResponse: nil,
+                                                         attemptNumber: 1)
+
+        XCTAssert(retryAdvice.shouldRetry)
+        assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
+    }
+
     func testMaxValueRetryDelay() {
         let retryableErrorCode = URLError.init(.timedOut)
 
