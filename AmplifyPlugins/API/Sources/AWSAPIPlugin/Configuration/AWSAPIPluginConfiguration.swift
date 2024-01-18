@@ -1,6 +1,14 @@
 import Foundation
 import AWSPluginsCore
 
+protocol AWSAPIPluginConfigurationGraphQL {
+
+}
+
+protocol AWSAPIPluginConfigurationREST {
+
+}
+
 public struct AWSAPIPluginConfiguration: Codable {
     
     public struct API: Codable {

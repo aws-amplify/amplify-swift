@@ -12,6 +12,7 @@ extension APICategory: APICategoryGraphQLBehavior {
         try await plugin.query(request: request)
     }
 
+    @available(customCondition, introduced: 1.0)
     public func mutate<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
         try await plugin.mutate(request: request)
     }
@@ -19,4 +20,9 @@ extension APICategory: APICategoryGraphQLBehavior {
     public func subscribe<R>(request: GraphQLRequest<R>) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>> {
         plugin.subscribe(request: request)
     }
+}
+// Check if a custom condition is met
+func isCustomConditionMet() -> Bool {
+    // Your custom conditions go here
+    return true // Replace with your actual condition logic
 }
