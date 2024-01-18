@@ -95,10 +95,11 @@ class PaginatedListTests: XCTestCase {
         }
     }
 
-    func testDecodePaginatedListOptimastically() {
+    func testDecodePaginatedListOptimistically() {
         let syncQueryJSON = """
         {
           "items": [
+            null,
             {
               "id": "post-id",
               "createdAt": "2019-11-27T23:35:39Z",
