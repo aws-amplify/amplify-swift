@@ -294,8 +294,18 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             advice = shouldRetryWithDifferentAuthType()
         // should retry with a different authType if request failed locally with an AuthError
         case .operationError(_, _, let error) where (error as? AuthError) != nil:
-            advice = shouldRetryWithDifferentAuthType()
-
+            
+            // Not all AuthError's are unauthorized errors. If `AuthError.sessionExpired` then
+            // the request never made it to the server. We should keep trying until the user is signed in.
+            // Otherwise we may be making the wrong determination to remove this mutation event.
+            if case .sessionExpired = error as? AuthError {
+                // Use `userAuthenticationRequired` to ensure advice to retry is true.
+                advice = requestRetryablePolicy.retryRequestAdvice(urlError: URLError(.userAuthenticationRequired),
+                                                                   httpURLResponse: nil,
+                                                                   attemptNumber: currentAttemptNumber)
+            } else {
+                advice = shouldRetryWithDifferentAuthType()
+            }
         case .httpStatusError(_, let httpURLResponse):
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
                                                                httpURLResponse: httpURLResponse,
