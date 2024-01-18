@@ -95,6 +95,12 @@ class PaginatedListTests: XCTestCase {
         }
     }
 
+    /// - Given: a `Post` Sync query with items, nextToken, and with sync data (startedAt, _version, etc)
+    /// - When:
+    ///   - some of the JSON items are not able to be decoded to Post
+    ///   - the JSON is decoded into `PaginatedList<Post>`
+    /// - Then:
+    ///   - the result should contain only valid items of type MutationSync<Post>, startedAt, nextToken.
     func testDecodePaginatedListOptimistically() {
         let syncQueryJSON = """
         {
