@@ -53,7 +53,7 @@ extension SelectionSet {
                       let schema = ModelRegistry.modelSchema(from: associatedModelName) {
                 if recursive {
                     var recursive = recursive
-                    if field._isBelongsToOrHasOne {
+                    if field._isBelongsToOrHasOne && !field.isRequired {
                         recursive = false
                     }
 
