@@ -40,7 +40,8 @@ class RequestRetryablePolicy: RequestRetryable {
              .timedOut,
              .dataNotAllowed,
              .cannotParseResponse,
-             .networkConnectionLost:
+             .networkConnectionLost,
+             .userAuthenticationRequired:
             let waitMillis = retryDelayInMillseconds(for: attemptNumber)
             return RequestRetryAdvice(shouldRetry: true, retryInterval: .milliseconds(waitMillis))
         default:
