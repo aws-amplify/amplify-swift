@@ -216,11 +216,17 @@ final class InitialSyncOperation: AsynchronousOperation {
 
         let syncQueryResult: SyncQueryResult
         switch graphQLResult {
+        case .success(let queryResult):
+            syncQueryResult = queryResult
+
+        case .failure(.partial(let queryResult, let errors)):
+            syncQueryResult = queryResult
+            errors.map { DataStoreError.api(APIError(errorDescription: $0.message, error: $0)) }
+                .forEach { dataStoreConfiguration.errorHandler($0) }
+
         case .failure(let graphQLResponseError):
             finish(result: .failure(DataStoreError.api(graphQLResponseError)))
             return
-        case .success(let queryResult):
-            syncQueryResult = queryResult
         }
 
         let items = syncQueryResult.items
