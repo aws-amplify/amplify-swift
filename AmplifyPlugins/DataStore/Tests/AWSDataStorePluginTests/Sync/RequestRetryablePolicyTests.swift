@@ -199,6 +199,17 @@ class RequestRetryablePolicyTests: XCTestCase {
         assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
     }
 
+    func testUserAuthenticationRequiredError() {
+        let retryableErrorCode = URLError.init(.userAuthenticationRequired)
+
+        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
+                                                         httpURLResponse: nil,
+                                                         attemptNumber: 1)
+
+        XCTAssert(retryAdvice.shouldRetry)
+        assertMilliseconds(retryAdvice.retryInterval, greaterThan: 200, lessThan: 300)
+    }
+
     func testHTTPTooManyRedirectsError() {
         let nonRetryableErrorCode = URLError.init(.httpTooManyRedirects)
 
