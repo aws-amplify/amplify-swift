@@ -44,3 +44,5 @@ extension GraphQLError {
         public let column: Int
     }
 }
+
+extension GraphQLError: Error { }
