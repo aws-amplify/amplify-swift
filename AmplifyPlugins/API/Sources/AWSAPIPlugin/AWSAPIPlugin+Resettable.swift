@@ -25,7 +25,7 @@ extension AWSAPIPlugin: Resettable {
             reachabilityMap.removeAll()
         }
 
-        subscriptionConnectionFactory = nil
+        appSyncRealTimeClientFactory = nil
     }
 
 }

@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "aws-appsync-realtime-client-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-      "state" : {
-        "revision" : "a08684c5004e2049c29f57a5938beae9695a1ef7",
-        "version" : "3.1.2"
-      }
-    },
-    {
       "identity" : "aws-crt-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-crt-swift",
@@ -73,21 +64,12 @@
       }
     },
     {
-      "identity" : "starscream",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/daltoniam/Starscream",
-      "state" : {
-        "revision" : "df8d82047f6654d8e4b655d1b1525c64e1059d21",
-        "version" : "4.0.4"
-      }
-    },
-    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "94cf62b3ba8d4bed62680a282d4c25f9c63c2efb",
-        "version" : "1.1.0"
+        "revision" : "d029d9d39c87bed85b1c50adee7c41795261a192",
+        "version" : "1.0.6"
       }
     },
     {
