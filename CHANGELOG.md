@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.25.5 (2024-01-23)
+
+### Bug Fixes
+
+- **ci**: disable minimum build workflow on main branch (#3481)
+- **datastore**: fix syncQuery for partial success-error responses and update retry mechanism for error codes (#3479)
+
 ## 2.25.4 (2024-01-15)
 
 ### Bug Fixes
