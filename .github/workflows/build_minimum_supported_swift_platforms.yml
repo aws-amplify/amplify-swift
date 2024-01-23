@@ -1,9 +1,6 @@
 name: Build with Minimum Supported Xcode Versions
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
