@@ -55,7 +55,7 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires minimum Xcode version for supported platforms as mentioned below:
+Amplify requires the following Xcode versions, according to the targeted platform:
 
 | Platform      | Xcode Version |
 | -------------:| ------------: |
