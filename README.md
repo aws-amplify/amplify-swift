@@ -55,7 +55,15 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires Xcode 14.1 or higher to build for iOS and macOS. Building for watchOS and tvOS requires Xcode 14.3 or higher.
+Amplify requires minimum Xcode version for supported platforms as mentioned below:
+
+| Platform      | Xcode Version |
+| -------------:| ------------: |
+| iOS           | 14.1+         |
+| macOS         | 14.1+         |
+| tvOS          | 14.3+         |
+| watchOS       | 14.3+         |
+| visionOS      | 15 beta 2+    |
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|
