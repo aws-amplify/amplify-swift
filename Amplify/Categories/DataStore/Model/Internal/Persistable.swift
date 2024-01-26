@@ -65,6 +65,12 @@ struct PersistableHelper {
             return lhs == rhs
         case let (lhs, rhs) as (String, String):
             return lhs == rhs
+        case let (lhs, rhs) as (any EnumPersistable, String):
+            return lhs.rawValue == rhs
+        case let (lhs, rhs) as (String, any EnumPersistable):
+            return lhs == rhs.rawValue
+        case let (lhs, rhs) as (any EnumPersistable, any EnumPersistable):
+            return lhs.rawValue == rhs.rawValue
         default:
             return false
         }
@@ -94,6 +100,12 @@ struct PersistableHelper {
             return lhs == Double(rhs)
         case let (lhs, rhs) as (String, String):
             return lhs == rhs
+        case let (lhs, rhs) as (any EnumPersistable, String):
+            return lhs.rawValue == rhs
+        case let (lhs, rhs) as (String, any EnumPersistable):
+            return lhs == rhs.rawValue
+        case let (lhs, rhs) as (any EnumPersistable, any EnumPersistable):
+            return lhs.rawValue == rhs.rawValue
         default:
             return false
         }
@@ -122,6 +134,12 @@ struct PersistableHelper {
             return lhs <= Double(rhs)
         case let (lhs, rhs) as (String, String):
             return lhs <= rhs
+        case let (lhs, rhs) as (any EnumPersistable, String):
+            return lhs.rawValue <= rhs
+        case let (lhs, rhs) as (String, any EnumPersistable):
+            return lhs <= rhs.rawValue
+        case let (lhs, rhs) as (any EnumPersistable, any EnumPersistable):
+            return lhs.rawValue <= rhs.rawValue
         default:
             return false
         }
@@ -150,6 +168,12 @@ struct PersistableHelper {
             return lhs < Double(rhs)
         case let (lhs, rhs) as (String, String):
             return lhs < rhs
+        case let (lhs, rhs) as (any EnumPersistable, String):
+            return lhs.rawValue < rhs
+        case let (lhs, rhs) as (String, any EnumPersistable):
+            return lhs < rhs.rawValue
+        case let (lhs, rhs) as (any EnumPersistable, any EnumPersistable):
+            return lhs.rawValue < rhs.rawValue
         default:
             return false
         }
@@ -178,6 +202,12 @@ struct PersistableHelper {
             return lhs >= Double(rhs)
         case let (lhs, rhs) as (String, String):
             return lhs >= rhs
+        case let (lhs, rhs) as (any EnumPersistable, String):
+            return lhs.rawValue >= rhs
+        case let (lhs, rhs) as (String, any EnumPersistable):
+            return lhs >= rhs.rawValue
+        case let (lhs, rhs) as (any EnumPersistable, any EnumPersistable):
+            return lhs.rawValue >= rhs.rawValue
         default:
             return false
         }
@@ -206,6 +236,12 @@ struct PersistableHelper {
             return Double(lhs) > rhs
         case let (lhs, rhs) as (String, String):
             return lhs > rhs
+        case let (lhs, rhs) as (any EnumPersistable, String):
+            return lhs.rawValue > rhs
+        case let (lhs, rhs) as (String, any EnumPersistable):
+            return lhs > rhs.rawValue
+        case let (lhs, rhs) as (any EnumPersistable, any EnumPersistable):
+            return lhs.rawValue > rhs.rawValue
         default:
             return false
         }
