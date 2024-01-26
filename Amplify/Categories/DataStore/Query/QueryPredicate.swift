@@ -155,34 +155,6 @@ public class QueryPredicateOperation: QueryPredicate, Encodable {
     }
 
     public func evaluate(target: Model) -> Bool {
-        guard let fieldValue = target[field] else {
-            return false
-        }
-
-        guard let value = fieldValue else {
-            return false
-        }
-
-        if let booleanValue = value as? Bool {
-            return self.operator.evaluate(target: booleanValue)
-        }
-
-        if let doubleValue = value as? Double {
-            return self.operator.evaluate(target: doubleValue)
-        }
-
-        if let intValue = value as? Int {
-            return self.operator.evaluate(target: intValue)
-        }
-
-        if let timeValue = value as? Temporal.Time {
-            return self.operator.evaluate(target: timeValue)
-        }
-
-        if let enumValue = value as? EnumPersistable {
-            return self.operator.evaluate(target: enumValue.rawValue)
-        }
-
-        return self.operator.evaluate(target: value)
+        return self.operator.evaluate(target: target[field]?.flatMap { $0 })
     }
 }
