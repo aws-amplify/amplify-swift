@@ -19,7 +19,7 @@ public enum QueryOperator {
     case beginsWith(_ value: String)
 
     // swiftlint:disable:next cyclomatic_complexity
-    public func evaluate(target: Any) -> Bool {
+    public func evaluate(target: Any?) -> Bool {
         switch self {
         case .notEqual(let predicateValue):
             return !PersistableHelper.isEqual(target, predicateValue)
@@ -34,14 +34,14 @@ public enum QueryOperator {
         case .greaterThan(let predicateValue):
             return PersistableHelper.isGreaterThan(target, predicateValue)
         case .contains(let predicateString):
-            if let targetString = target as? String {
+            if let targetString = target.flatMap({ $0 as? String }) {
                 return targetString.contains(predicateString)
             }
             return false
         case .between(let start, let end):
             return PersistableHelper.isBetween(start, end, target)
         case .beginsWith(let predicateValue):
-            if let targetString = target as? String {
+            if let targetString = target.flatMap({ $0 as? String }) {
                 return targetString.starts(with: predicateValue)
             }
         }

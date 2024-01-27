@@ -26,7 +26,7 @@ class AuthenticationProviderSignupTests: BaseAuthenticationProviderTest {
     ///
     func testSignupWithSuccess() {
 
-        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil)
+        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil, userSub: nil)
         mockAWSMobileClient?.signupMockResult = .success(mockSignupResult)
 
         let emailAttribute = AuthUserAttribute(.email, value: "email")
@@ -61,7 +61,7 @@ class AuthenticationProviderSignupTests: BaseAuthenticationProviderTest {
     ///
     func testSignupWithEmptyUserName() {
 
-        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil)
+        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil, userSub: nil)
         mockAWSMobileClient?.signupMockResult = .success(mockSignupResult)
 
         let emailAttribute = AuthUserAttribute(.email, value: "email")
@@ -96,7 +96,7 @@ class AuthenticationProviderSignupTests: BaseAuthenticationProviderTest {
     ///
     func testSignupWithEmptyPassword() {
 
-        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil)
+        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil, userSub: nil)
         mockAWSMobileClient?.signupMockResult = .success(mockSignupResult)
 
         let emailAttribute = AuthUserAttribute(.email, value: "email")
@@ -138,7 +138,11 @@ class AuthenticationProviderSignupTests: BaseAuthenticationProviderTest {
         let mockCodeDelivery = UserCodeDeliveryDetails(deliveryMedium: .email,
                                                        destination: mockEmail,
                                                        attributeName: "email")
-        let mockSignupResult = SignUpResult(signUpState: .unconfirmed, codeDeliveryDetails: mockCodeDelivery)
+        let mockSignupResult = SignUpResult(
+            signUpState: .unconfirmed,
+            codeDeliveryDetails: mockCodeDelivery,
+            userSub: nil
+        )
         mockAWSMobileClient?.signupMockResult = .success(mockSignupResult)
 
         let resultExpectation = expectation(description: "Should receive a result")
