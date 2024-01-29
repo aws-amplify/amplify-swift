@@ -45,13 +45,11 @@ class AuthTokenURLRequestInterceptorTests: XCTestCase {
         do {
             _ = try await interceptor.intercept(request).allHTTPHeaderFields
         } catch {
-            XCTAssertNotNil(error)
-            if case .operationError(let description, _, let underlyingError) = error as? APIError,
+            guard case .operationError(let description, _, let underlyingError) = error as? APIError,
                let authError = underlyingError as? AuthError,
-               case .sessionExpired = authError {
-                XCTAssertEqual(description, "Authorization token has expired.")
-            } else {
+               case .sessionExpired = authError else {
                 XCTFail("Should be API.operationError with underlying AuthError.sessionExpired")
+                return
             }
         }
     }

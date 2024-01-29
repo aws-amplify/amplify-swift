@@ -48,8 +48,8 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         if isTokenExpired?(token) ?? false {
             // If the access token has expired, we send back the underlying "AuthError.sessionExpired" error.
             // Without a more specific AuthError case like "tokenExpired", this is the closest representation.
-            throw APIError.operationError("Authorization token has expired.",
-                                          "",
+            throw APIError.operationError("Auth Token Provider returned a expired token.",
+                                          "Please call `Amplify.Auth.fetchAuthSession()` or sign in again.",
                                           AuthError.sessionExpired("", "", nil))
         }
 
