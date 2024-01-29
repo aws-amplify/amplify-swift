@@ -31,6 +31,30 @@ class AuthTokenURLRequestInterceptorTests: XCTestCase {
         XCTAssertNotNil(headers[URLRequestConstants.Header.xAmzDate])
         XCTAssertNotNil(headers[URLRequestConstants.Header.userAgent])
     }
+    
+    func testAuthTokenInterceptor_ThrowsInvalid() async throws {
+        let mockTokenProvider = MockTokenProvider()
+        let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: mockTokenProvider,
+                                                         isTokenExpired: { _ in return true })
+        let request = RESTOperationRequestUtils.constructURLRequest(
+            with: URL(string: "http://anapiendpoint.ca")!,
+            operationType: .get,
+            requestPayload: nil
+        )
+        
+        do {
+            _ = try await interceptor.intercept(request).allHTTPHeaderFields
+        } catch {
+            XCTAssertNotNil(error)
+            if case .operationError(let description, _, let underlyingError) = error as? APIError,
+               let authError = underlyingError as? AuthError,
+               case .sessionExpired = authError {
+                XCTAssertEqual(description, "Authorization token has expired.")
+            } else {
+                XCTFail("Should be API.operationError with underlying AuthError.sessionExpired")
+            }
+        }
+    }
 }
 
 // MARK: - Mocks

@@ -15,9 +15,12 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
 
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
     let authTokenProvider: AuthTokenProvider
+    let isTokenExpired: ((String) -> Bool)?
 
-    init(authTokenProvider: AuthTokenProvider) {
+    init(authTokenProvider: AuthTokenProvider, 
+         isTokenExpired: ((String) -> Bool)? = nil) {
         self.authTokenProvider = authTokenProvider
+        self.isTokenExpired = isTokenExpired
     }
 
     func intercept(_ request: URLRequest) async throws -> URLRequest {
@@ -40,6 +43,14 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
             token = try await authTokenProvider.getUserPoolAccessToken()
         } catch {
             throw APIError.operationError("Failed to retrieve authorization token.", "", error)
+        }
+        
+        if isTokenExpired?(token) ?? false {
+            // If the access token has expired, we send back the underlying "AuthError.sessionExpired" error.
+            // Without a more specific AuthError case like "tokenExpired", this is the closest representation.
+            throw APIError.operationError("Authorization token has expired.",
+                                          "",
+                                          AuthError.sessionExpired("", "", nil))
         }
 
         mutableRequest.setValue(token, forHTTPHeaderField: "authorization")
