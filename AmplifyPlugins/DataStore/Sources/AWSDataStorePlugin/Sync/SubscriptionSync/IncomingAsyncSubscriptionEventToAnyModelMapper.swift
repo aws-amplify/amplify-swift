@@ -25,6 +25,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
     typealias Payload = MutationSync<AnyModel>
 
     var subscription: Subscription?
+    var taskQueue: TaskQueue<Void>
 
     private let modelsFromSubscription: PassthroughSubject<IncomingAsyncSubscriptionEvent, DataStoreError>
 
@@ -34,6 +35,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
 
     init() {
         self.modelsFromSubscription = PassthroughSubject<IncomingAsyncSubscriptionEvent, DataStoreError>()
+        self.taskQueue = TaskQueue<Void>()
     }
 
     // MARK: - Subscriber
@@ -41,13 +43,14 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
     func receive(subscription: Subscription) {
         log.info("Received subscription: \(subscription)")
         self.subscription = subscription
-        subscription.request(.max(1))
+        subscription.request(.unlimited)
     }
 
     func receive(_ subscriptionEvent: IncomingAsyncSubscriptionEventPublisher.Event) -> Subscribers.Demand {
         log.verbose("\(#function): \(subscriptionEvent)")
-        dispose(of: subscriptionEvent)
-        return .max(1)
+        self.dispose(of: subscriptionEvent)
+
+        return .unlimited
     }
 
     func receive(completion: Subscribers.Completion<DataStoreError>) {
@@ -58,22 +61,26 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
     // MARK: - Event processing
 
     private func dispose(of subscriptionEvent: GraphQLSubscriptionEvent<Payload>) {
-        log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
-        switch subscriptionEvent {
-        case .connection(let connectionState):
-            // Connection events are informational only at this level. The terminal state is represented by the
-            // OperationResult.
-            log.info("connectionState now \(connectionState)")
-            switch connectionState {
-            case .connected:
-                modelsFromSubscription.send(.connectionConnected)
-            case .disconnected:
-                modelsFromSubscription.send(.connectionDisconnected)
-            default:
-                break
+        taskQueue.async { [weak self] in
+            guard let self else { return }
+
+            log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
+            switch subscriptionEvent {
+            case .connection(let connectionState):
+                // Connection events are informational only at this level. The terminal state is represented by the
+                // OperationResult.
+                log.info("connectionState now \(connectionState)")
+                switch connectionState {
+                case .connected:
+                    modelsFromSubscription.send(.connectionConnected)
+                case .disconnected:
+                    modelsFromSubscription.send(.connectionDisconnected)
+                default:
+                    break
+                }
+            case .data(let graphQLResponse):
+                dispose(of: graphQLResponse)
             }
-        case .data(let graphQLResponse):
-            dispose(of: graphQLResponse)
         }
     }
 

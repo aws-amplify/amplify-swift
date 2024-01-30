@@ -19,7 +19,8 @@ typealias ModelReconciliationQueueFactory = (
     QueryPredicate?,
     AuthCategoryBehavior?,
     AuthModeStrategy,
-    IncomingSubscriptionEventPublisher?
+    IncomingSubscriptionEventPublisher?,
+    TaskQueue<Void>
 ) async -> ModelReconciliationQueue
 
 /// A queue of reconciliation operations, merged from incoming subscription events and responses to locally-sourced
@@ -83,7 +84,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          authModeStrategy: AuthModeStrategy,
-         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) async {
+         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil,
+         incomingSubscriptionEventsOrderingQueue: TaskQueue<Void>) async {
 
         self.modelSchema = modelSchema
         self.storageAdapter = storageAdapter
@@ -108,7 +110,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 api: api,
                 modelPredicate: modelPredicate,
                 auth: auth,
-                authModeStrategy: authModeStrategy
+                authModeStrategy: authModeStrategy,
+                incomingSubscriptionEventsOrderingQueue: incomingSubscriptionEventsOrderingQueue
             )
         }
 

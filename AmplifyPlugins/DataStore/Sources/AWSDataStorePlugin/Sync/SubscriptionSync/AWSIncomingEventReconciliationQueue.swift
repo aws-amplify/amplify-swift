@@ -38,7 +38,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private var reconciliationQueues: AtomicValue<[ModelName: ModelReconciliationQueue]> = AtomicValue(initialValue: [:])
     private var reconciliationQueueConnectionStatus: [ModelName: Bool]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
-
+    private var incomingSubscriptionEventsOrderingQueue: TaskQueue<Void>
     private var isInitialized: Bool {
         log.verbose("[InitializeSubscription.5] \(reconciliationQueueConnectionStatus.count)/\(modelSchemasCount) initialized")
         return modelSchemasCount == reconciliationQueueConnectionStatus.count
@@ -59,6 +59,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.reconciliationQueues.set([:])
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
+        self.incomingSubscriptionEventsOrderingQueue = TaskQueue<Void>()
 
         if let modelReconciliationQueueFactory = modelReconciliationQueueFactory {
             self.modelReconciliationQueueFactory = modelReconciliationQueueFactory
@@ -101,7 +102,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                                    modelPredicate,
                                                                    auth,
                                                                    authModeStrategy,
-                                                                   subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil)
+                                                                   subscriptionsDisabled ? OperationDisabledIncomingSubscriptionEventPublisher() : nil,
+                                                                   incomingSubscriptionEventsOrderingQueue)
 
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue

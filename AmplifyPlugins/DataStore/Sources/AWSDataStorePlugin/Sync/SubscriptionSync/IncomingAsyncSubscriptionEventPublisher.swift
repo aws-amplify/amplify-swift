@@ -38,12 +38,17 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     private var combinedConnectionStatusIsConnected: Bool {
         return onCreateConnected && onUpdateConnected && onDeleteConnected
     }
+    
+    private let incomingSubscriptionEventsOrderingQueue: TaskQueue<Void>
+
+    var publisher: AnyPublisher<Event, DataStoreError> {
+        incomingSubscriptionEvents.eraseToAnyPublisher()
+    }
 
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
     private let awsAuthService: AWSAuthServiceBehavior
 
     private let consistencyQueue: DispatchQueue
-
     private let modelName: ModelName
 
     init(modelSchema: ModelSchema,
@@ -51,7 +56,8 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          authModeStrategy: AuthModeStrategy,
-         awsAuthService: AWSAuthServiceBehavior? = nil) async {
+         awsAuthService: AWSAuthServiceBehavior? = nil,
+         incomingSubscriptionEventsOrderingQueue: TaskQueue<Void>) async {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
@@ -65,7 +71,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
             = "com.amazonaws.Amplify.RemoteSyncEngine.\(modelSchema.name).IncomingAsyncSubscriptionEventPublisher"
         connectionStatusQueue.maxConcurrentOperationCount = 1
         connectionStatusQueue.isSuspended = false
-
+        self.incomingSubscriptionEventsOrderingQueue = incomingSubscriptionEventsOrderingQueue
         let incomingSubscriptionEvents = PassthroughSubject<Event, DataStoreError>()
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
         self.awsAuthService = awsAuthService ?? AWSAuthService()
@@ -170,7 +176,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
     func sendConnectionEventIfConnected(event: Event) {
         if combinedConnectionStatusIsConnected {
-            incomingSubscriptionEvents.send(event)
+            send(event)
         }
     }
 
@@ -178,18 +184,18 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         if case .connection = event {
             connectionStatusQueue.addOperation(cancelAwareBlock)
         } else {
-            incomingSubscriptionEvents.send(event)
+            send(event)
         }
     }
 
     func genericCompletionListenerHandler(result: Result<Void, APIError>) {
         switch result {
         case .success:
-            incomingSubscriptionEvents.send(completion: .finished)
+            send(completion: .finished)
         case .failure(let apiError):
             log.verbose("[InitializeSubscription.1] API.subscribe failed for `\(modelName)` error: \(apiError.errorDescription)")
             let dataStoreError = DataStoreError(error: apiError)
-            incomingSubscriptionEvents.send(completion: .failure(dataStoreError))
+            send(completion: .failure(dataStoreError))
         }
     }
 
@@ -233,9 +239,23 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         return nil
     }
 
-    func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {
-        incomingSubscriptionEvents.subscribe(subscriber)
+    func send(_ event: Event) {
+        incomingSubscriptionEventsOrderingQueue.async { [weak self] in
+            guard let self else { return }
+            incomingSubscriptionEvents.send(event)
+        }
     }
+
+    func send(completion: Subscribers.Completion<DataStoreError>) {
+        incomingSubscriptionEventsOrderingQueue.async { [weak self] in
+            guard let self else { return }
+            incomingSubscriptionEvents.send(completion: completion)
+        }
+    }
+
+//    func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {
+//        incomingSubscriptionEvents.subscribe(subscriber)
+//    }
 
     func cancel() {
         consistencyQueue.sync {
