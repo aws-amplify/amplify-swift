@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.25.6 (2024-01-30)
+
+### Bug Fixes
+
+- **DataStore**: retry MutationEvents on signed-out and token expired errors (#3487)
+
 ## 2.25.5 (2024-01-23)
 
 ### Bug Fixes
