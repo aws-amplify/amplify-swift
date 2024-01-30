@@ -80,13 +80,33 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
         XCTAssertNotNil(interceptorConfig.postludeInterceptors[0] as? IAMURLRequestInterceptor)
     }
 
+    func testExpiryValidator_Valid() {
+        let validToken = Date().timeIntervalSince1970 + 1
+        let authService = MockAWSAuthService()
+        authService.tokenClaims = ["exp": validToken as AnyObject]
+        let interceptorConfig = createAPIInterceptorConfig(authService: authService)
+        
+        let result = interceptorConfig.expiryValidator("")
+        XCTAssertFalse(result)
+    }
+    
+    func testExpiryValidator_Expired() {
+        let expiredToken = Date().timeIntervalSince1970 - 1
+        let authService = MockAWSAuthService()
+        authService.tokenClaims = ["exp": expiredToken as AnyObject]
+        let interceptorConfig = createAPIInterceptorConfig(authService: authService)
+        
+        let result = interceptorConfig.expiryValidator("")
+        XCTAssertTrue(result)
+    }
+    
     // MARK: - Test Helpers
 
-    func createAPIInterceptorConfig() -> AWSAPIEndpointInterceptors {
+    func createAPIInterceptorConfig(authService: AWSAuthServiceBehavior = MockAWSAuthService()) -> AWSAPIEndpointInterceptors {
         return AWSAPIEndpointInterceptors(
             endpointName: endpointName,
             apiAuthProviderFactory: APIAuthProviderFactory(),
-            authService: MockAWSAuthService())
+            authService: authService)
     }
 
     struct CustomInterceptor: URLRequestInterceptor {
