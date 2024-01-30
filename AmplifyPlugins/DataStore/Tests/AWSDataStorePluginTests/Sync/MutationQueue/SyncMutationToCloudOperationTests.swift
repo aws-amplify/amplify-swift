@@ -254,6 +254,132 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         operation.cancel()
         await fulfillment(of: [expectMutationRequestFailed], timeout: defaultAsyncWaitTimeout)
     }
+    
+    // MARK: - GetRetryAdviceIfRetryableTests
+    
+    func testGetRetryAdvice_NetworkError_RetryTrue() async throws {
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: try createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { _ in }
+        )
+        
+        let error = APIError.networkError("", nil, URLError(.userAuthenticationRequired))
+        let advice = operation.getRetryAdviceIfRetryable(error: error)
+        XCTAssertTrue(advice.shouldRetry)
+    }
+    
+    func testGetRetryAdvice_HTTPStatusError401WithMultiAuth_RetryTrue() async throws {
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: try createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: MockMultiAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { _ in }
+        )
+        let response = HTTPURLResponse(url: URL(string: "http://localhost")!,
+                                       statusCode: 401,
+                                       httpVersion: nil,
+                                       headerFields: nil)!
+        let error = APIError.httpStatusError(401, response)
+        let advice = operation.getRetryAdviceIfRetryable(error: error)
+        XCTAssertTrue(advice.shouldRetry)
+    }
+    
+    func testGetRetryAdvice_OperationErrorAuthErrorWithMultiAuth_RetryTrue() async throws {
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: try createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: MockMultiAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { _ in }
+        )
+        
+        let authError = AuthError.notAuthorized("", "", nil)
+        let error = APIError.operationError("", "", authError)
+        let advice = operation.getRetryAdviceIfRetryable(error: error)
+        XCTAssertTrue(advice.shouldRetry)
+    }
+    
+    func testGetRetryAdvice_OperationErrorAuthErrorWithSingleAuth_RetryFalse() async throws {
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: try createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { _ in }
+        )
+        
+        let authError = AuthError.notAuthorized("", "", nil)
+        let error = APIError.operationError("", "", authError)
+        let advice = operation.getRetryAdviceIfRetryable(error: error)
+        XCTAssertFalse(advice.shouldRetry)
+    }
+    
+    func testGetRetryAdvice_OperationErrorAuthErrorSessionExpired_RetryTrue() async throws {
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: try createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { _ in }
+        )
+        
+        let authError = AuthError.sessionExpired("", "", nil)
+        let error = APIError.operationError("", "", authError)
+        let advice = operation.getRetryAdviceIfRetryable(error: error)
+        XCTAssertTrue(advice.shouldRetry)
+    }
+    
+    func testGetRetryAdvice_OperationErrorAuthErrorSignedOut_RetryTrue() async throws {
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: try createMutationEvent(),
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { _ in }
+        )
+        
+        let authError = AuthError.signedOut("", "", nil)
+        let error = APIError.operationError("", "", authError)
+        let advice = operation.getRetryAdviceIfRetryable(error: error)
+        XCTAssertTrue(advice.shouldRetry)
+    }
+    
+    private func createMutationEvent() throws -> MutationEvent {
+        let post1 = Post(title: "post1", content: "content1", createdAt: .now())
+        return try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
+    }
+    
+}
+
+public class MockMultiAuthModeStrategy: AuthModeStrategy {
+    public weak var authDelegate: AuthModeStrategyDelegate?
+    required public init() {}
+
+    public func authTypesFor(schema: ModelSchema,
+                             operation: ModelOperation) -> AWSAuthorizationTypeIterator {
+        return AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools, .apiKey])
+    }
+
+    public func authTypesFor(schema: ModelSchema,
+                             operations: [ModelOperation]) -> AWSAuthorizationTypeIterator {
+        return AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools, .apiKey])
+    }
 }
 
 extension SyncMutationToCloudOperationTests {

@@ -277,7 +277,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     }
 
     /// - Warning: Must be invoked from a locking context
-    private func getRetryAdviceIfRetryable(error: APIError) -> RequestRetryAdvice {
+    func getRetryAdviceIfRetryable(error: APIError) -> RequestRetryAdvice {
         var advice = RequestRetryAdvice(shouldRetry: false, retryInterval: DispatchTimeInterval.never)
 
         switch error {
@@ -288,23 +288,25 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                                                                httpURLResponse: nil,
                                                                attemptNumber: currentAttemptNumber)
 
-        // we can't unify the following two cases as they have different associated values.
+        // we can't unify the following two cases (case 1 and case 2) as they have different associated values.
         // should retry with a different authType if server returned "Unauthorized Error"
-        case .httpStatusError(_, let httpURLResponse) where httpURLResponse.statusCode == 401:
+        case .httpStatusError(_, let httpURLResponse) where httpURLResponse.statusCode == 401: // case 1
             advice = shouldRetryWithDifferentAuthType()
-        // should retry with a different authType if request failed locally with an AuthError
-        case .operationError(_, _, let error) where (error as? AuthError) != nil:
-            
-            // Not all AuthError's are unauthorized errors. If `AuthError.sessionExpired` then
-            // the request never made it to the server. We should keep trying until the user is signed in.
-            // Otherwise we may be making the wrong determination to remove this mutation event.
-            if case .sessionExpired = error as? AuthError {
-                // Use `userAuthenticationRequired` to ensure advice to retry is true.
-                advice = requestRetryablePolicy.retryRequestAdvice(urlError: URLError(.userAuthenticationRequired),
-                                                                   httpURLResponse: nil,
-                                                                   attemptNumber: currentAttemptNumber)
-            } else {
-                advice = shouldRetryWithDifferentAuthType()
+        case .operationError(_, _, let error): // case 2
+            if let authError = error as? AuthError { // case 2
+                // Not all AuthError's are unauthorized errors. If `AuthError.sessionExpired` or `.signedOut` then
+                // the request never made it to the server. We should keep trying until the user is signed in.
+                // Otherwise we may be making the wrong determination to remove this mutation event.
+                switch authError {
+                case .sessionExpired, .signedOut:
+                    // use `userAuthenticationRequired` to ensure advice to retry is true.
+                    advice = requestRetryablePolicy.retryRequestAdvice(urlError: URLError(.userAuthenticationRequired),
+                                                                       httpURLResponse: nil,
+                                                                       attemptNumber: currentAttemptNumber)
+                default:
+                    // should retry with a different authType if request failed locally with any other AuthError
+                    advice = shouldRetryWithDifferentAuthType()
+                }
             }
         case .httpStatusError(_, let httpURLResponse):
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
