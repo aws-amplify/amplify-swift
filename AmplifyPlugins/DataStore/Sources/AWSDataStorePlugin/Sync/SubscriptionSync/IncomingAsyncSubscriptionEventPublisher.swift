@@ -43,7 +43,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     private let awsAuthService: AWSAuthServiceBehavior
 
     private let consistencyQueue: DispatchQueue
-
+    private let taskQueue: TaskQueue<Void>
     private let modelName: ModelName
 
     init(modelSchema: ModelSchema,
@@ -58,6 +58,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         self.consistencyQueue = DispatchQueue(
             label: "com.amazonaws.Amplify.RemoteSyncEngine.\(modelSchema.name)"
         )
+        self.taskQueue = TaskQueue()
         self.modelName = modelSchema.name
 
         self.connectionStatusQueue = OperationQueue()
@@ -170,7 +171,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
     func sendConnectionEventIfConnected(event: Event) {
         if combinedConnectionStatusIsConnected {
-            incomingSubscriptionEvents.send(event)
+            send(event)
         }
     }
 
@@ -178,18 +179,18 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         if case .connection = event {
             connectionStatusQueue.addOperation(cancelAwareBlock)
         } else {
-            incomingSubscriptionEvents.send(event)
+            send(event)
         }
     }
 
     func genericCompletionListenerHandler(result: Result<Void, APIError>) {
         switch result {
         case .success:
-            incomingSubscriptionEvents.send(completion: .finished)
+            send(completion: .finished)
         case .failure(let apiError):
             log.verbose("[InitializeSubscription.1] API.subscribe failed for `\(modelName)` error: \(apiError.errorDescription)")
             let dataStoreError = DataStoreError(error: apiError)
-            incomingSubscriptionEvents.send(completion: .failure(dataStoreError))
+            send(completion: .failure(dataStoreError))
         }
     }
 
@@ -235,6 +236,20 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
     func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {
         incomingSubscriptionEvents.subscribe(subscriber)
+    }
+
+    func send(_ event: Event) {
+        taskQueue.async { [weak self] in
+            guard let self else { return }
+            self.incomingSubscriptionEvents.send(event)
+        }
+    }
+
+    func send(completion: Subscribers.Completion<DataStoreError>) {
+        taskQueue.async { [weak self] in
+            guard let self else { return }
+            self.incomingSubscriptionEvents.send(completion: completion)
+        }
     }
 
     func cancel() {
