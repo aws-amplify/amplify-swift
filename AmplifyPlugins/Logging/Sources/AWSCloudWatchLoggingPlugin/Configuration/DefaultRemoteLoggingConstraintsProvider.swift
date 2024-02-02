@@ -58,7 +58,14 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         let loggingConstraint = try JSONDecoder().decode(LoggingConstraints.self, from: data)
         loggingConstraintsLocalStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraint)
 
-        if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "If-None-Match") {
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
+        // the response header should only use the ETag header field in accordance with Http protocol spec
+        // but we need to also look at `If-None-Match` due to the initial/old lambda documentation recommending to
+        // `If-None-Match` to return the ETag
+        if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "ETag") {
+            loggingConstraintsLocalStore.setLocalLoggingConstraintsEtag(etag: etag)
+        } else if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "If-None-Match") {
             loggingConstraintsLocalStore.setLocalLoggingConstraintsEtag(etag: etag)
         }
         return loggingConstraint
