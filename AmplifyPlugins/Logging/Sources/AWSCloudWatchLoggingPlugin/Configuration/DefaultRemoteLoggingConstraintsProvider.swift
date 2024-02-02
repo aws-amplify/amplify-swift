@@ -58,7 +58,9 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
         let loggingConstraint = try JSONDecoder().decode(LoggingConstraints.self, from: data)
         loggingConstraintsLocalStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraint)
 
-        if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "If-None-Match") {
+        if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "ETag") {
+            loggingConstraintsLocalStore.setLocalLoggingConstraintsEtag(etag: etag)
+        } else if let etag = (response as? HTTPURLResponse)?.value(forHTTPHeaderField: "If-None-Match") {
             loggingConstraintsLocalStore.setLocalLoggingConstraintsEtag(etag: etag)
         }
         return loggingConstraint
