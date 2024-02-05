@@ -26,7 +26,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     ///
     func testSuccessfulConfirmSignUp() {
 
-        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil)
+        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil, userSub: nil)
         mockAWSMobileClient?.confirmSignUpMockResult = .success(mockSignupResult)
 
         let resultExpectation = expectation(description: "Should receive a result")
@@ -60,7 +60,7 @@ class AuthenticationProviderConfirmSignupTests: BaseAuthenticationProviderTest {
     ///
     func testConfirmSignUpWithEmptyUserName() {
 
-        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil)
+        let mockSignupResult = SignUpResult(signUpState: .confirmed, codeDeliveryDetails: nil, userSub: nil)
         mockAWSMobileClient?.confirmSignUpMockResult = .success(mockSignupResult)
 
         let resultExpectation = expectation(description: "Should receive a result")
