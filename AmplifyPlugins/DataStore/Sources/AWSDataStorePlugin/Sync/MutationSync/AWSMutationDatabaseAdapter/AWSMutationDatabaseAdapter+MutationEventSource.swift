@@ -16,27 +16,30 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
             completion(.failure(DataStoreError.nilStorageAdapter()))
             return
         }
-
-        let fields = MutationEvent.keys
-        let predicate = fields.inProcess == false || fields.inProcess == nil
         let sort = QuerySortDescriptor(fieldName: MutationEvent.keys.createdAt.stringValue, order: .ascending)
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate,
-                             sort: [sort],
-                             paginationInput: nil,
-                             eagerLoad: true) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    completion(.failure(dataStoreError))
-                                case .success(let mutationEvents):
-                                    guard let notInProcessEvent = mutationEvents.first else {
-                                        self.nextEventPromise.set(completion)
-                                        return
-                                    }
-                                    self.markInProcess(mutationEvent: notInProcessEvent,
-                                                       storageAdapter: storageAdapter,
-                                                       completion: completion)
-                                }
+        storageAdapter.query(
+            MutationEvent.self,
+            predicate: nil,
+            sort: [sort],
+            paginationInput: nil,
+            eagerLoad: true) { result in
+                switch result {
+                case .failure(let dataStoreError):
+                    completion(.failure(dataStoreError))
+                case .success(let mutationEvents):
+                    guard let mutationEvent = mutationEvents.first else {
+                        self.nextEventPromise.set(completion)
+                        return
+                    }
+                    if mutationEvent.inProcess {
+                        log.verbose("The head of the MutationEvent queue was already inProcess (most likely interrupted process): \(mutationEvent)")
+                        completion(.success(mutationEvent))
+                    } else {
+                        self.markInProcess(mutationEvent: mutationEvent,
+                                           storageAdapter: storageAdapter,
+                                           completion: completion)
+                    }
+                }
 
         }
     }
