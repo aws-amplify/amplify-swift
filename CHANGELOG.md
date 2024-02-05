@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.30.7 (2024-02-05)
+
+### Bug Fixes
+
+- **DataStore-v1**: auth plugin requirement for single auth rule (#3454)
+- **datastore-v1**: correct the filter predicate logic applied to optional fields
+
 ## 1.30.6 (2024-01-08)
 
 ### Bug Fixes
