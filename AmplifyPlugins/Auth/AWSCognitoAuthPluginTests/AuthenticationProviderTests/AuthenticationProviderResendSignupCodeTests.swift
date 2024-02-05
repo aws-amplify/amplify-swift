@@ -31,7 +31,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
                                                            destination: nil,
                                                            attributeName: nil)
         let mockResendSignUpCodeResult = SignUpResult(signUpState: .confirmed,
-                                                      codeDeliveryDetails: codeDelieveryDetails)
+                                                      codeDeliveryDetails: codeDelieveryDetails, userSub: nil)
         mockAWSMobileClient?.resendSignUpCodeMockResult = .success(mockResendSignUpCodeResult)
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendSignUpCode(for: "username") { result in
@@ -66,7 +66,8 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
                                                            destination: nil,
                                                            attributeName: nil)
         let mockResendSignUpCodeResult = SignUpResult(signUpState: .confirmed,
-                                                      codeDeliveryDetails: codeDelieveryDetails)
+                                                      codeDeliveryDetails: codeDelieveryDetails,
+                                                      userSub: nil)
         mockAWSMobileClient?.resendSignUpCodeMockResult = .success(mockResendSignUpCodeResult)
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendSignUpCode(for: "") { result in
