@@ -210,36 +210,39 @@ final class StorageEngine: StorageEngineBehavior {
 
         do {
             try storageAdapter.transaction {
-                let wrappedCompletion: DataStoreCallback<M> = { result in
-                    guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
-                        completion(result)
-                        return
-                    }
-
-                    guard case .success(let savedModel) = result else {
-                        completion(result)
-                        return
-                    }
-
-                    self.log.verbose("\(#function) syncing mutation for \(savedModel)")
-                    self.syncMutation(of: savedModel,
-                                      modelSchema: modelSchema,
-                                      mutationType: mutationType,
-                                      predicate: condition,
-                                      syncEngine: syncEngine,
-                                      completion: completion)
+                let result = self.storageAdapter.save(model, 
+                                                      modelSchema: modelSchema,
+                                                      condition: condition,
+                                                      eagerLoad: eagerLoad)
+                guard modelSchema.isSyncable else {
+                    completion(result)
+                    return
                 }
 
-                storageAdapter.save(model,
-                                    modelSchema: modelSchema,
-                                    condition: condition,
-                                    eagerLoad: eagerLoad,
-                                    completion: wrappedCompletion)
+                guard case .success(let savedModel) = result else {
+                    completion(result)
+                    return
+                }
+
+                guard let syncEngine else {
+                    let message = "No SyncEngine available to sync mutation event, rollback save."
+                    self.log.verbose("\(#function) \(message) : \(savedModel)")
+                    throw DataStoreError.internalOperation(
+                        message,
+                        "Save was interrupted. `DataStore.stop()` may have been called.",
+                        nil)
+                }
+                self.log.verbose("\(#function) syncing mutation for \(savedModel)")
+                self.syncMutation(of: savedModel,
+                                  modelSchema: modelSchema,
+                                  mutationType: mutationType,
+                                  predicate: condition,
+                                  syncEngine: syncEngine,
+                                  completion: completion)
             }
         } catch {
             completion(.failure(causedBy: error))
         }
-
     }
 
     func save<M: Model>(_ model: M,
