@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.25.7 (2024-02-07)
+
+### Bug Fixes
+
+- **build**: update code to fix build in xcode 15.3 beta 2 (#3500)
+- **DataStore**: auth plugin requirement for single auth rule (#3453)
+
 ## 2.25.6 (2024-01-30)
 
 ### Bug Fixes
