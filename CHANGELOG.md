@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.26.0 (2024-02-08)
+
+### Features
+
+- **auth**: Removed dependency on oauth2 token for refreshToken and move to initiateAuth for hostedUI (#3497)
+
 ## 2.25.7 (2024-02-07)
 
 ### Bug Fixes
