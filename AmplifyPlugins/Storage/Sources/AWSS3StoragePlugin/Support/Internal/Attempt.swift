@@ -13,7 +13,7 @@ import Foundation
 ///   - fail: error handler
 /// - Returns: optional result
 func attempt<T>(_ expression: @autoclosure () throws -> T,
-                fail: @autoclosure () -> ((Swift.Error) -> Void) = { _ in }) -> T? {
+                fail: @autoclosure () -> ((Swift.Error) -> Void)) -> T? {
     do {
         return try expression()
     } catch {
@@ -29,7 +29,7 @@ func attempt<T>(_ expression: @autoclosure () throws -> T,
 /// - Returns: success
 @discardableResult
 func attempt(_ expression: @autoclosure () throws -> Void,
-             fail: @autoclosure () -> ((Swift.Error) -> Void) = { _ in }) -> Bool {
+             fail: @autoclosure () -> ((Swift.Error) -> Void)) -> Bool {
     do {
         try expression()
         return true

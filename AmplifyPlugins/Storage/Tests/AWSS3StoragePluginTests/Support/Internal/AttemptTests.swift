@@ -48,12 +48,14 @@ class AttemptTests: XCTestCase {
     }
 
     func testAttemptNoFailClosureNoThrow() throws {
-        let result = attempt(try work1(number: badNumber))
+        let result = attempt(try work1(number: badNumber), 
+                             fail: { error in })
         XCTAssertNil(result)
     }
 
     func testAttemptNoFailClosureThrow() throws {
-        let result = attempt(try work2(number: badNumber))
+        let result = attempt(try work2(number: badNumber),
+                             fail: { error in })
         XCTAssertEqual(false, result)
     }
 
