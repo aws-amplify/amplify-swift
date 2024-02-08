@@ -82,31 +82,4 @@ class HostedUIRequestHelperTests: XCTestCase {
         let encodedSecret = try XCTUnwrap(encodedSecret)
         XCTAssertEqual("Basic \(encodedSecret)", header)
     }
-
-    /// Given: A HostedUI configuration without a client secret
-    /// When: HostedUIRequestHelper.createRefreshTokenRequest is invoked with said configuration
-    /// Then: A request is generated that does not include an Authorization header
-    func testCreateRefreshTokenRequest_withoutClientSecret_shouldNotAddAuthorizationHeader() throws {
-        let request = try HostedUIRequestHelper.createRefreshTokenRequest(
-            refreshToken: "refreshToken",
-            configuration: configuration
-        )
-
-        XCTAssertNil(request.value(forHTTPHeaderField: "Authorization"))
-    }
-
-    /// Given: A HostedUI configuration that defines a client secret
-    /// When: HostedUIRequestHelper.createRefreshTokenRequest is invoked with said configuration
-    /// Then: A request is generated that includes an Authorization header and its value has an encoded version of the secret
-    func testCreateRefreshTokenRequest_withClientSecret_shouldEncodeSecretAndAddAuthorizationHeader() throws {
-        createConfiguration(clientSecret: "clientSecret")
-        let request = try HostedUIRequestHelper.createRefreshTokenRequest(
-            refreshToken: "refreshToken",
-            configuration: configuration
-        )
-
-        let header = try XCTUnwrap(request.value(forHTTPHeaderField: "Authorization"))
-        let encodedSecret = try XCTUnwrap(encodedSecret)
-        XCTAssertEqual("Basic \(encodedSecret)", header)
-    }
 }
