@@ -14,7 +14,7 @@ extension CognitoIdentityProviderClientTypes.DeviceType {
 
     func toAWSAuthDevice() -> AuthDevice {
         let id = deviceKey ?? ""
-        let name = ""
+        let name = deviceAttributes?.first(where: { $0.name == "device_name" })?.value ?? ""
         var attributes: [String: String] = [:]
         if deviceAttributes != nil {
             for attr in deviceAttributes! {
@@ -23,12 +23,13 @@ extension CognitoIdentityProviderClientTypes.DeviceType {
                 }
             }
         }
-        let device = AWSAuthDevice(id: id,
-                                   name: name,
-                                   attributes: attributes,
-                                   createdDate: deviceCreateDate,
-                                   lastAuthenticatedDate: deviceLastAuthenticatedDate,
-                                   lastModifiedDate: deviceLastModifiedDate)
+        let device = AWSAuthDevice(
+            id: id,
+            name: name,
+            attributes: attributes,
+            createdDate: deviceCreateDate,
+            lastAuthenticatedDate: deviceLastAuthenticatedDate,
+            lastModifiedDate: deviceLastModifiedDate)
 
         return device
     }
