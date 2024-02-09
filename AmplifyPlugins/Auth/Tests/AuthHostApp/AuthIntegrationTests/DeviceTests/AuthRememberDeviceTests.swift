@@ -60,5 +60,15 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
         let devices = try await Amplify.Auth.fetchDevices()
         XCTAssertNotNil(devices)
         XCTAssertGreaterThan(devices.count, 0)
+        XCTAssertEqual(devices.first?.name.isEmpty, false)
+        XCTAssertEqual(devices.first?.id.isEmpty, false)
+        guard let awsDevice = devices.first as? AWSAuthDevice else {
+            XCTFail("Should be able to cast to AWSAuthDevice")
+            return
+        }
+        XCTAssertEqual(awsDevice.attributes.isEmpty, false)
+        XCTAssertNotNil(awsDevice.createdDate)
+        XCTAssertNotNil(awsDevice.lastAuthenticatedDate)
+        XCTAssertNotNil(awsDevice.lastModifiedDate)
     }
 }
