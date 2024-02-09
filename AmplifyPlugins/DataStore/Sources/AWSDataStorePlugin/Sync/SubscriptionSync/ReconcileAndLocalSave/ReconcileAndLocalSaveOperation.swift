@@ -299,7 +299,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case .create, .update:
             operation = self.save(storageAdapter: storageAdapter, remoteModel: disposition.remoteModel)
         case .delete:
-            operation = self.delete(storageAdapter: storageAdapter, remoteModel: disposition.remoteModel)
+            operation = self.queryAndDelete(storageAdapter: storageAdapter, remoteModel: disposition.remoteModel)
         }
 
         return operation
@@ -341,7 +341,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         case dropped
     }
 
-    private func delete(storageAdapter: StorageEngineAdapter,
+    private func queryAndDelete(storageAdapter: StorageEngineAdapter,
                         remoteModel: RemoteModel) -> Future<ApplyRemoteModelResult, DataStoreError> {
         Future<ApplyRemoteModelResult, DataStoreError> { promise in
             guard let modelType = ModelRegistry.modelType(from: self.modelSchema.name) else {
@@ -350,11 +350,24 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
             }
 
-            storageAdapter.delete(untypedModelType: modelType,
-                                  modelSchema: self.modelSchema,
-                                  withIdentifier: remoteModel.model.identifier(schema: self.modelSchema),
-                                  condition: nil) { response in
-                switch response {
+            storageAdapter.query(modelSchema: self.modelSchema,
+                                 predicate: remoteModel.model.identifier(schema: self.modelSchema).predicate,
+                                 eagerLoad: false) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let models):
+                    if let existingModel = models.first {
+                        self.delete(
+                            modelType: modelType,
+                            storageAdapter: storageAdapter,
+                            remoteModel: remoteModel,
+                            existingModel: existingModel,
+                            promise: promise)
+                    } else {
+                        promise(.failure(
+                            .nonUniqueResult(model: modelType.modelName,
+                                             count: models.count)))
+                    }
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)
                     if storageAdapter.shouldIgnoreError(error: dataStoreError) {
@@ -362,9 +375,40 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                     } else {
                         promise(.failure(dataStoreError))
                     }
-                case .success:
-                    promise(.success(.applied(remoteModel)))
                 }
+            }
+        }
+    }
+
+    private func delete(modelType: Model.Type,
+                        storageAdapter: StorageEngineAdapter,
+                        remoteModel: RemoteModel,
+                        existingModel: Model,
+                        promise: (Result<ApplyRemoteModelResult, DataStoreError>) -> Void) {
+        storageAdapter.delete(untypedModelType: modelType,
+                              modelSchema: self.modelSchema,
+                              withIdentifier: remoteModel.model.identifier(schema: self.modelSchema),
+                              condition: nil) { response in
+            switch response {
+            case .failure(let dataStoreError):
+                self.notifyDropped(error: dataStoreError)
+                if storageAdapter.shouldIgnoreError(error: dataStoreError) {
+                    promise(.success(.dropped))
+                } else {
+                    promise(.failure(dataStoreError))
+                }
+            case .success:
+                let anyModel: AnyModel
+                do {
+                    anyModel = try existingModel.eraseToAnyModel()
+                } catch {
+                    let dataStoreError = DataStoreError(error: error)
+                    self.notifyDropped(error: dataStoreError)
+                    promise(.failure(dataStoreError))
+                    return
+                }
+                let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
+                promise(.success(.applied(inProcessModel)))
             }
         }
     }

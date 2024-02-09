@@ -49,24 +49,6 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
             return DataStoreModelProvider(model: model).eraseToAnyModelProvider()
         }
 
-        // This case can happen when a model is deleted remotely, and the reconciliation doesn't
-        // have the local model to pass back. Hence we would need to decode the Remote Model which is in the following format
-        // "post":[{"name":"id","value":"3"}]
-        // Which is very different comparing to DataStoreModelDecoder.Metadata is expecting from the local data store.
-        if var container = try? decoder.unkeyedContainer() {
-            var identifiers = [LazyReferenceIdentifier]()
-            while !container.isAtEnd {
-                if let identifier = try? container.decode(LazyReferenceIdentifier.self) {
-                    identifiers.append(identifier)
-                }
-            }
-            if !identifiers.isEmpty {
-                return DataStoreModelProvider<ModelType>(
-                    metadata: .init(identifiers: identifiers,
-                                    source: DataStoreSource)
-                ).eraseToAnyModelProvider()
-            }
-        }
         return nil
     }
 }
