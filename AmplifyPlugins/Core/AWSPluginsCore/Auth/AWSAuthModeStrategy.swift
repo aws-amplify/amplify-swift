@@ -55,6 +55,9 @@ public protocol AuthorizationTypeIterator {
 
     /// Total number of values
     var count: Int { get }
+    
+    /// Whether iterator has next available `AuthorizationType` to return or not
+    var hasNext: Bool { get }
 
     /// Next available `AuthorizationType` or `nil` if exhausted
     mutating func next() -> AuthorizationType?
@@ -66,18 +69,29 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
 
     private var values: IndexingIterator<[AWSAuthorizationType]>
     private var _count: Int
+    private var _position: Int
 
     public init(withValues values: [AWSAuthorizationType]) {
         self.values = values.makeIterator()
         self._count = values.count
+        self._position = 0
     }
 
     public var count: Int {
         _count
     }
+    
+    public var hasNext: Bool {
+        _position < _count
+    }
 
     public mutating func next() -> AWSAuthorizationType? {
-        values.next()
+        if let value = values.next() {
+            _position += 1
+            return value
+        }
+        
+        return nil
     }
 }
 
