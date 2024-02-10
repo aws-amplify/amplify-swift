@@ -292,6 +292,9 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         XCTAssertTrue(advice.shouldRetry)
     }
     
+    /// Given: Model with multiple auth types. Mutation requests always fail with 401 error code
+    /// When: Mutating model fails with 401
+    /// Then: DataStore will try again with each auth type and eventually fails
     func testGetRetryAdviceForEachModelAuthTypeThenFail_HTTPStatusError401() async throws {
         var numberOfTimesEntered = 0
         let mutationEvent = try createMutationEvent()
