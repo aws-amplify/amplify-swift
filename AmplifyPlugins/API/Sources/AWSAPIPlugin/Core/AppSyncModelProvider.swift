@@ -62,8 +62,8 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded(let identifiers):
-            var container = encoder.singleValueContainer()
-            try container.encode(identifiers)
+            let metadata = AppSyncModelDecoder.Metadata(identifiers: identifiers ?? [], apiName: apiName)
+            try metadata.encode(to: encoder)
         case .loaded(let element):
             try element.encode(to: encoder)
         }
