@@ -69,10 +69,23 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     ///    - I should get a successful result with one device fetched
     ///
     func testSuccessfulListDevices() async throws {
-
+        let dateToTest = Date()
+        let deviceName = "test device"
+        let deviceId = "deviceId"
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutput: { _ in
-                ListDevicesOutput(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
+                ListDevicesOutput(
+                    devices: [
+                        CognitoIdentityProviderClientTypes.DeviceType(
+                            deviceAttributes: [
+                                .init(name: "device_name", value: deviceName)
+                            ],
+                            deviceCreateDate: dateToTest,
+                            deviceKey: deviceId,
+                            deviceLastAuthenticatedDate: dateToTest,
+                            deviceLastModifiedDate: dateToTest
+                        )
+                    ], paginationToken: nil)
             }
         )
         let listDevicesResult = try await plugin.fetchDevices()
@@ -80,6 +93,16 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
             XCTFail("Result should have device count of 1")
             return
         }
+        guard let awsAuthDevice = listDevicesResult.first as? AWSAuthDevice else {
+            XCTFail("Resultant device type should be AWSAuthDevice")
+            return
+        }
+        XCTAssertEqual(awsAuthDevice.name, deviceName)
+        XCTAssertEqual(awsAuthDevice.id, deviceId)
+        XCTAssertNotEqual(awsAuthDevice.attributes?.count, 0)
+        XCTAssertEqual(awsAuthDevice.createdDate, dateToTest)
+        XCTAssertEqual(awsAuthDevice.lastAuthenticatedDate, dateToTest)
+        XCTAssertEqual(awsAuthDevice.lastModifiedDate, dateToTest)
     }
 
     /// Test a fetchDevices call with invalid response from service
