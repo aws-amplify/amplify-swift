@@ -191,7 +191,8 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             return nil
         }
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: mutationEvent.modelName)
+        let awsPluginOptions = AWSDataStorePluginOptions(authType: authType,
+                                                         modelName: mutationEvent.modelName)
         request.options = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
         return request
     }
@@ -247,7 +248,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             }
 
             resolveReachabilityPublisher(request: request)
-            if let pluginOptions = request.options?.pluginOptions as? AWSPluginOptions, pluginOptions.authType != nil,
+            if let pluginOptions = request.options?.pluginOptions as? AWSDataStorePluginOptions, pluginOptions.authType != nil,
                let nextAuthType = authTypesIterator?.next() {
                 scheduleRetry(advice: advice, withAuthType: nextAuthType)
             } else {

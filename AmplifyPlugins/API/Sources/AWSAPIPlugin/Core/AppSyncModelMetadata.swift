@@ -32,7 +32,8 @@ public struct AppSyncModelMetadataUtils {
     }
 
     static func addMetadata(toModel graphQLData: JSONValue,
-                            apiName: String?) -> JSONValue {
+                            apiName: String?,
+                            source: String = AppSyncModelDecoder.AppSyncSource) -> JSONValue {
         guard case var .object(modelJSON) = graphQLData else {
             Amplify.API.log.debug("Not an model object: \(graphQLData)")
             return graphQLData
@@ -85,7 +86,8 @@ public struct AppSyncModelMetadataUtils {
                 // Scenario: Belongs-To Primary Keys only are available for lazy loading
                 if let modelIdentifierMetadata = createModelIdentifierMetadata(associatedModelType,
                                                                                modelObject: modelObject,
-                                                                               apiName: apiName) {
+                                                                               apiName: apiName,
+                                                                               source: source) {
                     if let serializedMetadata = try? encoder.encode(modelIdentifierMetadata),
                        let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {
                         Amplify.API.log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
@@ -166,7 +168,8 @@ public struct AppSyncModelMetadataUtils {
     /// are more keys in the `modelObject` which means it was eager loaded.
     static func createModelIdentifierMetadata(_ associatedModel: Model.Type,
                                               modelObject: [String: JSONValue],
-                                              apiName: String?) -> AppSyncModelDecoder.Metadata? {
+                                              apiName: String?,
+                                              source: String) -> AppSyncModelDecoder.Metadata? {
         let primarykeys = associatedModel.schema.primaryKey
         var identifiers = [LazyReferenceIdentifier]()
         for identifierField in primarykeys.fields {
@@ -180,7 +183,10 @@ public struct AppSyncModelMetadataUtils {
         modelObject["_deleted"] = nil
         modelObject["_version"] = nil
         if !identifiers.isEmpty && (identifiers.count) == modelObject.keys.count {
-            return AppSyncModelDecoder.Metadata(identifiers: identifiers, apiName: apiName)
+            return AppSyncModelDecoder.Metadata(
+                identifiers: identifiers,
+                apiName: apiName,
+                source: source)
         } else {
             return nil
         }

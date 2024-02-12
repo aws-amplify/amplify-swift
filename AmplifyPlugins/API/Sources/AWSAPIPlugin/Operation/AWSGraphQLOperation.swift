@@ -153,7 +153,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     private func getEndpointInterceptors(from request: GraphQLOperationRequest<R>) -> Result<AWSAPIEndpointInterceptors?, APIError> {
         getEndpointConfig(from: request).flatMap { endpointConfig in
             do {
-                if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
+                if let pluginOptions = request.options.pluginOptions as? AWSDataStorePluginOptions,
                    let authType = pluginOptions.authType {
                     return .success(try pluginConfig.interceptorsForEndpoint(
                         withConfig: endpointConfig,
