@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.26.1 (2024-02-12)
+
+### Bug Fixes
+
+- **build**: update code to build for xcode 15.3 beta 2 (#3506)
+- **Auth**: Device name missing in FetchDevice API (#3508)
+
 ## 2.26.0 (2024-02-08)
 
 ### Features
