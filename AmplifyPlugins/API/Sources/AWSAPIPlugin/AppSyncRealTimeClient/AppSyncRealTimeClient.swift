@@ -10,14 +10,14 @@ import Foundation
 import Amplify
 import Combine
 
-fileprivate let jsonEncoder = JSONEncoder()
-fileprivate let jsonDecoder = JSONDecoder()
-
 protocol AppSyncRequestInterceptor {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest
 }
 
 actor AppSyncRealTimeClient {
+
+    static let jsonEncoder = JSONEncoder()
+    static let jsonDecoder = JSONDecoder()
 
     enum State {
         case none
@@ -27,7 +27,7 @@ actor AppSyncRealTimeClient {
         case disconnecting
         case disconnected
     }
-    
+
     // Internal state for tracking AppSync connection
     private var state: State
 
@@ -57,11 +57,11 @@ actor AppSyncRealTimeClient {
         self.requestInterceptor = requestInterceptor
 
         self.webSocketClient = WebSocketClient(
-            url: appSyncRealTimeEndpoint(endpoint),
+            url: Self.appSyncRealTimeEndpoint(endpoint),
             protocols: ["graphql-ws"],
             interceptor: connectionInterceptor
         )
-        
+
         Task { await self.subscribeToWebSocketEvent() }
     }
 
@@ -81,10 +81,16 @@ actor AppSyncRealTimeClient {
         self.state = .connecting
         log.debug("[AppSyncRealTimeClient] client start connecting")
 
-        await self.webSocketClient.connect(
-            autoConnectOnNetworkStatusChange: true,
-            autoRetryOnConnectionFailure: true
-        )
+        try await RetryWithJitter.execute {
+            try await self.sendRequestWithTimeout {
+                $0.type == .connectionAck
+            } requestFactory: { [weak self] in
+                await self?.webSocketClient.connect(
+                   autoConnectOnNetworkStatusChange: true,
+                   autoRetryOnConnectionFailure: true
+                )
+            }
+        }
     }
 
     func disconnect() async {
@@ -97,26 +103,42 @@ actor AppSyncRealTimeClient {
     }
 
     func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+        defer { subscriptions[id] = query }
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
         try await connect()
         if self.isConnected {
-            try await startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
+            Task {
+                try await startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
+            }
         }
-        subscriptions[id] = query
         return filterAppSyncSubscriptionEvent(with: id)
     }
 
     func unsubscribe(id: String) async throws {
+        defer { subscriptions.removeValue(forKey: id) }
         log.debug("[AppSyncRealTimeClient] unsubscribing: \(id)")
-        subscriptions.removeValue(forKey: id)
-        try await self.writeAppSyncEvent(.stop(id))
+
+        try await RetryWithJitter.execute {
+            try await self.sendRequestWithTimeout(id: id) {
+                $0.id == id && $0.type == .stopAck
+            } requestFactory: { [weak self] in
+                try await self?.writeAppSyncEvent(.stop(id))
+            }
+        }
     }
 
     private func startSubscription(id: String, query: String) async throws -> AnyCancellable {
         log.debug("[AppSyncRealTimeClient] Starting subscription request \(id), query: \(query)")
-        try await self.writeAppSyncEvent(
-            .start(.init(id: id, data: query, auth: nil))
-        )
+
+        try await RetryWithJitter.execute {
+            try await self.sendRequestWithTimeout(id: id) {
+                $0.id == id && $0.type == .startAck
+            } requestFactory: { [weak self] in
+                try await self?.writeAppSyncEvent(
+                    .start(.init(id: id, data: query, auth: nil))
+                )
+            }
+        }
 
         var isCancelled = false
         return AnyCancellable {
@@ -144,13 +166,13 @@ actor AppSyncRealTimeClient {
 
     private func resumeExistingSubscriptions() {
         log.debug("[AppSyncRealTimeClient] Resuming existing subscriptions")
-        Task {
-            do {
-                for (id, query) in self.subscriptions {
-                    try await startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
+        for (id, query) in self.subscriptions {
+            Task {
+                do {
+                    try await self.startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
+                } catch {
+                    log.debug("[AppSyncRealTimeClient] Failed to resume existing subscription query: (\(query))")
                 }
-            } catch {
-                log.debug("[AppSyncRealTimeClient] Failed to resume existing subscriptions(count=\(subscriptions.count))")
             }
         }
     }
@@ -162,7 +184,7 @@ actor AppSyncRealTimeClient {
         }
 
         let interceptedEvent = await self.requestInterceptor.interceptRequest(event: event, url: self.endpoint)
-        let eventString = try String(data: jsonEncoder.encode(interceptedEvent), encoding: .utf8)!
+        let eventString = try String(data: Self.jsonEncoder.encode(interceptedEvent), encoding: .utf8)!
         log.debug("[AppSyncRealTimeClient] Writing AppSyncEvent \(eventString)")
         try await webSocketClient.write(message: eventString)
     }
@@ -181,33 +203,30 @@ actor AppSyncRealTimeClient {
     private func filterAppSyncSubscriptionEvent(
         with id: String
     ) -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
-        subject.filter {
-            guard let eventId = $0.id else {
-                return false
-            }
-
-            return eventId == id
-        }
-        .map { [weak self] response -> AppSyncSubscriptionEvent? in
+        subject.filter { $0.id == id }
+        .map { response -> AppSyncSubscriptionEvent? in
             switch response.type {
             case .startAck: return .subscribed
             case .stopAck: return .unsubscribed
             case .error:
-                // TODO: (5d) better error types
-                guard let errors = try? GraphQLErrorDecoder.decodeAppSyncErrors(response.payload)
-                else {
-                    self?.log.debug("[AppSyncRealTimeClient] Failed to decode errors")
-                    return nil
-                }
-                return .error(errors)
+                return .error(Self.decodeGraphQLErrors(response.payload))
             case .data:
                 return response.payload.map { .data($0) }
-            default: 
+            default:
                 return nil
             }
         }
         .compactMap { $0 }
         .eraseToAnyPublisher()
+    }
+
+    private static func decodeGraphQLErrors(_ data: JSONValue?) -> [Error] {
+        do {
+            return try GraphQLErrorDecoder.decodeAppSyncErrors(data)
+        } catch {
+            log.debug("[AppSyncRealTimeClient] Failed to decode errors: \(error)")
+            return [error]
+        }
     }
 
 }
@@ -229,21 +248,22 @@ extension AppSyncRealTimeClient {
             self.cancellablesBindToConnection = Set()
 
         case .error(let error):
-            // TODO: (5d) propagate error
+            // Since we've activated auto-reconnect functionality in WebSocketClient upon connection failure,
+            // we only record errors here for debugging purposes.
             log.debug("[AppSyncRealTimeClient] WebSocket error event: \(error)")
         case .string(let string):
             guard let data = string.data(using: .utf8) else {
                 log.debug("[AppSyncRealTimeClient] Failed to decode string \(string)")
                 return
             }
-            guard let response = try? jsonDecoder.decode(AppSyncRealTimeResponse.self, from: data) else {
+            guard let response = try? Self.jsonDecoder.decode(AppSyncRealTimeResponse.self, from: data) else {
                 log.debug("[AppSyncRealTimeClient] Failed to decode string to AppSync event")
                 return
             }
             self.onAppSyncRealTimeResponse(response)
 
         case .data(let data):
-            guard let response = try? jsonDecoder.decode(AppSyncRealTimeResponse.self, from: data) else {
+            guard let response = try? Self.jsonDecoder.decode(AppSyncRealTimeResponse.self, from: data) else {
                 log.debug("[AppSyncRealTimeClient] Failed to decode data to AppSync event")
                 return
             }
@@ -260,15 +280,18 @@ extension AppSyncRealTimeClient {
     private func onAppSyncRealTimeResponse(_ event: AppSyncRealTimeResponse) {
         switch event.type {
         case .connectionAck:
-            self.state = .connected
             log.debug("[AppSyncRealTimeClient] AppSync connected: \(String(describing: event.payload))")
+            subject.send(event)
+
             self.resumeExistingSubscriptions()
+            self.state = .connected
             self.monitorHeartBeats(event.payload)
 
         case .keepAlive:
             self.heartBeats.send(())
 
         default:
+            log.debug("[AppSyncRealTimeClient] AppSync received response: \(event)")
             subject.send(event)
         }
     }
@@ -289,27 +312,108 @@ extension AppSyncRealTimeClient {
     }
 }
 
+extension AppSyncRealTimeClient {
+    static func appSyncRealTimeEndpoint(_ url: URL) -> URL {
+        let customDomainURL = url.appendingPathComponent("realtime")
+        guard let host = url.host, host.hasSuffix("amazonaws.com") else {
+            return customDomainURL
+        }
+
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return customDomainURL
+        }
+
+        urlComponents.host = host.replacingOccurrences(of: "appsync-api", with: "appsync-realtime-api")
+        guard let realTimeUrl = urlComponents.url else {
+            return customDomainURL
+        }
+        return realTimeUrl
+    }
+
+}
+
+extension AppSyncRealTimeClient {
+    private static func recoverableErrorOrValidatedResponse(
+        _ response: AppSyncRealTimeResponse,
+        id: String?,
+        validation: @escaping (AppSyncRealTimeResponse) -> Bool
+    ) -> AnyPublisher<AppSyncRealTimeResponse, AppSyncRealTimeRequest.Error> {
+        let limitExceededErrorString = "LimitExceededError"
+        let maxSubscriptionsReachedErrorString = "MaxSubscriptionsReachedError"
+        if validation(response) {
+            return Just(response).setFailureType(to: AppSyncRealTimeRequest.Error.self).eraseToAnyPublisher()
+        }
+
+        if id != nil && response.id == id,
+           response.type == .error,
+           let errors = response.payload?.errorType?.errors?.asArray {
+
+            let errorTypes = errors.map { $0.errorType?.stringValue }.compactMap { $0 }
+            if errorTypes.contains(where: { $0.contains(limitExceededErrorString) }) {
+                return Fail(
+                    outputType: AppSyncRealTimeResponse.self,
+                    failure: AppSyncRealTimeRequest.Error.limitExceeded
+                ).eraseToAnyPublisher()
+            } else if errorTypes.contains(where: { $0.contains(maxSubscriptionsReachedErrorString) }) {
+                return Fail(
+                    outputType: AppSyncRealTimeResponse.self,
+                    failure: AppSyncRealTimeRequest.Error.maxSubscriptionsReached
+                ).eraseToAnyPublisher()
+            } else {
+                return Fail(
+                    outputType: AppSyncRealTimeResponse.self,
+                    failure: AppSyncRealTimeRequest.Error.unknown
+                ).eraseToAnyPublisher()
+            }
+        }
+
+        return Empty(
+            outputType: AppSyncRealTimeResponse.self,
+            failureType: AppSyncRealTimeRequest.Error.self
+        ).eraseToAnyPublisher()
+    }
+
+    /**
+
+     */
+    nonisolated func sendRequestWithTimeout(
+        _ timeout: TimeInterval = 2,
+        id: String? = nil,
+        filter validateResponse: @escaping (AppSyncRealTimeResponse) -> Bool,
+        requestFactory: @escaping () async throws -> Void
+    ) async throws {
+        var cancellables = Set<AnyCancellable>()
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Swift.Error>) in
+            self?.subject.eraseToAnyPublisher()
+                .setFailureType(to: AppSyncRealTimeRequest.Error.self)
+                .flatMap { Self.recoverableErrorOrValidatedResponse($0, id: id, validation: validateResponse) }
+                .timeout(.seconds(timeout), scheduler: DispatchQueue.global(qos: .userInitiated), customError: { .timeout })
+                .first() // only take one valid response and finish
+                .sink { completion in
+                    switch completion {
+                    case .finished:
+                        self?.log.debug("[AppSyncRealTimeClient] request finished successfully")
+                        continuation.resume(returning: ())
+                    case .failure(let error):
+                        self?.log.debug("[AppSyncRealTimeClient] request failed, error: \(error)")
+                        if error == .unknown { // do not retry on unknown error
+                            continuation.resume(returning: ())
+                        } else {
+                            continuation.resume(throwing: error)
+                        }
+                    }
+                } receiveValue: { _ in }
+                .store(in: &cancellables)
+
+            Task { try? await requestFactory() }
+        }
+    }
+}
+
 extension AppSyncRealTimeClient: DefaultLogger {
     static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
     }
 
     nonisolated var log: Logger { Self.log }
-}
-
-fileprivate func appSyncRealTimeEndpoint(_ url: URL) -> URL {
-    let customDomainURL = url.appendingPathComponent("realtime")
-    guard let host = url.host, host.hasSuffix("amazonaws.com") else {
-        return customDomainURL
-    }
-
-    guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-        return customDomainURL
-    }
-
-    urlComponents.host = host.replacingOccurrences(of: "appsync-api", with: "appsync-realtime-api")
-    guard let realTimeUrl = urlComponents.url else {
-        return customDomainURL
-    }
-    return realTimeUrl
 }

@@ -249,9 +249,7 @@ extension WebSocketClient {
         }
         .sink(receiveCompletion: { _ in }) { _ in
             Task { [weak self] in
-                if await self?.autoRetryOnConnectionFailure == true {
-                    await self?.retryWithJitter.reset()
-                }
+                await self?.retryWithJitter.reset()
             }
         }
         .store(in: &cancelables)

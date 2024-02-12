@@ -7,6 +7,7 @@
 
 
 import Foundation
+import Combine
 import Amplify
 
 public enum AppSyncRealTimeRequest {
@@ -57,5 +58,15 @@ extension AppSyncRealTimeRequest: Encodable {
             try container.encode("stop", forKey: .type)
             try container.encode(id, forKey: .id)
         }
+    }
+}
+
+
+extension AppSyncRealTimeRequest {
+    enum Error: Swift.Error {
+        case timeout
+        case limitExceeded
+        case maxSubscriptionsReached
+        case unknown
     }
 }

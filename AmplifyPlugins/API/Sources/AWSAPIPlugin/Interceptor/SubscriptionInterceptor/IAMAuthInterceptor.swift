@@ -67,7 +67,7 @@ class IAMAuthInterceptor {
                     guard let headerValue = header.value.first else {
                         return partialResult
                     }
-                    return partialResult.merging([header.name: .string(headerValue)]) { a, b in b }
+                    return partialResult.merging([header.name: .string(headerValue)]) { $1 }
                 default:
                     return partialResult
                 }
