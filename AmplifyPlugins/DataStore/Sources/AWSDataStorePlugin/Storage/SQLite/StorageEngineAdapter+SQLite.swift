@@ -334,7 +334,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          eagerLoad: eagerLoad))
     }
 
-    func query<M: Model>(_ modelType: M.Type,
+    private func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,

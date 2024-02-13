@@ -229,7 +229,7 @@ final class StorageEngine: StorageEngineBehavior {
                     self.log.verbose("\(#function) \(message) : \(savedModel)")
                     throw DataStoreError.internalOperation(
                         message,
-                        "Save was interrupted. `DataStore.stop()` may have been called.",
+                        "`DataStore.save()` was interrupted. `DataStore.stop()` may have been called.",
                         nil)
                 }
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
