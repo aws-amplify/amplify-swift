@@ -15,14 +15,14 @@ import AWSPluginsCore
 
 class AWSMutationDatabaseAdapterTests: XCTestCase {
     var databaseAdapter: AWSMutationDatabaseAdapter!
-
+    var storageAdapter: MockSQLiteStorageEngineAdapter!
     let model1 = Post(title: "model1", content: "content1", createdAt: .now())
     let post = Post.keys
 
     override func setUp() {
         do {
-            let mockStorageAdapter = MockSQLiteStorageEngineAdapter()
-            databaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: mockStorageAdapter)
+            storageAdapter = MockSQLiteStorageEngineAdapter()
+            databaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         } catch {
             XCTFail("Failed to setup system under test")
         }
@@ -147,6 +147,69 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
         XCTAssertEqual(disposition, .dropCandidateWithError(DataStoreError.unknown("", "", nil)))
+    }
+    
+    /// Retrieve the first MutationEvent
+    func test_getNextMutationEvent_AlreadyInProcess() {
+        let queryExpectation = expectation(description: "test")
+        let expectation = expectation(description: "test")
+        var mutationEvent1 = MutationEvent(modelId: "1111-22",
+                                           modelName: "Post",
+                                           json: "{}",
+                                           mutationType: .create)
+        mutationEvent1.inProcess = true
+        let mutationEvent2 = MutationEvent(modelId: "1111-22",
+                                           modelName: "Post",
+                                           json: "{}",
+                                           mutationType: .create)
+        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+            queryExpectation.fulfill()
+            return .success([mutationEvent1, mutationEvent2])
+        }
+        storageAdapter.responders[.queryModelTypePredicate] = queryResponder
+        databaseAdapter.getNextMutationEvent { result in
+            switch result {
+            case .success(let mutationEvent):
+                XCTAssertTrue(mutationEvent.inProcess)
+            case .failure(let error):
+                XCTFail("Should have been successful result, error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1)
+    }
+    
+    /// Retrieve the first MutationEvent
+    func test_getNextMutationEvent_MarkInProcess() {
+        let queryExpectation = expectation(description: "test")
+        let expectation = expectation(description: "test")
+        let mutationEvent1 = MutationEvent(modelId: "1111-22",
+                                           modelName: "Post",
+                                           json: "{}",
+                                           mutationType: .create)
+        XCTAssertFalse(mutationEvent1.inProcess)
+        let mutationEvent2 = MutationEvent(modelId: "1111-22",
+                                           modelName: "Post",
+                                           json: "{}",
+                                           mutationType: .create)
+        let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
+            queryExpectation.fulfill()
+            return .success([mutationEvent1, mutationEvent2])
+        }
+        storageAdapter.responders[.queryModelTypePredicate] = queryResponder
+        databaseAdapter.getNextMutationEvent { result in
+            switch result {
+            case .success(let mutationEvent):
+                XCTAssertTrue(mutationEvent.inProcess)
+            case .failure(let error):
+                XCTFail("Should have been successful result, error: \(error)")
+            }
+            
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1)
     }
 }
 
