@@ -322,6 +322,62 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
         await fulfillment(of: [snapshotReceived], timeout: 60)
         querySnapshots.cancel()
     }
+
+    /// Test retrieving and loading of a Post from a deleted comment in DataStore.observe
+    ///
+    /// - Given:  A configured DataStore and API plugin, with Post and Comment model, which have been
+    ///     created and synced.
+    /// - When:
+    ///    - Call mutate API to delete an existing comment on a post
+    /// - Then:
+    ///    - The operation completes successfully with no errors
+    ///    - The observe query should be fired with the relevant mutation event
+    ///    - The model should be decoded from the mutation event
+    ///    - Lazy reference of the post should retrievable and loadable.
+    ///
+    func testObserveToQueryPostFromDeletedComment() async throws {
+        await setup(withModels: BlogPostComment8V2Models())
+        try await startAndWaitForReady()
+        let post = Post(name: "name", randomId: "randomId")
+        _ = try await createAndWaitForSync(post)
+        let comment = Comment(content: "content", post: post)
+        let receivedComment = try await createAndWaitForSync(comment)
+        let mutationEventReceived = expectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Comment.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
+                   receivedComment.id == receivedComment.id {
+                    assertLazyReference(receivedComment._post,
+                                        state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
+                    guard let loadedPost = try await comment.post else {
+                        XCTFail("Failed to load the post from the comment")
+                        return
+                    }
+                    XCTAssertEqual(loadedPost.id, post.id)
+                    assertLazyReference(comment._post,
+                                        state: .loaded(model: post))
+                    mutationEventReceived.fulfill()
+                } else {
+                    XCTFail("The model should be correctly decoded")
+                }
+            }
+        }
+
+        let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(
+            of: comment,
+            modelSchema: Comment.schema,
+            version: 1)
+        do {
+            let result = try await Amplify.API.mutate(request: deleteRequest)
+            print(result)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+
+        await fulfillment(of: [mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
 }
 
 extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
