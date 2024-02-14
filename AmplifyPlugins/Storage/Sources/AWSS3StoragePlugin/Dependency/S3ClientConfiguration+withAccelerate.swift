@@ -44,8 +44,9 @@ extension S3Client.S3ClientConfiguration {
             useDualStack: useDualStack,
             useFIPS: useFIPS,
             retryMode: awsRetryMode,
-            appID: appID,
-            connectTimeoutMs: connectTimeoutMs
+            appID: appID
+            // TODO: Figure out how to manage connection time outs
+//            connectTimeoutMs: connectTimeoutMs
         )
 
         return copy

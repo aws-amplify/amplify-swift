@@ -12,8 +12,8 @@ import AWSClientRuntime
 @_spi(PluginHTTPClientEngine)
 public func baseClientEngine(
     for configuration: AWSClientConfiguration<some AWSServiceSpecificConfiguration>
-) -> HttpClientEngine {
-    let baseClientEngine: HttpClientEngine
+) -> HTTPClient {
+    let baseClientEngine: HTTPClient
     #if os(iOS) || os(macOS)
     // networking goes through CRT
     baseClientEngine = configuration.httpClientEngine

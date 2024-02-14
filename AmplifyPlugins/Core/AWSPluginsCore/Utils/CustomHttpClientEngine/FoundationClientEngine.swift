@@ -10,8 +10,8 @@ import ClientRuntime
 import Amplify
 
 @_spi(FoundationClientEngine)
-public struct FoundationClientEngine: HttpClientEngine {
-    public func execute(request: ClientRuntime.SdkHttpRequest) async throws -> ClientRuntime.HttpResponse {
+public struct FoundationClientEngine: HTTPClient {
+    public func send(request: ClientRuntime.SdkHttpRequest) async throws -> ClientRuntime.HttpResponse {
         let urlRequest = try await URLRequest(sdkRequest: request)
 
         let (data, response) = try await URLSession.shared.data(for: urlRequest)

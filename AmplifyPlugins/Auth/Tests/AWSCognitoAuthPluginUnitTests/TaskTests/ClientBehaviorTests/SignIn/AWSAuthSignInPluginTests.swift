@@ -955,7 +955,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw try await AWSCognitoIdentityProvider.PasswordResetRequiredException(
-                httpResponse: .init(body: .none, statusCode: .badRequest),
+                httpResponse: .init(body: .empty, statusCode: .badRequest),
                 decoder: nil,
                 message: nil,
                 requestID: nil
@@ -1133,7 +1133,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw try await AWSCognitoIdentityProvider.UserNotConfirmedException(
-                httpResponse: .init(body: .none, statusCode: .badRequest)
+                httpResponse: .init(body: .empty, statusCode: .badRequest)
             )
         })
 

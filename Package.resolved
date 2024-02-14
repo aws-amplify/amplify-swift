@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-crt-swift",
       "state" : {
-        "revision" : "fd1756b6e5c9fd1a906edfb743f7cb64c2c98639",
-        "version" : "0.17.0"
+        "revision" : "0d0a0cf2e2cb780ceeceac190b4ede94f4f96902",
+        "version" : "0.26.0"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/awslabs/aws-sdk-swift.git",
       "state" : {
-        "revision" : "387016f3e62119e9962da4357c63671c694554e6",
-        "version" : "0.31.0"
+        "revision" : "c9498b5dff7ed1c075c29623005cb705871b1cd0",
+        "version" : "0.35.0"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/smithy-lang/smithy-swift",
       "state" : {
-        "revision" : "ab999a9f0c972adcb350beda3c630a35697f7e8e",
-        "version" : "0.35.0"
+        "revision" : "9a749d04e0e9bf8d60ece056c56d352a1ccc33ea",
+        "version" : "0.40.0"
       }
     },
     {
@@ -82,30 +82,12 @@
       }
     },
     {
-      "identity" : "swift-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections",
-      "state" : {
-        "revision" : "94cf62b3ba8d4bed62680a282d4c25f9c63c2efb",
-        "version" : "1.1.0"
-      }
-    },
-    {
       "identity" : "swift-log",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
         "revision" : "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
         "version" : "1.5.4"
-      }
-    },
-    {
-      "identity" : "xmlcoder",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
-      "state" : {
-        "revision" : "80b4a1646399b8e4e0ce80711653476a85bd5e37",
-        "version" : "0.17.0"
       }
     }
   ],

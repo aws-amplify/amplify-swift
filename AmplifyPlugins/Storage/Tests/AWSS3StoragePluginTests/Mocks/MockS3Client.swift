@@ -7,6 +7,7 @@
 
 import AWSS3
 import Foundation
+@testable import AWSS3StoragePlugin
 
 /// - Tag: MockS3Client
 final class MockS3Client {

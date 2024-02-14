@@ -45,7 +45,7 @@ extension ClientRuntime.HttpResponse {
 
     convenience init(httpURLResponse: HTTPURLResponse, data: Data) throws {
         let headers = Self.headers(from: httpURLResponse.allHeaderFields)
-        let body = HttpBody.data(data)
+        let body = ByteStream.data(data)
 
         guard let statusCode = HttpStatusCode(rawValue: httpURLResponse.statusCode) else {
             // This shouldn't happen, but `HttpStatusCode` only exposes a failable
