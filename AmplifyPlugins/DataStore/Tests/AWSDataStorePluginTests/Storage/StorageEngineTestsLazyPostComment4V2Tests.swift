@@ -259,21 +259,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
 
         let expectedJSONOutput = """
-        {
-            "content": "content",
-            "createdAt": null,
-            "id": "\(comment.id)",
-            "post": {
-                "identifiers": [
-                    {
-                        "name": "id",
-                        "value": "\(post.id)"
-                    }
-                ],
-                "source": "DataStore"
-            },
-            "updatedAt": null
-        }
+        {\"content\":\"content\",\"createdAt\":null,\"id\":\"\(comment.id)\",\"post\":{\"identifiers\":[{\"name\":\"id\",\"value\":\"\(post.id)\"}],\"source\":\"DataStore\"},\"updatedAt\":null}
         """
 
         XCTAssertEqual(expectedJSONOutput, try queriedCommentLazyLoadedPost.toJSON())
