@@ -48,11 +48,11 @@ extension GraphQLResponseDecoder {
                   case .array(var graphQLDataArray) = graphQLDataObject["items"] {
             for (index, item) in graphQLDataArray.enumerated() {
                 let modelJSON: JSONValue
-                if let _ = (request.options.pluginOptions as? AWSDataStorePluginOptions) {
+                if let _ = (request.options.pluginOptions as? AWSAPIPluginDataStoreOptions) {
                     modelJSON = AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,
                         apiName: request.apiName,
-                        source: AWSDataStorePluginOptions.DataStoreMetadataSource)
+                        source: AWSAPIPluginDataStoreOptions.DataStoreMetadataSource)
                 } else {
                     modelJSON = AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,

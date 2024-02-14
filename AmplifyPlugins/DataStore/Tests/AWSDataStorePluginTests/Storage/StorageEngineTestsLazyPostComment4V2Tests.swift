@@ -257,23 +257,24 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             XCTFail("Failed to query saved comment")
             return
         }
-let expectedJSONOutput = """
-{
-    "content": "content",
-    "createdAt": null,
-    "id": "\(comment.id)",
-    "post": {
-        "identifiers": [
-            {
-                "name": "id",
-                "value": "\(post.id)"
-            }
-        ],
-        "source": "DataStore"
-    },
-    "updatedAt": null
-}
-"""
+
+        let expectedJSONOutput = """
+        {
+            "content": "content",
+            "createdAt": null,
+            "id": "\(comment.id)",
+            "post": {
+                "identifiers": [
+                    {
+                        "name": "id",
+                        "value": "\(post.id)"
+                    }
+                ],
+                "source": "DataStore"
+            },
+            "updatedAt": null
+        }
+        """
 
         XCTAssertEqual(expectedJSONOutput, try queriedCommentLazyLoadedPost.toJSON())
 
