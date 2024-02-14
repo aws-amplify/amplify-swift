@@ -31,9 +31,11 @@ public struct AppSyncModelMetadataUtils {
         }
     }
 
-    static func addMetadata(toModel graphQLData: JSONValue,
-                            apiName: String?,
-                            source: String = AppSyncModelDecoder.AppSyncSource) -> JSONValue {
+    static func addMetadata(
+        toModel graphQLData: JSONValue,
+        apiName: String?,
+        source: String = ModelProviderRegistry.DecoderSource.appSync) -> JSONValue {
+            
         guard case var .object(modelJSON) = graphQLData else {
             Amplify.API.log.debug("Not an model object: \(graphQLData)")
             return graphQLData

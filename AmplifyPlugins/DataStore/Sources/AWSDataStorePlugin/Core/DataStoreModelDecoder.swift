@@ -18,7 +18,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         let source: String
 
         init(identifiers: [LazyReferenceIdentifier],
-             source: String = AWSAPIPluginDataStoreOptions.DataStoreMetadataSource) {
+             source: String = ModelProviderRegistry.DecoderSource.dataStore) {
             self.identifiers = identifiers
             self.source = source
         }
@@ -38,7 +38,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
 
     public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
         if let metadata = try? DataStoreModelDecoder.Metadata(from: decoder) {
-            if metadata.source == AWSAPIPluginDataStoreOptions.DataStoreMetadataSource {
+            if metadata.source == ModelProviderRegistry.DecoderSource.dataStore {
                 return DataStoreModelProvider<ModelType>(metadata: metadata).eraseToAnyModelProvider()
             } else {
                 return nil

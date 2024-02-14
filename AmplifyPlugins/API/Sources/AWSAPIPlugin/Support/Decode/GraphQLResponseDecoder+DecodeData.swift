@@ -52,7 +52,7 @@ extension GraphQLResponseDecoder {
                     modelJSON = AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,
                         apiName: request.apiName,
-                        source: AWSAPIPluginDataStoreOptions.DataStoreMetadataSource)
+                        source: ModelProviderRegistry.DecoderSource.dataStore)
                 } else {
                     modelJSON = AppSyncModelMetadataUtils.addMetadata(
                         toModel: item,

@@ -14,8 +14,6 @@ import Amplify
 ///   by host applications. The behavior of this may change without warning.
 public struct AWSAPIPluginDataStoreOptions {
 
-    public static let DataStoreMetadataSource = "DataStore"
-
     /// authorization type
     public let authType: AWSAuthorizationType?
 

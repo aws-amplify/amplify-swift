@@ -26,7 +26,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     init(model: ModelType?) {
         self.loadedState = .loaded(model: model)
         self.apiName = nil
-        self.source = AppSyncModelDecoder.AppSyncSource
+        self.source = ModelProviderRegistry.DecoderSource.appSync
     }
 
     // MARK: - APIs
