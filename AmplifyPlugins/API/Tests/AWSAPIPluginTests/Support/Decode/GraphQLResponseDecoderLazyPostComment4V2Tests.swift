@@ -376,9 +376,23 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
             ]
         ]
 
-        let expectedEncodedCommentModel = """
-        {"content":"content","createdAt":null,"id":"id","post":{"identifiers":[{"name":"id","value":"\(post.id)"}],"source":"AppSync"},"updatedAt":null}
-        """
+let expectedEncodedCommentModel = """
+{
+    "content": "content",
+    "createdAt": null,
+    "id": "id",
+    "post": {
+        "identifiers": [
+            {
+                "name": "id",
+                "value": "\(post.id)"
+            }
+        ],
+        "source": "AppSync"
+    },
+    "updatedAt": null
+}
+"""
 
         let commentWithLazyLoadPost = try decoder.decodeToResponseType(graphQLData)
         XCTAssertEqual(try commentWithLazyLoadPost.toJSON(), expectedEncodedCommentModel)
