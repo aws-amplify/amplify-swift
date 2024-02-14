@@ -160,7 +160,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
         
         let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
-        logMessage("[CascadeDelete.1] Deleting \(modelSchema.name) with identifiers: \(modelIds)")
+        logMessage("[CascadeDelete.1] Deleting \(self.modelSchema.name) with identifiers: \(modelIds)")
         
         associatedModels = await self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
 
@@ -259,7 +259,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
             switch deleteResult {
             case .success:
-                logMessage("[CascadeDelete.3] Local cascade delete of \(modelSchema.name) successful!")
+                logMessage("[CascadeDelete.3] Local cascade delete of \(self.modelSchema.name) successful!")
                 return .success(QueryAndDeleteResult(deletedModels: models,
                                                      associatedModels: associatedModels))
             case .failure(let error):
@@ -443,7 +443,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                syncEngine: RemoteSyncEngineBehavior,
                                dataStoreError: DataStoreError?,
                                completion: @escaping DataStoreCallback<Void>) {
-        logMessage("[CascadeDelete.4] Begin syncing \(models.count) \(modelSchema.name) model for deletion")
+        logMessage("[CascadeDelete.4] Begin syncing \(models.count) \(self.modelSchema.name) model for deletion")
         var graphQLFilterJSON: String?
         if let predicate = predicate {
             do {
