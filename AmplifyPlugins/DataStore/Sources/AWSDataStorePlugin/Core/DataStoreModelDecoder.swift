@@ -8,17 +8,17 @@
 import Foundation
 import Amplify
 import SQLite
+import AWSPluginsCore
 
 public struct DataStoreModelDecoder: ModelProviderDecoder {
-
-    public static let DataStoreSource = "DataStore"
 
     /// Metadata that contains the foreign key value of a parent model, which is the primary key of the model to be loaded.
     struct Metadata: Codable {
         let identifiers: [LazyReferenceIdentifier]
         let source: String
 
-        init(identifiers: [LazyReferenceIdentifier], source: String = DataStoreSource) {
+        init(identifiers: [LazyReferenceIdentifier],
+             source: String = ModelProviderRegistry.DecoderSource.dataStore) {
             self.identifiers = identifiers
             self.source = source
         }
@@ -38,7 +38,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
 
     public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
         if let metadata = try? DataStoreModelDecoder.Metadata(from: decoder) {
-            if metadata.source == DataStoreSource {
+            if metadata.source == ModelProviderRegistry.DecoderSource.dataStore {
                 return DataStoreModelProvider<ModelType>(metadata: metadata).eraseToAnyModelProvider()
             } else {
                 return nil

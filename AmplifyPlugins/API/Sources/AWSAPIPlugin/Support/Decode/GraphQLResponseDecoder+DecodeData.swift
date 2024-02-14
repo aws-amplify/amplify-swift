@@ -47,8 +47,17 @@ extension GraphQLResponseDecoder {
                   case .object(var graphQLDataObject) = graphQLData,
                   case .array(var graphQLDataArray) = graphQLDataObject["items"] {
             for (index, item) in graphQLDataArray.enumerated() {
-                let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
-                                                                      apiName: request.apiName)
+                let modelJSON: JSONValue
+                if let _ = (request.options.pluginOptions as? AWSAPIPluginDataStoreOptions) {
+                    modelJSON = AppSyncModelMetadataUtils.addMetadata(
+                        toModel: item,
+                        apiName: request.apiName,
+                        source: ModelProviderRegistry.DecoderSource.dataStore)
+                } else {
+                    modelJSON = AppSyncModelMetadataUtils.addMetadata(
+                        toModel: item,
+                        apiName: request.apiName)
+                }
                 graphQLDataArray[index] = modelJSON
             }
             graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
@@ -107,7 +116,7 @@ extension GraphQLResponseDecoder {
     // latest version of the developer's app will continue to work because the the mutation request sent from the
     // latest library continues to have the typename field.
     private func shouldAddTypename(to graphQLData: JSONValue) -> JSONValue? {
-        if let modelName = modelName,
+        if let modelName = dataStorePluginOptions?.modelName,
            request.responseType == MutationSync<AnyModel>.self,
            case var .object(modelJSON) = graphQLData,
            // No need to replace existing response payloads that have it already

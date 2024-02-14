@@ -55,9 +55,7 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
         switch loadedState {
         case .notLoaded(let identifiers):
             let metadata = DataStoreModelDecoder.Metadata(identifiers: identifiers ?? [])
-            var container = encoder.singleValueContainer()
-            try container.encode(metadata)
-
+            try metadata.encode(to: encoder)
         case .loaded(let element):
             try element.encode(to: encoder)
         }

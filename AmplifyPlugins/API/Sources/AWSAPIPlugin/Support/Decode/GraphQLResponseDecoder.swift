@@ -15,18 +15,17 @@ class GraphQLResponseDecoder<R: Decodable> {
     var response: Data
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
-    let modelName: String?
+    let dataStorePluginOptions: AWSAPIPluginDataStoreOptions?
 
     public init(request: GraphQLOperationRequest<R>, response: Data = Data()) {
         self.request = request
         self.response = response
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
-        if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
-           let modelName = pluginOptions.modelName {
-            self.modelName = modelName
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            self.dataStorePluginOptions = pluginOptions
         } else {
-            self.modelName = nil
+            self.dataStorePluginOptions = nil
         }
     }
 

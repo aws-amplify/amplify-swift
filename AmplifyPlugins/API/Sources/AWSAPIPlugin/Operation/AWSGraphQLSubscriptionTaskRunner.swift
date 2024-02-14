@@ -81,7 +81,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 
         // Retrieve request plugin option and
         // auth type in case of a multi-auth setup
-        let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
+        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
         let urlRequest = generateSubscriptionURLRequest(from: endpointConfig)
 
         // Retrieve the subscription connection
@@ -280,7 +280,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
         // Retrieve request plugin option and
         // auth type in case of a multi-auth setup
-        let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
+        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
         let urlRequest = generateSubscriptionURLRequest(from: endpointConfig)
 
         // Retrieve the subscription connection
