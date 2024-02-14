@@ -32,7 +32,7 @@ class StorageAdapterMutationSyncTests: BaseDataStoreTests {
             MutationSyncMetadata(modelId: $0.id,
                                  modelName: Post.modelName,
                                  deleted: false,
-                                 lastChangedAt: Int(Date().timeIntervalSince1970),
+                                 lastChangedAt: Int64(Date().timeIntervalSince1970),
                                  version: 1)
         }
         populateData(syncMetadataList)

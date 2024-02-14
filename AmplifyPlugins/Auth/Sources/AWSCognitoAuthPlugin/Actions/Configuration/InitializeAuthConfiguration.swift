@@ -30,11 +30,9 @@ struct InitializeAuthConfiguration: Action {
             if case .amplifyCredentials(let fetchedCredentials) = data {
                 credentials = fetchedCredentials
             }
-        }
-        catch KeychainStoreError.itemNotFound {
+        } catch KeychainStoreError.itemNotFound {
             logInfo("No existing session found.", environment: environment)
-        }
-        catch {
+        } catch {
             logError("Error when loading amplify credentials: \(error)", environment: environment)
         }
 

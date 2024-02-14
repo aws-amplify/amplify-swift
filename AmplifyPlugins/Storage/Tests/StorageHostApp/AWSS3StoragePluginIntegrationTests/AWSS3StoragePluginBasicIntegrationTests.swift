@@ -61,7 +61,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully
     func testUploadData() async throws {
         let key = UUID().uuidString
-        let data = key.data(using: .utf8)!
+        let data = Data(key.utf8)
 
         _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
@@ -79,7 +79,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully
     func testUploadEmptyData() async throws {
         let key = UUID().uuidString
-        let data = "".data(using: .utf8)!
+        let data = Data("".utf8)
         _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
 
@@ -95,7 +95,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
 
         let fileURL = URL(fileURLWithPath: filePath)
-        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+        FileManager.default.createFile(atPath: filePath, contents: Data(key.utf8), attributes: nil)
 
         _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
@@ -115,7 +115,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
-        FileManager.default.createFile(atPath: filePath, contents: "".data(using: .utf8), attributes: nil)
+        FileManager.default.createFile(atPath: filePath, contents: Data("".utf8), attributes: nil)
 
         _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         _ = try await Amplify.Storage.remove(key: key)
@@ -173,7 +173,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with the data retrieved
     func testDownloadDataToMemory() async throws {
         let key = UUID().uuidString
-        try await uploadData(key: key, data: key.data(using: .utf8)!)
+        try await uploadData(key: key, data: Data(key.utf8))
         _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
         _ = try await Amplify.Storage.remove(key: key)
     }
@@ -184,7 +184,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testDownloadFile() async throws {
         let key = UUID().uuidString
         let timestamp = String(Date().timeIntervalSince1970)
-        let timestampData = timestamp.data(using: .utf8)!
+        let timestampData = Data(timestamp.utf8)
         try await uploadData(key: key, data: timestampData)
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)

@@ -17,7 +17,7 @@ struct LogEntryCodec {
         case invalidScheme(log: URL)
         case invalidEncoding(log: URL)
     }
-    
+
     func encode(entry: LogEntry) throws -> Data {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .millisecondsSince1970
@@ -26,21 +26,19 @@ struct LogEntryCodec {
         data.append(Self.lineDelimiter)
         return data
     }
-    
+
     func decode(data: Data) throws -> LogEntry {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
         return try decoder.decode(LogEntry.self, from: data)
     }
-    
+
     func decode(string: String) throws -> LogEntry? {
         let trimmed = string.trim()
-        guard let data = trimmed.data(using: .utf8) else {
-            throw DecodingError.stringNotUtf8(string)
-        }
+        let data = Data(trimmed.utf8)
         return try decode(data: data)
     }
-    
+
     func decode(from fileURL: URL) throws -> [LogEntry] {
         guard fileURL.isFileURL else {
             throw DecodingError.invalidScheme(log: fileURL)

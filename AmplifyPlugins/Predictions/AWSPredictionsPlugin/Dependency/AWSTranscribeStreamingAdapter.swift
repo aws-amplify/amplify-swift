@@ -113,7 +113,6 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
             webSocket.send(message: .data(endFrame), onError: { _ in })
         }
 
-
         let stream = AsyncThrowingStream<TranscribeStreamingClientTypes.TranscriptEvent, Error> { continuation in
             Task {
                 webSocket.onMessageReceived { result in

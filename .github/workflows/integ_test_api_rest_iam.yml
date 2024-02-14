@@ -39,7 +39,6 @@ jobs:
       scheme: ${{ matrix.platform == 'watchOS' && 'AWSAPIPluginRESTIAMTestsWatch' || 'AWSAPIPluginRESTIAMTests' }}
       platform: ${{ matrix.platform }}
       project_path: ./AmplifyPlugins/API/Tests/APIHostApp
-      xcode_version: '14.3'
       resource_subfolder: api
       timeout-minutes: 45
     secrets: inherit

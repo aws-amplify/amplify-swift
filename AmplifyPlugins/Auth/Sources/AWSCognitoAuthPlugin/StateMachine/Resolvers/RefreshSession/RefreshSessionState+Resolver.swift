@@ -14,6 +14,7 @@ extension RefreshSessionState {
 
         var defaultState: RefreshSessionState = .notStarted
 
+        // swiftlint:disable:next cyclomatic_complexity
         func resolve(oldState: RefreshSessionState,
                      byApplying event: StateMachineEvent) -> StateResolution<RefreshSessionState> {
 
@@ -22,33 +23,19 @@ extension RefreshSessionState {
             case .notStarted:
 
                 if case .refreshCognitoUserPool(let signedInData) = event.isRefreshSessionEvent {
-                    if case .hostedUI = signedInData.signInMethod {
-                        let action = RefreshHostedUITokens(existingSignedIndata: signedInData)
-                        return .init(newState: .refreshingUserPoolToken(signedInData),
-                                     actions: [action])
-                    } else {
-                        let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
-                        return .init(newState: .refreshingUserPoolToken(signedInData),
-                                     actions: [action])
-                    }
+                    let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
+                    return .init(newState: .refreshingUserPoolToken(signedInData),
+                                 actions: [action])
                 }
 
                 if case .refreshCognitoUserPoolWithIdentityId(
                     let signedInData,
                     let identityID) = event.isRefreshSessionEvent {
 
-                    if case .hostedUI = signedInData.signInMethod {
-                        let action = RefreshHostedUITokens(existingSignedIndata: signedInData)
-                        return .init(
-                            newState: .refreshingUserPoolTokenWithIdentity(signedInData,
-                                                                           identityID),
-                            actions: [action])
-                    } else {
-                        let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
-                        return .init(newState:
-                                .refreshingUserPoolTokenWithIdentity(signedInData, identityID),
-                                     actions: [action])
-                    }
+                    let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
+                    return .init(newState:
+                            .refreshingUserPoolTokenWithIdentity(signedInData, identityID),
+                                 actions: [action])
 
                 }
                 if case .refreshUnAuthAWSCredentials(let identityID) = event.isRefreshSessionEvent {

@@ -10,7 +10,7 @@ import Foundation
 
 /// Input for updating the MFA preference for a MFA Type
 public enum MFAPreference {
-    
+
     // enabled: false
     case disabled
 

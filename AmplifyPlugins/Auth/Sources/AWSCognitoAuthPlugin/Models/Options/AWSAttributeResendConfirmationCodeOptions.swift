@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(*, deprecated, renamed: "AWSSendUserAttributeVerificationCodeOptions")
 public struct AWSAttributeResendConfirmationCodeOptions {
 
     /// A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.

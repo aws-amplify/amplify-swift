@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Foundation
 
 extension Result {
+    // swiftlint:disable:next identifier_name
     func flatMapAsync<NewSuccess>(_ f: (Success) async -> Result<NewSuccess, Failure>) async -> Result<NewSuccess, Failure> {
         switch self {
         case .success(let value):

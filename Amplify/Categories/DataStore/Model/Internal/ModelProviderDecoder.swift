@@ -29,6 +29,17 @@ extension ModelProviderRegistry {
     }
 }
 
+/// Extension to hold the decoder sources
+public extension ModelProviderRegistry {
+
+    /// Static decoder sources that will be referenced to initialize different type of decoders having source as
+    /// a metadata. 
+    struct DecoderSource {
+        public static let dataStore = "DataStore"
+        public static let appSync = "AppSync"
+    }
+}
+
 /// `ModelProviderDecoder` provides decoding and lazy reference functionality.
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used

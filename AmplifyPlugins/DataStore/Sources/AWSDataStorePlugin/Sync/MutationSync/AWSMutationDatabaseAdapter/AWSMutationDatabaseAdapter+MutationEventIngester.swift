@@ -13,15 +13,15 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
     /// Accepts a mutation event without a version, applies the latest version from the MutationSyncMetadata table,
     /// writes the updated mutation event to the local database, then submits it to `mutationEventSubject`
-    func submit(mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
+    func submit(mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
         Task {
             log.verbose("\(#function): \(mutationEvent)")
-            
+
             guard let storageAdapter = self.storageAdapter else {
                 completion(.failure(DataStoreError.nilStorageAdapter()))
                 return
             }
-            
+
             self.resolveConflictsThenSave(mutationEvent: mutationEvent,
                                           storageAdapter: storageAdapter,
                                           completion: completion)
@@ -32,22 +32,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     /// rejects the event with an error
     func resolveConflictsThenSave(mutationEvent: MutationEvent,
                                   storageAdapter: StorageEngineAdapter,
-                                  completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
-
-        // We don't want to query MutationSync<AnyModel> because a) we already have the model, and b) delete mutations
-        // are submitted *after* the delete has already been applied to the local data store, meaning there is no model
-        // to query.
-        var mutationEvent = mutationEvent
-        do {
-            // TODO: Refactor this so that it's clear that the storage engine is not responsible for setting the version
-            // perhaps as simple as renaming to `submit(unversionedMutationEvent:)` or similar
-            let syncMetadata = try storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId,
-                                                                               modelName: mutationEvent.modelName)
-            mutationEvent.version = syncMetadata?.version
-        } catch {
-            completion(.failure(DataStoreError(error: error)))
-        }
-
+                                  completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
         MutationEvent.pendingMutationEvents(
             forMutationEvent: mutationEvent,
             storageAdapter: storageAdapter) { result in
@@ -207,8 +192,6 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             updatedMutationType = originalEvent.mutationType
         }
         resolvedEvent.mutationType = updatedMutationType
-
-        resolvedEvent.version = candidate.version
 
         return resolvedEvent
     }

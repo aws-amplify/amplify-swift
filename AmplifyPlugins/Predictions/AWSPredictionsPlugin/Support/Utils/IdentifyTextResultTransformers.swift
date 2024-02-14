@@ -26,7 +26,7 @@ enum IdentifyTextResultTransformers {
 
             guard let polygon = IdentifyResultTransformers.processPolygon(rekognitionTextBlock.geometry?.polygon)
             else { continue }
-            
+
             let word = Predictions.IdentifiedWord(
                 text: detectedText,
                 boundingBox: boundingBox,

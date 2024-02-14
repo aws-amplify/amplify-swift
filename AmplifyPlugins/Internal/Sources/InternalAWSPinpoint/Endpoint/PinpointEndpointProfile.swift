@@ -10,7 +10,7 @@ import AWSPinpoint
 import Foundation
 
 @_spi(InternalAWSPinpoint)
-public class PinpointEndpointProfile: Codable {
+public struct PinpointEndpointProfile: Codable, Equatable {
     typealias DeviceToken = String
 
     var applicationId: String
@@ -45,11 +45,11 @@ public class PinpointEndpointProfile: Codable {
         self.user = user
     }
 
-    public func addUserId(_ userId: String) {
+    public mutating func addUserId(_ userId: String) {
         user.userId = userId
     }
 
-    public func addUserProfile(_ userProfile: UserProfile) {
+    public mutating func addUserProfile(_ userProfile: UserProfile) {
         if let email = userProfile.email {
             setCustomProperty(email, forKey: Constants.AttributeKeys.email)
         }
@@ -75,18 +75,18 @@ public class PinpointEndpointProfile: Codable {
         }
     }
 
-    public func setAPNsToken(_ apnsToken: Data) {
+    public mutating func setAPNsToken(_ apnsToken: Data) {
         deviceToken = apnsToken.asHexString()
     }
 
-    private func addCustomProperties(_ properties: [String: UserProfilePropertyValue]?) {
+    private mutating func addCustomProperties(_ properties: [String: UserProfilePropertyValue]?) {
         guard let properties = properties else { return }
         for (key, value) in properties {
             setCustomProperty(value, forKey: key)
         }
     }
 
-    private func addUserAttributes(_ attributes: [String: [String]]?) {
+    private mutating func addUserAttributes(_ attributes: [String: [String]]?) {
         guard let attributes = attributes else { return }
         let userAttributes = user.userAttributes ?? [:]
         user.userAttributes = userAttributes.merging(
@@ -95,7 +95,7 @@ public class PinpointEndpointProfile: Codable {
         )
     }
 
-    private func setCustomProperty(_ value: UserProfilePropertyValue,
+    private mutating func setCustomProperty(_ value: UserProfilePropertyValue,
                                    forKey key: String) {
         if let value = value as? String {
             attributes[key] = [value]

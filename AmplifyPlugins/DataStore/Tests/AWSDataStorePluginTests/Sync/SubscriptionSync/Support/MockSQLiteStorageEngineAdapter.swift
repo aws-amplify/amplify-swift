@@ -301,6 +301,8 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     }
 
+    var syncsFromRemote: Bool { true }
+
     var mockSyncEnginePublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>!
     var mockSyncEngineSubscription: AnyCancellable! {
         willSet {

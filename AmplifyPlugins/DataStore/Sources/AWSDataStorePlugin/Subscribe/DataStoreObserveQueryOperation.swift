@@ -17,9 +17,9 @@ protocol DataStoreObserveQueryOperation {
 
 class ObserveQueryRequest: AmplifyOperationRequest {
     var options: Any
-    
+
     typealias Options = Any
-    
+
     init(options: Any) {
         self.options = options
     }
@@ -44,11 +44,11 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     typealias InProcess = DataStoreQuerySnapshot<M>
     var request: ObserveQueryRequest
     var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
-    
+
     private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
                                             target: DispatchQueue.global())
     private let itemsChangedPeriodicPublishTimeInSeconds: DispatchQueue.SchedulerTimeType.Stride = 2
-    
+
     let modelType: M.Type
     let modelSchema: ModelSchema
     let predicate: QueryPredicate?
@@ -64,16 +64,16 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
     var modelSyncedEventSink: AnyCancellable?
-    
+
     var currentSnapshot: DataStoreQuerySnapshot<M> {
         DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: dispatchedModelSyncedEvent.get())
     }
-    
+
     private var running = false
-    
+
     var dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>
     var dataStoreStateSink: AnyCancellable?
-    
+
     init(request: ObserveQueryRequest = .init(options: []),
          context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
          modelType: M.Type,
@@ -87,7 +87,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
          dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>) {
         self.request = request
         self.context = context
-        
+
         self.modelType = modelType
         self.modelSchema = modelSchema
         self.predicate = predicate
@@ -99,22 +99,22 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
         self.stopwatch = Stopwatch()
         self.observeQueryStarted = false
         self.currentItems = SortedList(sortInput: sortInput, modelSchema: modelSchema)
-    
+
         self.dataStoreStatePublisher = dataStoreStatePublisher
     }
-    
+
     func run() async throws {
         guard !running else { return }
         running = true
-        
+
         subscribeToDataStoreState()
         startObserveQuery()
     }
-    
+
     func subscribeToDataStoreState() {
         serialQueue.async { [weak self] in
             guard let self = self else { return }
-            
+
             self.dataStoreStateSink = self.dataStoreStatePublisher.sink { completion in
                 switch completion {
                 case .finished:
@@ -133,17 +133,17 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
 
         }
     }
-    
+
     public func cancel() {
         serialQueue.sync {
             if let itemsChangedSink = itemsChangedSink {
                 itemsChangedSink.cancel()
             }
-            
+
             if let batchItemsChangedSink = batchItemsChangedSink {
                 batchItemsChangedSink.cancel()
             }
-            
+
             if let modelSyncedEventSink = modelSyncedEventSink {
                 modelSyncedEventSink.cancel()
             }
@@ -222,15 +222,29 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     func subscribeToItemChanges() {
         serialQueue.async { [weak self] in
             guard let self = self else { return }
+
             self.batchItemsChangedSink = self.dataStorePublisher.publisher
                 .filter { _ in !self.dispatchedModelSyncedEvent.get() }
                 .filter(self.filterByModelName(mutationEvent:))
                 .filter(self.filterByPredicateMatch(mutationEvent:))
                 .handleEvents(receiveOutput: self.onItemChangeDuringSync(mutationEvent:) )
-                .collect(.byTimeOrCount(self.serialQueue, self.itemsChangedPeriodicPublishTimeInSeconds, self.itemsChangedMaxSize))
+                .collect(
+                    .byTimeOrCount(
+                        // on queue
+                        self.serialQueue,
+                        // collect over this timeframe
+                        self.itemsChangedPeriodicPublishTimeInSeconds,
+                        // If the `storageEngine` does sync from remote, the initial batch should
+                        // collect snapshots based on time / snapshots received.
+                        // If it doesn't, it should publish each snapshot without waiting.
+                        self.storageEngine.syncsFromRemote
+                        ? self.itemsChangedMaxSize
+                        : 1
+                    )
+                )
                 .sink(receiveCompletion: self.onReceiveCompletion(completed:),
                       receiveValue: self.onItemsChangeDuringSync(mutationEvents:))
-            
+
             self.itemsChangedSink = self.dataStorePublisher.publisher
                 .filter { _ in self.dispatchedModelSyncedEvent.get() }
                 .filter(self.filterByModelName(mutationEvent:))

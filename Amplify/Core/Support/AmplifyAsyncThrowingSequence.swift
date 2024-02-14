@@ -13,7 +13,7 @@ public class AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Can
     public typealias Iterator = AsyncThrowingStream<Element, Error>.Iterator
     private var asyncStream: AsyncThrowingStream<Element, Error>! = nil
     private var continuation: AsyncThrowingStream<Element, Error>.Continuation! = nil
-    private var parent: Cancellable? = nil
+    private var parent: Cancellable?
 
     public private(set) var isCancelled: Bool = false
 

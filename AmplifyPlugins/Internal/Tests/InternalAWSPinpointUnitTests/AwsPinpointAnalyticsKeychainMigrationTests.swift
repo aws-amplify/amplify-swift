@@ -33,7 +33,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
 
     func testDeviceTokenMigrateFromUserDefaultsToKeychain() {
         let deviceToken = "000102030405060708090a0b0c0d0e0f"
-        let deviceTokenData = deviceToken.data(using: .utf8)
+        let deviceTokenData = Data(deviceToken.utf8)
         userDefaults.setValue(deviceTokenData, forKey: EndpointClient.Constants.deviceTokenKey)
         
         var currentKeychainDeviceToken = try? self.keychain._getData(EndpointClient.Constants.deviceTokenKey)

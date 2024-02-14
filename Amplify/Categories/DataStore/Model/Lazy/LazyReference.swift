@@ -13,7 +13,7 @@ import Combine
 public struct LazyReferenceIdentifier: Codable {
     public let name: String
     public let value: String
-    
+
     public init(name: String, value: String) {
         self.name = name
         self.value = value
@@ -34,21 +34,22 @@ struct LazyReferenceModelIdentifier: ModelIdentifierProtocol {
     var fields: [(name: String, value: Persistable)]
 }
 
+// swiftlint: disable identifier_name
 /// This class represents a lazy reference to a `Model`, meaning that the reference
 /// may or may not exist at instantiation time.
 ///
 /// The default implementation `DefaultModelProvider` only handles in-memory data, therefore `get()` and
 /// `require()` will simply return the current `reference`.
 public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
-    
+
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {
         case notLoaded(identifiers: [LazyReferenceIdentifier]?)
         case loaded(ModelType?)
     }
-    
+
     var loadedState: LoadedState
-    
+
     @_spi(LazyReference)
     public var _state: _LazyReferenceValueState {
         switch loadedState {
@@ -58,10 +59,10 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
             return .loaded(model: model)
         }
     }
-    
+
     /// The provider for fulfilling list behaviors
     let modelProvider: AnyModelProvider<ModelType>
-    
+
     public init(modelProvider: AnyModelProvider<ModelType>) {
         self.modelProvider = modelProvider
         switch self.modelProvider.getState() {
@@ -71,21 +72,21 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
             self.loadedState = .notLoaded(identifiers: identifiers)
         }
     }
-    
+
     // MARK: - Initializers
-    
+
     public convenience init(_ reference: ModelType?) {
         let modelProvider = DefaultModelProvider(element: reference).eraseToAnyModelProvider()
         self.init(modelProvider: modelProvider)
     }
-    
+
     public convenience init(identifiers: [LazyReferenceIdentifier]?) {
         let modelProvider = DefaultModelProvider<ModelType>(identifiers: identifiers).eraseToAnyModelProvider()
         self.init(modelProvider: modelProvider)
     }
-    
+
     // MARK: - Codable implementation
-    
+
     /// Decodable implementation is delegated to the ModelProviders.
     required convenience public init(from decoder: Decoder) throws {
         for modelDecoder in ModelProviderRegistry.decoders.get() {
@@ -100,8 +101,7 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
             if let element = try? ModelType(from: decoder) {
                 self.init(element)
                 return
-            }
-            else {
+            } else {
                 let identifiers = try ModelType.schema.lazyReferenceIdentifiers(from: object)
                 self.init(identifiers: identifiers)
                 return
@@ -111,14 +111,14 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
         }
         self.init(identifiers: nil)
     }
-    
+
     /// Encodable implementation is delegated to the underlying ModelProviders.
     public func encode(to encoder: Encoder) throws {
         try modelProvider.encode(to: encoder)
     }
-    
+
     // MARK: - APIs
-    
+
     /// This function is responsible for retrieving the model reference. In the default
     /// implementation this means simply returning the existing `reference`, but different
     /// storage mechanisms can implement their own logic to fetch data,
@@ -135,7 +135,7 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
             return element
         }
     }
-    
+
     /// The equivalent of `get()` but aimed to retrieve references that are considered
     /// non-optional. However, referential integrity issues and/or availability constraints
     /// might affect how required data is fetched. In such scenarios the implementation

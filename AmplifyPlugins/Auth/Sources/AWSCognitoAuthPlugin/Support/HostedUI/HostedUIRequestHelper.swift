@@ -115,40 +115,10 @@ struct HostedUIRequestHelper {
 
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        urlRequest.httpBody = body.data(using: .utf8)
+        urlRequest.httpBody = Data(body.utf8)
         urlRequest.addHeaders(using: configuration)
         return urlRequest
     }
-
-    static func createRefreshTokenRequest(
-        refreshToken: String,
-        configuration: HostedUIConfigurationData) throws -> URLRequest {
-
-            var components = URLComponents()
-            components.scheme = "https"
-            components.path = "/oauth2/token"
-            components.host = configuration.oauth.domain
-
-            guard let url = components.url else {
-                throw HostedUIError.tokenURI
-            }
-
-            var queryComponents = URLComponents()
-            queryComponents.queryItems = [
-                .init(name: "grant_type", value: "refresh_token"),
-                .init(name: "refresh_token", value: refreshToken),
-                .init(name: "client_id", value: configuration.clientId)]
-
-            guard let body = queryComponents.query else {
-                throw HostedUIError.tokenURI
-            }
-
-            var urlRequest = URLRequest(url: url)
-            urlRequest.httpMethod = "POST"
-            urlRequest.httpBody = body.data(using: .utf8)
-            urlRequest.addHeaders(using: configuration)
-            return urlRequest
-        }
 
     static func urlSafeBase64(_ content: String) -> String {
         return content.replacingOccurrences(of: "/", with: "_")
@@ -159,11 +129,10 @@ struct HostedUIRequestHelper {
 
 private extension URLRequest {
     mutating func addHeaders(using configuration: HostedUIConfigurationData) {
-        guard let clientSecret = configuration.clientSecret,
-              let value = "\(configuration.clientId):\(clientSecret)".data(using: .utf8) else {
+        guard let clientSecret = configuration.clientSecret else {
             return
         }
-
+        let value = Data("\(configuration.clientId):\(clientSecret)".utf8)
         setValue("Basic \(value.base64EncodedString())", forHTTPHeaderField: "Authorization")
     }
 }

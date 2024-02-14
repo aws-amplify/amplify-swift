@@ -133,7 +133,12 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
             guard let eTag = task.eTag else {
                 let message = "Completed upload part does not include header value for ETAG: [\(partNumber), \(uploadId)]"
                 logURLSessionActivity(message, warning: true)
-                multipartUploadSession.handle(uploadPartEvent: .failed(partNumber: partNumber, error: StorageError.unknown("Upload for part number does not include value for eTag", nil)))
+                multipartUploadSession.handle(
+                    uploadPartEvent: .failed(
+                        partNumber: partNumber,
+                        error: StorageError.unknown("Upload for part number does not include value for eTag", nil)
+                    )
+                )
                 return
             }
 
@@ -153,7 +158,11 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        logURLSessionActivity("Session task update: [bytesSent: \(bytesSent)], [totalBytesSent: \(totalBytesSent)], [totalBytesExpectedToSend: \(totalBytesExpectedToSend)]")
+        logURLSessionActivity(
+            """
+            Session task update: [bytesSent: \(bytesSent)], [totalBytesSent: \(totalBytesSent)], [totalBytesExpectedToSend: \(totalBytesExpectedToSend)]
+            """
+        )
 
         guard let storageService = storageService,
               let transferTask = findTransferTask(for: task.taskIdentifier) else { return }
@@ -165,7 +174,13 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
                 return
             }
 
-            multipartUploadSession.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: Int(bytesSent), taskIdentifier: task.taskIdentifier))
+            multipartUploadSession.handle(
+                uploadPartEvent: .progressUpdated(
+                    partNumber: partNumber,
+                    bytesTransferred: UInt64(bytesSent),
+                    taskIdentifier: task.taskIdentifier
+                )
+            )
         case .upload(let onEvent):
             let progress = Progress(totalUnitCount: totalBytesExpectedToSend)
             progress.completedUnitCount = totalBytesSent
@@ -183,7 +198,12 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        logURLSessionActivity("Session download task [\(downloadTask.taskIdentifier)] did write [\(bytesWritten)], [totalBytesWritten \(totalBytesWritten)], [totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)]")
+        logURLSessionActivity(
+            """
+            Session download task [\(downloadTask.taskIdentifier)] did write [\(bytesWritten)],
+            [totalBytesWritten \(totalBytesWritten)], [totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)]
+            """
+        )
 
         guard let transferTask = findTransferTask(for: downloadTask.taskIdentifier) else { return }
 

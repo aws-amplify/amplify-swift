@@ -10,27 +10,29 @@ import Amplify
 import AWSPluginsCore
 
 public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
-   
+
     let apiName: String?
-    
+    let source: String
     var loadedState: ModelProviderState<ModelType>
-    
+
     // Creates a "not loaded" provider
     init(metadata: AppSyncModelDecoder.Metadata) {
         self.loadedState = .notLoaded(identifiers: metadata.identifiers)
         self.apiName = metadata.apiName
+        self.source = metadata.source
     }
-    
+
     // Creates a "loaded" provider
     init(model: ModelType?) {
         self.loadedState = .loaded(model: model)
         self.apiName = nil
+        self.source = ModelProviderRegistry.DecoderSource.appSync
     }
-    
+
     // MARK: - APIs
-    
+
     public func load() async throws -> ModelType? {
-        
+
         switch loadedState {
         case .notLoaded(let identifiers):
             guard let identifiers = identifiers else {
@@ -54,16 +56,20 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
             return element
         }
     }
-    
+
     public func getState() -> ModelProviderState<ModelType> {
         loadedState
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded(let identifiers):
-            var container = encoder.singleValueContainer()
-            try container.encode(identifiers)
+            let metadata = AppSyncModelDecoder.Metadata(
+                identifiers: identifiers ?? [],
+                apiName: apiName,
+                source: source)
+            try metadata.encode(to: encoder)
+
         case .loaded(let element):
             try element.encode(to: encoder)
         }

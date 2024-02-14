@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthForgetDeviceTask: AuthForgetDeviceTask {
+class AWSAuthForgetDeviceTask: AuthForgetDeviceTask, DefaultLogger {
 
     private let request: AuthForgetDeviceRequest
     private let authStateMachine: AuthStateMachine

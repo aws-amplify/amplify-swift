@@ -56,7 +56,7 @@ extension MutationEvent {
             completion: completion
         )
     }
-    
+
     private static func pendingMutationEvents(for modelIds: [(String, String)],
                                       storageAdapter: StorageEngineAdapter,
                                       completion: @escaping DataStoreCallback<[MutationEvent]>) {
@@ -74,7 +74,7 @@ extension MutationEvent {
                 let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
                 let final = QueryPredicateGroup(type: .and, predicates: [groupedQueryPredicates, predicate])
                 let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
-                
+
                 do {
                     let mutationEvents = try await withCheckedThrowingContinuation { continuation in
                         storageAdapter.query(MutationEvent.self,
@@ -85,7 +85,7 @@ extension MutationEvent {
                             continuation.resume(with: result)
                         }
                     }
-                    
+
                     queriedMutationEvents.append(contentsOf: mutationEvents)
                 } catch {
                     completion(.failure(causedBy: error))

@@ -164,7 +164,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
             allMessages.joined(separator: "\n"),
             underlyingError
         )
-        
+
         return .failure(syncError)
     }
 
@@ -215,7 +215,7 @@ extension AWSInitialSyncOrchestrator {
               else {
             return false
         }
-        
+
         // The following check is to categorize the error as an unauthorized error when the process fails to retrieve
         // the authorization token. This is taken directly from `AuthTokenURLRequestInterceptor`'s error handling path
         // that returns an APIError.operationError with an underlying AuthError.
@@ -246,7 +246,7 @@ extension AWSInitialSyncOrchestrator {
            case .unauthorized = AppSyncErrorType(errorTypeValue) {
             return true
         }
-        
+
         // Check is API error is of unauthorized type
         if case let .api(amplifyError, _) = datastoreError,
             let apiError = amplifyError as? APIError {
@@ -255,13 +255,13 @@ extension AWSInitialSyncOrchestrator {
                                       options: .caseInsensitive) != nil {
                 return true
             }
-            
+
             if case .httpStatusError(let statusCode, _) = apiError,
-               (statusCode == 401 || statusCode == 403) {
+               statusCode == 401 || statusCode == 403 {
                 return true
             }
         }
-        
+
         return false
     }
 

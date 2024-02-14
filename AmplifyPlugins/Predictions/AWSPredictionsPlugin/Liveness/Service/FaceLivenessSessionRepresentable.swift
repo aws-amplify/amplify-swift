@@ -28,4 +28,3 @@ public protocol LivenessService {
 
     func closeSocket(with code: URLSessionWebSocketTask.CloseCode)
 }
-

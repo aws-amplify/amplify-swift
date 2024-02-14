@@ -19,13 +19,13 @@ public struct AppSyncListDecoder: ModelListDecoder {
         let appSyncAssociatedFields: [String]
         let apiName: String?
     }
-    
+
     /// Used by the custom decoder implemented in the `List` type to detect if the payload can be
     /// decoded to an AppSyncListProvider.
     public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
         self.shouldDecodeToAppSyncListProvider(modelType: modelType, decoder: decoder)?.eraseToAnyModelListProvider()
     }
-    
+
     static func shouldDecodeToAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AppSyncListProvider<ModelType>? {
         if let listPayload = try? AppSyncListPayload.init(from: decoder) {
             log.verbose("Creating loaded list of \(modelType.modelName)")

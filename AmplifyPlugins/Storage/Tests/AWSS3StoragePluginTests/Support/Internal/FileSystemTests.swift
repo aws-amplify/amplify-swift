@@ -18,7 +18,7 @@ extension FileSystem {
     /// - Parameter bytes: bytes
     /// - Returns: random data
     func randomData(bytes: Bytes) -> Data {
-        let count = bytes.bytes
+        let count = Int(bytes.bytes)
         var bytes = [Int8](repeating: 0, count: count)
         // Fill bytes with secure random data
         let status = SecRandomCopyBytes(
@@ -166,15 +166,12 @@ class FileSystemTests: XCTestCase {
 
         let fs = FileSystem()
 
-        guard let data = string.data(using: .utf8) else {
-            XCTFail("Failed to create data for file")
-            return
-        }
+        let data = Data(string.utf8)
         let fileURL = try fs.createTemporaryFile(data: data)
         defer {
             fs.removeFileIfExists(fileURL: fileURL)
         }
-        var offset = 0
+        var offset: UInt64 = 0
         var step: ((Int) -> Void)?
         let queue = DispatchQueue(label: "done-count-queue")
 
@@ -190,7 +187,7 @@ class FileSystemTests: XCTestCase {
             let part = parts[index]
 
             print("Creating partial file [\(index)]")
-            fs.createPartialFile(fileURL: fileURL, offset: offset, length: part.count) { result in
+            fs.createPartialFile(fileURL: fileURL, offset: offset, length: UInt64(part.count)) { result in
                 do {
                     let partFileURL = try result.get()
                     let fileContents = try String(contentsOf: partFileURL)
@@ -210,7 +207,7 @@ class FileSystemTests: XCTestCase {
                     XCTFail("Failed to create partial file: \(error)")
                 }
             }
-            offset += part.count
+            offset += UInt64(part.count)
             step?(index + 1)
         }
 

@@ -20,7 +20,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?
 
     override func setUp() {
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)
@@ -49,7 +49,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         let anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                    modelName: Post.modelName,
                                                    deleted: false,
-                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                    version: 1)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
@@ -129,7 +129,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         let anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                    modelName: "",
                                                    deleted: false,
-                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                    version: 1)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
@@ -202,7 +202,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         let anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                    modelName: Post.modelName,
                                                    deleted: false,
-                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                    version: 1)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)

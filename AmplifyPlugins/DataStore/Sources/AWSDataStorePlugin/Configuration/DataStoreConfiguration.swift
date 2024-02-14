@@ -70,6 +70,27 @@ public struct DataStoreConfiguration {
     /// Authorization mode strategy
     public var authModeStrategyType: AuthModeStrategyType
 
+    public let disableSubscriptions: () -> Bool
+
+    #if os(watchOS)
+    init(errorHandler: @escaping DataStoreErrorHandler,
+         conflictHandler: @escaping DataStoreConflictHandler,
+         syncInterval: TimeInterval,
+         syncMaxRecords: UInt,
+         syncPageSize: UInt,
+         syncExpressions: [DataStoreSyncExpression],
+         authModeStrategy: AuthModeStrategyType = .default,
+         disableSubscriptions: @escaping () -> Bool) {
+        self.errorHandler = errorHandler
+        self.conflictHandler = conflictHandler
+        self.syncInterval = syncInterval
+        self.syncMaxRecords = syncMaxRecords
+        self.syncPageSize = syncPageSize
+        self.syncExpressions = syncExpressions
+        self.authModeStrategyType = authModeStrategy
+        self.disableSubscriptions = disableSubscriptions
+    }
+    #else
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
          syncInterval: TimeInterval,
@@ -84,6 +105,7 @@ public struct DataStoreConfiguration {
         self.syncPageSize = syncPageSize
         self.syncExpressions = syncExpressions
         self.authModeStrategyType = authModeStrategy
+        self.disableSubscriptions = { false }
     }
-
+    #endif
 }

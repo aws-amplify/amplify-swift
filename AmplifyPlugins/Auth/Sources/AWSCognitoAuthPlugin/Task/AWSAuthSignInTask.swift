@@ -31,7 +31,7 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
     func execute() async throws -> AuthSignInResult {
         log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
-        //Check if we have a user pool configuration
+        // Check if we have a user pool configuration
         guard let userPoolConfiguration = authConfiguration.getUserPoolConfiguration() else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthError.configuration(
@@ -169,13 +169,5 @@ class AWSAuthSignInTask: AuthSignInTask, DefaultLogger {
         )
 
         return clientMetadata
-    }
-    
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-    
-    public var log: Logger {
-        Self.log
     }
 }

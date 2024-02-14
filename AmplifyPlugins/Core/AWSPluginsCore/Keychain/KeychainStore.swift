@@ -8,6 +8,7 @@
 import Foundation
 import Security
 
+// swiftlint:disable identifier_name
 public protocol KeychainStoreBehavior {
 
     @_spi(KeychainStore)
@@ -16,14 +17,14 @@ public protocol KeychainStoreBehavior {
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A string value
     func _getString(_ key: String) throws -> String
-    
+
     @_spi(KeychainStore)
     /// Get a data value from the Keychain based on the key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key use to look up the value in the Keychain
     /// - Returns: A data value
     func _getData(_ key: String) throws -> Data
-    
+
     @_spi(KeychainStore)
     /// Set a key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
@@ -31,7 +32,7 @@ public protocol KeychainStoreBehavior {
     ///   - value: A string value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
     func _set(_ value: String, key: String) throws
-    
+
     @_spi(KeychainStore)
     /// Set a key-value pair in the Keychain.
     /// This iSystem Programming Interface (SPI) may have breaking changes in future updates.
@@ -39,13 +40,13 @@ public protocol KeychainStoreBehavior {
     ///   - value: A data value to store in Keychain
     ///   - key: A String key for the value to store in the Keychain
     func _set(_ value: Data, key: String) throws
-    
+
     @_spi(KeychainStore)
     /// Remove key-value pair from Keychain based on the provided key.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     /// - Parameter key: A String key to delete the key-value pair
     func _remove(_ key: String) throws
-    
+
     @_spi(KeychainStore)
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
@@ -187,7 +188,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             throw KeychainStoreError.securityError(status)
         }
     }
-    
+
     @_spi(KeychainStore)
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
@@ -219,7 +220,7 @@ extension KeychainStore {
         static let AttributeLabel = String(kSecAttrLabel)
         static let AttributeComment = String(kSecAttrComment)
         static let AttributeAccessible = String(kSecAttrAccessible)
-        
+
         /** Attribute Accessible Constants */
         static let AttributeAccessibleAfterFirstUnlockThisDeviceOnly = String(kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly)
 
@@ -234,8 +235,9 @@ extension KeychainStore {
 
         /** Value Type Key Constants */
         static let ValueData = String(kSecValueData)
-        
+
         /** Indicates whether to treat macOS keychain items like iOS keychain items without setting kSecAttrSynchronizable */
         static let UseDataProtectionKeyChain = String(kSecUseDataProtectionKeychain)
     }
 }
+// swiftlint:enable identifier_name

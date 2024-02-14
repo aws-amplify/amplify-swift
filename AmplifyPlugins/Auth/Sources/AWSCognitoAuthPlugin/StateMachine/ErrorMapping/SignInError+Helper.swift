@@ -25,7 +25,7 @@ extension SignInError {
         switch self {
         case .service(error: let serviceError):
             return serviceError is AWSCognitoIdentityProvider.PasswordResetRequiredException
-        default: 
+        default:
             return false
         }
     }

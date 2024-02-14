@@ -22,3 +22,12 @@ struct AlterTableStatement: SQLStatement {
         self.modelSchema = toModelSchema
     }
 }
+
+struct AlterTableAddColumnStatement: SQLStatement {
+    var modelSchema: ModelSchema
+    var field: ModelField
+
+    var stringValue: String {
+        "ALTER TABLE \"\(modelSchema.name)\" ADD COLUMN \"\(field.sqlName)\" \"\(field.sqlType)\";"
+    }
+}

@@ -69,20 +69,12 @@ class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
     #else
         presentationAnchor = nil
     #endif
-        
+
         let signOutData = SignOutEventData(
             globalSignOut: request.options.globalSignOut,
             presentationAnchor: presentationAnchor
         )
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
         await authStateMachine.send(event)
-    }
-    
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-    
-    public var log: Logger {
-        Self.log
     }
 }

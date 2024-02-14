@@ -22,7 +22,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?
-    
+
     var dataStoreStateSubject = PassthroughSubject<DataStoreState, DataStoreError>()
 
     var dispatchedModelSyncedEvents: [ModelName: AtomicValue<Bool>]
@@ -55,7 +55,37 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    /// No-argument init that uses defaults for all providers
+    #if os(watchOS)
+    /// Initializer
+    /// - Parameters:
+    ///   - modelRegistration: Register DataStore models.
+    ///   - dataStoreConfiguration: Configuration object for DataStore
+    public init(modelRegistration: AmplifyModelRegistration,
+                configuration dataStoreConfiguration: DataStoreConfiguration) {
+        self.modelRegistration = modelRegistration
+        self.configuration = InternalDatastoreConfiguration(
+            isSyncEnabled: false,
+            validAPIPluginKey: "awsAPIPlugin",
+            validAuthPluginKey: "awsCognitoAuthPlugin",
+            pluginConfiguration: dataStoreConfiguration)
+
+        self.storageEngineBehaviorFactory =
+        StorageEngine.init(
+            isSyncEnabled:
+                dataStoreConfiguration:
+                validAPIPluginKey:
+                validAuthPluginKey:
+                modelRegistryVersion:
+                userDefault:
+        )
+        self.dataStorePublisher = DataStorePublisher()
+        self.dispatchedModelSyncedEvents = [:]
+    }
+    #else
+    /// Initializer
+    /// - Parameters:
+    ///   - modelRegistration: Register DataStore models.
+    ///   - dataStoreConfiguration: Configuration object for DataStore
     public init(modelRegistration: AmplifyModelRegistration,
                 configuration dataStoreConfiguration: DataStoreConfiguration = .default) {
         self.modelRegistration = modelRegistration
@@ -77,10 +107,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dataStorePublisher = DataStorePublisher()
         self.dispatchedModelSyncedEvents = [:]
     }
+    #endif
 
     /// Internal initializer for testing
     init(modelRegistration: AmplifyModelRegistration,
-         configuration dataStoreConfiguration: DataStoreConfiguration = .default,
+         configuration dataStoreConfiguration: DataStoreConfiguration = .testDefault(),
          storageEngineBehaviorFactory: StorageEngineBehaviorFactory? = nil,
          dataStorePublisher: ModelSubcriptionBehavior,
          operationQueue: OperationQueue = OperationQueue(),
@@ -111,7 +142,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// them to `StorageEngine.setUp(modelSchemas:)`
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
-        
+
         for modelSchema in ModelRegistry.modelSchemas {
             dispatchedModelSyncedEvents[modelSchema.name] = AtomicValue(initialValue: false)
             configuration.updateIsEagerLoad(modelSchema: modelSchema)
@@ -120,7 +151,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
         ModelProviderRegistry.registerDecoder(DataStoreModelDecoder.self)
     }
-    
+
     /// Initializes the underlying storage engine
     /// - Returns: success if the engine is successfully initialized or
     ///            a failure with a DataStoreError

@@ -267,8 +267,7 @@ class StorageMultipartUploadSession {
             if case .failed = multipartUpload {
                 logger.debug("Multipart Upload is failed and event cannot be handled: \(uploadPartEvent)")
                 return
-            }
-            else if case .paused = multipartUpload {
+            } else if case .paused = multipartUpload {
                 logger.debug("Multipart Upload is paused and event cannot be handled: \(uploadPartEvent)")
                 return
             }

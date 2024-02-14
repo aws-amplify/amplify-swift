@@ -94,6 +94,7 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     private func configure(endpointProfile: PinpointEndpointProfile) async -> PinpointEndpointProfile {
+        var endpointProfile = endpointProfile
         var deviceToken: PinpointEndpointProfile.DeviceToken?
         if let tokenData = Self.getStoredData(from: keychain, forKey: Constants.deviceTokenKey, fallbackTo: userDefaults) {
             deviceToken = tokenData.asHexString()
@@ -109,6 +110,7 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     private func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws {
+        var endpointProfile = endpointProfile
         endpointProfile.effectiveDate = Date()
         let input = createUpdateInput(from: endpointProfile)
         log.verbose("UpdateEndpointInput: \(input)")
@@ -207,7 +209,7 @@ actor EndpointClient: EndpointClientBehaviour {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.endpointProfileKey)")
             }
         }
-        
+
         let keychainTokenData = try? keychain._getData(Constants.deviceTokenKey)
         if let tokenData = userDefaults.data(forKey: Constants.deviceTokenKey), keychainTokenData == nil {
             do {

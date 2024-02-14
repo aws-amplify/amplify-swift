@@ -47,4 +47,3 @@ extension AuthFetchSessionRequest.Options {
         return AuthFetchSessionRequest.Options(forceRefresh: true)
     }
 }
-

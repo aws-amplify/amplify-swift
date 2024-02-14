@@ -68,10 +68,7 @@ final class AWSCloudWatchLoggingSession {
             return "guest"
         }
 
-        guard let userIdentifierData = userIdentifier.data(using: .utf8) else {
-            throw AWSCloudWatchLoggingError.sessionInternalErrorForUserId
-        }
-
+        let userIdentifierData = Data(userIdentifier.utf8)
         var hash = SHA256()
         hash.update(data: userIdentifierData)
 
@@ -87,5 +84,6 @@ extension AWSCloudWatchLoggingSession: LogBatchProducer {
 }
 
 extension AWSCloudWatchLoggingError {
-    static let sessionInternalErrorForUserId = AWSCloudWatchLoggingError(errorDescription: "Internal error while attempting to interpret userId", recoverySuggestion: "")
+    static let sessionInternalErrorForUserId = AWSCloudWatchLoggingError(
+        errorDescription: "Internal error while attempting to interpret userId", recoverySuggestion: "")
 }

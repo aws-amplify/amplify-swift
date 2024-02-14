@@ -23,7 +23,11 @@ class DataStoreConfigurationTests: XCTestCase {
     func testConfigureWithSameSchemaDoesNotDeleteDatabase() async throws {
         let previousVersion = "previousVersion"
         do {
+            #if os(watchOS)
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: previousVersion), configuration: .subscriptionsDisabled)
+            #else
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: previousVersion))
+            #endif
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
@@ -37,7 +41,11 @@ class DataStoreConfigurationTests: XCTestCase {
         await Amplify.reset()
 
         do {
+            #if os(watchOS)
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: previousVersion), configuration: .subscriptionsDisabled)
+            #else
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: previousVersion))
+            #endif
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
@@ -60,7 +68,11 @@ class DataStoreConfigurationTests: XCTestCase {
         let prevoisVersion = "previousVersion"
 
         do {
+            #if os(watchOS)
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion), configuration: .subscriptionsDisabled)
+            #else
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
+            #endif
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
@@ -73,7 +85,11 @@ class DataStoreConfigurationTests: XCTestCase {
         await Amplify.reset()
 
         do {
+            #if os(watchOS)
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: "1234"), configuration: .subscriptionsDisabled)
+            #else
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: "1234"))
+            #endif
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {

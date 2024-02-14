@@ -35,7 +35,7 @@ class Comment3Wrapper: NSCopying {
     }
 
     init(json: String) throws {
-        let data = json.data(using: .utf8)!
+        let data = Data(json.utf8)
         let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }

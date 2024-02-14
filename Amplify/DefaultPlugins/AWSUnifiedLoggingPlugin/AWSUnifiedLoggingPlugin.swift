@@ -29,7 +29,7 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
     let subsystem: String
     var enabled: Bool = true
     private let lock = NSLock()
-    
+
     /// Initializes the logging system with a default log, and immediately registers a default logger
     public init() {
         self.subsystem = Bundle.main.bundleIdentifier ?? "com.amazonaws.amplify.AWSUnifiedLoggingPlugin"
@@ -102,7 +102,7 @@ extension AWSUnifiedLoggingPlugin {
         wrapper.logLevel = logLevel
         return wrapper
     }
-    
+
     public func enable() {
         enabled = true
         lock.execute {
@@ -111,7 +111,7 @@ extension AWSUnifiedLoggingPlugin {
             }
         }
     }
-    
+
     public func disable() {
         enabled = false
         lock.execute {
@@ -120,12 +120,12 @@ extension AWSUnifiedLoggingPlugin {
             }
         }
     }
-    
+
     public func logger(forNamespace namespace: String) -> Logger {
         let wrapper = logWrapper(for: namespace)
         return wrapper
     }
-    
+
     public func logger(forCategory category: String, forNamespace namespace: String) -> Logger {
         let wrapper = logWrapper(for: category + namespace)
         return wrapper

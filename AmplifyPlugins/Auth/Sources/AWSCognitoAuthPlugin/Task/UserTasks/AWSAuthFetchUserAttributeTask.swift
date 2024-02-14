@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask {
+class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let request: AuthFetchUserAttributesRequest

@@ -32,7 +32,7 @@ protocol ModelStorageBehavior {
                           withId id: Model.Identifier,
                           condition: QueryPredicate?,
                           completion: @escaping DataStoreCallback<M?>)
-    
+
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withIdentifier identifier: ModelIdentifierProtocol,

@@ -14,7 +14,6 @@ import XCTest
 @testable import AWSDataStorePlugin
 @testable import AWSPluginsCore
 
-// TODO: This flaky test has been disabled, tracking issue: https://github.com/aws-amplify/amplify-ios/issues/1831
 // swiftlint:disable type_body_length
 class MutationEventExtensionsTest: BaseDataStoreTests {
 
@@ -23,7 +22,6 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     /// - When: The sent model matches the received model and the first pending mutation event version is `nil`.
     /// - Then: The pending mutation event version should be updated to the received model version of 1.
     func testSentModelWithNilVersion_Reconciled() throws {
-        throw XCTSkip("TODO: fix this test")
         let modelId = UUID().uuidString
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
         let requestMutationEvent = try createMutationEvent(model: post,
@@ -88,7 +86,6 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     /// - Then: The first pending mutation event(update) version should be updated to the received model version of 1
     ///         and the second pending mutation event version(delete) should not be updated.
     func testSentModelWithNilVersion_SecondPendingEventNotReconciled() throws {
-        throw XCTSkip("TODO: fix this test")
         let modelId = UUID().uuidString
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
         let requestMutationEvent = try createMutationEvent(model: post,
@@ -158,7 +155,6 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     /// - When: The sent model matches the received model and the first pending mutation event version is 2.
     /// - Then: The first pending mutation event version should NOT be updated.
     func testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled() throws {
-        throw XCTSkip("TODO: fix this test")
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
@@ -221,7 +217,6 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     /// - When: The sent model doesn't match the received model and the first pending mutation event version is 1.
     /// - Then: The first pending mutation event version should NOT be updated.
     func testSentModelNotEqualToResponseModel_PendingEventNotReconciled() throws {
-        throw XCTSkip("TODO: fix this test")
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
@@ -285,7 +280,6 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     /// - When: The sent model matches the received model and the first pending mutation event version is 1.
     /// - Then: The first pending mutation event version should be updated to received mutation sync version i.e. 2.
     func testPendingVersionReconciledSuccess() throws {
-        throw XCTSkip("TODO: fix this test")
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
@@ -361,7 +355,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
         let metadata = MutationSyncMetadata(modelId: model.identifier(schema: MutationEvent.schema).stringValue,
                                             modelName: model.modelName,
                                             deleted: false,
-                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            lastChangedAt: Int64(Date().timeIntervalSince1970),
                                             version: version)
         return MutationSync(model: AnyModel(model), syncMetadata: metadata)
     }

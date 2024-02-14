@@ -21,7 +21,12 @@ class LocalStoreIntegrationTestBase: XCTestCase {
         continueAfterFailure = false
 
         do {
+            #if os(watchOS)
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, 
+                                                       configuration: .subscriptionsDisabled))
+            #else
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            #endif
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
             XCTFail(String(describing: error))

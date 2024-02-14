@@ -30,7 +30,7 @@ struct InitializeSignInFlow: Action {
             let event = SignInEvent(eventType: .throwAuthError(.configuration(message: message)))
             return event
         }
-        
+
         var deviceMetadata = DeviceMetadata.noData
         if let username = signInEventData.username {
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(

@@ -63,9 +63,6 @@ extension ModelValueConverter {
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
     public static func fromJSON(_ value: String) throws -> Any? {
-        guard let data = value.data(using: .utf8) else {
-            return nil
-        }
-        return try JSONSerialization.jsonObject(with: data)
+        return try JSONSerialization.jsonObject(with: Data(value.utf8))
     }
 }

@@ -28,7 +28,7 @@ class StorageEngineTestsDelete: StorageEngineTestsBase {
 
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)

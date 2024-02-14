@@ -20,7 +20,7 @@ import AppKit
 
 extension AWSPinpointPushNotificationsPlugin {
     public func identifyUser(userId: String, userProfile: UserProfile?) async throws {
-        let currentEndpointProfile = await pinpoint.currentEndpointProfile()
+        var currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.addUserId(userId)
         if let userProfile = userProfile {
             currentEndpointProfile.addUserProfile(userProfile)
@@ -30,7 +30,7 @@ extension AWSPinpointPushNotificationsPlugin {
     }
 
     public func registerDevice(apnsToken: Data) async throws {
-        let currentEndpointProfile = await pinpoint.currentEndpointProfile()
+        var currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.setAPNsToken(apnsToken)
         do {
             try await pinpoint.updateEndpoint(with: currentEndpointProfile,
@@ -85,7 +85,9 @@ extension AWSPinpointPushNotificationsPlugin {
         guard let payload = userInfo.payload else {
             log.error(
                 """
-                No valid Pinpoint Push payload found. The recordNotification API only supports Pinpoint Campaigns and Journeys. Test messages will not be recorded.
+                No valid Pinpoint Push payload found.
+                The recordNotification API only supports Pinpoint Campaigns and Journeys.
+                Test messages will not be recorded.
                 """
             )
             return
@@ -140,7 +142,7 @@ extension AWSPinpointPushNotificationsPlugin {
     #elseif canImport(UIKit)
         let application = UIApplication.shared
     #endif
-        
+
     #if canImport(UIKit) || canImport(WatchKit)
         switch application.applicationState {
         case .background:

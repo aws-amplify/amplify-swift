@@ -49,20 +49,15 @@ extension RespondToAuthChallenge {
 
     /// Helper method to extract MFA types from parameters
     private func getMFATypes(forKey key: String) -> Set<MFAType> {
-        var mfaTypes = Set<MFAType>()
-        guard let mfaTypeParametersData = parameters?[key]?.data(using: .utf8),
+        guard let mfaTypeParameters = parameters?[key],
               let mfaTypesArray = try? JSONDecoder().decode(
-                [String].self, from: mfaTypeParametersData) else {
-            return mfaTypes
-        }
+                [String].self,
+                from: Data(mfaTypeParameters.utf8)
+              )
+        else { return .init() }
 
-        for mfaTypeValue in mfaTypesArray {
-            if let mfaType = MFAType(rawValue: String(mfaTypeValue)) {
-                mfaTypes.insert(mfaType)
-            }
-        }
-
-        return mfaTypes
+        let mfaTypes = mfaTypesArray.compactMap(MFAType.init(rawValue:))
+        return Set(mfaTypes)
     }
 
     var debugDictionary: [String: Any] {

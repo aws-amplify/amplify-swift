@@ -72,7 +72,6 @@ extension StorageEngineAdapter {
         delete(modelType, modelSchema: modelType.schema, filter: predicate, completion: completion)
     }
 
-
     func delete(untypedModelType modelType: Model.Type,
                 withIdentifier identifier: ModelIdentifierProtocol,
                 condition: QueryPredicate? = nil,

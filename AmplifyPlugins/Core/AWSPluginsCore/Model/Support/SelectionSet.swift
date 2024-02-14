@@ -56,14 +56,14 @@ extension SelectionSet {
                     if field._isBelongsToOrHasOne {
                         recursive = false
                     }
-                    
+
                     let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
                     if primaryKeysOnly {
                         child.withModelFields(schema.primaryKey.fields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
                     } else {
                         child.withModelFields(schema.graphQLFields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
                     }
-                    
+
                     self.addChild(settingParentOf: child)
                 }
             } else {

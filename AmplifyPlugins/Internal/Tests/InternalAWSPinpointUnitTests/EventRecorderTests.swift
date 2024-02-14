@@ -94,6 +94,37 @@ class EventRecorderTests: XCTestCase {
         XCTAssertEqual(storage.deleteEventCallCount, 2)
     }
     
+    /// - Given: a event recorder with events saved in the local storage with active and stopped sessions
+    /// - When: submitAllEvents is invoked
+    /// - Then: the input is generated accordingly by including duration only for the stopped session
+    func testSubmitAllEvents_withActiveAndStoppedSessions_shouldGenerateRightInput() async throws {
+        let activeSession = PinpointSession(
+            sessionId: "active",
+            startTime: Date(),
+            stopTime: nil
+        )
+        let stoppedSession = PinpointSession(
+            sessionId: "stopped",
+            startTime: Date().addingTimeInterval(-10),
+            stopTime: Date()
+        )
+        storage.events = [
+            .init(id: "1", eventType: "eventType1", eventDate: Date(), session: activeSession),
+            .init(id: "2", eventType: "eventType2", eventDate: Date(), session: stoppedSession)
+        ]
+
+        _ = try? await recorder.submitAllEvents()
+        XCTAssertEqual(pinpointClient.putEventsCount, 1)
+        let input = try XCTUnwrap(pinpointClient.putEventsLastInput)
+        let batchItem = try XCTUnwrap(input.eventsRequest?.batchItem?.first?.value as? PinpointClientTypes.EventsBatch)
+        let events = try XCTUnwrap(batchItem.events)
+        XCTAssertEqual(events.count, 2)
+        XCTAssertNotNil(events["1"]?.session, "Expected session for eventType1")
+        XCTAssertNil(events["1"]?.session?.duration, "Expected nil session duration for eventType")
+        XCTAssertNotNil(events["2"]?.session, "Expected session for eventType2")
+        XCTAssertNotNil(events["2"]?.session?.duration, "Expected session duration for eventType2")
+    }
+
     /// - Given: a event recorder with events saved in the local storage
     /// - When: submitAllEvents is invoked and fails with a non-retryable error
     /// - Then: the events are marked as dirty

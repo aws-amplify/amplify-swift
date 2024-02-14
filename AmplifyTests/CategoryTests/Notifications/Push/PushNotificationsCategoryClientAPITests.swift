@@ -48,7 +48,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
     }
 
     func testRegisterDeviceToken_shouldSucceed() async throws {
-        let data = "Data".data(using: .utf8)!
+        let data = Data("Data".utf8)
         let expectedMessage = "registerDevice(token:\(data))"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in

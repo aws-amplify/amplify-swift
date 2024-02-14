@@ -29,7 +29,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)
@@ -257,6 +257,13 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             XCTFail("Failed to query saved comment")
             return
         }
+
+        let expectedJSONOutput = """
+        {\"content\":\"content\",\"createdAt\":null,\"id\":\"\(comment.id)\",\"post\":{\"identifiers\":[{\"name\":\"id\",\"value\":\"\(post.id)\"}],\"source\":\"DataStore\"},\"updatedAt\":null}
+        """
+
+        XCTAssertEqual(expectedJSONOutput, try queriedCommentLazyLoadedPost.toJSON())
+
         switch queriedCommentLazyLoadedPost._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
             guard let identifiers = identifiers else {

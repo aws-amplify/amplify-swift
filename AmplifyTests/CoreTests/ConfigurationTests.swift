@@ -134,7 +134,7 @@ class ConfigurationTests: XCTestCase {
         {"UserAgent":"aws-amplify-cli/2.0","Version":"1.0","storage":{"plugins":{"MockStorageCategoryPlugin":{}}}}
         """
 
-        let jsonData = jsonString.data(using: .utf8)!
+        let jsonData = Data(jsonString.utf8)
         let decoder = JSONDecoder()
         let config = try decoder.decode(AmplifyConfiguration.self, from: jsonData)
         XCTAssertNotNil(config.storage)

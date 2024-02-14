@@ -8,9 +8,9 @@
 import Foundation
 
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
-public protocol QueryPredicate: Evaluable {}
+public protocol QueryPredicate: Evaluable, Encodable {}
 
-public enum QueryPredicateGroupType: String {
+public enum QueryPredicateGroupType: String, Encodable {
     case and
     case or
     case not
@@ -26,14 +26,14 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
 /// The case `.all` is a predicate used as an argument to select all of a single modeltype. We
 /// chose `.all` instead of `nil` because we didn't want to use the implicit nature of `nil` to
 /// specify an action applies to an entire data set.
-public enum QueryPredicateConstant: QueryPredicate {
+public enum QueryPredicateConstant: QueryPredicate, Encodable {
     case all
     public func evaluate(target: Model) -> Bool {
         return true
     }
 }
 
-public class QueryPredicateGroup: QueryPredicate {
+public class QueryPredicateGroup: QueryPredicate, Encodable {
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
 
@@ -92,9 +92,37 @@ public class QueryPredicateGroup: QueryPredicate {
             return !predicate.evaluate(target: target)
         }
     }
+
+    // MARK: - Encodable conformance
+
+    private enum CodingKeys: String, CodingKey {
+        case type
+        case predicates
+    }
+
+    struct AnyQueryPredicate: Encodable {
+        private let _encode: (Encoder) throws -> Void
+
+        init(_ base: QueryPredicate) {
+            _encode = base.encode
+        }
+
+        func encode(to encoder: Encoder) throws {
+            try _encode(encoder)
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type.rawValue, forKey: .type)
+
+        let anyPredicates = predicates.map(AnyQueryPredicate.init)
+        try container.encode(anyPredicates, forKey: .predicates)
+    }
+
 }
 
-public class QueryPredicateOperation: QueryPredicate {
+public class QueryPredicateOperation: QueryPredicate, Encodable {
 
     public let field: String
     public let `operator`: QueryOperator

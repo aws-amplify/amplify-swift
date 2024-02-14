@@ -24,14 +24,15 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
     #if os(iOS) || os(macOS)
         self.webPresentation = presentationAnchor
 
-        return try await withCheckedThrowingContinuation {
+        return try await withCheckedThrowingContinuation { [weak self]
             (continuation: CheckedContinuation<[URLQueryItem], Error>) in
+            guard let self else { return }
 
             let aswebAuthenticationSession = createAuthenticationSession(
                 url: url,
                 callbackURLScheme: callbackScheme,
-                completionHandler: { url, error in
-
+                completionHandler: { [weak self] url, error in
+                    guard let self else { return }
                     if let url = url {
                         let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
                         let queryItems = urlComponents?.queryItems ?? []
@@ -44,9 +45,10 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                             let message = "\(error) \(errorDescription)"
                             return continuation.resume(
                                 throwing: HostedUIError.serviceMessage(message))
+                        } else {
+                            return continuation.resume(
+                                returning: queryItems)
                         }
-                        return continuation.resume(
-                            returning: queryItems)
                     } else if let error = error {
                         return continuation.resume(
                             throwing: self.convertHostedUIError(error))
@@ -59,7 +61,13 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
             aswebAuthenticationSession.prefersEphemeralWebBrowserSession = inPrivate
 
             DispatchQueue.main.async {
-                aswebAuthenticationSession.start()
+                var canStart = true
+                if #available(macOS 10.15.4, iOS 13.4, *) {
+                    canStart = aswebAuthenticationSession.canStart
+                }
+                if canStart {
+                    aswebAuthenticationSession.start()
+                }
             }
         }
 
@@ -70,7 +78,7 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
 #if os(iOS) || os(macOS)
     var authenticationSessionFactory = ASWebAuthenticationSession.init(url:callbackURLScheme:completionHandler:)
-    
+
     private func createAuthenticationSession(
         url: URL,
         callbackURLScheme: String?,

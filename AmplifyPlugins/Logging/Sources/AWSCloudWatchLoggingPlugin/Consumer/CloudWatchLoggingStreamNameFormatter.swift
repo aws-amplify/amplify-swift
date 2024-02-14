@@ -24,7 +24,7 @@ struct CloudWatchLoggingStreamNameFormatter {
 
     let userIdentifier: String?
     let deviceIdentifier: String?
-    
+
     init(userIdentifier: String? = nil) {
         self.userIdentifier = userIdentifier
         #if canImport(WatchKit)

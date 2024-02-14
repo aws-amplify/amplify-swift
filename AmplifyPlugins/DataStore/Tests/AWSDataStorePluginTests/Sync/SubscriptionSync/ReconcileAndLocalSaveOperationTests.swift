@@ -39,7 +39,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                modelName: testPost.modelName,
                                                deleted: false,
-                                               lastChangedAt: Int(Date().timeIntervalSince1970),
+                                               lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                version: 1)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
 
@@ -48,7 +48,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let anyPostDeleteMetadata = MutationSyncMetadata(modelId: "2",
                                                          modelName: testPost.modelName,
                                                          deleted: true,
-                                                         lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                         lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                          version: 2)
         anyPostDeletedMutationSync = MutationSync<AnyModel>(model: anyPostDelete, syncMetadata: anyPostDeleteMetadata)
         anyPostMutationEvent = MutationEvent(id: "1",
@@ -314,23 +314,25 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     // MARK: - reconcile(remoteModels:pendingMutations)
 
-    func testReconcilePendingMutations_emptyModels() {
-        let result = operation.reconcile([], pendingMutations: [anyPostMutationEvent])
-
-        XCTAssertTrue(result.isEmpty)
+    func testSeparateDispositions_emptyModels() {
+        let result = operation.separateDispositions(pendingMutations: [], dispositions: [])
+        XCTAssertTrue(result.0.isEmpty)
+        XCTAssertTrue(result.1.isEmpty)
     }
 
     func testReconcilePendingMutations_emptyPendingMutations() {
-        let result = operation.reconcile([anyPostMutationSync], pendingMutations: [])
+        let result = operation.separateDispositions(pendingMutations: [], dispositions: [.update(anyPostMutationSync)])
 
-        guard let remoteModelToApply = result.first else {
+        guard let remoteModelToApply = result.0.first else {
             XCTFail("Missing models to apply")
             return
         }
-        XCTAssertEqual(remoteModelToApply.model.id, anyPostMutationSync.model.id)
+
+        XCTAssertTrue(result.1.isEmpty)
+        XCTAssertEqual(remoteModelToApply.remoteModel.model.id, anyPostMutationSync.model.id)
     }
 
-    func testReconcilePendingMutations_notifyDropped() {
+    func testSeparateDispositions_notifyDropped () async {
         let expect = expectation(description: "notify dropped twice")
         expect.expectedFulfillmentCount = 2
         let model1 = AnyModel(Post(title: "post1", content: "content", createdAt: .now()))
@@ -338,12 +340,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let metadata1 = MutationSyncMetadata(modelId: model1.id,
                                              modelName: model1.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let metadata2 = MutationSyncMetadata(modelId: model2.id,
                                              modelName: model2.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let remoteModel1 = MutationSync<AnyModel>(model: model1, syncMetadata: metadata1)
         let remoteModel2 = MutationSync<AnyModel>(model: model2, syncMetadata: metadata2)
@@ -377,11 +379,15 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 }
             }.store(in: &cancellables)
 
-        let result = operation.reconcile([remoteModel1, remoteModel2],
-                                         pendingMutations: [mutationEvent1, mutationEvent2])
+        let result = operation.separateDispositions(
+            pendingMutations: [mutationEvent1, mutationEvent2],
+            dispositions: [.update(remoteModel1), .update(remoteModel2)]
+        )
 
-        XCTAssertTrue(result.isEmpty)
-        waitForExpectations(timeout: 1)
+        XCTAssertTrue(result.0.isEmpty)
+        XCTAssertEqual(result.1, [.update(remoteModel1), .update(remoteModel2)])
+
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     // MARK: - queryLocalMetadata
@@ -491,12 +497,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let metadata1 = MutationSyncMetadata(modelId: model1.id,
                                              modelName: model1.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let metadata2 = MutationSyncMetadata(modelId: model2.id,
                                              modelName: model2.modelName,
                                              deleted: false,
-                                             lastChangedAt: Int(Date().timeIntervalSince1970),
+                                             lastChangedAt: Int64(Date().timeIntervalSince1970),
                                              version: 1)
         let remoteModel1 = MutationSync<AnyModel>(model: model1, syncMetadata: metadata1)
         let remoteModel2 = MutationSync<AnyModel>(model: model2, syncMetadata: metadata2)
@@ -504,12 +510,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let localMetadata1 = MutationSyncMetadata(modelId: model1.id,
                                                   modelName: model1.modelName,
                                                   deleted: false,
-                                                  lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                  lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                   version: 3)
         let localMetadata2 = MutationSyncMetadata(modelId: model2.id,
                                                   modelName: model2.modelName,
                                                   deleted: false,
-                                                  lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                  lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                   version: 4)
         operation.publisher
             .sink { completion in

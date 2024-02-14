@@ -35,7 +35,6 @@ extension CredentialStoreState: CustomDebugStringConvertible {
         return [type: additionalMetadataDictionary]
     }
 
-
     var debugDescription: String {
         return (debugDictionary as AnyObject).description
     }

@@ -13,11 +13,16 @@ extension AuthCategory: AuthCategoryUserBehavior {
         try await plugin.getCurrentUser()
     }
 
-    public func fetchUserAttributes(options: AuthFetchUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttribute] {
+    public func fetchUserAttributes(
+        options: AuthFetchUserAttributesRequest.Options? = nil
+    ) async throws -> [AuthUserAttribute] {
         try await plugin.fetchUserAttributes(options: options)
     }
 
-    public func update(userAttribute: AuthUserAttribute, options: AuthUpdateUserAttributeRequest.Options? = nil) async throws -> AuthUpdateAttributeResult {
+    public func update(
+        userAttribute: AuthUserAttribute,
+        options: AuthUpdateUserAttributeRequest.Options? = nil
+    ) async throws -> AuthUpdateAttributeResult {
         try await plugin.update(userAttribute: userAttribute, options: options)
     }
 
@@ -27,19 +32,36 @@ extension AuthCategory: AuthCategoryUserBehavior {
             try await plugin.update(userAttributes: userAttributes, options: options)
     }
 
-    public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
-                                       options: AuthAttributeResendConfirmationCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
+    @available(*, deprecated, renamed: "sendVerificationCode(forUserAttributeKey:options:)")
+    public func resendConfirmationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthAttributeResendConfirmationCodeRequest.Options? = nil
+    ) async throws -> AuthCodeDeliveryDetails {
         try await plugin.resendConfirmationCode(forUserAttributeKey: userAttributeKey, options: options)
+    }
 
+    public func sendVerificationCode(
+        forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
+        options: AuthSendUserAttributeVerificationCodeRequest.Options? = nil
+    ) async throws -> AuthCodeDeliveryDetails {
+        try await plugin.sendVerificationCode(forUserAttributeKey: userAttributeKey, options: options)
     }
 
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,
                         options: AuthConfirmUserAttributeRequest.Options? = nil) async throws {
-        try await plugin.confirm(userAttribute: userAttribute, confirmationCode: confirmationCode, options: options)
+        try await plugin.confirm(
+            userAttribute: userAttribute,
+            confirmationCode: confirmationCode,
+            options: options
+        )
     }
 
-    public func update(oldPassword: String, to newPassword: String, options: AuthChangePasswordRequest.Options? = nil) async throws {
+    public func update(
+        oldPassword: String,
+        to newPassword: String,
+        options: AuthChangePasswordRequest.Options? = nil
+    ) async throws {
         try await plugin.update(oldPassword: oldPassword, to: newPassword, options: options)
     }
 

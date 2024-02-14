@@ -34,7 +34,7 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
             try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
             syncEngine = MockRemoteSyncEngine()
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          dataStoreConfiguration: .default,
+                                          dataStoreConfiguration: .testDefault(),
                                           syncEngine: syncEngine,
                                           validAPIPluginKey: validAPIPluginKey,
                                           validAuthPluginKey: validAuthPluginKey)

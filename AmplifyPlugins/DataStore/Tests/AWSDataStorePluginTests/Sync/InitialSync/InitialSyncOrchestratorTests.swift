@@ -28,7 +28,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -44,7 +44,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                    authModeStrategy: AWSDefaultAuthModeStrategy(),
                                    api: apiPlugin,
                                    reconciliationQueue: reconciliationQueue,
@@ -126,7 +126,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                     .failure(APIError.operationError("", "", nil))
                 listener?(event)
             } else if request.document.contains("SyncComments") {
-                let startedAt = Int(Date().timeIntervalSince1970)
+                let startedAt = Int64(Date().timeIntervalSince1970)
                 let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
                 let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
                 listener?(event)
@@ -144,7 +144,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                    authModeStrategy: AWSDefaultAuthModeStrategy(),
                                    api: apiPlugin,
                                    reconciliationQueue: reconciliationQueue,
@@ -239,7 +239,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         TestModelsWithNoAssociations().registerModels(registry: ModelRegistry.self)
 
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -254,7 +254,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
 
-        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        let orchestrator = AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                       authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                       api: apiPlugin,
                                                       reconciliationQueue: reconciliationQueue,
@@ -306,7 +306,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                 commentWasQueried.fulfill()
             }
 
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -322,7 +322,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                        authModeStrategy: AWSDefaultAuthModeStrategy(),
                                        api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
@@ -380,7 +380,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
                 commentWasQueried.fulfill()
             }
 
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
@@ -397,7 +397,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: AWSInitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                        authModeStrategy: AWSDefaultAuthModeStrategy(),
                                        api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
@@ -441,7 +441,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
         
         let orchestrator =
-        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                    authModeStrategy: AWSDefaultAuthModeStrategy(),
                                    api: apiPlugin,
                                    reconciliationQueue: reconciliationQueue,

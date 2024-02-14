@@ -13,8 +13,8 @@ class JSONValueTests: XCTestCase {
     func testDecode() throws {
         let decoder = JSONDecoder()
         let sourceString = #"{"stringValue": "a string", "numberValue": 123.45, "booleanValue": true}"#
-        let sourceData = sourceString.data(using: .utf8)
-        let decodedObject = try decoder.decode(JSONValue.self, from: sourceData!)
+        let sourceData = Data(sourceString.utf8)
+        let decodedObject = try decoder.decode(JSONValue.self, from: sourceData)
 
         let expectedObject: JSONValue = [
             "booleanValue": true,

@@ -10,6 +10,7 @@ import Foundation
 import SQLite
 import AWSPluginsCore
 
+// swiftlint:disable type_body_length file_length
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
@@ -117,8 +118,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(
             storageAdapter: self,
             modelSchemas: modelSchemas)
-        let modelMigration = MutationSyncMetadataMigration(delegate: delegate)
-        let modelMigrations = ModelMigrations(modelMigrations: [modelMigration])
+        let mutationSyncMetadataMigration = MutationSyncMetadataMigration(delegate: delegate)
+
+        let modelSyncMetadataMigration = ModelSyncMetadataMigration(storageAdapter: self)
+
+        let modelMigrations = ModelMigrations(modelMigrations: [mutationSyncMetadataMigration,
+                                                                modelSyncMetadataMigration])
         do {
             try modelMigrations.apply()
         } catch {
@@ -242,8 +247,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
         }
     }
-    
-    
+
     func delete<M>(_ modelType: M.Type,
                    modelSchema: ModelSchema,
                    withIdentifier identifier: ModelIdentifierProtocol,
@@ -261,7 +265,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
         }
     }
-    
+
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withId id: Model.Identifier,
@@ -273,7 +277,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                condition: condition,
                completion: completion)
     }
-    
+
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withIdentifier id: ModelIdentifierProtocol,
@@ -563,3 +567,4 @@ extension SQLiteStorageEngineAdapter: DefaultLogger {
         Self.log
     }
 }
+// swiftlint:enable type_body_length file_length

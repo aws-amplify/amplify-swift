@@ -10,17 +10,17 @@ import Foundation
 // MARK: - DefaultModelProvider
 
 public struct DefaultModelProvider<Element: Model>: ModelProvider {
-    
+
     var loadedState: ModelProviderState<Element>
-    
+
     public init(element: Element? = nil) {
         self.loadedState = .loaded(model: element)
     }
-    
+
     public init(identifiers: [LazyReferenceIdentifier]?) {
         self.loadedState = .notLoaded(identifiers: identifiers)
     }
-    
+
     public func load() async throws -> Element? {
         switch loadedState {
         case .notLoaded:
@@ -29,11 +29,11 @@ public struct DefaultModelProvider<Element: Model>: ModelProvider {
             return model
         }
     }
-    
+
     public func getState() -> ModelProviderState<Element> {
         loadedState
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded(let identifiers):

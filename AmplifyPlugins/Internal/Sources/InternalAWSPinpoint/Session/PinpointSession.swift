@@ -8,19 +8,33 @@
 import Foundation
 
 @_spi(InternalAWSPinpoint)
-public class PinpointSession: Codable {
+public struct PinpointSession: Codable {
+    private enum State: Codable {
+        case active
+        case paused(date: Date)
+        case stopped(date: Date)
+    }
     typealias SessionId = String
 
     let sessionId: SessionId
     let startTime: Date
-    private(set) var stopTime: Date?
+    var stopTime: Date? {
+        switch state {
+        case .active:
+            return nil
+        case .paused(let stopTime),
+             .stopped(let stopTime):
+            return stopTime
+        }
+    }
+    
+    private var state: State = .active
 
     init(appId: String,
          uniqueId: String) {
         sessionId = Self.generateSessionId(appId: appId,
                                            uniqueId: uniqueId)
         startTime = Date()
-        stopTime = nil
     }
 
     init(sessionId: SessionId,
@@ -28,30 +42,45 @@ public class PinpointSession: Codable {
          stopTime: Date?) {
         self.sessionId = sessionId
         self.startTime = startTime
-        self.stopTime = stopTime
+        if let stopTime {
+            self.state = .stopped(date: stopTime)
+        }
     }
 
     var isPaused: Bool {
-        return stopTime != nil
+        if case .paused = state {
+            return true
+        }
+
+        return false
+    }
+    
+    var isStopped: Bool {
+        if case .stopped = state {
+            return true
+        }
+
+        return false
     }
 
-    var duration: Date.Millisecond {
-        let endTime = stopTime ?? Date()
-        return endTime.millisecondsSince1970 - startTime.millisecondsSince1970
+    var duration: Date.Millisecond? {
+        /// According to Pinpoint's documentation, `duration` is only required if `stopTime` is not nil.
+        guard let stopTime else { return nil }
+        return stopTime.millisecondsSince1970 - startTime.millisecondsSince1970
     }
 
-    func stop() {
-        guard stopTime == nil else { return }
-        stopTime = Date()
+    mutating func stop() {
+        guard !isStopped else { return }
+        state = .stopped(date: stopTime ?? Date())
     }
 
-    func pause() {
+    mutating func pause() {
         guard !isPaused else { return }
-        stopTime = Date()
+        state = .paused(date: Date())
     }
 
-    func resume() {
-        stopTime = nil
+    mutating func resume() {
+        state = .active
     }
 
     private static func generateSessionId(appId: String,

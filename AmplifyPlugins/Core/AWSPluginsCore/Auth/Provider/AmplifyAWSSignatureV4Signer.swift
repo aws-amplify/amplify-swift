@@ -46,7 +46,10 @@ public class AmplifyAWSSignatureV4Signer: AWSSignatureV4Signer {
                                                  signatureType: .requestHeaders,
                                                  signingAlgorithm: .sigv4)
 
-            let httpRequest = await AWSSigV4Signer.sigV4SignedRequest(requestBuilder: requestBuilder, signingConfig: signingConfig)
+            let httpRequest = await AWSSigV4Signer.sigV4SignedRequest(
+                requestBuilder: requestBuilder,
+                signingConfig: signingConfig
+            )
             return httpRequest
         } catch let error {
             throw AuthError.unknown("Unable to sign request", error)

@@ -34,7 +34,10 @@ extension StorageEngine {
                 ))
             }
 
-            let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
+            let authPluginRequired = StorageEngine.requiresAuthPlugin(
+                api,
+                authModeStrategy: dataStoreConfiguration.authModeStrategyType
+            )
             guard authPluginRequired else {
                 syncEngine.start(api: apiGraphQL, auth: nil)
                 return .success(.successfullyInitialized)
@@ -74,6 +77,12 @@ extension StorageEngine {
         }
     }
 
+    /// Expresses whether the `StorageEngine` syncs from a remote source
+    /// based on whether the `AWSAPIPlugin` is present.
+    var syncsFromRemote: Bool {
+        tryGetAPIPlugin() != nil
+    }
+
     private func tryGetAPIPlugin() -> APICategoryPlugin? {
         do {
             return try Amplify.API.getPlugin(for: validAPIPluginKey)
@@ -90,20 +99,45 @@ extension StorageEngine {
         }
     }
 
-    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin) -> Bool {
+    static func requiresAuthPlugin(
+        _ apiPlugin: APICategoryPlugin,
+        authModeStrategy: AuthModeStrategyType
+    ) -> Bool {
         let modelsRequireAuthPlugin = ModelRegistry.modelSchemas.contains { schema in
             guard schema.isSyncable  else {
                 return false
             }
-            return StorageEngine.requiresAuthPlugin(apiPlugin, authRules: schema.authRules)
+            return requiresAuthPlugin(apiPlugin, 
+                                      authRules: schema.authRules,
+                                      authModeStrategy: authModeStrategy)
         }
 
         return modelsRequireAuthPlugin
     }
 
-    static func requiresAuthPlugin(_ apiPlugin: APICategoryPlugin, authRules: [AuthRule]) -> Bool {
-        if let rulesRequireAuthPlugin = authRules.requireAuthPlugin {
-            return rulesRequireAuthPlugin
+    static func requiresAuthPlugin(
+        _ apiPlugin: APICategoryPlugin,
+        authRules: [AuthRule],
+        authModeStrategy: AuthModeStrategyType
+    ) -> Bool {
+        switch authModeStrategy {
+        case .default:
+            if authRules.isEmpty {
+                return false
+            }
+            // Only use the auth rule as determination for auth plugin requirement when there is
+            // exactly one. If there is more than one auth rule AND multi-auth is not enabled,
+            // then immediately fall back to using the default auth type configured on the APIPlugin because
+            // we do not have enough information to know which provider to use to make the determination.
+            if authRules.count == 1,
+               let singleAuthRule = authRules.first,
+               let ruleRequireAuthPlugin = singleAuthRule.requiresAuthPlugin {
+                return ruleRequireAuthPlugin
+            }
+        case .multiAuth:
+            if let rulesRequireAuthPlugin = authRules.requireAuthPlugin {
+                return rulesRequireAuthPlugin
+            }
         }
 
         // Fall back to the endpoint's auth type if a determination cannot be made from the auth rules. This can

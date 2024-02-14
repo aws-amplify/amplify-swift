@@ -9,7 +9,7 @@
 import Combine
 
 public extension Amplify {
-    
+
     /// Get Combine Publishers for Amplify APIs.
     ///
     /// Provides static methods to create Combine Publishers from Tasks and
@@ -37,7 +37,7 @@ public extension Amplify {
             _ operation: @escaping @Sendable () async throws -> Success
         ) -> AnyPublisher<Success, Error> {
             let task = Task(operation: operation)
-            return Future() { promise in
+            return Future { promise in
                 Task {
                     do {
                         let value = try await task.value
@@ -47,7 +47,7 @@ public extension Amplify {
                     }
                 }
             }
-            .handleEvents(receiveCancel: { task.cancel() } )
+            .handleEvents(receiveCancel: { task.cancel() })
             .eraseToAnyPublisher()
         }
 
@@ -69,16 +69,16 @@ public extension Amplify {
             _ operation: @escaping @Sendable () async -> Success
         ) -> AnyPublisher<Success, Never> {
             let task = Task(operation: operation)
-            return Future() { promise in
+            return Future { promise in
                 Task {
                     let value = await task.value
                     promise(.success(value))
                 }
             }
-            .handleEvents(receiveCancel: { task.cancel() } )
+            .handleEvents(receiveCancel: { task.cancel() })
             .eraseToAnyPublisher()
         }
-        
+
         /// Create a Combine Publisher for a given AsyncSequence.
         ///
         /// Example Usage
@@ -113,7 +113,6 @@ public extension Amplify {
                             // This is necessary to prevent the sequence from continuing to send values for a time
                             // after cancellation in the case of a fast Iterator.
                             try Task.checkCancellation()
-                            
                             subject.send(value)
                         }
                         subject.send(completion: .finished)

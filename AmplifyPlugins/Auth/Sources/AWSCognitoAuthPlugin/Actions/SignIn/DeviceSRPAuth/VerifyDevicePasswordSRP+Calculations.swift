@@ -10,6 +10,7 @@ import CryptoKit
 
 extension VerifyDevicePasswordSRP {
 
+    // swiftlint:disable:next function_parameter_count identifier_name
     func signature(deviceGroupKey: String,
                    deviceKey: String,
                    deviceSecret: String,
@@ -28,6 +29,7 @@ extension VerifyDevicePasswordSRP {
         do {
             let dateStr = stateData.clientTimestamp.utcString
             let clientClass = type(of: srpClient)
+            // swiftlint:disable:next identifier_name
             let u = try clientClass.calculateUHexValue(
                 clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
                 serverPublicKeyHexValue: serverPublicBHexString)
@@ -86,10 +88,10 @@ extension VerifyDevicePasswordSRP {
                            serviceSecretBlock: Data) -> Data {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
-        hmac.update(data: deviceGroupKey.data(using: .utf8)!)
-        hmac.update(data: deviceKey.data(using: .utf8)!)
+        hmac.update(data: Data(deviceGroupKey.utf8))
+        hmac.update(data: Data(deviceKey.utf8))
         hmac.update(data: serviceSecretBlock)
-        hmac.update(data: srpTimeStamp.data(using: .utf8)!)
+        hmac.update(data: Data(srpTimeStamp.utf8))
         return Data(hmac.finalize())
     }
 }

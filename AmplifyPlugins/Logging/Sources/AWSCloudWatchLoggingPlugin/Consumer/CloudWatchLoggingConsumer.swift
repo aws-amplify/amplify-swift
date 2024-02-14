@@ -12,7 +12,7 @@ import Amplify
 import Foundation
 
 class CloudWatchLoggingConsumer {
-    
+
     private let client: CloudWatchLogsClientProtocol
     private let logGroupName: String
     private let logStreamName: String
@@ -38,7 +38,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return
         }
         await ensureLogStreamExists()
-        
+
         let batchByteSize = try encoder.encode(entries).count
         if entries.count > AWSCloudWatchConstants.maxLogEvents {
             let smallerEntries = entries.chunked(into: AWSCloudWatchConstants.maxLogEvents)
@@ -53,7 +53,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                     try await sendLogEvents(entries)
                 }
             }
-            
+
         } else if batchByteSize > AWSCloudWatchConstants.maxBatchByteSize {
             let smallerEntries = try chunk(entries, into: AWSCloudWatchConstants.maxBatchByteSize)
             for entries in smallerEntries {
@@ -62,19 +62,19 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         } else {
             try await sendLogEvents(entries)
         }
-        
+
         try batch.complete()
     }
-    
+
     private func ensureLogStreamExists() async {
         if ensureLogStreamExistsComplete {
             return
         }
-        
+
         defer {
             ensureLogStreamExistsComplete = true
         }
-        
+
         let stream = try? await self.client.describeLogStreams(input: .init(
             logGroupName: self.logGroupName,
             logStreamNamePrefix: self.logStreamName
@@ -84,13 +84,13 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
         if stream != nil {
             return
         }
-        
+
         _ = try? await self.client.createLogStream(input: .init(
             logGroupName: self.logGroupName,
             logStreamName: self.logStreamName
         ))
     }
-    
+
     private func sendLogEvents(_ entries: [LogEntry]) async throws {
         let events = convertToCloudWatchInputLogEvents(for: entries)
         let response = try await self.client.putLogEvents(input: PutLogEventsInput(
@@ -110,7 +110,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             ))
         }
     }
-    
+
     private func convertToCloudWatchInputLogEvents(for entries: [LogEntry]) -> [CloudWatchLogsClientTypes.InputLogEvent] {
         let formatter = CloudWatchLoggingEntryFormatter()
         return entries.map { entry in
@@ -120,23 +120,24 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             )
         }
     }
-    
+
     private func retriable(entries: [LogEntry], in response: PutLogEventsOutput) -> [LogEntry] {
         guard let tooNewLogEventStartIndex = response.rejectedLogEventsInfo?.tooNewLogEventStartIndex else {
             return []
         }
         let totalEntries = entries.count
-        if (tooNewLogEventStartIndex < 0 || tooNewLogEventStartIndex >= totalEntries) {
+        if tooNewLogEventStartIndex < 0 || tooNewLogEventStartIndex >= totalEntries {
             return []
         }
-        
+
         var retriableEntries: [LogEntry] = []
         for index in tooNewLogEventStartIndex..<totalEntries {
             retriableEntries.append(entries[index])
         }
         return retriableEntries
     }
-    
+
+    // swiftlint:disable shorthand_operator
     private func chunk(_ entries: [LogEntry], into maxByteSize: Int64) throws -> [[LogEntry]] {
         var chunks: [[LogEntry]] = []
         var chunk: [LogEntry] = []
@@ -152,7 +153,8 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
                 currentChunkSize = currentChunkSize + entrySize
             }
         }
-        
+
         return chunks
     }
+    // swiftlint:enable shorthand_operator
 }

@@ -44,7 +44,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             _ = try await client.confirmSignUp(input: input)
             log.verbose("Received success")
             return AuthSignUpResult(.done, userID: nil)
-        }  catch let error as AuthErrorConvertible {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch {
             throw AuthError.configuration(
@@ -53,12 +53,5 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
                 error
             )
         }
-    }
-    
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-    public var log: Logger {
-        Self.log
     }
 }

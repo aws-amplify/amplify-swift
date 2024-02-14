@@ -111,7 +111,7 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         let key = "testValidateFileExistsForUrlSuccess"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
-        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+        FileManager.default.createFile(atPath: filePath, contents: Data(key.utf8), attributes: nil)
 
         let result = StorageRequestUtils.validateFileExists(fileURL)
         XCTAssertNil(result)

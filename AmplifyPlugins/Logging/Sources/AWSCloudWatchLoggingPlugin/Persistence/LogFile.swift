@@ -12,10 +12,10 @@ import Foundation
 final class LogFile {
     let fileURL: URL
     let sizeLimitInBytes: UInt64
-    
+
     private let handle: FileHandle
     private var count: UInt64
-    
+
     /// Creates a new file with the given URL and sets its attributes accordingly.
     init(forWritingTo fileURL: URL, sizeLimitInBytes: UInt64) throws {
         self.fileURL = fileURL
@@ -35,11 +35,11 @@ final class LogFile {
             self.count = self.handle.offsetInFile
         }
     }
-    
+
     deinit {
         try? self.handle.close()
     }
-    
+
     /// Returns the number of bytes available in the underlying file.
     var available: UInt64 {
         if sizeLimitInBytes > count {
@@ -48,32 +48,32 @@ final class LogFile {
             return 0
         }
     }
-    
+
     /// Attempts to close the underlying log file.
     func close() throws {
         try self.handle.close()
     }
-    
+
     /// Atempts to flush the receivers contents to disk.
     func synchronize() throws {
         try self.handle.synchronize()
     }
-    
+
     /// - Returns: true if writing to the underlying log file will keep its size below the limit.
     func hasSpace(for data: Data) -> Bool {
         return UInt64(data.count) <= self.available
     }
-    
+
     /// Writes the given **single line of text** represented as a
     /// Data  to the underlying log file.
-    func write(data: Data) throws {        
+    func write(data: Data) throws {
         if #available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *) {
             try self.handle.write(contentsOf: data)
         } else {
             self.handle.write(data)
         }
         try self.handle.synchronize()
-        count = count + UInt64(data.count)
+        count = count + UInt64(data.count) // swiftlint:disable:this shorthand_operator
     }
-    
+
 }

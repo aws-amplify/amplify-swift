@@ -321,7 +321,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
     // MARK: - Private -
 
     private func createFile() throws -> URL {
-        let size = minimumPartSize
+        let size = Int(minimumPartSize)
         let parts: [String] = [
             Array(repeating: "a", count: size).joined(),
             Array(repeating: "b", count: size).joined(),
@@ -332,11 +332,7 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         ]
         let string = parts.joined()
 
-        guard let data = string.data(using: .utf8) else {
-            XCTFail("Failed to create data for file")
-            throw Failure.unableToCreateData
-        }
-
+        let data = Data(string.utf8)
         let fileURL = try FileSystem.default.createTemporaryFile(data: data)
         return fileURL
     }

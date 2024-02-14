@@ -382,7 +382,7 @@ struct MockASF: AdvancedSecurityBehavior {
 extension AmplifyConfiguration {
 
     static func testData() -> AmplifyConfiguration {
-        return try! AmplifyConfiguration.decodeAmplifyConfiguration(from: json.data(using: .utf8)!)
+        return try! AmplifyConfiguration.decodeAmplifyConfiguration(from: Data(json.utf8))
     }
 
     static let json: String = """

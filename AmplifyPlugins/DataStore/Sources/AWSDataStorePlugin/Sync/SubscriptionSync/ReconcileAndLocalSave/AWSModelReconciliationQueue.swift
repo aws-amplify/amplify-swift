@@ -111,7 +111,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 authModeStrategy: authModeStrategy
             )
         }
-        
+
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
         self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents
@@ -122,7 +122,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 self?.receive(receiveValue)
             })
     }
-    
+
     /// (Re)starts the incoming subscription event queue.
     func start() {
         incomingSubscriptionEventQueue.isSuspended = false
@@ -209,8 +209,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                 return
             }
             if case let .api(error, _) = dataStoreError,
-               case let APIError.operationError(_, _, underlyingError) = error,
-               isOperationDisabledError(underlyingError) {
+               case let APIError.operationError(errorMessage, _, underlyingError) = error,
+               isOperationDisabledError(errorMessage, underlyingError) {
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined isOperationDisabledError \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationDisabled))
                 return
@@ -284,7 +284,12 @@ extension AWSModelReconciliationQueue {
         return false
     }
 
-    private func isOperationDisabledError(_ error: Error?) -> Bool {
+    private func isOperationDisabledError(_ errorMessage: String?, _ error: Error?) -> Bool {
+        if let errorMessage = errorMessage,
+            case .operationDisabled = AppSyncErrorType(errorMessage) {
+            return true
+        }
+
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),

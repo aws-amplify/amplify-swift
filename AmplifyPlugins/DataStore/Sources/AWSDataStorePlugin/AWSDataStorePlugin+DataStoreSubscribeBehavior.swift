@@ -9,7 +9,7 @@ import Amplify
 import Combine
 
 extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
-    
+
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
         _ = initStorageEngineAndStartSync()
         // Force-unwrapping: The optional 'dataStorePublisher' is expected
@@ -25,7 +25,7 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
         let runner = ObserveTaskRunner(publisher: publisher(for: modelType.modelName))
         return runner.sequence
     }
-    
+
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        where predicate: QueryPredicate?,
                                        sort sortInput: QuerySortInput?) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
@@ -53,7 +53,6 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
         case .failure(let error):
             return Fatal.preconditionFailure("Unable to get storage adapter \(error.localizedDescription)")
         }
-        
 
     }
 

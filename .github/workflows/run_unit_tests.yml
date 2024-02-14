@@ -15,7 +15,7 @@ on:
         type: string
       xcode_version:
         description: 'The version of Xcode used to run these tests'
-        required: true
+        default: 'latest'
         type: string
       timeout-minutes:
         description: 'The timeout for each execution'
@@ -38,7 +38,7 @@ jobs:
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 
@@ -77,7 +77,7 @@ jobs:
           scheme: ${{ inputs.scheme }}
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           generate_coverage: ${{ inputs.generate_coverage_report }}
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
@@ -92,7 +92,7 @@ jobs:
           scheme: ${{ inputs.scheme }}
           destination: ${{ steps.platform.outputs.destination }}
           sdk: ${{ steps.platform.outputs.sdk }}
-          xcode_path: /Applications/Xcode_${{ inputs.xcode_version }}.app
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
           project_path: ${{ inputs.project_path }}
           generate_coverage: ${{ inputs.generate_coverage_report }}
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -102,7 +102,7 @@ jobs:
 
       - name: Store Coverage Report File
         if: ${{ inputs.generate_coverage_report == true }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
+        uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
         with:
           name: ${{ inputs.scheme }}-Coverage-${{ github.sha }}
           path: ${{ github.workspace }}/${{ inputs.scheme }}-Coverage.lcov

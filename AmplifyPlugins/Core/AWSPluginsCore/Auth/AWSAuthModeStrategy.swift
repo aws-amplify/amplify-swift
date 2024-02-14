@@ -42,7 +42,7 @@ public protocol AuthModeStrategy: AnyObject {
     init()
 
     func authTypesFor(schema: ModelSchema, operation: ModelOperation) async -> AWSAuthorizationTypeIterator
-    
+
     func authTypesFor(schema: ModelSchema, operations: [ModelOperation]) async -> AWSAuthorizationTypeIterator
 }
 
@@ -95,7 +95,7 @@ public class AWSDefaultAuthModeStrategy: AuthModeStrategy {
                              operation: ModelOperation) -> AWSAuthorizationTypeIterator {
         return AWSAuthorizationTypeIterator(withValues: [])
     }
-    
+
     public func authTypesFor(schema: ModelSchema,
                              operations: [ModelOperation]) -> AWSAuthorizationTypeIterator {
         return AWSAuthorizationTypeIterator(withValues: [])
@@ -197,7 +197,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
                              operation: ModelOperation) async -> AWSAuthorizationTypeIterator {
         return await authTypesFor(schema: schema, operations: [operation])
     }
-    
+
     /// Returns the union of authorization types for the provided schema for the given list of operations
     /// - Parameters:
     ///   - schema: model schema
@@ -213,7 +213,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
                 }
             })
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
-        
+
         // if there isn't a user signed in, returns only public or custom rules
         if let authDelegate = authDelegate, await !authDelegate.isUserLoggedIn() {
             sortedRules = sortedRules.filter { rule in
@@ -225,5 +225,5 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
         }
         return AWSAuthorizationTypeIterator(withValues: applicableAuthTypes)
     }
-    
+
 }

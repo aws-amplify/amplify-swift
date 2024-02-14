@@ -13,7 +13,7 @@ struct AWSS3PluginOptions {
 
     /// - Tag: AWSS3PluginOptionsCodingKeys
     enum CodingKeys: String, CodingKey {
-        
+
         /// See: https://docs.amplify.aws/lib/storage/transfer-acceleration/q/platform/js/
         /// - Tag: AWSS3PluginOptionsCodingKeys.useAccelerateEndpoint
         case useAccelerateEndpoint
@@ -30,7 +30,7 @@ struct AWSS3PluginOptions {
     ///
     /// - Tag: AWSS3PluginOptions.accelerateValue
     static func accelerateValue(pluginOptions: Any?) throws -> Bool? {
-        guard let pluginOptions = pluginOptions as? [String:Any] else {
+        guard let pluginOptions = pluginOptions as? [String: Any] else {
             return nil
         }
         guard let value = pluginOptions[CodingKeys.useAccelerateEndpoint.rawValue] else {

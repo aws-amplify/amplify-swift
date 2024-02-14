@@ -27,6 +27,10 @@ public protocol TemporalSpec {
     /// by a Foundation `Date` instance.
     var foundationDate: Foundation.Date { get }
 
+    /// The timezone field is an optional field used to specify the timezone associated
+    /// with a particular date.
+    var timeZone: TimeZone? { get }
+
     /// The ISO-8601 formatted string in the UTC `TimeZone`.
     /// - SeeAlso: `iso8601FormattedString(TemporalFormat, TimeZone) -> String`
     var iso8601String: String { get }
@@ -57,7 +61,7 @@ public protocol TemporalSpec {
     /// Constructs a `TemporalSpec` from a `Date` object.
     /// - Parameter date: The `Date` instance that will be used as the reference of the
     /// `TemporalSpec` instance.
-    init(_ date: Foundation.Date)
+    init(_ date: Foundation.Date, timeZone: TimeZone?)
 
     /// A string representation of the underlying date formatted using ISO8601 rules.
     ///
@@ -90,25 +94,25 @@ extension TemporalSpec {
     /// The ISO8601 representation of the scalar using `.full` as the format and `.utc` as `TimeZone`.
     /// - SeeAlso: `iso8601FormattedString(format:timeZone:)`
     public var iso8601String: String {
-        iso8601FormattedString(format: .full)
+        iso8601FormattedString(format: .full, timeZone: timeZone ?? .utc)
     }
 
     @inlinable
     public init(iso8601String: String, format: TemporalFormat) throws {
-        let date = try SpecBasedDateConverting<Self>()
+        let (date, tz) = try SpecBasedDateConverting<Self>()
             .convert(iso8601String, format)
 
-        self.init(date)
+        self.init(date, timeZone: tz)
     }
 
     @inlinable
     public init(
         iso8601String: String
     ) throws {
-        let date = try SpecBasedDateConverting<Self>()
+        let (date, tz) = try SpecBasedDateConverting<Self>()
             .convert(iso8601String, nil)
 
-        self.init(date)
+        self.init(date, timeZone: tz)
     }
 }
 

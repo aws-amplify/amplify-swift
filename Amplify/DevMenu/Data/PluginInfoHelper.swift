@@ -13,35 +13,35 @@ struct PluginInfoHelper {
 
     static func getPluginInformation() -> [PluginInfoItem] {
         var pluginList = [PluginInfoItem]()
-        
+
         pluginList.append(contentsOf: Amplify.Analytics.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
-        
+
         pluginList.append(contentsOf: Amplify.API.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
-        
+
         pluginList.append(contentsOf: Amplify.Auth.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
-        
+
         pluginList.append(contentsOf: Amplify.DataStore.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
-        
+
         pluginList.append(contentsOf: Amplify.Hub.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
-        
+
         pluginList.append(contentsOf: Amplify.Logging.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
-        
+
         pluginList.append(contentsOf: Amplify.Predictions.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })
-        
+
         pluginList.append(contentsOf: Amplify.Storage.plugins.map {
             makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
         })

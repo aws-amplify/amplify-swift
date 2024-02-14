@@ -18,7 +18,7 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         Task {
-            let currentEndpointProfile =  await pinpoint.currentEndpointProfile()
+            var currentEndpointProfile =  await pinpoint.currentEndpointProfile()
             currentEndpointProfile.addUserId(userId)
             if let userProfile = userProfile {
                 currentEndpointProfile.addUserProfile(userProfile)
@@ -135,7 +135,7 @@ extension AWSPinpointAnalyticsPlugin {
             globalProperties.removeAll()
             return
         }
-        
+
         for key in keys {
             if let value = globalProperties[key] {
                 await pinpoint.removeGlobalProperty(value, forKey: key)

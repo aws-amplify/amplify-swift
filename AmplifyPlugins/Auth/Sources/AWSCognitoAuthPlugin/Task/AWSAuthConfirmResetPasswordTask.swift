@@ -32,7 +32,7 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogg
             throw validationError
         }
         do {
-            
+
             try await confirmResetPassword()
         } catch let error as AuthErrorConvertible {
             throw error.authError
@@ -44,7 +44,7 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogg
     func confirmResetPassword() async throws {
         let userPoolEnvironment = try environment.userPoolEnvironment()
         let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()
-        
+
         let clientMetaData = (request.options.pluginOptions
                               as? AWSAuthConfirmResetPasswordOptions)?.metadata ?? [:]
 
@@ -88,11 +88,5 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogg
 
         _ = try await userPoolService.confirmForgotPassword(input: input)
     }
-    
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-    public var log: Logger {
-        Self.log
-    }
+
 }

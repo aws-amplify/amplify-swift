@@ -17,11 +17,11 @@ extension MigrateSignInState: CustomDebugDictionaryConvertible {
 
         case .notStarted:
             additionalMetadataDictionary = [:]
-        case .signingIn(_):
+        case .signingIn:
             additionalMetadataDictionary = [:]
         case .signedIn(let signedInData):
             additionalMetadataDictionary = ["SignedInData": signedInData.debugDictionary]
-        case .error(_):
+        case .error:
             additionalMetadataDictionary = [:]
         }
         return [type: additionalMetadataDictionary]

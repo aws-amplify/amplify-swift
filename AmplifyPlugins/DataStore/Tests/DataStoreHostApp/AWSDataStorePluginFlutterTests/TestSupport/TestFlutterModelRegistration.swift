@@ -17,7 +17,7 @@ struct TestFlutterModelRegistration: AmplifyModelRegistration {
             resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         }
         // Convert jsonstring to object
-        let data = jsonString.data(using: .utf8)!
+        let data = Data(jsonString.utf8)
         let jsonValue = try resolvedDecoder.decode(JSONValue.self, from: data)
         if case .array(let jsonArray) = jsonValue,
            case .object(let jsonObj) = jsonArray[0],

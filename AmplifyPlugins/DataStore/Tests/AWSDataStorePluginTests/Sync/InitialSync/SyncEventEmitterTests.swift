@@ -45,7 +45,7 @@ class SyncEventEmitterTests: XCTestCase {
         let anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                    modelName: Post.modelName,
                                                    deleted: false,
-                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                    version: 1)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
         let postMutationEvent = try MutationEvent(untypedModel: testPost, mutationType: .create)
@@ -56,7 +56,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                                       syncExpressions: [],
                                                                       auth: nil)
 
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)
@@ -131,7 +131,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                                       syncExpressions: [],
                                                                       auth: nil)
 
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)
@@ -196,7 +196,7 @@ class SyncEventEmitterTests: XCTestCase {
         let anyPostMetadata = MutationSyncMetadata(modelId: "1",
                                                    modelName: Post.modelName,
                                                    deleted: false,
-                                                   lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                   lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                    version: 1)
         let anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
 
@@ -207,7 +207,7 @@ class SyncEventEmitterTests: XCTestCase {
         let anyCommentMetadata = MutationSyncMetadata(modelId: "1",
                                                       modelName: Comment.modelName,
                                                       deleted: true,
-                                                      lastChangedAt: Int(Date().timeIntervalSince1970),
+                                                      lastChangedAt: Int64(Date().timeIntervalSince1970),
                                                       version: 2)
         let anyCommentMutationSync = MutationSync<AnyModel>(model: anyComment, syncMetadata: anyCommentMetadata)
         let commentMutationEvent = try MutationEvent(untypedModel: testComment, mutationType: .delete)
@@ -229,7 +229,7 @@ class SyncEventEmitterTests: XCTestCase {
                                                                       syncExpressions: [],
                                                                       auth: nil)
 
-        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+        initialSyncOrchestrator = MockAWSInitialSyncOrchestrator(dataStoreConfiguration: .testDefault(),
                                                                  api: nil,
                                                                  reconciliationQueue: nil,
                                                                  storageAdapter: nil)

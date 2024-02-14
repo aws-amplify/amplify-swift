@@ -22,6 +22,225 @@ class InitialSyncOperationTests: XCTestCase {
         ModelRegistry.register(modelType: MockSynced.self)
     }
 
+    // MARK: - GetLastSyncTime
+
+    func testFullSyncWhenLastSyncPredicateNilAndCurrentSyncPredicateNonNil() {
+        let lastSyncTime: Int64 = 123456
+        let lastSyncPredicate: String? = nil
+        let currentSyncPredicate: DataStoreConfiguration
+        #if os(watchOS)
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ],
+            disableSubscriptions: { false }
+        )
+        #else
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ]
+        )
+        #endif
+
+        let expectedSyncType = SyncType.fullSync
+        let expectedLastSync: Int64? = nil
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let operation = InitialSyncOperation(
+            modelSchema: MockSynced.schema,
+            api: nil,
+            reconciliationQueue: nil,
+            storageAdapter: nil,
+            dataStoreConfiguration: currentSyncPredicate,
+            authModeStrategy: AWSDefaultAuthModeStrategy())
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
+                    XCTAssertEqual(syncType, expectedSyncType)
+                    syncStartedReceived.fulfill()
+                default:
+                    break
+                }
+            })
+
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
+                                                            lastSync: lastSyncTime,
+                                                            syncPredicate: lastSyncPredicate)
+        XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
+
+        waitForExpectations(timeout: 1)
+        sink.cancel()
+    }
+
+    func testFullSyncWhenLastSyncPredicateNonNilAndCurrentSyncPredicateNil() {
+        let lastSyncTime: Int64 = 123456
+        let lastSyncPredicate: String? = "non nil"
+        let expectedSyncType = SyncType.fullSync
+        let expectedLastSync: Int64? = nil
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let operation = InitialSyncOperation(
+            modelSchema: MockSynced.schema,
+            api: nil,
+            reconciliationQueue: nil,
+            storageAdapter: nil,
+            dataStoreConfiguration: .testDefault(),
+            authModeStrategy: AWSDefaultAuthModeStrategy())
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
+                    XCTAssertEqual(syncType, expectedSyncType)
+                    syncStartedReceived.fulfill()
+                default:
+                    break
+                }
+            })
+
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
+                                                            lastSync: lastSyncTime,
+                                                            syncPredicate: lastSyncPredicate)
+        XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
+
+        waitForExpectations(timeout: 1)
+        sink.cancel()
+    }
+
+    func testFullSyncWhenLastSyncPredicateDifferentFromCurrentSyncPredicate() {
+        let lastSyncTime: Int64 = 123456
+        let lastSyncPredicate: String? = "non nil different from current predicate"
+        let currentSyncPredicate: DataStoreConfiguration
+        #if os(watchOS)
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ],
+            disableSubscriptions: { false }
+        )
+        #else
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ]
+        )
+        #endif
+
+        let expectedSyncType = SyncType.fullSync
+        let expectedLastSync: Int64? = nil
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let operation = InitialSyncOperation(
+            modelSchema: MockSynced.schema,
+            api: nil,
+            reconciliationQueue: nil,
+            storageAdapter: nil,
+            dataStoreConfiguration: currentSyncPredicate,
+            authModeStrategy: AWSDefaultAuthModeStrategy())
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
+                    XCTAssertEqual(syncType, expectedSyncType)
+                    syncStartedReceived.fulfill()
+                default:
+                    break
+                }
+            })
+
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
+                                                            lastSync: lastSyncTime,
+                                                            syncPredicate: lastSyncPredicate)
+        XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
+
+        waitForExpectations(timeout: 1)
+        sink.cancel()
+    }
+
+    func testDeltaSyncWhenLastSyncPredicateSameAsCurrentSyncPredicate() {
+        let startDateSeconds = (Int64(Date().timeIntervalSince1970) - 100)
+        let lastSyncTime: Int64 = startDateSeconds * 1_000
+        let lastSyncPredicate: String? = "{\"field\":\"id\",\"operator\":{\"type\":\"equals\",\"value\":\"123\"}}"
+        let currentSyncPredicate: DataStoreConfiguration
+        #if os(watchOS)
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ],
+            disableSubscriptions: { false }
+        )
+        #else
+        currentSyncPredicate = DataStoreConfiguration.custom(
+            syncExpressions: [
+                .syncExpression(
+                    MockSynced.schema,
+                    where: { MockSynced.keys.id.eq("123") }
+                )
+            ]
+        )
+        #endif
+
+        let expectedSyncType = SyncType.deltaSync
+        let expectedLastSync: Int64? = lastSyncTime
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        let operation = InitialSyncOperation(
+            modelSchema: MockSynced.schema,
+            api: nil,
+            reconciliationQueue: nil,
+            storageAdapter: nil,
+            dataStoreConfiguration: currentSyncPredicate,
+            authModeStrategy: AWSDefaultAuthModeStrategy())
+        let sink = operation
+            .publisher
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { value in
+                switch value {
+                case .started(modelName: let modelName, syncType: let syncType):
+                    XCTAssertEqual(modelName, "MockSynced")
+                    XCTAssertEqual(syncType, expectedSyncType)
+                    syncStartedReceived.fulfill()
+                default:
+                    break
+                }
+            })
+
+        let lastSyncMetadataLastSyncNil = ModelSyncMetadata(id: MockSynced.schema.name,
+                                                            lastSync: lastSyncTime,
+                                                            syncPredicate: lastSyncPredicate)
+        XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
+
+        waitForExpectations(timeout: 1)
+        sink.cancel()
+    }
+
+    // MARK: - `main()` tests
+
     /// - Given: An InitialSyncOperation
     /// - When:
     ///    - I invoke main()
@@ -29,7 +248,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - It reads sync metadata from storage
     func testReadsMetadata() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -51,7 +270,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
@@ -90,7 +309,7 @@ class InitialSyncOperationTests: XCTestCase {
     func testQueriesAPI() {
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -110,7 +329,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
@@ -148,7 +367,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - The method invokes a completion callback when complete
     func testInvokesPublisherCompletion() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
@@ -167,7 +386,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
 
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -203,7 +422,7 @@ class InitialSyncOperationTests: XCTestCase {
         var nextTokens = ["token1", "token2"]
 
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAt = Int64(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
             let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
@@ -224,7 +443,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
 
         let syncCompletionReceived = expectation(description: "Sync completion received, sync operation is complete")
@@ -254,13 +473,13 @@ class InitialSyncOperationTests: XCTestCase {
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
     func testSubmitsToReconciliationQueue() {
-        let startedAtMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+        let startedAtMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
         let model = MockSynced(id: "1")
         let anyModel = AnyModel(model)
         let metadata = MutationSyncMetadata(modelId: "1",
                                             modelName: MockSynced.modelName,
                                             deleted: false,
-                                            lastChangedAt: Int(Date().timeIntervalSince1970),
+                                            lastChangedAt: Int64(Date().timeIntervalSince1970),
                                             version: 1)
         let mutationSync = MutationSync(model: anyModel, syncMetadata: metadata)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
@@ -291,7 +510,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
@@ -331,7 +550,7 @@ class InitialSyncOperationTests: XCTestCase {
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
     func testUpdatesSyncMetadata() throws {
-        let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+        let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startedAt = startDateMilliseconds
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
@@ -352,7 +571,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
@@ -411,6 +630,25 @@ class InitialSyncOperationTests: XCTestCase {
 
         let reconciliationQueue = MockReconciliationQueue()
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        
+        #if os(watchOS)
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                    XCTFail("Expected API error with mutationEvent")
+                    return
+            }
+            guard let actualAPIError = amplifyError as? APIError,
+                case let .operationError(_, _, underlyingError) = actualAPIError,
+                let authError = underlyingError as? AuthError,
+                case .signedOut = authError else {
+                    XCTFail("Should be `signedOut` error but got \(amplifyError)")
+                    return
+            }
+            expectErrorHandlerCalled.fulfill()
+            XCTAssertNil(mutationEventOptional)
+        }, disableSubscriptions: { false })
+        #else
         let configuration = DataStoreConfiguration.custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                 case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
@@ -427,6 +665,7 @@ class InitialSyncOperationTests: XCTestCase {
             expectErrorHandlerCalled.fulfill()
             XCTAssertNil(mutationEventOptional)
         })
+        #endif
         let operation = InitialSyncOperation(
             modelSchema: MockSynced.schema,
             api: apiPlugin,
@@ -477,7 +716,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - It performs a sync query against the API category with a "lastSync" time from the last start time of
     ///      the stored metadata
     func testQueriesFromLastSync() throws {
-        let startDateMilliseconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
+        let startDateMilliseconds = (Int64(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
@@ -496,7 +735,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
-            let lastSync = request.variables?["lastSync"] as? Int
+            let lastSync = request.variables?["lastSync"] as? Int64
             XCTAssertEqual(lastSync, startDateMilliseconds)
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
@@ -515,7 +754,7 @@ class InitialSyncOperationTests: XCTestCase {
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
             storageAdapter: storageAdapter,
-            dataStoreConfiguration: .default,
+            dataStoreConfiguration: .testDefault(),
             authModeStrategy: AWSDefaultAuthModeStrategy())
 
         let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
@@ -548,7 +787,7 @@ class InitialSyncOperationTests: XCTestCase {
 
     func testBaseQueryWhenExpiredLastSync() throws {
         // Set start date to 100 seconds in the past
-        let startDateMilliSeconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
+        let startDateMilliSeconds = (Int64(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
@@ -581,7 +820,11 @@ class InitialSyncOperationTests: XCTestCase {
         apiPlugin.responders[.queryRequestListener] = responder
 
         let reconciliationQueue = MockReconciliationQueue()
+        #if os(watchOS)
+        let configuration  = DataStoreConfiguration.custom(syncInterval: 60, disableSubscriptions: { false })
+        #else
         let configuration  = DataStoreConfiguration.custom(syncInterval: 60)
+        #endif
         let operation = InitialSyncOperation(
             modelSchema: MockSynced.schema,
             api: apiPlugin,
@@ -641,7 +884,11 @@ class InitialSyncOperationTests: XCTestCase {
         apiPlugin.responders[.queryRequestListener] = responder
 
         let reconciliationQueue = MockReconciliationQueue()
+        #if os(watchOS)
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, disableSubscriptions: { false })
+        #else
         let configuration  = DataStoreConfiguration.custom(syncPageSize: 10)
+        #endif
         let operation = InitialSyncOperation(
             modelSchema: MockSynced.schema,
             api: apiPlugin,

@@ -49,7 +49,11 @@ class HubEventsIntegrationTestBase: XCTestCase {
     func configureAmplify(withModels models: AmplifyModelRegistration) throws {
         let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
 
+        #if os(watchOS)
+        try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, configuration: .subscriptionsDisabled))
+        #else
         try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+        #endif
         try Amplify.add(plugin: AWSAPIPlugin(
             modelRegistration: models,
             sessionFactory: AmplifyURLSessionFactory()

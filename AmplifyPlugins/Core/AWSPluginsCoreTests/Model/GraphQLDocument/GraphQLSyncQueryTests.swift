@@ -77,7 +77,7 @@ class GraphQLSyncQueryTests: XCTestCase {
         XCTAssertEqual(variables["nextToken"] as? String, "token")
         XCTAssertNotNil(variables["filter"])
         XCTAssertNotNil(variables["lastSync"])
-        XCTAssertEqual(variables["lastSync"] as? Int, 123)
+        XCTAssertEqual(variables["lastSync"] as? Int64, 123)
     }
 
     func testSyncGraphQLQueryForComment() {

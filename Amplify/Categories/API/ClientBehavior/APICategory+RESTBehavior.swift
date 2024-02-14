@@ -8,7 +8,7 @@
 import Foundation
 
 extension APICategory: APICategoryRESTBehavior {
-    
+
     public func get(request: RESTRequest) async throws -> RESTTask.Success {
         try await plugin.get(request: request)
     }

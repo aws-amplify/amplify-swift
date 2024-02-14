@@ -56,12 +56,17 @@ extension ModelSchema {
                     return false
                 }
             case .int:
-                guard let value1Optional = value1 as? Int?, let value2Optional = value2 as? Int? else {
-                    return false
+                if let value1Optional = value1 as? Int?, let value2Optional = value2 as? Int? {
+                    if !compare(value1Optional, value2Optional) {
+                        return false
+                    }
                 }
-                if !compare(value1Optional, value2Optional) {
-                    return false
+                if let value1Optional = value1 as? Int64?, let value2Optional = value2 as? Int64? {
+                    if !compare(value1Optional, value2Optional) {
+                        return false
+                    }
                 }
+                return false
             case .double:
                 guard let value1Optional = value1 as? Double?, let value2Optional = value2 as? Double? else {
                     return false

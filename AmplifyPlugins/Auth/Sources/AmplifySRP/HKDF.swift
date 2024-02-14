@@ -9,6 +9,7 @@ import Foundation
 import CommonCrypto
 import CryptoKit
 
+// swiftlint:disable identifier_name
 // https://tools.ietf.org/html/rfc5869
 public enum HMACKeyDerivationFunction {
 
@@ -23,22 +24,23 @@ public enum HMACKeyDerivationFunction {
                                 outputLength: outputLength)
         } else {
             let pseudoRandomKey = extractPseudoRandomKey(salt: salt, inputKeyMaterial: keyingMaterial)
-            return expand(pseudoRandomKey: pseudoRandomKey, info: info?.data(using: .utf8), outputLength: outputLength)
+            return expand(pseudoRandomKey: pseudoRandomKey, info: info.map { Data($0.utf8) }, outputLength: outputLength)
         }
     }
 
     @available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *)
-    private static func generateHKDF(keyingMaterial: Data,
-                             salt: Data,
-                             info: String?,
-                             outputLength: Int) -> Data {
+    private static func generateHKDF(
+        keyingMaterial: Data,
+        salt: Data,
+        info: String?,
+        outputLength: Int
+    ) -> Data {
         let key = SymmetricKey(data: keyingMaterial)
         var hkdf: SymmetricKey
-        if let infoData = info?.data(using: .utf8) {
+        if let info {
             hkdf = HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
-                                          salt: salt, info: infoData,
+                                          salt: salt, info: Data(info.utf8),
                                           outputByteCount: outputLength)
-
         } else {
             hkdf = HKDF<SHA256>.deriveKey(inputKeyMaterial: key,
                                           salt: salt,
@@ -84,3 +86,4 @@ public enum HMACKeyDerivationFunction {
         return Data(hmacFinal)
     }
 }
+// swiftlint:enable identifier_name

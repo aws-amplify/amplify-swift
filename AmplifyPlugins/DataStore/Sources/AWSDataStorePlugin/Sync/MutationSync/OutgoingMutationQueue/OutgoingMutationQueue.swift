@@ -70,9 +70,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         self.stateMachineSink = self.stateMachine
             .$state
             .sink { [weak self] newState in
-                guard let self = self else {
-                    return
-                }
+                guard let self else { return }
+
                 self.log.verbose("New state: \(newState)")
                 self.mutationDispatchQueue.async {
                     self.respond(to: newState)
@@ -138,7 +137,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         self.api = api
         self.reconciliationQueue = reconciliationQueue
 
-        queryMutationEventsFromStorage {
+        queryMutationEventsFromStorage { [weak self] in
+            guard let self = self else { return }
+
             self.operationQueue.isSuspended = false
             // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
             mutationEventPublisher.publisher.subscribe(self)
@@ -203,6 +204,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         Task {
             let syncMutationToCloudOperation = await SyncMutationToCloudOperation(
                 mutationEvent: mutationEvent,
+                getLatestSyncMetadata: { try? self.storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId, modelName: mutationEvent.modelName) },
                 api: api,
                 authModeStrategy: authModeStrategy
             ) { [weak self] result in
@@ -247,10 +249,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             guard let reconciliationQueue = reconciliationQueue else {
                 let dataStoreError = DataStoreError.configuration(
                     "reconciliationQueue is unexpectedly nil",
-                                """
-                                The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
-                                \(AmplifyErrorMessages.reportBugToAWS())
-                                """
+                    """
+                    The reference to reconciliationQueue has been released while an ongoing mutation was being processed.
+                    \(AmplifyErrorMessages.reportBugToAWS())
+                    """
                 )
                 stateMachine.notify(action: .errored(dataStoreError))
                 return
@@ -259,7 +261,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             MutationEvent.reconcilePendingMutationEventsVersion(
                 sent: mutationEvent,
                 received: mutationSync,
-                storageAdapter: storageAdapter) { _ in
+                storageAdapter: storageAdapter
+            ) { _ in
                 self.completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
             }
         } else {
@@ -319,7 +322,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.dispatchOutboxMutationProcessedEvent(mutationEvent: mutationEvent,
                                                           mutationSync: mutationSync)
             }
-            self.queryMutationEventsFromStorage {
+            self.queryMutationEventsFromStorage { [weak self] in
+                guard let self else { return }
                 self.stateMachine.notify(action: .processedEvent)
             }
         }
@@ -333,7 +337,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                              predicate: predicate,
                              sort: nil,
                              paginationInput: nil,
-                             eagerLoad: true) { result in
+                             eagerLoad: true) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let events):
                 self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)

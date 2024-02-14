@@ -25,7 +25,8 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
         
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
         XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
+        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        XCTAssertEqual(updatedEndpoint.user.userId, "newUserId")
     }
 
     func testIdentifyUser_withProfile_shouldUpdateUserProfile() async throws {
@@ -38,13 +39,14 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
 
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
         XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes.count, 3)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["name"]?.first, "Name")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["email"]?.first, "Email")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["plan"]?.first, "Plan")
-        XCTAssertTrue(mockPinpoint.mockedPinpointEndpointProfile.metrics.isEmpty)
-        XCTAssertNil(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes)
+        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        XCTAssertEqual(updatedEndpoint.user.userId, "newUserId")
+        XCTAssertEqual(updatedEndpoint.attributes.count, 3)
+        XCTAssertEqual(updatedEndpoint.attributes["name"]?.first, "Name")
+        XCTAssertEqual(updatedEndpoint.attributes["email"]?.first, "Email")
+        XCTAssertEqual(updatedEndpoint.attributes["plan"]?.first, "Plan")
+        XCTAssertTrue(updatedEndpoint.metrics.isEmpty)
+        XCTAssertNil(updatedEndpoint.user.userAttributes)
     }
 
     func testIdentifyUser_withAnalyticsProfile_shouldUpdateUserProfile() async throws {
@@ -60,14 +62,15 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
 
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
         XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes.count, 2)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attribute"]?.first, "string")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["boolAttribute"]?.first, "true")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["metric"], 2.0)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["intMetric"], 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics.count, 2)
-        XCTAssertNil(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes)
+        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        XCTAssertEqual(updatedEndpoint.user.userId, "newUserId")
+        XCTAssertEqual(updatedEndpoint.attributes.count, 2)
+        XCTAssertEqual(updatedEndpoint.attributes["attribute"]?.first, "string")
+        XCTAssertEqual(updatedEndpoint.attributes["boolAttribute"]?.first, "true")
+        XCTAssertEqual(updatedEndpoint.metrics["metric"], 2.0)
+        XCTAssertEqual(updatedEndpoint.metrics["intMetric"], 1)
+        XCTAssertEqual(updatedEndpoint.metrics.count, 2)
+        XCTAssertNil(updatedEndpoint.user.userAttributes)
     }
 
     func testIdentifyUser_withBasicProfile_shouldUpdateUserProfile() async throws {
@@ -83,14 +86,15 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
 
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
         XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes.count, 2)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attribute"]?.first, "string")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["boolAttribute"]?.first, "true")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["metric"], 2.0)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["intMetric"], 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics.count, 2)
-        XCTAssertNil(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes)
+        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        XCTAssertEqual(updatedEndpoint.user.userId, "newUserId")
+        XCTAssertEqual(updatedEndpoint.attributes.count, 2)
+        XCTAssertEqual(updatedEndpoint.attributes["attribute"]?.first, "string")
+        XCTAssertEqual(updatedEndpoint.attributes["boolAttribute"]?.first, "true")
+        XCTAssertEqual(updatedEndpoint.metrics["metric"], 2.0)
+        XCTAssertEqual(updatedEndpoint.metrics["intMetric"], 1)
+        XCTAssertEqual(updatedEndpoint.metrics.count, 2)
+        XCTAssertNil(updatedEndpoint.user.userAttributes)
     }
 
     func testIdentifyUser_withPinpointProfile_shouldUpdateUserProfile() async throws {
@@ -110,37 +114,41 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
 
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
         XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attribute"]?.first, "string")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attributes"]?.count, 2)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["attributes"]?.first, "string")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.attributes["boolAttribute"]?.first, "true")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["metric"], 2)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.metrics["intMetric"], 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userId, "newUserId")
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes?["roles"]?.count, 2)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.user.userAttributes?["roles"]?.first, "Test")
+        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        XCTAssertEqual(updatedEndpoint.attributes["attribute"]?.first, "string")
+        XCTAssertEqual(updatedEndpoint.attributes["attributes"]?.count, 2)
+        XCTAssertEqual(updatedEndpoint.attributes["attributes"]?.first, "string")
+        XCTAssertEqual(updatedEndpoint.attributes["boolAttribute"]?.first, "true")
+        XCTAssertEqual(updatedEndpoint.metrics["metric"], 2)
+        XCTAssertEqual(updatedEndpoint.metrics["intMetric"], 1)
+        XCTAssertEqual(updatedEndpoint.user.userId, "newUserId")
+        XCTAssertEqual(updatedEndpoint.user.userAttributes?["roles"]?.count, 2)
+        XCTAssertEqual(updatedEndpoint.user.userAttributes?["roles"]?.first, "Test")
     }
 
     func testIdentifyUser_withPinpointProfileOptedOutOfMessages_shouldUpdateUserProfileOptOutValue() async throws {
         try await plugin.identifyUser(userId: "newUserId", userProfile: nil)
-        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        var updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
         XCTAssertFalse(updatedEndpoint.isOptOut)
 
         try await plugin.identifyUser(userId: "newUserId", userProfile: PinpointUserProfile(optedOutOfMessages: true))
+        updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
         XCTAssertTrue(updatedEndpoint.isOptOut)
 
         try await plugin.identifyUser(userId: "newUserId", userProfile: PinpointUserProfile(name: "User"))
+        updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
         XCTAssertTrue(updatedEndpoint.isOptOut)
     }
     
     // MARK: - Register Device tests
     func testRegisterDevice_shouldUpdateDeviceToken() async throws {
-        let apnsToken = "apnsToken".data(using: .utf8)!
+        let apnsToken = Data("apnsToken".utf8)
         try await plugin.registerDevice(apnsToken: apnsToken)
         
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCount, 1)
         XCTAssertEqual(mockPinpoint.updateEndpointCount, 1)
-        XCTAssertEqual(mockPinpoint.mockedPinpointEndpointProfile.deviceToken, apnsToken.asHexString())
+        let updatedEndpoint = try XCTUnwrap(mockPinpoint.updatedPinpointEndpointProfile)
+        XCTAssertEqual(updatedEndpoint.deviceToken, apnsToken.asHexString())
     }
     
     // MARK: - Record Notification received tests

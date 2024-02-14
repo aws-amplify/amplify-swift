@@ -69,7 +69,7 @@ public extension AmplifyInProcessReportingTask where InProcess == Progress {
     /// using [Progress](x-source-tag://Progress).
     ///
     /// - Tag: AmplifyInProcessReportingTask.progress
-    var progress : AmplifyAsyncSequence<InProcess> {
+    var progress: AmplifyAsyncSequence<InProcess> {
         get async {
             await inProcess
         }

@@ -19,6 +19,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
     private weak var api: APICategoryGraphQLBehaviorExtended?
     private let mutationEvent: MutationEvent
+    private let getLatestSyncMetadata: () -> MutationSyncMetadata?
     private let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener
     private let requestRetryablePolicy: RequestRetryablePolicy
 
@@ -31,6 +32,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     private var authTypesIterator: AWSAuthorizationTypeIterator?
 
     init(mutationEvent: MutationEvent,
+         getLatestSyncMetadata: @escaping () -> MutationSyncMetadata?,
          api: APICategoryGraphQLBehaviorExtended,
          authModeStrategy: AuthModeStrategy,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
@@ -38,6 +40,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
          completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) async {
         self.mutationEvent = mutationEvent
+        self.getLatestSyncMetadata = getLatestSyncMetadata
         self.api = api
         self.networkReachabilityPublisher = networkReachabilityPublisher
         self.completion = completion
@@ -47,7 +50,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
-            
+
             self.authTypesIterator = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                    operation: mutationType.toModelOperation())
         }
@@ -57,6 +60,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
     override func main() {
         log.verbose(#function)
+
         sendMutationToCloud(withAuthType: authTypesIterator?.next())
     }
 
@@ -99,6 +103,33 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
         }
     }
 
+    /// Always retrieve and use the largest version when available. The source of the version comes
+    /// from either the MutationEvent itself, which represents the queue request, or the persisted version
+    /// from the metadata table.
+    ///
+    /// **Version in the Mutation Event**. If there are mulitple mutation events pending, each outgoing
+    /// mutation processing will result in synchronously updating the pending mutation's version
+    /// before enqueuing the mutation response for reconciliation.
+    ///
+    /// **Version persisted in the metadata table**: Reconciliation will persist the latest version in the
+    /// metadata table. In cases of quick consecutive updates, the MutationEvent's version could
+    /// be greater than the persisted since the MutationEvent is updated from the original thread that
+    /// processed the outgoing mutation.
+    private func getLatestVersion(_ mutationEvent: MutationEvent) -> Int? {
+        let latestSyncedMetadataVersion = getLatestSyncMetadata()?.version
+        let mutationEventVersion = mutationEvent.version
+        switch (latestSyncedMetadataVersion, mutationEventVersion) {
+        case let (.some(syncedVersion), .some(version)):
+            return max(syncedVersion, version)
+        case let (.some(syncedVersion), .none):
+            return syncedVersion
+        case let (.none, .some(version)):
+            return version
+        case (.none, .none):
+            return nil
+        }
+    }
+
     /// Creates a GraphQLRequest based on given `mutationType`
     /// - Parameters:
     ///   - mutationType: mutation type
@@ -108,6 +139,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
         mutationType: GraphQLMutationType,
         authType: AWSAuthorizationType? = nil
     ) -> GraphQLRequest<MutationSync<AnyModel>>? {
+        let version = getLatestVersion(mutationEvent)
         var request: GraphQLRequest<MutationSync<AnyModel>>
 
         do {
@@ -128,7 +160,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 request = GraphQLRequest<MutationSyncResult>.deleteMutation(of: model,
                                                                             modelSchema: modelSchema,
                                                                             where: graphQLFilter,
-                                                                            version: mutationEvent.version)
+                                                                            version: version)
             case .update:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -140,7 +172,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
                                                                             modelSchema: modelSchema,
                                                                             where: graphQLFilter,
-                                                                            version: mutationEvent.version)
+                                                                            version: version)
             case .create:
                 let model = try mutationEvent.decodeModel()
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
@@ -151,7 +183,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                 }
                 request = GraphQLRequest<MutationSyncResult>.createMutation(of: model,
                                                                             modelSchema: modelSchema,
-                                                                            version: mutationEvent.version)
+                                                                            version: version)
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
@@ -159,7 +191,8 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             return nil
         }
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: mutationEvent.modelName)
+        let awsPluginOptions = AWSAPIPluginDataStoreOptions(authType: authType,
+                                                         modelName: mutationEvent.modelName)
         request.options = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
         return request
     }
@@ -215,7 +248,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             }
 
             resolveReachabilityPublisher(request: request)
-            if let pluginOptions = request.options?.pluginOptions as? AWSPluginOptions, pluginOptions.authType != nil,
+            if let pluginOptions = request.options?.pluginOptions as? AWSAPIPluginDataStoreOptions, pluginOptions.authType != nil,
                let nextAuthType = authTypesIterator?.next() {
                 scheduleRetry(advice: advice, withAuthType: nextAuthType)
             } else {
@@ -245,7 +278,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     }
 
     /// - Warning: Must be invoked from a locking context
-    private func getRetryAdviceIfRetryable(error: APIError) -> RequestRetryAdvice {
+    func getRetryAdviceIfRetryable(error: APIError) -> RequestRetryAdvice {
         var advice = RequestRetryAdvice(shouldRetry: false, retryInterval: DispatchTimeInterval.never)
 
         switch error {
@@ -256,14 +289,26 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                                                                httpURLResponse: nil,
                                                                attemptNumber: currentAttemptNumber)
 
-        // we can't unify the following two cases as they have different associated values.
+        // we can't unify the following two cases (case 1 and case 2) as they have different associated values.
         // should retry with a different authType if server returned "Unauthorized Error"
-        case .httpStatusError(_, let httpURLResponse) where httpURLResponse.statusCode == 401:
+        case .httpStatusError(_, let httpURLResponse) where httpURLResponse.statusCode == 401: // case 1
             advice = shouldRetryWithDifferentAuthType()
-        // should retry with a different authType if request failed locally with an AuthError
-        case .operationError(_, _, let error) where (error as? AuthError) != nil:
-            advice = shouldRetryWithDifferentAuthType()
-
+        case .operationError(_, _, let error): // case 2
+            if let authError = error as? AuthError { // case 2
+                // Not all AuthError's are unauthorized errors. If `AuthError.sessionExpired` or `.signedOut` then
+                // the request never made it to the server. We should keep trying until the user is signed in.
+                // Otherwise we may be making the wrong determination to remove this mutation event.
+                switch authError {
+                case .sessionExpired, .signedOut:
+                    // use `userAuthenticationRequired` to ensure advice to retry is true.
+                    advice = requestRetryablePolicy.retryRequestAdvice(urlError: URLError(.userAuthenticationRequired),
+                                                                       httpURLResponse: nil,
+                                                                       attemptNumber: currentAttemptNumber)
+                default:
+                    // should retry with a different authType if request failed locally with any other AuthError
+                    advice = shouldRetryWithDifferentAuthType()
+                }
+            }
         case .httpStatusError(_, let httpURLResponse):
             advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
                                                                httpURLResponse: httpURLResponse,

@@ -11,7 +11,7 @@ public struct ConsoleLoggingConfiguration: Codable {
     public init(enable: Bool = true) {
          self.enable = enable
     }
-    
+
     public let enable: Bool
 }
 
@@ -55,8 +55,7 @@ extension ConsoleLoggingConfiguration {
     static func decodeConfiguration(from data: Data) throws -> ConsoleLoggingConfiguration? {
         do {
             if let configuration = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let configurationJson = configuration["consoleLoggingPlugin"] as? [String: Any]
-            {
+               let configurationJson = configuration["consoleLoggingPlugin"] as? [String: Any] {
                 let decoder = JSONDecoder()
                 let data = try JSONSerialization.data(withJSONObject: configurationJson)
                 let consoleLoggingConfiguration = try decoder.decode(ConsoleLoggingConfiguration.self, from: data)
@@ -79,4 +78,3 @@ extension ConsoleLoggingConfiguration {
         return nil
     }
 }
-

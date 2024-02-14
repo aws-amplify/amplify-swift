@@ -6,7 +6,7 @@ on:
 
 permissions:
     id-token: write
-    contents: read 
+    contents: read
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -16,8 +16,11 @@ jobs:
   prepare-for-test:
     runs-on: macos-13
     environment: IntegrationTest
+    outputs:
+      destination: ${{ steps.platform.outputs.destination }}
+      xcode-version: ${{ steps.platform.outputs.xcode-version }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 
@@ -29,12 +32,21 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
+      - name: Get build parameters
+        id: platform
+        uses: ./.github/composite_actions/get_platform_parameters
+        with:
+          platform: 'iOS'
+
   auth-stress-test:
     needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 
@@ -54,15 +66,18 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
           scheme: AuthStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   geo-stress-test:
     needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 
@@ -82,15 +97,18 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
           scheme: GeoStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   storage-stress-test:
     needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 
@@ -110,15 +128,18 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
           scheme: StorageStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
-  
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
+
   datastore-stress-test:
     needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 
@@ -138,15 +159,18 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: DatastoreStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'
 
   graphql-api-stress-test:
     needs: prepare-for-test
     runs-on: macos-13
     environment: IntegrationTest
+    env:
+      DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
+      XCODE_VERSION: ${{ needs.prepare-for-test.outputs.xcode-version }}
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           persist-credentials: false
 
@@ -166,5 +190,5 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/API/Tests/APIHostApp
           scheme: GraphQLAPIStressTests
-          destination: 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
-          xcode_path: '/Applications/Xcode_14.3.app'
+          destination: ${{ env.DESTINATION }}
+          xcode_path: '/Applications/Xcode_${{ env.XCODE_VERSION }}.app'

@@ -10,6 +10,7 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+// swiftlint:disable type_body_length file_length
 /// CascadeDeleteOperation has the following logic:
 /// 1. Query models from local store based on the following use cases:
 ///    1a. If the use case is Delete with id, then query by `id`
@@ -31,7 +32,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
     private let serialQueueSyncDeletions = DispatchQueue(label: "com.amazoncom.Storage.CascadeDeleteOperation.concurrency")
     private let isDeveloperDefinedModel: Bool
-    
+
     convenience init(
         storageAdapter: StorageEngineAdapter,
         syncEngine: RemoteSyncEngineBehavior?,
@@ -110,12 +111,12 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             syncIfNeededAndFinish(.failure(causedBy: error))
         }
     }
-    
+
     func queryAndDeleteTransaction() async -> DataStoreResult<QueryAndDeleteResult<M>> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
         var associatedModels: [(ModelName, Model)] = []
-        
+
         queriedResult = await withCheckedContinuation { continuation in
             self.storageAdapter.query(self.modelType,
                                       modelSchema: self.modelSchema,
@@ -139,7 +140,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                        deleteResult: deletedResult,
                                        associatedModels: associatedModels)
             }
-            
+
             // Query using the computed predicate did not return any results, check if model actually exists.
             do {
                 if try self.storageAdapter.exists(self.modelSchema, withIdentifier: identifier, predicate: nil) {
@@ -153,15 +154,15 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             } catch {
                 queriedResult = .failure(DataStoreError.invalidOperation(causedBy: error))
             }
-            
+
             return collapseResults(queryResult: queriedResult,
                                    deleteResult: deletedResult,
                                    associatedModels: associatedModels)
         }
-        
+
         let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
-        logMessage("[CascadeDelete.1] Deleting \(modelSchema.name) with identifiers: \(modelIds)")
-        
+        logMessage("[CascadeDelete.1] Deleting \(self.modelSchema.name) with identifiers: \(modelIds)")
+
         associatedModels = await self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
 
         deletedResult = await withCheckedContinuation { continuation in
@@ -208,7 +209,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 ids: associatedModelIds)
             )
         }
-        
+
         return associatedModels
     }
 
@@ -224,7 +225,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 queryPredicates.append(QueryPredicateOperation(field: associatedField.name, operator: .equals(id)))
             }
             let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
-            
+
             do {
                 let models = try await withCheckedThrowingContinuation { continuation in
                     storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates, eagerLoad: true) { result in
@@ -259,7 +260,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
             switch deleteResult {
             case .success:
-                logMessage("[CascadeDelete.3] Local cascade delete of \(modelSchema.name) successful!")
+                logMessage("[CascadeDelete.3] Local cascade delete of \(self.modelSchema.name) successful!")
                 return .success(QueryAndDeleteResult(deletedModels: models,
                                                      associatedModels: associatedModels))
             case .failure(let error):
@@ -275,7 +276,10 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         switch transactionResult {
         case .success(let queryAndDeleteResult):
             logMessage(
-                "[CascadeDelete.4] sending a total of \(queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count) delete mutations"
+                """
+                [CascadeDelete.4] sending a total of
+                \(queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count) delete mutations
+                """
             )
             switch deleteInput {
             case .withIdentifier, .withIdentifierAndCondition:
@@ -443,7 +447,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                syncEngine: RemoteSyncEngineBehavior,
                                dataStoreError: DataStoreError?,
                                completion: @escaping DataStoreCallback<Void>) {
-        logMessage("[CascadeDelete.4] Begin syncing \(models.count) \(modelSchema.name) model for deletion")
+        logMessage("[CascadeDelete.4] Begin syncing \(models.count) \(self.modelSchema.name) model for deletion")
         var graphQLFilterJSON: String?
         if let predicate = predicate {
             do {
@@ -549,3 +553,4 @@ extension CascadeDeleteOperation: DefaultLogger {
         Self.log
     }
 }
+// swiftlint:enable type_body_length file_length

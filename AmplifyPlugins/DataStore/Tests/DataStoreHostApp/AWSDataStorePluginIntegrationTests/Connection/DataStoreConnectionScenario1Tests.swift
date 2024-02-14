@@ -32,13 +32,13 @@ import XCTest
  */
 
 class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
-
+    
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
             registry.register(modelType: Team1.self)
             registry.register(modelType: Project1.self)
         }
-
+        
         let version: String = "1"
     }
     

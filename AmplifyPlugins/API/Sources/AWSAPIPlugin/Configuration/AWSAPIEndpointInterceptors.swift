@@ -30,6 +30,20 @@ struct AWSAPIEndpointInterceptors {
 
     var postludeInterceptors: [URLRequestInterceptor] = []
 
+    /// Validates whether the access token has expired. A best-effort attempt is made, 
+    /// and it returns `false` if the expiration cannot be determined.
+    var expiryValidator: ((String) -> Bool) {
+        { token in
+            guard let authService,
+                  let claims = try? authService.getTokenClaims(tokenString: token).get(),
+                  let tokenExpiration = claims["exp"]?.doubleValue else {
+                return false
+            }
+            let currentTime = Date().timeIntervalSince1970
+            return currentTime > tokenExpiration
+        }
+    }
+    
     init(endpointName: APIEndpointName,
          apiAuthProviderFactory: APIAuthProviderFactory,
          authService: AWSAuthServiceBehavior? = nil) {
@@ -71,7 +85,8 @@ struct AWSAPIEndpointInterceptors {
                                                            "")
             }
             let provider = BasicUserPoolTokenProvider(authService: authService)
-            let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider)
+            let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: provider,
+                                                             isTokenExpired: expiryValidator)
             preludeInterceptors.append(interceptor)
         case .openIDConnect:
             guard let oidcAuthProvider = apiAuthProviderFactory.oidcAuthProvider() else {

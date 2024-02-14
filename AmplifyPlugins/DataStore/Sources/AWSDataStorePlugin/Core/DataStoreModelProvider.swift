@@ -9,21 +9,21 @@ import Foundation
 import Amplify
 import Combine
 
-public class DataStoreModelProvider<ModelType: Model>: ModelProvider {    
+public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     var loadedState: ModelProviderState<ModelType>
-    
+
     // Create a "not loaded" model provider with the identifier metadata, useful for hydrating the model
     init(metadata: DataStoreModelDecoder.Metadata) {
         self.loadedState = .notLoaded(identifiers: metadata.identifiers)
     }
-    
+
     // Create a "loaded" model provider with the model instance
     init(model: ModelType?) {
         self.loadedState = .loaded(model: model)
     }
-    
+
     // MARK: - APIs
-    
+
     public func load() async throws -> ModelType? {
         switch loadedState {
         case .notLoaded(let identifiers):
@@ -46,18 +46,16 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
             return model
         }
     }
-    
+
     public func getState() -> ModelProviderState<ModelType> {
         loadedState
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
         case .notLoaded(let identifiers):
             let metadata = DataStoreModelDecoder.Metadata(identifiers: identifiers ?? [])
-            var container = encoder.singleValueContainer()
-            try container.encode(metadata)
-            
+            try metadata.encode(to: encoder)
         case .loaded(let element):
             try element.encode(to: encoder)
         }

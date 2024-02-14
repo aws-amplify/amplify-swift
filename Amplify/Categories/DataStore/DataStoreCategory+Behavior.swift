@@ -17,7 +17,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                 byId id: String) async throws -> M? {
         try await plugin.query(modelType, byId: id)
     }
-    
+
     public func query<M: Model>(_ modelType: M.Type,
                                 byIdentifier id: String) async throws -> M?
         where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
@@ -41,13 +41,13 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil) async throws {
         try await plugin.delete(model, where: predicate)
     }
-    
+
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
                                  where predicate: QueryPredicate? = nil) async throws {
         try await plugin.delete(modelType, withId: id, where: predicate)
     }
-    
+
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: String,
                                  where predicate: QueryPredicate? = nil) async throws
@@ -60,7 +60,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil) async throws where M: ModelIdentifiable {
         try await plugin.delete(modelType, withIdentifier: id, where: predicate)
     }
-    
+
     public func delete<M: Model>(_ modelType: M.Type,
                                  where predicate: QueryPredicate) async throws {
         try await plugin.delete(modelType, where: predicate)

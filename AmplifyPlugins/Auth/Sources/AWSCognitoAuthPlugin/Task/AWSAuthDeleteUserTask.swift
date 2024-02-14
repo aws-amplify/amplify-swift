@@ -48,7 +48,10 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
         log.verbose("Waiting for delete user to complete")
         for await state in stateSequences {
             guard case .configured(let authNState, _) = state else {
-                let error = AuthError.invalidState("Auth state should be in configured state and authentication state should be in deleting user state", AuthPluginErrorConstants.invalidStateError, nil)
+                let error = AuthError.invalidState(
+                    "Auth state should be in configured state and authentication state should be in deleting user state",
+                    AuthPluginErrorConstants.invalidStateError,
+                    nil)
                 throw error
             }
 
@@ -85,11 +88,5 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
         await authStateMachine.send(event)
         await taskHelper.didStateMachineConfigured()
     }
-    
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-    public var log: Logger {
-        Self.log
-    }
+
 }

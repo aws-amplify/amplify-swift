@@ -21,7 +21,7 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully.
     func testUploadDataWithAccelerateDisabledExplicitly() async throws {
         let key = UUID().uuidString
-        let data = try XCTUnwrap(key.data(using: .utf8))
+        let data = Data(key.utf8)
         let task = Amplify.Storage.uploadData(key: key,
                                               data: data,
                                               options: .init(pluginOptions:["useAccelerateEndpoint": useAccelerateEndpoint]))
@@ -34,7 +34,7 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation fails.
     func testUploadDataWithAccelerateDisabledExplicitlyToWrongType() async throws {
         let key = UUID().uuidString
-        let data = try XCTUnwrap(key.data(using: .utf8))
+        let data = Data(key.utf8)
         do {
             let task = Amplify.Storage.uploadData(key: key,
                                                   data: data,
@@ -55,7 +55,7 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
 
         let fileURL = URL(fileURLWithPath: filePath)
-        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+        FileManager.default.createFile(atPath: filePath, contents: Data(key.utf8), attributes: nil)
         defer {
             try? FileManager.default.removeItem(at: fileURL)
         }
@@ -84,7 +84,7 @@ class AWSS3StoragePluginAccelerateIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with the data retrieved.
     func testDownloadDataToMemory() async throws {
         let key = UUID().uuidString
-        let data = try XCTUnwrap(key.data(using: .utf8))
+        let data = Data(key.utf8)
         let uploadTask = Amplify.Storage.uploadData(key: key,
                                                     data: data,
                                                     options: .init(pluginOptions:["useAccelerateEndpoint": useAccelerateEndpoint]))

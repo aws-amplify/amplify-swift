@@ -32,7 +32,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
         log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
 
-        //Check if we have a user pool configuration
+        // Check if we have a user pool configuration
         guard authConfiguration.getUserPoolConfiguration() != nil else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthError.configuration(
@@ -148,10 +148,4 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask, DefaultLogger {
             friendlyDeviceName: pluginOptions?.friendlyDeviceName)
     }
 
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-    public var log: Logger {
-        Self.log
-    }
 }

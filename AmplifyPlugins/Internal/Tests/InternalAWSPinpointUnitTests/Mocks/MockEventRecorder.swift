@@ -34,4 +34,9 @@ actor MockEventRecorder: AnalyticsEventRecording {
         submitCount += 1
         return []
     }
+
+    var updateSessionCount = 0
+    func update(_ session: InternalAWSPinpoint.PinpointSession) throws {
+        updateSessionCount += 1
+    }
 }

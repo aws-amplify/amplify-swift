@@ -10,6 +10,7 @@ import CryptoKit
 
 extension VerifyPasswordSRP {
 
+    // swiftlint:disable:next function_parameter_count
     func signature(userIdForSRP: String,
                    saltHex: String,
                    secretBlock: Data,
@@ -28,6 +29,7 @@ extension VerifyPasswordSRP {
             let strippedPoolId =  strippedPoolId(poolId)
             let dateStr = stateData.clientTimestamp.utcString
             let clientClass = type(of: srpClient)
+            // swiftlint:disable:next identifier_name
             let u = try clientClass.calculateUHexValue(
                 clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
                 serverPublicKeyHexValue: serverPublicBHexString)
@@ -93,10 +95,10 @@ extension VerifyPasswordSRP {
                            serviceSecretBlock: Data) -> Data {
         let key = SymmetricKey(data: authenticationKey)
         var hmac = HMAC<SHA256>.init(key: key)
-        hmac.update(data: poolName.data(using: .utf8)!)
-        hmac.update(data: srpUserName.data(using: .utf8)!)
+        hmac.update(data: Data(poolName.utf8))
+        hmac.update(data: Data(srpUserName.utf8))
         hmac.update(data: serviceSecretBlock)
-        hmac.update(data: srpTimeStamp.data(using: .utf8)!)
+        hmac.update(data: Data(srpTimeStamp.utf8))
         return Data(hmac.finalize())
     }
 }
