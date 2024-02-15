@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.26.2 (2024-02-15)
+
+### Bug Fixes
+
+- **DataStore**: pass DataStore source for API decoding (#3515)
+- **DataStore**: serialize IncomingAsyncSubscriptionEventPublisher events (#3489)
+
 ## 2.26.1 (2024-02-12)
 
 ### Bug Fixes
