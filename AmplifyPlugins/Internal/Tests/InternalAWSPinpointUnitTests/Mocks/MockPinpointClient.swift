@@ -36,4 +36,8 @@ class MockPinpointClient: PinpointClientProtocol {
         }
     }
 
+    func deleteUserEndpoints(input: DeleteUserEndpointsInput) async throws -> DeleteUserEndpointsOutput {
+        return DeleteUserEndpointsOutput()
+    }
+
 }

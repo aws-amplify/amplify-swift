@@ -15,6 +15,8 @@ public protocol PinpointClientProtocol {
 
     func putEvents(input: PutEventsInput) async throws -> PutEventsOutput
 
+    func deleteUserEndpoints(input: DeleteUserEndpointsInput) async throws -> DeleteUserEndpointsOutput
+
 }
 
 extension PinpointClient: PinpointClientProtocol { }

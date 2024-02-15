@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Logging
 import AWSCloudWatchLogs
 
 class AWSCloudWatchClientHelper {
