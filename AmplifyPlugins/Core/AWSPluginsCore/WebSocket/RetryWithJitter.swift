@@ -8,8 +8,9 @@
 
 import Foundation
 
-actor RetryWithJitter {
-    enum Error: Swift.Error {
+@_spi(AmplifySwift)
+public actor RetryWithJitter {
+    public enum Error: Swift.Error {
         case maxRetryExceeded
     }
     let base: UInt
@@ -36,7 +37,7 @@ actor RetryWithJitter {
 }
 
 extension RetryWithJitter {
-    static func execute<Output>(
+    public static func execute<Output>(
         maxRetryCount: UInt = 8,
         _ operation: @escaping () async throws -> Output
     ) async throws -> Output {

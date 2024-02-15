@@ -9,10 +9,27 @@
 import Foundation
 import Amplify
 import Combine
+@_spi(AmplifySwift) import AWSPluginsCore
 
 protocol AppSyncRequestInterceptor {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest
 }
+
+protocol AppSyncWebSocketClientProtocol {
+    var isConnected: Bool { get async }
+    var publisher: AnyPublisher<WebSocketEvent, Never> { get async }
+
+    func connect(
+        autoConnectOnNetworkStatusChange: Bool,
+        autoRetryOnConnectionFailure: Bool
+    ) async
+
+    func disconnect() async
+
+    func write(message: String) async throws
+}
+
+extension WebSocketClient: AppSyncWebSocketClientProtocol { }
 
 actor AppSyncRealTimeClient {
 
@@ -34,7 +51,7 @@ actor AppSyncRealTimeClient {
     private let endpoint: URL
     private let requestInterceptor: AppSyncRequestInterceptor
 
-    private var webSocketClient: WebSocketClient
+    private var webSocketClient: AppSyncWebSocketClientProtocol
     private let subject = PassthroughSubject<AppSyncRealTimeResponse, Never>()
     private var subscriptions = [String: String]()
 
@@ -49,18 +66,14 @@ actor AppSyncRealTimeClient {
 
     init(
         endpoint: URL,
-        connectionInterceptor: WebSocketInterceptor,
-        requestInterceptor: AppSyncRequestInterceptor
+        requestInterceptor: AppSyncRequestInterceptor,
+        webSocketClient: AppSyncWebSocketClientProtocol
     ) {
         self.state = .none
         self.endpoint = endpoint
         self.requestInterceptor = requestInterceptor
 
-        self.webSocketClient = WebSocketClient(
-            url: Self.appSyncRealTimeEndpoint(endpoint),
-            protocols: ["graphql-ws"],
-            interceptor: connectionInterceptor
-        )
+        self.webSocketClient = webSocketClient
 
         Task { await self.subscribeToWebSocketEvent() }
     }
@@ -105,15 +118,18 @@ actor AppSyncRealTimeClient {
         log.debug("[AppSyncRealTimeClient] client is disconnected")
     }
 
-    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
-        defer { subscriptions[id] = query }
+    func subscribe(id: String, query: String) throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
-        try await connect()
         if self.isConnected {
             Task {
                 try await startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
+                subscriptions[id] = query
             }
+        } else {
+            subscriptions[id] = query
+            Task { try await connect() }
         }
+
         return filterAppSyncSubscriptionEvent(with: id)
     }
 
@@ -324,26 +340,6 @@ extension AppSyncRealTimeClient {
 }
 
 extension AppSyncRealTimeClient {
-    static func appSyncRealTimeEndpoint(_ url: URL) -> URL {
-        let customDomainURL = url.appendingPathComponent("realtime")
-        guard let host = url.host, host.hasSuffix("amazonaws.com") else {
-            return customDomainURL
-        }
-
-        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return customDomainURL
-        }
-
-        urlComponents.host = host.replacingOccurrences(of: "appsync-api", with: "appsync-realtime-api")
-        guard let realTimeUrl = urlComponents.url else {
-            return customDomainURL
-        }
-        return realTimeUrl
-    }
-
-}
-
-extension AppSyncRealTimeClient {
     private static func recoverableErrorOrValidatedResponse(
         _ response: AppSyncRealTimeResponse,
         id: String?,
@@ -401,18 +397,23 @@ extension AppSyncRealTimeClient {
                 .flatMap { Self.recoverableErrorOrValidatedResponse($0, id: id, validation: validateResponse) }
                 .timeout(.seconds(timeout), scheduler: DispatchQueue.global(qos: .userInitiated), customError: { .timeout })
                 .first() // only take one valid response and finish
+                .catch {
+                    $0 == AppSyncRealTimeRequest.Error.unknown
+                    ? Empty(
+                        outputType: AppSyncRealTimeResponse.self,
+                        failureType: AppSyncRealTimeRequest.Error.self
+                      ).eraseToAnyPublisher()
+                    : Fail(error: $0).eraseToAnyPublisher()
+                }
                 .sink { completion in
                     switch completion {
                     case .finished:
                         log.debug("[AppSyncRealTimeClient] request finished successfully")
                         continuation.resume(returning: ())
                     case .failure(let error):
+                        // TODO: we should not consider unknown error as a failure to trigger the retry
                         log.debug("[AppSyncRealTimeClient] request failed, error: \(error)")
-                        if error == .unknown { // do not retry on unknown error
-                            continuation.resume(returning: ())
-                        } else {
-                            continuation.resume(throwing: error)
-                        }
+                        continuation.resume(throwing: error)
                     }
                 } receiveValue: { _ in }
                 .store(in: &cancellables)

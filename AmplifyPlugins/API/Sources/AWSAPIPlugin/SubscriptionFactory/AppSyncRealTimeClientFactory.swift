@@ -8,7 +8,7 @@
 
 import Foundation
 import Amplify
-import AWSPluginsCore
+@_spi(AmplifySwift) import AWSPluginsCore
 
 actor AppSyncRealTimeClientFactory {
     private struct MapperCacheKey: Hashable {
@@ -39,8 +39,12 @@ actor AppSyncRealTimeClientFactory {
         } else {
             let appSyncClient = AppSyncRealTimeClient(
                 endpoint: endpoint,
-                connectionInterceptor: authInterceptor,
-                requestInterceptor: authInterceptor
+                requestInterceptor: authInterceptor,
+                webSocketClient: WebSocketClient(
+                    url: Self.appSyncRealTimeEndpoint(endpoint),
+                    protocols: ["graphql-ws"],
+                    interceptor: authInterceptor
+                )
             )
 
             // store the connection provider for this api
@@ -94,4 +98,25 @@ actor AppSyncRealTimeClientFactory {
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")
         }
     }
+}
+
+
+extension AppSyncRealTimeClientFactory {
+    static func appSyncRealTimeEndpoint(_ url: URL) -> URL {
+        let customDomainURL = url.appendingPathComponent("realtime")
+        guard let host = url.host, host.hasSuffix("amazonaws.com") else {
+            return customDomainURL
+        }
+
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return customDomainURL
+        }
+
+        urlComponents.host = host.replacingOccurrences(of: "appsync-api", with: "appsync-realtime-api")
+        guard let realTimeUrl = urlComponents.url else {
+            return customDomainURL
+        }
+        return realTimeUrl
+    }
+
 }

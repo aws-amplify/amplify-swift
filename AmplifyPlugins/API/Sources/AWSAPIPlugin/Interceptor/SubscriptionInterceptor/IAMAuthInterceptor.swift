@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSPluginsCore
+@_spi(AmplifySwift) import AWSPluginsCore
 import Amplify
 import AWSClientRuntime
 import ClientRuntime

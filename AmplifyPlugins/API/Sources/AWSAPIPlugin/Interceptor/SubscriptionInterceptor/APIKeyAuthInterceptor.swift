@@ -8,6 +8,7 @@
 
 import Foundation
 import Amplify
+@_spi(AmplifySwift) import AWSPluginsCore
 
 class APIKeyAuthInterceptor {
     private let apiKey: String

@@ -8,6 +8,7 @@
 
 import Foundation
 
+@_spi(AmplifySwift)
 public enum WebSocketEvent {
     case connected
     case disconnected(URLSessionWebSocketTask.CloseCode, String?)

@@ -9,6 +9,7 @@
 import Network
 import Combine
 
+@_spi(AmplifySwift)
 public final class AmplifyNetworkMonitor {
 
     public enum State {

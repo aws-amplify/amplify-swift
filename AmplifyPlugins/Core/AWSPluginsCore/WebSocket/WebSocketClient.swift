@@ -10,10 +10,12 @@ import Foundation
 import Amplify
 import Combine
 
+@_spi(AmplifySwift)
 public protocol WebSocketInterceptor {
     func interceptConnection(url: URL) async -> URL
 }
 
+@_spi(AmplifySwift)
 public final actor WebSocketClient: NSObject {
     private let url: URL
     private let protocols: [String]
@@ -43,12 +45,12 @@ public final actor WebSocketClient: NSObject {
         self.connection?.state == .running
     }
 
-    init(
+    public init(
         url: URL,
         protocols: [String] = [],
         interceptor: WebSocketInterceptor? = nil
     ) {
-        self.url = useWssScheme(url: url)
+        self.url = Self.useWssScheme(url: url)
         self.protocols = protocols
         self.interceptor = interceptor
         self.autoConnectOnNetworkStatusChange = false
@@ -273,14 +275,15 @@ extension WebSocketClient {
     }
 }
 
-fileprivate func useWssScheme(url: URL) -> URL {
-    guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-        return url
+extension WebSocketClient {
+    static func useWssScheme(url: URL) -> URL {
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return url
+        }
+        urlComponents.scheme = "wss"
+        return urlComponents.url ?? url
     }
-    urlComponents.scheme = "wss"
-    return urlComponents.url ?? url
 }
-
 
 extension WebSocketClient: DefaultLogger {
     public static var log: Logger {
