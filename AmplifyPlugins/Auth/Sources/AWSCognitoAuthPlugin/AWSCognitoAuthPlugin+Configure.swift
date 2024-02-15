@@ -103,9 +103,7 @@ extension AWSCognitoAuthPlugin {
             }
 
             if let requestTimeout = networkPreferences?.timeoutIntervalForRequest {
-                let requestTimeOutMs = requestTimeout * 1_000
-                // TODO: Figure out how to manage connection time outs
-                //configuration.connectTimeoutMs = UInt32(requestTimeOutMs)
+                configuration.httpClientConfiguration = HttpClientConfiguration(connectTimeout: requestTimeout)
             }
 
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
@@ -127,9 +125,7 @@ extension AWSCognitoAuthPlugin {
             configuration.httpClientEngine = .userAgentEngine(for: configuration)
 
             if let requestTimeout = networkPreferences?.timeoutIntervalForRequest {
-                let requestTimeOutMs = requestTimeout * 1_000
-                // TODO: Figure out how to manage connection time outs
-                //configuration.connectTimeoutMs = UInt32(requestTimeOutMs)
+                configuration.httpClientConfiguration = HttpClientConfiguration(connectTimeout: requestTimeout)
             }
 
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {

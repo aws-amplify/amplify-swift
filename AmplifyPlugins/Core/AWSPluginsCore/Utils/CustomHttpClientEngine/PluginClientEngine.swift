@@ -14,7 +14,7 @@ public func baseClientEngine(
     for configuration: AWSClientConfiguration<some AWSServiceSpecificConfiguration>
 ) -> HTTPClient {
 
-    /// An example of how an client engine can be overridden for the aws-swift-sdk
+    /// An example of how a client engine provided by aws-swift-sdk can be overridden
     /// ```
     ///     let baseClientEngine: HTTPClient
     ///     #if os(iOS) || os(macOS)

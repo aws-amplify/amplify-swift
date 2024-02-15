@@ -45,8 +45,6 @@ extension S3Client.S3ClientConfiguration {
             useFIPS: useFIPS,
             retryMode: awsRetryMode,
             appID: appID
-            // TODO: Figure out how to manage connection time outs
-//            connectTimeoutMs: connectTimeoutMs
         )
 
         return copy
