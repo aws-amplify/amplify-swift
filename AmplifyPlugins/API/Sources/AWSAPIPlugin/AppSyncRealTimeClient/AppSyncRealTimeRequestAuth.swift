@@ -40,8 +40,9 @@ public enum AppSyncRealTimeRequestAuth {
             self.payload = payload
         }
 
-        func withBaseURL(_ url: URL) -> URL {
-            guard let headerJsonData = try? JSONEncoder().encode(header) else {
+        func withBaseURL(_ url: URL, encoder: JSONEncoder? = nil) -> URL {
+            let jsonEncoder: JSONEncoder = encoder ?? JSONEncoder()
+            guard let headerJsonData = try? jsonEncoder.encode(header) else {
                 return url
             }
 

@@ -81,8 +81,11 @@ actor AppSyncRealTimeClient {
         self.state = .connecting
         log.debug("[AppSyncRealTimeClient] client start connecting")
 
-        try await RetryWithJitter.execute {
-            try await self.sendRequestWithTimeout {
+        try await RetryWithJitter.execute { [weak self] in
+            guard let self else { return }
+            try await Self.sendRequestWithTimeout(
+                on: self.subject.eraseToAnyPublisher()
+            ) {
                 $0.type == .connectionAck
             } requestFactory: { [weak self] in
                 await self?.webSocketClient.connect(
@@ -118,8 +121,12 @@ actor AppSyncRealTimeClient {
         defer { subscriptions.removeValue(forKey: id) }
         log.debug("[AppSyncRealTimeClient] unsubscribing: \(id)")
 
-        try await RetryWithJitter.execute {
-            try await self.sendRequestWithTimeout(id: id) {
+        try await RetryWithJitter.execute { [weak self] in
+            guard let self else { return }
+            try await Self.sendRequestWithTimeout(
+                id: id,
+                on: self.subject.eraseToAnyPublisher()
+            ) {
                 $0.id == id && $0.type == .stopAck
             } requestFactory: { [weak self] in
                 try await self?.writeAppSyncEvent(.stop(id))
@@ -130,8 +137,12 @@ actor AppSyncRealTimeClient {
     private func startSubscription(id: String, query: String) async throws -> AnyCancellable {
         log.debug("[AppSyncRealTimeClient] Starting subscription request \(id), query: \(query)")
 
-        try await RetryWithJitter.execute {
-            try await self.sendRequestWithTimeout(id: id) {
+        try await RetryWithJitter.execute { [weak self] in
+            guard let self else { return }
+            try await Self.sendRequestWithTimeout(
+                id: id,
+                on: self.subject.eraseToAnyPublisher()
+            ) {
                 $0.id == id && $0.type == .startAck
             } requestFactory: { [weak self] in
                 try await self?.writeAppSyncEvent(
@@ -346,7 +357,7 @@ extension AppSyncRealTimeClient {
 
         if id != nil && response.id == id,
            response.type == .error,
-           let errors = response.payload?.errorType?.errors?.asArray {
+           let errors = response.payload?.errors?.asArray {
 
             let errorTypes = errors.map { $0.errorType?.stringValue }.compactMap { $0 }
             if errorTypes.contains(where: { $0.contains(limitExceededErrorString) }) {
@@ -376,15 +387,16 @@ extension AppSyncRealTimeClient {
     /**
 
      */
-    nonisolated func sendRequestWithTimeout(
+    static func sendRequestWithTimeout(
         _ timeout: TimeInterval = 2,
         id: String? = nil,
+        on responseStream: AnyPublisher<AppSyncRealTimeResponse, Never>,
         filter validateResponse: @escaping (AppSyncRealTimeResponse) -> Bool,
         requestFactory: @escaping () async throws -> Void
     ) async throws {
         var cancellables = Set<AnyCancellable>()
-        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Swift.Error>) in
-            self?.subject.eraseToAnyPublisher()
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) in
+            responseStream
                 .setFailureType(to: AppSyncRealTimeRequest.Error.self)
                 .flatMap { Self.recoverableErrorOrValidatedResponse($0, id: id, validation: validateResponse) }
                 .timeout(.seconds(timeout), scheduler: DispatchQueue.global(qos: .userInitiated), customError: { .timeout })
@@ -392,10 +404,10 @@ extension AppSyncRealTimeClient {
                 .sink { completion in
                     switch completion {
                     case .finished:
-                        self?.log.debug("[AppSyncRealTimeClient] request finished successfully")
+                        log.debug("[AppSyncRealTimeClient] request finished successfully")
                         continuation.resume(returning: ())
                     case .failure(let error):
-                        self?.log.debug("[AppSyncRealTimeClient] request failed, error: \(error)")
+                        log.debug("[AppSyncRealTimeClient] request failed, error: \(error)")
                         if error == .unknown { // do not retry on unknown error
                             continuation.resume(returning: ())
                         } else {
