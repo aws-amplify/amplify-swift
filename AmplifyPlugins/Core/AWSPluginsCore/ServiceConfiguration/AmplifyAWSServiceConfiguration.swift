@@ -15,7 +15,7 @@ import Amplify
 public class AmplifyAWSServiceConfiguration {
 
     /// - Tag: AmplifyAWSServiceConfiguration.amplifyVersion
-    public static let amplifyVersion = "2.26.1"
+    public static let amplifyVersion = "2.26.2"
 
     /// - Tag: AmplifyAWSServiceConfiguration.platformName
     public static let platformName = "amplify-swift"
