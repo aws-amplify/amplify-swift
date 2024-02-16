@@ -22,6 +22,7 @@ public struct AppSyncRealTimeResponse {
         case error
         case connectionError = "connection_error"
         case keepAlive = "ka"
+        case starting
     }
 }
 

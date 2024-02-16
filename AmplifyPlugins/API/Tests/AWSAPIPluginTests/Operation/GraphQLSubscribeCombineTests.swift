@@ -31,11 +31,6 @@
 //    var receivedDataValueSuccess: XCTestExpectation!
 //    var receivedDataValueError: XCTestExpectation!
 //
-//    // Handles to the subscription item and event handler used to make mock calls into the
-//    // subscription system
-//    var subscriptionItem: SubscriptionItem!
-//    var subscriptionEventHandler: SubscriptionEventHandler!
-//
 //    var connectionStateSink: AnyCancellable?
 //    var subscriptionDataSink: AnyCancellable?
 //
@@ -76,99 +71,99 @@
 //        try await subscribe(expecting: testJSON)
 //        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 //
-//        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-//        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-//        subscriptionEventHandler(.data(testData), subscriptionItem)
-//        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
-//
-//        await waitForSubscriptionExpectations()
+////        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+////        subscriptionEventHandler(.connection(.connected), subscriptionItem)
+////        subscriptionEventHandler(.data(testData), subscriptionItem)
+////        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+////
+////        await waitForSubscriptionExpectations()
 //    }
 //
-//    func testConnectionWithNoData() async throws {
-//        receivedCompletionFailure.isInverted = true
-//        receivedDataValueSuccess.isInverted = true
-//        receivedDataValueError.isInverted = true
-//
-//        try await subscribe()
-//        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-//
-//        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-//        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-//        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
-//
-//        await waitForSubscriptionExpectations()
-//    }
-//
-//    func testConnectionError() async throws {
-//        receivedCompletionSuccess.isInverted = true
-//        receivedStateValueConnected.isInverted = true
-//        receivedStateValueDisconnected.isInverted = true
-//        receivedDataValueSuccess.isInverted = true
-//        receivedDataValueError.isInverted = true
-//
-//        try await subscribe()
-//        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-//
-//        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-//        subscriptionEventHandler(.failed("Error"), subscriptionItem)
-//
-//        await waitForSubscriptionExpectations()
-//    }
-//
-//    func testDecodingError() async throws {
-//        let testData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
-//        receivedCompletionFailure.isInverted = true
-//        receivedDataValueSuccess.isInverted = true
-//
-//        try await subscribe()
-//        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-//
-//        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-//        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-//        subscriptionEventHandler(.data(testData), subscriptionItem)
-//        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
-//
-//        await waitForSubscriptionExpectations()
-//    }
-//
-//    func testMultipleSuccessValues() async throws {
-//        let testJSON: JSONValue = ["foo": true]
-//        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
-//        receivedCompletionFailure.isInverted = true
-//        receivedDataValueError.isInverted = true
-//        receivedDataValueSuccess.expectedFulfillmentCount = 2
-//
-//        try await subscribe(expecting: testJSON)
-//        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-//
-//        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-//        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-//        subscriptionEventHandler(.data(testData), subscriptionItem)
-//        subscriptionEventHandler(.data(testData), subscriptionItem)
-//        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
-//
-//        await waitForSubscriptionExpectations()
-//    }
-//
-//    func testMixedSuccessAndErrorValues() async throws {
-//        let successfulTestData = Data(#"{"data": {"foo": true}}"#.utf8)
-//        let invalidTestData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
-//        receivedCompletionFailure.isInverted = true
-//        receivedDataValueSuccess.expectedFulfillmentCount = 2
-//
-//        try await subscribe()
-//        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-//
-//        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-//        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-//        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
-//        subscriptionEventHandler(.data(invalidTestData), subscriptionItem)
-//        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
-//        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
-//
-//        await waitForSubscriptionExpectations()
-//    }
-//
+////    func testConnectionWithNoData() async throws {
+////        receivedCompletionFailure.isInverted = true
+////        receivedDataValueSuccess.isInverted = true
+////        receivedDataValueError.isInverted = true
+////
+////        try await subscribe()
+////        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+////
+////        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+////        subscriptionEventHandler(.connection(.connected), subscriptionItem)
+////        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+////
+////        await waitForSubscriptionExpectations()
+////    }
+////
+////    func testConnectionError() async throws {
+////        receivedCompletionSuccess.isInverted = true
+////        receivedStateValueConnected.isInverted = true
+////        receivedStateValueDisconnected.isInverted = true
+////        receivedDataValueSuccess.isInverted = true
+////        receivedDataValueError.isInverted = true
+////
+////        try await subscribe()
+////        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+////
+////        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+////        subscriptionEventHandler(.failed("Error"), subscriptionItem)
+////
+////        await waitForSubscriptionExpectations()
+////    }
+////
+////    func testDecodingError() async throws {
+////        let testData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
+////        receivedCompletionFailure.isInverted = true
+////        receivedDataValueSuccess.isInverted = true
+////
+////        try await subscribe()
+////        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+////
+////        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+////        subscriptionEventHandler(.connection(.connected), subscriptionItem)
+////        subscriptionEventHandler(.data(testData), subscriptionItem)
+////        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+////
+////        await waitForSubscriptionExpectations()
+////    }
+////
+////    func testMultipleSuccessValues() async throws {
+////        let testJSON: JSONValue = ["foo": true]
+////        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
+////        receivedCompletionFailure.isInverted = true
+////        receivedDataValueError.isInverted = true
+////        receivedDataValueSuccess.expectedFulfillmentCount = 2
+////
+////        try await subscribe(expecting: testJSON)
+////        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+////
+////        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+////        subscriptionEventHandler(.connection(.connected), subscriptionItem)
+////        subscriptionEventHandler(.data(testData), subscriptionItem)
+////        subscriptionEventHandler(.data(testData), subscriptionItem)
+////        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+////
+////        await waitForSubscriptionExpectations()
+////    }
+////
+////    func testMixedSuccessAndErrorValues() async throws {
+////        let successfulTestData = Data(#"{"data": {"foo": true}}"#.utf8)
+////        let invalidTestData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
+////        receivedCompletionFailure.isInverted = true
+////        receivedDataValueSuccess.expectedFulfillmentCount = 2
+////
+////        try await subscribe()
+////        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
+////
+////        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+////        subscriptionEventHandler(.connection(.connected), subscriptionItem)
+////        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
+////        subscriptionEventHandler(.data(invalidTestData), subscriptionItem)
+////        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
+////        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+////
+////        await waitForSubscriptionExpectations()
+////    }
+////
 //    // MARK: - Utilities
 //
 //    /// Sets up test with a mock subscription connection handler that populates

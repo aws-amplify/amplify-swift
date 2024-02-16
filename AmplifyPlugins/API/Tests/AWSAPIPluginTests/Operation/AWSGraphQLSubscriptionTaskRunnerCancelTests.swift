@@ -29,7 +29,7 @@
 //    let testBody = Data()
 //    let testPath = "testPath"
 //
-//    func setUp(subscriptionConnectionFactory: SubscriptionConnectionFactory) async {
+//    func setUp(appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol) async {
 //        apiPlugin = AWSAPIPlugin()
 //
 //        let authService = MockAWSAuthService()
@@ -49,7 +49,7 @@
 //            let dependencies = AWSAPIPlugin.ConfigurationDependencies(
 //                pluginConfig: pluginConfig,
 //                authService: authService,
-//                subscriptionConnectionFactory: subscriptionConnectionFactory,
+//                appSyncRealTimeClientFactory: appSyncRealTimeClientFactory,
 //                logLevel: .error
 //            )
 //            apiPlugin.configure(using: dependencies)
@@ -76,7 +76,7 @@
 //            }, onUnsubscribe: {_ in
 //            })
 //        })
-//        await setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
+//        await setUp(appSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 //
 //        let request = GraphQLRequest(apiName: apiName,
 //                                     document: testDocument,
@@ -117,11 +117,11 @@
 //    }
 //    
 //    func testFailureOnConnection() async {
-//        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
+//        let mockAppSyncRealTimeClientFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
 //            throw APIError.invalidConfiguration("something went wrong", "", nil)
 //        })
 //
-//        await setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
+//        await setUp(appSyncRealTimeClientFactory: mockAppSyncRealTimeClientFactory)
 //
 //        let request = GraphQLRequest(apiName: apiName,
 //                                     document: testDocument,

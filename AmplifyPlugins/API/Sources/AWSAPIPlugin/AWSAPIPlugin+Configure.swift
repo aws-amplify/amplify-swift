@@ -52,14 +52,14 @@ extension AWSAPIPlugin {
     struct ConfigurationDependencies {
         let authService: AWSAuthServiceBehavior
         let pluginConfig: AWSAPICategoryPluginConfiguration
-        let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory
+        let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
         let logLevel: Amplify.LogLevel
 
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,
             authService: AWSAuthServiceBehavior? = nil,
-            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory? = nil,
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
             logLevel: Amplify.LogLevel? = nil
         ) throws {
             let authService = authService
@@ -85,7 +85,7 @@ extension AWSAPIPlugin {
         init(
             pluginConfig: AWSAPICategoryPluginConfiguration,
             authService: AWSAuthServiceBehavior,
-            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory,
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
             logLevel: Amplify.LogLevel
         ) {
             self.pluginConfig = pluginConfig

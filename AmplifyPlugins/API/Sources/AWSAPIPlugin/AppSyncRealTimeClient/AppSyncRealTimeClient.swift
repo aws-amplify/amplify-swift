@@ -31,7 +31,7 @@ protocol AppSyncWebSocketClientProtocol {
 
 extension WebSocketClient: AppSyncWebSocketClientProtocol { }
 
-actor AppSyncRealTimeClient {
+actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     static let jsonEncoder = JSONEncoder()
     static let jsonDecoder = JSONDecoder()
@@ -161,6 +161,8 @@ actor AppSyncRealTimeClient {
             ) {
                 $0.id == id && $0.type == .startAck
             } requestFactory: { [weak self] in
+                // makeup and inject connecting event to conform GraphQLSubscriptionEvent
+                self?.subject.send(.init(id: id, payload: nil, type: .starting))
                 try await self?.writeAppSyncEvent(
                     .start(.init(id: id, data: query, auth: nil))
                 )
@@ -239,6 +241,7 @@ actor AppSyncRealTimeClient {
                 return .error(Self.decodeGraphQLErrors(response.payload))
             case .data:
                 return response.payload.map { .data($0) }
+            case .starting: return .subscribing
             default:
                 return nil
             }

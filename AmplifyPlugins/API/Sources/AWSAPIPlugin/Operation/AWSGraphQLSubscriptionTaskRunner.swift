@@ -17,13 +17,13 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     public var request: GraphQLOperationRequest<R>
     public var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
 
-    var appSyncClient: AppSyncRealTimeClient?
+    var appSyncClient: AppSyncRealTimeClientProtocol?
     var subscription: AnyCancellable? {
         willSet {
             self.subscription?.cancel()
         }
     }
-    let appSyncClientFactory: AppSyncRealTimeClientFactory
+    let appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let authService: AWSAuthServiceBehavior
     var apiAuthProviderFactory: APIAuthProviderFactory
@@ -34,7 +34,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 
     init(request: Request,
          pluginConfig: AWSAPICategoryPluginConfiguration,
-         appSyncClientFactory: AppSyncRealTimeClientFactory,
+         appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol,
          authService: AWSAuthServiceBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory) {
         self.request = request
@@ -132,6 +132,8 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
                 return
             }
             onGraphQLResponseData(data)
+        case .subscribing:
+            send(GraphQLSubscriptionEvent<R>.connection(.connecting))
         case .subscribed:
             send(GraphQLSubscriptionEvent<R>.connection(.connected))
         case .unsubscribed:
@@ -187,11 +189,11 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory
+    let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
     let authService: AWSAuthServiceBehavior
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
-    var appSyncRealTimeClient: AppSyncRealTimeClient?
+    var appSyncRealTimeClient: AppSyncRealTimeClientProtocol?
     var subscription: AnyCancellable? {
         willSet {
             self.subscription?.cancel()
@@ -203,7 +205,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     init(request: GraphQLOperationRequest<R>,
          pluginConfig: AWSAPICategoryPluginConfiguration,
-         appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory,
+         appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
          authService: AWSAuthServiceBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory,
          inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
@@ -286,6 +288,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                     for: endpointConfig,
                     endpoint: endpointConfig.baseURL,
                     authService: authService,
+                    authType: nil,
                     apiAuthProviderFactory: apiAuthProviderFactory
                 )
 
@@ -323,6 +326,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                 return
             }
             onGraphQLResponseData(data)
+        case .subscribing:
+            dispatchInProcess(data: GraphQLSubscriptionEvent<R>.connection(.connecting))
         case .subscribed:
             dispatchInProcess(data: GraphQLSubscriptionEvent<R>.connection(.connected))
         case .unsubscribed:

@@ -8,15 +8,33 @@
 
 import Foundation
 import Amplify
+import Combine
 @_spi(AmplifySwift) import AWSPluginsCore
 
-actor AppSyncRealTimeClientFactory {
+protocol AppSyncRealTimeClientFactoryProtocol {
+    func getAppSyncRealTimeClient(
+        for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+        endpoint: URL,
+        authService: AWSAuthServiceBehavior,
+        authType: AWSAuthorizationType?,
+        apiAuthProviderFactory: APIAuthProviderFactory
+    ) async throws -> AppSyncRealTimeClientProtocol
+}
+
+protocol AppSyncRealTimeClientProtocol {
+    func connect() async throws
+    func disconnect() async
+    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never>
+    func unsubscribe(id: String) async throws
+}
+
+actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
     private struct MapperCacheKey: Hashable {
         let apiName: String
         let authType: AWSAuthorizationType?
     }
 
-    private var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClient]()
+    private var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
 
     public func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
@@ -24,7 +42,7 @@ actor AppSyncRealTimeClientFactory {
         authService: AWSAuthServiceBehavior,
         authType: AWSAuthorizationType? = nil,
         apiAuthProviderFactory: APIAuthProviderFactory
-    ) throws -> AppSyncRealTimeClient {
+    ) throws -> AppSyncRealTimeClientProtocol {
         let apiName = endpointConfig.name
 
         let authInterceptor = try self.getInterceptor(
