@@ -45,6 +45,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     }
 
     public func cancel() {
+        self.send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
         Task { [weak self] in
             guard let self else {
                 return
@@ -54,8 +55,6 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             }
             do {
                 try await appSyncClient.unsubscribe(id: self.subscriptionId)
-                let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.disconnected)
-                self.send(subscriptionEvent)
             } catch {
                 print("Failed to unsubscribe \(self.subscriptionId)")
             }
@@ -224,7 +223,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     }
 
     override public func cancel() {
-        let superCancel = super.cancel
+        super.cancel()
+
         Task { [weak self] in
             guard let self else {
                 return
@@ -236,12 +236,6 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
             do {
                 try await appSyncRealTimeClient.unsubscribe(id: subscriptionId)
-                let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.disconnected)
-                dispatchInProcess(data: subscriptionEvent)
-
-
-                dispatch(result: .successfulVoid)
-                superCancel()
                 finish()
             } catch {
                 print("Failed to unsubscribe \(error)")

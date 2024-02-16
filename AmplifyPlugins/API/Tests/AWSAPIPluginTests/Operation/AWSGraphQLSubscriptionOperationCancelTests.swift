@@ -10,11 +10,11 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
-@testable import AWSPluginsCore
+@testable @_spi(AmplifySwift) import AWSPluginsCore
 @testable import AWSPluginsTestCommon
 
 // swiftlint:disable:next type_name
-class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
+class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     var apiPlugin: AWSAPIPlugin!
     var authService: MockAWSAuthService!
     var pluginConfig: AWSAPICategoryPluginConfiguration!
@@ -29,7 +29,7 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
     let testBody = Data()
     let testPath = "testPath"
 
-    func setUp(appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol) async {
+    func setUp(mockAppSyncRealTimeClientFactory: MockSubscriptionConnectionFactory) async {
         apiPlugin = AWSAPIPlugin()
 
         let authService = MockAWSAuthService()
@@ -49,7 +49,7 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
                 authService: authService,
-                appSyncRealTimeClientFactory: appSyncRealTimeClientFactory,
+                appSyncRealTimeClientFactory: mockAppSyncRealTimeClientFactory,
                 logLevel: .error
             )
             apiPlugin.configure(using: dependencies)
@@ -65,13 +65,12 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
             XCTFail("Error setting up Amplify: \(error)")
         }
     }
-    
-    func testCancelSendsCompletion() async throws {
-        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
-            return MockAppSyncRealTimeClient()
-        })
 
-        await setUp(appSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
+    func testCancelSendsCompletion() async {
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
+            MockAppSyncRealTimeClient()
+        })
+        await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
@@ -79,45 +78,79 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                                      responseType: JSONValue.self)
 
         let receivedValueConnecting = expectation(description: "Received value for connecting")
-        let receivedValueDisconnected = expectation(description: "Received value for disconnected")
+
+        let valueListener: GraphQLSubscriptionOperation<JSONValue>.InProcessListener = { value in
+            switch value {
+            case .connection(let state):
+                switch state {
+                case .connecting:
+                    print("1/3 Subscription is connecting")
+                    receivedValueConnecting.fulfill()
+                case .connected:
+                    break
+                case .disconnected:
+                    break
+                }
+            default:
+                XCTFail("Unexpected value on on value listener: \(value)")
+            }
+        }
+
+        let completionListener: GraphQLSubscriptionOperation<JSONValue>.ResultListener = { _ in }
+
+        let operation = apiPlugin.subscribe(
+            request: request,
+            valueListener: valueListener,
+            completionListener: completionListener
+        )
+        await fulfillment(of: [receivedValueConnecting], timeout: 5)
+
         let receivedCompletion = expectation(description: "Received completion")
         let receivedFailure = expectation(description: "Received failure")
         receivedFailure.isInverted = true
-        let subscriptionEvents = apiPlugin.subscribe(request: request)
-        Task {
-            do {
-                for try await subscriptionEvent in subscriptionEvents {
-                    switch subscriptionEvent {
-                    case .connection(let state):
-                        switch state {
-                        case .connecting:
-                            receivedValueConnecting.fulfill()
-                        case .disconnected:
-                            receivedValueDisconnected.fulfill()
-                        default:
-                            XCTFail("Unexpected value on value listener: \(state)")
-                        }
-                    default:
-                        XCTFail("Unexpected value on on value listener: \(subscriptionEvent)")
-                    }
+        let receivedValueDisconnected = expectation(description: "Received value for disconnected")
+
+        _ = operation.subscribe(inProcessListener: { value in
+            switch value {
+            case .connection(let state):
+                switch state {
+                case .connecting:
+                    XCTFail("Unexpected value on value listener: \(state)")
+                case .disconnected:
+                    print("2/3 Subscription is disconnected")
+                    receivedValueDisconnected.fulfill()
+                case .connected:
+                    break
                 }
-                receivedCompletion.fulfill()
-            } catch {
-                receivedFailure.fulfill()
+            default:
+                XCTFail("Unexpected value on on value listener: \(value)")
             }
-        }
-        await fulfillment(of: [receivedValueConnecting], timeout: 1)
-        subscriptionEvents.cancel()
-        try await MockAppSyncRealTimeClient.waitForUnsubscirbed()
-        await fulfillment(of: [receivedValueDisconnected, receivedCompletion, receivedFailure], timeout: 1)
+        })
+        _ = operation.subscribe(resultListener: { result in
+            switch result {
+            case .failure:
+                receivedFailure.fulfill()
+            case .success:
+                print("3/3 Subscription is completed successfully")
+                receivedCompletion.fulfill()
+            }
+        })
+        
+        operation.cancel()
+        XCTAssert(operation.isCancelled)
+
+        await fulfillment(
+            of: [receivedCompletion, receivedFailure, receivedValueDisconnected],
+            timeout: 1
+        )
     }
     
     func testFailureOnConnection() async {
-        let mockAppSyncRealTimeClientFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             throw APIError.invalidConfiguration("something went wrong", "", nil)
         })
 
-        await setUp(appSyncRealTimeClientFactory: mockAppSyncRealTimeClientFactory)
+        await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
@@ -130,19 +163,31 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
         let receivedValue = expectation(description: "Received value for connecting")
         receivedValue.isInverted = true
 
-        let subscriptionEvents = apiPlugin.subscribe(request: request)
-        Task {
-            do {
-                for try await _ in subscriptionEvents {
-                    receivedValue.fulfill()
-                }
-                receivedCompletion.fulfill()
-            } catch {
+        let valueListener: GraphQLSubscriptionOperation<JSONValue>.InProcessListener = { _ in
+            receivedValue.fulfill()
+        }
+
+        let completionListener: GraphQLSubscriptionOperation<JSONValue>.ResultListener = { result in
+            switch result {
+            case .failure:
                 receivedFailure.fulfill()
+            case .success:
+                receivedCompletion.fulfill()
             }
         }
-        
-        await fulfillment(of: [receivedValue, receivedFailure, receivedCompletion], timeout: 0.3)
+
+        let operation = apiPlugin.subscribe(
+            request: request,
+            valueListener: valueListener,
+            completionListener: completionListener
+        )
+
+        await fulfillment(
+            of: [receivedCompletion, receivedFailure, receivedValue],
+            timeout: 0.3
+        )
+
+        XCTAssert(operation.isFinished)
     }
 
     func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async {
@@ -152,35 +197,49 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
             return MockAppSyncRealTimeClient()
         })
 
-        await setUp(appSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
+        await setUp(mockAppSyncRealTimeClientFactory: mockSubscriptionConnectionFactory)
 
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
         
+        
         let receivedValue = expectation(description: "Received value for connecting")
-        receivedValue.expectedFulfillmentCount = 1
         receivedValue.assertForOverFulfill = false
+
+        let valueListener: GraphQLSubscriptionOperation<JSONValue>.InProcessListener = { _ in
+            receivedValue.fulfill()
+        }
+
+        let operation = apiPlugin.subscribe(
+            request: request,
+            valueListener: valueListener,
+            completionListener: nil
+        )
+        await fulfillment(
+            of: [receivedValue, connectionCreation],
+            timeout: 5
+        )
 
         let receivedFailure = expectation(description: "Received failure")
         receivedFailure.isInverted = true
-
         let receivedCompletion = expectation(description: "Received completion")
         
-        let subscriptionEvents = apiPlugin.subscribe(request: request)
-        Task {
-            do {
-                for try await _ in subscriptionEvents {
-                    receivedValue.fulfill()
-                }
-                receivedCompletion.fulfill()
-            } catch {
+        _ = operation.subscribe(resultListener: { result in
+            switch result {
+            case .failure:
                 receivedFailure.fulfill()
+            case .success:
+                receivedCompletion.fulfill()
             }
-        }
-        await fulfillment(of: [receivedValue, connectionCreation], timeout: 5)
-        subscriptionEvents.cancel()
-        await fulfillment(of: [receivedFailure, receivedCompletion], timeout: 5)
+        })
+        
+        operation.cancel()
+        XCTAssert(operation.isCancelled)
+        await fulfillment(
+            of: [receivedCompletion, receivedFailure],
+            timeout: 1
+        )
     }
 }

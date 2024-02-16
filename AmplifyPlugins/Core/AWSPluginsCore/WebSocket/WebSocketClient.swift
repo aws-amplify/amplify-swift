@@ -11,12 +11,12 @@ import Amplify
 import Combine
 
 @_spi(AmplifySwift)
-public protocol WebSocketInterceptor {
-    func interceptConnection(url: URL) async -> URL
-}
-
-@_spi(AmplifySwift)
 public final actor WebSocketClient: NSObject {
+    public enum Error: Swift.Error {
+        case connectionLost
+        case connectionCancelled
+    }
+
     private let url: URL
     private let protocols: [String]
     private var interceptor: WebSocketInterceptor?
@@ -24,7 +24,7 @@ public final actor WebSocketClient: NSObject {
     private let subject = PassthroughSubject<WebSocketEvent, Never>()
 
     private let retryWithJitter = RetryWithJitter()
-    private var networkMonitor = AmplifyNetworkMonitor()
+    private let networkMonitor: WebSocketNetworkMonitorProtocol
 
     // subscriptions bind with client life cycle
     private var cancelables = Set<AnyCancellable>()
@@ -48,13 +48,15 @@ public final actor WebSocketClient: NSObject {
     public init(
         url: URL,
         protocols: [String] = [],
-        interceptor: WebSocketInterceptor? = nil
+        interceptor: WebSocketInterceptor? = nil,
+        networkMonitor: WebSocketNetworkMonitorProtocol = AmplifyNetworkMonitor()
     ) {
-        self.url = Self.useWssScheme(url: url)
+        self.url = Self.useWebSocketProtocolScheme(url: url)
         self.protocols = protocols
         self.interceptor = interceptor
         self.autoConnectOnNetworkStatusChange = false
         self.autoRetryOnConnectionFailure = false
+        self.networkMonitor = networkMonitor
         super.init()
         /**
          The network monitor and retries should have a longer lifespan compared to the connection itself.
@@ -140,7 +142,15 @@ public final actor WebSocketClient: NSObject {
                 break
             }
         } catch {
-            subject.send(.error(error))
+            let nsError = error as NSError
+            switch (nsError.domain, nsError.code) {
+            case (NSURLErrorDomain.self, NSURLErrorCancelled):
+                log.debug("Skipping NSURLErrorCancelled error")
+            case (NSPOSIXErrorDomain.self, Int(ENOTCONN)):
+                log.debug("Skipping Socket is not connected error")
+            default:
+                subject.send(.error(error))
+            }
         }
 
         await self.startReadMessage()
@@ -171,24 +181,29 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
     nonisolated public func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
-        didCompleteWithError error: Error?
+        didCompleteWithError error: Swift.Error?
     ) {
-        log.debug("[WebSocketClient] URLSession didCompleteWithError: \(String(describing: error))")
-        switch error {
-        case .some(let error as NSError):
-            switch (error.domain, error.code) {
-            case ("NSURLErrorDomain", NSURLErrorNetworkConnectionLost), // connection lost
-                 ("NSPOSIXErrorDomain", 53): // background to foreground
-                Task { [weak self] in
-                    await self?.networkMonitor.updateState(.offline)
-                }
-            default:
-                self.subject.send(.error(error))
-            }
-        case .none:
-            break
+        guard let error else {
+            log.debug("[WebSocketClient] URLSession didComplete")
+            return
         }
-        self.subject.send(.disconnected(.invalid, nil))
+
+        log.debug("[WebSocketClient] URLSession didCompleteWithError: \(error))")
+
+        let nsError = (error as NSError)
+        switch (nsError.domain, nsError.code) {
+        case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost
+             (NSPOSIXErrorDomain.self, Int(ECONNABORTED)): // background to foreground
+            self.subject.send(.error(WebSocketClient.Error.connectionLost))
+            Task { [weak self] in
+                await self?.networkMonitor.updateState(.offline)
+            }
+        case (NSURLErrorDomain.self, NSURLErrorCancelled):
+            log.debug("Skipping NSURLErrorCancelled error")
+            self.subject.send(.error(WebSocketClient.Error.connectionCancelled))
+        default:
+            self.subject.send(.error(error))
+        }
     }
 }
 
@@ -215,6 +230,7 @@ extension WebSocketClient {
         case (.online, .offline):
             log.debug("[WebSocketClient] NetworkMonitor - Device went offline")
             self.connection?.cancel(with: .invalid, reason: nil)
+            self.subject.send(.disconnected(.invalid, nil))
         case (.offline, .online):
             log.debug("[WebSocketClient] NetworkMonitor - Device back online")
             await self.createConnectionAndRead()
@@ -276,11 +292,11 @@ extension WebSocketClient {
 }
 
 extension WebSocketClient {
-    static func useWssScheme(url: URL) -> URL {
+    static func useWebSocketProtocolScheme(url: URL) -> URL {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return url
         }
-        urlComponents.scheme = "wss"
+        urlComponents.scheme = urlComponents.scheme == "http" ? "ws" : "wss"
         return urlComponents.url ?? url
     }
 }

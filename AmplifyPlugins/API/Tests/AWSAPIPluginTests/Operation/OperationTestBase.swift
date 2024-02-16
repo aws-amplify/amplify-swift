@@ -68,9 +68,6 @@ class OperationTestBase: XCTestCase {
     func setUpPluginForSubscriptionResponse(
         onGetOrCreateConnection: @escaping MockSubscriptionConnectionFactory.OnGetOrCreateConnection
     ) throws {
-        let subscriptionConnectionFactory = MockSubscriptionConnectionFactory(
-            onGetOrCreateConnection: onGetOrCreateConnection
-        )
 
         let appSyncRealTimeClientFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: onGetOrCreateConnection)
 

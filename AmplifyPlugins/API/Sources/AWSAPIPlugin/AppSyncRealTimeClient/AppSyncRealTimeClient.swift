@@ -11,26 +11,6 @@ import Amplify
 import Combine
 @_spi(AmplifySwift) import AWSPluginsCore
 
-protocol AppSyncRequestInterceptor {
-    func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest
-}
-
-protocol AppSyncWebSocketClientProtocol {
-    var isConnected: Bool { get async }
-    var publisher: AnyPublisher<WebSocketEvent, Never> { get async }
-
-    func connect(
-        autoConnectOnNetworkStatusChange: Bool,
-        autoRetryOnConnectionFailure: Bool
-    ) async
-
-    func disconnect() async
-
-    func write(message: String) async throws
-}
-
-extension WebSocketClient: AppSyncWebSocketClientProtocol { }
-
 actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     static let jsonEncoder = JSONEncoder()
@@ -153,6 +133,8 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     private func startSubscription(id: String, query: String) async throws -> AnyCancellable {
         log.debug("[AppSyncRealTimeClient] Starting subscription request \(id), query: \(query)")
 
+        // TODO: (5d) it seems the current implementation is no retry on request level
+        // we just pass down the errors to subscribers to handle
         try await RetryWithJitter.execute { [weak self] in
             guard let self else { return }
             try await Self.sendRequestWithTimeout(
@@ -232,11 +214,13 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     private func filterAppSyncSubscriptionEvent(
         with id: String
     ) -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
-        subject.filter { $0.id == id }
+        subject.filter { $0.id == id || $0.type == .connectionError }
         .map { response -> AppSyncSubscriptionEvent? in
             switch response.type {
             case .startAck: return .subscribed
             case .stopAck: return .unsubscribed
+            case .connectionError:
+                return .error(Self.decodeURLErrors(response.payload))
             case .error:
                 return .error(Self.decodeGraphQLErrors(response.payload))
             case .data:
@@ -248,6 +232,20 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         }
         .compactMap { $0 }
         .eraseToAnyPublisher()
+    }
+
+    private static func decodeURLErrors(_ data: JSONValue?) -> [Error] {
+        guard let errors = data?.errors?.asArray else {
+            return []
+        }
+
+        return errors.flatMap { error -> [Error] in
+            guard let code = error.errorCode?.intValue else {
+                return []
+            }
+            let description = error.errorType?.stringValue ?? ""
+            return [URLError(URLError.Code(rawValue: code), userInfo: ["description": description])]
+        }
     }
 
     private static func decodeGraphQLErrors(_ data: JSONValue?) -> [Error] {

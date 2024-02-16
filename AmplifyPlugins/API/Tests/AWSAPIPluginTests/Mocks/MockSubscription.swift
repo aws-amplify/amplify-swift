@@ -21,7 +21,7 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
         AWSAuthServiceBehavior,
         AWSAuthorizationType?,
         APIAuthProviderFactory
-    ) async throws -> AppSyncRealTimeClient
+    ) async throws -> AppSyncRealTimeClientProtocol
 
     let onGetOrCreateConnection: OnGetOrCreateConnection
 
@@ -40,35 +40,46 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
     }
 }
 
-struct MockAppSyncRealTimeClient  {
-//    typealias OnSubscribe = (
-//        String,
-//        [String: Any?]?,
-//        @escaping SubscriptionEventHandler
-//    ) -> SubscriptionItem
-//
-//    typealias OnUnsubscribe = (SubscriptionItem) -> Void
-//
-//    let onSubscribe: OnSubscribe
-//    let onUnsubscribe: OnUnsubscribe
-//
-//    init(onSubscribe: @escaping OnSubscribe, onUnsubscribe: @escaping OnUnsubscribe) {
-//        self.onSubscribe = onSubscribe
-//        self.onUnsubscribe = onUnsubscribe
-//    }
-//
-//    func subscribe(
-//        requestString: String,
-//        variables: [String: Any?]?,
-//        eventHandler: @escaping SubscriptionEventHandler
-//    ) -> SubscriptionItem {
-//        onSubscribe(requestString, variables, eventHandler)
-//    }
-//
-//    func unsubscribe(item: SubscriptionItem) {
-//        onUnsubscribe(item)
-//    }
+struct MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
+    private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()
 
+    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+        defer {
+
+            Task {
+                try await Task.sleep(seconds: 0.25)
+                subject.send(.subscribing)
+                try await Task.sleep(seconds: 0.45)
+                subject.send(.subscribed)
+            }
+        }
+        return subject.eraseToAnyPublisher()
+    }
+    
+    func unsubscribe(id: String) async throws {
+        try await Task.sleep(seconds: 0.45)
+        subject.send(.unsubscribed)
+    }
+    
+    func connect() async throws { }
+
+    func disconnect() async { }
+
+    func triggerEvent(_ event: AppSyncSubscriptionEvent) {
+        subject.send(event)
+    }
+
+    static func waitForSubscirbing() async throws {
+        try await Task.sleep(seconds: 0.3)
+    }
+
+    static func waitForSubscirbed() async throws {
+        try await Task.sleep(seconds: 0.5)
+    }
+
+    static func waitForUnsubscirbed() async throws {
+        try await Task.sleep(seconds: 0.5)
+    }
 }
 
 class MockAppSyncRequestInterceptor: AppSyncRequestInterceptor {
