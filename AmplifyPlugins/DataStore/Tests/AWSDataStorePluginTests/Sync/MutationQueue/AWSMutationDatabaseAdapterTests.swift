@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SQLite
 import XCTest
 
 @testable import Amplify
@@ -151,8 +152,8 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     
     /// Retrieve the first MutationEvent
     func test_getNextMutationEvent_AlreadyInProcess() {
-        let queryExpectation = expectation(description: "test")
-        let expectation = expectation(description: "test")
+        let queryExpectation = expectation(description: "query called")
+        let getMutationEventCompleted = expectation(description: "getNextMutationEvent completed")
         var mutationEvent1 = MutationEvent(modelId: "1111-22",
                                            modelName: "Post",
                                            json: "{}",
@@ -174,7 +175,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             case .failure(let error):
                 XCTFail("Should have been successful result, error: \(error)")
             }
-            expectation.fulfill()
+            getMutationEventCompleted.fulfill()
         }
         
         waitForExpectations(timeout: 1)
@@ -182,8 +183,8 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     
     /// Retrieve the first MutationEvent
     func test_getNextMutationEvent_MarkInProcess() {
-        let queryExpectation = expectation(description: "test")
-        let expectation = expectation(description: "test")
+        let queryExpectation = expectation(description: "query called")
+        let getMutationEventCompleted = expectation(description: "getNextMutationEvent completed")
         let mutationEvent1 = MutationEvent(modelId: "1111-22",
                                            modelName: "Post",
                                            json: "{}",
@@ -206,9 +207,110 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
                 XCTFail("Should have been successful result, error: \(error)")
             }
             
-            expectation.fulfill()
+            getMutationEventCompleted.fulfill()
         }
         
+        waitForExpectations(timeout: 1)
+    }
+
+    /// This tests uses an in-memory SQLite connection to save and query mutation events.
+    ///
+    /// 1. First query will return `m2` since `createdAt`is the oldest, and marked `inProcess` true.
+    /// 2. The second query will also return `m2` since `inProcess` does not impact the results
+    /// 3. Delete `m2` from the storage
+    /// 4. The third query will return `m1` since `m2` was dequeued
+    func testGetNextMutationEvent_WithInMemoryStorage() throws {
+        let connection = try Connection(.inMemory)
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
+        try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
+        let oldestCreatedAt = Temporal.DateTime.now().add(value: -1, to: .second)
+        let newerCreatedAt = Temporal.DateTime.now().add(value: 1, to: .second)
+
+        databaseAdapter.storageAdapter = storageAdapter
+        let m1 = MutationEvent(modelId: "1111-22",
+                                           modelName: "Post",
+                                           json: "{}",
+                                           mutationType: .create,
+                                           createdAt: newerCreatedAt,
+                                           inProcess: false)
+        let m2 = MutationEvent(modelId: "1111-22",
+                                           modelName: "Post",
+                                           json: "{}",
+                                           mutationType: .create,
+                                           createdAt: oldestCreatedAt,
+                                           inProcess: false)
+
+        let setUpM1 = storageAdapter.save(m1, modelSchema: MutationEvent.schema)
+
+        guard case .success = setUpM1 else {
+            XCTFail("Could not set up mutation event: \(m1)")
+            return
+        }
+        let setUpM2 = storageAdapter.save(m2, modelSchema: MutationEvent.schema)
+
+        guard case .success = setUpM2 else {
+            XCTFail("Could not set up mutation event: \(m2)")
+            return
+        }
+
+        // (1)
+        let firstQueryCompleted = expectation(description: "getNextMutationEvent completed")
+        databaseAdapter.getNextMutationEvent { result in
+            switch result {
+            case .success(let mutationEvent):
+                XCTAssertTrue(mutationEvent.inProcess)
+                XCTAssertEqual(mutationEvent.modelId, m1.modelId)
+            case .failure(let error):
+                XCTFail("Should have been successful result, error: \(error)")
+            }
+
+            firstQueryCompleted.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+
+        // (2)
+        let secondQueryCompleted = expectation(description: "getNextMutationEvent completed")
+        databaseAdapter.getNextMutationEvent { result in
+            switch result {
+            case .success(let mutationEvent):
+                XCTAssertTrue(mutationEvent.inProcess)
+                XCTAssertEqual(mutationEvent.modelId, m1.modelId)
+            case .failure(let error):
+                XCTFail("Should have been successful result, error: \(error)")
+            }
+
+            secondQueryCompleted.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+
+        // (3)
+        storageAdapter.delete(MutationEvent.self, 
+                              modelSchema: MutationEvent.schema,
+                              withId: m1.id) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                XCTFail("Couldn't delete mutation event, error: \(error)")
+            }
+        }
+
+        // (4)
+        let thirdQueryCompleted = expectation(description: "getNextMutationEvent completed")
+        databaseAdapter.getNextMutationEvent { result in
+            switch result {
+            case .success(let mutationEvent):
+                XCTAssertTrue(mutationEvent.inProcess)
+                XCTAssertEqual(mutationEvent.modelId, m2.modelId)
+            case .failure(let error):
+                XCTFail("Should have been successful result, error: \(error)")
+            }
+
+            thirdQueryCompleted.fulfill()
+        }
+
         waitForExpectations(timeout: 1)
     }
 }

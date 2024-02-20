@@ -134,10 +134,24 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     }
 
     func assertQueryComment(_ savedComment: Comment, post: Post) async throws {
-        guard let persistedComment = try await Amplify.DataStore.query(
+        guard (try await Amplify.DataStore.query(
             Comment.self,
-            byIdentifier: savedComment.identifier) else {
-            Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Skipping comment \(savedComment.id) since it is not persisted in local DB")
+            byIdentifier: savedComment.identifier)) != nil else {
+            Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Comment \(savedComment.id) is not persisted in local DB")
+
+            let result = try await Amplify.API.query(
+                request: .get(
+                    Comment.self,
+                    byIdentifier: savedComment.id))
+            switch result {
+            case .success(let comment):
+                guard let comment else {
+                    return
+                }
+                XCTFail("Cost \(comment.id) should not be in AppSync")
+            case .failure(let error):
+                XCTFail("Failed to query, error \(error)")
+            }
             return
         }
 
@@ -163,10 +177,23 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
     }
 
     func assertQueryPost(_ savedPost: Post) async throws {
-        guard let persistedPost = try await Amplify.DataStore.query(
+        guard (try await Amplify.DataStore.query(
             Post.self,
-            byIdentifier: savedPost.identifier) else {
-            Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Skipping post \(savedPost.id) since it is not persisted in local DB")
+            byIdentifier: savedPost.identifier)) != nil else {
+            Amplify.Logging.info("[\(AWSDataStoreLazyLoadPostComment4V2Tests.loggingContext)] Post \(savedPost.id) is not persisted in local DB")
+            let result = try await Amplify.API.query(
+                request: .get(
+                    Post.self,
+                    byIdentifier: savedPost.id))
+            switch result {
+            case .success(let post):
+                guard let post else {
+                    return
+                }
+                XCTFail("Post \(post.id) should not be in AppSync")
+            case .failure(let error):
+                XCTFail("Failed to query, error \(error)")
+            }
             return
         }
         let result = try await Amplify.API.query(
