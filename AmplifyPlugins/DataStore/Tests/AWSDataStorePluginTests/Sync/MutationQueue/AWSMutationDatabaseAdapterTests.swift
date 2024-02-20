@@ -225,29 +225,25 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
         let oldestCreatedAt = Temporal.DateTime.now().add(value: -1, to: .second)
         let newerCreatedAt = Temporal.DateTime.now().add(value: 1, to: .second)
-
         databaseAdapter.storageAdapter = storageAdapter
-        let m1 = MutationEvent(modelId: "1111-22",
-                                           modelName: "Post",
-                                           json: "{}",
-                                           mutationType: .create,
-                                           createdAt: newerCreatedAt,
-                                           inProcess: false)
-        let m2 = MutationEvent(modelId: "1111-22",
-                                           modelName: "Post",
-                                           json: "{}",
-                                           mutationType: .create,
-                                           createdAt: oldestCreatedAt,
-                                           inProcess: false)
-
+        let m1 = MutationEvent(modelId: "m1",
+                               modelName: "Post",
+                               json: "{}",
+                               mutationType: .create,
+                               createdAt: newerCreatedAt,
+                               inProcess: false)
+        let m2 = MutationEvent(modelId: "m2",
+                               modelName: "Post",
+                               json: "{}",
+                               mutationType: .create,
+                               createdAt: oldestCreatedAt,
+                               inProcess: false)
         let setUpM1 = storageAdapter.save(m1, modelSchema: MutationEvent.schema)
-
         guard case .success = setUpM1 else {
             XCTFail("Could not set up mutation event: \(m1)")
             return
         }
         let setUpM2 = storageAdapter.save(m2, modelSchema: MutationEvent.schema)
-
         guard case .success = setUpM2 else {
             XCTFail("Could not set up mutation event: \(m2)")
             return
@@ -259,7 +255,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             switch result {
             case .success(let mutationEvent):
                 XCTAssertTrue(mutationEvent.inProcess)
-                XCTAssertEqual(mutationEvent.modelId, m1.modelId)
+                XCTAssertEqual(mutationEvent.id, m2.id)
             case .failure(let error):
                 XCTFail("Should have been successful result, error: \(error)")
             }
@@ -275,7 +271,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             switch result {
             case .success(let mutationEvent):
                 XCTAssertTrue(mutationEvent.inProcess)
-                XCTAssertEqual(mutationEvent.modelId, m1.modelId)
+                XCTAssertEqual(mutationEvent.id, m2.id)
             case .failure(let error):
                 XCTFail("Should have been successful result, error: \(error)")
             }
@@ -288,7 +284,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
         // (3)
         storageAdapter.delete(MutationEvent.self, 
                               modelSchema: MutationEvent.schema,
-                              withId: m1.id) { result in
+                              withId: m2.id) { result in
             switch result {
             case .success:
                 break
@@ -303,7 +299,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             switch result {
             case .success(let mutationEvent):
                 XCTAssertTrue(mutationEvent.inProcess)
-                XCTAssertEqual(mutationEvent.modelId, m2.modelId)
+                XCTAssertEqual(mutationEvent.id, m1.id)
             case .failure(let error):
                 XCTFail("Should have been successful result, error: \(error)")
             }
