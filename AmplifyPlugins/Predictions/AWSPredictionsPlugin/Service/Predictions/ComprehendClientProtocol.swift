@@ -7,6 +7,7 @@
 
 import AWSComprehend
 
+// swiftlint:disable file_length
 public protocol ComprehendClientProtocol {
     /// Performs the `BatchDetectDominantLanguage` operation on the `Comprehend_20171127` service.
     ///

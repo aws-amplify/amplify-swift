@@ -9,6 +9,7 @@ import Amplify
 import AWSPinpoint
 import Foundation
 
+// swiftlint:disable file_length
 public protocol PinpointClientProtocol {
     /// Performs the `CreateApp` operation on the `Pinpoint` service.
     ///

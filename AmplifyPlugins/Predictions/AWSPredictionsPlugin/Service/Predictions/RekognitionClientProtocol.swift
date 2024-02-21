@@ -7,6 +7,7 @@
 
 import AWSRekognition
 
+// swiftlint:disable file_length
 public protocol RekognitionClientProtocol {
     /// Performs the `AssociateFaces` operation on the `RekognitionService` service.
     ///

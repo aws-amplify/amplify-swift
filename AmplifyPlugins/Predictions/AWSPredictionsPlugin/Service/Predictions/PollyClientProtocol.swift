@@ -7,6 +7,7 @@
 
 import AWSPolly
 
+// swiftlint:disable file_length
 public protocol PollyClientProtocol {
     /// Performs the `DeleteLexicon` operation on the `Parrot_v1` service.
     ///

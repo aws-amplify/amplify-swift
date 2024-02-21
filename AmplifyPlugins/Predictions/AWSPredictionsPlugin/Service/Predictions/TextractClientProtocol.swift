@@ -7,6 +7,7 @@
 
 import AWSTextract
 
+// swiftlint:disable file_length
 public protocol TextractClientProtocol {
     /// Performs the `AnalyzeDocument` operation on the `Textract` service.
     ///

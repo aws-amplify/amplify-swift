@@ -7,6 +7,7 @@
 
 import AWSTranslate
 
+// swiftlint:disable file_length
 public protocol TranslateClientProtocol {
     /// Performs the `CreateParallelData` operation on the `AWSShineFrontendService_20170701` service.
     ///

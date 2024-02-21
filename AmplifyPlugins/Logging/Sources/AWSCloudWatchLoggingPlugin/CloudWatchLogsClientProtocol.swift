@@ -7,6 +7,7 @@
 
 import AWSCloudWatchLogs
 
+// swiftlint:disable file_length
 public protocol CloudWatchLogsClientProtocol {
     /// Performs the `AssociateKmsKey` operation on the `Logs_20140328` service.
     ///
