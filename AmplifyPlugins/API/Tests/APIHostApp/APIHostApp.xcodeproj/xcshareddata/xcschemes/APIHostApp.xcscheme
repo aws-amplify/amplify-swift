@@ -29,97 +29,23 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "97914BC229558714002000EA"
+               BuildableName = "APIStressTests.xctest"
+               BlueprintName = "APIStressTests"
+               ReferencedContainer = "container:APIHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "21EA887228F9BC600000BA75"
                BuildableName = "AWSAPIPluginLazyLoadTests.xctest"
                BlueprintName = "AWSAPIPluginLazyLoadTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "GraphQLLazyLoadCompositePKTests/testIncludesAllChildren()">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21698A7A28899804004BD994"
-               BuildableName = "AWSAPIPluginFunctionalTests.xctest"
-               BlueprintName = "AWSAPIPluginFunctionalTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "GraphQLConnectionScenario1Tests/testListProjectsByTeamID()">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21698A9428899818004BD994"
-               BuildableName = "AWSAPIPluginGraphQLAuthDirectiveTests.xctest"
-               BlueprintName = "AWSAPIPluginGraphQLAuthDirectiveTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "39E0F13C289DD57D00939D9F"
-               BuildableName = "AWSAPIPluginGraphQLIAMTests.xctest"
-               BlueprintName = "AWSAPIPluginGraphQLIAMTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "213DBC7428A6C47000B30280"
-               BuildableName = "AWSAPIPluginGraphQLLambdaAuthTests.xctest"
-               BlueprintName = "AWSAPIPluginGraphQLLambdaAuthTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "39E0F2A028A43FB100939D9F"
-               BuildableName = "AWSAPIPluginGraphQLUserPoolTests.xctest"
-               BlueprintName = "AWSAPIPluginGraphQLUserPoolTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "GraphQLWithUserPoolIntegrationTests">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "395906AB28AC4A16004B96B1"
-               BuildableName = "AWSAPIPluginRESTIAMTests.xctest"
-               BlueprintName = "AWSAPIPluginRESTIAMTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "395906BF28AC63A9004B96B1"
-               BuildableName = "AWSAPIPluginRESTUserPoolTests.xctest"
-               BlueprintName = "AWSAPIPluginRESTUserPoolTests"
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
