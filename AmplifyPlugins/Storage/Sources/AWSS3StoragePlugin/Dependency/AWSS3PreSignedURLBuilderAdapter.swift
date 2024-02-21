@@ -54,9 +54,9 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
                 expiration: expiration)
         case .uploadPart(let partNumber, let uploadId):
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-            preSignedUrl = try await input.presign(
+            preSignedUrl = try await input.customPresignURL(
                 config: config,
-                expiration: expiration)?.endpoint.url
+                expiration: expiration)
         }
         guard let escapedURL = urlWithEscapedToken(preSignedUrl) else {
             throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get presigned URL.", error: nil)
