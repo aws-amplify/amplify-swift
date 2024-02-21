@@ -22,7 +22,7 @@ class APIKeyAuthInterceptor {
 
 extension APIKeyAuthInterceptor: WebSocketInterceptor {
     func interceptConnection(url: URL) async -> URL {
-        let authHeader = getAuthHeader(apiKey, url.host!)
+        let authHeader = getAuthHeader(apiKey, AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!)
         return AppSyncRealTimeRequestAuth.URLQuery(
             header: .apiKey(authHeader)
         ).withBaseURL(url)
@@ -31,7 +31,7 @@ extension APIKeyAuthInterceptor: WebSocketInterceptor {
 
 extension APIKeyAuthInterceptor: AppSyncRequestInterceptor {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest {
-        let host = url.host!
+        let host = AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!
         guard case .start(let request) = event else {
             return event
         }
@@ -50,7 +50,7 @@ fileprivate func authHeaderBuilder() -> (String, String) -> AppSyncRealTimeReque
     formatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
     return { apiKey, host in
         AppSyncRealTimeRequestAuth.ApiKey(
-            host: host.replacingOccurrences(of: "appsync-realtime-api", with: "appsync-api"),
+            host: host,
             apiKey: apiKey,
             amzDate: formatter.string(from: Date())
         )

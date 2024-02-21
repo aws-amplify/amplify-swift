@@ -35,7 +35,7 @@ class IAMAuthInterceptor {
         /// 1. A request is created with the IAM based auth headers (date,  accept, content encoding, content type, and
         /// additional headers.
         let requestBuilder = SdkHttpRequestBuilder()
-            .withHost(endpoint.host ?? "")
+            .withHost(host)
             .withPath(endpoint.path)
             .withMethod(.post)
             .withPort(443)
@@ -67,7 +67,7 @@ class IAMAuthInterceptor {
                     guard let headerValue = header.value.first else {
                         return partialResult
                     }
-                    return partialResult.merging([header.name: .string(headerValue)]) { $1 }
+                    return partialResult.merging([header.name.lowercased(): .string(headerValue)]) { $1 }
                 default:
                     return partialResult
                 }
@@ -88,14 +88,14 @@ class IAMAuthInterceptor {
 
 extension IAMAuthInterceptor: WebSocketInterceptor {
     func interceptConnection(url: URL) async -> URL {
-        let connectUrl = url.appendingPathComponent("connect")
-        guard let authHeader = await getAuthHeader(url, with: "{}") else {
+        let connectUrl = AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).appendingPathComponent("connect")
+        guard let authHeader = await getAuthHeader(connectUrl, with: "{}") else {
             return connectUrl
         }
         
         return AppSyncRealTimeRequestAuth.URLQuery(
             header: .iam(authHeader)
-        ).withBaseURL(connectUrl)
+        ).withBaseURL(url)
     }
 }
 
@@ -108,7 +108,9 @@ extension IAMAuthInterceptor: AppSyncRequestInterceptor {
             return event
         }
 
-        let authHeader = await getAuthHeader(url, with: request.data)
+        let authHeader = await getAuthHeader(
+            AppSyncRealTimeClientFactory.appSyncApiEndpoint(url),
+            with: request.data)
         return .start(.init(
             id: request.id,
             data: request.data,

@@ -120,21 +120,58 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
 
 
 extension AppSyncRealTimeClientFactory {
+
+    /**
+     Converting appsync api url to realtime api url
+     1. api.example.com/graphql -> api.example.com/graphql/realtime
+     2. abc.appsync-api.us-east-1.amazonaws.com/graphql -> abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql
+     */
     static func appSyncRealTimeEndpoint(_ url: URL) -> URL {
-        let customDomainURL = url.appendingPathComponent("realtime")
-        guard let host = url.host, host.hasSuffix("amazonaws.com") else {
-            return customDomainURL
+        guard let host = url.host else {
+            return url
+        }
+
+        guard host.hasSuffix("amazonaws.com") else {
+            return url.appendingPathComponent("realtime")
         }
 
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return customDomainURL
+            return url
         }
 
         urlComponents.host = host.replacingOccurrences(of: "appsync-api", with: "appsync-realtime-api")
         guard let realTimeUrl = urlComponents.url else {
-            return customDomainURL
+            return url
         }
+
         return realTimeUrl
     }
 
+    /**
+     Converting appsync realtime api url to api url
+     1. api.example.com/graphql/realtime -> api.example.com/graphql
+     2. abc.appsync-realtime-api.us-east-1.amazonaws.com/graphql -> abc.appsync-api.us-east-1.amazonaws.com/graphql
+     */
+    static func appSyncApiEndpoint(_ url: URL) -> URL {
+        guard let host = url.host else {
+            return url
+        }
+
+        guard host.hasSuffix("amazonaws.com") else {
+            if url.lastPathComponent == "realtime" {
+                return url.deletingLastPathComponent()
+            }
+            return url
+        }
+
+        guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return url
+        }
+
+        urlComponents.host = host.replacingOccurrences(of: "appsync-realtime-api", with: "appsync-api")
+        guard let apiUrl = urlComponents.url else {
+            return url
+        }
+        return apiUrl
+    }
 }

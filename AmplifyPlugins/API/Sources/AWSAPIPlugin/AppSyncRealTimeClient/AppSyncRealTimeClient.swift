@@ -219,9 +219,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             switch response.type {
             case .startAck: return .subscribed
             case .stopAck: return .unsubscribed
-            case .connectionError:
-                return .error(Self.decodeURLErrors(response.payload))
-            case .error:
+            case .connectionError, .error:
                 return .error(Self.decodeGraphQLErrors(response.payload))
             case .data:
                 return response.payload.map { .data($0) }
@@ -243,7 +241,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             guard let code = error.errorCode?.intValue else {
                 return []
             }
-            let description = error.errorType?.stringValue ?? ""
+            let description = error.message?.stringValue ?? ""
             return [URLError(URLError.Code(rawValue: code), userInfo: ["description": description])]
         }
     }

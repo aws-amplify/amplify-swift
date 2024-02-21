@@ -276,13 +276,14 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
+        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
         Task {
             do {
                 appSyncRealTimeClient = try await appSyncRealTimeClientFactory.getAppSyncRealTimeClient(
                     for: endpointConfig,
                     endpoint: endpointConfig.baseURL,
                     authService: authService,
-                    authType: nil,
+                    authType: pluginOptions?.authType,
                     apiAuthProviderFactory: apiAuthProviderFactory
                 )
 
@@ -370,11 +371,10 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             }
             let graphQLResponseError = GraphQLResponseError<R>.error(graphQLErrors)
             dispatch(result: .failure(APIError.operationError(errorDescription, "", graphQLResponseError)))
-            finish()
         } else {
             dispatch(result: .failure(APIError.operationError(errorDescription, "", errors.first)))
-            finish()
         }
+        finish()
     }
 }
 
