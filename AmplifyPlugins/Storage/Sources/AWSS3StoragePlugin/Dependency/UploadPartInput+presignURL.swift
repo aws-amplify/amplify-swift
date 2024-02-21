@@ -45,7 +45,7 @@ extension UploadPartInput {
         let sigv4Config = AWSClientRuntime.SigV4Config(
             signatureType: .requestQueryParams,
             useDoubleURIEncode: false,
-            expiration: expiration, 
+            expiration: expiration,
             unsignedBody: true,
             signingAlgorithm: .sigv4)
         operation.finalizeStep.intercept(
