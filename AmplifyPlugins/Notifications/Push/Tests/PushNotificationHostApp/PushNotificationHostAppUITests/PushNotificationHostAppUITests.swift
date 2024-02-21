@@ -142,9 +142,7 @@ final class PushNotificationHostAppUITests: XCTestCase {
             XCTFail("Failed to receive open_notification event from hub")
         }
     }
-#endif
 
-#if !os(visionOS)
     @MainActor
     func testAppInBackground_withBasicAppleRemoteNotification_notRecordNotificationOpened() async throws {
         initAmplify()
