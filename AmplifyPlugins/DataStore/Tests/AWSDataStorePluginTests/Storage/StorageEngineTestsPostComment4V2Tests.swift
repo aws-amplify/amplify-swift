@@ -50,6 +50,48 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         }
     }
 
+    func testSavePostAndSyncSuccess() async throws {
+        let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
+        let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
+        let post = ParentPost4V2(
+            id: "postId1",
+            title: "title1")
+        
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+            receivedMutationEvent.fulfill()
+            if submittedMutationEvent.modelId == post.id {
+                expectedSuccess.fulfill()
+                completion(.success(submittedMutationEvent))
+            } else {
+                XCTFail("Unexpected submitted MutationEvent \(submittedMutationEvent)")
+                completion(.failure(.internalOperation("mockError", "", nil)))
+            }
+        }
+        try await saveAsync(post)
+        await fulfillment(of: [receivedMutationEvent, expectedSuccess], timeout: 1)
+            
+    }
+    
+    /// A save should fail if the corresponding MutationEvent could not be submitted to the syncEngine.
+    func testSavePostFailDueToSyncEngineMissing() async throws {
+        storageEngine.syncEngine = nil
+        do {
+            try await saveAsync(
+                ParentPost4V2(
+                    id: "postId1",
+                    title: "title1"))
+            XCTFail("Expected to fail when sync engine is `nil`")
+        } catch {
+            guard let dataStoreError = error as? DataStoreError else {
+                XCTFail("Unexpected type of error \(error)")
+                return
+            }
+            XCTAssertEqual(
+                dataStoreError.errorDescription,
+                "No SyncEngine available to sync mutation event, rollback save.")
+        }
+    }
+    
     func testSaveCommentThenQueryComment() async throws {
         let comment = ChildComment4V2(content: "content")
         let savedComment = try await saveAsync(comment)
