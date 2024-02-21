@@ -522,9 +522,6 @@
 						CreatedOnToolsVersion = 13.4.1;
 						TestTargetID = 684FB06928BEAF1500C8A6EB;
 					};
-					97914B9E2955798D002000EA = {
-						TestTargetID = 684FB06928BEAF1500C8A6EB;
-					};
 				};
 			};
 			buildConfigurationList = 684FB06528BEAF1500C8A6EB /* Build configuration list for PBXProject "StorageHostApp" */;
@@ -1151,7 +1148,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1165,7 +1161,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,3,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Debug;
 		};
@@ -1173,7 +1168,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1187,7 +1181,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,3,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Release;
 		};
@@ -1195,7 +1188,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1209,7 +1201,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,3,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Debug;
 		};
@@ -1217,7 +1208,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1231,7 +1221,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,3,7";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StorageHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StorageHostApp";
 			};
 			name = Release;
 		};
