@@ -21,8 +21,9 @@ public func baseClientEngine(
     ///     // networking goes through default aws sdk engine
     ///     baseClientEngine = configuration.httpClientEngine
     ///     #else
-    ///     // networking goes through Foundation
-    ///     baseClientEngine = FoundationClientEngine()
+    ///     // The custom client engine from where we want to route requests
+    ///     // FoundationClientEngine() was an example used in 2.26.x and before
+    ///     baseClientEngine = <your custom client engine>
     ///     #endif
     ///     return baseClientEngine
     /// ```
