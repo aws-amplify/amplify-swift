@@ -35,8 +35,9 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 | watchOS   | 9+        | GA            |
 | visionOS  | 1+        | Preview*      |
 
-> To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
-> For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
+To use the `visionos-preview` branch, add Amplify Swift via SPM with the **Dependency Rule: Branch** targeting `visionos-preview`.
+
+![Add package dependency](readme-images/spm_visionos-preview_branch.png)
 
 ## Semantic versioning
 
@@ -48,12 +49,6 @@ When Amplify adds a new enumeration value, we will publish a new **minor** versi
 of the library.
 
 Applications that evaluate all members of an enumeration using a `switch` statement can add a `default` case to prevent new cases from causing compile warnings or errors.
-| watchOS   | 7+        | GA            |
-| visionOS  | 1+        | Preview       |
-
-To use the `visionos-preview` branch, add Amplify Swift via SPM with the **Dependency Rule: Branch** targeting `visionos-preview`.
-
-![Add package dependency](readme-images/spm_visionos-preview_branch.png)
 
 ## License
 
