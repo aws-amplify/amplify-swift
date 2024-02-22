@@ -93,14 +93,14 @@ extension AWSCognitoAuthPlugin {
                 serviceSpecific: .init(endpointResolver: userPoolConfig.endpoint?.resolver)
             )
 
-            if var httpClientEngineProxy = httpClientEngineProxy {
-                httpClientEngineProxy.target = baseClientEngine(for: configuration)
-                configuration.httpClientEngine = UserAgentSettingClientEngine(
-                    target: httpClientEngineProxy
-                )
-            } else {
-                configuration.httpClientEngine = .userAgentEngine(for: configuration)
-            }
+//            if var httpClientEngineProxy = httpClientEngineProxy {
+//                httpClientEngineProxy.target = baseClientEngine(for: configuration)
+//                configuration.httpClientEngine = UserAgentSettingClientEngine(
+//                    target: httpClientEngineProxy
+//                )
+//            } else {
+//                configuration.httpClientEngine = .userAgentEngine(for: configuration)
+//            }
 
             if let requestTimeout = networkPreferences?.timeoutIntervalForRequest {
                 configuration.httpClientConfiguration = HttpClientConfiguration(connectTimeout: requestTimeout)
