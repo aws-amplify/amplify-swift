@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.27.0 (2024-02-22)
+
+### Features
+
+- Update aws-swift-sdk dependency to 0.36.1 (#3519)
+
 ## 2.26.3 (2024-02-21)
 
 ### Bug Fixes
