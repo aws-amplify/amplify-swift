@@ -28,10 +28,11 @@ extension AWSS3MultipartUploadRequestCompletedParts {
 
     init(parts: [S3ClientTypes.Part]) {
         self = parts.compactMap {
-            guard let eTag = $0.eTag else {
+            guard let eTag = $0.eTag,
+                  let partNumber = $0.partNumber else {
                 return nil
             }
-            return AWSS3MultipartUploadRequestCompletedPart(partNumber: $0.partNumber, eTag: eTag)
+            return AWSS3MultipartUploadRequestCompletedPart(partNumber: partNumber, eTag: eTag)
         }
     }
 

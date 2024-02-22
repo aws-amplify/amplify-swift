@@ -34,7 +34,7 @@ class PinpointRequestsRegistryTests: XCTestCase {
         await PinpointRequestsRegistry.shared.registerSource(.analytics, for: .recordEvent)
         await PinpointRequestsRegistry.shared.registerSource(.pushNotifications, for: .recordEvent)
         let sdkRequest = try createSdkRequest(for: .recordEvent)
-        _ = try await httpClientEngine.execute(request: sdkRequest)
+        _ = try await httpClientEngine.send(request: sdkRequest)
         let executedRequest = mockedHttpSdkClient.request
 
         XCTAssertEqual(mockedHttpSdkClient.executeCount, 1)
@@ -53,7 +53,7 @@ class PinpointRequestsRegistryTests: XCTestCase {
         let sdkRequest = try createSdkRequest(for: nil)
         let oldUserAgent = sdkRequest.headers.value(for: "User-Agent")
 
-        _ = try await httpClientEngine.execute(request: sdkRequest)
+        _ = try await httpClientEngine.send(request: sdkRequest)
         let executedRequest = mockedHttpSdkClient.request
 
         XCTAssertEqual(mockedHttpSdkClient.executeCount, 1)
@@ -66,7 +66,7 @@ class PinpointRequestsRegistryTests: XCTestCase {
         XCTAssertFalse(newUserAgent.contains(AWSPinpointSource.pushNotifications.rawValue))
     }
 
-    private var httpClientEngine: HttpClientEngine {
+    private var httpClientEngine: HTTPClient {
         pinpointConfiguration.httpClientEngine
     }
 
@@ -83,20 +83,20 @@ class PinpointRequestsRegistryTests: XCTestCase {
     }
 }
 
-private extension HttpClientEngine {
+private extension HTTPClient {
     var typeString: String {
         String(describing: type(of: self))
     }
 }
 
-private class MockHttpClientEngine: HttpClientEngine {
+private class MockHttpClientEngine: HTTPClient {
     var executeCount = 0
     var request: SdkHttpRequest?
 
-    func execute(request: SdkHttpRequest) async throws -> HttpResponse {
+    func send(request: SdkHttpRequest) async throws -> HttpResponse {
         executeCount += 1
         self.request = request
-        return .init(body: .none, statusCode: .accepted)
+        return .init(body: .empty, statusCode: .accepted)
     }
 
     func close() async {}

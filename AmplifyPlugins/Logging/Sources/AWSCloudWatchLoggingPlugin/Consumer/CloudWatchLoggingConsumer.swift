@@ -75,7 +75,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             ensureLogStreamExistsComplete = true
         }
 
-        let stream = try? await self.client.describeLogStreams(input: .init(
+        let stream = try? await self.client.describeLogStreams(input: DescribeLogStreamsInput(
             logGroupName: self.logGroupName,
             logStreamNamePrefix: self.logStreamName
         )).logStreams?.first(where: { stream in
@@ -85,7 +85,7 @@ extension CloudWatchLoggingConsumer: LogBatchConsumer {
             return
         }
 
-        _ = try? await self.client.createLogStream(input: .init(
+        _ = try? await self.client.createLogStream(input: CreateLogStreamInput(
             logGroupName: self.logGroupName,
             logStreamName: self.logStreamName
         ))

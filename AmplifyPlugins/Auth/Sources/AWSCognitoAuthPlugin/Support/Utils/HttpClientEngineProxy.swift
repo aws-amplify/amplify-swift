@@ -9,8 +9,8 @@
 import ClientRuntime
 import Foundation
 
-protocol HttpClientEngineProxy: HttpClientEngine {
-    var target: HttpClientEngine? { get set }
+protocol HttpClientEngineProxy: HTTPClient {
+    var target: HTTPClient? { get set }
 }
 
 extension UserAgentSuffixAppender: HttpClientEngineProxy {}
