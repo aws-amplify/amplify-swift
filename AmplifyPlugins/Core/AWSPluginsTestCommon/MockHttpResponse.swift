@@ -9,6 +9,6 @@ import ClientRuntime
 
 class MockHttpResponse {
     class var ok: HttpResponse {
-        HttpResponse(body: .none, statusCode: .ok)
+        HttpResponse(body: .empty, statusCode: .ok)
     }
 }

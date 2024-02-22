@@ -18,7 +18,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
         try await super.setUp()
         AuthSessionHelper.clearSession()
         if Self.setSDKLogLevelDebug {
-            SDKLoggingSystem.initialize(logLevel: .debug)
+            await SDKLoggingSystem.initialize(logLevel: .debug)
             Self.setSDKLogLevelDebug = false
         }
     }

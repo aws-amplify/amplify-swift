@@ -78,8 +78,7 @@ final class S3ClientConfigurationAccelerateTestCase: XCTestCase {
             useDualStack: .random(),
             useFIPS: .random(),
             retryMode: .adaptive,
-            appID: UUID().uuidString,
-            connectTimeoutMs: .random(in: UInt32.min...UInt32.max)
+            appID: UUID().uuidString
         )
 
         return baseConfiguration

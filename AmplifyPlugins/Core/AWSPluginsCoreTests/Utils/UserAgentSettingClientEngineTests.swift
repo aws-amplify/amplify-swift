@@ -25,7 +25,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
 
         let target = MockTargetEngine()
         let engine = UserAgentSettingClientEngine(target: target)
-        _ = try await engine.execute(request: request)
+        _ = try await engine.send(request: request)
         let userAgent = try XCTUnwrap(target.request?.headers.value(for: userAgentKey))
 
         XCTAssertEqual(
@@ -41,7 +41,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
         let request: SdkHttpRequest = .mock
         let target = MockTargetEngine()
         let engine = UserAgentSettingClientEngine(target: target)
-        _ = try await engine.execute(request: request)
+        _ = try await engine.send(request: request)
         let userAgent = try XCTUnwrap(target.request?.headers.value(for: userAgentKey)).trim()
 
         XCTAssertEqual(userAgent, AmplifyAWSServiceConfiguration.userAgentLib)
@@ -61,7 +61,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
         suffixAppender.target = target
         let engine = UserAgentSettingClientEngine(target: suffixAppender)
 
-        _ = try await engine.execute(request: request)
+        _ = try await engine.send(request: request)
         let userAgent = try XCTUnwrap(target.request?.headers.value(for: userAgentKey))
         XCTAssertEqual(
             userAgent,
@@ -81,7 +81,7 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
         suffixAppender.target = target
         let engine = UserAgentSettingClientEngine(target: suffixAppender)
 
-        _ = try await engine.execute(request: request)
+        _ = try await engine.send(request: request)
         let userAgent = try XCTUnwrap(target.request?.headers.value(for: userAgentKey)).trim()
         XCTAssertEqual(
             userAgent,
@@ -90,10 +90,10 @@ class UserAgentSettingClientEngineTestCase: XCTestCase {
     }
 }
 
-class MockTargetEngine: HttpClientEngine {
+class MockTargetEngine: HTTPClient {
     var request: SdkHttpRequest?
 
-    func execute(
+    func send(
         request: SdkHttpRequest
     ) async throws -> HttpResponse {
         self.request = request
