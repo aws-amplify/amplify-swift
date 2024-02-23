@@ -26,7 +26,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     // Internal state for tracking AppSync connection
-    private var state: State
+    private let state = CurrentValueSubject<State, Never>(.none)
 
     private let endpoint: URL
     private let requestInterceptor: AppSyncRequestInterceptor
@@ -41,7 +41,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     private var cancellablesBindToConnection = Set<AnyCancellable>()
 
     var isConnected: Bool {
-        self.state == .connected
+        self.state.value == .connected
     }
 
     init(
@@ -49,7 +49,6 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         requestInterceptor: AppSyncRequestInterceptor,
         webSocketClient: AppSyncWebSocketClientProtocol
     ) {
-        self.state = .none
         self.endpoint = endpoint
         self.requestInterceptor = requestInterceptor
 
@@ -66,12 +65,12 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     func connect() async throws {
-        if self.state == .connecting || self.state == .connected {
+        if self.state.value == .connecting || self.state.value == .connected {
             log.debug("[AppSyncRealTimeClient] client is already connecting or connected")
             return
         }
 
-        self.state = .connecting
+        self.state.send(.connecting)
         log.debug("[AppSyncRealTimeClient] client start connecting")
 
         try await RetryWithJitter.execute { [weak self] in
@@ -91,26 +90,47 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     func disconnect() async {
         log.debug("[AppSyncRealTimeClient] client start disconnecting")
-        self.state = .disconnecting
+        self.state.send(.disconnecting)
         self.cancellablesBindToConnection = Set()
         await self.webSocketClient.disconnect()
-        self.state = .disconnected
+        self.state.send(.disconnected)
         log.debug("[AppSyncRealTimeClient] client is disconnected")
     }
 
     func subscribe(id: String, query: String) throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
-        if self.isConnected {
-            Task {
-                try await startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
-                subscriptions[id] = query
+        // Initiate the subscription in a separate task and returning the filtered
+        // publisher immediately for downstream to listen to all the error messages
+        Task {
+            if !self.isConnected {
+                try await connect()
+                try await waitForStateConnected()
             }
-        } else {
-            subscriptions[id] = query
-            Task { try await connect() }
-        }
 
+            try await startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
+            subscriptions[id] = query
+        }
         return filterAppSyncSubscriptionEvent(with: id)
+    }
+
+    private func waitForStateConnected() async throws {
+        var cancellables = Set<AnyCancellable>()
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) -> Void in
+            state.filter { $0 == .connected }
+                .setFailureType(to: AppSyncRealTimeRequest.Error.self)
+                .timeout(.seconds(10), scheduler: DispatchQueue.global())
+                .first()
+                .sink { completion in
+                    switch completion {
+                    case .finished:
+                        continuation.resume(returning: ())
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                } receiveValue: { _ in }
+                .store(in: &cancellables)
+        }
     }
 
     func unsubscribe(id: String) async throws {
@@ -268,8 +288,8 @@ extension AppSyncRealTimeClient {
 
         case let .disconnected(closeCode, reason): //
             log.debug("[AppSyncRealTimeClient] WebSocket disconnected with closeCode: \(closeCode), reason: \(String(describing: reason))")
-            if self.state != .disconnecting || self.state != .disconnected {
-                self.state = .connectionDropped
+            if self.state.value != .disconnecting || self.state.value != .disconnected {
+                self.state.send(.connectionDropped)
             }
             self.cancellablesBindToConnection = Set()
 
@@ -310,7 +330,7 @@ extension AppSyncRealTimeClient {
             subject.send(event)
 
             self.resumeExistingSubscriptions()
-            self.state = .connected
+            self.state.send(.connected)
             self.monitorHeartBeats(event.payload)
 
         case .keepAlive:
