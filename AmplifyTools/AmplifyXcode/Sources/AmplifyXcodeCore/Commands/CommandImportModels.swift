@@ -20,7 +20,7 @@ enum CommandImportModelsTasks {
                 return .failure(
                     AmplifyCommandError(
                         .folderNotFound,
-                        errorDescription: "Amplify generated models not found at \(modelsPath)",
+                        errorDescription: "Unable to create a new folder for models at path: \(modelsPath)",
                         recoverySuggestion: "Run amplify codegen models."))
             }
 
