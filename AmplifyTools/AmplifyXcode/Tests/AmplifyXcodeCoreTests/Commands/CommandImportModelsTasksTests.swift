@@ -61,12 +61,19 @@ class CommandImportModelsTasksTests: XCTestCase {
                 _ = super.directoryExists(atPath: dirPath)
                 return false
             }
+
+            override func createDirectory(atPath path: String) throws -> String {
+                _ = try super.createDirectory(atPath: path)
+                return "created"
+            }
         }
         let environment = FailingEnvironment(basePath: basePath, fileManager: fileManager)
         let result = CommandImportModelsTasks.projectHasGeneratedModels(environment: environment, args: taskArgs)
-        if case .success = result {
+        guard case .success(let message) = result else {
             XCTFail("projectHasGeneratedModels should not have succeeded")
+            return
         }
+        XCTAssertTrue(message.hasPrefix("Amplify models folder created at"))
     }
 
 }

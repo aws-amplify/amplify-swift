@@ -89,6 +89,8 @@ extension CommandEnvironment {
         if xcodeProjFiles.count != 1 {
             throw AmplifyCommandError(
                 .xcodeProject,
+                errorDescription: "Unable to find an Xcode project file at path: \(path)",
+                recoverySuggestion: "Please create an Xcode project at \(path) using Xcode.",
                 error: XcodeProjectError.notFound(path: path))
         }
         let projectName = xcodeProjFiles[0]
