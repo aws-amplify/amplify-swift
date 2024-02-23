@@ -58,10 +58,10 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     deinit {
+        log.debug("Deinit AppSyncRealTimeClient")
         subject.send(completion: .finished)
-        Task {
-            await self.disconnect()
-        }
+        cancellables = Set()
+        cancellablesBindToConnection = Set()
     }
 
     func connect() async throws {
@@ -448,4 +448,15 @@ extension AppSyncRealTimeClient: DefaultLogger {
     }
 
     nonisolated var log: Logger { Self.log }
+}
+
+extension AppSyncRealTimeClient: Resettable {
+    func reset() async {
+        subject.send(completion: .finished)
+        cancellables = Set()
+        cancellablesBindToConnection = Set()
+        if let resettableWebSocketClient = webSocketClient as? Resettable {
+            await resettableWebSocketClient.reset()
+        }
+    }
 }

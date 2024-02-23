@@ -175,3 +175,17 @@ extension AppSyncRealTimeClientFactory {
         return apiUrl
     }
 }
+
+extension AppSyncRealTimeClientFactory: Resettable {
+    func reset() async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            self.apiToClientCache.values
+                .map { $0 as? Resettable }
+                .compactMap { $0 }
+                .forEach { resettable in
+                    taskGroup.addTask { await resettable.reset()}
+                }
+            await taskGroup.waitForAll()
+        }
+    }
+}

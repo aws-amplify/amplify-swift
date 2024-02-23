@@ -69,6 +69,9 @@ public final actor WebSocketClient: NSObject {
 
     deinit {
         self.subject.send(completion: .finished)
+        self.autoConnectOnNetworkStatusChange = false
+        self.autoRetryOnConnectionFailure = false
+        cancelables = Set()
     }
 
     public func connect(
@@ -307,4 +310,13 @@ extension WebSocketClient: DefaultLogger {
     }
 
     public nonisolated var log: Logger { Self.log }
+}
+
+extension WebSocketClient: Resettable {
+    public func reset() async {
+        self.subject.send(completion: .finished)
+        self.autoConnectOnNetworkStatusChange = false
+        self.autoRetryOnConnectionFailure = false
+        cancelables = Set()
+    }
 }
