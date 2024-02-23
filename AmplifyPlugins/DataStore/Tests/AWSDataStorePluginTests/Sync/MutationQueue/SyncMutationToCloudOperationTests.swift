@@ -292,6 +292,68 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         XCTAssertTrue(advice.shouldRetry)
     }
     
+    /// Given: Model with multiple auth types. Mutation requests always fail with 401 error code
+    /// When: Mutating model fails with 401
+    /// Then: DataStore will try again with each auth type and eventually fails
+    func testGetRetryAdviceForEachModelAuthTypeThenFail_HTTPStatusError401() async throws {
+        var numberOfTimesEntered = 0
+        let mutationEvent = try createMutationEvent()
+        let authStrategy = MockMultiAuthModeStrategy()
+        let expectedNumberOfTimesEntered = authStrategy.authTypesFor(schema: mutationEvent.schema, operation: .create).count
+        
+        let expectCalllToApiMutateNTimesAndFail = expectation(description: "Call API.mutate \(expectedNumberOfTimesEntered) times and then fail")
+        
+        let response = HTTPURLResponse(url: URL(string: "http://localhost")!,
+                                       statusCode: 401,
+                                       httpVersion: nil,
+                                       headerFields: nil)!
+        let error = APIError.httpStatusError(401, response)
+        
+        let operation = await SyncMutationToCloudOperation(
+            mutationEvent: mutationEvent,
+            getLatestSyncMetadata: { nil },
+            api: mockAPIPlugin,
+            authModeStrategy: authStrategy,
+            networkReachabilityPublisher: publisher,
+            currentAttemptNumber: 1,
+            completion: { result in
+                if numberOfTimesEntered == expectedNumberOfTimesEntered {
+                    expectCalllToApiMutateNTimesAndFail.fulfill()
+                    
+                } else {
+                    XCTFail("API.mutate was called incorrect amount of times, expected: \(expectedNumberOfTimesEntered), was : \(numberOfTimesEntered)")
+                }
+            }
+        )
+        
+        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+            let requestOptions = GraphQLOperationRequest<MutationSync<AnyModel>>.Options(pluginOptions: nil)
+            let request = GraphQLOperationRequest<MutationSync<AnyModel>>(apiName: request.apiName,
+                                                     operationType: .mutation,
+                                                     document: request.document,
+                                                     variables: request.variables,
+                                                     responseType: request.responseType,
+                                                     options: requestOptions)
+            let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
+            
+            numberOfTimesEntered += 1
+            
+            DispatchQueue.global().sync {
+                // Fail with 401 status code
+                eventListener!(.failure(error))
+            }
+            
+            return operation
+        }
+        
+        mockAPIPlugin.responders[.mutateRequestListener] = responder
+        
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        
+        await fulfillment(of: [expectCalllToApiMutateNTimesAndFail], timeout: defaultAsyncWaitTimeout)
+    }
+    
     func testGetRetryAdvice_OperationErrorAuthErrorWithMultiAuth_RetryTrue() async throws {
         let operation = await SyncMutationToCloudOperation(
             mutationEvent: try createMutationEvent(),
