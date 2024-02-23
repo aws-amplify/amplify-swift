@@ -27,6 +27,11 @@ on:
         required: false
         type: boolean
         default: false
+      test_iterations_flags:
+        description: 'The xcodebuild flags used when running the test. Defaults to retrying on failure up to 3 times'
+        required: false
+        type: string
+        default: '-test-iterations 3 -retry-tests-on-failure'
 
 permissions:
     contents: read
@@ -82,7 +87,7 @@ jobs:
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
-          other_flags: -test-iterations 3 -retry-tests-on-failure
+          other_flags: ${{ inputs.test_iterations_flags }}
 
       - name: Retry ${{ inputs.platform }} Unit Tests
         if: steps.run-tests.outcome=='failure'
@@ -98,7 +103,7 @@ jobs:
           cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
           derived_data_path: ${{ github.workspace }}/Build
           disable_package_resolution: true
-          other_flags: -test-iterations 3 -retry-tests-on-failure
+          other_flags: ${{ inputs.test_iterations_flags }}
 
       - name: Store Coverage Report File
         if: ${{ inputs.generate_coverage_report == true }}
