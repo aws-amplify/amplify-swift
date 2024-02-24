@@ -65,8 +65,18 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     func connect() async throws {
-        if self.state.value == .connecting || self.state.value == .connected {
+        switch self.state.value {
+        case .connecting, .connected:
             log.debug("[AppSyncRealTimeClient] client is already connecting or connected")
+            return
+        case .disconnecting:
+            try await waitForState(.disconnected)
+        case .connectionDropped, .disconnected, .none:
+            break
+        }
+
+        guard self.state.value != .connecting else {
+            log.debug("[AppSyncRealTimeClient] actor reentry, state has been changed to connecting")
             return
         }
 
@@ -89,11 +99,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     func disconnect() async {
+        defer { self.state.send(.disconnected) }
         log.debug("[AppSyncRealTimeClient] client start disconnecting")
         self.state.send(.disconnecting)
         self.cancellablesBindToConnection = Set()
         await self.webSocketClient.disconnect()
-        self.state.send(.disconnected)
         log.debug("[AppSyncRealTimeClient] client is disconnected")
     }
 
@@ -104,7 +114,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         Task {
             if !self.isConnected {
                 try await connect()
-                try await waitForStateConnected()
+                try await waitForState(.connected)
             }
 
             try await startSubscription(id: id, query: query).store(in: &cancellablesBindToConnection)
@@ -113,11 +123,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         return filterAppSyncSubscriptionEvent(with: id)
     }
 
-    private func waitForStateConnected() async throws {
+    private func waitForState(_ targetState: State) async throws {
         var cancellables = Set<AnyCancellable>()
 
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) -> Void in
-            state.filter { $0 == .connected }
+            state.filter { $0 == targetState }
                 .setFailureType(to: AppSyncRealTimeRequest.Error.self)
                 .timeout(.seconds(10), scheduler: DispatchQueue.global())
                 .first()
