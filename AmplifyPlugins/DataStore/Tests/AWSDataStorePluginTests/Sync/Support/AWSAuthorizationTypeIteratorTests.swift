@@ -1,8 +1,8 @@
 //
-//  AWSAuthorizationTypeIteratorTests.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Tomasz Trela on 10/02/2024.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import XCTest
