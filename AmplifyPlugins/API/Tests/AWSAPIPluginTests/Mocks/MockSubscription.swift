@@ -40,7 +40,8 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
     }
 }
 
-struct MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
+class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
+
     private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()
 
     func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
@@ -63,7 +64,7 @@ struct MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
     
     func connect() async throws { }
 
-    func disconnect() async { }
+    func disconnect(onlyIdel: Bool) async { }
 
     func triggerEvent(_ event: AppSyncSubscriptionEvent) {
         subject.send(event)

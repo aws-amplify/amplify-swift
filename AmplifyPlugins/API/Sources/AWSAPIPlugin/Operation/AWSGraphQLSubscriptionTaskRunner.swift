@@ -54,10 +54,13 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
                 return
             }
             do {
+                print("[AWSGraphQLSubscriptionTaskRunner] Unsubscribing \(self.subscriptionId)")
                 try await appSyncClient.unsubscribe(id: self.subscriptionId)
             } catch {
-                print("Failed to unsubscribe \(self.subscriptionId)")
+                print("[AWSGraphQLSubscriptionTaskRunner] Failed to unsubscribe \(self.subscriptionId)")
             }
+
+            await appSyncClient.disconnect(onlyIdel: true)
         }
     }
 
@@ -235,11 +238,14 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             }
 
             do {
+                print("[AWSGraphQLSubscriptionOperation] Unsubscribing \(subscriptionId)")
                 try await appSyncRealTimeClient.unsubscribe(id: subscriptionId)
                 finish()
             } catch {
-                print("Failed to unsubscribe \(error)")
+                print("[AWSGraphQLSubscriptionOperation] Failed to unsubscribe \(subscriptionId), error: \(error)")
             }
+
+            await appSyncRealTimeClient.disconnect(onlyIdel: true)
         }
     }
 

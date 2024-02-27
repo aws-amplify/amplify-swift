@@ -334,7 +334,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The final snapshot should have all the latest models with `isSynced` true
     ///
     func testObserveQuery_withClearedDataStore_fullySyncedWithMaxRecords() async throws {
-        await setUp(withModels: TestModelRegistration())
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startAmplifyAndWaitForReady()
         try await clearDataStore()
 

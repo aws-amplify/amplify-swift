@@ -21,12 +21,14 @@ class AppSyncRealTimeClientTests: XCTestCase {
         let requestFailedExpectation = expectation(description: "Request should be failed with error")
         Task {
             do {
-                try await AppSyncRealTimeClient.sendRequestWithTimeout(
-                    timeout,
-                    on: dataSource.eraseToAnyPublisher(),
-                    filter: { _ in true }) {
-                        requestFactoryExpectation.fulfill()
-                    }
+                try await AppSyncRealTimeRequest.sendRequest(
+                    request: .connectionInit,
+                    responseStream: dataSource.eraseToAnyPublisher(),
+                    timeout: timeout
+                ) { _ in
+                    requestFactoryExpectation.fulfill()
+                }
+
                 XCTFail("The operation should be failed with time out")
             } catch {
                 let requestError = error as! AppSyncRealTimeRequest.Error
@@ -44,13 +46,15 @@ class AppSyncRealTimeClientTests: XCTestCase {
         let finishExpectation = expectation(description: "Request finished successfully")
         Task {
             do {
-                try await AppSyncRealTimeClient.sendRequestWithTimeout(
-                    timeout,
-                    on: dataSource.eraseToAnyPublisher(),
-                    filter: { $0.type == .connectionAck }) {
-                        requestFactoryExpectation.fulfill()
-                        dataSource.send(.init(id: nil, payload: nil, type: .connectionAck))
-                    }
+                try await AppSyncRealTimeRequest.sendRequest(
+                    request: .connectionInit,
+                    responseStream: dataSource.eraseToAnyPublisher(),
+                    timeout: timeout
+                ) { _ in
+                    requestFactoryExpectation.fulfill()
+                    dataSource.send(.init(id: nil, payload: nil, type: .connectionAck))
+                }
+
                 finishExpectation.fulfill()
             } catch {
                 XCTFail("Operation shouldn't fail with error \(error)")
@@ -67,24 +71,24 @@ class AppSyncRealTimeClientTests: XCTestCase {
         let id = UUID().uuidString
         Task {
             do {
-                try await AppSyncRealTimeClient.sendRequestWithTimeout(
-                    timeout,
-                    id: id,
-                    on: dataSource.eraseToAnyPublisher(),
-                    filter: { $0.type == .connectionAck }) {
-                        requestFactoryExpectation.fulfill()
-                        dataSource.send(.init(
-                            id: id,
-                            payload: .object([
-                                "errors": .array([
-                                    .object([
-                                        "errorType": "LimitExceededError"
-                                    ])
+                try await AppSyncRealTimeRequest.sendRequest(
+                    request: .start(.init(id: id, data: "", auth: nil)),
+                    responseStream: dataSource.eraseToAnyPublisher(),
+                    timeout: timeout
+                ) { _ in
+                    requestFactoryExpectation.fulfill()
+                    dataSource.send(.init(
+                        id: id,
+                        payload: .object([
+                            "errors": .array([
+                                .object([
+                                    "errorType": "LimitExceededError"
                                 ])
-                            ]),
-                            type: .error
-                        ))
-                    }
+                            ])
+                        ]),
+                        type: .error
+                    ))
+                }
                 XCTFail("Operation should be failed")
             } catch {
                 let requestError = error as! AppSyncRealTimeRequest.Error
@@ -104,11 +108,11 @@ class AppSyncRealTimeClientTests: XCTestCase {
         let id = UUID().uuidString
         Task {
             do {
-                try await AppSyncRealTimeClient.sendRequestWithTimeout(
-                    timeout,
-                    id: id,
-                    on: dataSource.eraseToAnyPublisher(),
-                    filter: { $0.type == .connectionAck }) {
+                try await AppSyncRealTimeRequest.sendRequest(
+                    request: .start(.init(id: id, data: "", auth: nil)),
+                    responseStream: dataSource.eraseToAnyPublisher(),
+                    timeout: timeout
+                ) { _ in
                         requestFactoryExpectation.fulfill()
                         dataSource.send(.init(
                             id: id,
@@ -135,41 +139,43 @@ class AppSyncRealTimeClientTests: XCTestCase {
         ], timeout: timeout + 1)
     }
 
-    func testSendRequestWithTimeout_withErrorResponse_notTriggerErrorForUnknow() async {
+    func testSendRequestWithTimeout_withErrorResponse_triggerErrorForUnknow() async {
         let timeout = 1.0
         let dataSource = PassthroughSubject<AppSyncRealTimeResponse, Never>()
         let requestFactoryExpectation = expectation(description: "Request factory being called")
-        let skipUnknownErrorExpectation =
-            expectation(description: "Request should skip unknown errors")
+        let triggerUnknownErrorExpectation =
+            expectation(description: "Request should trigger unknown errors")
         let id = UUID().uuidString
         Task {
             do {
-                try await AppSyncRealTimeClient.sendRequestWithTimeout(
-                    timeout,
-                    id: id,
-                    on: dataSource.eraseToAnyPublisher(),
-                    filter: { $0.type == .connectionAck }) {
-                        requestFactoryExpectation.fulfill()
-                        dataSource.send(.init(
-                            id: id,
-                            payload: .object([
-                                "errors": .array([
-                                    .object([
-                                        "errorType": "OtherError"
-                                    ])
+                try await AppSyncRealTimeRequest.sendRequest(
+                    request: .start(.init(id: id, data: "", auth: nil)),
+                    responseStream: dataSource.eraseToAnyPublisher(),
+                    timeout: timeout
+                ) { _ in
+                    requestFactoryExpectation.fulfill()
+                    dataSource.send(.init(
+                        id: id,
+                        payload: .object([
+                            "errors": .array([
+                                .object([
+                                    "errorType": "OtherError"
                                 ])
-                            ]),
-                            type: .error
-                        ))
-                    }
-                skipUnknownErrorExpectation.fulfill()
+                            ])
+                        ]),
+                        type: .error
+                    ))
+                }
+
             } catch {
-                XCTFail("Should not trigger failure for unknown error")
+                let requestError = error as! AppSyncRealTimeRequest.Error
+                XCTAssertEqual(requestError, .unknown)
+                triggerUnknownErrorExpectation.fulfill()
             }
         }
         await fulfillment(of: [
             requestFactoryExpectation,
-            skipUnknownErrorExpectation
+            triggerUnknownErrorExpectation
         ], timeout: timeout + 1)
     }
 
@@ -250,21 +256,20 @@ class AppSyncRealTimeClientTests: XCTestCase {
         )
         let id = UUID().uuidString
 
+        let connectTriggered = expectation(description: "connect websocket")
+        let startTriggered = expectation(description: "webSocket start subscription")
         let stopTriggered = expectation(description: "webSocket writing stop event to connection")
 
         await mockWebSocketClient.setStateToConnected()
-        Task {
-            try await Task.sleep(nanoseconds: 80 * 1_000_000)
-            await mockWebSocketClient.subject.send(.connected)
-            try await Task.sleep(nanoseconds: 80 * 1_000_000)
-            await mockWebSocketClient.subject.send(.string("""
-                {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
-            """))
-        }
-        try await appSyncClient.connect()
+
         await mockWebSocketClient.actionSubject
             .sink { action in
                 switch action {
+                case .connect:
+                    Task  {
+                        await mockWebSocketClient.subject.send(.connected)
+                    }
+
                 case .write(let message):
                     guard let response = try? JSONDecoder().decode(
                         JSONValue.self,
@@ -274,10 +279,32 @@ class AppSyncRealTimeClientTests: XCTestCase {
                         return
                     }
 
-                    if response.type?.stringValue == "stop" {
+                    switch response.type?.stringValue {
+                    case .some("stop"):
                         XCTAssertEqual(response.id?.stringValue, id)
                         stopTriggered.fulfill()
-                    } else {
+
+                    case .some("start"):
+                        XCTAssertEqual(response.id?.stringValue, id)
+                        startTriggered.fulfill()
+                        Task {
+                            try await Task.sleep(nanoseconds: 80 * 1_000_000)
+                            await mockWebSocketClient.subject.send(.string("""
+                                {"type": "start_ack", "id": "\(id)"}
+                            """))
+                            try await Task.sleep(nanoseconds: 80 * 1_000_000)
+                            try await appSyncClient.unsubscribe(id: id)
+                        }
+
+                    case .some("connection_init"):
+                        connectTriggered.fulfill()
+                        Task {
+                            try await Task.sleep(nanoseconds: 80 * 1_000_000)
+                            await mockWebSocketClient.subject.send(.string("""
+                                {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
+                            """))
+                        }
+                    default:
                         XCTFail("No other message should be written")
                     }
 
@@ -287,10 +314,15 @@ class AppSyncRealTimeClientTests: XCTestCase {
             }
             .store(in: &cancellables)
 
+        Task {
+            _ = try await appSyncClient.subscribe(id: id, query: "")
+        }
 
-        Task { try await appSyncClient.unsubscribe(id: id) }
-
-        await fulfillment(of: [stopTriggered], timeout: 2)
+        await fulfillment(
+            of: [connectTriggered, startTriggered, stopTriggered],
+            timeout: 2,
+            enforceOrder: true
+        )
     }
 
     func testUnsubscribe_withAppSyncRealTimeClientNotConnected_doesNotTriggerWebSocketStopEvent() async throws {
