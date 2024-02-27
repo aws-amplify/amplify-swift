@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.30.8 (2024-02-27)
+
 ## 1.30.7 (2024-02-05)
 
 ### Bug Fixes
