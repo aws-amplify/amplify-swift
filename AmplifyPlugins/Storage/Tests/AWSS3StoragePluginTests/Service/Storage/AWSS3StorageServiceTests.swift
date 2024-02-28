@@ -387,11 +387,11 @@ class AWSS3StorageServiceTests: XCTestCase {
 }
 
 private class MockHttpClientEngineProxy: HttpClientEngineProxy {
-    var target: HttpClientEngine? = nil
+    var target: HTTPClient? = nil
 
     var executeCount = 0
     var executeRequest: SdkHttpRequest?
-    func execute(request: SdkHttpRequest) async throws -> HttpResponse {
+    func send(request: SdkHttpRequest) async throws -> HttpResponse {
         executeCount += 1
         executeRequest = request
         return .init(body: .empty, statusCode: .accepted)

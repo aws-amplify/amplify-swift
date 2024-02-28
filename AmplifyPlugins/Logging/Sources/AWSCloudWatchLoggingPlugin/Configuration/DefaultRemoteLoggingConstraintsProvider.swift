@@ -88,7 +88,7 @@ public class DefaultRemoteLoggingConstraintsProvider: RemoteLoggingConstraintsPr
 
         let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?
             .queryItems?
-            .map { ClientRuntime.URLQueryItem(name: $0.name, value: $0.value) } ?? []
+            .map { ClientRuntime.SDKURLQueryItem(name: $0.name, value: $0.value) } ?? []
 
         let requestBuilder = SdkHttpRequestBuilder()
             .withHost(host)

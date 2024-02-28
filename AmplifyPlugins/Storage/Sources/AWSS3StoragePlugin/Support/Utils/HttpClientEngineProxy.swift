@@ -21,11 +21,11 @@ import Foundation
 /// * [CommonRuntime.HttpClientEngine](x-source-tag://HttpClientEngine)
 ///
 /// - Tag: HttpClientEngineProxy
-protocol HttpClientEngineProxy: HttpClientEngine {
+protocol HttpClientEngineProxy: HTTPClient {
 
     /// The actual engine performing the requests. This must be set before the receiver gets its first call to
     /// `execute(request:)`.
     ///
     /// - Tag: HttpClientEngineProxy.target
-    var target: HttpClientEngine? { get set }
+    var target: HTTPClient? { get set }
 }

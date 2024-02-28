@@ -13,11 +13,18 @@ enum CommandImportModelsTasks {
                                           args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult {
         let modelsPath = environment.path(for: args.generatedModelsPath)
         guard environment.directoryExists(atPath: modelsPath) else {
-            return .failure(
-                AmplifyCommandError(
-                    .folderNotFound,
-                    errorDescription: "Amplify generated models not found at \(modelsPath)",
-                    recoverySuggestion: "Run amplify codegen models."))
+            do {
+                _ = try environment.createDirectory(atPath: args.generatedModelsPath)
+            } 
+            catch {
+                return .failure(
+                    AmplifyCommandError(
+                        .folderNotFound,
+                        errorDescription: "Unable to create a new folder for models at path: \(modelsPath)",
+                        recoverySuggestion: "Run amplify codegen models."))
+            }
+
+            return .success("Amplify models folder created at \(modelsPath)")
         }
 
         return .success("Amplify models folder found at \(modelsPath)")

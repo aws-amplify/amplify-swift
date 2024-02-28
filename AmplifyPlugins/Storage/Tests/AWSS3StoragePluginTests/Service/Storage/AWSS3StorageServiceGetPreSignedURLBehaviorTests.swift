@@ -43,7 +43,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
                                                   bucket: bucket,
                                                   storageTransferDatabase: database)
         systemUnderTest.preSignedURLBuilder = builder
-        systemUnderTest.client  = client
+        systemUnderTest.client = client
         
         let url = try XCTUnwrap(presignedURL)
         builder.getPreSignedURLHandler = { (_,_,_) in
@@ -145,9 +145,7 @@ class AWSS3StorageServiceGetPreSignedURLBehaviorTests: XCTestCase {
     /// - Then: An SdkError.service is thrown
     func testvalidateObjectExistenceForNonExistentKeyWithSdkServiceError() async throws {
         client.headObjectHandler = { _ in
-            throw try await AWSS3.NotFound(
-                httpResponse: HttpResponse(body: .none, statusCode: .notFound)
-            )
+            throw AWSS3.NotFound()
         }
         let nonExistentKey = UUID().uuidString
         do {

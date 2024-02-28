@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.27.0 (2024-02-22)
+
+### Features
+
+- Update aws-swift-sdk dependency to 0.36.1 (#3519)
+
+## 2.26.3 (2024-02-21)
+
+### Bug Fixes
+
+- **DataStore**: improve MutationEvent resiliency to interruptions (#3492)
+
 ## 2.26.2 (2024-02-15)
 
 ### Bug Fixes

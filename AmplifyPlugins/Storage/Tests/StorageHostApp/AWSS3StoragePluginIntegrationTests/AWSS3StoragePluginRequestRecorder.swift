@@ -11,7 +11,7 @@ import ClientRuntime
 import Foundation
 
 class AWSS3StoragePluginRequestRecorder {
-    var target: HttpClientEngine? = nil
+    var target: HTTPClient? = nil
     var sdkRequests: [SdkHttpRequest] = []
     var urlRequests: [URLRequest] = []
     init() {
@@ -19,12 +19,12 @@ class AWSS3StoragePluginRequestRecorder {
 }
 
 extension AWSS3StoragePluginRequestRecorder: HttpClientEngineProxy {
-    func execute(request: SdkHttpRequest) async throws -> HttpResponse {
+    func send(request: SdkHttpRequest) async throws -> HttpResponse {
         guard let target = target  else {
             throw ClientError.unknownError("HttpClientEngine is not set")
         }
         sdkRequests.append(request)
-        return try await target.execute(request: request)
+        return try await target.send(request: request)
    }
 }
 

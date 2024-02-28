@@ -543,6 +543,7 @@
 		21C3C4C1293FD9BD009194A0 /* AWSDataStoreLazyLoadDefaultPKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C3C4C0293FD9BD009194A0 /* AWSDataStoreLazyLoadDefaultPKTests.swift */; };
 		21C3C4C3293FD9FF009194A0 /* AWSDataStoreLazyLoadHasOneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C3C4C2293FD9FF009194A0 /* AWSDataStoreLazyLoadHasOneTests.swift */; };
 		21C3C4C5293FDA12009194A0 /* AWSDataStoreLazyLoadCompositePKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C3C4C4293FDA12009194A0 /* AWSDataStoreLazyLoadCompositePKTests.swift */; };
+		21D8E2D22B7BF89900F945F8 /* AWSDataStoreLazyLoadPostComment4V2StressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D8E2D12B7BF89900F945F8 /* AWSDataStoreLazyLoadPostComment4V2StressTests.swift */; };
 		21DFAE9F295F4E8600B4A883 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE99295F4E8500B4A883 /* Person.swift */; };
 		21DFAEA0295F4E8600B4A883 /* PhoneCall+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9A295F4E8500B4A883 /* PhoneCall+Schema.swift */; };
 		21DFAEA1295F4E8600B4A883 /* Transcript+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9B295F4E8500B4A883 /* Transcript+Schema.swift */; };
@@ -2113,6 +2114,7 @@
 		21C3C4C0293FD9BD009194A0 /* AWSDataStoreLazyLoadDefaultPKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadDefaultPKTests.swift; sourceTree = "<group>"; };
 		21C3C4C2293FD9FF009194A0 /* AWSDataStoreLazyLoadHasOneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadHasOneTests.swift; sourceTree = "<group>"; };
 		21C3C4C4293FDA12009194A0 /* AWSDataStoreLazyLoadCompositePKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadCompositePKTests.swift; sourceTree = "<group>"; };
+		21D8E2D12B7BF89900F945F8 /* AWSDataStoreLazyLoadPostComment4V2StressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostComment4V2StressTests.swift; sourceTree = "<group>"; };
 		21DFAE99295F4E8500B4A883 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		21DFAE9A295F4E8500B4A883 /* PhoneCall+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhoneCall+Schema.swift"; sourceTree = "<group>"; };
 		21DFAE9B295F4E8500B4A883 /* Transcript+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Transcript+Schema.swift"; sourceTree = "<group>"; };
@@ -2645,6 +2647,7 @@
 			children = (
 				21801D0528F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2Tests.swift */,
 				210EB5EB294796C40060C185 /* AWSDataStoreLazyLoadPostComment4V2SnapshotTests.swift */,
+				21D8E2D12B7BF89900F945F8 /* AWSDataStoreLazyLoadPostComment4V2StressTests.swift */,
 				21801CB728F9A86700FFA37E /* Comment4V2.swift */,
 				21801CCB28F9A86800FFA37E /* Comment4V2+Schema.swift */,
 				21801CBA28F9A86700FFA37E /* Post4V2.swift */,
@@ -5170,6 +5173,7 @@
 				21801D6629097D5800FFA37E /* DefaultPKChild+Schema.swift in Sources */,
 				21801D0728F9B11800FFA37E /* AsyncTesting.swift in Sources */,
 				21DFAEA0295F4E8600B4A883 /* PhoneCall+Schema.swift in Sources */,
+				21D8E2D22B7BF89900F945F8 /* AWSDataStoreLazyLoadPostComment4V2StressTests.swift in Sources */,
 				21801D2A29006DA300FFA37E /* Project1.swift in Sources */,
 				21AB5C5529819BF100CCA482 /* Nested.swift in Sources */,
 				2138482A2947ACCF00BBA647 /* AWSDataStoreLazyLoadBlogPostComment8V2Tests.swift in Sources */,

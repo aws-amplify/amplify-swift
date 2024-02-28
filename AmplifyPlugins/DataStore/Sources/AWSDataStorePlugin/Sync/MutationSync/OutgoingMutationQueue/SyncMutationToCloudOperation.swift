@@ -321,7 +321,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
     /// - Warning: Must be invoked from a locking context
     private func shouldRetryWithDifferentAuthType() -> RequestRetryAdvice {
-        let shouldRetry = (authTypesIterator?.count ?? 0) > 0
+        let shouldRetry = authTypesIterator?.hasNext == true
         return RequestRetryAdvice(shouldRetry: shouldRetry, retryInterval: .milliseconds(0))
     }
 

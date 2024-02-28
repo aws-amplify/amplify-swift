@@ -126,4 +126,5 @@ extension MockComprehendBehavior {
     func listFlywheels(input: AWSComprehend.ListFlywheelsInput) async throws -> AWSComprehend.ListFlywheelsOutput { fatalError() }
     func startFlywheelIteration(input: AWSComprehend.StartFlywheelIterationInput) async throws -> AWSComprehend.StartFlywheelIterationOutput { fatalError() }
     func updateFlywheel(input: AWSComprehend.UpdateFlywheelInput) async throws -> AWSComprehend.UpdateFlywheelOutput { fatalError() }
+    func detectToxicContent(input: AWSComprehend.DetectToxicContentInput) async throws -> AWSComprehend.DetectToxicContentOutput { fatalError() }
 }

@@ -16,6 +16,11 @@ on:
         required: false
         type: boolean
         default: false
+      test_iterations_flags:
+        description: 'The xcodebuild flags used when running the test. Defaults to retrying on failure up to 3 times'
+        required: false
+        type: string
+        default: '-test-iterations 3 -retry-tests-on-failure'
 
 permissions:
     contents: read
@@ -38,3 +43,4 @@ jobs:
       platform: ${{ matrix.platform }}
       generate_coverage_report: ${{ github.event_name != 'workflow_dispatch' && matrix.platform == 'iOS' && inputs.generate_coverage_report }}
       timeout-minutes: ${{ inputs.timeout-minutes }}
+      test_iterations_flags: ${{ inputs.test_iterations_flags }}

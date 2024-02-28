@@ -34,6 +34,11 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     // MARK: - Synchronous APIs
 
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition: QueryPredicate?,
+                        eagerLoad: Bool) -> DataStoreResult<M>
+
     func exists(_ modelSchema: ModelSchema,
                 withIdentifier id: ModelIdentifierProtocol,
                 predicate: QueryPredicate?) throws -> Bool

@@ -54,7 +54,11 @@ While debugging within Xcode, you might also find useful to invoke the executabl
 In order to do so you can create a copy of the *amplify-xcode* scheme in the Xcode scheme editor (**Product > Scheme > edit Scheme**) and change the arguments passed to the executable on launch
 in the *Arguments* tab.
 
-Running `swift build -c release --disable-sandbox` will generate a release executable located at `.build/release/amplify-xcode`.
+### Release
+Running `swift build -c release --arch x86_64 --disable-sandbox` will generate a release executable located at `.build/release/amplify-xcode`.
+This executable generated would need to be updated in the [amplify-cli](https://github.com/aws-amplify/amplify-cli/tree/dev/packages/amplify-frontend-ios/resources) repository. This would allow the Amplify CLI to use the latest version of the AmplifyXcode executable.
+
+**Note: The executable architecture is set to x86_64 to ensure compatibility with the Amplify CLI.**
 
 ### Dependencies
 - [Apple Swift Argument Parser](https://github.com/apple/swift-argument-parser)
