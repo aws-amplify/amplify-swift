@@ -29,12 +29,12 @@ protocol AppSyncRealTimeClientProtocol {
 }
 
 actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
-    private struct MapperCacheKey: Hashable {
+    struct MapperCacheKey: Hashable {
         let apiName: String
         let authType: AWSAuthorizationType?
     }
 
-    private var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
+    public private(set) var apiToClientCache = [MapperCacheKey: AppSyncRealTimeClientProtocol]()
 
     public func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,

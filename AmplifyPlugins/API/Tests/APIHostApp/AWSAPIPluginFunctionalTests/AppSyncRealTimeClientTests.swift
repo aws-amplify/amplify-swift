@@ -86,7 +86,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
     func testMultThreads_withConnectedClient_subscribeAndUnsubscribe() async throws {
         var cancellables = [AnyCancellable?]()
-        let concurrentFactor = 60
+        let concurrentFactor = 90
         let expectedSubscription = expectation(description: "Multi threads subscription")
         expectedSubscription.expectedFulfillmentCount = concurrentFactor
 
@@ -124,7 +124,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
 
         await fulfillment(of: [expectedSubscription, expectedUnsubscription], timeout: 3)
-        cancellables = []
+        withExtendedLifetime(cancellables, { })
     }
 
     private static func appSyncQuery(

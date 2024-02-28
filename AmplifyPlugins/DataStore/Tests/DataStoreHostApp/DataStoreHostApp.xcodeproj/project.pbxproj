@@ -564,6 +564,7 @@
 		602E8BF92A37D13700A3EA1E /* AWSDataStoreAWSIPAddressSortKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602E8BF32A37D13700A3EA1E /* AWSDataStoreAWSIPAddressSortKeyTest.swift */; };
 		602E8BFA2A37D13700A3EA1E /* AWSDataStoreAWSEmailSortKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602E8BF52A37D13700A3EA1E /* AWSDataStoreAWSEmailSortKeyTest.swift */; };
 		602E8BFC2A37D14900A3EA1E /* AWSDataStoreSortKeyBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602E8BFB2A37D14900A3EA1E /* AWSDataStoreSortKeyBaseTest.swift */; };
+		606C8B7B2B8FAFF700716094 /* DataStoreLargeNumberModelsSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606C8B7A2B8FAFF700716094 /* DataStoreLargeNumberModelsSubscriptionTests.swift */; };
 		6080BE5F2A37D48A0086EBDF /* Post16.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6080BE5D2A37D48A0086EBDF /* Post16.swift */; };
 		6080BE602A37D48A0086EBDF /* Post16+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6080BE5E2A37D48A0086EBDF /* Post16+Schema.swift */; };
 		6080BE632A37D4940086EBDF /* Post17+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6080BE612A37D4940086EBDF /* Post17+Schema.swift */; };
@@ -2133,6 +2134,7 @@
 		602E8BF32A37D13700A3EA1E /* AWSDataStoreAWSIPAddressSortKeyTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStoreAWSIPAddressSortKeyTest.swift; sourceTree = "<group>"; };
 		602E8BF52A37D13700A3EA1E /* AWSDataStoreAWSEmailSortKeyTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStoreAWSEmailSortKeyTest.swift; sourceTree = "<group>"; };
 		602E8BFB2A37D14900A3EA1E /* AWSDataStoreSortKeyBaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStoreSortKeyBaseTest.swift; sourceTree = "<group>"; };
+		606C8B7A2B8FAFF700716094 /* DataStoreLargeNumberModelsSubscriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreLargeNumberModelsSubscriptionTests.swift; sourceTree = "<group>"; };
 		6080BE5D2A37D48A0086EBDF /* Post16.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post16.swift; sourceTree = "<group>"; };
 		6080BE5E2A37D48A0086EBDF /* Post16+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post16+Schema.swift"; sourceTree = "<group>"; };
 		6080BE612A37D4940086EBDF /* Post17+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post17+Schema.swift"; sourceTree = "<group>"; };
@@ -3085,6 +3087,7 @@
 				21BBFC25289C054900B32A39 /* Models */,
 				21BBF9E7289BFE3400B32A39 /* TestSupport */,
 				21BBFA0D289BFE3400B32A39 /* README.md */,
+				606C8B7A2B8FAFF700716094 /* DataStoreLargeNumberModelsSubscriptionTests.swift */,
 				21BBFA0C289BFE3400B32A39 /* SubscriptionEndToEndTests.swift */,
 				21BBFA0E289BFE3400B32A39 /* DataStoreScalarTests.swift */,
 				21BBFA15289BFE3400B32A39 /* DataStoreObserveQueryTests.swift */,
@@ -5276,6 +5279,7 @@
 				21BBFD62289C06E400B32A39 /* TodoWithDefaultValueV2.swift in Sources */,
 				21BBFD8E289C06E400B32A39 /* Nested.swift in Sources */,
 				21BBFDE2289C06E400B32A39 /* QPredGen+Schema.swift in Sources */,
+				606C8B7B2B8FAFF700716094 /* DataStoreLargeNumberModelsSubscriptionTests.swift in Sources */,
 				21BBFDC2289C06E400B32A39 /* Blog6.swift in Sources */,
 				21BBFD4E289C06E400B32A39 /* Team4aV2.swift in Sources */,
 				21BBFDD8289C06E400B32A39 /* Team2+Schema.swift in Sources */,
