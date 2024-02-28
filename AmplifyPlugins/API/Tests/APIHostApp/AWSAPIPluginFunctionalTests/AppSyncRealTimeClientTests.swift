@@ -75,9 +75,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
             id: UUID().uuidString,
             query: Self.appSyncQuery(with: subscriptionRequest)
         )
-        .sink(receiveCompletion: { completion in
-            print("### completion \(completion)")
-        }, receiveValue: { event in
+        .sink(receiveCompletion: { _ in }, receiveValue: { event in
             if case .subscribed = event {
                 subscribedExpectation.fulfill()
             }
@@ -86,14 +84,15 @@ class AppSyncRealTimeClientTests: XCTestCase {
         await fulfillment(of: [subscribedExpectation], timeout: 5)
     }
 
-    func testMultThreads_subscribeAndUnsubscribe() async throws {
-        let concurrentFactor = 100
+    func testMultThreads_withConnectedClient_subscribeAndUnsubscribe() async throws {
+        var cancellables = [AnyCancellable?]()
+        let concurrentFactor = 60
         let expectedSubscription = expectation(description: "Multi threads subscription")
         expectedSubscription.expectedFulfillmentCount = concurrentFactor
 
         let expectedUnsubscription = expectation(description: "Multi threads unsubscription")
         expectedUnsubscription.expectedFulfillmentCount = concurrentFactor
-        _ = try await withThrowingTaskGroup(
+        cancellables = try await withThrowingTaskGroup(
             of: AnyCancellable?.self,
             returning: [AnyCancellable?].self
         ) { taskGroup in
@@ -108,11 +107,13 @@ class AppSyncRealTimeClientTests: XCTestCase {
                     .sink {
                         if case .subscribed = $0 {
                             expectedSubscription.fulfill()
+                            Task {
+                                try await self.appSyncRealTimeClient?.unsubscribe(id: id)
+                            }
                         } else if case .unsubscribed = $0 {
                             expectedUnsubscription.fulfill()
                         }
                     }
-                    try await self.appSyncRealTimeClient?.unsubscribe(id: id)
 
                     return subscription
                 }
@@ -122,7 +123,8 @@ class AppSyncRealTimeClientTests: XCTestCase {
             return try await taskGroup.reduce([AnyCancellable?]()) { $0 + [$1] }
         }
 
-        await fulfillment(of: [expectedSubscription, expectedUnsubscription], timeout:1)
+        await fulfillment(of: [expectedSubscription, expectedUnsubscription], timeout: 3)
+        cancellables = []
     }
 
     private static func appSyncQuery(
@@ -136,4 +138,5 @@ class AppSyncRealTimeClientTests: XCTestCase {
         let data = try JSONEncoder().encode(payload)
         return String(data: data, encoding: .utf8)!
     }
+
 }

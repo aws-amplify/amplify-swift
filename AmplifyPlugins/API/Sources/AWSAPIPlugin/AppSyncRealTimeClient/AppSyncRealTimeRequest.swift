@@ -75,7 +75,6 @@ extension AppSyncRealTimeRequest {
         case timeout
         case limitExceeded
         case maxSubscriptionsReached
-        case abort
         case unknown
     }
 
@@ -91,16 +90,15 @@ extension AppSyncRealTimeRequest {
                 .setFailureType(to: AppSyncRealTimeRequest.Error.self)
                 .flatMap { filterResponse(request: request, response: $0) }
                 .timeout(.seconds(timeout), scheduler: DispatchQueue.global(qos: .userInitiated), customError: { .timeout })
+                .first()
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
-                        continuation.resume(throwing: Error.abort)
+                        continuation.resume(returning: ())
                     case .failure(let error):
                         continuation.resume(throwing: error)
                     }
-                }, receiveValue: { _ in
-                    continuation.resume(returning: ())
-                })
+                }, receiveValue: { _ in })
                 .store(in: &cancellables)
 
             Task {

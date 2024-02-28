@@ -117,19 +117,26 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         log.debug("[AppSyncRealTimeClient] client is disconnected")
     }
 
-    func subscribe(id: String, query: String) throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
-        subscriptions[id] = AppSyncRealTimeSubscription(id: id, query: query)
-        // Initiate the subscription in a separate task and returning the filtered
-        // publisher immediately for downstream to listen to all the error messages
-        Task {
-            if !self.isConnected {
-                try await connect()
-                try await waitForState(.connected)
+        let subscription = AppSyncRealTimeSubscription(id: id, query: query)
+        subscriptions[id] = subscription
+
+        defer {
+            // Initiate the subscription in a separate task and returning the filtered
+            // publisher immediately for downstream to listen to all the error messages
+            Task {
+                if !self.isConnected {
+                    try await connect()
+                    try await waitForState(.connected)
+                }
+                try await self.startSubscription(id).store(in: &cancellablesBindToConnection)
             }
-            try await self.startSubscription(id).store(in: &cancellablesBindToConnection)
         }
+
         return filterAppSyncSubscriptionEvent(with: id)
+            .merge(with: (await subscription.publisher).toAppSyncSubscriptionEventStream())
+            .eraseToAnyPublisher()
     }
 
     private func waitForState(_ targetState: State) async throws {
@@ -253,13 +260,10 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         subject.filter { $0.id == id || $0.type == .connectionError }
         .map { response -> AppSyncSubscriptionEvent? in
             switch response.type {
-            case .startAck: return .subscribed
-            case .stopAck: return .unsubscribed
             case .connectionError, .error:
                 return .error(Self.decodeGraphQLErrors(response.payload))
             case .data:
                 return response.payload.map { .data($0) }
-            case .starting: return .subscribing
             default:
                 return nil
             }
@@ -377,5 +381,19 @@ extension AppSyncRealTimeClient: Resettable {
         if let resettableWebSocketClient = webSocketClient as? Resettable {
             await resettableWebSocketClient.reset()
         }
+    }
+}
+
+extension Publisher where Output == AppSyncRealTimeSubscription.State, Failure == Never {
+    func toAppSyncSubscriptionEventStream() -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+        self.compactMap { subscriptionState -> AppSyncSubscriptionEvent? in
+            switch subscriptionState {
+            case .subscribing: return .subscribing
+            case .subscribed: return .subscribed
+            case .unsubscribed: return .unsubscribed
+            default: return nil
+            }
+        }
+        .eraseToAnyPublisher()
     }
 }

@@ -21,7 +21,10 @@ actor AppSyncRealTimeSubscription {
         case unsubscribed
     }
 
-    private var state: State = .none
+    private let state = CurrentValueSubject<State, Never>(.none)
+    public var publisher: AnyPublisher<State, Never> {
+        state.eraseToAnyPublisher()
+    }
     public let id: String
     public let query: String
 
@@ -30,17 +33,21 @@ actor AppSyncRealTimeSubscription {
         self.query = query
     }
 
+    deinit {
+        self.state.send(completion: .finished)
+    }
+
     func subscribe(
         with webSocketClient: AppSyncWebSocketClientProtocol,
         request: AppSyncRealTimeRequest,
         responseStream: AnyPublisher<AppSyncRealTimeResponse, Never>
     ) async throws {
-        guard self.state != .subscribing else {
+        guard self.state.value != .subscribing else {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription already in subscribing state")
             return
         }
 
-        guard self.state != .subscribed else {
+        guard self.state.value != .subscribed else {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription already in subscribed state")
             return
         }
@@ -51,7 +58,7 @@ actor AppSyncRealTimeSubscription {
         }
 
         log.debug("[AppSyncRealTimeSubscription-\(id)] Start subscribing")
-        self.state = .subscribing
+        self.state.send(.subscribing)
 
         try await AppSyncRealTimeRequest.sendRequest(
             request: request,
@@ -62,20 +69,20 @@ actor AppSyncRealTimeSubscription {
         }
 
         log.debug("[AppSyncRealTimeSubscription-\(id)] Subscribed")
-        self.state = .subscribed
+        self.state.send(.subscribed)
     }
 
     func unsubscribe(
         with webSocketClient: AppSyncWebSocketClientProtocol,
         responseStream: AnyPublisher<AppSyncRealTimeResponse, Never>
     ) async throws {
-        guard self.state == .subscribed else {
+        guard self.state.value == .subscribed else {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription should be subscribed to be unsubscribed")
             return
         }
 
         log.debug("[AppSyncRealTimeSubscription-\(id)] Unsubscribing")
-        self.state = .unsubscribing
+        self.state.send(.unsubscribing)
 
         try await AppSyncRealTimeRequest.sendRequest(
             request: AppSyncRealTimeRequest.stop(id),
@@ -86,7 +93,7 @@ actor AppSyncRealTimeSubscription {
         }
 
         log.debug("[AppSyncRealTimeSubscription-\(id)] Unsubscribed")
-        self.state = .unsubscribed
+        self.state.send(.unsubscribed)
     }
 
     private static func sendSubscriptionRequest(
