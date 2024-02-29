@@ -71,10 +71,11 @@ extension AppSyncRealTimeRequest: Encodable {
 
 
 extension AppSyncRealTimeRequest {
-    enum Error: Swift.Error {
+    public enum Error: Swift.Error {
         case timeout
         case limitExceeded
         case maxSubscriptionsReached
+        case unauthorized
         case unknown
     }
 
@@ -129,7 +130,7 @@ extension AppSyncRealTimeRequest {
             where request.id != nil
                 && request.id == response.id
                 && response.payload?.errors?.asArray != nil:
-            return parseResponseError(errors: (response.payload?.errors?.asArray)!)
+            return parseResponseErrors(errors: (response.payload?.errors?.asArray)!)
 
         default:
             return Empty(
@@ -140,27 +141,42 @@ extension AppSyncRealTimeRequest {
         }
     }
 
-    private static func parseResponseError(
-        errors: [JSONValue]
-    ) -> AnyPublisher<AppSyncRealTimeResponse, AppSyncRealTimeRequest.Error> {
+    public static func parseResponseError(
+        error: JSONValue
+    ) -> AppSyncRealTimeRequest.Error? {
         let limitExceededErrorString = "LimitExceededError"
         let maxSubscriptionsReachedErrorString = "MaxSubscriptionsReachedError"
+        let unauthorized = "Unauthorized"
 
-        let errorTypes = errors.map { $0.errorType?.stringValue }.compactMap { $0 }
-        if errorTypes.contains(where: { $0.contains(limitExceededErrorString) }) {
-            return Fail(
+        guard let errorType = error.errorType?.stringValue else {
+            return nil
+        }
+
+        switch errorType {
+        case _ where errorType.contains(limitExceededErrorString):
+            return .limitExceeded
+        case _ where errorType.contains(maxSubscriptionsReachedErrorString):
+            return .maxSubscriptionsReached
+        case _ where errorType.contains(unauthorized):
+            return .unauthorized
+        default:
+            return .unknown
+        }
+    }
+
+    private static func parseResponseErrors(
+        errors: [JSONValue]
+    ) -> AnyPublisher<AppSyncRealTimeResponse, AppSyncRealTimeRequest.Error> {
+        let reqeustErrors = errors.compactMap(parseResponseError(error:))
+        if reqeustErrors.isEmpty {
+            return Empty(
                 outputType: AppSyncRealTimeResponse.self,
-                failure: AppSyncRealTimeRequest.Error.limitExceeded
-            ).eraseToAnyPublisher()
-        } else if errorTypes.contains(where: { $0.contains(maxSubscriptionsReachedErrorString) }) {
-            return Fail(
-                outputType: AppSyncRealTimeResponse.self,
-                failure: AppSyncRealTimeRequest.Error.maxSubscriptionsReached
+                failureType: AppSyncRealTimeRequest.Error.self
             ).eraseToAnyPublisher()
         } else {
             return Fail(
                 outputType: AppSyncRealTimeResponse.self,
-                failure: AppSyncRealTimeRequest.Error.unknown
+                failure: reqeustErrors.first!
             ).eraseToAnyPublisher()
         }
     }

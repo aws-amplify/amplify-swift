@@ -23,7 +23,8 @@ protocol AppSyncRealTimeClientFactoryProtocol {
 
 protocol AppSyncRealTimeClientProtocol {
     func connect() async throws
-    func disconnect(onlyIdel: Bool) async
+    func disconnectWhenIdel() async
+    func disconnect() async
     func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never>
     func unsubscribe(id: String) async throws
 }

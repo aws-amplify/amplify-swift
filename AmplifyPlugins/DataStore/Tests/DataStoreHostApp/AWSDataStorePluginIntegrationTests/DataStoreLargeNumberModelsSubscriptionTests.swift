@@ -40,10 +40,32 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
     }
 
     func testDataStoreStart_subscriptionsShouldBeEstablishedInReasonableTime() async throws {
-        var cancellables = Set<AnyCancellable>()
-        let expectation = expectation(description: "DataStore with 19 models should establish subscription in 2 seconds")
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
+        try await startDataStoreAndWaitForSubscriptionsEstablished(timeout: 2)
+    }
+
+    func testDataStoreStop_subscriptionsShouldAllUnsubscribed() async throws {
+        await setUp(withModels: TestModelRegistration())
+        try await startAmplifyAndWaitForSync()
+
+        try await stopDataStoreAndVerifyAppSyncClientDisconnected()
+    }
+
+    func testDataStoreStartStopRepeat_subscriptionShouldBehaviorCorrect() async throws {
+        let repeatCount = 5
+        await setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        
+        for _ in 0..<repeatCount {
+            try await startDataStoreAndWaitForSubscriptionsEstablished(timeout: 2)
+            try await stopDataStoreAndVerifyAppSyncClientDisconnected()
+        }
+    }
+
+    private func startDataStoreAndWaitForSubscriptionsEstablished(timeout: TimeInterval) async throws {
+        var cancellables = Set<AnyCancellable>()
+        let expectation = expectation(description: "DataStore with 19 models should establish subscription in 2 seconds")
         Amplify.Hub.publisher(for: .dataStore)
             .filter { $0.eventName == HubPayload.EventName.DataStore.subscriptionsEstablished }
             .sink { _ in expectation.fulfill() }
@@ -52,13 +74,12 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
         Task {
             try await Amplify.DataStore.start()
         }
-        await fulfillment(of: [expectation], timeout: 2)
+        await fulfillment(of: [expectation], timeout: timeout)
         withExtendedLifetime(cancellables, { })
     }
 
-    func testDataStoreStop_subscriptionsShouldAllUnsubscribed() async throws {
-        await setUp(withModels: TestModelRegistration())
-        try await startAmplifyAndWaitForSync()
+    private func stopDataStoreAndVerifyAppSyncClientDisconnected() async throws {
+        try await Amplify.DataStore.stop()
 
         guard let awsApiPlugin = try? Amplify.API.getPlugin(for: "awsAPIPlugin") as? AWSAPIPlugin else {
             XCTFail("AWSAPIPlugin should not be nil")
@@ -75,7 +96,6 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
         let appSyncRealTimeClients = (await appSyncRealTimeClientFactory.apiToClientCache.values)
             .map { $0 as! AppSyncRealTimeClient }
 
-        try await Amplify.DataStore.stop()
         try await Task.sleep(seconds: 1)
 
         var allClientsDisconnected = true

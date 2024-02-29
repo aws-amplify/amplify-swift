@@ -97,14 +97,18 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         }
     }
 
-    func disconnect(onlyIdel: Bool = false) async {
+    func disconnectWhenIdel() async {
+        if self.subscriptions.isEmpty {
+            log.debug("[AppSyncRealTimeClient] no subscription exist, client is trying to disconnect")
+            await disconnect()
+        } else {
+            log.debug("[AppSyncRealTimeClient] client only try to disconnect when no subscriptions exist")
+        }
+    }
+
+    func disconnect() async {
         guard self.state.value != .disconnecting else {
             log.debug("[AppSyncRealTimeClient] client already disconnecting")
-            return
-        }
-
-        if onlyIdel && !self.subscriptions.isEmpty {
-            log.debug("[AppSyncRealTimeClient] client only try to disconnect when no subscriptions exist")
             return
         }
 
@@ -261,7 +265,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         .map { response -> AppSyncSubscriptionEvent? in
             switch response.type {
             case .connectionError, .error:
-                return .error(Self.decodeGraphQLErrors(response.payload))
+                return .error(Self.decodeAppSyncRealTimeResponseError(response.payload))
             case .data:
                 return response.payload.map { .data($0) }
             default:
@@ -272,13 +276,36 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         .eraseToAnyPublisher()
     }
 
-    private static func decodeGraphQLErrors(_ data: JSONValue?) -> [Error] {
+    private static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
+        let appSyncRealTimeRequestErorrs = 
+            Self.decodeAppSyncRealTimeRequestError(data)
+                .filter { $0 != .unknown }
+        if appSyncRealTimeRequestErorrs.isEmpty {
+            let graphQLErrors = Self.decodeGraphQLErrors(data)
+            return graphQLErrors.isEmpty
+                ? [APIError.operationError("Failed to decode AppSync error response", "", nil)]
+                : graphQLErrors
+        } else {
+            return appSyncRealTimeRequestErorrs
+        }
+    }
+
+    private static func decodeGraphQLErrors(_ data: JSONValue?) -> [GraphQLError] {
         do {
             return try GraphQLErrorDecoder.decodeAppSyncErrors(data)
         } catch {
             log.debug("[AppSyncRealTimeClient] Failed to decode errors: \(error)")
-            return [error]
+            return []
         }
+    }
+
+    private static func decodeAppSyncRealTimeRequestError(_ data: JSONValue?) -> [AppSyncRealTimeRequest.Error] {
+        guard let errorsJson = data?.errors else {
+            log.error("[AppSyncRealTimeClient] No 'errors' field found in response json")
+            return []
+        }
+        let errors = errorsJson.asArray ?? [errorsJson]
+        return errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
     }
 
 }

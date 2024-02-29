@@ -71,17 +71,14 @@ class AppSyncRealTimeClientTests: XCTestCase {
         let subscribedExpectation = expectation(description: "Subscription established")
 
         try await appSyncRealTimeClient?.connect()
-        try await appSyncRealTimeClient?.subscribe(
-            id: UUID().uuidString,
-            query: Self.appSyncQuery(with: subscriptionRequest)
-        )
-        .sink(receiveCompletion: { _ in }, receiveValue: { event in
+        try await makeOneSubscription { event in
             if case .subscribed = event {
                 subscribedExpectation.fulfill()
             }
-        })
-        .store(in: &cancellables)
+        }?.store(in: &cancellables)
+
         await fulfillment(of: [subscribedExpectation], timeout: 5)
+        withExtendedLifetime(cancellables, { })
     }
 
     func testMultThreads_withConnectedClient_subscribeAndUnsubscribe() async throws {
@@ -100,11 +97,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 let id = UUID().uuidString
                 taskGroup.addTask { [weak self] () -> AnyCancellable? in
                     guard let self else { return nil }
-                    let subscription: AnyCancellable? = try await self.appSyncRealTimeClient?.subscribe(
-                        id: id,
-                        query: Self.appSyncQuery(with: self.subscriptionRequest)
-                    )
-                    .sink {
+                    let subscription = try await self.makeOneSubscription(id: id) {
                         if case .subscribed = $0 {
                             expectedSubscription.fulfill()
                             Task {
@@ -125,6 +118,59 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
         await fulfillment(of: [expectedSubscription, expectedUnsubscription], timeout: 3)
         withExtendedLifetime(cancellables, { })
+    }
+
+    func testMaxSubscriptionReached() async throws {
+        let numOfMaxSubscriptionCount = 100
+        let maxSubsctiptionsSuccess = expectation(description: "Client can subscribe to max subscription count")
+        maxSubsctiptionsSuccess.expectedFulfillmentCount = numOfMaxSubscriptionCount
+
+        var cancellables = try await withThrowingTaskGroup(
+            of: AnyCancellable?.self,
+            returning: [AnyCancellable?].self
+        ) { taskGroup in
+            (0..<numOfMaxSubscriptionCount).forEach { index in
+                let id = UUID().uuidString
+                taskGroup.addTask { [weak self] () -> AnyCancellable? in
+                    guard let self else { return nil }
+                    let subscription = try await self.makeOneSubscription(id: id) {
+                        if case .subscribed = $0 {
+                            maxSubsctiptionsSuccess.fulfill()
+                        }
+                    }
+
+                    return subscription
+                }
+            }
+            return try await taskGroup.reduce([AnyCancellable?]()) { $0 + [$1] }
+        }
+
+        await fulfillment(of: [maxSubsctiptionsSuccess], timeout: 2)
+
+        let maxSubscriptionReachedError = expectation(description: "Should return max subscriptionReachError")
+        cancellables.append(try await makeOneSubscription { event in
+            if case .error(let errors) = event {
+                XCTAssertTrue(errors.count == 1)
+                XCTAssertTrue(errors[0] is AppSyncRealTimeRequest.Error)
+                if case .maxSubscriptionsReached = errors[0] as! AppSyncRealTimeRequest.Error {
+                    maxSubscriptionReachedError.fulfill()
+                }
+            }
+        })
+        await fulfillment(of: [maxSubscriptionReachedError], timeout: 1)
+        withExtendedLifetime(cancellables, { })
+    }
+
+    private func makeOneSubscription(
+        id: String = UUID().uuidString,
+        onSubscriptionEvents: ((AppSyncSubscriptionEvent) -> Void)?
+    ) async throws -> AnyCancellable? {
+        try await appSyncRealTimeClient?.subscribe(
+            id: id,
+            query: Self.appSyncQuery(with: self.subscriptionRequest)
+        ).sink(receiveValue: {
+            onSubscriptionEvents?($0)
+        })
     }
 
     private static func appSyncQuery(

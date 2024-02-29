@@ -29,9 +29,11 @@ struct GraphQLErrorDecoder {
     }
 
     static func decodeAppSyncErrors(_ payload: JSONValue?) throws -> [GraphQLError] {
-        guard case let .some(.array(errors)) = payload.flatMap({ $0.value(at: "errors") }) else {
+        guard let errorsJson = payload?.errors else {
             throw APIError.unknown("Expected 'errors' field not found in \(String(describing: payload))", "", nil)
         }
+
+        let errors = errorsJson.asArray ?? [errorsJson]
         return try decodeErrors(graphQLErrors: errors)
     }
 
