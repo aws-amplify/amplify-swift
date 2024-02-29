@@ -44,7 +44,7 @@ if let request = request {
 
 ## Platform Support
 
-Amplify supports iOS 11 and above and iOS 13 for certain categories such as Predictions and Geo. There are currently no plans to support Amplify on WatchOS, tvOS, or MacOS.
+Amplify supports iOS 12 and above and iOS 13 for certain categories such as Predictions and Geo. There are currently no plans to support Amplify on WatchOS, tvOS, or MacOS.
 
 ## License
 
