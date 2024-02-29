@@ -123,7 +123,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
-        let subscription = AppSyncRealTimeSubscription(id: id, query: query)
+        let subscription = AppSyncRealTimeSubscription(id: id, query: query, endpoint: endpoint)
         subscriptions[id] = subscription
 
         defer {
@@ -183,18 +183,9 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             throw APIError.unknown("Could not find a subscription with id \(id)", "", nil)
         }
 
-        log.debug("[AppSyncRealTimeClient] Starting subscription request \(subscription.id), query: \(subscription.query)")
-
-        // TODO: (5d) it seems the current implementation is no retry on request level
-        // we just pass down the errors to subscribers to handle
-        let subscriptionRequest = await self.requestInterceptor.interceptRequest(
-            event: .start(.init(id: subscription.id, data: subscription.query, auth: nil)),
-            url: self.endpoint
-        )
-
         try await subscription.subscribe(
             with: webSocketClient,
-            request: subscriptionRequest,
+            requestInterceptor: requestInterceptor,
             responseStream: subject.eraseToAnyPublisher()
         )
 

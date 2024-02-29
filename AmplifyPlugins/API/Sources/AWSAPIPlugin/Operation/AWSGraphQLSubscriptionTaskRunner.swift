@@ -141,7 +141,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
             finish()
         case .error(let errors):
-            onSubscriptionFailure(errors)
+            fail(toAPIError(errors, type: R.self))
         }
     }
 
@@ -171,19 +171,6 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         }
     }
 
-    private func onSubscriptionFailure(_ errors: [Error]) {
-        // TODO: need reimplement error of auth
-        var errorDescription = "Subscription item event failed with error"
-        if let graphQLErrors = errors as? [GraphQLError] {
-            if graphQLErrors.hasUnauthorizedError() {
-                errorDescription += ": \(APIError.UnauthorizedMessageString)"
-            }
-            let graphQLResponseError = GraphQLResponseError<R>.error(graphQLErrors)
-            fail(APIError.operationError(errorDescription, "", graphQLResponseError))
-        } else {
-            fail(APIError.operationError(errorDescription, "", errors.first))
-        }
-    }
 }
 
 // Class is still necessary. See https://github.com/aws-amplify/amplify-swift/issues/2252
@@ -334,7 +321,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             dispatch(result: .successfulVoid)
             finish()
         case .error(let errors):
-            onSubscriptionFailure(errors)
+            dispatch(result: .failure(toAPIError(errors, type: R.self)))
+            finish()
         }
     }
 
@@ -366,34 +354,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             finish()
         }
     }
-
-    private func onSubscriptionFailure(_ errors: [Error]) {
-        var errorDescription = "Subscription item event failed with error"
-        if let graphQLErrors = errors as? [GraphQLError] {
-            if graphQLErrors.hasUnauthorizedError() {
-                errorDescription += ": \(APIError.UnauthorizedMessageString)"
-            }
-            let graphQLResponseError = GraphQLResponseError<R>.error(graphQLErrors)
-            dispatch(result: .failure(APIError.operationError(errorDescription, "", graphQLResponseError)))
-        } else {
-            dispatch(result: .failure(APIError.operationError(errorDescription, "", errors.first)))
-        }
-        finish()
-    }
 }
-
-extension Array where Element == GraphQLError {
-    func hasUnauthorizedError() -> Bool {
-        contains { graphQLError in
-            if case let .string(errorTypeValue) = graphQLError.extensions?["errorType"],
-               case .unauthorized = AppSyncErrorType(errorTypeValue) {
-                return true
-            }
-            return false
-        }
-    }
-}
-
 
 fileprivate func encodeRequest(query: String, variables: [String: Any]?) -> String {
     var json: [String: Any] = [
@@ -409,4 +370,37 @@ fileprivate func encodeRequest(query: String, variables: [String: Any]?) -> Stri
     } catch {
         return ""
     }
+}
+
+fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> APIError {
+    func errorDescription(_ hasAuthorizationError: Bool = false) -> String {
+        "Subscription item event failed with error" +
+        (hasAuthorizationError ? ": \(APIError.UnauthorizedMessageString)" : "")
+    }
+
+    switch errors {
+    case let errors as [AppSyncRealTimeRequest.Error]:
+        let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            errors.first
+        )
+    case let errors as [GraphQLError]:
+        let hasAuthorizationError = errors.map(\.extensions)
+            .compactMap { $0.flatMap { $0["errorType"]?.stringValue } }
+            .contains(where: { AppSyncErrorType($0) == .unauthorized })
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            GraphQLResponseError<R>.error(errors)
+        )
+    default:
+        return APIError.operationError(
+            errorDescription(),
+            "",
+            errors.first
+        )
+    }
+
 }
