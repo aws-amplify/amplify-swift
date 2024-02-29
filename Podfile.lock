@@ -2,9 +2,9 @@ PODS:
   - AWSCore (2.35.0)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
-  - CwlCatchExceptionSupport (2.1.1)
-  - CwlMachBadInstructionHandler (2.1.0)
-  - CwlPosixPreconditionTesting (2.1.0)
+  - CwlCatchExceptionSupport (2.1.2)
+  - CwlMachBadInstructionHandler (2.1.2)
+  - CwlPosixPreconditionTesting (2.1.2)
   - CwlPreconditionTesting (2.1.0):
     - CwlCatchException (~> 2.1.1)
     - CwlMachBadInstructionHandler (~> 2.1.0)
@@ -42,13 +42,13 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AWSCore: f644b48f9508301ba5d2692b5a0c418ca47e1673
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
-  CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
-  CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8
-  CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
+  CwlCatchExceptionSupport: 42bf8c5e4e5e663f51100ddfa68caf7cfcf64ab6
+  CwlMachBadInstructionHandler: b982c7e3e44fcfa1c680e8046f6bba35f3476d65
+  CwlPosixPreconditionTesting: 4011f0660c0be460b088d10bcfdf351c7e036ac4
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
 
-PODFILE CHECKSUM: 5e20e56b8ef40444b018a3736b7b726ff9772f00
+PODFILE CHECKSUM: b3d8eb161b81a4940234a217f012e115769acae2
 
 COCOAPODS: 1.15.2

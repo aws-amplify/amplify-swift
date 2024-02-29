@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => $AMPLIFY_RELEASE_TAG }
 
-  s.platform = :ios, '11.0'
+  s.platform = :ios, '12.0'
   s.swift_version = '5.0'
 
   s.dependency 'AWSPluginsCore', $AMPLIFY_VERSION

@@ -94,16 +94,16 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-  Amplify: 3fb7e406c959563dcc37722497ba577dac958245
-  AmplifyPlugins: 538a89ab8b7365ba1ea39dd3dd48389b9c24bb2d
-  AmplifyTestCommon: 82a4f47daaa1449b7d34843caa371fa0dbaa9c4b
+  Amplify: 5caf64f8d16da4afde8d0aae76d89b98cbea513b
+  AmplifyPlugins: 421dbb90de455cf9c2a2ef79f9d53a87decbb74d
+  AmplifyTestCommon: 1c47564dcfab09e6cc2f48b71a072d24cee5d0f1
   AWSAuthCore: aa5090b8d86389f958c5b916f14dc218b0c20f8e
   AWSCognitoIdentityProvider: b4c4d7d78782d62636cb3edfed71472dffe5e6d6
   AWSCognitoIdentityProviderASF: 295cac5c59c71c1494a3bac437f4c6284b9a73d3
   AWSCore: f644b48f9508301ba5d2692b5a0c418ca47e1673
   AWSLocation: 711e3bd2332f8da15c5c782029c033bcbed51c03
   AWSMobileClient: 6c00da79fef9fcb63311b9b2e2abb7cf45fc7ccd
-  AWSPluginsCore: 8c4c25e9ae2eb8a86e281eb0ec899c347a33c1fd
+  AWSPluginsCore: d9b08ab2f666dd2e6d01c4bba024d30a77d5040f
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
   CwlCatchExceptionSupport: 42bf8c5e4e5e663f51100ddfa68caf7cfcf64ab6
   CwlMachBadInstructionHandler: b982c7e3e44fcfa1c680e8046f6bba35f3476d65
@@ -114,4 +114,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: eac71f2c18215703baf5648bacac93d4641c2d87
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2
