@@ -35,7 +35,7 @@ public final actor WebSocketClient: NSObject {
     /// Network monitor provide notification of device network status
     private let networkMonitor: WebSocketNetworkMonitorProtocol
 
-    /// cancellables bind with client life cycle
+    /// Cancellables bind with client life cycle
     private var cancelables = Set<AnyCancellable>()
     /// The underlying URLSessionWebSocketTask
     private var connection: URLSessionWebSocketTask? {

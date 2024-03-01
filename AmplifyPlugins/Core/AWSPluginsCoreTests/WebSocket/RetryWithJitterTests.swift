@@ -10,7 +10,9 @@ import XCTest
 @testable @_spi(AmplifySwift) import AWSPluginsCore
 
 class RetryWithJitterTests: XCTestCase {
-    struct TestError: Error { }
+    struct TestError: Error {
+        let message: String
+    }
 
     func testNext_returnDistinctValues() async {
         let retryWithJitter = RetryWithJitter()
@@ -40,12 +42,17 @@ class RetryWithJitterTests: XCTestCase {
         do {
             try await RetryWithJitter.execute(maxRetryCount: UInt(maxRetryCount)) {
                 retryAttempts.fulfill()
-                throw "Failed operation"
+                throw TestError(message: "Failed operation")
             }
         } catch {
-            let failedError = error as! RetryWithJitter.Error
-            XCTAssertEqual(failedError, RetryWithJitter.Error.maxRetryExceeded)
-            failedWithExceedMaxRetryCountError.fulfill()
+            XCTAssert(error is RetryWithJitter.Error)
+            if case .maxRetryExceeded(let errors) = (error as! RetryWithJitter.Error) {
+                XCTAssertEqual(errors.count, maxRetryCount)
+                XCTAssert(errors.reduce(true) {
+                    $0 && (($1 as? TestError).map { $0.message.contains("Failed operation") } == true)
+                } )
+                failedWithExceedMaxRetryCountError.fulfill()
+            }
         }
         await fulfillment(of: [retryAttempts, failedWithExceedMaxRetryCountError], timeout: 5)
     }

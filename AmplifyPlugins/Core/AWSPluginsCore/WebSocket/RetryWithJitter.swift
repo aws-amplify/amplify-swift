@@ -11,7 +11,7 @@ import Foundation
 @_spi(AmplifySwift)
 public actor RetryWithJitter {
     public enum Error: Swift.Error {
-        case maxRetryExceeded
+        case maxRetryExceeded([Swift.Error])
     }
     let base: UInt
     let max: UInt
@@ -43,9 +43,9 @@ extension RetryWithJitter {
         _ operation: @escaping () async throws -> Output
     ) async throws -> Output {
         let retryWithJitter = RetryWithJitter()
-        func recursive(retryCount: UInt) async -> Result<Output, Swift.Error> {
+        func recursive(retryCount: UInt, cause: [Swift.Error]) async -> Result<Output, Swift.Error> {
             if retryCount == maxRetryCount {
-                return .failure(RetryWithJitter.Error.maxRetryExceeded)
+                return .failure(RetryWithJitter.Error.maxRetryExceeded(cause))
             }
 
             let backoffInterval = retryCount == 0 ? 0 : await retryWithJitter.next()
@@ -55,13 +55,13 @@ extension RetryWithJitter {
             } catch {
                 print("[RetryWithJitter] operation failed with error \(error), retrying(\(retryCount))")
                 if shouldRetryOnError(error) {
-                    return await recursive(retryCount: retryCount + 1)
+                    return await recursive(retryCount: retryCount + 1, cause: cause + [error])
                 } else {
                     return .failure(error)
                 }
             }
         }
-        return try await recursive(retryCount: 0).get()
+        return try await recursive(retryCount: 0, cause: []).get()
     }
 }
 

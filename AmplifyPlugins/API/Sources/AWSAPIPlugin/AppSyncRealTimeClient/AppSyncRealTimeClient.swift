@@ -35,9 +35,9 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     private var subscriptions = [String: AppSyncRealTimeSubscription]()
     /// heart beat stream to keep connection alive
     private let heartBeats = PassthroughSubject<Void, Never>()
-    /// All cancellables bind to instance life cycle
+    /// Cancellables bind to instance life cycle
     private var cancellables = Set<AnyCancellable>()
-    /// All cancellables bind to connection life cycle
+    /// Cancellables bind to connection life cycle
     private var cancellablesBindToConnection = Set<AnyCancellable>()
 
     /// AppSync RealTime server endpoint
@@ -267,6 +267,14 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         try await webSocketClient.write(message: eventString)
     }
 
+    /**
+     Filter response to downstream by id.
+     - Parameters:
+        - id: subscription identifier
+     - Returns:
+        - AppSyncSubscriptionEvent data stream related to subscription
+     - important: connection errors will also be passed to downstreams
+     */
     private func filterAppSyncSubscriptionEvent(
         with id: String
     ) -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
@@ -366,8 +374,7 @@ extension AppSyncRealTimeClient {
 
 // MARK: - On AppSyncServer Event
 extension AppSyncRealTimeClient {
-    // handles connection level response
-    // passes request level response to downstream
+    /// handles connection level response and passes request level response to downstream
     private func onAppSyncRealTimeResponse(_ event: AppSyncRealTimeResponse) {
         switch event.type {
         case .connectionAck:
@@ -403,6 +410,20 @@ extension AppSyncRealTimeClient {
     }
 }
 
+extension Publisher where Output == AppSyncRealTimeSubscription.State, Failure == Never {
+    func toAppSyncSubscriptionEventStream() -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+        self.compactMap { subscriptionState -> AppSyncSubscriptionEvent? in
+            switch subscriptionState {
+            case .subscribing: return .subscribing
+            case .subscribed: return .subscribed
+            case .unsubscribed: return .unsubscribed
+            default: return nil
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
 extension AppSyncRealTimeClient: DefaultLogger {
     static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
@@ -420,19 +441,5 @@ extension AppSyncRealTimeClient: Resettable {
         if let resettableWebSocketClient = webSocketClient as? Resettable {
             await resettableWebSocketClient.reset()
         }
-    }
-}
-
-extension Publisher where Output == AppSyncRealTimeSubscription.State, Failure == Never {
-    func toAppSyncSubscriptionEventStream() -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
-        self.compactMap { subscriptionState -> AppSyncSubscriptionEvent? in
-            switch subscriptionState {
-            case .subscribing: return .subscribing
-            case .subscribed: return .subscribed
-            case .unsubscribed: return .unsubscribed
-            default: return nil
-            }
-        }
-        .eraseToAnyPublisher()
     }
 }
