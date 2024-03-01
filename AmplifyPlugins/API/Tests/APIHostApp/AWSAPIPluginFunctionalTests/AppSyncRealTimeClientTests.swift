@@ -120,7 +120,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         withExtendedLifetime(cancellables, { })
     }
 
-    func testMaxSubscriptionReached() async throws {
+    func testMaxSubscriptionReached_throwMaxSubscriptionsReachedError() async throws {
         let numOfMaxSubscriptionCount = 100
         let maxSubsctiptionsSuccess = expectation(description: "Client can subscribe to max subscription count")
         maxSubsctiptionsSuccess.expectedFulfillmentCount = numOfMaxSubscriptionCount
@@ -147,17 +147,22 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
         await fulfillment(of: [maxSubsctiptionsSuccess], timeout: 2)
 
-        let maxSubscriptionReachedError = expectation(description: "Should return max subscriptionReachError")
+        let maxSubscriptionReachedError = expectation(description: "Should return max subscription reached error")
+        maxSubscriptionReachedError.assertForOverFulfill = false
+        let retryTriggerredAndSucceed = expectation(description: "Retry on max subscription reached error and succeed")
         cancellables.append(try await makeOneSubscription { event in
             if case .error(let errors) = event {
                 XCTAssertTrue(errors.count == 1)
                 XCTAssertTrue(errors[0] is AppSyncRealTimeRequest.Error)
                 if case .maxSubscriptionsReached = errors[0] as! AppSyncRealTimeRequest.Error {
                     maxSubscriptionReachedError.fulfill()
+                    cancellables.dropLast(10).forEach { $0?.cancel() }
                 }
+            } else if case .subscribed = event {
+                retryTriggerredAndSucceed.fulfill()
             }
         })
-        await fulfillment(of: [maxSubscriptionReachedError], timeout: 1)
+        await fulfillment(of: [maxSubscriptionReachedError, retryTriggerredAndSucceed], timeout: 5, enforceOrder: true)
         withExtendedLifetime(cancellables, { })
     }
 
@@ -165,12 +170,19 @@ class AppSyncRealTimeClientTests: XCTestCase {
         id: String = UUID().uuidString,
         onSubscriptionEvents: ((AppSyncSubscriptionEvent) -> Void)?
     ) async throws -> AnyCancellable? {
-        try await appSyncRealTimeClient?.subscribe(
+        let subscription = try await appSyncRealTimeClient?.subscribe(
             id: id,
             query: Self.appSyncQuery(with: self.subscriptionRequest)
         ).sink(receiveValue: {
             onSubscriptionEvents?($0)
         })
+
+        return AnyCancellable {
+            subscription?.cancel()
+            Task { [weak self] in
+                try? await self?.appSyncRealTimeClient?.unsubscribe(id: id)
+            }
+        }
     }
 
     private static func appSyncQuery(

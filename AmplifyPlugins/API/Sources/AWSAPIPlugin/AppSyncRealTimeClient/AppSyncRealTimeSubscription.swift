@@ -9,6 +9,7 @@
 import Foundation
 import Combine
 import Amplify
+@_spi(AmplifySwift) import AWSPluginsCore
 
 /**
  AppSyncRealTimeSubscription reprensents one realtime subscription to AppSync realtime server.
@@ -70,12 +71,16 @@ actor AppSyncRealTimeSubscription {
         )
 
         do {
-            try await AppSyncRealTimeRequest.sendRequest(
-                request: request,
-                responseStream: responseStream
-            ) { [weak webSocketClient] request in
-                guard let webSocketClient else { return }
-                try await Self.sendSubscriptionRequest(request, with: webSocketClient)
+            try await RetryWithJitter.execute(shouldRetryOnError: { error in
+                (error as? AppSyncRealTimeRequest.Error) == .maxSubscriptionsReached
+            }) {
+                try await AppSyncRealTimeRequest.sendRequest(
+                    request: request,
+                    responseStream: responseStream
+                ) { [weak webSocketClient] request in
+                    guard let webSocketClient else { return }
+                    try await Self.sendAppSyncRealTimeRequest(request, with: webSocketClient)
+                }
             }
         } catch {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Failed to subscribe, error: \(error)")
@@ -100,12 +105,13 @@ actor AppSyncRealTimeSubscription {
         self.state.send(.unsubscribing)
 
         do {
+            let request = AppSyncRealTimeRequest.stop(id)
             try await AppSyncRealTimeRequest.sendRequest(
-                request: AppSyncRealTimeRequest.stop(id),
+                request: request,
                 responseStream: responseStream
             ) { [weak webSocketClient] request in
                 guard let webSocketClient else { return }
-                try await Self.sendSubscriptionRequest(request, with: webSocketClient)
+                try await Self.sendAppSyncRealTimeRequest(request, with: webSocketClient)
             }
         } catch {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Failed to unsubscribe, error \(error)")
@@ -117,7 +123,7 @@ actor AppSyncRealTimeSubscription {
         self.state.send(.unsubscribed)
     }
 
-    private static func sendSubscriptionRequest(
+    private static func sendAppSyncRealTimeRequest(
         _ request: AppSyncRealTimeRequest,
         with webSocketClient: AppSyncWebSocketClientProtocol
     ) async throws {

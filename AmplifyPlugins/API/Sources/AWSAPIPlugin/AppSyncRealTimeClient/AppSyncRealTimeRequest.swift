@@ -129,8 +129,8 @@ extension AppSyncRealTimeRequest {
         case (_, .error)
             where request.id != nil
                 && request.id == response.id
-                && response.payload?.errors?.asArray != nil:
-            return parseResponseErrors(errors: (response.payload?.errors?.asArray)!)
+                && response.payload?.errors != nil:
+            return parseResponseErrors((response.payload?.errors)!)
 
         default:
             return Empty(
@@ -165,8 +165,9 @@ extension AppSyncRealTimeRequest {
     }
 
     private static func parseResponseErrors(
-        errors: [JSONValue]
+        _ errorsJson: JSONValue
     ) -> AnyPublisher<AppSyncRealTimeResponse, AppSyncRealTimeRequest.Error> {
+        let errors = errorsJson.asArray ?? [errorsJson]
         let reqeustErrors = errors.compactMap(parseResponseError(error:))
         if reqeustErrors.isEmpty {
             return Empty(

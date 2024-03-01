@@ -39,10 +39,11 @@ public actor RetryWithJitter {
 extension RetryWithJitter {
     public static func execute<Output>(
         maxRetryCount: UInt = 8,
+        shouldRetryOnError: (Swift.Error) -> Bool = { _ in true },
         _ operation: @escaping () async throws -> Output
     ) async throws -> Output {
         let retryWithJitter = RetryWithJitter()
-        func recursive(retryCount: UInt) async -> Result<Output, Error> {
+        func recursive(retryCount: UInt) async -> Result<Output, Swift.Error> {
             if retryCount == maxRetryCount {
                 return .failure(RetryWithJitter.Error.maxRetryExceeded)
             }
@@ -53,7 +54,11 @@ extension RetryWithJitter {
                 return .success(try await operation())
             } catch {
                 print("[RetryWithJitter] operation failed with error \(error), retrying(\(retryCount))")
-                return await recursive(retryCount: retryCount + 1)
+                if shouldRetryOnError(error) {
+                    return await recursive(retryCount: retryCount + 1)
+                } else {
+                    return .failure(error)
+                }
             }
         }
         return try await recursive(retryCount: 0).get()
