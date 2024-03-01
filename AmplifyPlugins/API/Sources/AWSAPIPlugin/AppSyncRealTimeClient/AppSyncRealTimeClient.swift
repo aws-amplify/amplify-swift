@@ -11,6 +11,10 @@ import Amplify
 import Combine
 @_spi(AmplifySwift) import AWSPluginsCore
 
+/**
+ The AppSyncRealTimeClient conforms to the AppSync real-time WebSocket protocol.
+ ref: https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
+ */
 actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     static let jsonEncoder = JSONEncoder()
@@ -25,25 +29,37 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         case disconnected
     }
 
-    // Internal state for tracking AppSync connection
+    /// Internal state for tracking AppSync connection
     private let state = CurrentValueSubject<State, Never>(.none)
-
+    /// AppSync RealTime server endpoint
     private let endpoint: URL
+    /// Interceptor for decorating AppSyncRealTimeRequest
     private let requestInterceptor: AppSyncRequestInterceptor
 
+    /// WebSocketClient offering connections at the WebSocket protocol level
     private var webSocketClient: AppSyncWebSocketClientProtocol
+    /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
     private let subject = PassthroughSubject<AppSyncRealTimeResponse, Never>()
+    /// Subscriptions created using this client
     private var subscriptions = [String: AppSyncRealTimeSubscription]()
-
+    /// heart beat stream to keep connection alive
     private let heartBeats = PassthroughSubject<Void, Never>()
-
+    /// All cancellables bind to instance life cycle
     private var cancellables = Set<AnyCancellable>()
+    /// All cancellables bind to connection life cycle
     private var cancellablesBindToConnection = Set<AnyCancellable>()
 
     var isConnected: Bool {
         self.state.value == .connected
     }
 
+    /**
+     Creates a new AppSyncRealTimeClient with endpoint, requestInterceptor and webSocketClient.
+     - Parameters:
+        - endpoint: AppSync real-time server endpoint
+        - requestInterceptor: Interceptor for decocating AppSyncRealTimeRequest
+        - webSocketClient: WebSocketClient for reading/writing to connection
+     */
     init(
         endpoint: URL,
         requestInterceptor: AppSyncRequestInterceptor,
@@ -64,6 +80,9 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         cancellablesBindToConnection = Set()
     }
 
+    /**
+     Connecting to remote AppSync real-time server.
+     */
     func connect() async throws {
         switch self.state.value {
         case .connecting, .connected:
@@ -97,6 +116,9 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         }
     }
 
+    /**
+     Disconnect only when there are no subscriptions exist.
+     */
     func disconnectWhenIdel() async {
         if self.subscriptions.isEmpty {
             log.debug("[AppSyncRealTimeClient] no subscription exist, client is trying to disconnect")
@@ -106,6 +128,9 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         }
     }
 
+    /**
+     Disconnect from AppSync real-time server.
+     */
     func disconnect() async {
         guard self.state.value != .disconnecting else {
             log.debug("[AppSyncRealTimeClient] client already disconnecting")
@@ -121,14 +146,24 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         log.debug("[AppSyncRealTimeClient] client is disconnected")
     }
 
+    /**
+     Subscribing to a query with unique identifier.
+     - Parameters:
+        - id: unique identifier
+        - query: GraphQL query for subscription
+
+     -  Returns:
+        A never fail data stream for AppSyncSubscriptionEvent.
+     */
     func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
         let subscription = AppSyncRealTimeSubscription(id: id, query: query, endpoint: endpoint)
         subscriptions[id] = subscription
 
+
+        // Placing the actual subscription work in a deferred task and
+        // promptly returning the filtered publisher for downstream consumption of all error messages.
         defer {
-            // Initiate the subscription in a separate task and returning the filtered
-            // publisher immediately for downstream to listen to all the error messages
             Task {
                 if !self.isConnected {
                     try await connect()
@@ -163,6 +198,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         }
     }
 
+    /**
+     Unsubscribe a subscription with unique identifier.
+     - Parameters:
+        - id: unique identifier of the subscription.
+     */
     func unsubscribe(id: String) async throws {
         defer {
             log.debug("[AppSyncRealTimeClient] deleted subscription with id: \(id)")

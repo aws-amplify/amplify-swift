@@ -10,6 +10,10 @@ import Foundation
 import Amplify
 import Combine
 
+/**
+ WebSocketClient wraps URLSessionWebSocketTask and offers
+ an abstraction of the data stream in the form of WebSocketEvent.
+ */
 @_spi(AmplifySwift)
 public final actor WebSocketClient: NSObject {
     public enum Error: Swift.Error {
@@ -17,26 +21,34 @@ public final actor WebSocketClient: NSObject {
         case connectionCancelled
     }
 
+    /// WebSocket server endpoint
     private let url: URL
+    /// WebSocket subprotocols
     private let protocols: [String]
+    /// Interceptor for appending additional info before makeing the connection
     private var interceptor: WebSocketInterceptor?
-
+    /// Internal wriable WebSocketEvent data stream
     private let subject = PassthroughSubject<WebSocketEvent, Never>()
 
     private let retryWithJitter = RetryWithJitter()
+
+    /// Network monitor provide notification of device network status
     private let networkMonitor: WebSocketNetworkMonitorProtocol
 
-    // subscriptions bind with client life cycle
+    /// cancellables bind with client life cycle
     private var cancelables = Set<AnyCancellable>()
+    /// The underlying URLSessionWebSocketTask
     private var connection: URLSessionWebSocketTask? {
         willSet {
             self.connection?.cancel(with: .goingAway, reason: nil)
         }
     }
 
+    /// A flag indicating whether to automatically update the connection upon network status updates
     private var autoConnectOnNetworkStatusChange: Bool
+    /// A flag indicating whether to automatically retry on connection failure
     private var autoRetryOnConnectionFailure: Bool
-
+    /// Data stream for downstream subscribers to engage with
     public var publisher: AnyPublisher<WebSocketEvent, Never> {
         self.subject.eraseToAnyPublisher()
     }
@@ -45,6 +57,15 @@ public final actor WebSocketClient: NSObject {
         self.connection?.state == .running
     }
 
+    /**
+     Creates a WebSocketClient.
+
+     - Parameters:
+        - url: WebSocket server endpoint
+        - protocols: WebSocket subprotocols, for header `Sec-WebSocket-Protocol`
+        - interceptor: An optional interceptor for additional info before establishing the connection
+        - networkMonitor: Provides network status notifications
+     */
     public init(
         url: URL,
         protocols: [String] = [],
@@ -74,6 +95,14 @@ public final actor WebSocketClient: NSObject {
         cancelables = Set()
     }
 
+    /**
+     Connect to WebSocket server.
+     - Parameters:
+        - autoConnectOnNetworkStatusChange:
+            A flag indicating whether this connection should be automatically updated when the network status changes.
+        - autoRetryOnConnectionFailure:
+            A flag indicating whether this connection should attampt to retry upon failure.
+     */
     public func connect(
         autoConnectOnNetworkStatusChange: Bool = false,
         autoRetryOnConnectionFailure: Bool = false
@@ -90,17 +119,32 @@ public final actor WebSocketClient: NSObject {
         await self.createConnectionAndRead()
     }
 
+    /**
+     Disconnect from WebSocket server.
+
+     This will halt all automatic processes and attempt to gracefully close the connection.
+     */
     public func disconnect() {
         self.autoConnectOnNetworkStatusChange = false
         self.autoRetryOnConnectionFailure = false
         self.connection?.cancel(with: .goingAway, reason: nil)
     }
 
+    /**
+     Write text data to WebSocket server.
+     - Parameters:
+        - message: text message in String
+     */
     public func write(message: String) async throws {
         log.debug("[WebSocketClient] WebSocket write message string: \(message)")
         try await self.connection?.send(.string(message))
     }
 
+    /**
+     Write binary data to WebSocket server.
+     - Parameters:
+        - message: binary message in Data
+     */
     public func write(message: Data) async throws {
         log.debug("[WebSocketClient] WebSocket write message data: \(message)")
         try await self.connection?.send(.data(message))
@@ -122,6 +166,9 @@ public final actor WebSocketClient: NSObject {
         self.connection?.resume()
     }
 
+    /**
+     Recusively read WebSocket data frames and publish to data stream.
+     */
     private func startReadMessage() async {
         guard let connection = self.connection else {
             log.debug("[WebSocketClient] WebSocket connection doesn't exist")
@@ -193,7 +240,11 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
 
         log.debug("[WebSocketClient] URLSession didCompleteWithError: \(error))")
 
-        let nsError = (error as NSError)
+        guard let nsError = (error as? NSError) else {
+            self.subject.send(.error(error))
+            return
+        }
+
         switch (nsError.domain, nsError.code) {
         case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost
              (NSPOSIXErrorDomain.self, Int(ECONNABORTED)): // background to foreground
@@ -212,7 +263,7 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
 
 // MARK: - network reachability
 extension WebSocketClient {
-
+    /// Monitor network status. Disconnect or reconnect when the network drops or comes back online.
     private func startNetworkMonitor() {
         networkMonitor.publisher.sink(receiveValue: { stateChange in
             Task { [weak self] in
