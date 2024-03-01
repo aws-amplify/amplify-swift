@@ -79,68 +79,6 @@ extension AppSyncRealTimeRequest {
         case unknown
     }
 
-    static func sendRequest(
-        request: AppSyncRealTimeRequest,
-        responseStream: AnyPublisher<AppSyncRealTimeResponse, Never>,
-        timeout: TimeInterval = 5,
-        fireRequest: @escaping (AppSyncRealTimeRequest) async throws -> Void
-    ) async throws {
-        var cancellables = Set<AnyCancellable>()
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) in
-            responseStream
-                .setFailureType(to: AppSyncRealTimeRequest.Error.self)
-                .flatMap { filterResponse(request: request, response: $0) }
-                .timeout(.seconds(timeout), scheduler: DispatchQueue.global(qos: .userInitiated), customError: { .timeout })
-                .first()
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        continuation.resume(returning: ())
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }, receiveValue: { _ in })
-                .store(in: &cancellables)
-
-            Task {
-                try await fireRequest(request)
-            }
-        }
-    }
-
-    private static func filterResponse(
-        request: AppSyncRealTimeRequest,
-        response: AppSyncRealTimeResponse
-    ) -> AnyPublisher<AppSyncRealTimeResponse, AppSyncRealTimeRequest.Error> {
-        let justTheResponse = Just(response)
-            .setFailureType(to: AppSyncRealTimeRequest.Error.self)
-            .eraseToAnyPublisher()
-
-        switch (request, response.type) {
-        case (.connectionInit, .connectionAck):
-            return justTheResponse
-
-        case (.start(let startRequest), .startAck) where startRequest.id == response.id:
-            return justTheResponse
-
-        case (.stop(let id), .stopAck) where id == response.id:
-            return justTheResponse
-
-        case (_, .error)
-            where request.id != nil
-                && request.id == response.id
-                && response.payload?.errors != nil:
-            return parseResponseErrors((response.payload?.errors)!)
-
-        default:
-            return Empty(
-                outputType: AppSyncRealTimeResponse.self,
-                failureType: AppSyncRealTimeRequest.Error.self
-            ).eraseToAnyPublisher()
-
-        }
-    }
-
     public static func parseResponseError(
         error: JSONValue
     ) -> AppSyncRealTimeRequest.Error? {
@@ -161,24 +99,6 @@ extension AppSyncRealTimeRequest {
             return .unauthorized
         default:
             return .unknown
-        }
-    }
-
-    private static func parseResponseErrors(
-        _ errorsJson: JSONValue
-    ) -> AnyPublisher<AppSyncRealTimeResponse, AppSyncRealTimeRequest.Error> {
-        let errors = errorsJson.asArray ?? [errorsJson]
-        let reqeustErrors = errors.compactMap(parseResponseError(error:))
-        if reqeustErrors.isEmpty {
-            return Empty(
-                outputType: AppSyncRealTimeResponse.self,
-                failureType: AppSyncRealTimeRequest.Error.self
-            ).eraseToAnyPublisher()
-        } else {
-            return Fail(
-                outputType: AppSyncRealTimeResponse.self,
-                failure: reqeustErrors.first!
-            ).eraseToAnyPublisher()
         }
     }
 }

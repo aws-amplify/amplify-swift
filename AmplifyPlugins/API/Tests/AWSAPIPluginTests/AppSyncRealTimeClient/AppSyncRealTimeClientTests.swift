@@ -16,19 +16,18 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
     func testSendRequestWithTimeout_withNoResponse_failedWithTimeOutError() async {
         let timeout = 1.0
-        let dataSource = PassthroughSubject<AppSyncRealTimeResponse, Never>()
-        let requestFactoryExpectation = expectation(description: "Request factory being called")
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+
         let requestFailedExpectation = expectation(description: "Request should be failed with error")
         Task {
             do {
-                try await AppSyncRealTimeRequest.sendRequest(
-                    request: .connectionInit,
-                    responseStream: dataSource.eraseToAnyPublisher(),
-                    timeout: timeout
-                ) { _ in
-                    requestFactoryExpectation.fulfill()
-                }
-
+                try await appSyncClient.sendRequest(.connectionInit, timeout: timeout)
                 XCTFail("The operation should be failed with time out")
             } catch {
                 let requestError = error as! AppSyncRealTimeRequest.Error
@@ -36,59 +35,53 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 requestFailedExpectation.fulfill()
             }
         }
-        await fulfillment(of: [requestFactoryExpectation, requestFailedExpectation], timeout: timeout + 1)
+        await fulfillment(of: [requestFailedExpectation], timeout: timeout + 1)
     }
 
     func testSendRequestWithTimeout_withCorrectResponse_succeed() async {
         let timeout = 1.0
-        let dataSource = PassthroughSubject<AppSyncRealTimeResponse, Never>()
-        let requestFactoryExpectation = expectation(description: "Request factory being called")
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+
         let finishExpectation = expectation(description: "Request finished successfully")
         Task {
             do {
-                try await AppSyncRealTimeRequest.sendRequest(
-                    request: .connectionInit,
-                    responseStream: dataSource.eraseToAnyPublisher(),
-                    timeout: timeout
-                ) { _ in
-                    requestFactoryExpectation.fulfill()
-                    dataSource.send(.init(id: nil, payload: nil, type: .connectionAck))
-                }
-
+                try await appSyncClient.sendRequest(.connectionInit, timeout: timeout)
                 finishExpectation.fulfill()
             } catch {
                 XCTFail("Operation shouldn't fail with error \(error)")
             }
         }
-        await fulfillment(of: [requestFactoryExpectation, finishExpectation], timeout: timeout + 1)
+        Task {
+            try await Task.sleep(nanoseconds: 80 * 1000)
+            await appSyncClient.subject.send(.init(id: nil, payload: nil, type: .connectionAck))
+        }
+        await fulfillment(of: [finishExpectation], timeout: timeout + 1)
     }
 
     func testSendRequestWithTimeout_withErrorResponse_transformLimitExceededError() async {
         let timeout = 1.0
-        let dataSource = PassthroughSubject<AppSyncRealTimeResponse, Never>()
-        let requestFactoryExpectation = expectation(description: "Request factory being called")
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+
         let limitExceededErrorExpectation = expectation(description: "Request should be failed with limitExceeded error")
         let id = UUID().uuidString
         Task {
             do {
-                try await AppSyncRealTimeRequest.sendRequest(
-                    request: .start(.init(id: id, data: "", auth: nil)),
-                    responseStream: dataSource.eraseToAnyPublisher(),
+                try await appSyncClient.sendRequest(
+                    .start(.init(id: id, data: "", auth: nil)),
                     timeout: timeout
-                ) { _ in
-                    requestFactoryExpectation.fulfill()
-                    dataSource.send(.init(
-                        id: id,
-                        payload: .object([
-                            "errors": .array([
-                                .object([
-                                    "errorType": "LimitExceededError"
-                                ])
-                            ])
-                        ]),
-                        type: .error
-                    ))
-                }
+                )
                 XCTFail("Operation should be failed")
             } catch {
                 let requestError = error as! AppSyncRealTimeRequest.Error
@@ -96,36 +89,41 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 limitExceededErrorExpectation.fulfill()
             }
         }
-        await fulfillment(of: [requestFactoryExpectation, limitExceededErrorExpectation], timeout: timeout + 1)
+        Task {
+            try await Task.sleep(nanoseconds: 80 * 1000)
+            await appSyncClient.subject.send(.init(
+                id: id,
+                payload: .object([
+                    "errors": .array([
+                        .object([
+                            "errorType": "LimitExceededError"
+                        ])
+                    ])
+                ]),
+                type: .error
+            ))
+        }
+        await fulfillment(of: [limitExceededErrorExpectation], timeout: timeout + 1)
     }
 
     func testSendRequestWithTimeout_withErrorResponse_transformMaxSubscriptionsReachedError() async {
         let timeout = 1.0
-        let dataSource = PassthroughSubject<AppSyncRealTimeResponse, Never>()
-        let requestFactoryExpectation = expectation(description: "Request factory being called")
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
         let maxSubscriptionsReachedExpectation =
             expectation(description: "Request should be failed with maxSubscriptionsReached error")
         let id = UUID().uuidString
         Task {
             do {
-                try await AppSyncRealTimeRequest.sendRequest(
-                    request: .start(.init(id: id, data: "", auth: nil)),
-                    responseStream: dataSource.eraseToAnyPublisher(),
+                try await appSyncClient.sendRequest(
+                    .start(.init(id: id, data: "", auth: nil)),
                     timeout: timeout
-                ) { _ in
-                        requestFactoryExpectation.fulfill()
-                        dataSource.send(.init(
-                            id: id,
-                            payload: .object([
-                                "errors": .array([
-                                    .object([
-                                        "errorType": "MaxSubscriptionsReachedError"
-                                    ])
-                                ])
-                            ]),
-                            type: .error
-                        ))
-                    }
+                )
                 XCTFail("Operation should be failed")
             } catch {
                 let requestError = error as! AppSyncRealTimeRequest.Error
@@ -133,48 +131,66 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 maxSubscriptionsReachedExpectation.fulfill()
             }
         }
+
+        Task {
+            try await Task.sleep(nanoseconds: 80 * 1000)
+            await appSyncClient.subject.send(.init(
+                id: id,
+                payload: .object([
+                    "errors": .array([
+                        .object([
+                            "errorType": "MaxSubscriptionsReachedError"
+                        ])
+                    ])
+                ]),
+                type: .error
+            ))
+        }
         await fulfillment(of: [
-            requestFactoryExpectation,
             maxSubscriptionsReachedExpectation
         ], timeout: timeout + 1)
     }
 
     func testSendRequestWithTimeout_withErrorResponse_triggerErrorForUnknow() async {
         let timeout = 1.0
-        let dataSource = PassthroughSubject<AppSyncRealTimeResponse, Never>()
-        let requestFactoryExpectation = expectation(description: "Request factory being called")
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
         let triggerUnknownErrorExpectation =
             expectation(description: "Request should trigger unknown errors")
         let id = UUID().uuidString
         Task {
             do {
-                try await AppSyncRealTimeRequest.sendRequest(
-                    request: .start(.init(id: id, data: "", auth: nil)),
-                    responseStream: dataSource.eraseToAnyPublisher(),
+                try await appSyncClient.sendRequest(
+                    .start(.init(id: id, data: "", auth: nil)),
                     timeout: timeout
-                ) { _ in
-                    requestFactoryExpectation.fulfill()
-                    dataSource.send(.init(
-                        id: id,
-                        payload: .object([
-                            "errors": .array([
-                                .object([
-                                    "errorType": "OtherError"
-                                ])
-                            ])
-                        ]),
-                        type: .error
-                    ))
-                }
-
+                )
             } catch {
                 let requestError = error as! AppSyncRealTimeRequest.Error
                 XCTAssertEqual(requestError, .unknown)
                 triggerUnknownErrorExpectation.fulfill()
             }
         }
+
+        Task {
+            try await Task.sleep(nanoseconds: 80 * 1000)
+            await appSyncClient.subject.send(.init(
+                id: id,
+                payload: .object([
+                    "errors": .array([
+                        .object([
+                            "errorType": "OtherError"
+                        ])
+                    ])
+                ]),
+                type: .error
+            ))
+        }
         await fulfillment(of: [
-            requestFactoryExpectation,
             triggerUnknownErrorExpectation
         ], timeout: timeout + 1)
     }
@@ -456,7 +472,6 @@ class AppSyncRealTimeClientTests: XCTestCase {
         Task {
             try await Task.sleep(nanoseconds: 50 * 1_000_000)
             await mockWebSocketClient.setStateToConnected()
-            await mockWebSocketClient.subject.send(.connected)
             try await Task.sleep(nanoseconds: 50 * 1_000_000)
             await mockWebSocketClient.subject.send(.string("""
                 {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}

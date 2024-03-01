@@ -31,15 +31,6 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     /// Internal state for tracking AppSync connection
     private let state = CurrentValueSubject<State, Never>(.none)
-    /// AppSync RealTime server endpoint
-    private let endpoint: URL
-    /// Interceptor for decorating AppSyncRealTimeRequest
-    private let requestInterceptor: AppSyncRequestInterceptor
-
-    /// WebSocketClient offering connections at the WebSocket protocol level
-    private var webSocketClient: AppSyncWebSocketClientProtocol
-    /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
-    private let subject = PassthroughSubject<AppSyncRealTimeResponse, Never>()
     /// Subscriptions created using this client
     private var subscriptions = [String: AppSyncRealTimeSubscription]()
     /// heart beat stream to keep connection alive
@@ -48,6 +39,16 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     private var cancellables = Set<AnyCancellable>()
     /// All cancellables bind to connection life cycle
     private var cancellablesBindToConnection = Set<AnyCancellable>()
+
+    /// AppSync RealTime server endpoint
+    internal let endpoint: URL
+    /// Interceptor for decorating AppSyncRealTimeRequest
+    internal let requestInterceptor: AppSyncRequestInterceptor
+
+    /// WebSocketClient offering connections at the WebSocket protocol level
+    internal var webSocketClient: AppSyncWebSocketClientProtocol
+    /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
+    internal let subject = PassthroughSubject<AppSyncRealTimeResponse, Never>()
 
     var isConnected: Bool {
         self.state.value == .connected
@@ -104,15 +105,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
         try await RetryWithJitter.execute { [weak self] in
             guard let self else { return }
-            try await AppSyncRealTimeRequest.sendRequest(
-                request: .connectionInit,
-                responseStream: subject.eraseToAnyPublisher()
-            ) { [weak self] _ in
-                await self?.webSocketClient.connect(
-                   autoConnectOnNetworkStatusChange: true,
-                   autoRetryOnConnectionFailure: true
-                )
-            }
+            await self.webSocketClient.connect(
+                autoConnectOnNetworkStatusChange: true,
+                autoRetryOnConnectionFailure: true
+            )
+            try await self.sendRequest(.connectionInit)
         }
     }
 
@@ -157,7 +154,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
      */
     func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
-        let subscription = AppSyncRealTimeSubscription(id: id, query: query, endpoint: endpoint)
+        let subscription = AppSyncRealTimeSubscription(id: id, query: query, appSyncRealTimeClient: self)
         subscriptions[id] = subscription
 
 
@@ -214,7 +211,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             return
         }
         log.debug("[AppSyncRealTimeClient] unsubscribing: \(id)")
-        try await subscription.unsubscribe(with: webSocketClient, responseStream: subject.eraseToAnyPublisher())
+        try await subscription.unsubscribe()
     }
 
     private func startSubscription(_ id: String) async throws -> AnyCancellable {
@@ -223,19 +220,11 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             throw APIError.unknown("Could not find a subscription with id \(id)", "", nil)
         }
 
-        try await subscription.subscribe(
-            with: webSocketClient,
-            requestInterceptor: requestInterceptor,
-            responseStream: subject.eraseToAnyPublisher()
-        )
+        try await subscription.subscribe()
 
         return AnyCancellable {
-            Task { [weak self] in
-                guard let self else { return }
-                try await subscription.unsubscribe(
-                    with: self.webSocketClient,
-                    responseStream: self.subject.eraseToAnyPublisher()
-                )
+            Task {
+                try await subscription.unsubscribe()
             }
         }
 
@@ -276,17 +265,6 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         let eventString = try String(data: Self.jsonEncoder.encode(interceptedEvent), encoding: .utf8)!
         log.debug("[AppSyncRealTimeClient] Writing AppSyncEvent \(eventString)")
         try await webSocketClient.write(message: eventString)
-    }
-
-    private func initAppSyncConnect() {
-        log.debug("[AppSyncRealTimeClient] Sending connectionInit message")
-        Task {
-            do {
-                try await writeAppSyncEvent(.connectionInit)
-            } catch {
-                log.debug("[AppSyncRealTimeClient] Failed to send connectInit message, error: \(error)")
-            }
-        }
     }
 
     private func filterAppSyncSubscriptionEvent(
@@ -348,7 +326,10 @@ extension AppSyncRealTimeClient {
         switch event {
         case .connected:
             log.debug("[AppSyncRealTimeClient] WebSocket connected")
-            self.initAppSyncConnect()
+            if self.state.value == .connectionDropped {
+                log.debug("[AppSyncRealTimeClient] reconnecting appSyncClient after connection drop")
+                Task { [weak self] in try? await self?.connect() }
+            }
 
         case let .disconnected(closeCode, reason): //
             log.debug("[AppSyncRealTimeClient] WebSocket disconnected with closeCode: \(closeCode), reason: \(String(describing: reason))")

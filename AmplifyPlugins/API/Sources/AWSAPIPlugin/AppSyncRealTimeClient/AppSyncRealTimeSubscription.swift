@@ -33,25 +33,24 @@ actor AppSyncRealTimeSubscription {
     public var publisher: AnyPublisher<State, Never> {
         state.eraseToAnyPublisher()
     }
+
+    private weak var appSyncRealTimeClient: AppSyncRealTimeClient?
+
     public let id: String
     public let query: String
-    public let endpoint: URL
 
-    init(id: String, query: String, endpoint: URL) {
+
+    init(id: String, query: String, appSyncRealTimeClient: AppSyncRealTimeClient) {
         self.id = id
         self.query = query
-        self.endpoint = endpoint
+        self.appSyncRealTimeClient = appSyncRealTimeClient
     }
 
     deinit {
         self.state.send(completion: .finished)
     }
 
-    func subscribe(
-        with webSocketClient: AppSyncWebSocketClientProtocol,
-        requestInterceptor: AppSyncRequestInterceptor,
-        responseStream: AnyPublisher<AppSyncRealTimeResponse, Never>
-    ) async throws {
+    func subscribe() async throws {
         guard self.state.value != .subscribing else {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription already in subscribing state")
             return
@@ -65,22 +64,14 @@ actor AppSyncRealTimeSubscription {
         log.debug("[AppSyncRealTimeSubscription-\(id)] Start subscribing")
         self.state.send(.subscribing)
 
-        let request = await requestInterceptor.interceptRequest(
-            event: .start(.init(id: id, data: query, auth: nil)),
-            url: endpoint
-        )
-
         do {
             try await RetryWithJitter.execute(shouldRetryOnError: { error in
                 (error as? AppSyncRealTimeRequest.Error) == .maxSubscriptionsReached
-            }) {
-                try await AppSyncRealTimeRequest.sendRequest(
-                    request: request,
-                    responseStream: responseStream
-                ) { [weak webSocketClient] request in
-                    guard let webSocketClient else { return }
-                    try await Self.sendAppSyncRealTimeRequest(request, with: webSocketClient)
-                }
+            }) { [weak self] in
+                guard let self else { return }
+                try await self.appSyncRealTimeClient?.sendRequest(
+                    .start(.init(id: self.id, data: self.query, auth: nil))
+                )
             }
         } catch {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Failed to subscribe, error: \(error)")
@@ -92,10 +83,7 @@ actor AppSyncRealTimeSubscription {
         self.state.send(.subscribed)
     }
 
-    func unsubscribe(
-        with webSocketClient: AppSyncWebSocketClientProtocol,
-        responseStream: AnyPublisher<AppSyncRealTimeResponse, Never>
-    ) async throws {
+    func unsubscribe() async throws {
         guard self.state.value == .subscribed else {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Subscription should be subscribed to be unsubscribed")
             return
@@ -106,13 +94,7 @@ actor AppSyncRealTimeSubscription {
 
         do {
             let request = AppSyncRealTimeRequest.stop(id)
-            try await AppSyncRealTimeRequest.sendRequest(
-                request: request,
-                responseStream: responseStream
-            ) { [weak webSocketClient] request in
-                guard let webSocketClient else { return }
-                try await Self.sendAppSyncRealTimeRequest(request, with: webSocketClient)
-            }
+            try await appSyncRealTimeClient?.sendRequest(request)
         } catch {
             log.debug("[AppSyncRealTimeSubscription-\(id)] Failed to unsubscribe, error \(error)")
             self.state.send(.failure)
