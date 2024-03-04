@@ -10,7 +10,7 @@ import XCTest
 import Combine
 @testable import Amplify
 @testable import AWSAPIPlugin
-@testable @_spi(AmplifySwift) import AWSPluginsCore
+@testable @_spi(WebSocket) import AWSPluginsCore
 
 class AppSyncRealTimeClientTests: XCTestCase {
     let subscriptionRequest = """

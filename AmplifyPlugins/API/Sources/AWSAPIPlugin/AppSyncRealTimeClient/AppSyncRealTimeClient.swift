@@ -9,7 +9,7 @@
 import Foundation
 import Amplify
 import Combine
-@_spi(AmplifySwift) import AWSPluginsCore
+@_spi(WebSocket) import AWSPluginsCore
 
 /**
  The AppSyncRealTimeClient conforms to the AppSync real-time WebSocket protocol.

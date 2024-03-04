@@ -8,7 +8,7 @@
 
 import XCTest
 import Combine
-@testable @_spi(AmplifySwift) import AWSPluginsCore
+@testable @_spi(WebSocket) import AWSPluginsCore
 
 fileprivate let timeout: TimeInterval = 5
 

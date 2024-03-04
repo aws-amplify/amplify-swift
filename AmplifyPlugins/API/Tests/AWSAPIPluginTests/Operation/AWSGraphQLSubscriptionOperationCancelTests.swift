@@ -10,7 +10,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPIPlugin
 @testable import AmplifyTestCommon
-@testable @_spi(AmplifySwift) import AWSPluginsCore
+@testable @_spi(WebSocket) import AWSPluginsCore
 @testable import AWSPluginsTestCommon
 
 // swiftlint:disable:next type_name

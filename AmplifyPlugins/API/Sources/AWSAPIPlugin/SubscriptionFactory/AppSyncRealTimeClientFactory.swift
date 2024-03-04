@@ -9,7 +9,7 @@
 import Foundation
 import Amplify
 import Combine
-@_spi(AmplifySwift) import AWSPluginsCore
+@_spi(WebSocket) import AWSPluginsCore
 
 protocol AppSyncRealTimeClientFactoryProtocol {
     func getAppSyncRealTimeClient(

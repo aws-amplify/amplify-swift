@@ -14,7 +14,7 @@ import Combine
  WebSocketClient wraps URLSessionWebSocketTask and offers
  an abstraction of the data stream in the form of WebSocketEvent.
  */
-@_spi(AmplifySwift)
+@_spi(WebSocket)
 public final actor WebSocketClient: NSObject {
     public enum Error: Swift.Error {
         case connectionLost
@@ -107,14 +107,14 @@ public final actor WebSocketClient: NSObject {
         autoConnectOnNetworkStatusChange: Bool = false,
         autoRetryOnConnectionFailure: Bool = false
     ) async {
+        guard self.connection?.state != .running else {
+            log.debug("[WebSocketClient] WebSocket is already in connecting state")
+            return
+        }
+
         log.debug("[WebSocketClient] WebSocket about to connect")
         self.autoConnectOnNetworkStatusChange = autoConnectOnNetworkStatusChange
         self.autoRetryOnConnectionFailure = autoRetryOnConnectionFailure
-
-        if self.isConnected {
-            log.debug("[WebSocketClient] Already has a running websocket connection")
-            return
-        }
 
         await self.createConnectionAndRead()
     }
@@ -125,6 +125,11 @@ public final actor WebSocketClient: NSObject {
      This will halt all automatic processes and attempt to gracefully close the connection.
      */
     public func disconnect() {
+        guard self.connection?.state == .running else {
+            log.debug("[WebSocketClient] client should be in connected state to trigger disconnect")
+            return
+        }
+
         self.autoConnectOnNetworkStatusChange = false
         self.autoRetryOnConnectionFailure = false
         self.connection?.cancel(with: .goingAway, reason: nil)
@@ -192,14 +197,10 @@ public final actor WebSocketClient: NSObject {
                 break
             }
         } catch {
-            let nsError = error as NSError
-            switch (nsError.domain, nsError.code) {
-            case (NSURLErrorDomain.self, NSURLErrorCancelled):
-                log.debug("Skipping NSURLErrorCancelled error")
-            case (NSPOSIXErrorDomain.self, Int(ENOTCONN)):
-                log.debug("Skipping Socket is not connected error")
-            default:
+            if connection.state == .running {
                 subject.send(.error(error))
+            } else {
+                log.debug("[WebSocketClient] read message failed with connection state \(connection.state), error \(error)")
             }
         }
 
@@ -240,11 +241,7 @@ extension WebSocketClient: URLSessionWebSocketDelegate {
 
         log.debug("[WebSocketClient] URLSession didCompleteWithError: \(error))")
 
-        guard let nsError = (error as? NSError) else {
-            self.subject.send(.error(error))
-            return
-        }
-
+        let nsError = error as NSError
         switch (nsError.domain, nsError.code) {
         case (NSURLErrorDomain.self, NSURLErrorNetworkConnectionLost), // connection lost
              (NSPOSIXErrorDomain.self, Int(ECONNABORTED)): // background to foreground

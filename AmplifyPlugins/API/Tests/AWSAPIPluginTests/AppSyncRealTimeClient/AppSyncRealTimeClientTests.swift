@@ -9,7 +9,7 @@
 import XCTest
 import Combine
 import Amplify
-@_spi(AmplifySwift) import AWSPluginsCore
+@_spi(WebSocket) import AWSPluginsCore
 @testable import AWSAPIPlugin
 
 class AppSyncRealTimeClientTests: XCTestCase {

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@_spi(AmplifySwift) import AWSPluginsCore
+@_spi(WebSocket) import AWSPluginsCore
 import Amplify
 import AWSClientRuntime
 import ClientRuntime

@@ -7,7 +7,7 @@
 
 
 import XCTest
-@testable @_spi(AmplifySwift) import AWSPluginsCore
+@testable @_spi(WebSocket) import AWSPluginsCore
 
 class RetryWithJitterTests: XCTestCase {
     struct TestError: Error {

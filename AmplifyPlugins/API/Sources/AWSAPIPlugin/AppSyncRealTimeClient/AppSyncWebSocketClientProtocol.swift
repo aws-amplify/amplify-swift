@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-@_spi(AmplifySwift) import AWSPluginsCore
+@_spi(WebSocket) import AWSPluginsCore
 
 protocol AppSyncWebSocketClientProtocol: AnyObject {
     var isConnected: Bool { get async }

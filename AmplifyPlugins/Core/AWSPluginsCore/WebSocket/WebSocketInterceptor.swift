@@ -8,7 +8,7 @@
 
 import Foundation
 
-@_spi(AmplifySwift)
+@_spi(WebSocket)
 public protocol WebSocketInterceptor {
     func interceptConnection(url: URL) async -> URL
 }
