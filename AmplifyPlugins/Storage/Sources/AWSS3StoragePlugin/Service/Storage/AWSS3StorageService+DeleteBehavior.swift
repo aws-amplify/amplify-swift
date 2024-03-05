@@ -10,6 +10,7 @@ import Amplify
 
 extension AWSS3StorageService {
 
+    // DEPRECATE
     func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventHandler) {
         let request = AWSS3DeleteObjectRequest(bucket: bucket, key: serviceKey)
 

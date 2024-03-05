@@ -92,6 +92,17 @@ public protocol StorageCategoryBehavior {
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?) async throws -> String
 
+    /// Delete object from storage
+    ///
+    /// - Parameters:
+    ///   - path: The unique path of the object in storage.
+    ///   - options: Parameters to specific plugin behavior
+    ///
+    /// - Tag: StorageCategoryBehavior.remove
+    func remove(
+        path: String,
+        options: StorageRemoveOperation.Request.Options?) async throws
+
     /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:

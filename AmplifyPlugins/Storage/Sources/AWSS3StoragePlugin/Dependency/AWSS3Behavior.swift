@@ -16,6 +16,7 @@ import AWSClientRuntime
 // Behavior that the implemenation class for AWSS3 will use.
 protocol AWSS3Behavior {
 
+    // DEPRECATE
     // Deletes object.
     func deleteObject(_ request: AWSS3DeleteObjectRequest, completion: @escaping (Result<Void, StorageError>) -> Void)
 

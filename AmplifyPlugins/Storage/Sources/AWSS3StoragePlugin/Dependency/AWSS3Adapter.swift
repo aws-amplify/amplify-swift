@@ -26,6 +26,7 @@ class AWSS3Adapter: AWSS3Behavior {
         self.config = config
     }
 
+    // DEPRECATE
     /// Deletes object identify by request.
     /// - Parameters:
     ///   - request:: request identifying object

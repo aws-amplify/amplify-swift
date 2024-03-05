@@ -19,6 +19,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     private var authService: AWSAuthServiceBehavior?
     var logger: Logger!
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
+    // DEPRECATE
     var awsS3: AWSS3Behavior!
     var region: String!
     var bucket: String!

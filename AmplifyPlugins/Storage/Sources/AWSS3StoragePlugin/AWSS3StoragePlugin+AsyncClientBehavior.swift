@@ -116,6 +116,7 @@ extension AWSS3StoragePlugin {
         return taskAdapter
     }
 
+    // DEPRECATE
     @discardableResult
     public func remove(
         key: String,
@@ -131,6 +132,18 @@ extension AWSS3StoragePlugin {
         queue.addOperation(operation)
 
         return try await taskAdapter.value
+    }
+
+    public func remove(
+        path: String,
+        options: StorageRemoveRequest.Options?) async throws {
+            let options = options ?? StorageRemoveRequest.Options()
+            let request = StorageRemoveRequest(key: path, options: options)
+            let task = AWSS3StorageRemoveTask(
+                request,
+                storageConfiguration: storageConfiguration,
+                storageBehaviour: storageService)
+            try await task.value
     }
 
     public func list(

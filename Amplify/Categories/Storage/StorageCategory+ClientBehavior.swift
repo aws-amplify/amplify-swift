@@ -60,6 +60,10 @@ extension StorageCategory: StorageCategoryBehavior {
         try await plugin.remove(key: key, options: options)
     }
 
+    public func remove(path: String, options: StorageRemoveRequest.Options?) async throws {
+        try await plugin.remove(path: path, options: options)
+    }
+
     @discardableResult
     public func list(
         options: StorageListOperation.Request.Options? = nil
