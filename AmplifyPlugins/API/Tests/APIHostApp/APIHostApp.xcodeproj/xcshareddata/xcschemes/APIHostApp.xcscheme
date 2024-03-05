@@ -49,6 +49,17 @@
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D86FBA272B95FEBA00024BAC"
+               BuildableName = "AWSAPIPluginV2Tests.xctest"
+               BlueprintName = "AWSAPIPluginV2Tests"
+               ReferencedContainer = "container:APIHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

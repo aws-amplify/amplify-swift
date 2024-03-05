@@ -353,6 +353,17 @@
 		97914C1E29558AF2002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914C1D29558AF2002000EA /* README.md */; };
 		97D4946D2981AF9900397C75 /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D4946B2981AF9900397C75 /* AuthSignInHelper.swift */; };
 		97D4946E2981AF9900397C75 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D4946C2981AF9900397C75 /* TestConfigHelper.swift */; };
+		D86FBA2B2B95FEBA00024BAC /* GraphQLSubscriptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA2A2B95FEBA00024BAC /* GraphQLSubscriptionsTests.swift */; };
+		D86FBA362B96216000024BAC /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D86FBA352B96216000024BAC /* README.md */; };
+		D86FBA382B9624B800024BAC /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = D86FBA372B9624B800024BAC /* schema.graphql */; };
+		D86FBA562B9634D400024BAC /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA542B9634D300024BAC /* TestConfigHelper.swift */; };
+		D86FBA5E2B96350D00024BAC /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA572B96350D00024BAC /* Comment+Schema.swift */; };
+		D86FBA5F2B96350D00024BAC /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA582B96350D00024BAC /* Comment.swift */; };
+		D86FBA602B96350D00024BAC /* Blog+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA592B96350D00024BAC /* Blog+Schema.swift */; };
+		D86FBA612B96350D00024BAC /* Blog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA5A2B96350D00024BAC /* Blog.swift */; };
+		D86FBA622B96350D00024BAC /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA5B2B96350D00024BAC /* Post.swift */; };
+		D86FBA632B96350D00024BAC /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA5C2B96350D00024BAC /* Post+Schema.swift */; };
+		D86FBA642B96350D00024BAC /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D86FBA5D2B96350D00024BAC /* AmplifyModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -434,6 +445,13 @@
 			remoteInfo = APIWatchApp;
 		};
 		97914BCE2955872A002000EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21E73E6A28898D7800D7DB7E;
+			remoteInfo = APIHostApp;
+		};
+		D86FBA2C2B95FEBA00024BAC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
 			proxyType = 1;
@@ -692,6 +710,18 @@
 		97914C1D29558AF2002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		97D4946B2981AF9900397C75 /* AuthSignInHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 		97D4946C2981AF9900397C75 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		D86FBA282B95FEBA00024BAC /* AWSAPIPluginV2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginV2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D86FBA2A2B95FEBA00024BAC /* GraphQLSubscriptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLSubscriptionsTests.swift; sourceTree = "<group>"; };
+		D86FBA352B96216000024BAC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D86FBA372B9624B800024BAC /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		D86FBA542B9634D300024BAC /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		D86FBA572B96350D00024BAC /* Comment+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
+		D86FBA582B96350D00024BAC /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		D86FBA592B96350D00024BAC /* Blog+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog+Schema.swift"; sourceTree = "<group>"; };
+		D86FBA5A2B96350D00024BAC /* Blog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog.swift; sourceTree = "<group>"; };
+		D86FBA5B2B96350D00024BAC /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		D86FBA5C2B96350D00024BAC /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
+		D86FBA5D2B96350D00024BAC /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -804,6 +834,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		97914C122955872A002000EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86FBA252B95FEBA00024BAC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1164,8 +1201,10 @@
 				395906C128AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests */,
 				97914BC429558714002000EA /* GraphQLAPIStressTests */,
 				21EA887428F9BC600000BA75 /* AWSAPIPluginLazyLoadTests */,
+				D86FBA292B95FEBA00024BAC /* AWSAPIPluginV2Tests */,
 				21E73E6C28898D7900D7DB7E /* Products */,
 				21698BD728899EBB004BD994 /* Frameworks */,
+				39AC502FEC3F482AF1545BE2 /* AmplifyConfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1186,6 +1225,7 @@
 				681B35892A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch.xctest */,
 				681B35A12A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest */,
 				681B35C52A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch.xctest */,
+				D86FBA282B95FEBA00024BAC /* AWSAPIPluginV2Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1403,6 +1443,40 @@
 				97D4946C2981AF9900397C75 /* TestConfigHelper.swift */,
 			);
 			path = Base;
+			sourceTree = "<group>";
+		};
+		D86FBA292B95FEBA00024BAC /* AWSAPIPluginV2Tests */ = {
+			isa = PBXGroup;
+			children = (
+				D86FBA532B9634D300024BAC /* Base */,
+				D86FBA552B9634D400024BAC /* Models */,
+				D86FBA372B9624B800024BAC /* schema.graphql */,
+				D86FBA352B96216000024BAC /* README.md */,
+				D86FBA2A2B95FEBA00024BAC /* GraphQLSubscriptionsTests.swift */,
+			);
+			path = AWSAPIPluginV2Tests;
+			sourceTree = "<group>";
+		};
+		D86FBA532B9634D300024BAC /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				D86FBA542B9634D300024BAC /* TestConfigHelper.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		D86FBA552B9634D400024BAC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D86FBA5D2B96350D00024BAC /* AmplifyModels.swift */,
+				D86FBA5A2B96350D00024BAC /* Blog.swift */,
+				D86FBA592B96350D00024BAC /* Blog+Schema.swift */,
+				D86FBA582B96350D00024BAC /* Comment.swift */,
+				D86FBA572B96350D00024BAC /* Comment+Schema.swift */,
+				D86FBA5B2B96350D00024BAC /* Post.swift */,
+				D86FBA5C2B96350D00024BAC /* Post+Schema.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1696,6 +1770,24 @@
 			productReference = 97914C182955872A002000EA /* GraphQLAPIStressTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		D86FBA272B95FEBA00024BAC /* AWSAPIPluginV2Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D86FBA302B95FEBA00024BAC /* Build configuration list for PBXNativeTarget "AWSAPIPluginV2Tests" */;
+			buildPhases = (
+				D86FBA242B95FEBA00024BAC /* Sources */,
+				D86FBA252B95FEBA00024BAC /* Frameworks */,
+				D86FBA262B95FEBA00024BAC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D86FBA2D2B95FEBA00024BAC /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginV2Tests;
+			productName = AWSAPIPluginV2Tests;
+			productReference = D86FBA282B95FEBA00024BAC /* AWSAPIPluginV2Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1703,7 +1795,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					213DBC7428A6C47000B30280 = {
@@ -1755,6 +1847,10 @@
 					681B35B62A43970A0074F369 = {
 						TestTargetID = 681B35282A4395730074F369;
 					};
+					D86FBA272B95FEBA00024BAC = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = 21E73E6A28898D7800D7DB7E;
+					};
 				};
 			};
 			buildConfigurationList = 21E73E6628898D7800D7DB7E /* Build configuration list for PBXProject "APIHostApp" */;
@@ -1787,6 +1883,7 @@
 				681B353E2A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch */,
 				681B35912A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch */,
 				681B35B62A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch */,
+				D86FBA272B95FEBA00024BAC /* AWSAPIPluginV2Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -1890,6 +1987,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				97914C1E29558AF2002000EA /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D86FBA262B95FEBA00024BAC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D86FBA382B9624B800024BAC /* schema.graphql in Resources */,
+				D86FBA362B96216000024BAC /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2539,6 +2645,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D86FBA242B95FEBA00024BAC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D86FBA2B2B95FEBA00024BAC /* GraphQLSubscriptionsTests.swift in Sources */,
+				D86FBA562B9634D400024BAC /* TestConfigHelper.swift in Sources */,
+				D86FBA602B96350D00024BAC /* Blog+Schema.swift in Sources */,
+				D86FBA612B96350D00024BAC /* Blog.swift in Sources */,
+				D86FBA642B96350D00024BAC /* AmplifyModels.swift in Sources */,
+				D86FBA5E2B96350D00024BAC /* Comment+Schema.swift in Sources */,
+				D86FBA622B96350D00024BAC /* Post.swift in Sources */,
+				D86FBA632B96350D00024BAC /* Post+Schema.swift in Sources */,
+				D86FBA5F2B96350D00024BAC /* Comment.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2601,6 +2723,11 @@
 			isa = PBXTargetDependency;
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
 			targetProxy = 97914BCE2955872A002000EA /* PBXContainerItemProxy */;
+		};
+		D86FBA2D2B95FEBA00024BAC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
+			targetProxy = D86FBA2C2B95FEBA00024BAC /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3409,6 +3536,53 @@
 			};
 			name = Release;
 		};
+		D86FBA2E2B95FEBA00024BAC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginV2Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
+			};
+			name = Debug;
+		};
+		D86FBA2F2B95FEBA00024BAC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginV2Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -3543,6 +3717,15 @@
 			buildConfigurations = (
 				97914C162955872A002000EA /* Debug */,
 				97914C172955872A002000EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D86FBA302B95FEBA00024BAC /* Build configuration list for PBXNativeTarget "AWSAPIPluginV2Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D86FBA2E2B95FEBA00024BAC /* Debug */,
+				D86FBA2F2B95FEBA00024BAC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

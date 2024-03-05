@@ -78,7 +78,8 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         self.onCreateValueListener = onCreateValueListener
         self.onCreateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
-                for: modelSchema,
+                for: modelSchema, 
+                where: modelPredicate,
                 subscriptionType: .onCreate,
                 api: api,
                 auth: auth,
@@ -100,6 +101,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         self.onUpdateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
                 for: modelSchema,
+                where: modelPredicate,
                 subscriptionType: .onUpdate,
                 api: api,
                 auth: auth,
@@ -120,7 +122,8 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         self.onDeleteValueListener = onDeleteValueListener
         self.onDeleteOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
-                for: modelSchema,
+                for: modelSchema, 
+                where: modelPredicate,
                 subscriptionType: .onDelete,
                 api: api,
                 auth: auth,
@@ -195,6 +198,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     }
 
     static func makeAPIRequest(for modelSchema: ModelSchema,
+                               where predicate: QueryPredicate?,
                                subscriptionType: GraphQLSubscriptionType,
                                api: APICategoryGraphQLBehaviorExtended,
                                auth: AuthCategoryBehavior?,
@@ -205,7 +209,8 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
             let _ = auth,
             let tokenString = try? await awsAuthService.getUserPoolAccessToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema, 
+                                                           where: predicate,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims,
                                                            authType: authType)
@@ -213,12 +218,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
             let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
             let tokenString = try? await oidcAuthProvider.getLatestAuthToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema, 
+                                                           where: predicate,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims,
                                                            authType: authType)
         } else {
             request = GraphQLRequest<Payload>.subscription(to: modelSchema,
+                                                           where: predicate,
                                                            subscriptionType: subscriptionType,
                                                            authType: authType)
         }
@@ -296,6 +303,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 // MARK: - IncomingAsyncSubscriptionEventPublisher + API request factory
 extension IncomingAsyncSubscriptionEventPublisher {
     static func apiRequestFactoryFor(for modelSchema: ModelSchema,
+                                     where predicate: QueryPredicate?,
                                      subscriptionType: GraphQLSubscriptionType,
                                      api: APICategoryGraphQLBehaviorExtended,
                                      auth: AuthCategoryBehavior?,
@@ -303,7 +311,8 @@ extension IncomingAsyncSubscriptionEventPublisher {
                                      authTypeProvider: AWSAuthorizationTypeIterator) -> RetryableGraphQLOperation<Payload>.RequestFactory {
         var authTypes = authTypeProvider
         return {
-            return await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
+            return await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema, 
+                                                                          where: predicate,
                                                                           subscriptionType: subscriptionType,
                                                                           api: api,
                                                                           auth: auth,

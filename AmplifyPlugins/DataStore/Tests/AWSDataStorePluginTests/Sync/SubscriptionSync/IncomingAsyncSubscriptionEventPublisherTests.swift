@@ -106,4 +106,76 @@ final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
         XCTAssertEqual(expectedOrder.get(), actualOrder.get())
         sink.cancel()
     }
+    
+    /// Given: IncomingAsyncSubscriptionEventPublisher initilized with modelPredicate
+    /// When: IncomingAsyncSubscriptionEventPublisher subscribes to onCreate, onUpdate, onDelete events
+    /// Then: IncomingAsyncSubscriptionEventPublisher provides correct filters in subscriptions request
+    func testModelPredicateAsSubscribtionsFilter() async throws {
+        
+        let id1 = UUID().uuidString
+        let id2 = UUID().uuidString
+        
+        let correctFilterOnCreate = expectation(description: "Correct filter in onCreate request")
+        let correctFilterOnUpdate = expectation(description: "Correct filter in onUpdate request")
+        let correctFilterOnDelete = expectation(description: "Correct filter in onDelete request")
+        
+        func validateVariables(_ variables: [String: Any]?) -> Bool {
+            guard let variables = variables else {
+                XCTFail("The request doesn't contain variables")
+                return false
+            }
+            
+            guard
+                let filter = variables["filter"] as? [String: [[String: [String: String]]]],
+                filter == ["or": [
+                    ["id": ["eq": id1]],
+                    ["id": ["eq": id2]]
+                ]]
+                    
+            else {
+                XCTFail("The document variables property doesn't contain a valid filter")
+                return false
+            }
+
+            return true
+        }
+        
+        let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> { request, _, _ in
+            if request.document.contains("onCreatePost") {
+                if validateVariables(request.variables) {
+                    correctFilterOnCreate.fulfill()
+                }
+                
+            } else if request.document.contains("onUpdatePost") {
+                if validateVariables(request.variables) {
+                    correctFilterOnUpdate.fulfill()
+                }
+                
+            } else if request.document.contains("onDeletePost") {
+                if validateVariables(request.variables) {
+                    correctFilterOnDelete.fulfill()
+                }
+                
+            } else {
+                XCTFail("Unexpected request: \(request.document)")
+            }
+            
+            return nil
+        }
+
+        apiPlugin.responders[.subscribeRequestListener] = responder
+        
+        _ = await IncomingAsyncSubscriptionEventPublisher(
+            modelSchema: Post.schema,
+            api: apiPlugin,
+            modelPredicate: QueryPredicateGroup(type: .or, predicates: [
+                Post.keys.id.eq(id1),
+                Post.keys.id.eq(id2)
+            ]),
+            auth: nil,
+            authModeStrategy: AWSDefaultAuthModeStrategy(),
+            awsAuthService: nil)
+
+        await fulfillment(of: [correctFilterOnCreate, correctFilterOnUpdate, correctFilterOnDelete], timeout: 1)
+    }
 }
