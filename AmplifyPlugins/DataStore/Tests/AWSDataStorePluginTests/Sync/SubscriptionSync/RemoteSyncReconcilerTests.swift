@@ -179,6 +179,33 @@ class RemoteSyncReconcilerTests: XCTestCase {
         }
         waitForExpectations(timeout: 1)
     }
+    
+    func testGetDispositions_emptyLocal_singleModelAddedAndDeleted() {
+        let sameId = UUID().uuidString
+        
+        let remoteModels = [
+            makeRemoteModel(modelId: sameId, deleted: false, version: 1),
+            makeRemoteModel(modelId: sameId, deleted: true, version: 2)
+        ]
+
+        let dispositions = RemoteSyncReconciler.getDispositions(remoteModels, localMetadatas: [])
+
+        XCTAssertTrue(dispositions.isEmpty)
+    }
+    
+    func testGetDispositions_emptyLocal_oneModelAdded_SecondModelAddedAndDeleted() {
+        let sameId = UUID().uuidString
+        
+        let remoteModels = [
+            makeRemoteModel(deleted: false, version: 1),
+            makeRemoteModel(modelId: sameId, deleted: false, version: 1),
+            makeRemoteModel(modelId: sameId, deleted: true, version: 2)
+        ]
+
+        let dispositions = RemoteSyncReconciler.getDispositions(remoteModels, localMetadatas: [])
+
+        XCTAssertTrue(dispositions.count == 1)
+    }
 
     // MARK: - Utilities
 

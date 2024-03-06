@@ -42,18 +42,35 @@ struct RemoteSyncReconciler {
     /// - Returns: disposition of models to apply locally
     static func getDispositions(_ remoteModels: [RemoteModel],
                                 localMetadatas: [LocalMetadata]) -> [Disposition] {
-        guard !remoteModels.isEmpty else {
-            return []
+        
+        let remoteModelsGroupedById = remoteModels.reduce(into: [:]) { $0[$1.model.id] = ($0[$1.model.id] ?? []) + [$1] }
+        let localMetadatasGroupedById = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = ($0[$1.modelId] ?? []) + [$1] }
+        
+        var result: [Disposition] = []
+        
+        for (modelId, remoteModels) in remoteModelsGroupedById {
+            let localMetadatas = localMetadatasGroupedById[modelId] ?? []
+            
+            if remoteModels.isEmpty {
+                continue
+                
+            } else if localMetadatas.isEmpty {
+                let isRemoved = remoteModels.contains(where: { $0.syncMetadata.deleted })
+                
+                // Ignore all dispositions for model that doesn't exist locally and is deleted
+                guard isRemoved == false else { continue }
+                
+                let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: nil) }
+                result.append(contentsOf: dispositions)
+                
+            } else {
+                let metadataBymodelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
+                let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: metadataBymodelId[$0.model.identifier]) }
+                result.append(contentsOf: dispositions)
+            }
         }
-
-        guard !localMetadatas.isEmpty else {
-            return remoteModels.compactMap { getDisposition($0, localMetadata: nil) }
-        }
-
-        let metadataBymodelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
-        let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: metadataBymodelId[$0.model.identifier]) }
-
-        return dispositions
+        
+        return result
     }
 
     /// Reconcile a remote model against local metadata
