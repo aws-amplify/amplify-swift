@@ -68,7 +68,11 @@ extension CodingKey where Self: ModelKey {
 
     // MARK: - eq
 
-    public func eq(_ value: Persistable?) -> QueryPredicateOperation {
+    public func eq(_ value: Persistable?) -> QueryPredicateGroup {
+        return field(stringValue).eq(value)
+    }
+
+    public func eq(_ value: Persistable) -> QueryPredicateOperation {
         return field(stringValue).eq(value)
     }
 
@@ -76,7 +80,11 @@ extension CodingKey where Self: ModelKey {
         return field(stringValue).eq(value)
     }
 
-    public static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
+    public static func == (key: Self, value: Persistable?) -> QueryPredicateGroup {
+        return key.eq(value)
+    }
+
+    public static func == (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.eq(value)
     }
 
@@ -126,7 +134,11 @@ extension CodingKey where Self: ModelKey {
 
     // MARK: - ne
 
-    public func ne(_ value: Persistable?) -> QueryPredicateOperation {
+    public func ne(_ value: Persistable?) -> QueryPredicateGroup {
+        return field(stringValue).ne(value)
+    }
+
+    public func ne(_ value: Persistable) -> QueryPredicateOperation {
         return field(stringValue).ne(value)
     }
 
@@ -134,7 +146,11 @@ extension CodingKey where Self: ModelKey {
         return field(stringValue).ne(value)
     }
 
-    public static func != (key: Self, value: Persistable?) -> QueryPredicateOperation {
+    public static func != (key: Self, value: Persistable?) -> QueryPredicateGroup {
+        return key.ne(value)
+    }
+
+    public static func != (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.ne(value)
     }
 

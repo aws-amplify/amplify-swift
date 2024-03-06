@@ -42,7 +42,10 @@ class QueryPredicateTests: XCTestCase {
             type: .and,
             predicates: [
                 QueryPredicateOperation(field: "draft", operator: .equals(true)),
-                QueryPredicateOperation(field: "id", operator: .notEqual(nil))
+                QueryPredicateGroup(type: .and, predicates: [
+                    QueryPredicateOperation(field: "id", operator: .attributeExists(true)),
+                    QueryPredicateOperation(field: "id", operator: .notEqual(nil))
+                ])
             ]
         )
 
@@ -66,7 +69,10 @@ class QueryPredicateTests: XCTestCase {
             type: .and,
             predicates: [
                 QueryPredicateOperation(field: "draft", operator: .equals(true)),
-                QueryPredicateOperation(field: "id", operator: .notEqual(nil)),
+                QueryPredicateGroup(type: .and, predicates: [
+                    QueryPredicateOperation(field: "id", operator: .attributeExists(true)),
+                    QueryPredicateOperation(field: "id", operator: .notEqual(nil))
+                ]),
                 QueryPredicateGroup(
                     type: .or,
                     predicates: [
