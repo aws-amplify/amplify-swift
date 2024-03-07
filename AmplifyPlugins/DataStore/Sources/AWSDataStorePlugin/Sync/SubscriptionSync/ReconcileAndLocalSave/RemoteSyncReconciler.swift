@@ -33,16 +33,6 @@ struct RemoteSyncReconciler {
         }
     }
 
-
-    /// Reconciles the incoming `remoteModels` against the local metadata to get the disposition
-    ///
-    /// - Parameters:
-    ///   - remoteModels: models retrieved from the remote store
-    ///   - localMetadatas: metadata retrieved from the local store
-    /// - Returns: disposition of models to apply locally
-    static func getDispositions(_ remoteModels: [RemoteModel],
-                                localMetadatas: [LocalMetadata]) -> [Disposition] {
-        
     /// Reconciles the incoming `remoteModels` against the local metadata to get the disposition
     ///
     /// GroupBy the remoteModels by model identifier and apply only the latest version of the remoteModel
@@ -60,53 +50,25 @@ struct RemoteSyncReconciler {
                 $1.model.identifier: ($0[$1.model.identifier] ?? []) + [$1]
             ], uniquingKeysWith: { $1 })
         }
-
+        
         let optimizedRemoteModels = remoteModelsGroupByIdentifier.values.compactMap {
             $0.sorted(by: { $0.syncMetadata.version > $1.syncMetadata.version }).first
         }
-
+        
         guard !optimizedRemoteModels.isEmpty else {
             return []
         }
-
+        
         guard !localMetadatas.isEmpty else {
             return optimizedRemoteModels.compactMap { getDisposition($0, localMetadata: nil) }
         }
-
-        let metadataBymodelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
+        
+        let metadataByModelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
         let dispositions = optimizedRemoteModels.compactMap {
-            getDisposition($0, localMetadata: metadataBymodelId[$0.model.identifier])
+            getDisposition($0, localMetadata: metadataByModelId[$0.model.identifier])
         }
-
+        
         return dispositions
-    }
-        let localMetadatasGroupedById = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = ($0[$1.modelId] ?? []) + [$1] }
-        
-        var result: [Disposition] = []
-        
-        for (modelId, remoteModels) in remoteModelsGroupedById {
-            let localMetadatas = localMetadatasGroupedById[modelId] ?? []
-            
-            if remoteModels.isEmpty {
-                continue
-                
-            } else if localMetadatas.isEmpty {
-                let isRemoved = remoteModels.contains(where: { $0.syncMetadata.deleted })
-                
-                // Ignore all dispositions for model that doesn't exist locally and is deleted
-                guard isRemoved == false else { continue }
-                
-                let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: nil) }
-                result.append(contentsOf: dispositions)
-                
-            } else {
-                let metadataBymodelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
-                let dispositions = remoteModels.compactMap { getDisposition($0, localMetadata: metadataBymodelId[$0.model.identifier]) }
-                result.append(contentsOf: dispositions)
-            }
-        }
-        
-        return result
     }
 
     /// Reconcile a remote model against local metadata
