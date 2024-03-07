@@ -43,7 +43,43 @@ struct RemoteSyncReconciler {
     static func getDispositions(_ remoteModels: [RemoteModel],
                                 localMetadatas: [LocalMetadata]) -> [Disposition] {
         
-        let remoteModelsGroupedById = remoteModels.reduce(into: [:]) { $0[$1.model.id] = ($0[$1.model.id] ?? []) + [$1] }
+    /// Reconciles the incoming `remoteModels` against the local metadata to get the disposition
+    ///
+    /// GroupBy the remoteModels by model identifier and apply only the latest version of the remoteModel
+    ///
+    /// - Parameters:
+    ///   - remoteModels: models retrieved from the remote store
+    ///   - localMetadatas: metadata retrieved from the local store
+    /// - Returns: disposition of models to apply locally
+    static func getDispositions(
+        _ remoteModels: [RemoteModel],
+        localMetadatas: [LocalMetadata]
+    ) -> [Disposition] {
+        let remoteModelsGroupByIdentifier = remoteModels.reduce([String: [RemoteModel]]()) {
+            $0.merging([
+                $1.model.identifier: ($0[$1.model.identifier] ?? []) + [$1]
+            ], uniquingKeysWith: { $1 })
+        }
+
+        let optimizedRemoteModels = remoteModelsGroupByIdentifier.values.compactMap {
+            $0.sorted(by: { $0.syncMetadata.version > $1.syncMetadata.version }).first
+        }
+
+        guard !optimizedRemoteModels.isEmpty else {
+            return []
+        }
+
+        guard !localMetadatas.isEmpty else {
+            return optimizedRemoteModels.compactMap { getDisposition($0, localMetadata: nil) }
+        }
+
+        let metadataBymodelId = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = $1 }
+        let dispositions = optimizedRemoteModels.compactMap {
+            getDisposition($0, localMetadata: metadataBymodelId[$0.model.identifier])
+        }
+
+        return dispositions
+    }
         let localMetadatasGroupedById = localMetadatas.reduce(into: [:]) { $0[$1.modelId] = ($0[$1.modelId] ?? []) + [$1] }
         
         var result: [Disposition] = []
