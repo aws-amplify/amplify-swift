@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.27.1 (2024-03-07)
+
+### Bug Fixes
+
+- add collected data types to privacy manifests (#3531)
+- **DataStore**: endless retry of mutation request when server responds with 401 error code (#3511) (#3512)
+- **amplify-xcode**: Fixing errors during amplify pull (#3536)
+
 ## 2.27.0 (2024-02-22)
 
 ### Features
