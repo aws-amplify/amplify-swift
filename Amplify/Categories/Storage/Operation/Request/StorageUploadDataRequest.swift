@@ -46,11 +46,13 @@ public extension StorageUploadDataRequest {
         /// Access level of the storage system. Defaults to `public`
         ///
         /// - Tag: StorageUploadDataRequestOptions.accessLevel
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let accessLevel: StorageAccessLevel
 
         /// Target user to apply the action on.
         ///
         /// - Tag: StorageUploadDataRequestOptions.targetIdentityId
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let targetIdentityId: String?
 
         /// Metadata for the object to store

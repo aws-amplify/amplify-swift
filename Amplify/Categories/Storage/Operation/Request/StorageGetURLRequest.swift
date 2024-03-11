@@ -43,11 +43,13 @@ public extension StorageGetURLRequest {
         /// Access level of the storage system. Defaults to `public`
         ///
         /// - Tag: StorageListRequestOptions.accessLevel
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let accessLevel: StorageAccessLevel
 
         /// Target user to apply the action on.
         ///
         /// - Tag: StorageListRequestOptions.targetIdentityId
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let targetIdentityId: String?
 
         /// Number of seconds before the URL expires. Defaults to

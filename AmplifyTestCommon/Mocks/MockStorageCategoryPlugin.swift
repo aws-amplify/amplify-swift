@@ -180,6 +180,68 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         false
     }
 
+    func getURL(path: StoragePath, options: StorageGetURLRequest.Options?) async throws -> URL {
+        notify("getURL")
+        let options = options ?? StorageGetURLRequest.Options()
+        let request = StorageGetURLRequest(key: key, options: options)
+        let operation = MockStorageGetURLOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
+    func downloadData(path: StoragePath, options: StorageDownloadDataRequest.Options?) -> StorageDownloadDataTask {
+        notify("downloadData")
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(key: key, options: options)
+        let operation = MockStorageDownloadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    func downloadFile(path: StoragePath, local: URL, options: StorageDownloadFileRequest.Options?) -> StorageDownloadFileTask {
+        notify("downloadFile")
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+        let operation = MockStorageDownloadFileOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    func uploadData(path: StoragePath, data: Data, options: StorageUploadDataRequest.Options?) -> StorageUploadDataTask {
+        notify("uploadData")
+        let options = options ?? StorageUploadDataRequest.Options()
+        let request = StorageUploadDataRequest(key: key, data: data, options: options)
+        let operation = MockStorageUploadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    func uploadFile(path: StoragePath, local: URL, options: StorageUploadFileRequest.Options?) -> StorageUploadFileTask {
+        notify("uploadFile")
+        let options = options ?? StorageUploadFileRequest.Options()
+        let request = StorageUploadFileRequest(key: key, local: local, options: options)
+        let operation =  MockStorageUploadFileOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    func remove(path: StoragePath, options: StorageRemoveRequest.Options?) async throws -> String {
+        notify("remove")
+        let options = options ?? StorageRemoveRequest.Options()
+        let request = StorageRemoveRequest(key: key, options: options)
+        let operation = MockStorageRemoveOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
+    func list(path: StoragePath, options: StorageListRequest.Options?) async throws -> StorageListResult {
+        notify("list")
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(options: options)
+        let operation = MockStorageListOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
 }
 
 class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
