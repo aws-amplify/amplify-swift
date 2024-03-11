@@ -38,6 +38,7 @@ public extension StorageRemoveRequest {
         /// Access level of the storage system. Defaults to `public`
         ///
         /// - Tag: StorageRemoveRequestOptions.accessLevel
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let accessLevel: StorageAccessLevel
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide

@@ -40,11 +40,13 @@ public extension StorageDownloadDataRequest {
         /// Access level of the storage system. Defaults to `public`
         ///
         /// - Tag: StorageDownloadDataRequestOptions.accessLevel
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let accessLevel: StorageAccessLevel
 
         /// Target user to apply the action on.
         ///
         /// - Tag: StorageDownloadDataRequestOptions.targetIdentityId
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let targetIdentityId: String?
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
