@@ -22,7 +22,7 @@ public extension StoragePath where Self == StringStoragePath {
     }
 }
 
-public extension StoragePath where Self == IdentityIdStoragePath  {
+public extension StoragePath where Self == IdentityIdStoragePath {
     static func fromIdentityId(_ identityIdPathResolver: @escaping StoragePathResolver) -> Self {
         return IdentityIdStoragePath(pathResolver: identityIdPathResolver)
     }
@@ -42,4 +42,3 @@ public struct StringStoragePath: StoragePath {
 public struct IdentityIdStoragePath: StoragePath {
     public let pathResolver: StoragePathResolver
 }
-

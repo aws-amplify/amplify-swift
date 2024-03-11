@@ -135,7 +135,6 @@ public protocol StorageCategoryBehavior {
         options: StorageUploadDataOperation.Request.Options?
     ) -> StorageUploadDataTask
 
-
     /// Upload local file to storage
     ///
     /// - Parameters:
