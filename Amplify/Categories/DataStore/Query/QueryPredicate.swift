@@ -10,10 +10,33 @@ import Foundation
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
 public protocol QueryPredicate: Evaluable, Encodable {}
 
+public extension QueryPredicate {
+    func optimize() -> QueryPredicate {
+        func simplifyIdentityPredicateGroup(_ predicateGroup: QueryPredicateGroup) -> QueryPredicate {
+            switch predicateGroup.type {
+            case .id:
+                return predicateGroup.predicates.first!
+            default:
+                return QueryPredicateGroup(
+                    type: predicateGroup.type,
+                    predicates: predicateGroup.predicates.map { $0.optimize() }
+                )
+            }
+        }
+
+        if let predicate = self as? QueryPredicateGroup {
+            return simplifyIdentityPredicateGroup(predicate)
+        } else {
+            return self
+        }
+    }
+}
+
 public enum QueryPredicateGroupType: String, Encodable {
     case and
     case or
     case not
+    case id
 }
 
 /// The `not` function is used to wrap a `QueryPredicate` in a `QueryPredicateGroup` of type `.not`.
@@ -41,6 +64,10 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
                 predicates: [QueryPredicate] = []) {
         self.type = type
         self.predicates = predicates
+    }
+
+    public convenience init(predicate: QueryPredicate) {
+        self.init(type: .id, predicates: [predicate])
     }
 
     public func and(_ predicate: QueryPredicate) -> QueryPredicateGroup {
@@ -90,6 +117,9 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
         case .not:
             let predicate = predicates[0]
             return !predicate.evaluate(target: target)
+        case .id:
+            let predicate = predicates[0]
+            return predicate.evaluate(target: target)
         }
     }
 

@@ -160,6 +160,12 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
             } else {
                 return Fatal.preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
             }
+        case .id:
+            if let predicate = predicates.first {
+                return predicate.graphQLFilter(for: modelSchema)
+            } else {
+                return Fatal.preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
+            }
         }
     }
 }

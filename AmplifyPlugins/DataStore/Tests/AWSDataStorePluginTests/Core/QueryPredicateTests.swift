@@ -30,7 +30,7 @@ class QueryPredicateTests: XCTestCase {
         let predicate = post.draft.eq(true)
 
         XCTAssertEqual(predicate, post.draft == true)
-        XCTAssertEqual(predicate, QueryPredicateOperation(field: "draft", operator: .equals(true)))
+        XCTAssertEqual(predicate, QueryPredicateGroup(predicate: QueryPredicateOperation(field: "draft", operator: .equals(true))))
     }
 
     /// it should create a simple `QueryPredicateGroup`
@@ -41,7 +41,9 @@ class QueryPredicateTests: XCTestCase {
         let expected = QueryPredicateGroup(
             type: .and,
             predicates: [
-                QueryPredicateOperation(field: "draft", operator: .equals(true)),
+                QueryPredicateGroup(
+                    predicate:QueryPredicateOperation(field: "draft", operator: .equals(true))
+                ),
                 QueryPredicateGroup(type: .and, predicates: [
                     QueryPredicateOperation(field: "id", operator: .attributeExists(true)),
                     QueryPredicateOperation(field: "id", operator: .notEqual(nil))
@@ -68,7 +70,9 @@ class QueryPredicateTests: XCTestCase {
         let expected = QueryPredicateGroup(
             type: .and,
             predicates: [
-                QueryPredicateOperation(field: "draft", operator: .equals(true)),
+                QueryPredicateGroup(
+                    predicate: QueryPredicateOperation(field: "draft", operator: .equals(true))
+                ),
                 QueryPredicateGroup(type: .and, predicates: [
                     QueryPredicateOperation(field: "id", operator: .attributeExists(true)),
                     QueryPredicateOperation(field: "id", operator: .notEqual(nil))

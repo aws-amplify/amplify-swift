@@ -303,7 +303,6 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         XCTAssertEqual(variables["limit"] as? Int, limit)
         XCTAssertEqual(variables["nextToken"] as? String, nextToken)
         XCTAssertNotNil(filter)
-        XCTAssertNotNil(filter["and"])
     }
 
     func testSyncQueryGraphQLRequestWithPredicateGroupFilter() {
