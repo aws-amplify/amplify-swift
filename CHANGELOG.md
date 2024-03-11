@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.27.2 (2024-03-11)
+
+### Bug Fixes
+
+- **DataStore**: created and deleted model on one device appears as created on the other (#3554)
+- **predictions**: Serialize the dispatch of web socket events (#3558)
+
 ## 2.27.1 (2024-03-07)
 
 ### Bug Fixes
