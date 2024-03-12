@@ -182,7 +182,7 @@ class InitialSyncOperationTests: XCTestCase {
     func testDeltaSyncWhenLastSyncPredicateSameAsCurrentSyncPredicate() {
         let startDateSeconds = (Int64(Date().timeIntervalSince1970) - 100)
         let lastSyncTime: Int64 = startDateSeconds * 1_000
-        let lastSyncPredicate: String? = "{\"field\":\"id\",\"operator\":{\"type\":\"equals\",\"value\":\"123\"}}"
+        let lastSyncPredicate: String? = "{\"operation\":{\"_0\":\"id\",\"_1\":{\"type\":\"equals\",\"value\":\"123\"}}}"
         let currentSyncPredicate: DataStoreConfiguration
         #if os(watchOS)
         currentSyncPredicate = DataStoreConfiguration.custom(

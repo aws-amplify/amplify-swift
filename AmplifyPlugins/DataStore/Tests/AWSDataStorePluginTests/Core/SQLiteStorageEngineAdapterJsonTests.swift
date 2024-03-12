@@ -140,7 +140,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
         storageAdapter.save(model, modelSchema: ModelRegistry.modelSchema(from: "Post")!) { saveResult in
             switch saveResult {
             case .success:
-                let predicate = QueryPredicateOperation(field: "title", operator: .equals(title))
+                let predicate = QueryPredicateOperation.operation("title", .equals(title))
                 self.storageAdapter.query(Post.self, predicate: predicate) { queryResult in
                     switch queryResult {
                     case .success(let posts):
@@ -316,7 +316,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                                    "content": .string(content),
                                    "createdAt": .string(createdAt)] as [String: JSONValue]
                 let updatedModel = DynamicModel(id: model.id, values: updatedPost)
-                let condition = QueryPredicateOperation(field: "content", operator: .equals(content))
+                let condition = QueryPredicateOperation.operation("content", .equals(content))
                 self.storageAdapter.save(updatedModel, modelSchema: schema, condition: condition) { updateResult in
                     switch updateResult {
                     case .success:
@@ -351,7 +351,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                     "createdAt": .string(createdAt)] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let schema = ModelRegistry.modelSchema(from: "Post")!
-        let condition = QueryPredicateOperation(field: "content", operator: .equals(content))
+        let condition = QueryPredicateOperation.operation("content", .equals(content))
         storageAdapter.save(model, modelSchema: schema, condition: condition) { insertResult in
             switch insertResult {
             case .success:
@@ -396,8 +396,10 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                                    "content": .string(content),
                                    "createdAt": .string(createdAt)] as [String: JSONValue]
                 let updatedModel = DynamicModel(id: model.id, values: updatedPost)
-                let condition = QueryPredicateOperation(field: "content",
-                                                        operator: .equals("content 2 does not match previous content"))
+                let condition = QueryPredicateOperation.operation(
+                    "content",
+                    .equals("content 2 does not match previous content")
+                )
                 self.storageAdapter.save(updatedModel,
                                          modelSchema: schema,
                                          condition: condition) { updateResult in
@@ -442,8 +444,10 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             switch insertResult {
             case .success:
                 saveExpectation.fulfill()
-                let predicate = QueryPredicateOperation(field: "createdAt",
-                                                        operator: .greaterThan(dateTestStart.iso8601String))
+                let predicate = QueryPredicateOperation.operation(
+                    "createdAt",
+                    .greaterThan(dateTestStart.iso8601String)
+                )
                 self.storageAdapter.delete(DynamicModel.self,
                                            modelSchema: Post.schema,
                                            filter: predicate) { result in

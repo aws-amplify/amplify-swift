@@ -54,7 +54,7 @@ struct SelectStatementMetadata {
             sql = """
             \(sql)
             where 1 = 1
-            \(conditionStatement.stringValue)
+              \(conditionStatement.stringValue)
             """
         }
 

@@ -278,15 +278,11 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
     /// If the provided group is of type AND, the optimization will occur.
     /// If the top level group is OR or NOT, the optimization is not possible anyway.
     private static func optimizePredicate(_ predicate: QueryPredicate?) -> QueryPredicate? {
-        guard let predicate = predicate else {
-            return nil
+        if let predicate = predicate as? QueryPredicateOperation,
+           case .operation = predicate {
+            return QueryPredicateOperation.and([predicate])
         }
-        if predicate as? QueryPredicateGroup != nil {
-            return predicate
-        } else if let predicate = predicate as? QueryPredicateConstant,
-                  predicate == .all {
-            return predicate
-        }
-        return QueryPredicateGroup(type: .and, predicates: [predicate])
+
+        return predicate
     }
 }

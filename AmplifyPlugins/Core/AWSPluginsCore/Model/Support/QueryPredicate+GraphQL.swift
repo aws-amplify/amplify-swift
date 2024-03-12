@@ -75,10 +75,6 @@ extension QueryPredicate {
     public func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter(for: modelSchema)
-        } else if let group = self as? QueryPredicateGroup {
-            return group.graphQLFilter(for: modelSchema)
-        } else if let constant = self as? QueryPredicateConstant {
-            return constant.graphQLFilter(for: modelSchema)
         }
 
         return Fatal.preconditionFailure(
@@ -91,8 +87,6 @@ extension QueryPredicate {
     public var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter(for: nil)
-        } else if let group = self as? QueryPredicateGroup {
-            return group.graphQLFilter(for: nil)
         }
 
         return Fatal.preconditionFailure(
@@ -100,26 +94,28 @@ extension QueryPredicate {
     }
 }
 
-extension QueryPredicateConstant: GraphQLFilterConvertible {
+extension QueryPredicateOperation: GraphQLFilterConvertible {
     func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
-        if self == .all {
+        switch self {
+        case let .operation(field, op):
+            let filterValue = [op.graphQLOperator: op.value]
+            if let modelSchema {
+                return [columnName(modelSchema, field: field): filterValue]
+            } else {
+                return [field: filterValue]
+            }
+        case let .and(predicates),
+             let .or(predicates):
+            return [self.operator: predicates.map { $0.graphQLFilter(for: modelSchema) }]
+        case let .not(op):
+            return [self.operator: op.graphQLFilter(for: modelSchema)]
+        default:
             return [:]
         }
-        return Fatal.preconditionFailure("Could not find QueryPredicateConstant \(self)")
-    }
-}
-
-extension QueryPredicateOperation: GraphQLFilterConvertible {
-
-    func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
-        let filterValue = [self.operator.graphQLOperator: self.operator.value]
-        guard let modelSchema = modelSchema else {
-            return [field: filterValue]
-        }
-        return [columnName(modelSchema): filterValue]
     }
 
-    func columnName(_ modelSchema: ModelSchema) -> String {
+    func columnName(_ modelSchema: ModelSchema, field: String) -> String {
+
         guard let modelField = modelSchema.field(withName: field) else {
             return field
         }
@@ -139,27 +135,6 @@ extension QueryPredicateOperation: GraphQLFilterConvertible {
             return targetName
         default:
             return field
-        }
-    }
-}
-
-extension QueryPredicateGroup: GraphQLFilterConvertible {
-
-    func graphQLFilter(for modelSchema: ModelSchema?) -> GraphQLFilter {
-        let logicalOperator = type.rawValue
-        switch type {
-        case .and, .or:
-            var graphQLPredicateOperation = [logicalOperator: [Any]()]
-            predicates.forEach { predicate in
-                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter(for: modelSchema))
-            }
-            return graphQLPredicateOperation
-        case .not:
-            if let predicate = predicates.first {
-                return [logicalOperator: predicate.graphQLFilter(for: modelSchema)]
-            } else {
-                return Fatal.preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
-            }
         }
     }
 }

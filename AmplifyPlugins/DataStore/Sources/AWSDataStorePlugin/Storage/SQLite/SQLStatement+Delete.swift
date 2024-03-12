@@ -39,14 +39,14 @@ struct DeleteStatement: SQLStatement {
                   predicate: predicate)
     }
 
-    init(modelSchema: ModelSchema,
-         withIdentifier id: ModelIdentifierProtocol,
-         predicate: QueryPredicate? = nil) {
-        var queryPredicate: QueryPredicate = field(modelSchema.primaryKey.sqlName)
-            .eq(id.stringValue)
-        if let predicate = predicate {
-            queryPredicate = field(modelSchema.primaryKey.sqlName)
-                .eq(id.stringValue).and(predicate)
+    init(
+        modelSchema: ModelSchema,
+        withIdentifier id: ModelIdentifierProtocol,
+        predicate: QueryPredicate? = nil
+    ) {
+        var queryPredicate = field(modelSchema.primaryKey.sqlName).eq(id.stringValue)
+        if let predicate = predicate as? QueryPredicateOperation {
+            queryPredicate = queryPredicate.and(predicate)
         }
         self.init(modelSchema: modelSchema, predicate: queryPredicate)
     }
@@ -64,7 +64,7 @@ struct DeleteStatement: SQLStatement {
             return """
             \(sql)
             where 1 = 1
-            \(conditionStatement.stringValue)
+              \(conditionStatement.stringValue)
             """
         }
         return sql

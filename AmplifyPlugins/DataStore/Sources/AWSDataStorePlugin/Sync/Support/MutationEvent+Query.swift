@@ -66,13 +66,10 @@ extension MutationEvent {
             let chunkedArrays = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
             var queriedMutationEvents: [MutationEvent] = []
             for chunkedArray in chunkedArrays {
-                var queryPredicates: [QueryPredicateGroup] = []
-                for (id, name) in chunkedArray {
-                    let operation = fields.modelId == id && fields.modelName == name
-                    queryPredicates.append(operation)
-                }
-                let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
-                let final = QueryPredicateGroup(type: .and, predicates: [groupedQueryPredicates, predicate])
+                let groupedQueryPredicates = chunkedArray
+                    .map { fields.modelId == $0.0 && fields.modelName == $0.1 }
+                    .fold(||)
+                let final = groupedQueryPredicates?.and(predicate) ?? predicate
                 let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
 
                 do {

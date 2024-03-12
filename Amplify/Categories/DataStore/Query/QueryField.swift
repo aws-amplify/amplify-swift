@@ -63,23 +63,23 @@ public struct QueryField: QueryFieldOperation {
 
     // MARK: - attributeExists
     public func attributeExists(_ value: Bool) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .attributeExists(value))
+        return .operation(name, .attributeExists(value))
     }
 
     // MARK: - beginsWith
     public func beginsWith(_ value: String) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .beginsWith(value))
+        return .operation(name, .beginsWith(value))
     }
 
     // MARK: - between
     public func between(start: Persistable, end: Persistable) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .between(start: start, end: end))
+        return .operation(name, .between(start: start, end: end))
     }
 
     // MARK: - contains
 
     public func contains(_ value: String) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .contains(value))
+        return .operation(name, .contains(value))
     }
 
     public static func ~= (key: Self, value: String) -> QueryPredicateOperation {
@@ -88,17 +88,24 @@ public struct QueryField: QueryFieldOperation {
 
     // MARK: - not contains
     public func notContains(_ value: String) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .notContains(value))
+        return .operation(name, .notContains(value))
     }
 
     // MARK: - eq
 
     public func eq(_ value: Persistable?) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .equals(value))
+        if let value {
+            return .operation(name, .equals(value))
+        } else {
+            return .or([
+                .operation(name, .attributeExists(false)),
+                .operation(name, .equals(value))
+            ])
+        }
     }
 
     public func eq(_ value: EnumPersistable) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .equals(value.rawValue))
+        return .operation(name, .equals(value.rawValue))
     }
 
     public static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
@@ -112,7 +119,7 @@ public struct QueryField: QueryFieldOperation {
     // MARK: - ge
 
     public func ge(_ value: Persistable) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .greaterOrEqual(value))
+        return .operation(name, .greaterOrEqual(value))
     }
 
     public static func >= (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -122,7 +129,7 @@ public struct QueryField: QueryFieldOperation {
     // MARK: - gt
 
     public func gt(_ value: Persistable) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .greaterThan(value))
+        return .operation(name, .greaterThan(value))
     }
 
     public static func > (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -132,7 +139,7 @@ public struct QueryField: QueryFieldOperation {
     // MARK: - le
 
     public func le(_ value: Persistable) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .lessOrEqual(value))
+        return .operation(name, .lessOrEqual(value))
     }
 
     public static func <= (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -142,7 +149,7 @@ public struct QueryField: QueryFieldOperation {
     // MARK: - lt
 
     public func lt(_ value: Persistable) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .lessThan(value))
+        return .operation(name, .lessThan(value))
     }
 
     public static func < (key: Self, value: Persistable) -> QueryPredicateOperation {
@@ -152,11 +159,19 @@ public struct QueryField: QueryFieldOperation {
     // MARK: - ne
 
     public func ne(_ value: Persistable?) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .notEqual(value))
+        if let value {
+            return .operation(name, .notEqual(value))
+        } else {
+            return .and([
+                .operation(name, .attributeExists(true)),
+                .operation(name, .notEqual(value))
+            ])
+        }
+
     }
 
     public func ne(_ value: EnumPersistable) -> QueryPredicateOperation {
-        return QueryPredicateOperation(field: name, operator: .notEqual(value.rawValue))
+        return .operation(name, .notEqual(value.rawValue))
     }
 
     public static func != (key: Self, value: Persistable?) -> QueryPredicateOperation {

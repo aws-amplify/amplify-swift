@@ -112,16 +112,14 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             let predicate: QueryPredicate = field(associatedField) == associatedId
             filter = predicate.graphQLFilter(for: Element.schema)
         } else {
-            var queryPredicates: [QueryPredicateOperation] = []
 
             let columnNames = columnNames(fields: associatedFields, Element.schema)
             let predicateValues = zip(columnNames, associatedIdentifiers)
-            for (identifierName, identifierValue) in predicateValues {
-                queryPredicates.append(QueryPredicateOperation(field: identifierName,
-                                                               operator: .equals(identifierValue)))
-            }
-            let groupedQueryPredicates = QueryPredicateGroup(type: .and, predicates: queryPredicates)
-            filter = groupedQueryPredicates.graphQLFilter(for: Element.schema)
+            let queryPredicate = predicateValues
+                .map { QueryPredicateOperation.operation($0.0, .equals($0.1)) }
+                .fold(&&)
+
+            filter = queryPredicate?.graphQLFilter(for: Element.schema) ?? [:]
         }
 
         let request = GraphQLRequest<JSONValue>.listQuery(responseType: JSONValue.self,

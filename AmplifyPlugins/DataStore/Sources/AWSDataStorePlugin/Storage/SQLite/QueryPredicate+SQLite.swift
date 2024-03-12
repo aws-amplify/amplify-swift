@@ -53,16 +53,16 @@ extension QueryOperator {
             .beginsWith(let value),
             .notContains(let value):
             return [value.asBinding()]
-        case .attributeExists:
-            return []
+        case .attributeExists(let value):
+            return [value.asBinding()]
         }
     }
 }
 
 extension QueryPredicate {
     var isAll: Bool {
-        if let allPredicate = self as? QueryPredicateConstant, allPredicate == .all {
-            return true
+        if let predicate = self as? QueryPredicateOperation {
+            return predicate == QueryPredicateConstant.all
         } else {
             return false
         }

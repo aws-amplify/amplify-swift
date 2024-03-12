@@ -457,14 +457,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         var results = [MutationSyncMetadata]()
         let chunkedModelIdsArr = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedModelIds in chunkedModelIdsArr {
-            var queryPredicates: [QueryPredicateOperation] = []
-            for id in chunkedModelIds {
-                let mutationSyncMetadataId = MutationSyncMetadata.identifier(modelName: modelName,
-                                                                             modelId: id)
-                queryPredicates.append(QueryPredicateOperation(field: fields.id.stringValue,
-                                                               operator: .equals(mutationSyncMetadataId)))
-            }
-            let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
+            let groupedQueryPredicates = chunkedModelIds
+                .map { MutationSyncMetadata.identifier(modelName: modelName, modelId: $0) }
+                .map { QueryPredicateOperation.operation(fields.id.stringValue, .equals($0)) }
+                .fold(||)
             let statement = SelectStatement(from: modelSchema, predicate: groupedQueryPredicates)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result = try rows.convert(to: modelType,
