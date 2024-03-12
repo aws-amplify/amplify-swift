@@ -136,12 +136,12 @@ extension AWSS3StoragePlugin {
         options: StorageDownloadFileOperation.Request.Options? = nil
     ) -> StorageDownloadFileTask {
         let options = options ?? StorageDownloadFileRequest.Options()
-        let path = "" //TODO: resolve path
-        let request = StorageDownloadFileRequest(key: path, local: local, options: options)
+        let request = StorageDownloadFileRequest(key: "", local: local, options: options)
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageConfiguration: storageConfiguration,
                                                           storageService: storageService,
-                                                          authService: authService)
+                                                          authService: authService,
+                                                          path: path)
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
 
