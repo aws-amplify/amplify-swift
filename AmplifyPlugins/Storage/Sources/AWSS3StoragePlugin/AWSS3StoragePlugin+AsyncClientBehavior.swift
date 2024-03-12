@@ -143,7 +143,9 @@ extension AWSS3StoragePlugin {
                 request,
                 storageConfiguration: storageConfiguration,
                 storageBehaviour: storageService)
-            try await task.value
+            _ = try await taskQueue.sync {
+                return try await task.value
+            }
     }
 
     public func list(

@@ -1,9 +1,10 @@
 //
-//  File.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Singh, Harshdeep on 2024-03-05.
+// SPDX-License-Identifier: Apache-2.0
 //
+
 
 import Amplify
 import Foundation
@@ -39,6 +40,6 @@ class AWSS3StorageRemoveTask: StorageRemoveTask, DefaultLogger {
         let input = DeleteObjectInput(
             bucket: storageBehaviour.bucket,
             key: serviceKey)
-        let output = try await storageBehaviour.client.deleteObject(input: input)
+        _ = try await storageBehaviour.client.deleteObject(input: input)
     }
 }

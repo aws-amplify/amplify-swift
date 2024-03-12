@@ -24,6 +24,8 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
+    var taskQueue: TaskQueue<Any>!
+
     /// The default access level used for API calls.
     var defaultAccessLevel: StorageAccessLevel!
 
