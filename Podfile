@@ -1,6 +1,6 @@
 load 'build-support/dependencies.rb'
 
-platform :ios, "11.0"
+platform :ios, "12.0"
 
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks

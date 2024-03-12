@@ -39,9 +39,9 @@ PODS:
     - AWSCore (= 2.34.0)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
-  - CwlCatchExceptionSupport (2.1.1)
-  - CwlMachBadInstructionHandler (2.1.0)
-  - CwlPosixPreconditionTesting (2.1.0)
+  - CwlCatchExceptionSupport (2.1.2)
+  - CwlMachBadInstructionHandler (2.1.2)
+  - CwlPosixPreconditionTesting (2.1.2)
   - CwlPreconditionTesting (2.1.0):
     - CwlCatchException (~> 2.1.1)
     - CwlMachBadInstructionHandler (~> 2.1.0)
@@ -94,24 +94,24 @@ CHECKOUT OPTIONS:
     :tag: 2.1.0
 
 SPEC CHECKSUMS:
-  Amplify: e7dcabfb29a14ec8d3ff94e113519a192ca2d54d
-  AmplifyPlugins: c08ffb54a66c68792bfea613c28bfd005ef4dfdf
-  AmplifyTestCommon: deb7b3a9f7f2820b1b018cddb378d68ea44697fc
+  Amplify: cf225550c698c2db56b6385000d5c1842b4158ad
+  AmplifyPlugins: f7e8231e1f9be9c9c5ae27b7b1e715f5b48f016b
+  AmplifyTestCommon: 1897168e02e2dcaf46a2ee76b6d5c96eb2f6bc5d
   AWSAuthCore: 78d09e86a9db5a972dea9d046dbbc01bc6513960
   AWSCognitoIdentityProvider: 5d10b3b7f826f084239c036fc81334354e19292c
   AWSCognitoIdentityProviderASF: 9fd7e74bf86e25389c930eb51fc3b61ce601a72d
   AWSCore: 35d036e9519377a20fd2783874b5ff44268608bb
   AWSMobileClient: 5c624a1a77995d13be65faef8b1a82ed71fb4029
-  AWSPluginsCore: 6265e87adf13164ad54b85e896e792bb574c1b1a
+  AWSPluginsCore: 4237676a1b80c306f12b1d4e4d2cb9931802477b
   AWSS3: 426e9bc563aea1a47f4fabac114df2a01bdb38d2
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
-  CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
-  CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8
-  CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
+  CwlCatchExceptionSupport: 42bf8c5e4e5e663f51100ddfa68caf7cfcf64ab6
+  CwlMachBadInstructionHandler: b982c7e3e44fcfa1c680e8046f6bba35f3476d65
+  CwlPosixPreconditionTesting: 4011f0660c0be460b088d10bcfdf351c7e036ac4
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
 
-PODFILE CHECKSUM: 23c3028505a2f56c001d01c66c1622dff6f8dd8e
+PODFILE CHECKSUM: ec07a397b2a349b1fab877fbd699a526d24d2036
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2
