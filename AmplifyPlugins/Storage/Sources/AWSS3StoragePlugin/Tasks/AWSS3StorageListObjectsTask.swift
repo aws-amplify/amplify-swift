@@ -43,7 +43,7 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
         }
         let input = ListObjectsV2Input(bucket: storageBehaviour.bucket,
                                        continuationToken: request.options.nextToken,
-                                       delimiter: nil,
+                                       delimiter: request.options.subpathStragegy.delimiter,
                                        maxKeys: Int(request.options.pageSize),
                                        prefix: path,
                                        startAfter: nil)
@@ -57,9 +57,21 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
                 return StorageListResult.Item(
                     path: path,
                     eTag: s3Object.eTag,
-                    lastModified: s3Object.lastModified)
+                    lastModified: s3Object.lastModified
+                )
             }
-            return StorageListResult(items: items, nextToken: response.nextContinuationToken)
+            let commonPrefixes: [S3ClientTypes.CommonPrefix] = response.commonPrefixes ?? []
+            let excludedSubpaths: [String] = commonPrefixes.compactMap {
+                guard let commonPrefix = $0.prefix else {
+                    return nil
+                }
+                return String(commonPrefix.dropFirst(path.count))
+            }
+            return StorageListResult(
+                items: items,
+                excludedSubpaths: excludedSubpaths,
+                nextToken: response.nextContinuationToken
+            )
         } catch let error as StorageErrorConvertible {
             throw error.storageError
         } catch {

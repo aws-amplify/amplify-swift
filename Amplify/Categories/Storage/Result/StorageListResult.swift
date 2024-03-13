@@ -17,8 +17,9 @@ public struct StorageListResult {
     /// [StorageCategoryBehavior.list](x-source-tag://StorageCategoryBehavior.list).
     ///
     /// - Tag: StorageListResult.init
-    public init(items: [Item], nextToken: String? = nil) {
+    public init(items: [Item], excludedSubpaths: [String] = [], nextToken: String? = nil) {
         self.items = items
+        self.excludedSubpaths = excludedSubpaths
         self.nextToken = nextToken
     }
 
@@ -26,6 +27,12 @@ public struct StorageListResult {
     ///
     /// - Tag: StorageListResult.items
     public var items: [Item]
+
+
+    /// Array of excluded subpaths in the Result. This field is only populated when `Options.subpathStrategy` is set to `.exclude()`.
+    ///
+    /// - Tag: StorageListResult.excludedSubpaths
+    public var excludedSubpaths: [String]
 
     /// Opaque string indicating the page offset at which to resume a listing. This value is usually copied to
     /// [StorageListRequestOptions.nextToken](x-source-tag://StorageListRequestOptions.nextToken).

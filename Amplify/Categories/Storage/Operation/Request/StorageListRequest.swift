@@ -60,6 +60,11 @@ public extension StorageListRequest {
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let path: String?
 
+        /// The strategy to use when listing contents from subpaths. Defaults to `.include`
+        ///
+        /// - Tag: StorageListRequestOptions.subpathStragegy
+        public let subpathStragegy: SubpathStrategy
+
         /// Number between 1 and 1,000 that indicates the limit of how many entries to fetch when
         /// retreiving file lists from the server.
         ///
@@ -94,15 +99,38 @@ public extension StorageListRequest {
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     path: String? = nil,
+                    subpathStragegy: SubpathStrategy = .include,
                     pageSize: UInt = 1000,
                     nextToken: String? = nil,
                     pluginOptions: Any? = nil) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.path = path
+            self.subpathStragegy = subpathStragegy
             self.pageSize = pageSize
             self.nextToken = nextToken
             self.pluginOptions = pluginOptions
         }
+    }
+}
+
+public extension StorageListRequest.Options {
+    /// Represents the strategy used when listing contents from subpaths relative to the given path.
+    ///
+    /// - Tag: StorageListRequestOptions.SubpathStrategy
+    enum SubpathStrategy {
+        /// Items from nested subpaths are included in the results
+        ///
+        /// - Tag: SubpathStrategy.include
+        case include
+
+        /// Items from nested subpaths are not included in the results, and instead grouped under `StorageListResult.excludedSubpaths`.
+        ///
+        /// - Parameter delimitedBy: the delimiter used to determine subpaths. Defaults to `"/"`
+        ///
+        /// - SeeAlso: [StorageListResult.excludedSubpaths](x-source-tag://StorageListResult.excludedSubpaths)
+        ///
+        /// - Tag: SubpathStrategy.exclude
+        case exclude(delimitedBy: String = "/")
     }
 }
