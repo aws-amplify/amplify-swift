@@ -10,10 +10,10 @@ import Amplify
 
 @_spi(InternalAmplifyConfiguration)
 public struct PasswordProtectionSettings: Equatable, Codable {
-    public var minLength: Int?
-    public var characterPolicy: [PasswordCharacterPolicy]
+    public let minLength: UInt
+    public let characterPolicy: [PasswordCharacterPolicy]
 
-    public init(minLength: Int?,
+    public init(minLength: UInt,
                 characterPolicy: [PasswordCharacterPolicy]) {
         self.minLength = minLength
         self.characterPolicy = characterPolicy

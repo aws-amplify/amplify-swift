@@ -74,11 +74,11 @@ struct ConfigurationHelper {
         if case .object(let passwordSettings) = cognitoConfiguration?.value(at: "passwordProtectionSettings") {
 
             // parse `minLength`
-            var minLength: Int?
+            var minLength: UInt = 0
             if case .number(let value) = passwordSettings["passwordPolicyMinLength"] {
-                minLength = Int(value)
+                minLength = UInt(value)
             } else if case .string(let value) = passwordSettings["passwordPolicyMinLength"],
-                      let intValue = Int(value) {
+                      let intValue = UInt(value) {
                 minLength = intValue
             }
 
