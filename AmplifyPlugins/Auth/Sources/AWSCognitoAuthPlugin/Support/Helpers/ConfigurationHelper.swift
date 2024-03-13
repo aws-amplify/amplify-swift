@@ -23,6 +23,7 @@ struct ConfigurationHelper {
             return nil
         }
 
+        // parse `pinpointId`
         var pinpointId: String?
         if case .string(let pinpointIdFromConfig) = cognitoUserPoolJSON.value(at: "PinpointAppId") {
             pinpointId = pinpointIdFromConfig
@@ -44,6 +45,7 @@ struct ConfigurationHelper {
             return nil
         }()
 
+        // parse `authFlowType`
         var authFlowType: AuthFlowType
         if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
            isMigrationEnabled == true {
@@ -56,13 +58,83 @@ struct ConfigurationHelper {
             authFlowType = .userSRP
         }
 
+        // parse `clientSecret`
         var clientSecret: String?
         if case .string(let clientSecretFromConfig) = cognitoUserPoolJSON.value(at: "AppClientSecret") {
             clientSecret = clientSecretFromConfig
         }
 
+        // parse `hostedUIConfig`
         let hostedUIConfig = parseHostedConfiguration(
             configuration: config.value(at: "Auth.Default.OAuth"))
+
+        // parse `passwordProtectionSettings`
+        let cognitoConfiguration = config.value(at: "Auth.Default")
+        var passwordProtectionSettings: PasswordProtectionSettings?
+        if case .object(let passwordSettings) = cognitoConfiguration?.value(at: "passwordProtectionSettings") {
+
+            // parse `minLength`
+            var minLength: Int?
+            if case .number(let value) = passwordSettings["passwordPolicyMinLength"] {
+                minLength = Int(value)
+            } else if case .string(let value) = passwordSettings["passwordPolicyMinLength"],
+                      let intValue = Int(value) {
+                minLength = intValue
+            }
+
+            // parse `characterPolicy`
+            var characterPolicy: [PasswordCharacterPolicy] = []
+            if case .array(let characters) = passwordSettings["passwordPolicyCharacters"] {
+                characterPolicy = characters.compactMap { value in
+                    guard case .string(let string) = value else {
+                        return nil
+                    }
+
+                    return .init(rawValue: string)
+                }
+            }
+
+            passwordProtectionSettings =  PasswordProtectionSettings(
+                minLength: minLength,
+                characterPolicy: characterPolicy
+            )
+        }
+
+        // parse `usernameAttributes`
+        var usernameAttributes: [UsernameAttribute] = []
+        if case .array(let attributes) = cognitoConfiguration?["usernameAttributes"] {
+            usernameAttributes = attributes.compactMap { value in
+                guard case .string(let string) = value else {
+                    return nil
+                }
+
+                return .init(rawValue: string)
+            }
+        }
+
+        // parse `signUpAttributes`
+        var signUpAttributes: [SignUpAttributeType] = []
+        if case .array(let attributes) = cognitoConfiguration?["signupAttributes"] {
+            signUpAttributes = attributes.compactMap { value in
+                guard case .string(let string) = value else {
+                    return nil
+                }
+
+                return .init(rawValue: string)
+            }
+        }
+
+        // parse `verificationMechanisms`
+        var verificationMechanisms: [VerificationMechanism] = []
+        if case .array(let attributes) = cognitoConfiguration?["verificationMechanisms"] {
+            verificationMechanisms = attributes.compactMap { value in
+                guard case .string(let string) = value else {
+                    return nil
+                }
+
+                return .init(rawValue: string)
+            }
+        }
 
         return UserPoolConfigurationData(poolId: poolId,
                                          clientId: appClientId,
@@ -71,7 +143,12 @@ struct ConfigurationHelper {
                                          clientSecret: clientSecret,
                                          pinpointAppId: pinpointId,
                                          authFlowType: authFlowType,
-                                         hostedUIConfig: hostedUIConfig)
+                                         hostedUIConfig: hostedUIConfig,
+                                         passwordProtectionSettings: passwordProtectionSettings,
+                                         usernameAttributes: usernameAttributes,
+                                         signUpAttributes: signUpAttributes,
+                                         verificationMechanisms: verificationMechanisms)
+
     }
 
     static func parseHostedConfiguration(configuration: JSONValue?) -> HostedUIConfigurationData? {

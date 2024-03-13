@@ -7,7 +7,8 @@
 
 import Foundation
 
-enum AuthConfiguration {
+@_spi(InternalAmplifyConfiguration)
+public enum AuthConfiguration {
     case userPools(UserPoolConfigurationData)
     case identityPools(IdentityPoolConfigurationData)
     case userPoolsAndIdentityPools(UserPoolConfigurationData, IdentityPoolConfigurationData)
@@ -21,7 +22,7 @@ extension AuthConfiguration: Codable {
         case identityPools
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         switch self {
@@ -35,7 +36,7 @@ extension AuthConfiguration: Codable {
         }
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
 
         let userConfigData = try? values.decode(UserPoolConfigurationData.self, forKey: .userPools)

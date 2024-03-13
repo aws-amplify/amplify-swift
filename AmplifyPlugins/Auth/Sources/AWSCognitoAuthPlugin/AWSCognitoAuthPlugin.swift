@@ -21,7 +21,8 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     var queue: OperationQueue!
 
     /// Configuration for the auth plugin
-    var authConfiguration: AuthConfiguration!
+    @_spi(InternalAmplifyConfiguration)
+    internal(set) public var authConfiguration: AuthConfiguration!
 
     /// Handles different auth event send through hub
     var hubEventHandler: AuthHubEventBehavior!
@@ -35,6 +36,7 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     /// The user network preferences for timeout and retry
     let networkPreferences: AWSCognitoNetworkPreferences?
 
+    @available(*, deprecated, message: "Use `authConfiguration`")
     @_spi(InternalAmplifyConfiguration)
     internal(set) public var jsonConfiguration: JSONValue?
 
