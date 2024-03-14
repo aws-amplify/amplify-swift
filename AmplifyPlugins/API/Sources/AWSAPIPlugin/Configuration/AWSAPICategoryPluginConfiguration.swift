@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 import Foundation
 import AWSPluginsCore
 
@@ -40,6 +40,26 @@ public struct AWSAPICategoryPluginConfiguration {
         let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(forEndpoints: endpoints,
                                                                                   apiAuthProviderFactory: apiAuthProviderFactory,
                                                                                   authService: authService)
+
+        self.init(endpoints: endpoints,
+                  interceptors: interceptors,
+                  apiAuthProviderFactory: apiAuthProviderFactory,
+                  authService: authService)
+
+    }
+
+    init(configuration: AmplifyConfigurationV2,
+         apiAuthProviderFactory: APIAuthProviderFactory,
+         authService: AWSAuthServiceBehavior) throws {
+
+        let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(
+            config: configuration,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService)
+        let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(
+            forEndpoints: endpoints,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService)
 
         self.init(endpoints: endpoints,
                   interceptors: interceptors,
@@ -155,6 +175,36 @@ public struct AWSAPICategoryPluginConfiguration {
                                                     apiAuthProviderFactory: apiAuthProviderFactory,
                                                     authService: authService)
             endpoints[name] = endpointConfig
+        }
+
+        return endpoints
+    }
+
+    private static func endpointsFromConfig(
+        config: AmplifyConfigurationV2,
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        authService: AWSAuthServiceBehavior
+    ) throws -> [APIEndpointName: EndpointConfig] {
+        var endpoints = [APIEndpointName: EndpointConfig]()
+
+        if let data = config.data {
+            let name = "dataCategory"
+            let endpointConfig = try EndpointConfig(name: name,
+                                                    config: data,
+                                                    apiAuthProviderFactory: apiAuthProviderFactory,
+                                                    authService: authService)
+            endpoints[name] = endpointConfig
+        }
+
+        if let api = config.api {
+            for endpoint in api.endpoints {
+                let name = endpoint.name
+                let endpointConfig = try EndpointConfig(name: name,
+                                                        config: endpoint,
+                                                        apiAuthProviderFactory: apiAuthProviderFactory,
+                                                        authService: authService)
+                endpoints[name] = endpointConfig
+            }
         }
 
         return endpoints
