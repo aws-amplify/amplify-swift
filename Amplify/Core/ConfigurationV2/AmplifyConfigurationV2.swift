@@ -128,12 +128,12 @@ public struct AmplifyConfigurationV2: Codable {
 
     @_spi(AmplifyUnifiedConfiguration)
     public struct Notifications: Codable {
-        let channels: [Channel]
+        public let channels: [Channel]
 
-        struct Channel: Codable {
-            let awsRegion: String
-            let pinpointAppId: String
-            let channelType: String
+        public struct Channel: Codable {
+            public let awsRegion: String
+            public let pinpointAppId: String
+            public let channelType: String
         }
     }
 
