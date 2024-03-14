@@ -51,7 +51,7 @@ public struct AmplifyConfigurationV2: Codable {
         public let awsRegion: String
         public let userPoolId: String
         public let userPoolClientId: String
-        public let identityPoolId: String?
+        public let identityPoolId: String
         public let passwordPolicy: PasswordPolicy?
         public let identityProviders: [String]
         public let oauthDomain: String?
@@ -87,28 +87,28 @@ public struct AmplifyConfigurationV2: Codable {
 
     @_spi(AmplifyUnifiedConfiguration)
     public struct Geo: Codable {
-        let awsRegion: String
-        let maps: Maps
-        let searchIndices: SearchIndices
-        let geofenceCollections: GeofenceCollections
+        public let awsRegion: String
+        public let maps: Maps
+        public let searchIndices: SearchIndices
+        public let geofenceCollections: GeofenceCollections
 
-        struct Maps: Codable {
-            let items: [AmazonLocationServiceConfig]
-            let `default`: String
+        public struct Maps: Codable {
+            public let items: [AmazonLocationServiceConfig]
+            public let `default`: String
 
-            struct AmazonLocationServiceConfig: Codable {
-                let name: String
-                let style: String
+            public struct AmazonLocationServiceConfig: Codable {
+                public let name: String
+                public let style: String
             }
         }
 
-        struct SearchIndices: Codable {
-            let items: [String]
-            let `default`: String
+        public struct SearchIndices: Codable {
+            public let items: [String]
+            public let `default`: String
         }
 
-        struct GeofenceCollections: Codable {
-            let items: [String]
+        public struct GeofenceCollections: Codable {
+            public let items: [String]
             let `default`: String
         }
     }
