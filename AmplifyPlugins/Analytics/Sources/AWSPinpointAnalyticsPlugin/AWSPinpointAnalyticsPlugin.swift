@@ -25,13 +25,18 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An observer to monitor connectivity changes
     var networkMonitor: NetworkMonitor!
 
+    var options: AWSPinpointAnalyticsPluginOptions!
+
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {
         "awsPinpointAnalyticsPlugin"
     }
 
     /// Instantiates an instance of the AWSPinpointAnalyticsPlugin
-    public init() {}
+    public init(options: AWSPinpointAnalyticsPluginOptions? = .init()) {
+        self.options = options
+    }
 }
 
 extension AWSPinpointAnalyticsPlugin: AmplifyVersionable { }
+

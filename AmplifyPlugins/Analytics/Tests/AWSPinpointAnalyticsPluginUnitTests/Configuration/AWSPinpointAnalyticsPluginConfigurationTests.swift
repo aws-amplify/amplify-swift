@@ -16,11 +16,11 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     let appId: JSONValue = "testAppId"
     let testRegion = "us-east-1"
     let region: JSONValue = "us-east-1"
-    let testAutoFlushInterval = 300
+    let testAutoFlushInterval: UInt = 300
     let autoFlushInterval: JSONValue = 300
     let testTrackAppSession = false
     let trackAppSession: JSONValue = false
-    let testAutoSessionTrackingInterval = 100
+    let testAutoSessionTrackingInterval: UInt = 100
     let autoSessionTrackingInterval: JSONValue = 100
     let pinpointAnalyticsPluginConfiguration = JSONValue(
         dictionaryLiteral:
@@ -43,11 +43,11 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoFlushEventsInterval)
             XCTAssertEqual(config.trackAppSessions,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
+                           AWSPinpointAnalyticsPluginOptions.defaultTrackAppSession)
             XCTAssertEqual(config.autoSessionTrackingInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
@@ -65,11 +65,11 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoFlushEventsInterval)
             XCTAssertEqual(config.trackAppSessions,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
+                           AWSPinpointAnalyticsPluginOptions.defaultTrackAppSession)
             XCTAssertEqual(config.autoSessionTrackingInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
@@ -89,9 +89,9 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.region, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval, testAutoFlushInterval)
             XCTAssertEqual(config.trackAppSessions,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
+                           AWSPinpointAnalyticsPluginOptions.defaultTrackAppSession)
             XCTAssertEqual(config.autoSessionTrackingInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
@@ -128,10 +128,10 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoFlushEventsInterval)
             XCTAssertEqual(config.trackAppSessions, testTrackAppSession)
             XCTAssertEqual(config.autoSessionTrackingInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
@@ -150,8 +150,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion)
             XCTAssertEqual(config.autoFlushEventsInterval,
-                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
-            XCTAssertEqual(config.trackAppSessions, AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
+                           AWSPinpointAnalyticsPluginOptions.defaultAutoFlushEventsInterval)
+            XCTAssertEqual(config.trackAppSessions, AWSPinpointAnalyticsPluginOptions.defaultTrackAppSession)
             XCTAssertEqual(config.autoSessionTrackingInterval, testAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
