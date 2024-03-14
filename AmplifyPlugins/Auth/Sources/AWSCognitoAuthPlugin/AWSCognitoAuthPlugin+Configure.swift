@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
@@ -25,15 +25,20 @@ extension AWSCognitoAuthPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
 
-        guard let jsonValueConfiguration = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(
-                AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
-                AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+        let authConfiguration: AuthConfiguration
+        if let configuration = configuration as? AmplifyConfigurationV2 {
+            jsonConfiguration = JSONValue.number(10)
+            authConfiguration = try ConfigurationHelper.authConfiguration(configuration)
+        } else {
+            guard let jsonValueConfiguration = configuration as? JSONValue else {
+                throw PluginError.pluginConfigurationError(
+                    AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
+                    AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+            }
+        
+            jsonConfiguration = jsonValueConfiguration
+            authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
         }
-
-        jsonConfiguration = jsonValueConfiguration
-
-        let authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
 
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
         let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)

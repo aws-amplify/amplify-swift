@@ -6,6 +6,7 @@
 //
 
 import ClientRuntime
+import Amplify
 
 struct UserPoolConfigurationData: Equatable {
 
@@ -17,6 +18,10 @@ struct UserPoolConfigurationData: Equatable {
     let pinpointAppId: String?
     let hostedUIConfig: HostedUIConfigurationData?
     let authFlowType: AuthFlowType
+    let passwordProtectionSettings: PasswordProtectionSettings?
+    let usernameAttributes: [UsernameAttribute]
+    let signUpAttributes: [SignUpAttributeType]
+    let verificationMechanisms: [VerificationMechanism]
 
     init(
         poolId: String,
@@ -26,7 +31,11 @@ struct UserPoolConfigurationData: Equatable {
         clientSecret: String? = nil,
         pinpointAppId: String? = nil,
         authFlowType: AuthFlowType = .userSRP,
-        hostedUIConfig: HostedUIConfigurationData? = nil
+        hostedUIConfig: HostedUIConfigurationData? = nil,
+        passwordProtectionSettings: PasswordProtectionSettings? = nil,
+        usernameAttributes: [UsernameAttribute] = [],
+        signUpAttributes: [SignUpAttributeType] = [],
+        verificationMechanisms: [VerificationMechanism] = []
     ) {
         self.poolId = poolId
         self.clientId = clientId
@@ -36,6 +45,10 @@ struct UserPoolConfigurationData: Equatable {
         self.pinpointAppId = pinpointAppId
         self.hostedUIConfig = hostedUIConfig
         self.authFlowType = authFlowType
+        self.passwordProtectionSettings = passwordProtectionSettings
+        self.usernameAttributes = usernameAttributes
+        self.signUpAttributes = signUpAttributes
+        self.verificationMechanisms = verificationMechanisms
     }
 
     /// Amazon Cognito user pool: cognito-idp.<region>.amazonaws.com/<YOUR_USER_POOL_ID>,
@@ -47,6 +60,7 @@ struct UserPoolConfigurationData: Equatable {
 
 extension UserPoolConfigurationData: Codable { }
 
+// TODO: this should be updated with the newly added properties
 extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
@@ -81,5 +95,69 @@ extension UserPoolConfigurationData.CustomEndpoint {
     init(endpoint: String, validator: (String) throws -> Endpoint) rethrows {
         let endpoint = try validator(endpoint)
         validatedHost = endpoint.host
+    }
+}
+
+extension UserPoolConfigurationData {
+    struct PasswordProtectionSettings: Equatable, Codable {
+        let minLength: UInt
+        let characterPolicy: [PasswordCharacterPolicy]
+
+        init(minLength: UInt,
+             characterPolicy: [PasswordCharacterPolicy]) {
+            self.minLength = minLength
+            self.characterPolicy = characterPolicy
+        }
+    }
+
+    enum PasswordCharacterPolicy: String, Codable {
+        case lowercase = "REQUIRES_LOWERCASE"
+        case uppercase = "REQUIRES_UPPERCASE"
+        case numbers = "REQUIRES_NUMBERS"
+        case symbols = "REQUIRES_SYMBOLS"
+    }
+}
+
+extension UserPoolConfigurationData {
+    enum UsernameAttribute: String, Codable {
+        case username = "USERNAME"
+        case email = "EMAIL"
+        case phoneNumber = "PHONE_NUMBER"
+
+        init?(from authUserAttributeKey: AuthUserAttributeKey) {
+            switch authUserAttributeKey {
+            case .email:
+                self = .email
+            case .phoneNumber:
+                self = .phoneNumber
+            default:
+                return nil
+            }
+        }
+    }
+}
+
+extension UserPoolConfigurationData {
+    enum SignUpAttributeType: String, Codable {
+        case address = "ADDRESS"
+        case birthDate = "BIRTHDATE"
+        case email = "EMAIL"
+        case familyName = "FAMILY_NAME"
+        case gender = "GENDER"
+        case givenName = "GIVEN_NAME"
+        case middleName = "MIDDLE_NAME"
+        case name = "NAME"
+        case nickname = "NICKNAME"
+        case phoneNumber = "PHONE_NUMBER"
+        case preferredUsername = "PREFERRED_USERNAME"
+        case profile = "PROFILE"
+        case website = "WEBSITE"
+    }
+}
+
+extension UserPoolConfigurationData {
+    enum VerificationMechanism: String, Codable {
+        case email = "EMAIL"
+        case phoneNumber = "PHONE_NUMBER"
     }
 }
