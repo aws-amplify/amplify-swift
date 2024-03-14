@@ -36,11 +36,6 @@ public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {}
 
 extension CodingKey where Self: ModelKey {
 
-    // MARK: - attributeExists
-    public func attributeExists(_ value: Bool) -> QueryPredicateOperation {
-        return field(stringValue).attributeExists(value)
-    }
-
     // MARK: - beginsWith
     public func beginsWith(_ value: String) -> QueryPredicateOperation {
         return field(stringValue).beginsWith(value)
