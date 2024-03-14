@@ -115,14 +115,14 @@ public struct AmplifyConfigurationV2: Codable {
 
     @_spi(AmplifyUnifiedConfiguration)
     public struct Logging: Codable {
-        let awsRegion: String
-        let flushInterval: Double
-        let logGroupName: String
-        let maxLocalStoreSize: Double
-        let loggingConstraints: LoggingConstraints
+        public let awsRegion: String
+        public let flushInterval: Double?
+        public let logGroupName: String
+        public let maxLocalStoreSize: Double?
+        public let loggingConstraints: LoggingConstraints?
 
-        struct LoggingConstraints: Codable {
-            let defaultLogLevel: String
+        public struct LoggingConstraints: Codable {
+            public let defaultLogLevel: Int
         }
     }
 

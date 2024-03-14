@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 
 public struct AWSCloudWatchLoggingPluginConfiguration: Codable {
     public init(
@@ -34,6 +34,45 @@ public struct AWSCloudWatchLoggingPluginConfiguration: Codable {
    public let flushIntervalInSeconds: Int
    public let defaultRemoteConfiguration: DefaultRemoteConfiguration?
    public let loggingConstraints: LoggingConstraints
+}
+
+extension AWSCloudWatchLoggingPluginConfiguration {
+    init(config: AmplifyConfigurationV2) throws {
+        guard let logging = config.logging else {
+            throw LoggingError.configuration(
+                """
+                Missing logging category section in `amplify-outputs.json` for AWSCloudWatchLoggingPlugin.
+                """,
+                """
+                Expected to find the logging section in the contents of `amplify-outputs.json`.
+                """
+            )
+        }
+
+        self.enable = true // TODO: Missing in unified config, maybe move to Options object.
+        self.logGroupName = logging.logGroupName
+        self.region = logging.awsRegion
+        if let maxLocalStoreSize = logging.maxLocalStoreSize {
+            self.localStoreMaxSizeInMB = Int(maxLocalStoreSize)
+        } else {
+            self.localStoreMaxSizeInMB = 5
+        }
+        if let flushInterval = logging.flushInterval {
+            self.flushIntervalInSeconds = Int(flushInterval)
+        } else {
+            self.flushIntervalInSeconds = 60
+        }
+
+        self.defaultRemoteConfiguration = nil // TODO: Missing in unified config, maybe move to Options object
+        
+        if let loggingConstraints = logging.loggingConstraints,
+           let logLevel = Amplify.LogLevel(rawValue: loggingConstraints.defaultLogLevel) {
+            // TODO: Missing categoryLogLevel and userLogLevel, all or none- move LoggingConstraints to Options object.
+            self.loggingConstraints = LoggingConstraints(defaultLogLevel: logLevel)
+        } else {
+            self.loggingConstraints = LoggingConstraints()
+        }
+    }
 }
 
 extension AWSCloudWatchLoggingPluginConfiguration {
