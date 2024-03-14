@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 import AWSPluginsCore
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
@@ -20,14 +20,19 @@ extension AWSPinpointAnalyticsPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-        guard let config = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(
-                AnalyticsPluginErrorConstant.decodeConfigurationError.errorDescription,
-                AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion
-            )
+        let pluginConfiguration: AWSPinpointAnalyticsPluginConfiguration
+        if let configuration = configuration as? AmplifyConfigurationV2 {
+            pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(configuration, options)
+        } else {
+            guard let config = configuration as? JSONValue else {
+                throw PluginError.pluginConfigurationError(
+                    AnalyticsPluginErrorConstant.decodeConfigurationError.errorDescription,
+                    AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion
+                )
+            }
+            pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config)
         }
 
-        let pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config)
         try configure(using: pluginConfiguration)
     }
 

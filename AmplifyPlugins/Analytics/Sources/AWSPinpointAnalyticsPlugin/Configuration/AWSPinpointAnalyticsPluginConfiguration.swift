@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 import AWSPinpoint
 import AWSClientRuntime
 import Foundation
@@ -20,21 +20,11 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     static let appIdConfigKey = "appId"
     static let regionConfigKey = "region"
 
-    static let defaultAutoFlushEventsInterval = 60
-    static let defaultTrackAppSession = true
-    static let defaultAutoSessionTrackingInterval: Int = {
-    #if os(macOS)
-        .max
-    #else
-        5
-    #endif
-    }()
-
     let appId: String
     let region: String
-    let autoFlushEventsInterval: Int
+    let autoFlushEventsInterval: UInt
     let trackAppSessions: Bool
-    let autoSessionTrackingInterval: Int
+    let autoSessionTrackingInterval: UInt
 
     private static let logger = Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: Self.self))
 
@@ -73,11 +63,27 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
                   autoSessionTrackingInterval: autoSessionTrackingInterval)
     }
 
+    init(_ configuration: AmplifyConfigurationV2,
+         _ options: AWSPinpointAnalyticsPluginOptions) throws {
+        guard let pinpointAnalyticsConfig = configuration.analytics else {
+            throw PluginError.pluginConfigurationError(
+                AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.errorDescription,
+                AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.recoverySuggestion
+            )
+        }
+
+        self.init(appId: pinpointAnalyticsConfig.pinpointAppId,
+                  region: pinpointAnalyticsConfig.awsRegion,
+                  autoFlushEventsInterval: options.autoFlushEventsInerval,
+                  trackAppSessions: options.trackAppSessions,
+                  autoSessionTrackingInterval: options.autoSessionTrackingInterval)
+    }
+
     init(appId: String,
          region: String,
-         autoFlushEventsInterval: Int,
+         autoFlushEventsInterval: UInt,
          trackAppSessions: Bool,
-         autoSessionTrackingInterval: Int) {
+         autoSessionTrackingInterval: UInt) {
         self.appId = appId
         self.region = region
         self.autoFlushEventsInterval = autoFlushEventsInterval
@@ -85,9 +91,9 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         self.autoSessionTrackingInterval = autoSessionTrackingInterval
     }
 
-    private static func getAutoFlushEventsInterval(_ configuration: [String: JSONValue]) throws -> Int {
+    private static func getAutoFlushEventsInterval(_ configuration: [String: JSONValue]) throws -> UInt {
         guard let autoFlushEventsInterval = configuration[autoFlushEventsIntervalKey] else {
-            return Self.defaultAutoFlushEventsInterval
+            return AWSPinpointAnalyticsPluginOptions.defaultAutoFlushEventsInterval
         }
 
         guard case let .number(autoFlushEventsIntervalValue) = autoFlushEventsInterval else {
@@ -104,12 +110,12 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
-        return Int(autoFlushEventsIntervalValue)
+        return UInt(autoFlushEventsIntervalValue)
     }
 
     private static func getTrackAppSessions(_ configuration: [String: JSONValue]) throws -> Bool {
         guard let trackAppSessions = configuration[trackAppSessionsKey] else {
-            return Self.defaultTrackAppSession
+            return AWSPinpointAnalyticsPluginOptions.defaultTrackAppSession
         }
 
         guard case let .boolean(trackAppSessionsValue) = trackAppSessions else {
@@ -122,9 +128,9 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         return trackAppSessionsValue
     }
 
-    private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> Int {
+    private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> UInt {
         guard let autoSessionTrackingInterval = configuration[autoSessionTrackingIntervalKey] else {
-            return Self.defaultAutoSessionTrackingInterval
+            return AWSPinpointAnalyticsPluginOptions.defaultAutoSessionTrackingInterval
         }
 
         guard case let .number(autoSessionTrackingIntervalValue) = autoSessionTrackingInterval else {
@@ -142,6 +148,6 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
-        return Int(autoSessionTrackingIntervalValue)
+        return UInt(autoSessionTrackingIntervalValue)
     }
 }
