@@ -27,4 +27,18 @@ extension HubCategory: CategoryConfigurable {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
 
+    func configure(using amplifyConfiguration: AmplifyConfigurationV2) throws {
+        guard configurationState.get() != .configured else {
+            let error = ConfigurationError.amplifyAlreadyConfigured(
+                "\(categoryType.displayName) has already been configured.",
+                "Remove the duplicate call to `Amplify.configure()`"
+            )
+            throw error
+        }
+
+        try plugin.configure(using: amplifyConfiguration)
+
+        configurationState.set(.configured)
+    }
+
 }
