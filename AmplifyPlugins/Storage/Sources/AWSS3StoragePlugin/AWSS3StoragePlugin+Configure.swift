@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 import AWSPluginsCore
 
 extension AWSS3StoragePlugin {
@@ -22,24 +22,35 @@ extension AWSS3StoragePlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.configure
     public func configure(using configuration: Any?) throws {
-        guard let config = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
-                                                       PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
-        }
+        let region: String
+        let bucket: String
+        let defaultAccessLevel: StorageAccessLevel
+        if let config = configuration as? AmplifyConfigurationV2 {
+            guard let storage = config.storage else {
+                throw PluginError.pluginConfigurationError("Missing storage category in configuration",
+                                                           "")
+            }
+            region = storage.awsRegion
+            bucket = storage.bucketName
+            defaultAccessLevel = options.defaultAccessLevel
+        } else {
+            guard let config = configuration as? JSONValue else {
+                throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
+                                                           PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+            }
+            guard case let .object(configObject) = config else {
+                throw StorageError.configuration(
+                    PluginErrorConstants.configurationObjectExpected.errorDescription,
+                    PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
+            }
 
-        guard case let .object(configObject) = config else {
-            throw StorageError.configuration(
-                PluginErrorConstants.configurationObjectExpected.errorDescription,
-                PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
+            region = try AWSS3StoragePlugin.getRegion(configObject)
+            bucket = try AWSS3StoragePlugin.getBucket(configObject)
+            defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
         }
 
         do {
             let authService = AWSAuthService()
-
-            let region = try AWSS3StoragePlugin.getRegion(configObject)
-            let bucket = try AWSS3StoragePlugin.getBucket(configObject)
-            let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
-
             let storageService = try AWSS3StorageService(authService: authService,
                                                          region: region,
                                                          bucket: bucket,
@@ -78,8 +89,7 @@ extension AWSS3StoragePlugin {
         self.storageService = storageService
         self.authService = authService
         self.queue = queue
-        self.defaultAccessLevel = defaultAccessLevel
-
+        self.options = AWSS3StoragePluginOptions(defaultAccessLevel: defaultAccessLevel)
     }
 
     // MARK: Private helper methods

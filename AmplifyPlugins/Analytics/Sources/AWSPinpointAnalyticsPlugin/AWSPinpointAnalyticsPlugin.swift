@@ -33,7 +33,7 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     }
 
     /// Instantiates an instance of the AWSPinpointAnalyticsPlugin
-    public init(options: AWSPinpointAnalyticsPluginOptions? = .init()) {
+    public init(options: AWSPinpointAnalyticsPluginOptions? = nil) {
         self.options = options
     }
 }

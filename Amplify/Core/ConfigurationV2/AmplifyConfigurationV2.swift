@@ -139,8 +139,8 @@ public struct AmplifyConfigurationV2: Codable {
 
     @_spi(AmplifyUnifiedConfiguration)
     public struct Storage: Codable {
-        let awsRegion: String
-        let bucketName: String
+        public let awsRegion: String
+        public let bucketName: String
     }
 
     @_spi(AmplifyUnifiedConfiguration)
