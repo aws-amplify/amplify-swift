@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 import AWSPluginsCore
 @_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import AWSLocation
@@ -21,7 +21,16 @@ extension AWSLocationGeoPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty.
     public func configure(using configuration: Any?) throws {
-        let pluginConfiguration = try AWSLocationGeoPluginConfiguration(config: configuration)
+        let pluginConfiguration: AWSLocationGeoPluginConfiguration
+        if let configuration = configuration as? AmplifyConfigurationV2 {
+            pluginConfiguration = try AWSLocationGeoPluginConfiguration(config: configuration)
+        } else {
+            guard let configJSON = configuration as? JSONValue else {
+                throw GeoPluginConfigError.configurationInvalid(section: .plugin)
+            }
+            pluginConfiguration = try AWSLocationGeoPluginConfiguration(config: configJSON)
+        }
+
         try configure(using: pluginConfiguration)
     }
 

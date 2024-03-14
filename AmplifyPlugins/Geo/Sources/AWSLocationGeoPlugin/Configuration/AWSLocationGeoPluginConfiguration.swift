@@ -5,11 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(AmplifyUnifiedConfiguration) import Amplify
 import Foundation
 import AWSLocation
 
 public struct AWSLocationGeoPluginConfiguration {
+    private static func urlString(regionName: String, mapName: String) -> String {
+        "https://maps.geo.\(regionName).amazonaws.com/maps/v0/maps/\(mapName)/style-descriptor"
+    }
+
     let defaultMap: String?
     let maps: [String: Geo.MapStyle]
     let defaultSearchIndex: String?
@@ -17,13 +21,9 @@ public struct AWSLocationGeoPluginConfiguration {
 
     public let regionName: String
 
-    init(config: Any?) throws {
-        guard let configJSON = config as? JSONValue else {
-            throw GeoPluginConfigError.configurationInvalid(section: .plugin)
-        }
-
+    init(config: JSONValue) throws {
         let configObject = try AWSLocationGeoPluginConfiguration.getConfigObject(section: .plugin,
-                                                                              configJSON: configJSON)
+                                                                                 configJSON: config)
         let regionName = try AWSLocationGeoPluginConfiguration.getRegion(configObject)
 
         var maps = [String: Geo.MapStyle]()
@@ -59,6 +59,22 @@ public struct AWSLocationGeoPluginConfiguration {
                   maps: maps,
                   defaultSearchIndex: defaultSearchIndex,
                   searchIndices: searchIndices)
+    }
+    
+    init(config: AmplifyConfigurationV2) throws {
+        guard let geo = config.geo else {
+            throw GeoPluginConfigError.configurationInvalid(section: .plugin)
+        }
+
+        let maps = try AWSLocationGeoPluginConfiguration.getMaps(
+            mapConfig: geo.maps,
+            regionName: geo.awsRegion)
+
+        self.init(regionName: geo.awsRegion,
+                  defaultMap: geo.maps.default,
+                  maps: maps,
+                  defaultSearchIndex: geo.searchIndices.default,
+                  searchIndices: geo.searchIndices.items)
     }
 
     init(regionName: String,
@@ -163,8 +179,8 @@ public struct AWSLocationGeoPluginConfiguration {
                 throw GeoPluginConfigError.mapStyleIsNotString(mapName: mapName)
             }
 
-            let urlString = "https://maps.geo.\(regionName).amazonaws.com/maps/v0/maps/\(mapName)/style-descriptor"
-            let url = URL(string: urlString)
+            let url = URL(string: AWSLocationGeoPluginConfiguration.urlString(regionName: regionName,
+                                                                              mapName: mapName))
             guard let styleURL = url else {
                 throw GeoPluginConfigError.mapStyleURLInvalid(mapName: mapName)
             }
@@ -176,5 +192,20 @@ public struct AWSLocationGeoPluginConfiguration {
         let mapStyles = Dictionary(uniqueKeysWithValues: mapTuples)
 
         return mapStyles
+    }
+
+    private static func getMaps(mapConfig: AmplifyConfigurationV2.Geo.Maps,
+                                regionName: String) throws -> [String: Geo.MapStyle] {
+        let mapTuples: [(String, Geo.MapStyle)] = try mapConfig.items.map { map in
+            let url = URL(string: AWSLocationGeoPluginConfiguration.urlString(regionName: regionName,
+                                                                              mapName: map.name))
+            guard let styleURL = url else {
+                throw GeoPluginConfigError.mapStyleURLInvalid(mapName: map.name)
+            }
+            let mapStyle = Geo.MapStyle.init(mapName: map.name, style: map.style, styleURL: styleURL)
+            return (map.name, mapStyle)
+        }
+
+        return Dictionary(uniqueKeysWithValues: mapTuples)
     }
 }
