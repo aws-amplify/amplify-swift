@@ -295,16 +295,16 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     }
 
     private static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
-        let appSyncRealTimeRequestErorrs = 
+        let knownAppSyncRealTimeRequestErorrs =
             Self.decodeAppSyncRealTimeRequestError(data)
-                .filter { $0 != .unknown }
-        if appSyncRealTimeRequestErorrs.isEmpty {
+            .filter { $0.isUnknown }
+        if knownAppSyncRealTimeRequestErorrs.isEmpty {
             let graphQLErrors = Self.decodeGraphQLErrors(data)
             return graphQLErrors.isEmpty
                 ? [APIError.operationError("Failed to decode AppSync error response", "", nil)]
                 : graphQLErrors
         } else {
-            return appSyncRealTimeRequestErorrs
+            return knownAppSyncRealTimeRequestErorrs
         }
     }
 

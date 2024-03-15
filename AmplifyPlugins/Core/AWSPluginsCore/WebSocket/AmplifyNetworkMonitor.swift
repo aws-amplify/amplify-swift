@@ -18,11 +18,7 @@ public final class AmplifyNetworkMonitor {
         case offline
     }
 
-    #if DEBUG
-    private let monitor = NWPathMonitor(requiredInterfaceType: .cellular)
-    #else
-    private let monitor = NWPathMonitor()
-    #endif
+    private let monitor: NWPathMonitor
 
     private let subject = PassthroughSubject<State, Never>()
 
@@ -32,8 +28,8 @@ public final class AmplifyNetworkMonitor {
         }.eraseToAnyPublisher()
     }
 
-    public init() {
-
+    public init(on interface: NWInterface.InterfaceType? = nil) {
+        monitor = interface.map(NWPathMonitor.init(requiredInterfaceType:)) ?? NWPathMonitor()
         monitor.pathUpdateHandler = { [weak self] path in
             self?.subject.send(path.status == .satisfied ? .online : .offline)
         }

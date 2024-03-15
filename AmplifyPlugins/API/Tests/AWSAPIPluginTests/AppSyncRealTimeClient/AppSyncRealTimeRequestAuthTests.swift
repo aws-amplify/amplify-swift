@@ -9,14 +9,14 @@
 import XCTest
 @testable import AWSAPIPlugin
 
-let host = UUID().uuidString
-let apiKey = UUID().uuidString
-let date = UUID().uuidString
-let id = UUID().uuidString
-let data = UUID().uuidString
-let token = UUID().uuidString
-
 class AppSyncRealTimeRequestAuthTests: XCTestCase {
+    let host = UUID().uuidString
+    let apiKey = UUID().uuidString
+    let date = UUID().uuidString
+    let id = UUID().uuidString
+    let data = UUID().uuidString
+    let token = UUID().uuidString
+
     var jsonEncoder = {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]

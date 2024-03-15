@@ -71,13 +71,33 @@ extension AppSyncRealTimeRequest: Encodable {
 
 
 extension AppSyncRealTimeRequest {
-    public enum Error: Swift.Error {
+    public enum Error: Swift.Error, Equatable {
         case timeout
         case limitExceeded
         case maxSubscriptionsReached
         case unauthorized
-        case unknown
+        case unknown(message: String? = nil, causedBy: Swift.Error? = nil, payload: [String: Any]?)
+
+        var isUnknown: Bool {
+            if case .unknown = self {
+                return true
+            }
+            return false
+        }
+
+        public static func == (lhs: AppSyncRealTimeRequest.Error, rhs: AppSyncRealTimeRequest.Error) -> Bool {
+            switch (lhs, rhs) {
+            case (.timeout, .timeout),
+                 (.limitExceeded, .limitExceeded),
+                 (.maxSubscriptionsReached, .maxSubscriptionsReached),
+                 (.unauthorized, .unauthorized):
+                return true
+            default:
+                return false
+            }
+        }
     }
+
 
     public static func parseResponseError(
         error: JSONValue
@@ -98,7 +118,11 @@ extension AppSyncRealTimeRequest {
         case _ where errorType.contains(unauthorized):
             return .unauthorized
         default:
-            return .unknown
+            return .unknown(
+                message: error.message?.stringValue,
+                causedBy: nil,
+                payload: error.asObject
+            )
         }
     }
 }

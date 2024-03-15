@@ -171,7 +171,10 @@ class AppSyncRealTimeClientTests: XCTestCase {
                 )
             } catch {
                 let requestError = error as! AppSyncRealTimeRequest.Error
-                XCTAssertEqual(requestError, .unknown)
+                guard case .unknown = requestError else {
+                    XCTFail("The error should in unknown case")
+                    return
+                }
                 triggerUnknownErrorExpectation.fulfill()
             }
         }
