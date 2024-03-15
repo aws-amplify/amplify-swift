@@ -330,4 +330,46 @@ struct ConfigurationHelper {
             AuthPluginErrorConstants.configurationMissingError
         )
     }
+
+    static func jsonConfiguration(_ authConfig: AuthConfiguration) throws -> JSONValue {
+        let config: UserPoolConfigurationData
+        switch authConfig {
+        case .userPools(let userPoolConfig):
+            config = userPoolConfig
+        case .userPoolsAndIdentityPools(let userPoolConfig, _):
+            config = userPoolConfig
+        case .identityPools:
+            return JSONValue.null
+        }
+
+        let usernameAttributes: [JSONValue] = config.usernameAttributes.map { .string($0.rawValue) }
+        let signUpAttributes: [JSONValue] = config.signUpAttributes.map { .string($0.rawValue) }
+        let verificationMechanisms: [JSONValue] = config.verificationMechanisms.map { .string($0.rawValue) }
+
+        let authConfigObject: JSONValue
+        if let passwordProtectionSettings = config.passwordProtectionSettings {
+            let minLength = Double(passwordProtectionSettings.minLength)
+            let characterPolicy: [JSONValue] = passwordProtectionSettings.characterPolicy.map { .string($0.rawValue) }
+
+            authConfigObject = .object(
+                ["usernameAttributes": .array(usernameAttributes),
+                 "signupAttributes": .array(signUpAttributes),
+                 "verificationMechanism": .array(verificationMechanisms),
+                 "passwordProtectionSettings": .object(
+                    ["passwordPolicyMinLength": .number(Double(minLength)),
+                     "passwordPolicyCharacters": .array(characterPolicy)])])
+        } else {
+            authConfigObject = .object(
+                ["usernameAttributes": .array(usernameAttributes),
+                 "signupAttributes": .array(signUpAttributes),
+                 "verificationMechanism": .array(verificationMechanisms)])
+        }
+
+        return JSONValue.object(
+            ["auth": .object(
+                ["plugins": .object(
+                    ["awsCognitoAuthPlugin": .object(
+                        ["Auth": .object(
+                            ["Default": authConfigObject])])])])])
+    }
 }

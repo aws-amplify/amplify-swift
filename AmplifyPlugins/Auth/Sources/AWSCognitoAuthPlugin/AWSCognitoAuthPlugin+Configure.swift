@@ -27,15 +27,15 @@ extension AWSCognitoAuthPlugin {
 
         let authConfiguration: AuthConfiguration
         if let configuration = configuration as? AmplifyConfigurationV2 {
-            jsonConfiguration = JSONValue.number(10)
             authConfiguration = try ConfigurationHelper.authConfiguration(configuration)
+            jsonConfiguration = try ConfigurationHelper.jsonConfiguration(authConfiguration)
         } else {
             guard let jsonValueConfiguration = configuration as? JSONValue else {
                 throw PluginError.pluginConfigurationError(
                     AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
                     AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
             }
-        
+
             jsonConfiguration = jsonValueConfiguration
             authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
         }
