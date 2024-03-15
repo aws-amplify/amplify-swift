@@ -7,7 +7,7 @@
 
 import AWSCloudWatchLogs
 import AWSPluginsCore
-@_spi(AmplifyUnifiedConfiguration) import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import Combine
 import Foundation
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@_spi(AmplifyUnifiedConfiguration) import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 
 struct ConfigurationHelper {
 

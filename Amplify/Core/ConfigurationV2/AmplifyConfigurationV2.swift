@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Tag: AmplifyConfigurationV2
 ///
-@_spi(AmplifyUnifiedConfiguration)
+@_spi(InternalAmplifyConfiguration)
 public struct AmplifyConfigurationV2: Codable {
     public let version: String
     public let analytics: Analytics?
@@ -26,17 +26,17 @@ public struct AmplifyConfigurationV2: Codable {
     public let storage: Storage?
     public let custom: CustomOutput?
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct Analytics: Codable {
         public let awsRegion: String
         public let pinpointAppId: String
     }
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct API: Codable {
         public let endpoints: [Endpoint]
 
-        @_spi(AmplifyUnifiedConfiguration)
+        @_spi(InternalAmplifyConfiguration)
         public struct Endpoint: Codable {
             public let name: String
             public let url: String
@@ -46,7 +46,7 @@ public struct AmplifyConfigurationV2: Codable {
         }
     }
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct Auth: Codable {
         public let awsRegion: String
         public let userPoolId: String
@@ -85,7 +85,7 @@ public struct AmplifyConfigurationV2: Codable {
         public let conflictResolutionMode: String?
     }
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct Geo: Codable {
         public let awsRegion: String
         public let maps: Maps
@@ -113,7 +113,7 @@ public struct AmplifyConfigurationV2: Codable {
         }
     }
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct Logging: Codable {
         public let awsRegion: String
         public let flushInterval: Double?
@@ -126,7 +126,7 @@ public struct AmplifyConfigurationV2: Codable {
         }
     }
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct Notifications: Codable {
         public let channels: [Channel]
 
@@ -137,13 +137,13 @@ public struct AmplifyConfigurationV2: Codable {
         }
     }
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct Storage: Codable {
         public let awsRegion: String
         public let bucketName: String
     }
 
-    @_spi(AmplifyUnifiedConfiguration)
+    @_spi(InternalAmplifyConfiguration)
     public struct CustomOutput: Codable {}
 }
 

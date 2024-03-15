@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(AmplifyUnifiedConfiguration) import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPinpoint
 import AWSClientRuntime
 import Foundation
