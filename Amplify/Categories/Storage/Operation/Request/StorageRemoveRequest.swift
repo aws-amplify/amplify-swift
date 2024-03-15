@@ -14,7 +14,13 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageRemoveRequest.key
+    @available(*, deprecated, message: "Use `path` in Storage API instead of `key`")
     public let key: String
+
+    /// The unique identifier for the object in storage
+    ///
+    /// - Tag: StorageRemoveRequest.key
+    public let path: StoragePath?
 
     /// Options to adjust the behavior of this request, including plugin-options
     ///
@@ -22,9 +28,18 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     public let options: Options
 
     /// - Tag: StorageRemoveRequest.init
+    @available(*, deprecated, message: "Use init(path:options)")
     public init(key: String, options: Options) {
         self.key = key
         self.options = options
+        self.path = nil
+    }
+
+    /// - Tag: StorageRemoveRequest.init
+    public init(path: StoragePath, options: Options) {
+        self.key = ""
+        self.options = options
+        self.path = path
     }
 }
 

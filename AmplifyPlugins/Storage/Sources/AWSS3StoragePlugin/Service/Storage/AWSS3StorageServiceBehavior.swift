@@ -33,6 +33,12 @@ protocol AWSS3StorageServiceBehavior {
     typealias StorageServiceMultiPartUploadEvent =
         StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 
+
+    /// - Tag: AWSS3StorageService.client
+    var client: S3ClientProtocol { get }
+
+    var bucket: String! { get }
+
     func reset()
 
     func getEscapeHatch() -> S3Client
@@ -67,6 +73,7 @@ protocol AWSS3StorageServiceBehavior {
     func list(prefix: String,
               options: StorageListRequest.Options) async throws -> StorageListResult
 
+    @available(*, deprecated, message: "Use `AWSS3StorageRemoveTask` instead")
     func delete(serviceKey: String,
                 onEvent: @escaping StorageServiceDeleteEventHandler)
 }
