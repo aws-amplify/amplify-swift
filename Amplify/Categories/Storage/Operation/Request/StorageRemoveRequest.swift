@@ -17,9 +17,9 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     @available(*, deprecated, message: "Use `path` in Storage API instead of `key`")
     public let key: String
 
-    /// The unique identifier for the object in storage
+    /// The unique path for the object in storage
     ///
-    /// - Tag: StorageRemoveRequest.key
+    /// - Tag: StorageRemoveRequest.path
     public let path: StoragePath?
 
     /// Options to adjust the behavior of this request, including plugin-options

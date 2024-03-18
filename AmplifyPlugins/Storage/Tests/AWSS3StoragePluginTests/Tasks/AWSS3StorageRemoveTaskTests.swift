@@ -15,6 +15,10 @@ import AWSS3
 
 class AWSS3StorageRemoveTaskTests: XCTestCase {
 
+
+    /// - Given: A configured Storage Remove Task with mocked service
+    /// - When: AWSS3StorageRemoveTask value is invoked
+    /// - Then: A key should be returned, that has been removed without any errors.
     func testRemoveTaskSuccess() async throws {
         let serviceMock = MockAWSS3StorageService()
         let client = serviceMock.client as! MockS3Client
@@ -29,14 +33,17 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
             storageConfiguration: AWSS3StoragePluginConfiguration(),
             storageBehaviour: serviceMock)
         let value = try await task.value
-        XCTAssertNotNil(value)
+        XCTAssertEqual(value, "/path")
     }
 
+    /// - Given: A configured Storage Remove Task with mocked service, throwing `NoSuchKey` exception
+    /// - When: AWSS3StorageRemoveTask value is invoked
+    /// - Then: A storage service error should be returned, with an underlying service error
     func testRemoveTaskNoBucket() async throws {
         let serviceMock = MockAWSS3StorageService()
         let client = serviceMock.client as! MockS3Client
         client.deleteObjectHandler = { input in
-            throw AWSS3.NoSuchBucket()
+            throw AWSS3.NoSuchKey()
         }
 
         let request = StorageRemoveRequest(
@@ -50,7 +57,13 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
             XCTFail("Task should throw an exception")
         }
         catch {
-            XCTAssertTrue(error is AWSS3.NoSuchBucket)
+            guard let storageError = error as? StorageError,
+                  case .service(_, _, let underlyingError) = storageError else {
+                XCTFail("Should throw a Storage service error, instead threw \(error)")
+                return
+            }
+            XCTAssertTrue(underlyingError is AWSS3.NoSuchKey,
+                          "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))")
         }
     }
 

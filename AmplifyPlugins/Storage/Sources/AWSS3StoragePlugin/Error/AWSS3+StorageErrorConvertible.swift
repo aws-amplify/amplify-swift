@@ -20,17 +20,6 @@ extension AWSS3.NoSuchBucket: StorageErrorConvertible {
     }
 }
 
-//extension NoSuchBucketException: StorageErrorConvertible {
-//    var fallbackDescription: String { "The specific bucket does not exist" }
-//
-//    var authError: AuthError {
-//        .service(
-//            properties.message ?? fallbackDescription,
-//            AuthPluginErrorConstants.forbiddenError
-//        )
-//    }
-//}
-
 extension AWSClientRuntime.UnknownAWSHTTPServiceError: StorageErrorConvertible {
     var storageError: StorageError {
         let error: StorageError
