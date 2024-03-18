@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct IdentityPoolConfigurationData: Equatable {
+@_spi(InternalAmplifyConfiguration)
+public struct IdentityPoolConfigurationData: Equatable {
     let poolId: String
     let region: String
 
@@ -25,7 +26,7 @@ extension IdentityPoolConfigurationData: CustomDebugDictionaryConvertible {
 }
 
 extension IdentityPoolConfigurationData: CustomDebugStringConvertible {
-    var debugDescription: String {
+    public var debugDescription: String {
         debugDictionary.debugDescription
     }
 }

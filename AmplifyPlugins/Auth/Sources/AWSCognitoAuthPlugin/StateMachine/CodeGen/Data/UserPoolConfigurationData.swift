@@ -7,7 +7,8 @@
 
 import ClientRuntime
 
-struct UserPoolConfigurationData: Equatable {
+@_spi(InternalAmplifyConfiguration)
+public struct UserPoolConfigurationData: Equatable {
 
     let poolId: String
     let clientId: String
@@ -17,6 +18,14 @@ struct UserPoolConfigurationData: Equatable {
     let pinpointAppId: String?
     let hostedUIConfig: HostedUIConfigurationData?
     let authFlowType: AuthFlowType
+    @_spi(InternalAmplifyConfiguration)
+    public let passwordProtectionSettings: PasswordProtectionSettings?
+    @_spi(InternalAmplifyConfiguration)
+    public let usernameAttributes: [UsernameAttribute]
+    @_spi(InternalAmplifyConfiguration)
+    public let signUpAttributes: [SignUpAttributeType]
+    @_spi(InternalAmplifyConfiguration)
+    public let verificationMechanisms: [VerificationMechanism]
 
     init(
         poolId: String,
@@ -26,7 +35,11 @@ struct UserPoolConfigurationData: Equatable {
         clientSecret: String? = nil,
         pinpointAppId: String? = nil,
         authFlowType: AuthFlowType = .userSRP,
-        hostedUIConfig: HostedUIConfigurationData? = nil
+        hostedUIConfig: HostedUIConfigurationData? = nil,
+        passwordProtectionSettings: PasswordProtectionSettings? = nil,
+        usernameAttributes: [UsernameAttribute] = [],
+        signUpAttributes: [SignUpAttributeType] = [],
+        verificationMechanisms: [VerificationMechanism] = []
     ) {
         self.poolId = poolId
         self.clientId = clientId
@@ -36,6 +49,10 @@ struct UserPoolConfigurationData: Equatable {
         self.pinpointAppId = pinpointAppId
         self.hostedUIConfig = hostedUIConfig
         self.authFlowType = authFlowType
+        self.passwordProtectionSettings = passwordProtectionSettings
+        self.usernameAttributes = usernameAttributes
+        self.signUpAttributes = signUpAttributes
+        self.verificationMechanisms = verificationMechanisms
     }
 
     /// Amazon Cognito user pool: cognito-idp.<region>.amazonaws.com/<YOUR_USER_POOL_ID>,
@@ -62,7 +79,8 @@ extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
 }
 
 extension UserPoolConfigurationData: CustomDebugStringConvertible {
-    var debugDescription: String {
+    @_spi(InternalAmplifyConfiguration)
+    public var debugDescription: String {
         debugDictionary.debugDescription
     }
 }
