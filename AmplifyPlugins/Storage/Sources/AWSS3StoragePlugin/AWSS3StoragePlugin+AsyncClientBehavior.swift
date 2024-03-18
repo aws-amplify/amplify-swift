@@ -133,6 +133,20 @@ extension AWSS3StoragePlugin {
         return try await taskAdapter.value
     }
 
+    @discardableResult
+    public func remove(
+        path: StoragePath,
+        options: StorageRemoveOperation.Request.Options? = nil
+    ) async throws -> String {
+        let options = options ?? StorageRemoveRequest.Options()
+        let request = StorageRemoveRequest(path: path, options: options)
+        let task = AWSS3StorageRemoveTask(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageBehaviour: storageService)
+        return try await task.value
+    }
+
     public func list(
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {

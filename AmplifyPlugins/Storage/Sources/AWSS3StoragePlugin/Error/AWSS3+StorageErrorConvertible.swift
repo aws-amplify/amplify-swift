@@ -14,7 +14,7 @@ extension AWSS3.NoSuchBucket: StorageErrorConvertible {
     var storageError: StorageError {
         .service(
             "The specific bucket does not exist",
-            "",
+            "Make sure the bucket exists",
             self
         )
     }

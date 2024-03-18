@@ -9,6 +9,7 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
+// TODO: [HS] Add path validation test cases once storage path extension is merged.
 class AWSS3StorageRemoveRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
