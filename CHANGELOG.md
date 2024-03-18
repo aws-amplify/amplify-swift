@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.27.3 (2024-03-18)
+
+### Bug Fixes
+
+- **Logging**: Updating the required reason API usage (#3570)
+
 ## 2.27.2 (2024-03-11)
 
 ### Bug Fixes
