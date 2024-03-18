@@ -95,7 +95,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
             return APIKeyAuthInterceptor(apiKey: apiKeyConfiguration.apiKey)
         case .amazonCognitoUserPools:
             let provider = AWSOIDCAuthProvider(authService: authService)
-            return CognitoAuthInterceptor(getLatestAuthToken: provider.getLatestAuthToken)
+            return AuthTokenInterceptor(getLatestAuthToken: provider.getLatestAuthToken)
         case .awsIAM(let awsIAMConfiguration):
             return IAMAuthInterceptor(authService.getCredentialsProvider(),
                                                  region: awsIAMConfiguration.region)
@@ -105,14 +105,14 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
                     "Using openIDConnect requires passing in an APIAuthProvider with an OIDC AuthProvider",
                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
-            return CognitoAuthInterceptor(getLatestAuthToken: oidcAuthProvider.getLatestAuthToken)
+            return AuthTokenInterceptor(getLatestAuthToken: oidcAuthProvider.getLatestAuthToken)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration(
                     "Using function as auth provider requires passing in an APIAuthProvider with a Function AuthProvider",
                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
-            return CognitoAuthInterceptor(authTokenProvider: functionAuthProvider)
+            return AuthTokenInterceptor(authTokenProvider: functionAuthProvider)
         case .none:
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")
         }

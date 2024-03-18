@@ -15,7 +15,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
 
     func testInterceptConnection_withAuthTokenProvider_appendCorrectAuthHeaderToQuery() async {
         let authTokenProvider = MockAuthTokenProvider()
-        let interceptor = CognitoAuthInterceptor(authTokenProvider: authTokenProvider)
+        let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
 
         let decoratedURL = await interceptor.interceptConnection(url: URL(string: "https://example.com")!)
         guard let components = URLComponents(url: decoratedURL, resolvingAgainstBaseURL: false) else {
@@ -41,7 +41,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
 
     func testInterceptConnection_withAuthTokenProviderFailed_appendEmptyAuthHeaderToQuery() async {
         let authTokenProvider = MockAuthTokenProviderFailed()
-        let interceptor = CognitoAuthInterceptor(authTokenProvider: authTokenProvider)
+        let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
 
         let decoratedURL = await interceptor.interceptConnection(url: URL(string: "https://example.com")!)
         guard let components = URLComponents(url: decoratedURL, resolvingAgainstBaseURL: false) else {
@@ -67,7 +67,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
 
     func testInterceptRequest_withAuthTokenProvider_appendCorrectAuthInfoToPayload() async {
         let authTokenProvider = MockAuthTokenProvider()
-        let interceptor = CognitoAuthInterceptor(authTokenProvider: authTokenProvider)
+        let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
         let decoratedRequest = await interceptor.interceptRequest(
             event: .start(.init(id: UUID().uuidString, data: UUID().uuidString, auth: nil)),
             url: URL(string: "https://example.com")!
@@ -78,7 +78,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
             return
         }
 
-        guard case let .some(.cognito(authInfo))  = decoratedAuth.auth else {
+        guard case let .some(.authToken(authInfo))  = decoratedAuth.auth else {
             XCTFail("Failed to extract authInfo from decoratedAuth")
             return
         }
@@ -89,7 +89,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
 
     func testInterceptRequest_withAuthTokenProviderFailed_appendEmptyAuthInfoToPayload() async {
         let authTokenProvider = MockAuthTokenProviderFailed()
-        let interceptor = CognitoAuthInterceptor(authTokenProvider: authTokenProvider)
+        let interceptor = AuthTokenInterceptor(authTokenProvider: authTokenProvider)
         let decoratedRequest = await interceptor.interceptRequest(
             event: .start(.init(id: UUID().uuidString, data: UUID().uuidString, auth: nil)),
             url: URL(string: "https://example.com")!
@@ -100,7 +100,7 @@ class CognitoAuthInterceptorTests: XCTestCase {
             return
         }
 
-        guard case let .some(.cognito(authInfo))  = decoratedAuth.auth else {
+        guard case let .some(.authToken(authInfo))  = decoratedAuth.auth else {
             XCTFail("Failed to extract authInfo from decoratedAuth")
             return
         }

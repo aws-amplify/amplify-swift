@@ -297,7 +297,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     private static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
         let knownAppSyncRealTimeRequestErorrs =
             Self.decodeAppSyncRealTimeRequestError(data)
-            .filter { $0.isUnknown }
+            .filter { !$0.isUnknown }
         if knownAppSyncRealTimeRequestErorrs.isEmpty {
             let graphQLErrors = Self.decodeGraphQLErrors(data)
             return graphQLErrors.isEmpty

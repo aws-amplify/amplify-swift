@@ -24,7 +24,7 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
     }()
 
     func testAppSyncRealTimeRequestAuth_encodeCognito() {
-        let cognitoAuth = AppSyncRealTimeRequestAuth.CognitoAuth(host: host, authToken: token)
+        let cognitoAuth = AppSyncRealTimeRequestAuth.AuthToken(host: host, authToken: token)
         XCTAssertEqual(toJson(cognitoAuth)?.shrink(), """
         {
             "Authorization": "\(token)",
@@ -67,7 +67,7 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
     }
 
     func testAppSyncRealTimeRequestAuth_encodeStartRequestWithCognitoAuth() {
-        let auth: AppSyncRealTimeRequestAuth = .cognito(.init(host: host, authToken: token))
+        let auth: AppSyncRealTimeRequestAuth = .authToken(.init(host: host, authToken: token))
         let request = AppSyncRealTimeRequest.start(
             .init(id: id, data: data, auth: auth)
         )
@@ -155,7 +155,7 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
         &payload=e30%3D
         """
         let encodedURL = AppSyncRealTimeRequestAuth.URLQuery(
-            header: .cognito(.init(
+            header: .authToken(.init(
                 host: "example.com",
                 authToken: "49859c7c-7405-4d58-aff7-52be4b473557"
             ))

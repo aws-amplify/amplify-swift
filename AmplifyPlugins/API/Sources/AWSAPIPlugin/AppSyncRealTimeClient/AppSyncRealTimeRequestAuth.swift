@@ -9,11 +9,11 @@
 import Foundation
 
 public enum AppSyncRealTimeRequestAuth {
-    case cognito(CognitoAuth)
+    case authToken(AuthToken)
     case apiKey(ApiKey)
     case iam(IAM)
 
-    public struct CognitoAuth {
+    public struct AuthToken {
         let host: String
         let authToken: String
     }
@@ -67,7 +67,7 @@ extension AppSyncRealTimeRequestAuth: Encodable {
         switch self {
         case .apiKey(let apiKey):
             try container.encode(apiKey)
-        case .cognito(let cognito):
+        case .authToken(let cognito):
             try container.encode(cognito)
         case .iam(let iam):
             try container.encode(iam)
@@ -75,7 +75,7 @@ extension AppSyncRealTimeRequestAuth: Encodable {
     }
 }
 
-extension AppSyncRealTimeRequestAuth.CognitoAuth: Encodable {
+extension AppSyncRealTimeRequestAuth.AuthToken: Encodable {
     enum CodingKeys: String, CodingKey {
         case host
         case authToken = "Authorization"

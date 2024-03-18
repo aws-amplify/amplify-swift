@@ -11,7 +11,7 @@ import Amplify
 
 /// General purpose authenticatication subscriptions interceptor for providers whose only
 /// requirement is to provide an authentication token via the "Authorization" header
-class CognitoAuthInterceptor {
+class AuthTokenInterceptor {
 
     let getLatestAuthToken: () async throws -> String?
 
@@ -37,7 +37,7 @@ class CognitoAuthInterceptor {
     }
 }
 
-extension CognitoAuthInterceptor: AppSyncRequestInterceptor {
+extension AuthTokenInterceptor: AppSyncRequestInterceptor {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest {
         guard case .start(let request) = event else {
             return event
@@ -48,7 +48,7 @@ extension CognitoAuthInterceptor: AppSyncRequestInterceptor {
         return .start(.init(
             id: request.id,
             data: request.data,
-            auth: .cognito(.init(
+            auth: .authToken(.init(
                 host: AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!,
                 authToken: authToken
             ))
@@ -56,12 +56,12 @@ extension CognitoAuthInterceptor: AppSyncRequestInterceptor {
     }
 }
 
-extension CognitoAuthInterceptor: WebSocketInterceptor {
+extension AuthTokenInterceptor: WebSocketInterceptor {
     func interceptConnection(url: URL) async -> URL {
         let authToken = await getAuthToken()
 
         return AppSyncRealTimeRequestAuth.URLQuery(
-            header: .cognito(.init(
+            header: .authToken(.init(
                 host: AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!,
                 authToken: authToken
             ))
@@ -70,7 +70,7 @@ extension CognitoAuthInterceptor: WebSocketInterceptor {
 }
 
 // MARK: AuthorizationTokenAuthInterceptor + DefaultLogger
-extension CognitoAuthInterceptor: DefaultLogger {
+extension AuthTokenInterceptor: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
     }
