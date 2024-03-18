@@ -182,7 +182,11 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 
-    func testDownloadDataOperationStringStoragePathValidationError() {        let path = StringStoragePath(resolve: { _ in return "my/path" })
+    /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an invalid StringStoragePath
+    /// Then: The operation will fail with a validation error
+    func testDownloadDataOperationStringStoragePathValidationError() {
+        let path = StringStoragePath(resolve: { _ in return "my/path" })
         let request = StorageDownloadFileRequest(path: path,
                                                  local: testURL,
                                                  options: StorageDownloadFileRequest.Options())
@@ -210,6 +214,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
+    /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
+    /// Then: The operation will fail with a validation error
     func testDownloadDataOperationIdentityIDStoragePathValidationError() {
         let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
         let request = StorageDownloadFileRequest(path: path,
@@ -239,6 +246,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
+    /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an a custom implementation of StoragePath
+    /// Then: The operation will fail with a validation error
     func testDownloadDataOperationCustomStoragePathValidationError() {
         let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
         let request = StorageDownloadFileRequest(path: path,
@@ -268,6 +278,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
+    /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an valid StringStoragePath
+    /// Then: The operation will succeed
     func testDownloadFileOperationWithStringStoragePathSucceeds() async throws {
         let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
@@ -304,6 +317,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: url)
     }
 
+    /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an valid IdentityIDStoragePath
+    /// Then: The operation will succeed
     func testDownloadDataOperationWithIdentityIDStoragePathSucceeds() async throws {
         let path = IdentityIDStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")

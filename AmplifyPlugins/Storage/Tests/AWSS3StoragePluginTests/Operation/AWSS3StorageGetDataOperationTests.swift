@@ -174,7 +174,10 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
-    func testDownloadDataOperationStoragePathValidationError() {
+    /// Given: Storage Download Data Operation
+    /// When: The operation is executed with a request that has an invalid StringStoragePath
+    /// Then: The operation will fail with a validation error
+    func testDownloadDataOperationStringStoragePathValidationError() {
         let path = StringStoragePath(resolve: { _ in return "my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -200,6 +203,9 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
+    /// Given: Storage Download Data Operation
+    /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
+    /// Then: The operation will fail with a validation error
     func testDownloadDataOperationIdentityIdStoragePathValidationError() {
         let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
@@ -226,6 +232,9 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
+    /// Given: Storage Download Data Operation
+    /// When: The operation is executed with a request that has an a custom implementation of StoragePath
+    /// Then: The operation will fail with a validation error
     func testDownloadDataOperationCustomStoragePathValidationError() {
         let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
@@ -252,6 +261,9 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
+    /// Given: Storage Download Data Operation
+    /// When: The operation is executed with a request that has an valid StringStoragePath
+    /// Then: The operation will succeed
     func testDownloadDataOperationWithStringStoragePathSucceeds() async throws {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
@@ -286,6 +298,9 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: nil)
     }
 
+    /// Given: Storage Download Data Operation
+    /// When: The operation is executed with a request that has an valid IdentityIDStoragePath
+    /// Then: The operation will succeed
     func testDownloadDataOperationWithIdentityIDStoragePathSucceeds() async throws {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [

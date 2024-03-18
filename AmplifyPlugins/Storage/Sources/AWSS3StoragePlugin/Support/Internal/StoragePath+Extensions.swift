@@ -14,9 +14,9 @@ extension StoragePath {
         if self is IdentityIDStoragePath {
             let authService = authService ?? AWSAuthService()
             guard let identityId = try await authService.getIdentityID() as? Input else {
-                throw StorageError.authError(
-                    "Unable to resolve identity id",
-                    "Please verify that authentication is configured with a valid session",
+                throw StorageError.configuration(
+                    "Unable to resolve identity id as a storage path input type",
+                    "Please verify that storage is configured correctly",
                     nil
                 )
             }
@@ -34,8 +34,8 @@ extension StoragePath {
             try validate(path)
             return path
         } else {
-            let errorDescription = "Invalid StoragePath specified."
-            let recoverySuggestion = "Please specify a valid StoragePath."
+            let errorDescription = "The StoragePath specified is not supported"
+            let recoverySuggestion = "Please specify a StoragePath from string or from identityID."
             throw StorageError.validation("path", errorDescription, recoverySuggestion, nil)
         }
     }
