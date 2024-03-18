@@ -95,6 +95,10 @@ class StorageDownloadDataRequestTests: XCTestCase {
         XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
     }
 
+    /// Given: StorageDownloadDataRequest with an invalid StringStoragePath
+    /// When: Request validation is executed
+    /// Then: There is no error returned even though the storage path is invalid
+    /// There is no error because the path validation is done at operation execution time and not part of the request
     func testValidateWithStoragePath() {
         let options = StorageDownloadDataRequest.Options(accessLevel: .private,
                                                     targetIdentityId: "",
