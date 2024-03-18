@@ -14,12 +14,24 @@ extension StoragePath {
     func resolvePath(authService: AWSAuthServiceBehavior? = nil) async throws -> String {
         if self is IdentityIDStoragePath {
             let authService = authService ?? AWSAuthService()
-            let identityId = try await authService.getIdentityID()
-            let path = resolve(identityId as! Self.Input)
+            guard let identityId = try await authService.getIdentityID() as? Input else {
+                throw StorageError.authError(
+                    "Unable to resolve identity id",
+                    "Please verify that authentication is configured with a valid session",
+                    nil
+                )
+            }
+            let path = resolve(identityId)
             try validate(path)
             return path
         } else if self is StringStoragePath {
-            let path = resolve("" as! Self.Input)
+            guard let input = "" as? Input else {
+                throw StorageError.unknown(
+                    "Unable to resolve StringStoragePath resolver input",
+                    nil
+                )
+            }
+            let path = resolve(input)
             try validate(path)
             return path
         } else {
