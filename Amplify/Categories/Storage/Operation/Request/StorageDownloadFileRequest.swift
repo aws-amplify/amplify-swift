@@ -13,9 +13,15 @@ import Foundation
 /// - Tag: StorageDownloadFileRequest
 public struct StorageDownloadFileRequest: AmplifyOperationRequest {
 
+    /// The path for the object in storage
+    ///
+    /// - Tag: StorageDownloadFileRequest.path
+    public let path: (any StoragePath)?
+
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageDownloadFileRequest.key
+    @available(*, deprecated, message: "Use `StoragePath` instead")
     public let key: String
 
     /// The local file to download the object to
@@ -29,10 +35,19 @@ public struct StorageDownloadFileRequest: AmplifyOperationRequest {
     public let options: Options
 
     /// - Tag: StorageDownloadFileRequest.init
+    @available(*, deprecated, message: "Use init(path:local:options)")
     public init(key: String, local: URL, options: Options) {
         self.key = key
         self.local = local
         self.options = options
+        self.path = nil
+    }
+
+    public init(path: any StoragePath, local: URL, options: Options) {
+        self.key = ""
+        self.local = local
+        self.options = options
+        self.path = path
     }
 }
 

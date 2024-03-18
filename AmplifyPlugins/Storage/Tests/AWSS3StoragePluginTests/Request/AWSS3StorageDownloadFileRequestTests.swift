@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 @testable import AWSS3StoragePlugin
 
 class StorageDownloadFileRequestTests: XCTestCase {
@@ -94,5 +94,21 @@ class StorageDownloadFileRequestTests: XCTestCase {
         XCTAssertEqual(field, StorageErrorConstants.keyIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.keyIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
+    }
+
+    /// Given: StorageDownloadFileRequest with an invalid StringStoragePath
+    /// When: Request validation is executed
+    /// Then: There is no error returned even though the storage path is invalid
+    /// There is no error because the path validation is done at operation execution time and not part of the request
+    func testValidateWithStoragePath() {
+        let options = StorageDownloadFileRequest.Options(accessLevel: .private,
+                                                    targetIdentityId: "",
+                                                    pluginOptions: testPluginOptions)
+        let path = StringStoragePath(resolve: {_ in "my/path"})
+        let request = StorageDownloadFileRequest(path: path, local: testURL, options: options)
+
+        let storageErrorOptional = request.validate()
+
+        XCTAssertNil(storageErrorOptional)
     }
 }

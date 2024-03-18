@@ -20,7 +20,7 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     /// The unique path for the object in storage
     ///
     /// - Tag: StorageRemoveRequest.path
-    public let path: StoragePath?
+    public let path: (any StoragePath)?
 
     /// Options to adjust the behavior of this request, including plugin-options
     ///
@@ -36,7 +36,7 @@ public struct StorageRemoveRequest: AmplifyOperationRequest {
     }
 
     /// - Tag: StorageRemoveRequest.init
-    public init(path: StoragePath, options: Options) {
+    public init(path: any StoragePath, options: Options) {
         self.key = ""
         self.options = options
         self.path = path
