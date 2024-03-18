@@ -44,6 +44,7 @@ extension StoragePath {
         if !path.hasPrefix("/") {
             let errorDescription = "Invalid StoragePath specified."
             let recoverySuggestion = "Please specify a valid StoragePath that contains the prefix / "
+            throw StorageError.validation("path", errorDescription, recoverySuggestion, nil)
         }
     }
 }
