@@ -9,7 +9,6 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-
 extension StoragePath {
     func resolvePath(authService: AWSAuthServiceBehavior? = nil) async throws -> String {
         if self is IdentityIDStoragePath {
@@ -45,7 +44,6 @@ extension StoragePath {
         if !path.hasPrefix("/") {
             let errorDescription = "Invalid StoragePath specified."
             let recoverySuggestion = "Please specify a valid StoragePath that contains the prefix / "
-            throw StorageError.validation(path, errorDescription, recoverySuggestion, nil)
         }
     }
 }

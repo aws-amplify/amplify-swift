@@ -243,16 +243,12 @@ extension AWSS3StoragePlugin {
         options: StorageRemoveOperation.Request.Options? = nil
     ) async throws -> String {
         let options = options ?? StorageRemoveRequest.Options()
-        let path = "" //TODO: resolve path
-        let request = StorageRemoveRequest(key: path, options: options)
-        let operation = AWSS3StorageRemoveOperation(request,
-                                                    storageConfiguration: storageConfiguration,
-                                                    storageService: storageService,
-                                                    authService: authService)
-        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
-        queue.addOperation(operation)
-
-        return try await taskAdapter.value
+        let request = StorageRemoveRequest(path: path, options: options)
+        let task = AWSS3StorageRemoveTask(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageBehaviour: storageService)
+        return try await task.value
     }
 
     public func list(
