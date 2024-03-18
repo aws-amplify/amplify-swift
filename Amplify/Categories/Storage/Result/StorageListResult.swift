@@ -45,7 +45,7 @@ extension StorageListResult {
         /// The path of the object in storage.
         ///
         /// - Tag: StorageListResultItem.path
-        public let path: StoragePath
+        public let path: String
 
         /// The unique identifier of the object in storage.
         ///
@@ -90,11 +90,11 @@ extension StorageListResult {
             self.eTag = eTag
             self.lastModified = lastModified
             self.pluginResults  = pluginResults
-            self.path = StringStoragePath(pathResolver: { _ in return "" })
+            self.path = ""
         }
 
         public init(
-            path: StoragePath,
+            path: String,
             key: String,
             size: Int? = nil,
             eTag: String? = nil,

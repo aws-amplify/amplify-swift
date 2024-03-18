@@ -46,7 +46,7 @@ extension AWSS3StoragePlugin {
     }
 
     public func getURL(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageGetURLOperation.Request.Options? = nil
     ) async throws -> URL {
         let options = options ?? StorageGetURLRequest.Options()
@@ -78,12 +78,11 @@ extension AWSS3StoragePlugin {
     }
 
     public func downloadData(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageDownloadDataOperation.Request.Options? = nil
     ) -> StorageDownloadDataTask {
         let options = options ?? StorageDownloadDataRequest.Options()
-        let path = "" //TODO: resolve path
-        let request = StorageDownloadDataRequest(key: path, options: options)
+        let request = StorageDownloadDataRequest(path: path, options: options)
         let operation = AWSS3StorageDownloadDataOperation(request,
                                                           storageConfiguration: storageConfiguration,
                                                           storageService: storageService,
@@ -131,13 +130,12 @@ extension AWSS3StoragePlugin {
 
     @discardableResult
     public func downloadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options? = nil
     ) -> StorageDownloadFileTask {
         let options = options ?? StorageDownloadFileRequest.Options()
-        let path = "" //TODO: resolve path
-        let request = StorageDownloadFileRequest(key: path, local: local, options: options)
+        let request = StorageDownloadFileRequest(path: path, local: local, options: options)
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageConfiguration: storageConfiguration,
                                                           storageService: storageService,
@@ -168,7 +166,7 @@ extension AWSS3StoragePlugin {
 
     @discardableResult
     public func uploadData(
-        path: StoragePath,
+        path: any StoragePath,
         data: Data,
         options: StorageUploadDataOperation.Request.Options? = nil
     ) -> StorageUploadDataTask {
@@ -205,7 +203,7 @@ extension AWSS3StoragePlugin {
 
     @discardableResult
     public func uploadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageUploadFileOperation.Request.Options? = nil
     ) -> StorageUploadFileTask {
@@ -241,7 +239,7 @@ extension AWSS3StoragePlugin {
 
     @discardableResult
     public func remove(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageRemoveOperation.Request.Options? = nil
     ) async throws -> String {
         let options = options ?? StorageRemoveRequest.Options()
@@ -269,7 +267,7 @@ extension AWSS3StoragePlugin {
     }
 
     public func list(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {
         let options = options ?? StorageListRequest.Options()

@@ -39,7 +39,7 @@ public protocol StorageCategoryBehavior {
     /// - Tag: StorageCategoryBehavior.getURL
     @discardableResult
     func getURL(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageGetURLOperation.Request.Options?
     ) async throws -> URL
 
@@ -65,7 +65,7 @@ public protocol StorageCategoryBehavior {
     ///
     /// - Tag: StorageCategoryBehavior.downloadData
     func downloadData(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageDownloadDataOperation.Request.Options?
     ) -> StorageDownloadDataTask
 
@@ -97,7 +97,7 @@ public protocol StorageCategoryBehavior {
     /// - Tag: StorageCategoryBehavior.downloadFile
     @discardableResult
     func downloadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options?
     ) -> StorageDownloadFileTask
@@ -130,7 +130,7 @@ public protocol StorageCategoryBehavior {
     /// - Tag: StorageCategoryBehavior.uploadData
     @discardableResult
     func uploadData(
-        path: StoragePath,
+        path: any StoragePath,
         data: Data,
         options: StorageUploadDataOperation.Request.Options?
     ) -> StorageUploadDataTask
@@ -163,7 +163,7 @@ public protocol StorageCategoryBehavior {
     /// - Tag: StorageCategoryBehavior.uploadFile
     @discardableResult
     func uploadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageUploadFileOperation.Request.Options?
     ) -> StorageUploadFileTask
@@ -193,7 +193,7 @@ public protocol StorageCategoryBehavior {
     /// - Tag: StorageCategoryBehavior.remove
     @discardableResult
     func remove(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageRemoveOperation.Request.Options?
     ) async throws -> String
 
@@ -218,7 +218,7 @@ public protocol StorageCategoryBehavior {
     /// - Tag: StorageCategoryBehavior.list
     @discardableResult
     func list(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageListOperation.Request.Options?
     ) async throws -> StorageListResult
 

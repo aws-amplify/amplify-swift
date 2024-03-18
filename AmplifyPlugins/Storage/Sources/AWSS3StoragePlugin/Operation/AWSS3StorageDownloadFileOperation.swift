@@ -27,7 +27,6 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageService: AWSS3StorageServiceBehavior
     let authService: AWSAuthServiceBehavior
-
     var storageTaskReference: StorageTaskReference?
 
     // Serial queue for synchronizing access to `storageTaskReference`.
@@ -38,7 +37,8 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
          storageService: AWSS3StorageServiceBehavior,
          authService: AWSAuthServiceBehavior,
          progressListener: InProcessListener? = nil,
-         resultListener: ResultListener? = nil) {
+         resultListener: ResultListener? = nil
+    ) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
@@ -87,15 +87,23 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
             return
         }
 
-        let prefixResolver = storageConfiguration.prefixResolver ??
-            StorageAccessLevelAwarePrefixResolver(authService: authService)
-
         Task {
             do {
-                let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
-                let serviceKey = prefix + request.key
+                let serviceKey: String
+                if let path = request.path {
+                    serviceKey = try await path.resolvePath(authService: authService)
+                } else {
+                    let prefixResolver = storageConfiguration.prefixResolver ??
+                        StorageAccessLevelAwarePrefixResolver(authService: authService)
+                    let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
+                    serviceKey = prefix + request.key
+                }
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
-                storageService.download(serviceKey: serviceKey, fileURL: self.request.local, accelerate: accelerate) { [weak self] event in
+                storageService.download(
+                    serviceKey: serviceKey,
+                    fileURL: self.request.local,
+                    accelerate: accelerate
+                ) { [weak self] event in
                     self?.onServiceEvent(event: event)
                 }
             } catch {

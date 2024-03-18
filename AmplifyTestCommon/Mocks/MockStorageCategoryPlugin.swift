@@ -180,7 +180,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         false
     }
 
-    func getURL(path: StoragePath, options: StorageGetURLRequest.Options?) async throws -> URL {
+    func getURL(path: any StoragePath, options: StorageGetURLRequest.Options?) async throws -> URL {
         notify("getURL")
         let options = options ?? StorageGetURLRequest.Options()
         let request = StorageGetURLRequest(key: key, options: options)
@@ -189,25 +189,25 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return try await taskAdapter.value
     }
 
-    func downloadData(path: StoragePath, options: StorageDownloadDataRequest.Options?) -> StorageDownloadDataTask {
+    func downloadData(path: any StoragePath, options: StorageDownloadDataRequest.Options?) -> StorageDownloadDataTask {
         notify("downloadData")
         let options = options ?? StorageDownloadDataRequest.Options()
-        let request = StorageDownloadDataRequest(key: key, options: options)
+        let request = StorageDownloadDataRequest(path: path, options: options)
         let operation = MockStorageDownloadDataOperation(request: request)
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         return taskAdapter
     }
 
-    func downloadFile(path: StoragePath, local: URL, options: StorageDownloadFileRequest.Options?) -> StorageDownloadFileTask {
+    func downloadFile(path: any StoragePath, local: URL, options: StorageDownloadFileRequest.Options?) -> StorageDownloadFileTask {
         notify("downloadFile")
         let options = options ?? StorageDownloadFileRequest.Options()
-        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+        let request = StorageDownloadFileRequest(path: path, local: local, options: options)
         let operation = MockStorageDownloadFileOperation(request: request)
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         return taskAdapter
     }
 
-    func uploadData(path: StoragePath, data: Data, options: StorageUploadDataRequest.Options?) -> StorageUploadDataTask {
+    func uploadData(path: any StoragePath, data: Data, options: StorageUploadDataRequest.Options?) -> StorageUploadDataTask {
         notify("uploadData")
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
@@ -216,7 +216,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return taskAdapter
     }
 
-    func uploadFile(path: StoragePath, local: URL, options: StorageUploadFileRequest.Options?) -> StorageUploadFileTask {
+    func uploadFile(path: any StoragePath, local: URL, options: StorageUploadFileRequest.Options?) -> StorageUploadFileTask {
         notify("uploadFile")
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
@@ -225,7 +225,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return taskAdapter
     }
 
-    func remove(path: StoragePath, options: StorageRemoveRequest.Options?) async throws -> String {
+    func remove(path: any StoragePath, options: StorageRemoveRequest.Options?) async throws -> String {
         notify("remove")
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)
@@ -234,7 +234,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return try await taskAdapter.value
     }
 
-    func list(path: StoragePath, options: StorageListRequest.Options?) async throws -> StorageListResult {
+    func list(path: any StoragePath, options: StorageListRequest.Options?) async throws -> StorageListResult {
         notify("list")
         let options = options ?? StorageListRequest.Options()
         let request = StorageListRequest(options: options)
