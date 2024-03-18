@@ -19,7 +19,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func getURL(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageGetURLOperation.Request.Options? = nil
     ) async throws -> URL {
         try await plugin.getURL(path: path, options: options)
@@ -35,7 +35,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func downloadData(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageDownloadDataOperation.Request.Options? = nil
     ) -> StorageDownloadDataTask {
         plugin.downloadData(path: path, options: options)
@@ -52,7 +52,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func downloadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options? = nil
     ) -> StorageDownloadFileTask {
@@ -70,7 +70,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func uploadData(
-        path: StoragePath,
+        path: any StoragePath,
         data: Data,
         options: StorageUploadDataOperation.Request.Options? = nil
     ) -> StorageUploadDataTask {
@@ -88,7 +88,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func uploadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageUploadFileOperation.Request.Options? = nil
     ) -> StorageUploadFileTask {
@@ -105,7 +105,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func remove(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageRemoveRequest.Options? = nil
     ) async throws -> String {
         try await plugin.remove(path: path, options: options)
@@ -120,7 +120,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func list(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageListOperation.Request.Options? = nil
     ) async throws -> StorageListResult {
         try await plugin.list(path: path, options: options)

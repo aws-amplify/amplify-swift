@@ -13,9 +13,15 @@ import Foundation
 /// - Tag: StorageDownloadDataRequest
 public struct StorageDownloadDataRequest: AmplifyOperationRequest {
 
+    /// The path for the object in storage
+    ///
+    /// - Tag: StorageDownloadFileRequest.path
+    public let path: (any StoragePath)?
+    
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageDownloadDataRequest.key
+    @available(*, deprecated, message: "Use `StoragePath` instead")
     public let key: String
 
     /// Options to adjust the behavior of this request, including plugin-options
@@ -24,9 +30,17 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     public let options: Options
 
     /// - Tag: StorageDownloadDataRequest.key
+    @available(*, deprecated, message: "Use init(path:local:options)")
     public init(key: String, options: Options) {
         self.key = key
         self.options = options
+        self.path = nil
+    }
+
+    public init(path: any StoragePath, options: Options) {
+        self.key = ""
+        self.options = options
+        self.path = path
     }
 }
 

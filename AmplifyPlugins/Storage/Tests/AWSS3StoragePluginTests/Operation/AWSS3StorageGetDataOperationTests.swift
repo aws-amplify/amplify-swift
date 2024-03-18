@@ -174,5 +174,155 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
+    func testDownloadDataOperationStoragePathValidationError() {
+        let path = StringStoragePath(resolve: { _ in return "my/path" })
+        let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageDownloadDataOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
+                                                          storageService: mockStorageService,
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { event in
+                                                            switch event {
+                                                            case .failure(let error):
+                                                                guard case .validation = error else {
+                                                                    XCTFail("Should have failed with validation error")
+                                                                    return
+                                                                }
+                                                                failedInvoked.fulfill()
+                                                            default:
+                                                                XCTFail("Should have received failed event")
+                                                            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    func testDownloadDataOperationIdentityIdStoragePathValidationError() {
+        let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
+        let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageDownloadDataOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
+                                                          storageService: mockStorageService,
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { event in
+                                                            switch event {
+                                                            case .failure(let error):
+                                                                guard case .validation = error else {
+                                                                    XCTFail("Should have failed with validation error")
+                                                                    return
+                                                                }
+                                                                failedInvoked.fulfill()
+                                                            default:
+                                                                XCTFail("Should have received failed event")
+                                                            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    func testDownloadDataOperationCustomStoragePathValidationError() {
+        let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
+        let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageDownloadDataOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
+                                                          storageService: mockStorageService,
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { event in
+                                                            switch event {
+                                                            case .failure(let error):
+                                                                guard case .validation = error else {
+                                                                    XCTFail("Should have failed with validation error")
+                                                                    return
+                                                                }
+                                                                failedInvoked.fulfill()
+                                                            default:
+                                                                XCTFail("Should have received failed event")
+                                                            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    func testDownloadDataOperationWithStringStoragePathSucceeds() async throws {
+        let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceDownloadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(Data())]
+        let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
+
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageDownloadDataOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
+                inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected event invoked on operation: \(error)")
+            }
+        })
+
+        operation.start()
+
+        await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: nil)
+    }
+
+    func testDownloadDataOperationWithIdentityIDStoragePathSucceeds() async throws {
+        let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceDownloadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(Data())]
+        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(self.testKey)" })
+        let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
+
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageDownloadDataOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
+                inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected event invoked on operation: \(error)")
+            }
+        })
+
+        operation.start()
+
+        await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: nil)
+    }
+
     // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageTaskReference?
+}
+
+struct InvalidCustomStoragePath: StoragePath {
+    var resolve: (String) -> String
 }

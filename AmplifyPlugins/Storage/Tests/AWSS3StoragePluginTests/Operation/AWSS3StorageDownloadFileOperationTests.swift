@@ -182,5 +182,163 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 
+    func testDownloadDataOperationStringStoragePathValidationError() {        let path = StringStoragePath(resolve: { _ in return "my/path" })
+        let request = StorageDownloadFileRequest(path: path,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
+
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageDownloadFileOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
+                                                          storageService: mockStorageService,
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    func testDownloadDataOperationIdentityIDStoragePathValidationError() {
+        let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
+        let request = StorageDownloadFileRequest(path: path,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
+
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageDownloadFileOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
+                                                          storageService: mockStorageService,
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    func testDownloadDataOperationCustomStoragePathValidationError() {
+        let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
+        let request = StorageDownloadFileRequest(path: path,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
+
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageDownloadFileOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
+                                                          storageService: mockStorageService,
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    func testDownloadFileOperationWithStringStoragePathSucceeds() async throws {
+        let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceDownloadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(nil)]
+        let url = URL(fileURLWithPath: "path")
+        let request = StorageDownloadFileRequest(path: path,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
+                inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected error on operation: \(error)")
+            }
+        })
+
+        operation.start()
+
+        await waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: url)
+    }
+
+    func testDownloadDataOperationWithIdentityIDStoragePathSucceeds() async throws {
+        let path = IdentityIDStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceDownloadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(nil)]
+        let url = URL(fileURLWithPath: "path")
+        let request = StorageDownloadFileRequest(path: path,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
+                inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected error on operation: \(error)")
+            }
+        })
+
+        operation.start()
+
+        await waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: url)
+    }
+
     // TODO: missing unit tests for pause resume and cancel. do we create a mock of the StorageTaskReference?
 }

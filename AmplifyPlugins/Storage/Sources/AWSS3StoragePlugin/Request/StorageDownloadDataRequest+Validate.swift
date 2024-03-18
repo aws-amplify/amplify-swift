@@ -11,6 +11,7 @@ import Amplify
 extension StorageDownloadDataRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
+        guard path == nil else { return nil }
         if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
                                                                     accessLevel: options.accessLevel) {
             return error

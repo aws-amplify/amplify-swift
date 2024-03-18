@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 @testable import AWSS3StoragePlugin
 
 class StorageDownloadDataRequestTests: XCTestCase {
@@ -93,5 +93,17 @@ class StorageDownloadDataRequestTests: XCTestCase {
         XCTAssertEqual(field, StorageErrorConstants.keyIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.keyIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
+    }
+
+    func testValidateWithStoragePath() {
+        let options = StorageDownloadDataRequest.Options(accessLevel: .private,
+                                                    targetIdentityId: "",
+                                                    pluginOptions: testPluginOptions)
+        let path = StringStoragePath(resolve: { input in return "my/path/"})
+        let request = StorageDownloadDataRequest(path: path, options: options)
+
+        let storageErrorOptional = request.validate()
+
+        XCTAssertNil(storageErrorOptional)
     }
 }

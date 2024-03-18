@@ -301,7 +301,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     func getURL(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageGetURLOperation.Request.Options?
     ) async throws -> URL {
         let options = options ?? StorageGetURLRequest.Options()
@@ -313,7 +313,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     public func downloadData(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageDownloadDataOperation.Request.Options? = nil
     ) -> StorageDownloadDataTask {
         let options = options ?? StorageDownloadDataRequest.Options()
@@ -325,7 +325,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     public func downloadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageDownloadFileOperation.Request.Options?
     ) -> StorageDownloadFileTask {
@@ -338,7 +338,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     public func uploadData(
-        path: StoragePath,
+        path: any StoragePath,
         data: Data,
         options: StorageUploadDataOperation.Request.Options?
     ) -> StorageUploadDataTask {
@@ -351,7 +351,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     public func uploadFile(
-        path: StoragePath,
+        path: any StoragePath,
         local: URL,
         options: StorageUploadFileOperation.Request.Options?
     ) -> StorageUploadFileTask {
@@ -364,7 +364,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     public func remove(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageRemoveRequest.Options? = nil
     ) async throws -> String {
         let options = options ?? StorageRemoveRequest.Options()
@@ -376,7 +376,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     func list(
-        path: StoragePath,
+        path: any StoragePath,
         options: StorageListOperation.Request.Options?
     ) async throws -> StorageListResult {
         let options = options ?? StorageListRequest.Options()

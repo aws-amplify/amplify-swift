@@ -7,24 +7,25 @@
 
 import Foundation
 
-public typealias StoragePathResolver = (String) -> String
+public typealias IdentityIDPathResolver = (String) -> String
 
 /// Protocol that provides a closure to resolve the storage path.
 ///
 /// - Tag: StoragePath
 public protocol StoragePath {
-    var pathResolver: StoragePathResolver { get }
+    associatedtype Input
+    var resolve: (Input) -> String { get }
 }
 
 public extension StoragePath where Self == StringStoragePath {
     static func fromString(_ path: String) -> Self {
-        return StringStoragePath(pathResolver: { _ in return path })
+        return StringStoragePath(resolve: { _ in return path })
     }
 }
 
-public extension StoragePath where Self == IdentityIdStoragePath {
-    static func fromIdentityId(_ identityIdPathResolver: @escaping StoragePathResolver) -> Self {
-        return IdentityIdStoragePath(pathResolver: identityIdPathResolver)
+public extension StoragePath where Self == IdentityIDStoragePath {
+    static func fromIdentityID(_ identityIdPathResolver: @escaping IdentityIDPathResolver) -> Self {
+        return IdentityIDStoragePath(resolve: identityIdPathResolver)
     }
 }
 
@@ -32,13 +33,13 @@ public extension StoragePath where Self == IdentityIdStoragePath {
 ///
 /// - Tag: StringStoragePath
 public struct StringStoragePath: StoragePath {
-    public let pathResolver: StoragePathResolver
+    public let resolve: (String) -> String
 }
 
 /// Conforms to StoragePath protocol.
 /// Provides a storage path constructed from an unique identity identifer.
 ///
 /// - Tag: IdentityStoragePath
-public struct IdentityIdStoragePath: StoragePath {
-    public let pathResolver: StoragePathResolver
+public struct IdentityIDStoragePath: StoragePath {
+    public let resolve: IdentityIDPathResolver
 }
