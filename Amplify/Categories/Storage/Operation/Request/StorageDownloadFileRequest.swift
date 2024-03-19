@@ -21,7 +21,7 @@ public struct StorageDownloadFileRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageDownloadFileRequest.key
-    @available(*, deprecated, message: "Use `StoragePath` instead")
+    @available(*, deprecated, message: "Use `path` instead of `key`")
     public let key: String
 
     /// The local file to download the object to
@@ -43,6 +43,7 @@ public struct StorageDownloadFileRequest: AmplifyOperationRequest {
         self.path = nil
     }
 
+    /// - Tag: StorageDownloadFileRequest.init
     public init(path: any StoragePath, local: URL, options: Options) {
         self.key = ""
         self.local = local
@@ -78,11 +79,20 @@ public extension StorageDownloadFileRequest {
         public let pluginOptions: Any?
 
         /// - Tag: StorageDownloadFileRequestOptions.init
+        @available(*, deprecated, message: "Use init(pluginOptions)")
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     pluginOptions: Any? = nil) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
+            self.pluginOptions = pluginOptions
+        }
+
+        /// - Tag: StorageDownloadFileRequestOptions.init
+        @available(*, deprecated, message: "Use init(pluginOptions)")
+        public init(pluginOptions: Any? = nil) {
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
             self.pluginOptions = pluginOptions
         }
     }

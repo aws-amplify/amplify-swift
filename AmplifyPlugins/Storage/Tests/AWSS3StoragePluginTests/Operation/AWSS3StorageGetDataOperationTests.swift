@@ -185,17 +185,18 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
                                                           storageConfiguration: testStorageConfiguration,
                                                           storageService: mockStorageService,
                                                           authService: mockAuthService,
-                                                          progressListener: nil) { event in
-                                                            switch event {
-                                                            case .failure(let error):
-                                                                guard case .validation = error else {
-                                                                    XCTFail("Should have failed with validation error")
-                                                                    return
-                                                                }
-                                                                failedInvoked.fulfill()
-                                                            default:
-                                                                XCTFail("Should have received failed event")
-                                                            }
+                                                          progressListener: nil
+        ) { event in
+            switch event {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
         }
 
         operation.start()
@@ -302,12 +303,13 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an valid IdentityIDStoragePath
     /// Then: The operation will succeed
     func testDownloadDataOperationWithIdentityIDStoragePathSucceeds() async throws {
+        mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
-        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(self.testKey)" })
+        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(id)/\(self.testKey)" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
 
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
@@ -332,7 +334,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: nil)
+        mockStorageService.verifyDownload(serviceKey: "/public/\(testIdentityId)/\(self.testKey)", fileURL: nil)
     }
 
     // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageTaskReference?
