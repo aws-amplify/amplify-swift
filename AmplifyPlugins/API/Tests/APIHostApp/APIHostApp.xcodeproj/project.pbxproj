@@ -227,6 +227,7 @@
 		39E0F2AA28A440A700939D9F /* GraphQLWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BBD28899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift */; };
 		39E0F2AD28A441B100939D9F /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */; };
 		39E0F2AF28A4425C00939D9F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F2AE28A4425C00939D9F /* Todo.swift */; };
+		606C8B792B895E5A00716094 /* AppSyncRealTimeClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 606C8B782B895E5A00716094 /* AppSyncRealTimeClientTests.swift */; };
 		681B35422A43962D0074F369 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271F289ABFE9003788E3 /* Team2+Schema.swift */; };
 		681B35432A43962D0074F369 /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262707289ABFE6003788E3 /* EnumTestModel.swift */; };
 		681B35442A43962D0074F369 /* ScalarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262720289ABFE9003788E3 /* ScalarContainer.swift */; };
@@ -676,6 +677,7 @@
 		39E0F2A128A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		39E0F2AE28A4425C00939D9F /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
+		606C8B782B895E5A00716094 /* AppSyncRealTimeClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncRealTimeClientTests.swift; sourceTree = "<group>"; };
 		681B35292A4395730074F369 /* APIWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		681B35892A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginFunctionalTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		681B35A12A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -899,6 +901,7 @@
 			children = (
 				21E581E32A6835910027D13A /* API.swift */,
 				212626CA289ABC79003788E3 /* Base */,
+				606C8B782B895E5A00716094 /* AppSyncRealTimeClientTests.swift */,
 				21698AA82889996A004BD994 /* GraphQLConnectionScenario1Tests.swift */,
 				21E581E12A6707900027D13A /* GraphQLConnectionScenario1APISwiftTests.swift */,
 				21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */,
@@ -2180,6 +2183,7 @@
 				2126273D289ABFEB003788E3 /* Blog6.swift in Sources */,
 				2126274B289ABFEB003788E3 /* Comment.swift in Sources */,
 				2126273E289ABFEB003788E3 /* Post6.swift in Sources */,
+				606C8B792B895E5A00716094 /* AppSyncRealTimeClientTests.swift in Sources */,
 				2126275F289ABFEB003788E3 /* Post3.swift in Sources */,
 				21262757289ABFEB003788E3 /* User5+Schema.swift in Sources */,
 				21262754289ABFEB003788E3 /* Blog6+Schema.swift in Sources */,

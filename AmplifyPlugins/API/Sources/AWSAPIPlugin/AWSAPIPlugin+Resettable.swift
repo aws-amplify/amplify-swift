@@ -11,6 +11,11 @@ import Foundation
 extension AWSAPIPlugin: Resettable {
 
     public func reset() async {
+        if let resettableAppSyncRealClientFactory = appSyncRealTimeClientFactory as? Resettable {
+            await resettableAppSyncRealClientFactory.reset()
+        }
+        appSyncRealTimeClientFactory = nil
+
         mapper.reset()
 
         await session.cancelAndReset()
@@ -24,8 +29,6 @@ extension AWSAPIPlugin: Resettable {
         reachabilityMapLock.execute {
             reachabilityMap.removeAll()
         }
-
-        subscriptionConnectionFactory = nil
     }
 
 }

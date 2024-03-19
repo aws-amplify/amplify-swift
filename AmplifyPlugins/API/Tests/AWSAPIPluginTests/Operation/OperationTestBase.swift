@@ -24,7 +24,7 @@ class OperationTestBase: XCTestCase {
 
     func setUpPlugin(
         sessionFactory: URLSessionBehaviorFactory? = nil,
-        subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil,
+        appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
         endpointType: AWSAPICategoryPluginEndpointType
     ) throws {
         apiPlugin = AWSAPIPlugin(sessionFactory: sessionFactory)
@@ -42,7 +42,7 @@ class OperationTestBase: XCTestCase {
             configurationValues: configurationValues,
             apiAuthProviderFactory: APIAuthProviderFactory(),
             authService: MockAWSAuthService(),
-            subscriptionConnectionFactory: subscriptionConnectionFactory
+            appSyncRealTimeClientFactory: appSyncRealTimeClientFactory
         )
 
         apiPlugin.configure(using: dependencies)
@@ -68,12 +68,11 @@ class OperationTestBase: XCTestCase {
     func setUpPluginForSubscriptionResponse(
         onGetOrCreateConnection: @escaping MockSubscriptionConnectionFactory.OnGetOrCreateConnection
     ) throws {
-        let subscriptionConnectionFactory = MockSubscriptionConnectionFactory(
-            onGetOrCreateConnection: onGetOrCreateConnection
-        )
+
+        let appSyncRealTimeClientFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: onGetOrCreateConnection)
 
         try setUpPlugin(
-            subscriptionConnectionFactory: subscriptionConnectionFactory,
+            appSyncRealTimeClientFactory: appSyncRealTimeClientFactory,
             endpointType: .graphQL
         )
     }
