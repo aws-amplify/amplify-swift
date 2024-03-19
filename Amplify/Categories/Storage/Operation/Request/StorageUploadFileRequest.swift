@@ -20,7 +20,7 @@ public struct StorageUploadFileRequest: AmplifyOperationRequest {
 
     /// The unique identifier for the object in storage
     /// - Tag: StorageUploadFileRequest.key
-    @available(*, deprecated, message: "Use `path` instead")
+    @available(*, deprecated, message: "Use `path` instead of `key`")
     public let key: String
 
     /// The file to be uploaded
@@ -85,13 +85,27 @@ public extension StorageUploadFileRequest {
         public let pluginOptions: Any?
 
         /// - Tag: StorageUploadFileRequestOptions.init
+        @available(*, deprecated, message: "Use init(metadata:contentType:pluginOptions)")
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     metadata: [String: String]? = nil,
                     contentType: String? = nil,
-                    pluginOptions: Any? = nil) {
+                    pluginOptions: Any? = nil
+        ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
+            self.metadata = metadata
+            self.contentType = contentType
+            self.pluginOptions = pluginOptions
+        }
+
+        /// - Tag: StorageUploadFileRequestOptions.init
+        public init(metadata: [String: String]? = nil,
+                    contentType: String? = nil,
+                    pluginOptions: Any? = nil
+        ) {
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
             self.metadata = metadata
             self.contentType = contentType
             self.pluginOptions = pluginOptions
