@@ -12,7 +12,6 @@ import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 @_implementationOnly import AmplifyAsyncTesting
-import AppSyncRealTimeClient
 
 class GraphQLSubscribeTasksTests: OperationTestBase {
 
@@ -30,14 +29,10 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
     var receivedDataValueSuccess: XCTestExpectation!
     var receivedDataValueError: XCTestExpectation!
 
-    // Handles to the subscription item and event handler used to make mock calls into the
-    // subscription system
-    var subscriptionItem: SubscriptionItem!
-    var subscriptionEventHandler: SubscriptionEventHandler!
-
     var connectionStateSink: AnyCancellable?
     var subscriptionDataSink: AnyCancellable?
     var expectedCompletionFailureError: APIError?
+    var mockAppSyncRealTimeClient: MockAppSyncRealTimeClient?
 
     override func setUp() async throws {
         try await super.setUp()
@@ -54,6 +49,23 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueError = expectation(description: "receivedDataValueError")
 
         try setUpMocksAndSubscriptionItems()
+    }
+
+    override func tearDown() async throws {
+        connectionStateSink?.cancel()
+        subscriptionDataSink?.cancel()
+
+        onSubscribeInvoked = nil
+        receivedCompletionFailure = nil
+        receivedCompletionSuccess = nil
+        receivedStateValueConnected = nil
+        receivedStateValueConnecting = nil
+        receivedStateValueDisconnected = nil
+
+        receivedDataValueError = nil
+        receivedDataValueSuccess = nil
+        mockAppSyncRealTimeClient = nil
+        try await super.tearDown()
     }
 
     func waitForSubscriptionExpectations() async {
@@ -76,15 +88,19 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         receivedDataValueError.isInverted = true
 
         let testJSON: JSONValue = ["foo": true]
-        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
+        let testData: JSONValue = [
+            "data": [
+                "foo": true
+            ]
+        ]
 
         try await subscribe(expecting: testJSON)
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
         await waitForSubscriptionExpectations()
     }
@@ -96,10 +112,9 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
 
         try await subscribe()
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
         await waitForSubscriptionExpectations()
     }
@@ -114,25 +129,9 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         try await subscribe()
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.failed(ConnectionProviderError.limitExceeded(nil)), subscriptionItem)
-        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.limitExceeded(nil))
-        await waitForSubscriptionExpectations()
-    }
-    
-    func testConnectionErrorWithSubscriptionError() async throws {
-        receivedCompletionSuccess.isInverted = true
-        receivedStateValueConnected.isInverted = true
-        receivedStateValueDisconnected.isInverted = true
-        receivedDataValueSuccess.isInverted = true
-        receivedDataValueError.isInverted = true
-
-        try await subscribe()
-        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.failed(ConnectionProviderError.subscription("", nil)), subscriptionItem)
-        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.subscription("", nil))
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        mockAppSyncRealTimeClient?.triggerEvent(.error([AppSyncRealTimeRequest.Error.limitExceeded]))
+        expectedCompletionFailureError = APIError.operationError("", "", AppSyncRealTimeRequest.Error.limitExceeded)
         await waitForSubscriptionExpectations()
     }
     
@@ -146,13 +145,18 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         try await subscribe()
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.failed(ConnectionProviderError.unauthorized), subscriptionItem)
-        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.unauthorized)
+        let unauthorizedError = GraphQLError(message: "", extensions: ["errorType": "Unauthorized"])
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        mockAppSyncRealTimeClient?.triggerEvent(.error([unauthorizedError]))
+        expectedCompletionFailureError = APIError.operationError(
+            "Subscription item event failed with error: Unauthorized",
+            "",
+            GraphQLResponseError<JSONValue>.error([unauthorizedError])
+        )
         await waitForSubscriptionExpectations()
     }
     
-    func testConnectionErrorWithConnectionProviderConnectionError() async throws {
+    func testConnectionErrorWithAppSyncConnectionError() async throws {
         receivedCompletionSuccess.isInverted = true
         receivedStateValueConnected.isInverted = true
         receivedStateValueDisconnected.isInverted = true
@@ -162,31 +166,35 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         try await subscribe()
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.failed(ConnectionProviderError.connection), subscriptionItem)
-        expectedCompletionFailureError = APIError.networkError("", nil, URLError(.networkConnectionLost))
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        mockAppSyncRealTimeClient?.triggerEvent(.error([URLError(URLError.Code(rawValue: 400))]))
+        expectedCompletionFailureError = APIError.operationError("", "", URLError(URLError.Code(rawValue: 400)))
         await waitForSubscriptionExpectations()
     }
 
     func testDecodingError() async throws {
-        let testData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
+        let testData: JSONValue = [
+            "data": [ "foo": true ],
+            "errors": []
+        ]
         receivedCompletionFailure.isInverted = true
         receivedDataValueSuccess.isInverted = true
 
         try await subscribe()
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
-
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
         await waitForSubscriptionExpectations()
     }
 
     func testMultipleSuccessValues() async throws {
         let testJSON: JSONValue = ["foo": true]
-        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
+        let testData: JSONValue = [
+            "data": [ "foo": true ]
+        ]
 
         receivedCompletionFailure.isInverted = true
         receivedDataValueError.isInverted = true
@@ -195,18 +203,23 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         try await subscribe(expecting: testJSON)
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient?.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
         await waitForSubscriptionExpectations()
     }
 
     func testMixedSuccessAndErrorValues() async throws {
-        let successfulTestData = Data(#"{"data": {"foo": true}}"#.utf8)
-        let invalidTestData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
+        let successfulTestData: JSONValue = [
+            "data": [ "foo": true ]
+        ]
+        let invalidTestData: JSONValue = [
+            "data": [ "foo": true ],
+            "errors": []
+        ]
 
         receivedCompletionFailure.isInverted = true
         receivedDataValueSuccess.expectedFulfillmentCount = 2
@@ -214,12 +227,12 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         try await subscribe()
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
-        subscriptionEventHandler(.data(invalidTestData), subscriptionItem)
-        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient?.triggerEvent(.data(successfulTestData))
+        mockAppSyncRealTimeClient?.triggerEvent(.data(invalidTestData))
+        mockAppSyncRealTimeClient?.triggerEvent(.data(successfulTestData))
+        mockAppSyncRealTimeClient?.triggerEvent(.unsubscribed)
 
         await waitForSubscriptionExpectations()
     }
@@ -230,25 +243,12 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
     /// self.subscriptionItem and self.subscriptionEventHandler, then fulfills
     /// self.onSubscribeInvoked
     func setUpMocksAndSubscriptionItems() throws {
-        let onSubscribe: MockSubscriptionConnection.OnSubscribe = {
-            requestString, variables, eventHandler in
-            let item = SubscriptionItem(
-                requestString: requestString,
-                variables: variables,
-                eventHandler: eventHandler
-            )
-
-            self.subscriptionItem = item
-            self.subscriptionEventHandler = eventHandler
-            self.onSubscribeInvoked.fulfill()
-            return item
+        defer { self.onSubscribeInvoked.fulfill() }
+        let mockAppSyncRealTimeClient = MockAppSyncRealTimeClient()
+        self.mockAppSyncRealTimeClient = mockAppSyncRealTimeClient
+        try setUpPluginForSubscriptionResponse { _, _, _, _, _ in
+            mockAppSyncRealTimeClient
         }
-
-        let onGetOrCreateConnection: MockSubscriptionConnectionFactory.OnGetOrCreateConnection = { _, _, _, _, _  in
-            MockSubscriptionConnection(onSubscribe: onSubscribe, onUnsubscribe: { _ in })
-        }
-
-        try setUpPluginForSubscriptionResponse(onGetOrCreateConnection: onGetOrCreateConnection)
     }
 
     /// Calls `Amplify.API.subscribe` with a request made from a generic document, and returns
@@ -313,23 +313,17 @@ extension APIError: Equatable {
             (.pluginError, .pluginError):
             return true
         case (.operationError(_, _, let lhs), .operationError(_, _, let rhs)):
-            if let lhs = lhs as? ConnectionProviderError, let rhs = rhs as? ConnectionProviderError {
-                switch (lhs, rhs) {
-                case (.connection, .connection),
-                    (.jsonParse, .jsonParse),
-                    (.limitExceeded, .limitExceeded),
-                    (.subscription, .subscription),
-                    (.unauthorized, .unauthorized),
-                    (.unknown, .unknown):
-                    return true
-                default:
-                    return false
-                }
-            } else if lhs == nil && rhs == nil {
-                return true
-            } else {
-                return false
+            switch (lhs, rhs) {
+            case let (lhs, rhs) as (URLError, URLError):
+                return lhs == rhs
+            case let (lhs, rhs) as (GraphQLResponseError<JSONValue>, GraphQLResponseError<JSONValue>):
+                return lhs.errorDescription == rhs.errorDescription
+            case let (lhs, rhs) as (AppSyncRealTimeRequest.Error, AppSyncRealTimeRequest.Error):
+                return lhs == rhs
+            case (.none, .none): return true
+            default: return false
             }
+
         case (.networkError(_, _, let lhs), .networkError(_, _, let rhs)):
             if let lhs = lhs as? URLError, let rhs = rhs as? URLError {
                 return lhs.code == rhs.code

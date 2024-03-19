@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
-import AppSyncRealTimeClient
+import Combine
 
 public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
     public typealias Request = GraphQLOperationRequest<R>
@@ -17,37 +17,49 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     public var request: GraphQLOperationRequest<R>
     public var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
 
+    var appSyncClient: AppSyncRealTimeClientProtocol?
+    var subscription: AnyCancellable? {
+        willSet {
+            self.subscription?.cancel()
+        }
+    }
+    let appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
     var apiAuthProviderFactory: APIAuthProviderFactory
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
+    private let subscriptionId = UUID().uuidString
 
-    var subscriptionConnection: SubscriptionConnection?
-    var subscriptionItem: SubscriptionItem?
     private var running = false
-
-    private let subscriptionQueue = DispatchQueue(label: "AWSGraphQLSubscriptionOperation.subscriptionQueue")
 
     init(request: Request,
          pluginConfig: AWSAPICategoryPluginConfiguration,
-         subscriptionConnectionFactory: SubscriptionConnectionFactory,
+         appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol,
          authService: AWSAuthServiceBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory) {
         self.request = request
         self.pluginConfig = pluginConfig
-        self.subscriptionConnectionFactory = subscriptionConnectionFactory
+        self.appSyncClientFactory = appSyncClientFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
     }
 
     public func cancel() {
-        subscriptionQueue.sync {
-            if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
-                subscriptionConnection.unsubscribe(item: subscriptionItem)
-                let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.disconnected)
-                send(subscriptionEvent)
+        self.send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
+        Task { [weak self] in
+            guard let self else {
+                return
             }
+            guard let appSyncClient = self.appSyncClient else {
+                return
+            }
+            do {
+                try await appSyncClient.unsubscribe(id: self.subscriptionId)
+            } catch {
+                print("[AWSGraphQLSubscriptionTaskRunner] Failed to unsubscribe \(self.subscriptionId)")
+            }
+
+            await appSyncClient.disconnectWhenIdel()
         }
     }
 
@@ -79,33 +91,28 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         }
 
-        // Retrieve request plugin option and
-        // auth type in case of a multi-auth setup
         let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
-        let urlRequest = generateSubscriptionURLRequest(from: endpointConfig)
-
         // Retrieve the subscription connection
-        subscriptionQueue.sync {
-            do {
-                subscriptionConnection = try subscriptionConnectionFactory
-                    .getOrCreateConnection(for: endpointConfig,
-                                           urlRequest: urlRequest,
-                                           authService: authService,
-                                           authType: pluginOptions?.authType,
-                                           apiAuthProviderFactory: apiAuthProviderFactory)
-            } catch {
-                let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
-                fail(error)
-                return
-            }
+        do {
+            self.appSyncClient = try await appSyncClientFactory.getAppSyncRealTimeClient(
+                for: endpointConfig,
+                endpoint: endpointConfig.baseURL,
+                authService: authService,
+                authType: pluginOptions?.authType,
+                apiAuthProviderFactory: apiAuthProviderFactory
+            )
 
             // Create subscription
-
-            subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
-                                                                 variables: request.variables,
-                                                                 eventHandler: { [weak self] event, _ in
+            self.subscription = try await appSyncClient?.subscribe(
+                id: subscriptionId,
+                query: encodeRequest(query: request.document, variables: request.variables)
+            ).sink(receiveValue: { [weak self] event in
                 self?.onAsyncSubscriptionEvent(event: event)
             })
+        } catch {
+            let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
+            fail(error)
+            return
         }
     }
 
@@ -119,29 +126,22 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 
     // MARK: - Subscription callbacks
 
-    private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {
+    private func onAsyncSubscriptionEvent(event: AppSyncSubscriptionEvent) {
         switch event {
-        case .connection(let subscriptionConnectionEvent):
-            onSubscriptionEvent(subscriptionConnectionEvent)
-        case .data(let data):
+        case .data(let json):
+            guard let data = try? JSONEncoder().encode(json) else {
+                return
+            }
             onGraphQLResponseData(data)
-        case .failed(let error):
-            onSubscriptionFailure(error)
-        }
-    }
-
-    private func onSubscriptionEvent(_ subscriptionConnectionEvent: SubscriptionConnectionEvent) {
-        switch subscriptionConnectionEvent {
-        case .connecting:
-            let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.connecting)
-            send(subscriptionEvent)
-        case .connected:
-            let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.connected)
-            send(subscriptionEvent)
-        case .disconnected:
-            let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.disconnected)
-            send(subscriptionEvent)
+        case .subscribing:
+            send(GraphQLSubscriptionEvent<R>.connection(.connecting))
+        case .subscribed:
+            send(GraphQLSubscriptionEvent<R>.connection(.connected))
+        case .unsubscribed:
+            send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
             finish()
+        case .error(let errors):
+            fail(toAPIError(errors, type: R.self))
         }
     }
 
@@ -171,56 +171,36 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         }
     }
 
-    private func onSubscriptionFailure(_ error: Error) {
-        var errorDescription = "Subscription item event failed with error"
-        if case let ConnectionProviderError.subscription(_, payload) = error,
-           let errors = payload?["errors"] as? AppSyncJSONValue,
-           let graphQLErrors = try? GraphQLErrorDecoder.decodeAppSyncErrors(errors) {
-
-            if graphQLErrors.hasUnauthorizedError() {
-                errorDescription += ": \(APIError.UnauthorizedMessageString)"
-            }
-
-            let graphQLResponseError = GraphQLResponseError<R>.error(graphQLErrors)
-            fail(APIError.operationError(errorDescription, "", graphQLResponseError))
-            return
-        } else if case ConnectionProviderError.unauthorized = error {
-            errorDescription += ": \(APIError.UnauthorizedMessageString)"
-        } else if case ConnectionProviderError.connection = error {
-            errorDescription += ": connection"
-            let error = URLError(.networkConnectionLost)
-            fail(APIError.networkError(errorDescription, nil, error))
-            return
-        }
-
-        fail(APIError.operationError(errorDescription, "", error))
-    }
 }
 
 // Class is still necessary. See https://github.com/aws-amplify/amplify-swift/issues/2252
 final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let subscriptionConnectionFactory: SubscriptionConnectionFactory
+    let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
     let authService: AWSAuthServiceBehavior
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
-    var subscriptionConnection: SubscriptionConnection?
-    var subscriptionItem: SubscriptionItem?
-    var apiAuthProviderFactory: APIAuthProviderFactory
+    var appSyncRealTimeClient: AppSyncRealTimeClientProtocol?
+    var subscription: AnyCancellable? {
+        willSet {
+            self.subscription?.cancel()
+        }
+    }
 
-    private let subscriptionQueue = DispatchQueue(label: "AWSGraphQLSubscriptionOperation.subscriptionQueue")
+    var apiAuthProviderFactory: APIAuthProviderFactory
+    private let subscriptionId = UUID().uuidString
 
     init(request: GraphQLOperationRequest<R>,
          pluginConfig: AWSAPICategoryPluginConfiguration,
-         subscriptionConnectionFactory: SubscriptionConnectionFactory,
+         appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
          authService: AWSAuthServiceBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory,
          inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
          resultListener: AWSGraphQLSubscriptionOperation.ResultListener?) {
 
         self.pluginConfig = pluginConfig
-        self.subscriptionConnectionFactory = subscriptionConnectionFactory
+        self.appSyncRealTimeClientFactory = appSyncRealTimeClientFactory
         self.authService = authService
         self.apiAuthProviderFactory = apiAuthProviderFactory
 
@@ -232,17 +212,26 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     }
 
     override public func cancel() {
-        subscriptionQueue.sync {
-            if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
-                subscriptionConnection.unsubscribe(item: subscriptionItem)
-                let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.disconnected)
-                dispatchInProcess(data: subscriptionEvent)
-            }
-        }
-
-        dispatch(result: .successfulVoid)
         super.cancel()
-        finish()
+
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+
+            guard let appSyncRealTimeClient = self.appSyncRealTimeClient else {
+                return
+            }
+
+            do {
+                try await appSyncRealTimeClient.unsubscribe(id: subscriptionId)
+                finish()
+            } catch {
+                print("[AWSGraphQLSubscriptionOperation] Failed to unsubscribe \(subscriptionId), error: \(error)")
+            }
+
+            await appSyncRealTimeClient.disconnectWhenIdel()
+        }
     }
 
     override public func main() {
@@ -278,20 +267,24 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
-        // Retrieve request plugin option and
-        // auth type in case of a multi-auth setup
         let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
-        let urlRequest = generateSubscriptionURLRequest(from: endpointConfig)
-
-        // Retrieve the subscription connection
-        subscriptionQueue.sync {
+        Task {
             do {
-                subscriptionConnection = try subscriptionConnectionFactory
-                    .getOrCreateConnection(for: endpointConfig,
-                                           urlRequest: urlRequest,
-                                           authService: authService,
-                                           authType: pluginOptions?.authType,
-                                           apiAuthProviderFactory: apiAuthProviderFactory)
+                appSyncRealTimeClient = try await appSyncRealTimeClientFactory.getAppSyncRealTimeClient(
+                    for: endpointConfig,
+                    endpoint: endpointConfig.baseURL,
+                    authService: authService,
+                    authType: pluginOptions?.authType,
+                    apiAuthProviderFactory: apiAuthProviderFactory
+                )
+
+                // Create subscription
+                self.subscription = try await appSyncRealTimeClient?.subscribe(
+                    id: subscriptionId,
+                    query: encodeRequest(query: request.document, variables: request.variables)
+                ).sink(receiveValue: { [weak self] event in
+                    self?.onAsyncSubscriptionEvent(event: event)
+                })
             } catch {
                 let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
                 dispatch(result: .failure(error))
@@ -299,13 +292,6 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                 return
             }
 
-            // Create subscription
-
-            subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
-                                                                 variables: request.variables,
-                                                                 eventHandler: { [weak self] event, _ in
-                self?.onAsyncSubscriptionEvent(event: event)
-            })
         }
     }
 
@@ -319,29 +305,23 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     // MARK: - Subscription callbacks
 
-    private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {
+    private func onAsyncSubscriptionEvent(event: AppSyncSubscriptionEvent) {
         switch event {
-        case .connection(let subscriptionConnectionEvent):
-            onSubscriptionEvent(subscriptionConnectionEvent)
-        case .data(let data):
+        case .data(let json):
+            guard let data = try? JSONEncoder().encode(json) else {
+                return
+            }
             onGraphQLResponseData(data)
-        case .failed(let error):
-            onSubscriptionFailure(error)
-        }
-    }
-
-    private func onSubscriptionEvent(_ subscriptionConnectionEvent: SubscriptionConnectionEvent) {
-        switch subscriptionConnectionEvent {
-        case .connecting:
-            let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.connecting)
-            dispatchInProcess(data: subscriptionEvent)
-        case .connected:
-            let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.connected)
-            dispatchInProcess(data: subscriptionEvent)
-        case .disconnected:
-            let subscriptionEvent = GraphQLSubscriptionEvent<R>.connection(.disconnected)
-            dispatchInProcess(data: subscriptionEvent)
+        case .subscribing:
+            dispatchInProcess(data: GraphQLSubscriptionEvent<R>.connection(.connecting))
+        case .subscribed:
+            dispatchInProcess(data: GraphQLSubscriptionEvent<R>.connection(.connected))
+        case .unsubscribed:
+            dispatchInProcess(data: GraphQLSubscriptionEvent<R>.connection(.disconnected))
             dispatch(result: .successfulVoid)
+            finish()
+        case .error(let errors):
+            dispatch(result: .failure(toAPIError(errors, type: R.self)))
             finish()
         }
     }
@@ -374,43 +354,53 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             finish()
         }
     }
+}
 
-    private func onSubscriptionFailure(_ error: Error) {
-        var errorDescription = "Subscription item event failed with error"
-        if case let ConnectionProviderError.subscription(_, payload) = error,
-           let errors = payload?["errors"] as? AppSyncJSONValue,
-           let graphQLErrors = try? GraphQLErrorDecoder.decodeAppSyncErrors(errors) {
+fileprivate func encodeRequest(query: String, variables: [String: Any]?) -> String {
+    var json: [String: Any] = [
+        "query": query
+    ]
 
-            if graphQLErrors.hasUnauthorizedError() {
-                errorDescription += ": \(APIError.UnauthorizedMessageString)"
-            }
+    if let variables {
+        json["variables"] = variables
+    }
 
-            let graphQLResponseError = GraphQLResponseError<R>.error(graphQLErrors)
-            dispatch(result: .failure(APIError.operationError(errorDescription, "", graphQLResponseError)))
-            finish()
-            return
-        } else if case ConnectionProviderError.unauthorized = error {
-            errorDescription += ": \(APIError.UnauthorizedMessageString)"
-        } else if case ConnectionProviderError.connection = error {
-            errorDescription += ": connection"
-            let error = URLError(.networkConnectionLost)
-            dispatch(result: .failure(APIError.networkError(errorDescription, nil, error)))
-            finish()
-            return
-        }
-        dispatch(result: .failure(APIError.operationError(errorDescription, "", error)))
-        finish()
+    do {
+        return String(data: try JSONSerialization.data(withJSONObject: json), encoding: .utf8)!
+    } catch {
+        return ""
     }
 }
 
-extension Array where Element == GraphQLError {
-    func hasUnauthorizedError() -> Bool {
-        contains { graphQLError in
-            if case let .string(errorTypeValue) = graphQLError.extensions?["errorType"],
-               case .unauthorized = AppSyncErrorType(errorTypeValue) {
-                return true
-            }
-            return false
-        }
+fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> APIError {
+    func errorDescription(_ hasAuthorizationError: Bool = false) -> String {
+        "Subscription item event failed with error" +
+        (hasAuthorizationError ? ": \(APIError.UnauthorizedMessageString)" : "")
     }
+
+    switch errors {
+    case let errors as [AppSyncRealTimeRequest.Error]:
+        let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            errors.first
+        )
+    case let errors as [GraphQLError]:
+        let hasAuthorizationError = errors.map(\.extensions)
+            .compactMap { $0.flatMap { $0["errorType"]?.stringValue } }
+            .contains(where: { AppSyncErrorType($0) == .unauthorized })
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            GraphQLResponseError<R>.error(errors)
+        )
+    default:
+        return APIError.operationError(
+            errorDescription(),
+            "",
+            errors.first
+        )
+    }
+
 }

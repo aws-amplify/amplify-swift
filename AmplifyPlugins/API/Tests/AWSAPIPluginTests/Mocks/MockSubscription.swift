@@ -7,20 +7,21 @@
 
 import Foundation
 
-@testable import AWSAPIPlugin
 import Amplify
+import Combine
+@testable import AWSAPIPlugin
+@_spi(WebSocket) import AWSPluginsCore
 
-import AWSPluginsCore
-import AppSyncRealTimeClient
+struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
+    
 
-struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     typealias OnGetOrCreateConnection = (
         AWSAPICategoryPluginConfiguration.EndpointConfig,
-        URLRequest,
+        URL,
         AWSAuthServiceBehavior,
         AWSAuthorizationType?,
         APIAuthProviderFactory
-    ) throws -> SubscriptionConnection
+    ) async throws -> AppSyncRealTimeClientProtocol
 
     let onGetOrCreateConnection: OnGetOrCreateConnection
 
@@ -28,45 +29,115 @@ struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
         self.onGetOrCreateConnection = onGetOrCreateConnection
     }
 
-    func getOrCreateConnection(
+    func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
-        urlRequest: URLRequest,
+        endpoint: URL,
         authService: AWSAuthServiceBehavior,
         authType: AWSAuthorizationType?,
         apiAuthProviderFactory: APIAuthProviderFactory
-    ) throws -> SubscriptionConnection {
-        try onGetOrCreateConnection(endpointConfig, urlRequest,  authService, authType, apiAuthProviderFactory)
+    ) async throws -> AppSyncRealTimeClientProtocol {
+        try await onGetOrCreateConnection(endpointConfig, endpoint, authService, authType, apiAuthProviderFactory)
     }
-
 }
 
-struct MockSubscriptionConnection: SubscriptionConnection {
-    typealias OnSubscribe = (
-        String,
-        [String: Any?]?,
-        @escaping SubscriptionEventHandler
-    ) -> SubscriptionItem
+class MockAppSyncRealTimeClient: AppSyncRealTimeClientProtocol  {
 
-    typealias OnUnsubscribe = (SubscriptionItem) -> Void
 
-    let onSubscribe: OnSubscribe
-    let onUnsubscribe: OnUnsubscribe
+    private let subject = PassthroughSubject<AppSyncSubscriptionEvent, Never>()
 
-    init(onSubscribe: @escaping OnSubscribe, onUnsubscribe: @escaping OnUnsubscribe) {
-        self.onSubscribe = onSubscribe
-        self.onUnsubscribe = onUnsubscribe
+    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+        defer {
+
+            Task {
+                try await Task.sleep(seconds: 0.25)
+                subject.send(.subscribing)
+                try await Task.sleep(seconds: 0.45)
+                subject.send(.subscribed)
+            }
+        }
+        return subject.eraseToAnyPublisher()
+    }
+    
+    func unsubscribe(id: String) async throws {
+        try await Task.sleep(seconds: 0.45)
+        subject.send(.unsubscribed)
+    }
+    
+    func connect() async throws { }
+
+    func disconnectWhenIdel() async { }
+
+    func disconnect() async { }
+
+    func triggerEvent(_ event: AppSyncSubscriptionEvent) {
+        subject.send(event)
     }
 
-    func subscribe(
-        requestString: String,
-        variables: [String: Any?]?,
-        eventHandler: @escaping SubscriptionEventHandler
-    ) -> SubscriptionItem {
-        onSubscribe(requestString, variables, eventHandler)
+    static func waitForSubscirbing() async throws {
+        try await Task.sleep(seconds: 0.3)
     }
 
-    func unsubscribe(item: SubscriptionItem) {
-        onUnsubscribe(item)
+    static func waitForSubscirbed() async throws {
+        try await Task.sleep(seconds: 0.5)
     }
 
+    static func waitForUnsubscirbed() async throws {
+        try await Task.sleep(seconds: 0.5)
+    }
+}
+
+class MockAppSyncRequestInterceptor: AppSyncRequestInterceptor {
+    func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest {
+        return event
+    }
+}
+
+actor MockWebSocketClient: AppSyncWebSocketClientProtocol {
+    enum State {
+        case none
+        case connected
+    }
+
+    enum Action {
+        case connect(Bool, Bool)
+        case disconnect
+        case write(String)
+    }
+
+    var actionSubject = PassthroughSubject<Action, Never>()
+    var subject = PassthroughSubject<WebSocketEvent, Never>()
+    var state: State
+
+    var isConnected: Bool {
+        state == .connected
+    }
+
+    var publisher: AnyPublisher<WebSocketEvent, Never> {
+        subject.eraseToAnyPublisher()
+    }
+
+    init() {
+        self.state = .none
+    }
+
+    deinit {
+        subject.send(completion: .finished)
+        actionSubject.send(completion: .finished)
+    }
+
+    func connect(autoConnectOnNetworkStatusChange: Bool, autoRetryOnConnectionFailure: Bool) {
+        actionSubject.send(.connect(autoConnectOnNetworkStatusChange, autoRetryOnConnectionFailure))
+    }
+
+    func disconnect() {
+        actionSubject.send(.disconnect)
+    }
+
+    func write(message: String) throws {
+        actionSubject.send(.write(message))
+    }
+
+    func setStateToConnected() {
+        self.state = .connected
+    }
 }

@@ -24,7 +24,9 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
     func testSuccessfulSignUp() async throws {
 
         self.mockIdentityProvider = MockIdentityProvider(
-            mockConfirmSignUpResponse: { _ in
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNil(request.clientMetadata)
+                XCTAssertNil(request.forceAliasCreation)
                 return .init()
             }
         )
@@ -47,11 +49,14 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
             mockConfirmSignUpResponse: { request in
                 XCTAssertNotNil(request.clientMetadata)
                 XCTAssertEqual(request.clientMetadata?["key"], "value")
+                XCTAssertEqual(request.forceAliasCreation, true)
                 return .init()
             }
         )
 
-        let pluginOptions = AWSAuthConfirmSignUpOptions(metadata: ["key": "value"])
+        let pluginOptions = AWSAuthConfirmSignUpOptions(
+            metadata: ["key": "value"],
+            forceAliasCreation: true)
         let options = AuthConfirmSignUpRequest.Options(pluginOptions: pluginOptions)
         let result = try await self.plugin.confirmSignUp(
             for: "jeffb",
