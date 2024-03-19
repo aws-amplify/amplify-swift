@@ -28,7 +28,7 @@ public struct AmplifyConfigurationV2: Codable {
 
     @_spi(InternalAmplifyConfiguration)
     public struct Analytics: Codable {
-        public let awsRegion: String
+        public let awsRegion: AWSRegion
         public let pinpointAppId: String
     }
 
@@ -40,15 +40,15 @@ public struct AmplifyConfigurationV2: Codable {
         public struct Endpoint: Codable {
             public let name: String
             public let url: String
-            public let awsRegion: String
-            public let authorizationTypes: [String]
-            public let defaultAuthorizationType: String
+            public let awsRegion: AWSRegion
+            public let authorizationTypes: [AWSAppSyncAuthorizationType]
+            public let defaultAuthorizationType: AWSAppSyncAuthorizationType
         }
     }
 
     @_spi(InternalAmplifyConfiguration)
     public struct Auth: Codable {
-        public let awsRegion: String
+        public let awsRegion: AWSRegion
         public let userPoolId: String
         public let userPoolClientId: String
         public let identityPoolId: String
@@ -59,7 +59,7 @@ public struct AmplifyConfigurationV2: Codable {
         public let oauthRedirectSignIn: String?
         public let oauthRedirectSignOut: String?
         public let oauthResponseType: String?
-        public let standardAttributes: [String: Bool]
+        public let standardAttributes: [AmazonCognitoStandardAttributes: AmazonCognitoStandardAttributesConfig]
         public let usernameAttributes: [String]
         public let userVerificationMechanisms: [String]
         public let unauthenticatedIdentitiesEnabled: Bool?
@@ -76,18 +76,18 @@ public struct AmplifyConfigurationV2: Codable {
     }
 
     public struct DataCategory: Codable {
-        public let awsRegion: String
+        public let awsRegion: AWSRegion
         public let url: String
         public let modelIntrospection: JSONValue
         public let apiKey: String?
-        public let defaultAuthorizationType: String
-        public let authorizationTypes: [String]
+        public let defaultAuthorizationType: AWSAppSyncAuthorizationType
+        public let authorizationTypes: [AWSAppSyncAuthorizationType]
         public let conflictResolutionMode: String?
     }
 
     @_spi(InternalAmplifyConfiguration)
     public struct Geo: Codable {
-        public let awsRegion: String
+        public let awsRegion: AWSRegion
         public let maps: Maps
         public let searchIndices: SearchIndices
         public let geofenceCollections: GeofenceCollections
@@ -115,7 +115,7 @@ public struct AmplifyConfigurationV2: Codable {
 
     @_spi(InternalAmplifyConfiguration)
     public struct Logging: Codable {
-        public let awsRegion: String
+        public let awsRegion: AWSRegion
         public let flushInterval: Double?
         public let logGroupName: String
         public let maxLocalStoreSize: Double?
@@ -131,7 +131,7 @@ public struct AmplifyConfigurationV2: Codable {
         public let channels: [Channel]
 
         public struct Channel: Codable {
-            public let awsRegion: String
+            public let awsRegion: AWSRegion
             public let pinpointAppId: String
             public let channelType: String
         }
@@ -139,12 +139,51 @@ public struct AmplifyConfigurationV2: Codable {
 
     @_spi(InternalAmplifyConfiguration)
     public struct Storage: Codable {
-        public let awsRegion: String
+        public let awsRegion: AWSRegion
         public let bucketName: String
     }
 
     @_spi(InternalAmplifyConfiguration)
     public struct CustomOutput: Codable {}
+
+    @_spi(InternalAmplifyConfiguration)
+    public typealias AWSRegion = String
+
+    @_spi(InternalAmplifyConfiguration)
+    public enum AmazonCognitoStandardAttributes: String, Codable, CodingKeyRepresentable {
+        case address
+        case birthdate
+        case email
+        case familyName
+        case gender
+        case givenName
+        case locale
+        case middleName
+        case name
+        case nickname
+        case phoneNumber
+        case picture
+        case preferredUsername
+        case profile
+        case sub
+        case updatedAt
+        case website
+        case zoneinfo
+    }
+
+    @_spi(InternalAmplifyConfiguration)
+    public struct AmazonCognitoStandardAttributesConfig: Codable {
+        let required: Bool
+    }
+
+    @_spi(InternalAmplifyConfiguration)
+    public enum AWSAppSyncAuthorizationType: String, Codable {
+        case amazonCognitoUserPools = "AMAZON_COGNITO_USER_POOLS"
+        case apiKey = "API_KEY"
+        case awsIAM = "AWS_IAM"
+        case awsLambda = "AWS_LAMBDA"
+        case openIDConnect = "OPENID_CONNECT"
+    }
 }
 
 // MARK: - Configure
@@ -158,7 +197,7 @@ extension Amplify {
     /// 
     /// - Parameter with: format of the configuration file
     ///     Only one explicit format is supported,`.amplifyOutputs`.
-    static func configure(with: ConfigurationFormat) throws {
+    public static func configure(with: ConfigurationFormat) throws {
         let resolvedConfiguration: AmplifyConfigurationV2
         do {
             resolvedConfiguration = try AmplifyConfigurationV2(bundle: Bundle.main)
