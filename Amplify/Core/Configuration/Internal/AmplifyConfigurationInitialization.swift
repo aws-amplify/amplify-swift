@@ -122,6 +122,7 @@ extension AmplifyConfigurationV2 {
         let jsonDecoder = JSONDecoder()
 
         do {
+            jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
             let configuration = try jsonDecoder.decode(AmplifyConfigurationV2.self, from: data)
             return configuration
         } catch {
