@@ -11,6 +11,12 @@ import Amplify
 extension StorageUploadFileRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
+        guard path == nil else {
+            // return nil here StoragePath are validated
+            // at during execution of request operation where the path is resolved
+            return nil
+        }
+        
         if let error = StorageRequestUtils.validateKey(key) {
             return error
         }

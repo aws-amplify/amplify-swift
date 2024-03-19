@@ -255,5 +255,248 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                                  metadata: metadata)
     }
 
+    /// Given: Storage Upload File Operation
+    /// When: The operation is executed with a request that has an invalid StringStoragePath
+    /// Then: The operation will fail with a validation error
+    func testUploadFileOperationStringStoragePathValidationError() {
+        let path = StringStoragePath(resolve: { _ in return "my/path" })
+        mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceUploadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completedVoid]
+
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let expectedUploadSource = UploadSource.local(fileURL)
+        let metadata = ["mykey": "Value"]
+
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: metadata,
+                                                       contentType: testContentType)
+        let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
+
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageUploadFileOperation(request,
+                                                        storageConfiguration: testStorageConfiguration,
+                                                        storageService: mockStorageService,
+                                                        authService: mockAuthService,
+                                                        progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    /// Given: Storage Upload File Operation
+    /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
+    /// Then: The operation will fail with a validation error
+    func testUploadFileOperationIdentityIDStoragePathValidationError() {
+        let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
+        mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceUploadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completedVoid]
+
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let expectedUploadSource = UploadSource.local(fileURL)
+        let metadata = ["mykey": "Value"]
+
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: metadata,
+                                                       contentType: testContentType)
+        let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
+
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageUploadFileOperation(request,
+                                                        storageConfiguration: testStorageConfiguration,
+                                                        storageService: mockStorageService,
+                                                        authService: mockAuthService,
+                                                        progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an a custom implementation of StoragePath
+    /// Then: The operation will fail with a validation error
+    func testUploadFileOperationCustomStoragePathValidationError() {
+        let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
+        mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceUploadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completedVoid]
+
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let expectedUploadSource = UploadSource.local(fileURL)
+        let metadata = ["mykey": "Value"]
+
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: metadata,
+                                                       contentType: testContentType)
+        let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
+
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageUploadFileOperation(request,
+                                                        storageConfiguration: testStorageConfiguration,
+                                                        storageService: mockStorageService,
+                                                        authService: mockAuthService,
+                                                        progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an valid StringStoragePath
+    /// Then: The operation will succeed
+    func testUploadFileOperationWithStringStoragePathSucceeds() async throws {
+        let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceUploadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completedVoid]
+
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let expectedUploadSource = UploadSource.local(fileURL)
+        let metadata = ["mykey": "Value"]
+
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: metadata,
+                                                       contentType: testContentType)
+        let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
+
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
+                inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        })
+
+        operation.start()
+
+        await waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.uploadCalled, 1)
+        mockStorageService.verifyUpload(serviceKey: "/public/\(testKey)",
+                                        key: testKey,
+                                        uploadSource: expectedUploadSource,
+                                        contentType: testContentType,
+                                        metadata: metadata)
+    }
+
+    /// Given: Storage Upload File Operation
+    /// When: The operation is executed with a request that has an valid IdentityIDStoragePath
+    /// Then: The operation will succeed
+    func testUploadFileOperationWithIdentityIDStoragePathSucceeds() async throws {
+        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(id)/\(self.testKey)" })
+        mockAuthService.identityId = testIdentityId
+        let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
+        mockStorageService.storageServiceUploadEvents = [
+            StorageEvent.initiated(StorageTaskReference(task)),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completedVoid]
+
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let expectedUploadSource = UploadSource.local(fileURL)
+        let metadata = ["mykey": "Value"]
+
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: metadata,
+                                                       contentType: testContentType)
+        let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageUploadFileOperation(
+            request,
+            storageConfiguration: testStorageConfiguration,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
+                inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        })
+
+        operation.start()
+
+        await waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.uploadCalled, 1)
+        mockStorageService.verifyUpload(serviceKey: "/public/\(testIdentityId)/\(testKey)",
+                                        key: testKey,
+                                        uploadSource: expectedUploadSource,
+                                        contentType: testContentType,
+                                        metadata: metadata)
+    }
+
     // TODO: test pause, resume, canel, etc.
 }

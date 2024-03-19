@@ -21,7 +21,7 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageDownloadDataRequest.key
-    @available(*, deprecated, message: "Use `StoragePath` instead")
+    @available(*, deprecated, message: "Use `path` instead of `key`")
     public let key: String
 
     /// Options to adjust the behavior of this request, including plugin-options
@@ -29,7 +29,7 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     /// - Tag: StorageDownloadDataRequest.options
     public let options: Options
 
-    /// - Tag: StorageDownloadDataRequest.key
+    /// - Tag: StorageDownloadDataRequest.init
     @available(*, deprecated, message: "Use init(path:local:options)")
     public init(key: String, options: Options) {
         self.key = key
@@ -37,6 +37,7 @@ public struct StorageDownloadDataRequest: AmplifyOperationRequest {
         self.path = nil
     }
 
+    /// - Tag: StorageDownloadDataRequest.init
     public init(path: any StoragePath, options: Options) {
         self.key = ""
         self.options = options
@@ -87,11 +88,20 @@ public extension StorageDownloadDataRequest {
 
         ///
         /// - Tag: StorageDownloadDataRequestOptions.init
+        @available(*, deprecated, message: "Use init(pluginOptions)")
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     pluginOptions: Any? = nil) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
+            self.pluginOptions = pluginOptions
+        }
+
+        ///
+        /// - Tag: StorageDownloadDataRequestOptions.init
+        public init(pluginOptions: Any? = nil) {
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
             self.pluginOptions = pluginOptions
         }
     }
