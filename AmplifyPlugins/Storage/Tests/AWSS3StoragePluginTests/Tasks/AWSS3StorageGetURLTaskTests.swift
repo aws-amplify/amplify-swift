@@ -13,44 +13,47 @@ import XCTest
 @testable import AWSPluginsTestCommon
 import AWSS3
 
-class AWSS3StorageRemoveTaskTests: XCTestCase {
+class AWSS3StorageGetURLTaskTests: XCTestCase {
 
 
-    /// - Given: A configured Storage Remove Task with mocked service
-    /// - When: AWSS3StorageRemoveTask value is invoked
-    /// - Then: A key should be returned, that has been removed without any errors.
+    /// - Given: A configured Storage GetURL Task with mocked service
+    /// - When: AWSS3StorageGetURLTask value is invoked
+    /// - Then: A URL should be returned.
     func testRemoveTaskSuccess() async throws {
+
+        let somePath = "/path"
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
+
         let serviceMock = MockAWSS3StorageService()
-        let client = serviceMock.client as! MockS3Client
-        client.deleteObjectHandler = { input in
-            return .init()
+        serviceMock.getPreSignedURLHandler = { path, _, _ in
+            XCTAssertEqual(somePath, path)
+            return tempURL
         }
 
-        let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
-        let task = AWSS3StorageRemoveTask(
+        let request = StorageGetURLRequest(
+            path: StringStoragePath.fromString(somePath), options: .init())
+        let task = AWSS3StorageGetURLTask(
             request,
-            storageConfiguration: AWSS3StoragePluginConfiguration(),
             storageBehaviour: serviceMock)
         let value = try await task.value
-        XCTAssertEqual(value, "/path")
+        XCTAssertEqual(value, tempURL)
     }
 
-    /// - Given: A configured Storage Remove Task with mocked service, throwing `NoSuchKey` exception
-    /// - When: AWSS3StorageRemoveTask value is invoked
+    /// - Given: A configured Storage GetURL Task with mocked service, throwing `NotFound` exception
+    /// - When: AWSS3StorageGetURLTask value is invoked
     /// - Then: A storage service error should be returned, with an underlying service error
     func testRemoveTaskNoBucket() async throws {
+        let somePath = "/path"
+
         let serviceMock = MockAWSS3StorageService()
-        let client = serviceMock.client as! MockS3Client
-        client.deleteObjectHandler = { input in
-            throw AWSS3.NoSuchKey()
+        serviceMock.getPreSignedURLHandler = { _, _, _ in
+            throw AWSS3.NotFound()
         }
 
-        let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
-        let task = AWSS3StorageRemoveTask(
+        let request = StorageGetURLRequest(
+            path: StringStoragePath.fromString(somePath), options: .init())
+        let task = AWSS3StorageGetURLTask(
             request,
-            storageConfiguration: AWSS3StoragePluginConfiguration(),
             storageBehaviour: serviceMock)
         do {
             _ = try await task.value
@@ -62,22 +65,28 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
                 XCTFail("Should throw a Storage service error, instead threw \(error)")
                 return
             }
-            XCTAssertTrue(underlyingError is AWSS3.NoSuchKey,
+            XCTAssertTrue(underlyingError is AWSS3.NotFound,
                           "Underlying error should be NoSuchKey, instead got \(String(describing: underlyingError))")
         }
     }
 
-    /// - Given: A configured Storage Remove Task with invalid path
-    /// - When: AWSS3StorageRemoveTask value is invoked
+    /// - Given: A configured Storage GetURL Task with invalid path
+    /// - When: AWSS3StorageGetURLTask value is invoked
     /// - Then: A storage validation error should be returned
-    func testRemoveTaskWithInvalidPath() async throws {
-        let serviceMock = MockAWSS3StorageService()
+    func testGetURLTaskWithInvalidPath() async throws {
+        let somePath = "path"
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
 
-        let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("path"), options: .init())
-        let task = AWSS3StorageRemoveTask(
+        let serviceMock = MockAWSS3StorageService()
+        serviceMock.getPreSignedURLHandler = { path, _, _ in
+            XCTAssertEqual(somePath, path)
+            return tempURL
+        }
+
+        let request = StorageGetURLRequest(
+            path: StringStoragePath.fromString(somePath), options: .init())
+        let task = AWSS3StorageGetURLTask(
             request,
-            storageConfiguration: AWSS3StoragePluginConfiguration(),
             storageBehaviour: serviceMock)
         do {
             _ = try await task.value

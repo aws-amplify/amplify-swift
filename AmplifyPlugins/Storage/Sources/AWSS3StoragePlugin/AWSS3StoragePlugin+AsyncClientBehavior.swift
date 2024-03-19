@@ -50,31 +50,11 @@ extension AWSS3StoragePlugin {
         options: StorageGetURLOperation.Request.Options? = nil
     ) async throws -> URL {
         let options = options ?? StorageGetURLRequest.Options()
-        let path = "" //TODO: resolve path
-        let request = StorageGetURLRequest(key: path, options: options)
-        if let error = request.validate() {
-            throw error
-        }
-        let prefixResolver = storageConfiguration.prefixResolver ?? StorageAccessLevelAwarePrefixResolver(authService: authService)
-        let prefix = try await prefixResolver.resolvePrefix(for: options.accessLevel,
-                                                            targetIdentityId: options.targetIdentityId)
-        let serviceKey = prefix + request.key
-        if let pluginOptions = options.pluginOptions as? AWSStorageGetURLOptions, pluginOptions.validateObjectExistence {
-            try await storageService.validateObjectExistence(serviceKey: serviceKey)
-        }
-        let accelerate = try AWSS3PluginOptions.accelerateValue(
-            pluginOptions: options.pluginOptions)
-        let result = try await storageService.getPreSignedURL(
-            serviceKey: serviceKey,
-            signingOperation: .getObject,
-            metadata: nil,
-            accelerate: accelerate,
-            expires: options.expires)
-
-        let channel = HubChannel(from: categoryType)
-        let payload = HubPayload(eventName: HubPayload.EventName.Storage.getURL, context: options, data: result)
-        Amplify.Hub.dispatch(to: channel, payload: payload)
-        return result
+        let request = StorageGetURLRequest(path: path, options: options)
+        let task = AWSS3StorageGetURLTask(
+            request,
+            storageBehaviour: storageService)
+        return try await task.value
     }
 
     public func downloadData(
