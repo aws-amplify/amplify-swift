@@ -84,13 +84,21 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
             return
         }
 
-        let prefixResolver = storageConfiguration.prefixResolver ??
-        StorageAccessLevelAwarePrefixResolver(authService: authService)
+
 
         Task {
             do {
-                let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
-                let serviceKey = prefix + request.key
+
+                let serviceKey: String
+                if let path = request.path {
+                    serviceKey = try await path.resolvePath(authService: self.authService)
+                } else {
+                    let prefixResolver = storageConfiguration.prefixResolver ??
+                    StorageAccessLevelAwarePrefixResolver(authService: authService)
+                    let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
+                    serviceKey = prefix + request.key
+                }
+
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
                 if request.data.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold {
                     storageService.multiPartUpload(

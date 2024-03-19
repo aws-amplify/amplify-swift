@@ -13,9 +13,15 @@ import Foundation
 /// - Tag: StorageUploadDataRequest
 public struct StorageUploadDataRequest: AmplifyOperationRequest {
 
+    /// The path for the object in storage
+    ///
+    /// - Tag: StorageDownloadFileRequest.path
+    public let path: (any StoragePath)?
+
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageUploadDataRequest.key
+    @available(*, deprecated, message: "Use `path` instead")
     public let key: String
 
     /// The data in memory to be uploaded
@@ -29,10 +35,19 @@ public struct StorageUploadDataRequest: AmplifyOperationRequest {
     public let options: Options
 
     /// - Tag: StorageUploadDataRequest.init
+    @available(*, deprecated, message: "Use init(path:data:options)")
     public init(key: String, data: Data, options: Options) {
         self.key = key
         self.data = data
         self.options = options
+        self.path = nil
+    }
+
+    public init(path: any StoragePath, data: Data, options: Options) {
+        self.key = ""
+        self.data = data
+        self.options = options
+        self.path = path
     }
 }
 

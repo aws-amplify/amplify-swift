@@ -21,7 +21,7 @@ public struct StorageDownloadFileRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     ///
     /// - Tag: StorageDownloadFileRequest.key
-    @available(*, deprecated, message: "Use `StoragePath` instead")
+    @available(*, deprecated, message: "Use `path` instead")
     public let key: String
 
     /// The local file to download the object to
