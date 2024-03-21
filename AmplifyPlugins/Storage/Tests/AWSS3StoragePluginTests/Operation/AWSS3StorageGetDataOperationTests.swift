@@ -178,7 +178,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
     func testDownloadDataOperationStringStoragePathValidationError() {
-        let path = StringStoragePath(resolve: { _ in return "my/path" })
+        let path = StringStoragePath(resolve: { _ in return "/my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(request,
@@ -208,7 +208,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
     func testDownloadDataOperationIdentityIdStoragePathValidationError() {
-        let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
+        let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(request,
@@ -271,7 +271,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
-        let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        let path = StringStoragePath(resolve: { _ in return "public/\(self.testKey)" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
 
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
@@ -296,7 +296,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: nil)
+        mockStorageService.verifyDownload(serviceKey: "public/\(self.testKey)", fileURL: nil)
     }
 
     /// Given: Storage Download Data Operation
@@ -309,7 +309,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
-        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(id)/\(self.testKey)" })
+        let path = IdentityIDStoragePath(resolve: { id in return "public/\(id)/\(self.testKey)" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
 
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
@@ -334,7 +334,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         await fulfillment(of: [inProcessInvoked, completeInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        mockStorageService.verifyDownload(serviceKey: "/public/\(testIdentityId)/\(self.testKey)", fileURL: nil)
+        mockStorageService.verifyDownload(serviceKey: "public/\(testIdentityId)/\(self.testKey)", fileURL: nil)
     }
 
     // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageTaskReference?

@@ -259,7 +259,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
     func testUploadFileOperationStringStoragePathValidationError() {
-        let path = StringStoragePath(resolve: { _ in return "my/path" })
+        let path = StringStoragePath(resolve: { _ in return "/my/path" })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
@@ -305,7 +305,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
     func testUploadFileOperationIdentityIDStoragePathValidationError() {
-        let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
+        let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
@@ -397,7 +397,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an valid StringStoragePath
     /// Then: The operation will succeed
     func testUploadFileOperationWithStringStoragePathSucceeds() async throws {
-        let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        let path = StringStoragePath(resolve: { _ in return "public/\(self.testKey)" })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
@@ -439,7 +439,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: "/public/\(testKey)",
+        mockStorageService.verifyUpload(serviceKey: "public/\(testKey)",
                                         key: testKey,
                                         uploadSource: expectedUploadSource,
                                         contentType: testContentType,
@@ -450,7 +450,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an valid IdentityIDStoragePath
     /// Then: The operation will succeed
     func testUploadFileOperationWithIdentityIDStoragePathSucceeds() async throws {
-        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(id)/\(self.testKey)" })
+        let path = IdentityIDStoragePath(resolve: { id in return "public/\(id)/\(self.testKey)" })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
@@ -491,7 +491,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: "/public/\(testIdentityId)/\(testKey)",
+        mockStorageService.verifyUpload(serviceKey: "public/\(testIdentityId)/\(testKey)",
                                         key: testKey,
                                         uploadSource: expectedUploadSource,
                                         contentType: testContentType,

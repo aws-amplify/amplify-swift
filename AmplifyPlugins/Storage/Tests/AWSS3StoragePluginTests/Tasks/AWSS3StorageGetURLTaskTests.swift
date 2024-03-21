@@ -21,7 +21,7 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
     /// - Then: A URL should be returned.
     func testRemoveTaskSuccess() async throws {
 
-        let somePath = "/path"
+        let somePath = "path"
         let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
 
         let serviceMock = MockAWSS3StorageService()
@@ -43,7 +43,7 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
     /// - When: AWSS3StorageGetURLTask value is invoked
     /// - Then: A storage service error should be returned, with an underlying service error
     func testRemoveTaskNoBucket() async throws {
-        let somePath = "/path"
+        let somePath = "path"
 
         let serviceMock = MockAWSS3StorageService()
         serviceMock.getPreSignedURLHandler = { _, _, _ in
@@ -74,7 +74,7 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
     /// - When: AWSS3StorageGetURLTask value is invoked
     /// - Then: A storage validation error should be returned
     func testGetURLTaskWithInvalidPath() async throws {
-        let somePath = "path"
+        let somePath = "/path"
         let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
 
         let serviceMock = MockAWSS3StorageService()
