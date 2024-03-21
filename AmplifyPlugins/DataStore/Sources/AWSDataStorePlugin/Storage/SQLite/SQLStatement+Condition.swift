@@ -18,68 +18,112 @@ typealias SQLPredicate = (String, [Binding?])
 ///   - modelSchema: the model schema of the `Model`
 ///   - predicate: the query predicate
 /// - Returns: a tuple containing the SQL string and the associated values
-private func translateQueryPredicate(from modelSchema: ModelSchema,
-                                     predicate: QueryPredicate,
-                                     namespace: Substring? = nil) -> SQLPredicate {
-    var sql: [String] = []
-    var bindings: [Binding?] = []
-    let indentPrefix = "  "
-    var indentSize = 1
+private func translateQueryPredicate(
+    from modelSchema: ModelSchema,
+    predicate: QueryPredicate,
+    namespace: Substring? = nil
+) -> SQLPredicate {
+    let indentPrefix = " "
+    let indentSize = 2
 
-    func translate(_ pred: QueryPredicate, predicateIndex: Int, groupType: QueryPredicateGroupType) {
-        let indent = String(repeating: indentPrefix, count: indentSize)
-        if let operation = pred as? QueryPredicateOperation {
-            let column = resolveColumn(operation)
-            if predicateIndex == 0 {
-                sql.append("\(indent)\(operation.operator.sqlOperation(column: column))")
-            } else {
-                sql.append("\(indent)\(groupType.rawValue) \(operation.operator.sqlOperation(column: column))")
+    func translate(_ predicate: QueryPredicateOperation, indentationLevel: Int) -> (String, [Binding?]) {
+        func padding(_ level: Int) -> String {
+            String(repeating: indentPrefix, count: indentSize * level)
+        }
+
+        func statement(_ sqls: [String], predicate: QueryPredicateOperation) -> String {
+            switch sqls.count {
+            case 0: return ""
+            case 1: return "\(padding(indentationLevel))\(predicate.operator) \(sqls.joined())"
+            default:
+                let statements = sqls.joined(separator: "\n\(padding(indentationLevel + 1))\(predicate.operator) ")
+                return """
+                (
+                \(padding(indentationLevel + 1))\(statements)
+                \(padding(indentationLevel)))
+                """
             }
+        }
 
-            bindings.append(contentsOf: operation.operator.bindings)
-        } else if let group = pred as? QueryPredicateGroup {
-            var shouldClose = false
-
-            if predicateIndex == 0 {
-                sql.append("\(indent)(")
-            } else {
-                sql.append("\(indent)\(groupType.rawValue) (")
-            }
-
-            indentSize += 1
-            shouldClose = true
-
-            for index in 0 ..< group.predicates.count {
-                translate(group.predicates[index], predicateIndex: index, groupType: group.type)
-            }
-
-            if shouldClose {
-                indentSize -= 1
-                sql.append("\(indent))")
-            }
-        } else if let constant = pred as? QueryPredicateConstant {
-            if case .all = constant {
-                sql.append("or 1 = 1")
-            }
+        switch predicate {
+        case let .operation(field, op):
+            let column = resolveColumn(field)
+            return (op.sqlOperation(column: column), op.bindings)
+        case .and(let predicates),
+             .or(let predicates):
+            let sqls = predicates.map { translate($0, indentationLevel: indentationLevel + 1) }
+            return (
+                statement(sqls.map(\.0), predicate: predicate),
+                sqls.map(\.1).flatMap { $0 }
+            )
+        case let .not(predicate):
+            let sql = translate(predicate, indentationLevel: indentationLevel + 1)
+            return (
+                statement([sql.0], predicate: predicate),
+                sql.1
+            )
+        case .true:
+            return ("1 = 1", [])
+        case .false:
+            return ("1 = 0", [])
         }
     }
 
-    func resolveColumn(_ operation: QueryPredicateOperation) -> String {
-        let modelField = modelSchema.field(withName: operation.field)
+    func resolveColumn(_ field: String) -> String {
+        let modelField = modelSchema.field(withName: field)
         if let namespace = namespace, let modelField = modelField {
             return modelField.columnName(forNamespace: String(namespace))
         } else if let modelField = modelField {
             return modelField.columnName()
         } else if let namespace = namespace {
-            return String(namespace).quoted() + "." + operation.field.quoted()
+            return String(namespace).quoted() + "." + field.quoted()
         }
-        return operation.field.quoted()
+        return field.quoted()
+    }
+
+    func deduplicate(_ predicate: QueryPredicateOperation) -> QueryPredicateOperation {
+        func rewritePredicate(_ predicate: QueryPredicateOperation) -> QueryPredicateOperation {
+            switch predicate {
+            case let .operation(field, op):
+                if case .attributeExists(let bool) = op {
+                    return bool ? .operation(field, .notEqual(nil))
+                                : .operation(field, .equals(nil))
+                }
+                return predicate
+            case .and, .or:
+                return deduplicate(predicate)
+            default:
+                return predicate
+            }
+        }
+
+        switch predicate {
+        case let .and(predicates):
+            let optimizedPredicates = predicates.map(rewritePredicate(_:)).reduce([]) { result, predicate in
+                result.contains(where: { predicate == $0 }) ? result : result + [predicate]
+            }
+            return optimizedPredicates.count == 1
+                ? optimizedPredicates.first!
+                : .and(optimizedPredicates)
+        case let .or(predicates):
+            let optimizedPredicates = predicates.map(rewritePredicate(_:)).reduce([]) { result, predicate in
+                result.contains(where: { predicate == $0 }) ? result : result + [predicate]
+            }
+            return optimizedPredicates.count == 1
+                ? optimizedPredicates.first!
+                : .or(optimizedPredicates)
+        default:
+            return predicate
+        }
     }
 
     // the very first `and` is always prepended, using -1 for if statement checking
     // the very first `and` is to connect `where` clause with translated QueryPredicate
-    translate(predicate, predicateIndex: -1, groupType: .and)
-    return (sql.joined(separator: "\n"), bindings)
+
+    guard let predicate = predicate as? QueryPredicateOperation else {
+        return ("", [])
+    }
+    return translate(QueryPredicateOperation.and([deduplicate(predicate)]), indentationLevel: 0)
 }
 
 /// Represents a partial SQL statement with query conditions. This type can be used to

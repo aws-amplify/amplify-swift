@@ -650,6 +650,31 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(localSuccess, postCount)
     }
 
+    /**
+     - Given: DataStore with Post schema and optional field 'draft'
+     - When:
+        - create a new post with optional field 'draft' value .none
+     - Then:
+        - query Posts with filter {attributeExists : false} should include the post
+     */
+    func test_listModelsWithNilOptionalField_success() async {
+        let post = Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
+        do {
+            await setUp(withModels: TestModelRegistration())
+            try await startAmplifyAndWaitForSync()
+
+            try await Amplify.DataStore.save(post)
+            let posts = try await Amplify.DataStore.query(
+                Post.self,
+                where: Post.keys.draft.eq(nil)
+                    .and(Post.keys.createdAt.ge(post.createdAt))
+            )
+            XCTAssertTrue(posts.map(\.id).contains(post.id))
+        } catch {
+            XCTFail("attributeExists filter should include records with optinal field .none")
+        }
+    }
+
     // MARK: - Helpers
 
     private func sleepMill(_ milliseconds: UInt64) async throws {

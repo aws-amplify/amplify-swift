@@ -595,6 +595,7 @@ class SQLStatementTests: XCTestCase {
             and "root"."content" = ?
           )
         """
+
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
@@ -993,7 +994,7 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
-          and "id" is not null
+        and "id" is not null
         """, statement.stringValue)
         XCTAssert(statement.variables.isEmpty)
     }
@@ -1011,7 +1012,7 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
 
         XCTAssertEqual("""
-          and "root"."id" is not null
+        and "root"."id" is not null
         """, statement.stringValue)
         XCTAssert(statement.variables.isEmpty)
     }
@@ -1027,7 +1028,7 @@ class SQLStatementTests: XCTestCase {
                              matches sql: String,
                              bindings: [Binding?]? = nil) {
             let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
-            XCTAssertEqual(statement.stringValue, "  and \(sql)")
+            XCTAssertEqual(statement.stringValue, "and \(sql)")
             if let bindings = bindings {
                 XCTAssertEqual(bindings.count, statement.variables.count)
                 bindings.enumerated().forEach {
@@ -1078,7 +1079,7 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate)
 
         XCTAssertEqual("""
-          and (
+        and (
             "id" is not null
             and "draft" = ?
             and "rating" > ?
@@ -1278,10 +1279,8 @@ class SQLStatementTests: XCTestCase {
                 and "root"."content" = ?
               )
             )
-            and (
-              "root"."rating" > ?
-              and "root"."createdAt" = ?
-            )
+            and "root"."rating" > ?
+            and "root"."createdAt" = ?
           )
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -1312,7 +1311,7 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
         let expectedStatement =
             """
-              and (
+            and (
                 "root"."id" is not null
                 and "root"."draft" = ?
                 and "root"."rating" > ?
@@ -1343,7 +1342,7 @@ class SQLStatementTests: XCTestCase {
         let variables = statement.variables
 
         let expectStatement = """
-          and "root"."commentPostId" = ?
+        and "root"."commentPostId" = ?
         """
         let expectedVariable = "postID"
 

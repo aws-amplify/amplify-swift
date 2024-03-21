@@ -30,7 +30,7 @@ class QueryPredicateTests: XCTestCase {
         let predicate = post.draft.eq(true)
 
         XCTAssertEqual(predicate, post.draft == true)
-        XCTAssertEqual(predicate, QueryPredicateOperation(field: "draft", operator: .equals(true)))
+        XCTAssertEqual(predicate, QueryPredicateOperation.operation("draft", .equals(true)))
     }
 
     /// it should create a simple `QueryPredicateGroup`
@@ -38,13 +38,11 @@ class QueryPredicateTests: XCTestCase {
         let post = Post.keys
         let predicate = post.draft.eq(true).and(post.id.ne(nil))
 
-        let expected = QueryPredicateGroup(
-            type: .and,
-            predicates: [
-                QueryPredicateOperation(field: "draft", operator: .equals(true)),
-                QueryPredicateOperation(field: "id", operator: .notEqual(nil))
-            ]
-        )
+        let expected = QueryPredicateOperation.and([
+            .operation("draft", .equals(true)),
+            .operation("id", .attributeExists(true)),
+            .operation("id", .notEqual(nil))
+        ])
 
         XCTAssertEqual(predicate, expected)
         
@@ -60,29 +58,19 @@ class QueryPredicateTests: XCTestCase {
         let predicate = post.draft.eq(true)
             .and(post.id.ne(nil))
             .and(post.title.beginsWith("gelato").or(post.title.beginsWith("ice cream")))
-            .and(not(post.content.contains("italia")))
+            .and(.not(post.content.contains("italia")))
 
-        let expected = QueryPredicateGroup(
-            type: .and,
-            predicates: [
-                QueryPredicateOperation(field: "draft", operator: .equals(true)),
-                QueryPredicateOperation(field: "id", operator: .notEqual(nil)),
-                QueryPredicateGroup(
-                    type: .or,
-                    predicates: [
-                        QueryPredicateOperation(field: "title", operator: .beginsWith("gelato")),
-                        QueryPredicateOperation(field: "title", operator: .beginsWith("ice cream"))
-                    ]
-                ),
-                QueryPredicateGroup(
-                    type: .not,
-                    predicates: [
-                        QueryPredicateOperation(field: "content", operator: .contains("italia"))
-                    ]
-                )
-            ]
-        )
-        XCTAssert(predicate == expected)
+        let expected = QueryPredicateOperation.and([
+            .operation("draft", .equals(true)),
+            .operation("id", .attributeExists(true)),
+            .operation("id", .notEqual(nil)),
+            .or([
+                .operation("title", .beginsWith("gelato")),
+                .operation("title", .beginsWith("ice cream"))
+            ]),
+            .not(.operation("content", .contains("italia")))
+        ])
+        XCTAssertEqual(predicate, expected)
         
         let predicateString = String(data: try! encoder.encode(predicate), encoding: .utf8)!
         let expectedString = String(data: try! encoder.encode(expected), encoding: .utf8)!
@@ -113,7 +101,7 @@ class QueryPredicateTests: XCTestCase {
             post.id != nil || post.id == "id"
         )
         XCTAssertEqual(
-            not(post.id.eq("id")),
+            .not(post.id.eq("id")),
             !(post.id == "id")
         )
     }
@@ -130,7 +118,7 @@ class QueryPredicateTests: XCTestCase {
             post.id != nil || post.id == "id" || post.rating >= 0
         )
         XCTAssertEqual(
-            not(post.id.eq("id").and(post.id.ne(nil))),
+            .not(post.id.eq("id").and(post.id.ne(nil))),
             !(post.id == "id" && post.id != nil)
         )
     }
@@ -155,7 +143,7 @@ class QueryPredicateTests: XCTestCase {
         let funcationPredicate = post.draft.eq(true)
             .and(post.id.ne(nil))
             .and(post.title.beginsWith("gelato").or(post.title.beginsWith("ice cream")))
-            .and(not(post.updatedAt.eq(nil)))
+            .and(.not(post.updatedAt.eq(nil)))
 
         let operatorPredicate = post.draft == true
             && post.id != nil

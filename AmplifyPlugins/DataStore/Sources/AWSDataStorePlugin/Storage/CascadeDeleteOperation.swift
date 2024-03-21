@@ -220,11 +220,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
             // TODO: Add conveinence to queryPredicate where we have a list of items, to be all or'ed
-            var queryPredicates: [QueryPredicateOperation] = []
-            for id in chunkedArray {
-                queryPredicates.append(QueryPredicateOperation(field: associatedField.name, operator: .equals(id)))
-            }
-            let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
+            let groupedQueryPredicates = chunkedArray
+                .map { QueryPredicateOperation.operation(associatedField.name, .equals($0)) }
+                .fold(||)
 
             do {
                 let models = try await withCheckedThrowingContinuation { continuation in
@@ -519,8 +517,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 // MARK: - Supporting types
 extension CascadeDeleteOperation {
 
-    struct QueryAndDeleteResult<M: Model> {
-        let deletedModels: [M]
+    struct QueryAndDeleteResult<T: Model> {
+        let deletedModels: [T]
         let associatedModels: [(ModelName, Model)]
     }
 
@@ -535,9 +533,12 @@ extension CascadeDeleteOperation {
             case .withIdentifier(let identifier):
                 return identifier.predicate
             case .withIdentifierAndCondition(let identifier, let predicate):
-                return QueryPredicateGroup(type: .and,
-                                           predicates: [identifier.predicate,
-                                                        predicate])
+                guard let identifierPredicate = identifier.predicate as? QueryPredicateOperation,
+                      let predicate = predicate as? QueryPredicateOperation 
+                else {
+                    return identifier.predicate
+                }
+                return identifierPredicate && predicate
             case .withFilter(let predicate):
                 return predicate
             }

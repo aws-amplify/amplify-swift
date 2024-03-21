@@ -112,14 +112,12 @@ class ModelIdentifierTests: XCTestCase {
 
         let identifier = model.identifier(schema: ModelCompositePk.schema)
 
-        let predicate = (identifier.predicate as? QueryPredicateGroup)!
+        let predicate = (identifier.predicate as? QueryPredicateOperation)!
 
         let keys = ModelCompositePk.keys
 
         let expectedPredicate = keys.dob == model.dob && keys.id == model.id
 
-        XCTAssertEqual(predicate.type, expectedPredicate.type)
-        XCTAssertEqual(predicate.predicates.count, expectedPredicate.predicates.count)
         XCTAssertEqual(predicate, expectedPredicate)
 
     }

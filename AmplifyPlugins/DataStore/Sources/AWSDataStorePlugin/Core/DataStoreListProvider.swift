@@ -43,7 +43,7 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         case .loaded(let elements):
             return elements
         case .notLoaded(let associatedIdentifiers, let associatedFields):
-            let predicate: QueryPredicate
+            let predicate: QueryPredicate?
             if associatedIdentifiers.count == 1,
                let associatedId = associatedIdentifiers.first,
                let associatedField = associatedFields.first {
@@ -51,13 +51,11 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                 predicate = field(associatedField) == associatedId
             } else {
                 let predicateValues = zip(associatedFields, associatedIdentifiers)
-                var queryPredicates: [QueryPredicateOperation] = []
-                for (identifierName, identifierValue) in predicateValues {
-                    queryPredicates.append(QueryPredicateOperation(field: identifierName,
-                                                                   operator: .equals(identifierValue)))
-                }
+                predicate = predicateValues
+                    .map { .operation($0.0, .equals($0.1)) }
+                    .fold(&&)
+
                 self.log.verbose("Loading List of \(Element.schema.name) by \(associatedFields) == \(associatedIdentifiers) ")
-                predicate = QueryPredicateGroup(type: .and, predicates: queryPredicates)
             }
 
             do {

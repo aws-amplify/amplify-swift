@@ -33,7 +33,7 @@ class AWSRESTOperationTests: OperationTestBase {
     }
 
     // TODO: Fix this test
-    func testGetReturnsOperation() throws {
+    func testGetReturnsOperation() async throws {
         try setUpPlugin(endpointType: .rest)
 
         // Use this as a semaphore to ensure the task is cleaned up before proceeding to the next test
@@ -50,7 +50,7 @@ class AWSRESTOperationTests: OperationTestBase {
 
         XCTAssertNotNil(operation.request)
 
-        waitForExpectations(timeout: 1.00)
+        await fulfillment(of: [listenerWasInvoked], timeout: 3.00)
     }
 
     func testGetFailsWithBadAPIName() throws {

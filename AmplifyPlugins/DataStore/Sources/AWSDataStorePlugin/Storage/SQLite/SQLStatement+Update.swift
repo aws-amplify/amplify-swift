@@ -48,7 +48,7 @@ struct UpdateStatement: SQLStatement {
         if let conditionStatement = conditionStatement {
             sql = """
             \(sql)
-            \(conditionStatement.stringValue)
+              \(conditionStatement.stringValue)
             """
         }
 

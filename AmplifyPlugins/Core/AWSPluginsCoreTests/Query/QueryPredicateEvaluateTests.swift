@@ -146,7 +146,7 @@ class QueryPredicateEvaluateTests: XCTestCase {
 
         XCTAssert(evaluation)
     }
-    func testConstantall() throws {
+    func testConstantAll() throws {
         let predicate = QueryPredicateConstant.all
         let instance = QPredGen(name: "test")
 
