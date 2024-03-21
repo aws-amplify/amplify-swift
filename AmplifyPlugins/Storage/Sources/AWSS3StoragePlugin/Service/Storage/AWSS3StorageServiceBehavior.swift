@@ -70,6 +70,7 @@ protocol AWSS3StorageServiceBehavior {
                          accelerate: Bool?,
                          onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
 
+    @available(*, deprecated, message: "Use `AWSS3StorageListObjectsV2Task` instead")
     func list(prefix: String,
               options: StorageListRequest.Options) async throws -> StorageListResult
 
