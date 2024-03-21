@@ -23,4 +23,11 @@ extension PushNotificationsCategory: CategoryConfigurable {
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
+
+    func configure(using amplifyConfiguration: AmplifyConfigurationV2) throws {
+        for plugin in Array(plugins.values) {
+            try plugin.configure(using: amplifyConfiguration)
+        }
+        isConfigured = true
+    }
 }

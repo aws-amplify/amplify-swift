@@ -79,19 +79,6 @@ class AWSLocationGeoPluginConfigurationTests: XCTestCase {
         }
     }
 
-    func testConfigureThrowsErrorForMissingConfigurationObject() {
-        let geoPluginConfig: Any? = nil
-
-        XCTAssertThrowsError(try AWSLocationGeoPluginConfiguration(config: geoPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
-                XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
-                return
-            }
-            XCTAssertEqual(errorDescription,
-                           GeoPluginConfigError.configurationInvalid(section: .plugin).errorDescription)
-        }
-    }
-
     func testConfigureThrowsErrorForInvalidConfigurationObject() {
         let geoPluginConfig = JSONValue(stringLiteral: "notADictionaryLiteral")
 

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import Foundation
 import AWSPluginsCore
 
@@ -19,20 +19,26 @@ extension AWSPredictionsPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-
-        guard let jsonValueConfiguration = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(
-                PluginErrorMessage.decodeConfigurationError.errorDescription,
-                PluginErrorMessage.decodeConfigurationError.recoverySuggestion
+        let predictionsConfiguration: PredictionsPluginConfiguration
+        if let configuration = configuration as? AmplifyConfigurationV2 {
+            // TODO: Implement
+            predictionsConfiguration = PredictionsPluginConfiguration(defaultRegion: "",
+                                                                      identify: .init(""),
+                                                                      interpret: .init(""),
+                                                                      convert: .init(""))
+        } else {
+            guard let jsonValueConfiguration = configuration as? JSONValue else {
+                throw PluginError.pluginConfigurationError(
+                    PluginErrorMessage.decodeConfigurationError.errorDescription,
+                    PluginErrorMessage.decodeConfigurationError.recoverySuggestion
+                )
+            }
+            let configurationData =  try JSONEncoder().encode(jsonValueConfiguration)
+            predictionsConfiguration = try JSONDecoder().decode(
+                PredictionsPluginConfiguration.self,
+                from: configurationData
             )
         }
-
-        let configurationData =  try JSONEncoder().encode(jsonValueConfiguration)
-
-        let predictionsConfiguration = try JSONDecoder().decode(
-            PredictionsPluginConfiguration.self,
-            from: configurationData
-        )
 
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
