@@ -27,13 +27,13 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         }
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init())
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
             storageBehaviour: serviceMock)
         let value = try await task.value
-        XCTAssertEqual(value, "/path")
+        XCTAssertEqual(value, "path")
     }
 
     /// - Given: A configured Storage Remove Task with mocked service, throwing `NoSuchKey` exception
@@ -47,7 +47,7 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         }
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init())
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
@@ -74,7 +74,7 @@ class AWSS3StorageRemoveTaskTests: XCTestCase {
         let serviceMock = MockAWSS3StorageService()
 
         let request = StorageRemoveRequest(
-            path: StringStoragePath.fromString("path"), options: .init())
+            path: StringStoragePath.fromString("/path"), options: .init())
         let task = AWSS3StorageRemoveTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),

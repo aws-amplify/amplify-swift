@@ -186,7 +186,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
     func testDownloadFileOperationStringStoragePathValidationError() {
-        let path = StringStoragePath(resolve: { _ in return "my/path" })
+        let path = StringStoragePath(resolve: { _ in return "/my/path" })
         let request = StorageDownloadFileRequest(path: path,
                                                  local: testURL,
                                                  options: StorageDownloadFileRequest.Options())
@@ -218,7 +218,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
     func testDownloadFileOperationIdentityIDStoragePathValidationError() {
-        let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
+        let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
         let request = StorageDownloadFileRequest(path: path,
                                                  local: testURL,
                                                  options: StorageDownloadFileRequest.Options())
@@ -282,7 +282,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an valid StringStoragePath
     /// Then: The operation will succeed
     func testDownloadFileOperationWithStringStoragePathSucceeds() async throws {
-        let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        let path = StringStoragePath(resolve: { _ in return "public/\(self.testKey)" })
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -314,7 +314,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
         await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        mockStorageService.verifyDownload(serviceKey: "/public/\(self.testKey)", fileURL: url)
+        mockStorageService.verifyDownload(serviceKey: "public/\(self.testKey)", fileURL: url)
     }
 
     /// Given: Storage Download File Operation
@@ -322,7 +322,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     /// Then: The operation will succeed
     func testDownloadFileOperationWithIdentityIDStoragePathSucceeds() async throws {
         mockAuthService.identityId = testIdentityId
-        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(id)/\(self.testKey)" })
+        let path = IdentityIDStoragePath(resolve: { id in return "public/\(id)/\(self.testKey)" })
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -354,7 +354,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
         await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        mockStorageService.verifyDownload(serviceKey: "/public/\(testIdentityId)/\(self.testKey)", fileURL: url)
+        mockStorageService.verifyDownload(serviceKey: "public/\(testIdentityId)/\(self.testKey)", fileURL: url)
     }
 
     // TODO: missing unit tests for pause resume and cancel. do we create a mock of the StorageTaskReference?

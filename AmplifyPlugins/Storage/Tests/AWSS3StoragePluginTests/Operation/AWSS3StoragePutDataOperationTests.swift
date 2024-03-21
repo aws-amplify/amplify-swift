@@ -223,7 +223,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
     func testUploadDataOperationStringStoragePathValidationError() {
-        let path = StringStoragePath(resolve: { _ in return "my/path" })
+        let path = StringStoragePath(resolve: { _ in return "/my/path" })
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let options = StorageUploadDataRequest.Options(accessLevel: .protected)
         let request = StorageUploadDataRequest(path: path, data: testData, options: options)
@@ -254,7 +254,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
     func testUploadDataOperationIdentityIDStoragePathValidationError() {
-        let path = IdentityIDStoragePath(resolve: { _ in return "my/path" })
+        let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let options = StorageUploadDataRequest.Options(accessLevel: .protected)
         let request = StorageUploadDataRequest(path: path, data: testData, options: options)
@@ -316,7 +316,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
     /// When: The operation is executed with a request that has an valid StringStoragePath
     /// Then: The operation will succeed
     func testUploadDataOperationWithStringStoragePathSucceeds() async throws {
-        let path = StringStoragePath(resolve: { _ in return "/public/\(self.testKey)" })
+        let path = StringStoragePath(resolve: { _ in return "public/\(self.testKey)" })
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -354,7 +354,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: "/public/\(self.testKey)",
+        mockStorageService.verifyUpload(serviceKey: "public/\(self.testKey)",
                                         key: testKey,
                                         uploadSource: expectedUploadSource,
                                         contentType: testContentType,
@@ -366,7 +366,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
     /// Then: The operation will succeed
     func testUploadDataOperationWithIdentityIDStoragePathSucceeds() async throws {
         mockAuthService.identityId = testIdentityId
-        let path = IdentityIDStoragePath(resolve: { id in return "/public/\(id)/\(self.testKey)" })
+        let path = IdentityIDStoragePath(resolve: { id in return "public/\(id)/\(self.testKey)" })
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -403,7 +403,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
-        mockStorageService.verifyUpload(serviceKey: "/public/\(testIdentityId)/\(testKey)",
+        mockStorageService.verifyUpload(serviceKey: "public/\(testIdentityId)/\(testKey)",
                                         key: testKey,
                                         uploadSource: expectedUploadSource,
                                         contentType: testContentType,

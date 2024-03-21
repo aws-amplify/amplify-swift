@@ -31,7 +31,7 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         }
 
         let request = StorageListRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init())
         let task = AWSS3StorageListObjectsTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
@@ -56,7 +56,7 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         }
 
         let request = StorageListRequest(
-            path: StringStoragePath.fromString("/path"), options: .init())
+            path: StringStoragePath.fromString("path"), options: .init())
         let task = AWSS3StorageListObjectsTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
@@ -83,7 +83,7 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         let serviceMock = MockAWSS3StorageService()
 
         let request = StorageListRequest(
-            path: StringStoragePath.fromString("path"), options: .init())
+            path: StringStoragePath.fromString("/path"), options: .init())
         let task = AWSS3StorageListObjectsTask(
             request,
             storageConfiguration: AWSS3StoragePluginConfiguration(),
