@@ -15,9 +15,22 @@ public struct StorageListRequest: AmplifyOperationRequest {
     /// - Tag: StorageListRequest
     public let options: Options
 
+    /// The unique path for the object in storage
+    ///
+    /// - Tag: StorageListRequest.path
+    public let path: (any StoragePath)?
+
     /// - Tag: StorageListRequest.init
+    @available(*, deprecated, message: "Use init(path:options)")
     public init(options: Options) {
         self.options = options
+        self.path = nil
+    }
+
+    /// - Tag: StorageListRequest.init
+    public init(path: any StoragePath, options: Options) {
+        self.options = options
+        self.path = path
     }
 }
 
