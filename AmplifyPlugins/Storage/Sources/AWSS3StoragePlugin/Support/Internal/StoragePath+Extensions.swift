@@ -41,9 +41,9 @@ extension StoragePath {
     }
 
     func validate(_ path: String) throws {
-        if !path.hasPrefix("/") {
+        if path.hasPrefix("/") {
             let errorDescription = "Invalid StoragePath specified."
-            let recoverySuggestion = "Please specify a valid StoragePath that contains the prefix / "
+            let recoverySuggestion = "Please specify a valid StoragePath that does not contain the prefix / "
             throw StorageError.validation("path", errorDescription, recoverySuggestion, nil)
         }
     }
