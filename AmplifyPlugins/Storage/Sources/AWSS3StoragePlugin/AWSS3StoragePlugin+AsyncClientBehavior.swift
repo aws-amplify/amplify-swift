@@ -251,14 +251,12 @@ extension AWSS3StoragePlugin {
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {
         let options = options ?? StorageListRequest.Options()
-        let prefix = "" //TODO: resolve path
-        let result = try await storageService.list(prefix: prefix, options: options)
-
-        let channel = HubChannel(from: categoryType)
-        let payload = HubPayload(eventName: HubPayload.EventName.Storage.list, context: options, data: result)
-        Amplify.Hub.dispatch(to: channel, payload: payload)
-
-        return result
+        let request = StorageListRequest(path: path, options: options)
+        let task = AWSS3StorageListObjectsTask(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageBehaviour: storageService)
+        return try await task.value
     }
 
     public func handleBackgroundEvents(identifier: String) async -> Bool {
