@@ -11,7 +11,11 @@ public struct AWSAuthConfirmSignUpOptions {
 
     public let metadata: [String: String]?
 
-    public init(metadata: [String: String]? = nil) {
+    public let forceAliasCreation: Bool?
+
+    public init(metadata: [String: String]? = nil,
+                forceAliasCreation: Bool? = nil) {
         self.metadata = metadata
+        self.forceAliasCreation = forceAliasCreation
     }
 }
