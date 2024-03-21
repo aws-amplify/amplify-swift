@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.28.0 (2024-03-21)
+
+### Features
+
+- **Auth**: Adding forceAliasCreation option during confirmSignUp (#3382)
+
 ## 2.27.3 (2024-03-18)
 
 ### Bug Fixes
