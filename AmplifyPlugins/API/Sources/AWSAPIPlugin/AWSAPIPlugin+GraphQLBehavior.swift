@@ -61,7 +61,7 @@ public extension AWSAPIPlugin {
             let operation = AWSGraphQLSubscriptionOperation(
                 request: request.toOperationRequest(operationType: .subscription),
                 pluginConfig: pluginConfig,
-                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                appSyncRealTimeClientFactory: appSyncRealTimeClientFactory,
                 authService: authService,
                 apiAuthProviderFactory: authProviderFactory,
                 inProcessListener: valueListener,
@@ -74,7 +74,7 @@ public extension AWSAPIPlugin {
         let request = request.toOperationRequest(operationType: .subscription)
         let runner = AWSGraphQLSubscriptionTaskRunner(request: request,
                                                       pluginConfig: pluginConfig,
-                                                      subscriptionConnectionFactory: subscriptionConnectionFactory,
+                                                      appSyncClientFactory: appSyncRealTimeClientFactory,
                                                       authService: authService,
                                                       apiAuthProviderFactory: authProviderFactory)
         return runner.sequence

@@ -36,7 +36,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQL
 
     /// Creating and retrieving connections for subscriptions. This will be instantiated during the configuration phase,
     /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
-    var subscriptionConnectionFactory: SubscriptionConnectionFactory!
+    var appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol!
 
     var authProviderFactory: APIAuthProviderFactory
 
