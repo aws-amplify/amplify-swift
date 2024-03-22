@@ -115,7 +115,8 @@ let apiTargets: [Target] = [
         name: "AWSAPIPlugin",
         dependencies: [
             .target(name: "Amplify"),
-            .target(name: "AWSPluginsCore")
+            .target(name: "AWSPluginsCore"),
+            .target(name: "AmplifyNetwork")
         ],
         path: "AmplifyPlugins/API/Sources/AWSAPIPlugin",
         exclude: [
@@ -315,6 +316,23 @@ let internalPinpointTargets: [Target] = [
     )
 ]
 
+let internalNetworkingTargets: [Target] = [
+    .target(
+        name: "AmplifyNetwork",
+        dependencies: [
+            .target(name: "Amplify")
+        ],
+        path: "AmplifyPlugins/Internal/Sources/Network"
+    ),
+    .testTarget(
+        name: "AmplifyNetworkUnitTests",
+        dependencies: [
+            "AmplifyNetwork"
+        ],
+        path: "AmplifyPlugins/Internal/Tests/NetworkTests"
+    )
+]
+
 let analyticsTargets: [Target] = [
     .target(
         name: "AWSPinpointAnalyticsPlugin",
@@ -443,6 +461,7 @@ let targets: [Target] = amplifyTargets
     + analyticsTargets
     + pushNotificationsTargets
     + internalPinpointTargets
+    + internalNetworkingTargets
     + predictionsTargets
     + loggingTargets
 

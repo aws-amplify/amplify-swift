@@ -8,6 +8,7 @@
 
 import Foundation
 
+@_spi(AppSyncRTC)
 public enum AppSyncRealTimeRequestAuth {
     case authToken(AuthToken)
     case apiKey(ApiKey)
@@ -16,12 +17,23 @@ public enum AppSyncRealTimeRequestAuth {
     public struct AuthToken {
         let host: String
         let authToken: String
+
+        public init(host: String, authToken: String) {
+            self.host = host
+            self.authToken = authToken
+        }
     }
 
     public struct ApiKey {
         let host: String
         let apiKey: String
         let amzDate: String
+        
+        public init(host: String, apiKey: String, amzDate: String) {
+            self.host = host
+            self.apiKey = apiKey
+            self.amzDate = amzDate
+        }
     }
 
     public struct IAM {
@@ -29,18 +41,25 @@ public enum AppSyncRealTimeRequestAuth {
         let authToken: String
         let securityToken: String
         let amzDate: String
+
+        public init(host: String, authToken: String, securityToken: String, amzDate: String) {
+            self.host = host
+            self.authToken = authToken
+            self.securityToken = securityToken
+            self.amzDate = amzDate
+        }
     }
 
     public struct URLQuery {
         let header: AppSyncRealTimeRequestAuth
         let payload: String
 
-        init(header: AppSyncRealTimeRequestAuth, payload: String = "{}") {
+        public init(header: AppSyncRealTimeRequestAuth, payload: String = "{}") {
             self.header = header
             self.payload = payload
         }
 
-        func withBaseURL(_ url: URL, encoder: JSONEncoder? = nil) -> URL {
+        public func withBaseURL(_ url: URL, encoder: JSONEncoder? = nil) -> URL {
             let jsonEncoder: JSONEncoder = encoder ?? JSONEncoder()
             guard let headerJsonData = try? jsonEncoder.encode(header) else {
                 return url
@@ -53,7 +72,7 @@ public enum AppSyncRealTimeRequestAuth {
 
             urlComponents.queryItems = [
                 URLQueryItem(name: "header", value: headerJsonData.base64EncodedString()),
-                URLQueryItem(name: "payload", value: try? payload.base64EncodedString())
+                URLQueryItem(name: "payload", value: payload.data(using: .utf8)?.base64EncodedString())
             ]
 
             return urlComponents.url ?? url

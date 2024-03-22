@@ -8,7 +8,7 @@
 
 import Foundation
 import Amplify
-@_spi(WebSocket) import AWSPluginsCore
+@_spi(WebSocket) @_spi(AppSyncRTC) import AmplifyNetwork
 
 class APIKeyAuthInterceptor {
     private let apiKey: String
@@ -31,7 +31,10 @@ extension APIKeyAuthInterceptor: WebSocketInterceptor {
 
 extension APIKeyAuthInterceptor: AppSyncRequestInterceptor {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest {
-        let host = AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!
+        guard let host = AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host else {            
+            return event
+        }
+
         guard case .start(let request) = event else {
             return event
         }

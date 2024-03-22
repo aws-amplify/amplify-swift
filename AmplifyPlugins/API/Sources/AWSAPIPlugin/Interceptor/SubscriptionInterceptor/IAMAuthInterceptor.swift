@@ -6,10 +6,11 @@
 //
 
 import Foundation
-@_spi(WebSocket) import AWSPluginsCore
 import Amplify
 import AWSClientRuntime
 import ClientRuntime
+import AWSPluginsCore
+@_spi(WebSocket) @_spi(AppSyncRTC) import AmplifyNetwork
 
 class IAMAuthInterceptor {
 
@@ -114,7 +115,7 @@ extension IAMAuthInterceptor: AppSyncRequestInterceptor {
         return .start(.init(
             id: request.id,
             data: request.data,
-            auth: authHeader.map { .iam($0) }
+            auth: authHeader.map { AppSyncRealTimeRequestAuth.iam($0) }
         ))
     }
 }
