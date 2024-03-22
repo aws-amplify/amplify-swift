@@ -13,14 +13,5 @@ import AWSClientRuntime
 public func baseClientEngine(
     for configuration: AWSClientConfiguration<some AWSServiceSpecificConfiguration>
 ) -> HTTPClient {
-    let baseClientEngine: HTTPClient
-    
-    #if os(macOS)
-    // networking goes through CRT
-    baseClientEngine = configuration.httpClientEngine
-    #else
-    // networking goes through Foundation
-    baseClientEngine = FoundationClientEngine()
-    #endif
-    return baseClientEngine
+    return FoundationClientEngine()
 }
