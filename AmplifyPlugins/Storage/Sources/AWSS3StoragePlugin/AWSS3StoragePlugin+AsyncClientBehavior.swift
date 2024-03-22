@@ -151,8 +151,7 @@ extension AWSS3StoragePlugin {
         options: StorageUploadDataOperation.Request.Options? = nil
     ) -> StorageUploadDataTask {
         let options = options ?? StorageUploadDataRequest.Options()
-        let path = "" //TODO: resolve path
-        let request = StorageUploadDataRequest(key: path, data: data, options: options)
+        let request = StorageUploadDataRequest(path: path, data: data, options: options)
         let operation = AWSS3StorageUploadDataOperation(request,
                                                         storageConfiguration: storageConfiguration,
                                                         storageService: storageService,
@@ -188,8 +187,7 @@ extension AWSS3StoragePlugin {
         options: StorageUploadFileOperation.Request.Options? = nil
     ) -> StorageUploadFileTask {
         let options = options ?? StorageUploadFileRequest.Options()
-        let path = "" //TODO: resolve path
-        let request = StorageUploadFileRequest(key: path, local: local, options: options)
+        let request = StorageUploadFileRequest(path: path, local: local, options: options)
         let operation = AWSS3StorageUploadFileOperation(request,
                                                         storageConfiguration: storageConfiguration,
                                                         storageService: storageService,
