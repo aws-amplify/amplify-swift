@@ -9,6 +9,7 @@
 import XCTest
 import Amplify
 @testable import AWSAPIPlugin
+@testable @_spi(AppSyncRTC) import AmplifyNetwork
 
 class APIKeyAuthInterceptorTests: XCTestCase {
 

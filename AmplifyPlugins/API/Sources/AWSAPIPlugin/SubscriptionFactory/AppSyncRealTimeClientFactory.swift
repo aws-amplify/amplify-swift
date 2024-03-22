@@ -9,7 +9,9 @@
 import Foundation
 import Amplify
 import Combine
-@_spi(WebSocket) import AWSPluginsCore
+import AWSPluginsCore
+@_spi(WebSocket) @_spi(AppSyncRTC) import AmplifyNetwork
+
 
 protocol AppSyncRealTimeClientFactoryProtocol {
     func getAppSyncRealTimeClient(
@@ -21,13 +23,6 @@ protocol AppSyncRealTimeClientFactoryProtocol {
     ) async throws -> AppSyncRealTimeClientProtocol
 }
 
-protocol AppSyncRealTimeClientProtocol {
-    func connect() async throws
-    func disconnectWhenIdel() async
-    func disconnect() async
-    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never>
-    func unsubscribe(id: String) async throws
-}
 
 actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
     struct MapperCacheKey: Hashable {

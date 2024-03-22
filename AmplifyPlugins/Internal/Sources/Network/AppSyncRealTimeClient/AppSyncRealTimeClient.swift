@@ -7,15 +7,24 @@
 
 
 import Foundation
-import Amplify
 import Combine
-@_spi(WebSocket) import AWSPluginsCore
+import Amplify
+
+@_spi(AppSyncRTC)
+public protocol AppSyncRealTimeClientProtocol {
+    func connect() async throws
+    func disconnectWhenIdel() async
+    func disconnect() async
+    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never>
+    func unsubscribe(id: String) async throws
+}
 
 /**
  The AppSyncRealTimeClient conforms to the AppSync real-time WebSocket protocol.
  ref: https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
  */
-actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
+@_spi(AppSyncRTC)
+public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     static let jsonEncoder = JSONEncoder()
     static let jsonDecoder = JSONDecoder()
@@ -50,7 +59,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
     internal let subject = PassthroughSubject<AppSyncRealTimeResponse, Never>()
 
-    var isConnected: Bool {
+    public var isConnected: Bool {
         self.state.value == .connected
     }
 
@@ -61,7 +70,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         - requestInterceptor: Interceptor for decocating AppSyncRealTimeRequest
         - webSocketClient: WebSocketClient for reading/writing to connection
      */
-    init(
+    public init(
         endpoint: URL,
         requestInterceptor: AppSyncRequestInterceptor,
         webSocketClient: AppSyncWebSocketClientProtocol
@@ -84,7 +93,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /**
      Connecting to remote AppSync real-time server.
      */
-    func connect() async throws {
+    public func connect() async throws {
         switch self.state.value {
         case .connecting, .connected:
             log.debug("[AppSyncRealTimeClient] client is already connecting or connected")
@@ -116,7 +125,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /**
      Disconnect only when there are no subscriptions exist.
      */
-    func disconnectWhenIdel() async {
+    public func disconnectWhenIdel() async {
         if self.subscriptions.isEmpty {
             log.debug("[AppSyncRealTimeClient] no subscription exist, client is trying to disconnect")
             await disconnect()
@@ -128,7 +137,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /**
      Disconnect from AppSync real-time server.
      */
-    func disconnect() async {
+    public func disconnect() async {
         guard self.state.value != .disconnecting else {
             log.debug("[AppSyncRealTimeClient] client already disconnecting")
             return
@@ -152,7 +161,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
      -  Returns:
         A never fail data stream for AppSyncSubscriptionEvent.
      */
-    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+    public func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
         let subscription = AppSyncRealTimeSubscription(id: id, query: query, appSyncRealTimeClient: self)
         subscriptions[id] = subscription
@@ -201,7 +210,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
      - Parameters:
         - id: unique identifier of the subscription.
      */
-    func unsubscribe(id: String) async throws {
+    public func unsubscribe(id: String) async throws {
         defer {
             log.debug("[AppSyncRealTimeClient] deleted subscription with id: \(id)")
             subscriptions.removeValue(forKey: id)
@@ -283,7 +292,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         .map { response -> AppSyncSubscriptionEvent? in
             switch response.type {
             case .connectionError, .error:
-                return .error(Self.decodeAppSyncRealTimeResponseError(response.payload))
+                return response.payload.map { .error($0) }
             case .data:
                 return response.payload.map { .data($0) }
             default:
@@ -292,38 +301,6 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         }
         .compactMap { $0 }
         .eraseToAnyPublisher()
-    }
-
-    private static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
-        let knownAppSyncRealTimeRequestErorrs =
-            Self.decodeAppSyncRealTimeRequestError(data)
-            .filter { !$0.isUnknown }
-        if knownAppSyncRealTimeRequestErorrs.isEmpty {
-            let graphQLErrors = Self.decodeGraphQLErrors(data)
-            return graphQLErrors.isEmpty
-                ? [APIError.operationError("Failed to decode AppSync error response", "", nil)]
-                : graphQLErrors
-        } else {
-            return knownAppSyncRealTimeRequestErorrs
-        }
-    }
-
-    private static func decodeGraphQLErrors(_ data: JSONValue?) -> [GraphQLError] {
-        do {
-            return try GraphQLErrorDecoder.decodeAppSyncErrors(data)
-        } catch {
-            log.debug("[AppSyncRealTimeClient] Failed to decode errors: \(error)")
-            return []
-        }
-    }
-
-    private static func decodeAppSyncRealTimeRequestError(_ data: JSONValue?) -> [AppSyncRealTimeRequest.Error] {
-        guard let errorsJson = data?.errors else {
-            log.error("[AppSyncRealTimeClient] No 'errors' field found in response json")
-            return []
-        }
-        let errors = errorsJson.asArray ?? [errorsJson]
-        return errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
     }
 
     private func bindCancellableToConnection(_ cancellable: AnyCancellable) {
@@ -434,15 +411,15 @@ extension Publisher where Output == AppSyncRealTimeSubscription.State, Failure =
 }
 
 extension AppSyncRealTimeClient: DefaultLogger {
-    static var log: Logger {
+    public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
     }
 
-    nonisolated var log: Logger { Self.log }
+    public nonisolated var log: Logger { Self.log }
 }
 
 extension AppSyncRealTimeClient: Resettable {
-    func reset() async {
+    public func reset() async {
         subject.send(completion: .finished)
         cancellables = Set()
         cancellablesBindToConnection = Set()
