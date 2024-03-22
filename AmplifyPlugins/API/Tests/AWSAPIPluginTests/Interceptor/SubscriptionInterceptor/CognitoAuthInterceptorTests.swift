@@ -9,7 +9,8 @@
 import XCTest
 import Amplify
 @testable import AWSAPIPlugin
-@testable @_spi(WebSocket) import AWSPluginsCore
+@testable import AWSPluginsCore
+@testable @_spi(WebSocket) @_spi(AppSyncRTC) import AmplifyNetwork
 
 class CognitoAuthInterceptorTests: XCTestCase {
 

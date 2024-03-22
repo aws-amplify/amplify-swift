@@ -9,7 +9,6 @@
 import XCTest
 import Combine
 import Amplify
-@_spi(WebSocket) import AWSPluginsCore
 @testable import AWSAPIPlugin
 
 class AppSyncRealTimeClientTests: XCTestCase {
