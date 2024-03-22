@@ -10,7 +10,8 @@ import Foundation
 import Amplify
 import Combine
 @testable import AWSAPIPlugin
-@_spi(WebSocket) import AWSPluginsCore
+@testable import AWSPluginsCore
+@testable @_spi(WebSocket) @_spi(AppSyncRTC) import AmplifyNetwork
 
 struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
     

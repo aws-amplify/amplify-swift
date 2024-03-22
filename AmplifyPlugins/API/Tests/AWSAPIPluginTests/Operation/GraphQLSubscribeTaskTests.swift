@@ -11,6 +11,7 @@ import XCTest
 import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
+@testable @_spi(AppSyncRTC) import AmplifyNetwork
 @_implementationOnly import AmplifyAsyncTesting
 
 class GraphQLSubscribeTasksTests: OperationTestBase {
@@ -130,7 +131,11 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        mockAppSyncRealTimeClient?.triggerEvent(.error([AppSyncRealTimeRequest.Error.limitExceeded]))
+        mockAppSyncRealTimeClient?.triggerEvent(.error([
+            "errors": [
+                "errorType": "LimitExceededError"
+            ]
+        ]))
         expectedCompletionFailureError = APIError.operationError("", "", AppSyncRealTimeRequest.Error.limitExceeded)
         await waitForSubscriptionExpectations()
     }
@@ -145,18 +150,21 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         try await subscribe()
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        let unauthorizedError = GraphQLError(message: "", extensions: ["errorType": "Unauthorized"])
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        mockAppSyncRealTimeClient?.triggerEvent(.error([unauthorizedError]))
+        mockAppSyncRealTimeClient?.triggerEvent(.error([
+            "errors": [
+                "errorType": "Unauthorized"
+            ]
+        ]))
         expectedCompletionFailureError = APIError.operationError(
             "Subscription item event failed with error: Unauthorized",
             "",
-            GraphQLResponseError<JSONValue>.error([unauthorizedError])
+            AppSyncRealTimeRequest.Error.unauthorized
         )
         await waitForSubscriptionExpectations()
     }
     
-    func testConnectionErrorWithAppSyncConnectionError() async throws {
+    func testConnectionErrorWithOtherAppSyncConnectionError() async throws {
         receivedCompletionSuccess.isInverted = true
         receivedStateValueConnected.isInverted = true
         receivedStateValueDisconnected.isInverted = true
@@ -167,8 +175,16 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
-        mockAppSyncRealTimeClient?.triggerEvent(.error([URLError(URLError.Code(rawValue: 400))]))
-        expectedCompletionFailureError = APIError.operationError("", "", URLError(URLError.Code(rawValue: 400)))
+        mockAppSyncRealTimeClient?.triggerEvent(.error([
+            "errors": [
+                "message": "other error"
+            ]
+        ]))
+        expectedCompletionFailureError = APIError.operationError(
+            "Subscription item event failed with error",
+            "",
+            GraphQLResponseError<JSONValue>.error([GraphQLError(message: "other error")])
+        )
         await waitForSubscriptionExpectations()
     }
 
