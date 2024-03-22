@@ -26,7 +26,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     let authService: AWSAuthServiceBehavior
 
     var storageTaskReference: StorageTaskReference?
-
+    private var resolvedPath: String?
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
@@ -92,6 +92,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
                 let serviceKey: String
                 if let path = request.path {
                     serviceKey = try await path.resolvePath(authService: self.authService)
+                    resolvedPath = serviceKey
                 } else {
                     let prefixResolver = storageConfiguration.prefixResolver ??
                     StorageAccessLevelAwarePrefixResolver(authService: authService)
@@ -142,7 +143,11 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
         case .inProcess(let progress):
             dispatch(progress)
         case .completed:
-            dispatch(request.key)
+            if let path = resolvedPath {
+                dispatch(path)
+            } else {
+                dispatch(request.key)
+            }
             finish()
         case .failed(let error):
             dispatch(error)
