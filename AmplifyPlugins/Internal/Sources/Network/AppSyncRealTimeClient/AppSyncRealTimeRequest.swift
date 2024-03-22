@@ -7,18 +7,24 @@
 
 
 import Foundation
-import Combine
 import Amplify
 
+@_spi(AppSyncRTC)
 public enum AppSyncRealTimeRequest {
     case connectionInit
     case start(StartRequest)
     case stop(String)
 
     public struct StartRequest {
-        let id: String
-        let data: String
-        let auth: AppSyncRealTimeRequestAuth?
+        public let id: String
+        public let data: String
+        public let auth: AppSyncRealTimeRequestAuth?
+
+        public init(id: String, data: String, auth: AppSyncRealTimeRequestAuth?) {
+            self.id = id
+            self.data = data
+            self.auth = auth
+        }
     }
 
     var id: String? {
@@ -78,7 +84,7 @@ extension AppSyncRealTimeRequest {
         case unauthorized
         case unknown(message: String? = nil, causedBy: Swift.Error? = nil, payload: [String: Any]?)
 
-        var isUnknown: Bool {
+        public var isUnknown: Bool {
             if case .unknown = self {
                 return true
             }

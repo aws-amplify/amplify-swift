@@ -8,6 +8,7 @@
 import Foundation
 import Amplify
 
+@_spi(AppSyncRTC)
 public struct AppSyncRealTimeResponse {
 
     public let id: String?

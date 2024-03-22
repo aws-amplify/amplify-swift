@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 import Combine
+@_spi(AppSyncRTC) import AmplifyNetwork
 
 public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
     public typealias Request = GraphQLOperationRequest<R>
@@ -140,8 +141,8 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         case .unsubscribed:
             send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
             finish()
-        case .error(let errors):
-            fail(toAPIError(errors, type: R.self))
+        case .error(let payload):
+            fail(toAPIError(decodeAppSyncRealTimeResponseError(payload), type: R.self))
         }
     }
 
@@ -320,8 +321,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             dispatchInProcess(data: GraphQLSubscriptionEvent<R>.connection(.disconnected))
             dispatch(result: .successfulVoid)
             finish()
-        case .error(let errors):
-            dispatch(result: .failure(toAPIError(errors, type: R.self)))
+        case .error(let payload):
+            dispatch(result: .failure(toAPIError(decodeAppSyncRealTimeResponseError(payload), type: R.self)))
             finish()
         }
     }
@@ -402,5 +403,36 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
             errors.first
         )
     }
+}
 
+fileprivate func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
+    let knownAppSyncRealTimeRequestErorrs =
+        decodeAppSyncRealTimeRequestError(data)
+        .filter { !$0.isUnknown }
+    if knownAppSyncRealTimeRequestErorrs.isEmpty {
+        let graphQLErrors = decodeGraphQLErrors(data)
+        return graphQLErrors.isEmpty
+            ? [APIError.operationError("Failed to decode AppSync error response", "", nil)]
+            : graphQLErrors
+    } else {
+        return knownAppSyncRealTimeRequestErorrs
+    }
+}
+
+fileprivate func decodeGraphQLErrors(_ data: JSONValue?) -> [GraphQLError] {
+    do {
+        return try GraphQLErrorDecoder.decodeAppSyncErrors(data)
+    } catch {
+        print("Failed to decode errors: \(error)")
+        return []
+    }
+}
+
+fileprivate func decodeAppSyncRealTimeRequestError(_ data: JSONValue?) -> [AppSyncRealTimeRequest.Error] {
+    guard let errorsJson = data?.errors else {
+        print("No 'errors' field found in response json")
+        return []
+    }
+    let errors = errorsJson.asArray ?? [errorsJson]
+    return errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
 }
