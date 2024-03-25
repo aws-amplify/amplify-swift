@@ -23,8 +23,8 @@ public final actor WebSocketClient: NSObject {
 
     /// WebSocket server endpoint
     private let url: URL
-    /// WebSocket subprotocols
-    private let protocols: [String]
+    /// Additional Header for WebSocket handshake http request
+    private let handshakeHttpHeaders: [String: String]
     /// Interceptor for appending additional info before makeing the connection
     private var interceptor: WebSocketInterceptor?
     /// Internal wriable WebSocketEvent data stream
@@ -68,12 +68,12 @@ public final actor WebSocketClient: NSObject {
      */
     public init(
         url: URL,
-        protocols: [String] = [],
+        handshakeHttpHeaders: [String: String] = [:],
         interceptor: WebSocketInterceptor? = nil,
         networkMonitor: WebSocketNetworkMonitorProtocol = AmplifyNetworkMonitor()
     ) {
         self.url = Self.useWebSocketProtocolScheme(url: url)
-        self.protocols = protocols
+        self.handshakeHttpHeaders = handshakeHttpHeaders
         self.interceptor = interceptor
         self.autoConnectOnNetworkStatusChange = false
         self.autoRetryOnConnectionFailure = false
@@ -156,9 +156,12 @@ public final actor WebSocketClient: NSObject {
     }
 
     private func createWebSocketConnection() async -> URLSessionWebSocketTask {
-        let urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         let decoratedURL = (await self.interceptor?.interceptConnection(url: self.url)) ?? self.url
-        return urlSession.webSocketTask(with: decoratedURL, protocols: self.protocols)
+        var urlRequest = URLRequest(url: decoratedURL)
+        self.handshakeHttpHeaders.forEach { urlRequest.setValue($0.value, forHTTPHeaderField: $0.key) }
+
+        let urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        return urlSession.webSocketTask(with: urlRequest)
     }
 
     private func createConnectionAndRead() async {

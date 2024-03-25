@@ -61,7 +61,10 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
                 requestInterceptor: authInterceptor,
                 webSocketClient: WebSocketClient(
                     url: Self.appSyncRealTimeEndpoint(endpoint),
-                    protocols: ["graphql-ws"],
+                    handshakeHttpHeaders: [
+                        URLRequestConstants.Header.webSocketSubprotocols: "graphql-ws",
+                        URLRequestConstants.Header.userAgent: AmplifyAWSServiceConfiguration.userAgentLib
+                    ],
                     interceptor: authInterceptor
                 )
             )
