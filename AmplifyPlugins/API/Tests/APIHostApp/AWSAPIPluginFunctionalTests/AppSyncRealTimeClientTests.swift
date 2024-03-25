@@ -47,7 +47,10 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
             let webSocketClient = WebSocketClient(
                 url: AppSyncRealTimeClientFactory.appSyncRealTimeEndpoint(URL(string: endpoint)!),
-                protocols: ["graphql-ws"],
+                handshakeHttpHeaders: [
+                    URLRequestConstants.Header.webSocketSubprotocols: "graphql-ws",
+                    URLRequestConstants.Header.userAgent: AmplifyAWSServiceConfiguration.userAgentLib + " (intg-test)"
+                ],
                 interceptor: APIKeyAuthInterceptor(apiKey: apiKey)
             )
             appSyncRealTimeClient = AppSyncRealTimeClient(
