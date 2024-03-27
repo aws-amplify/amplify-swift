@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 @testable import AWSS3StoragePlugin
 
 class AWSS3StorageUploadFileRequestTests: XCTestCase {
@@ -113,6 +113,26 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
         XCTAssertEqual(field, StorageErrorConstants.metadataKeysInvalid.field)
         XCTAssertEqual(description, StorageErrorConstants.metadataKeysInvalid.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.metadataKeysInvalid.recoverySuggestion)
+    }
+
+    /// Given: StorageUploadFileRequest with an invalid StringStoragePath
+    /// When: Request validation is executed
+    /// Then: There is no error returned even though the storage path is invalid
+    /// There is no error because the path validation is done at operation execution time and not part of the request
+    func testValidateWithStoragePath() {
+        let path = StringStoragePath(resolve: {_ in "my/path"})
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: testMetadata,
+                                                       contentType: testContentType,
+                                                       pluginOptions: testPluginOptions)
+        let request = StorageUploadFileRequest(path: path, local: fileURL, options: options)
+
+        let storageErrorOptional = request.validate()
+
+        XCTAssertNil(storageErrorOptional)
     }
 
     // TODO: testValidateMetadataValuesTooLarge

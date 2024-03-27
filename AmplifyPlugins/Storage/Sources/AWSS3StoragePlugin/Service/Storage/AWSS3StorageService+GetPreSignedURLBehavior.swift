@@ -21,7 +21,7 @@ extension AWSS3StorageService {
             key: serviceKey,
             signingOperation: signingOperation,
             metadata: metadata,
-            accelerate: nil,
+            accelerate: accelerate,
             expires: Int64(expires)
         )
     }

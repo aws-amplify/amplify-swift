@@ -55,6 +55,10 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehavior {
     }
      */
 
+    public var client: any S3ClientProtocol = MockS3Client()
+
+    public var bucket: String! = "bucket"
+
     public func reset() {
         interactions.append(#function)
     }
