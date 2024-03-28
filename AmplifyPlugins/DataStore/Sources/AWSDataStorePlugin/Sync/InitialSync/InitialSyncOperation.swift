@@ -194,7 +194,8 @@ final class InitialSyncOperation: AsynchronousOperation {
                                                       lastSync: lastSyncTime,
                                                       authType: authTypes.next())
         },
-                                  maxRetries: authTypes.count,
+                                  maxRetries: authTypes.count, 
+                                  errorListener: { _ in },
                                   resultListener: completionListener) { nextRequest, wrappedCompletionListener in
             api.query(request: nextRequest, listener: wrappedCompletionListener)
         }.main()

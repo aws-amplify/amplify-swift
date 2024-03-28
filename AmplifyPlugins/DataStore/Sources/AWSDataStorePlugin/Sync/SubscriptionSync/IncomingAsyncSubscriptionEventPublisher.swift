@@ -73,18 +73,39 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onCreate operation
         let onCreateValueListener = onCreateValueListenerHandler(event:)
-        let onCreateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
+        var onCreateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                            operations: [.create, .read])
+        var onCreateAuthType: AWSAuthorizationType? = onCreateAuthTypeProvider.next()
+        var onCreateModelPredicate = modelPredicate
+        
         self.onCreateValueListener = onCreateValueListener
         self.onCreateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
-                for: modelSchema,
+                for: modelSchema, 
+                where: { onCreateModelPredicate },
                 subscriptionType: .onCreate,
                 api: api,
                 auth: auth,
                 awsAuthService: self.awsAuthService,
-                authTypeProvider: onCreateAuthTypeProvider),
+                authTypeProvider: { onCreateAuthType }),
             maxRetries: onCreateAuthTypeProvider.count,
+            errorListener: { error in
+                // TODO: - How to distinguish errors?
+                // TODO: - Handle other errors
+                if error.debugDescription.contains("Filters combination exceed maximum limit 10 for subscription.") {
+                    onCreateModelPredicate = nil
+                    
+                } else if case let .operationError(errorDescription, recoverySuggestion, underlyingError) = error,
+                  let authError = underlyingError as? AuthError  {
+                    
+                    switch authError {
+                    case .signedOut, .notAuthorized:
+                        onCreateAuthType = onCreateAuthTypeProvider.next()
+                    default:
+                        return
+                    }
+                }
+            },
             resultListener: genericCompletionListenerHandler) { nextRequest, wrappedCompletion in
             api.subscribe(request: nextRequest,
                           valueListener: onCreateValueListener,
@@ -94,18 +115,39 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onUpdate operation
         let onUpdateValueListener = onUpdateValueListenerHandler(event:)
-        let onUpdateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
+        var onUpdateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                            operations: [.update, .read])
+        var onUpdateAuthType: AWSAuthorizationType? = onUpdateAuthTypeProvider.next()
+        var onUpdateModelPredicate = modelPredicate
+        
         self.onUpdateValueListener = onUpdateValueListener
         self.onUpdateOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
                 for: modelSchema,
+                where: { onUpdateModelPredicate },
                 subscriptionType: .onUpdate,
                 api: api,
                 auth: auth,
                 awsAuthService: self.awsAuthService,
-                authTypeProvider: onUpdateAuthTypeProvider),
+                authTypeProvider: { onUpdateAuthType }),
             maxRetries: onUpdateAuthTypeProvider.count,
+            errorListener: { error in
+                // TODO: - How to distinguish errors?
+                // TODO: - Handle other errors
+                if error.debugDescription.contains("Filters combination exceed maximum limit 10 for subscription.") {
+                    onUpdateModelPredicate = nil
+                    
+                } else if case let .operationError(errorDescription, recoverySuggestion, underlyingError) = error,
+                  let authError = underlyingError as? AuthError  {
+                    
+                    switch authError {
+                    case .signedOut, .notAuthorized:
+                        onUpdateAuthType = onUpdateAuthTypeProvider.next()
+                    default:
+                        return
+                    }
+                }
+            },
             resultListener: genericCompletionListenerHandler) { nextRequest, wrappedCompletion in
             api.subscribe(request: nextRequest,
                           valueListener: onUpdateValueListener,
@@ -115,18 +157,39 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onDelete operation
         let onDeleteValueListener = onDeleteValueListenerHandler(event:)
-        let onDeleteAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
+        var onDeleteAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                            operations: [.delete, .read])
+        var onDeleteAuthType: AWSAuthorizationType? = onDeleteAuthTypeProvider.next()
+        var onDeleteModelPredicate = modelPredicate
+        
         self.onDeleteValueListener = onDeleteValueListener
         self.onDeleteOperation = RetryableGraphQLSubscriptionOperation(
             requestFactory: IncomingAsyncSubscriptionEventPublisher.apiRequestFactoryFor(
-                for: modelSchema,
+                for: modelSchema, 
+                where: { onDeleteModelPredicate },
                 subscriptionType: .onDelete,
                 api: api,
                 auth: auth,
                 awsAuthService: self.awsAuthService,
-                authTypeProvider: onDeleteAuthTypeProvider),
+                authTypeProvider: { onDeleteAuthType }),
             maxRetries: onUpdateAuthTypeProvider.count,
+            errorListener: { error in
+                // TODO: - How to distinguish errors?
+                // TODO: - Handle other errors
+                if error.debugDescription.contains("Filters combination exceed maximum limit 10 for subscription.") {
+                    onDeleteModelPredicate = nil
+                    
+                } else if case let .operationError(errorDescription, recoverySuggestion, underlyingError) = error,
+                  let authError = underlyingError as? AuthError  {
+                    
+                    switch authError {
+                    case .signedOut, .notAuthorized:
+                        onDeleteAuthType = onDeleteAuthTypeProvider.next()
+                    default:
+                        return
+                    }
+                }
+            },
             resultListener: genericCompletionListenerHandler) { nextRequest, wrappedCompletion in
             api.subscribe(request: nextRequest,
                           valueListener: onDeleteValueListener,
@@ -195,17 +258,20 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     }
 
     static func makeAPIRequest(for modelSchema: ModelSchema,
+                               where predicate: QueryPredicate?,
                                subscriptionType: GraphQLSubscriptionType,
                                api: APICategoryGraphQLBehaviorExtended,
                                auth: AuthCategoryBehavior?,
                                authType: AWSAuthorizationType?,
                                awsAuthService: AWSAuthServiceBehavior) async -> GraphQLRequest<Payload> {
+        
         let request: GraphQLRequest<Payload>
         if modelSchema.hasAuthenticationRules,
             let _ = auth,
             let tokenString = try? await awsAuthService.getUserPoolAccessToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema, 
+                                                           where: predicate,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims,
                                                            authType: authType)
@@ -213,12 +279,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
             let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
             let tokenString = try? await oidcAuthProvider.getLatestAuthToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
-            request = GraphQLRequest<Payload>.subscription(to: modelSchema,
+            request = GraphQLRequest<Payload>.subscription(to: modelSchema, 
+                                                           where: predicate,
                                                            subscriptionType: subscriptionType,
                                                            claims: claims,
                                                            authType: authType)
         } else {
             request = GraphQLRequest<Payload>.subscription(to: modelSchema,
+                                                           where: predicate,
                                                            subscriptionType: subscriptionType,
                                                            authType: authType)
         }
@@ -296,18 +364,20 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 // MARK: - IncomingAsyncSubscriptionEventPublisher + API request factory
 extension IncomingAsyncSubscriptionEventPublisher {
     static func apiRequestFactoryFor(for modelSchema: ModelSchema,
+                                     where predicate: @escaping () -> QueryPredicate?,
                                      subscriptionType: GraphQLSubscriptionType,
                                      api: APICategoryGraphQLBehaviorExtended,
                                      auth: AuthCategoryBehavior?,
                                      awsAuthService: AWSAuthServiceBehavior,
-                                     authTypeProvider: AWSAuthorizationTypeIterator) -> RetryableGraphQLOperation<Payload>.RequestFactory {
-        var authTypes = authTypeProvider
+                                     authTypeProvider: @escaping () -> AWSAuthorizationType?) -> RetryableGraphQLOperation<Payload>.RequestFactory {
+    
         return {
-            return await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
+            await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
+                                                                          where: predicate(),
                                                                           subscriptionType: subscriptionType,
                                                                           api: api,
                                                                           auth: auth,
-                                                                          authType: authTypes.next(),
+                                                                          authType: authTypeProvider(),
                                                                           awsAuthService: awsAuthService)
         }
     }
