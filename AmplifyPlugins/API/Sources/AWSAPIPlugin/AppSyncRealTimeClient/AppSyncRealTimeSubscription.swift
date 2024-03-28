@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import Amplify
-@_spi(WebSocket) import AmplifyNetwork
+@_implementationOnly import AmplifyNetwork
 
 /**
  AppSyncRealTimeSubscription reprensents one realtime subscription to AppSync realtime server.

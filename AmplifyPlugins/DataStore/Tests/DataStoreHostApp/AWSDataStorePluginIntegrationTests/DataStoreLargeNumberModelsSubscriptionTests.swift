@@ -10,7 +10,7 @@ import XCTest
 import Combine
 import Amplify
 @testable import AWSAPIPlugin
-@_spi(AppSyncRTC) import AmplifyNetwork
+@_implementationOnly import AmplifyNetwork
 
 class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase {
 

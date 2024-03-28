@@ -9,7 +9,6 @@
 import Network
 import Combine
 
-@_spi(WebSocket)
 public final class AmplifyNetworkMonitor {
 
     public enum State {

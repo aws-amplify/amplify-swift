@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 import Combine
-@_spi(AppSyncRTC) import AmplifyNetwork
+@_implementationOnly import AmplifyNetwork
 
 public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
     public typealias Request = GraphQLOperationRequest<R>

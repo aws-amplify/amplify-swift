@@ -8,7 +8,6 @@
 
 import Foundation
 
-@_spi(WebSocket)
 public protocol WebSocketInterceptor {
     func interceptConnection(url: URL) async -> URL
 }

@@ -11,7 +11,7 @@ import XCTest
 import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-@testable @_spi(AppSyncRTC) import AmplifyNetwork
+@testable @_implementationOnly import AmplifyNetwork
 @_implementationOnly import AmplifyAsyncTesting
 
 class GraphQLSubscribeCombineTests: OperationTestBase {

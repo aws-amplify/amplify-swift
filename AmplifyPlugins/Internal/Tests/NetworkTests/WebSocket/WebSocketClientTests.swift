@@ -8,7 +8,7 @@
 
 import XCTest
 import Combine
-@testable @_spi(WebSocket) import AWSPluginsCore
+@testable import AWSPluginsCore
 
 fileprivate let timeout: TimeInterval = 5
 

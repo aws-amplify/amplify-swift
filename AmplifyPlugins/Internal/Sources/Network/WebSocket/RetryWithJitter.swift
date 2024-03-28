@@ -8,7 +8,6 @@
 
 import Foundation
 
-@_spi(WebSocket)
 public actor RetryWithJitter {
     public enum Error: Swift.Error {
         case maxRetryExceeded([Swift.Error])
