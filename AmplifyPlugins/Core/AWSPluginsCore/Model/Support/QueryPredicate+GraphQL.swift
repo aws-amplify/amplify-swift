@@ -160,6 +160,12 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
             } else {
                 return Fatal.preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
             }
+        case .id:
+            if let predicate = predicates.first {
+                return predicate.graphQLFilter(for: modelSchema)
+            } else {
+                return Fatal.preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
+            }
         }
     }
 }
@@ -187,6 +193,8 @@ extension QueryOperator {
             return "beginsWith"
         case .notContains:
             return "notContains"
+        case .attributeExists:
+            return "attributeExists"
         }
     }
 
@@ -211,6 +219,8 @@ extension QueryOperator {
         case .beginsWith(let value):
             return value
         case .notContains(let value):
+            return value
+        case .attributeExists(let value):
             return value
         }
     }

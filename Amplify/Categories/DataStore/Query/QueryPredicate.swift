@@ -10,10 +10,33 @@ import Foundation
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
 public protocol QueryPredicate: Evaluable, Encodable {}
 
+public extension QueryPredicate {
+    func optimize() -> QueryPredicate {
+        func simplifyIdentityPredicateGroup(_ predicateGroup: QueryPredicateGroup) -> QueryPredicate {
+            switch predicateGroup.type {
+            case .id:
+                return predicateGroup.predicates.first!
+            default:
+                return QueryPredicateGroup(
+                    type: predicateGroup.type,
+                    predicates: predicateGroup.predicates.map { $0.optimize() }
+                )
+            }
+        }
+
+        if let predicate = self as? QueryPredicateGroup {
+            return simplifyIdentityPredicateGroup(predicate)
+        } else {
+            return self
+        }
+    }
+}
+
 public enum QueryPredicateGroupType: String, Encodable {
     case and
     case or
     case not
+    case id
 }
 
 /// The `not` function is used to wrap a `QueryPredicate` in a `QueryPredicateGroup` of type `.not`.
@@ -41,6 +64,10 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
                 predicates: [QueryPredicate] = []) {
         self.type = type
         self.predicates = predicates
+    }
+
+    public convenience init(predicate: QueryPredicate) {
+        self.init(type: .id, predicates: [predicate])
     }
 
     public func and(_ predicate: QueryPredicate) -> QueryPredicateGroup {
@@ -90,6 +117,9 @@ public class QueryPredicateGroup: QueryPredicate, Encodable {
         case .not:
             let predicate = predicates[0]
             return !predicate.evaluate(target: target)
+        case .id:
+            let predicate = predicates[0]
+            return predicate.evaluate(target: target)
         }
     }
 
@@ -155,34 +185,6 @@ public class QueryPredicateOperation: QueryPredicate, Encodable {
     }
 
     public func evaluate(target: Model) -> Bool {
-        guard let fieldValue = target[field] else {
-            return false
-        }
-
-        guard let value = fieldValue else {
-            return false
-        }
-
-        if let booleanValue = value as? Bool {
-            return self.operator.evaluate(target: booleanValue)
-        }
-
-        if let doubleValue = value as? Double {
-            return self.operator.evaluate(target: doubleValue)
-        }
-
-        if let intValue = value as? Int {
-            return self.operator.evaluate(target: intValue)
-        }
-
-        if let timeValue = value as? Temporal.Time {
-            return self.operator.evaluate(target: timeValue)
-        }
-
-        if let enumValue = value as? EnumPersistable {
-            return self.operator.evaluate(target: enumValue.rawValue)
-        }
-
-        return self.operator.evaluate(target: value)
+        return self.operator.evaluate(target: target[field]?.flatMap { $0 })
     }
 }

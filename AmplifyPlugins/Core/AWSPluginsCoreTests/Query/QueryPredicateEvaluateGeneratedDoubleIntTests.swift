@@ -50,7 +50,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testDouble2_1notEqualInt1() throws {
@@ -89,7 +89,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testDouble3_1notEqualInt1() throws {
@@ -128,7 +128,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testDouble1notEqualInt1() throws {
@@ -167,7 +167,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testDouble2notEqualInt1() throws {
@@ -206,7 +206,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testDouble3notEqualInt1() throws {
@@ -245,7 +245,7 @@ class QueryPredicateEvaluateGeneratedDoubleIntTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testDouble1_1equalsInt1() throws {

@@ -69,7 +69,7 @@ class ModelIdentifierTests: XCTestCase {
     func testModelIdentifierDefaultIdPredicate() {
         let model = Post(title: "title", content: "", createdAt: Temporal.DateTime.now())
 
-        let predicate = (model.identifier(schema: Post.schema).predicate as? QueryPredicateOperation)!
+        let predicate = (model.identifier(schema: Post.schema).predicate as? QueryPredicateGroup)!
 
         XCTAssertEqual(predicate, Post.keys.id == model.id)
     }
@@ -79,7 +79,7 @@ class ModelIdentifierTests: XCTestCase {
 
         let identifier = model.identifier(schema: ModelImplicitDefaultPk.schema)
 
-        let predicate = (identifier.predicate as? QueryPredicateOperation)!
+        let predicate = (identifier.predicate as? QueryPredicateGroup)!
 
         XCTAssertEqual(predicate, ModelImplicitDefaultPk.keys.id == model.id)
     }
@@ -89,7 +89,7 @@ class ModelIdentifierTests: XCTestCase {
 
         let identifier = model.identifier(schema: ModelExplicitDefaultPk.schema)
 
-        let predicate = (identifier.predicate as? QueryPredicateOperation)!
+        let predicate = (identifier.predicate as? QueryPredicateGroup)!
 
         XCTAssertEqual(predicate, ModelExplicitDefaultPk.keys.id == model.id)
     }
@@ -99,7 +99,7 @@ class ModelIdentifierTests: XCTestCase {
 
         let identifier = model.identifier(schema: ModelExplicitCustomPk.schema)
 
-        let predicate = (identifier.predicate as? QueryPredicateOperation)!
+        let predicate = (identifier.predicate as? QueryPredicateGroup)!
 
         XCTAssertEqual(predicate, ModelExplicitCustomPk.keys.userId == model.userId)
 

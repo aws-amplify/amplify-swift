@@ -33,7 +33,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private var syncPredicate: QueryPredicate? {
         return dataStoreConfiguration.syncExpressions.first {
             $0.modelSchema.name == self.modelSchema.name
-        }?.modelPredicate()
+        }?.modelPredicate().optimize()
     }
 
     private var syncPredicateString: String? {
