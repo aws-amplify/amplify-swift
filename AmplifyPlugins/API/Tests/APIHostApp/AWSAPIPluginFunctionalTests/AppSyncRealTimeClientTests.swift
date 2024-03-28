@@ -10,7 +10,8 @@ import XCTest
 import Combine
 @testable import Amplify
 @testable import AWSAPIPlugin
-@testable @_spi(WebSocket) import AWSPluginsCore
+@testable import AWSPluginsCore
+@testable @_spi(WebSocket) import AmplifyNetwork
 
 class AppSyncRealTimeClientTests: XCTestCase {
     let subscriptionRequest = """
@@ -154,10 +155,12 @@ class AppSyncRealTimeClientTests: XCTestCase {
         maxSubscriptionReachedError.assertForOverFulfill = false
         let retryTriggerredAndSucceed = expectation(description: "Retry on max subscription reached error and succeed")
         cancellables.append(try await makeOneSubscription { event in
-            if case .error(let errors) = event {
-                XCTAssertTrue(errors.count == 1)
-                XCTAssertTrue(errors[0] is AppSyncRealTimeRequest.Error)
-                if case .maxSubscriptionsReached = errors[0] as! AppSyncRealTimeRequest.Error {
+            if case .error(let payload) = event,
+               let error = payload.errors {
+                let errors = error.asArray ?? [error]
+                let requestErrors = errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
+                XCTAssertTrue(requestErrors.count == 1)
+                if case .maxSubscriptionsReached = requestErrors[0] {
                     maxSubscriptionReachedError.fulfill()
                     cancellables.dropLast(10).forEach { $0?.cancel() }
                 }

@@ -8,14 +8,13 @@
 import Foundation
 import Amplify
 
-@_spi(AppSyncRTC)
-public struct AppSyncRealTimeResponse {
+struct AppSyncRealTimeResponse {
 
-    public let id: String?
-    public let payload: JSONValue?
-    public let type: EventType
+    let id: String?
+    let payload: JSONValue?
+    let type: EventType
 
-    public enum EventType: String, Codable {
+    enum EventType: String, Codable {
         case connectionAck = "connection_ack"
         case startAck = "start_ack"
         case stopAck = "complete"

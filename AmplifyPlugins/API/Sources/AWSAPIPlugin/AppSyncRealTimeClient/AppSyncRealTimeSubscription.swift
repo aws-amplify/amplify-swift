@@ -9,15 +9,15 @@
 import Foundation
 import Combine
 import Amplify
+@_spi(WebSocket) import AmplifyNetwork
 
 /**
  AppSyncRealTimeSubscription reprensents one realtime subscription to AppSync realtime server.
  */
-@_spi(AppSyncRTC)
-public actor AppSyncRealTimeSubscription {
+actor AppSyncRealTimeSubscription {
     static let jsonEncoder = JSONEncoder()
 
-    public enum State {
+    enum State {
         case none
         case subscribing
         case subscribed
@@ -36,8 +36,8 @@ public actor AppSyncRealTimeSubscription {
 
     private weak var appSyncRealTimeClient: AppSyncRealTimeClient?
 
-    public let id: String
-    public let query: String
+    let id: String
+    let query: String
 
 
     init(id: String, query: String, appSyncRealTimeClient: AppSyncRealTimeClient) {

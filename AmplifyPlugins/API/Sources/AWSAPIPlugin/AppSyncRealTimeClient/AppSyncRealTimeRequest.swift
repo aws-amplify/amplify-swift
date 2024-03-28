@@ -9,18 +9,17 @@
 import Foundation
 import Amplify
 
-@_spi(AppSyncRTC)
-public enum AppSyncRealTimeRequest {
+enum AppSyncRealTimeRequest {
     case connectionInit
     case start(StartRequest)
     case stop(String)
 
-    public struct StartRequest {
-        public let id: String
-        public let data: String
-        public let auth: AppSyncRealTimeRequestAuth?
+    struct StartRequest {
+        let id: String
+        let data: String
+        let auth: AppSyncRealTimeRequestAuth?
 
-        public init(id: String, data: String, auth: AppSyncRealTimeRequestAuth?) {
+        init(id: String, data: String, auth: AppSyncRealTimeRequestAuth?) {
             self.id = id
             self.data = data
             self.auth = auth

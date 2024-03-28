@@ -8,7 +8,6 @@
 
 import Foundation
 
-@_spi(AppSyncRTC)
-public protocol AppSyncRequestInterceptor {
+protocol AppSyncRequestInterceptor {
     func interceptRequest(event: AppSyncRealTimeRequest, url: URL) async -> AppSyncRealTimeRequest
 }

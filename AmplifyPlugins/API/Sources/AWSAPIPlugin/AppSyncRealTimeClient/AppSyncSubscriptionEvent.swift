@@ -9,8 +9,7 @@
 import Foundation
 import Amplify
 
-@_spi(AppSyncRTC)
-public enum AppSyncSubscriptionEvent {
+enum AppSyncSubscriptionEvent {
     case subscribing
     case subscribed
     case data(JSONValue)

@@ -10,7 +10,6 @@ import Foundation
 import Combine
 import Amplify
 
-@_spi(AppSyncRTC)
 extension AppSyncRealTimeClient {
     /**
      Submit an AppSync request to real-time server.

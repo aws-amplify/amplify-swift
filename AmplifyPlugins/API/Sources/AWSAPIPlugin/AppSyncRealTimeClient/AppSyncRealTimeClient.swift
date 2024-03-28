@@ -9,9 +9,9 @@
 import Foundation
 import Combine
 import Amplify
+@_spi(WebSocket) import AmplifyNetwork
 
-@_spi(AppSyncRTC)
-public protocol AppSyncRealTimeClientProtocol {
+protocol AppSyncRealTimeClientProtocol {
     func connect() async throws
     func disconnectWhenIdel() async
     func disconnect() async
@@ -23,8 +23,7 @@ public protocol AppSyncRealTimeClientProtocol {
  The AppSyncRealTimeClient conforms to the AppSync real-time WebSocket protocol.
  ref: https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
  */
-@_spi(AppSyncRTC)
-public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
+actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
 
     static let jsonEncoder = JSONEncoder()
     static let jsonDecoder = JSONDecoder()
@@ -59,7 +58,7 @@ public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /// Writable data stream convert WebSocketEvent to AppSyncRealTimeResponse
     internal let subject = PassthroughSubject<AppSyncRealTimeResponse, Never>()
 
-    public var isConnected: Bool {
+    var isConnected: Bool {
         self.state.value == .connected
     }
 
@@ -70,7 +69,7 @@ public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         - requestInterceptor: Interceptor for decocating AppSyncRealTimeRequest
         - webSocketClient: WebSocketClient for reading/writing to connection
      */
-    public init(
+    init(
         endpoint: URL,
         requestInterceptor: AppSyncRequestInterceptor,
         webSocketClient: AppSyncWebSocketClientProtocol
@@ -93,7 +92,7 @@ public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /**
      Connecting to remote AppSync real-time server.
      */
-    public func connect() async throws {
+    func connect() async throws {
         switch self.state.value {
         case .connecting, .connected:
             log.debug("[AppSyncRealTimeClient] client is already connecting or connected")
@@ -125,7 +124,7 @@ public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /**
      Disconnect only when there are no subscriptions exist.
      */
-    public func disconnectWhenIdel() async {
+    func disconnectWhenIdel() async {
         if self.subscriptions.isEmpty {
             log.debug("[AppSyncRealTimeClient] no subscription exist, client is trying to disconnect")
             await disconnect()
@@ -137,7 +136,7 @@ public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
     /**
      Disconnect from AppSync real-time server.
      */
-    public func disconnect() async {
+    func disconnect() async {
         guard self.state.value != .disconnecting else {
             log.debug("[AppSyncRealTimeClient] client already disconnecting")
             return
@@ -161,7 +160,7 @@ public actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
      -  Returns:
         A never fail data stream for AppSyncSubscriptionEvent.
      */
-    public func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
+    func subscribe(id: String, query: String) async throws -> AnyPublisher<AppSyncSubscriptionEvent, Never> {
         log.debug("[AppSyncRealTimeClient] Received subscription request id: \(id), query: \(query)")
         let subscription = AppSyncRealTimeSubscription(id: id, query: query, appSyncRealTimeClient: self)
         subscriptions[id] = subscription
