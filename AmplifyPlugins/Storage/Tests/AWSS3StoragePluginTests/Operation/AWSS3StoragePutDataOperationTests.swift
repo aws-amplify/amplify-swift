@@ -251,6 +251,37 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     /// Given: Storage Upload Data Operation
+    /// When: The operation is executed with a request that has an invalid StringStoragePath
+    /// Then: The operation will fail with a validation error
+    func testUploadDataOperationEmptyStoragePathValidationError() {
+        let path = StringStoragePath(resolve: { _ in return " " })
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let request = StorageUploadDataRequest(path: path, data: testData, options: options)
+        let operation = AWSS3StorageUploadDataOperation(request,
+                                                        storageConfiguration: testStorageConfiguration,
+                                                        storageService: mockStorageService,
+                                                        authService: mockAuthService,
+                                                        progressListener: nil
+        ) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    /// Given: Storage Upload Data Operation
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
     func testUploadDataOperationIdentityIDStoragePathValidationError() {
