@@ -215,6 +215,38 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     }
 
     /// Given: Storage Download File Operation
+    /// When: The operation is executed with a request that has an invalid StringStoragePath
+    /// Then: The operation will fail with a validation error
+    func testDownloadFileOperationEmptyStoragePathValidationError() {
+        let path = StringStoragePath(resolve: { _ in return " " })
+        let request = StorageDownloadFileRequest(path: path,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
+
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageDownloadFileOperation(request,
+                                                          storageConfiguration: testStorageConfiguration,
+                                                          storageService: mockStorageService,
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+    }
+
+    /// Given: Storage Download File Operation
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
     func testDownloadFileOperationIdentityIDStoragePathValidationError() {

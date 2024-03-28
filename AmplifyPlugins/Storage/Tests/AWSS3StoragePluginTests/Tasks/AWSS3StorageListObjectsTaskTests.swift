@@ -103,4 +103,30 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         }
     }
 
+    /// - Given: A configured Storage ListObjects Task with invalid path
+    /// - When: AWSS3StorageListObjectsTask value is invoked
+    /// - Then: A storage validation error should be returned
+    func testListObjectsTaskWithInvalidEmptyPath() async throws {
+        let serviceMock = MockAWSS3StorageService()
+
+        let request = StorageListRequest(
+            path: StringStoragePath.fromString(" "), options: .init())
+        let task = AWSS3StorageListObjectsTask(
+            request,
+            storageConfiguration: AWSS3StoragePluginConfiguration(),
+            storageBehaviour: serviceMock)
+        do {
+            _ = try await task.value
+            XCTFail("Task should throw an exception")
+        }
+        catch {
+            guard let storageError = error as? StorageError,
+                  case .validation(let field, _, _, _) = storageError else {
+                XCTFail("Should throw a storage validation error, instead threw \(error)")
+                return
+            }
+
+            XCTAssertEqual(field, "path", "Field in error should be `path`")
+        }
+    }
 }
