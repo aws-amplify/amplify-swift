@@ -103,4 +103,36 @@ class AWSS3StorageGetURLTaskTests: XCTestCase {
         }
     }
 
+    /// - Given: A configured Storage GetURL Task with invalid path
+    /// - When: AWSS3StorageGetURLTask value is invoked
+    /// - Then: A storage validation error should be returned
+    func testGetURLTaskWithInvalidEmptyPath() async throws {
+        let emptyPath = " "
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
+
+        let serviceMock = MockAWSS3StorageService()
+        serviceMock.getPreSignedURLHandler = { path, _, _ in
+            XCTAssertEqual(emptyPath, path)
+            return tempURL
+        }
+
+        let request = StorageGetURLRequest(
+            path: StringStoragePath.fromString(emptyPath), options: .init())
+        let task = AWSS3StorageGetURLTask(
+            request,
+            storageBehaviour: serviceMock)
+        do {
+            _ = try await task.value
+            XCTFail("Task should throw an exception")
+        }
+        catch {
+            guard let storageError = error as? StorageError,
+                  case .validation(let field, _, _, _) = storageError else {
+                XCTFail("Should throw a storage validation error, instead threw \(error)")
+                return
+            }
+
+            XCTAssertEqual(field, "path", "Field in error should be `path`")
+        }
+    }
 }

@@ -20,7 +20,7 @@ extension StoragePath {
                     nil
                 )
             }
-            let path = resolve(identityId)
+            let path = resolve(identityId).trimmingCharacters(in: .whitespaces)
             try validate(path)
             return path
         } else if self is StringStoragePath {
@@ -30,7 +30,7 @@ extension StoragePath {
                     nil
                 )
             }
-            let path = resolve(input)
+            let path = resolve(input).trimmingCharacters(in: .whitespaces)
             try validate(path)
             return path
         } else {
@@ -41,6 +41,12 @@ extension StoragePath {
     }
 
     func validate(_ path: String) throws {
+        guard !path.isEmpty else {
+            let errorDescription = "Invalid StoragePath specified."
+            let recoverySuggestion = "Please specify a valid StoragePath"
+            throw StorageError.validation("path", errorDescription, recoverySuggestion, nil)
+        }
+
         if path.hasPrefix("/") {
             let errorDescription = "Invalid StoragePath specified."
             let recoverySuggestion = "Please specify a valid StoragePath that does not contain the prefix / "
