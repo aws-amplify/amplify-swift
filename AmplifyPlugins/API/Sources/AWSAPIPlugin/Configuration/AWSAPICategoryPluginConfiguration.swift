@@ -196,17 +196,6 @@ public struct AWSAPICategoryPluginConfiguration {
             endpoints[name] = endpointConfig
         }
 
-        if let api = config.api {
-            for endpoint in api.endpoints {
-                let name = endpoint.name
-                let endpointConfig = try EndpointConfig(name: name,
-                                                        config: endpoint,
-                                                        apiAuthProviderFactory: apiAuthProviderFactory,
-                                                        authService: authService)
-                endpoints[name] = endpointConfig
-            }
-        }
-
         return endpoints
     }
 

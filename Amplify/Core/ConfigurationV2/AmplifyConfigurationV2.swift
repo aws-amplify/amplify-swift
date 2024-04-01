@@ -17,49 +17,33 @@ import Foundation
 public struct AmplifyConfigurationV2: Codable {
     public let version: String
     public let analytics: Analytics?
-    public let api: API?
     public let auth: Auth?
     public let data: DataCategory?
     public let geo: Geo?
-    public let logging: Logging?
     public let notifications: Notifications?
     public let storage: Storage?
     public let custom: CustomOutput?
 
     @_spi(InternalAmplifyConfiguration)
     public struct Analytics: Codable {
-        public let awsRegion: AWSRegion
-        public let pinpointAppId: String
-    }
+        public let amazonPinpoint: AmazonPinpoint?
 
-    @_spi(InternalAmplifyConfiguration)
-    public struct API: Codable {
-        public let endpoints: [Endpoint]
-
-        @_spi(InternalAmplifyConfiguration)
-        public struct Endpoint: Codable {
-            public let name: String
-            public let url: String
+        public struct AmazonPinpoint: Codable {
             public let awsRegion: AWSRegion
-            public let authorizationTypes: [AWSAppSyncAuthorizationType]
-            public let defaultAuthorizationType: AWSAppSyncAuthorizationType
+            public let appId: String
         }
     }
 
     @_spi(InternalAmplifyConfiguration)
     public struct Auth: Codable {
         public let awsRegion: AWSRegion
+        public let authenticationFlowType: String
         public let userPoolId: String
         public let userPoolClientId: String
         public let identityPoolId: String
         public let passwordPolicy: PasswordPolicy?
-        public let identityProviders: [String]
-        public let oauthDomain: String?
-        public let oauthScopes: [String]
-        public let oauthRedirectSignIn: String?
-        public let oauthRedirectSignOut: String?
-        public let oauthResponseType: String?
-        public let standardAttributes: [AmazonCognitoStandardAttributes: AmazonCognitoStandardAttributesConfig]
+        public let oauth: OAuth?
+        public let standardAttributes: [AmazonCognitoStandardAttributes]
         public let usernameAttributes: [String]
         public let userVerificationMechanisms: [String]
         public let unauthenticatedIdentitiesEnabled: Bool?
@@ -73,6 +57,15 @@ public struct AmplifyConfigurationV2: Codable {
             public let requireUppercase: Bool
             public let requireSymbols: Bool
         }
+
+        public struct OAuth: Codable {
+            public let identityProviders: [String]
+            public let domain: String
+            public let scopes: [String]
+            public let redirectSignInUri: [String]
+            public let redirectSignOutUri: [String]
+            public let responseType: String
+        }
     }
 
     public struct DataCategory: Codable {
@@ -82,7 +75,6 @@ public struct AmplifyConfigurationV2: Codable {
         public let apiKey: String?
         public let defaultAuthorizationType: AWSAppSyncAuthorizationType
         public let authorizationTypes: [AWSAppSyncAuthorizationType]
-        public let conflictResolutionMode: String?
     }
 
     @_spi(InternalAmplifyConfiguration)
@@ -93,7 +85,7 @@ public struct AmplifyConfigurationV2: Codable {
         public let geofenceCollections: GeofenceCollections
 
         public struct Maps: Codable {
-            public let items: [AmazonLocationServiceConfig]
+            public let items: [String: AmazonLocationServiceConfig]
             public let `default`: String
 
             public struct AmazonLocationServiceConfig: Codable {
@@ -109,32 +101,15 @@ public struct AmplifyConfigurationV2: Codable {
 
         public struct GeofenceCollections: Codable {
             public let items: [String]
-            let `default`: String
-        }
-    }
-
-    @_spi(InternalAmplifyConfiguration)
-    public struct Logging: Codable {
-        public let awsRegion: AWSRegion
-        public let flushInterval: Double?
-        public let logGroupName: String
-        public let maxLocalStoreSize: Double?
-        public let loggingConstraints: LoggingConstraints?
-
-        public struct LoggingConstraints: Codable {
-            public let defaultLogLevel: Int
+            public let `default`: String
         }
     }
 
     @_spi(InternalAmplifyConfiguration)
     public struct Notifications: Codable {
-        public let channels: [Channel]
-
-        public struct Channel: Codable {
-            public let awsRegion: AWSRegion
-            public let pinpointAppId: String
-            public let channelType: String
-        }
+        public let awsRegion: String
+        public let amazonPinpointAppId: String
+        public let channels: [AmazonPinpointChannelType]
     }
 
     @_spi(InternalAmplifyConfiguration)
@@ -172,17 +147,21 @@ public struct AmplifyConfigurationV2: Codable {
     }
 
     @_spi(InternalAmplifyConfiguration)
-    public struct AmazonCognitoStandardAttributesConfig: Codable {
-        let required: Bool
-    }
-
-    @_spi(InternalAmplifyConfiguration)
     public enum AWSAppSyncAuthorizationType: String, Codable {
         case amazonCognitoUserPools = "AMAZON_COGNITO_USER_POOLS"
         case apiKey = "API_KEY"
         case awsIAM = "AWS_IAM"
         case awsLambda = "AWS_LAMBDA"
         case openIDConnect = "OPENID_CONNECT"
+    }
+
+    @_spi(InternalAmplifyConfiguration)
+    public enum AmazonPinpointChannelType: String, Codable {
+        case inAppMessaging = "IN_APP_MESSAGING"
+        case fcm = "FCM"
+        case apns = "APNS"
+        case email = "EMAIL"
+        case sms = "SMS"
     }
 }
 

@@ -75,21 +75,6 @@ public extension AWSAPICategoryPluginConfiguration {
         }
 
         init(name: String,
-             config: AmplifyConfigurationV2.API.Endpoint,
-             apiAuthProviderFactory: APIAuthProviderFactory,
-             authService: AWSAuthServiceBehavior? = nil) throws {
-
-            try self.init(name: name,
-                          baseURL: try EndpointConfig.getBaseURL(from: config.url),
-                          region: config.awsRegion,
-                          authorizationType: try AWSAuthorizationType.from(authorizationTypeString: config.defaultAuthorizationType.rawValue),
-                          endpointType: .graphQL,
-                          apiKey: nil,
-                          apiAuthProviderFactory: apiAuthProviderFactory,
-                          authService: authService)
-        }
-
-        init(name: String,
              baseURL: URL,
              region: AWSRegionType?,
              authorizationType: AWSAuthorizationType,

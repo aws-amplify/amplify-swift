@@ -65,14 +65,15 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     init(_ configuration: AmplifyConfigurationV2,
          _ options: AWSPinpointAnalyticsPluginOptions) throws {
-        guard let pinpointAnalyticsConfig = configuration.analytics else {
+        guard let analyticsConfig = configuration.analytics,
+              let pinpointAnalyticsConfig = analyticsConfig.amazonPinpoint else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.errorDescription,
                 AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.recoverySuggestion
             )
         }
 
-        self.init(appId: pinpointAnalyticsConfig.pinpointAppId,
+        self.init(appId: pinpointAnalyticsConfig.appId,
                   region: pinpointAnalyticsConfig.awsRegion,
                   autoFlushEventsInterval: options.autoFlushEventsInerval,
                   trackAppSessions: options.trackAppSessions,
