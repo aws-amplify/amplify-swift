@@ -238,17 +238,16 @@ struct ConfigurationHelper {
     }
 
     static func parseHostedConfiguration(configuration: AmplifyConfigurationV2.Auth) -> HostedUIConfigurationData? {
-
-        guard let domain = configuration.oauthDomain,
-              let signInRedirectURI = configuration.oauthRedirectSignIn,
-              let signOutRedirectURI = configuration.oauthRedirectSignOut else {
+        guard let oauth = configuration.oauth,
+              let signInRedirectURI = oauth.redirectSignInUri.first,
+              let signOutRedirectURI = oauth.redirectSignOutUri.first else {
             return nil
         }
 
         return createHostedConfiguration(appClientId: "TODO", // TODO: Missing Auth.Default.OAuth.AppClientId
                                          clientSecret: nil, // TODO: Auth.Default.OAuth.AppClientSecret no longer needed?
-                                         domain: domain,
-                                         scopes: configuration.oauthScopes,
+                                         domain: oauth.domain,
+                                         scopes: oauth.scopes,
                                          signInRedirectURI: signInRedirectURI,
                                          signOutRedirectURI: signOutRedirectURI)
 

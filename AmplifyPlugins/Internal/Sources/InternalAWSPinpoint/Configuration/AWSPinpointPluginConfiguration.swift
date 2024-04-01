@@ -33,8 +33,7 @@ public struct AWSPinpointPluginConfiguration {
     }
 
     public init(_ config: AmplifyConfigurationV2) throws {
-        guard let notifications = config.notifications,
-              let channel = notifications.channels.first else {
+        guard let notifications = config.notifications else {
             throw PluginError.pluginConfigurationError(
                 AWSPinpointErrorConstants.pinpointConfigurationExpected.errorDescription,
                 AWSPinpointErrorConstants.pinpointConfigurationExpected.recoverySuggestion
@@ -42,8 +41,8 @@ public struct AWSPinpointPluginConfiguration {
         }
 
         self.init(
-            appId: channel.pinpointAppId,
-            region: channel.awsRegion
+            appId: notifications.amazonPinpointAppId,
+            region: notifications.awsRegion
         )
     }
 

@@ -198,12 +198,12 @@ public struct AWSLocationGeoPluginConfiguration {
                                 regionName: String) throws -> [String: Geo.MapStyle] {
         let mapTuples: [(String, Geo.MapStyle)] = try mapConfig.items.map { map in
             let url = URL(string: AWSLocationGeoPluginConfiguration.urlString(regionName: regionName,
-                                                                              mapName: map.name))
+                                                                              mapName: map.key))
             guard let styleURL = url else {
-                throw GeoPluginConfigError.mapStyleURLInvalid(mapName: map.name)
+                throw GeoPluginConfigError.mapStyleURLInvalid(mapName: map.key)
             }
-            let mapStyle = Geo.MapStyle.init(mapName: map.name, style: map.style, styleURL: styleURL)
-            return (map.name, mapStyle)
+            let mapStyle = Geo.MapStyle.init(mapName: map.key, style: map.value.style, styleURL: styleURL)
+            return (map.key, mapStyle)
         }
 
         return Dictionary(uniqueKeysWithValues: mapTuples)
