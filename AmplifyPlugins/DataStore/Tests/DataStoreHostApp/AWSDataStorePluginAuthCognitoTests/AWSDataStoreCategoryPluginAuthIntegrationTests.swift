@@ -48,7 +48,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
                     print("Can't cast payload as mutation event")
                     return
             }
-            if todo.id == savedLocalTodo.id {
+            if todo.id == savedLocalTodo.id && todo.owner != nil {
                 remoteTodoOptional = todo
                 syncReceivedInvoked.fulfill()
             }
@@ -60,7 +60,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
 
         try await signIn(user: user1)
 
-        await fulfillment(of: [syncReceivedInvoked], timeout: 60)
+        await fulfillment(of: [syncReceivedInvoked], timeout: 20)
         Amplify.Hub.removeListener(syncReceivedListener)
         guard let remoteTodo = remoteTodoOptional else {
             XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")

@@ -62,6 +62,7 @@ final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
 
     /// Ensure that the publisher-subscriber with back pressure is receiving all the events in the order in which they were sent.
     func testSubscriberRecievedEventsInOrder() async throws {
+        let prefix = UUID().uuidString
         let expectedEvents = expectation(description: "Expected number of ")
         let expectedOrder = AtomicValue<[String]>(initialValue: [])
         let actualOrder = AtomicValue<[String]>(initialValue: [])
@@ -92,7 +93,7 @@ final class IncomingAsyncSubscriptionEventPublisherTests: XCTestCase {
             )
 
         for index in 0..<numberOfEvents {
-            let post = Post(id: "\(index)", title: "title", content: "content", createdAt: .now())
+            let post = Post(id: "\(prefix)-\(index)", title: "title", content: "content", createdAt: .now())
             expectedOrder.append(post.id)
             asyncEvents.send(.data(.success(.init(model: AnyModel(post),
                                                   syncMetadata: .init(modelId: post.id,

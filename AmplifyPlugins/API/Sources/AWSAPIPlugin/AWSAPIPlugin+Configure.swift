@@ -7,7 +7,6 @@
 
 import Amplify
 import AWSPluginsCore
-import AppSyncRealTimeClient
 import AwsCommonRuntimeKit
 
 public extension AWSAPIPlugin {
@@ -53,14 +52,14 @@ extension AWSAPIPlugin {
     struct ConfigurationDependencies {
         let authService: AWSAuthServiceBehavior
         let pluginConfig: AWSAPICategoryPluginConfiguration
-        let subscriptionConnectionFactory: SubscriptionConnectionFactory
+        let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
         let logLevel: Amplify.LogLevel
 
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,
             authService: AWSAuthServiceBehavior? = nil,
-            subscriptionConnectionFactory: SubscriptionConnectionFactory? = nil,
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
             logLevel: Amplify.LogLevel? = nil
         ) throws {
             let authService = authService
@@ -72,15 +71,13 @@ extension AWSAPIPlugin {
                 authService: authService
             )
 
-            let subscriptionConnectionFactory = subscriptionConnectionFactory
-                ?? AWSSubscriptionConnectionFactory()
-
             let logLevel = logLevel ?? Amplify.Logging.logLevel
 
             self.init(
                 pluginConfig: pluginConfig,
                 authService: authService,
-                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                appSyncRealTimeClientFactory: appSyncRealTimeClientFactory
+                ?? AppSyncRealTimeClientFactory(),
                 logLevel: logLevel
             )
         }
@@ -88,12 +85,12 @@ extension AWSAPIPlugin {
         init(
             pluginConfig: AWSAPICategoryPluginConfiguration,
             authService: AWSAuthServiceBehavior,
-            subscriptionConnectionFactory: SubscriptionConnectionFactory,
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
             logLevel: Amplify.LogLevel
         ) {
             self.pluginConfig = pluginConfig
             self.authService = authService
-            self.subscriptionConnectionFactory = subscriptionConnectionFactory
+            self.appSyncRealTimeClientFactory = appSyncRealTimeClientFactory
             self.logLevel = logLevel
         }
 
@@ -108,8 +105,6 @@ extension AWSAPIPlugin {
     func configure(using dependencies: ConfigurationDependencies) {
         authService = dependencies.authService
         pluginConfig = dependencies.pluginConfig
-        subscriptionConnectionFactory = dependencies.subscriptionConnectionFactory
-        AppSyncRealTimeClient.logLevel = AppSyncRealTimeClient.LogLevel(
-            rawValue: dependencies.logLevel.rawValue) ?? .error
+        appSyncRealTimeClientFactory = dependencies.appSyncRealTimeClientFactory
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AppSyncRealTimeClient
 import Foundation
 
 struct GraphQLErrorDecoder {
@@ -29,12 +28,13 @@ struct GraphQLErrorDecoder {
         return responseErrors
     }
 
-    static func decodeAppSyncErrors(_ appSyncJSON: AppSyncJSONValue) throws -> [GraphQLError] {
-        guard case let .array(errors) = appSyncJSON else {
-            throw APIError.unknown("Expected 'errors' field not found in \(String(describing: appSyncJSON))", "", nil)
+    static func decodeAppSyncErrors(_ payload: JSONValue?) throws -> [GraphQLError] {
+        guard let errorsJson = payload?.errors else {
+            throw APIError.unknown("Expected 'errors' field not found in \(String(describing: payload))", "", nil)
         }
-        let convertedValues = errors.map(AppSyncJSONValue.toJSONValue)
-        return try decodeErrors(graphQLErrors: convertedValues)
+
+        let errors = errorsJson.asArray ?? [errorsJson]
+        return try decodeErrors(graphQLErrors: errors)
     }
 
     static func decode(graphQLErrorJSON: JSONValue) throws -> GraphQLError {

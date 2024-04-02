@@ -12,7 +12,7 @@ import Amplify
 public protocol LivenessService {
     func send<T>(
         _ event: LivenessEvent<T>,
-        eventDate: () -> Date
+        eventDate: @escaping () -> Date
     )
 
     var onServiceException: (FaceLivenessSessionError) -> Void { get set }
