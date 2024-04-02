@@ -6,14 +6,23 @@
 //
 
 import Foundation
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 
 class TestConfigHelper {
+
+    static var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
 
     static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
 
         let data = try retrieve(forResource: forResource)
         return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
+    }
+
+    static func retrieveAmplifyConfigurationV2(forResource: String) throws -> AmplifyConfigurationV2 {
+        let data = try retrieve(forResource: forResource)
+        return try AmplifyConfigurationV2.decodeAmplifyConfiguration(from: data)
     }
 
     static func retrieveCredentials(forResource: String) throws -> [String: String] {

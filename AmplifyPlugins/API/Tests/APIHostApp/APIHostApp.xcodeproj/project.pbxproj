@@ -442,7 +442,22 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		212371362BBB0279003B1B44 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		212371562BBC5CCC003B1B44 /* AWSAPIPluginGen2FunctionalTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AWSAPIPluginGen2FunctionalTests.xctestplan; sourceTree = "<group>"; };
+		212371582BBD9853003B1B44 /* README_GEN2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README_GEN2.md; sourceTree = "<group>"; };
 		21262523289ABB0C003788E3 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		21262702289ABFE4003788E3 /* ScalarContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ScalarContainer+Schema.swift"; sourceTree = "<group>"; };
 		21262703289ABFE5003788E3 /* Post5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post5.swift; sourceTree = "<group>"; };
@@ -897,6 +912,7 @@
 		21698A7C28899805004BD994 /* AWSAPIPluginFunctionalTests */ = {
 			isa = PBXGroup;
 			children = (
+				212371562BBC5CCC003B1B44 /* AWSAPIPluginGen2FunctionalTests.xctestplan */,
 				21E581E32A6835910027D13A /* API.swift */,
 				212626CA289ABC79003788E3 /* Base */,
 				21698AA82889996A004BD994 /* GraphQLConnectionScenario1Tests.swift */,
@@ -917,6 +933,7 @@
 				21698AAF2889996A004BD994 /* GraphQLTestBase.swift */,
 				212626CB289ABC89003788E3 /* Models */,
 				21698AA92889996A004BD994 /* README.md */,
+				212371582BBD9853003B1B44 /* README_GEN2.md */,
 				21698A9F28899921004BD994 /* Todo.swift */,
 			);
 			path = AWSAPIPluginFunctionalTests;
@@ -1472,6 +1489,7 @@
 				21E73E6728898D7800D7DB7E /* Sources */,
 				21E73E6828898D7800D7DB7E /* Frameworks */,
 				21E73E6928898D7800D7DB7E /* Resources */,
+				212371362BBB0279003B1B44 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1703,7 +1721,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					213DBC7428A6C47000B30280 = {

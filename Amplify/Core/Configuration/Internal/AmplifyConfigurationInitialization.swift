@@ -128,11 +128,11 @@ extension AmplifyConfigurationV2 {
         } catch {
             throw ConfigurationError.unableToDecode(
                 """
-                Could not decode `amplifyconfiguration.json` into a valid AmplifyConfiguration object
+                Could not decode `amplify_outputs.json` into a valid AmplifyConfigurationV2 object
                 """,
 
                 """
-                `amplifyconfiguration.json` was found, but could not be converted to an AmplifyConfiguration object
+                `amplify_outputs.json` was found, but could not be converted to an AmplifyConfigurationV2 object
                 using the default JSONDecoder. The system reported the following error:
                 \(error.localizedDescription)
                 """,
