@@ -63,6 +63,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		212371552BBC5414003B1B44 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5C2E096629551CDD00673FF9 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 		6857645C28AE94D9000CE2E9 /* AnalyticsHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnalyticsHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6857645F28AE94D9000CE2E9 /* AnalyticsHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHostAppApp.swift; sourceTree = "<group>"; };
@@ -165,6 +166,7 @@
 		6857647728AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				212371552BBC5414003B1B44 /* README.md */,
 				6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */,
 				6857648828AE9951000CE2E9 /* TestConfigHelper.swift */,
 			);

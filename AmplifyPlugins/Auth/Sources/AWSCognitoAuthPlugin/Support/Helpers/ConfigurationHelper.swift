@@ -178,20 +178,25 @@ struct ConfigurationHelper {
         }
 
         // parse `usernameAttributes`
-        let usernameAttributes: [UserPoolConfigurationData.UsernameAttribute] = config
-            .usernameAttributes
-            .compactMap { .init(rawValue: $0) }
+        let usernameAttributes: [UserPoolConfigurationData.UsernameAttribute]
+        if let configUsernameAttributes = config.usernameAttributes {
+            usernameAttributes = configUsernameAttributes.compactMap { .init(rawValue: $0) }
+        } else {
+            usernameAttributes = []
+        }
 
         // parse `signUpAttributes`
-        let signUpAttributes: [UserPoolConfigurationData.SignUpAttributeType] = config
-            .usernameAttributes // TODO: Should be `signUpAttributes`, missing from unified config
-            .compactMap { .init(rawValue: $0) }
-
+        let signUpAttributes: [UserPoolConfigurationData.SignUpAttributeType]
+        if let configStandardRequiredAttributes = config.standardRequiredAttributes {
+            signUpAttributes = configStandardRequiredAttributes.compactMap { .init(rawValue: $0.rawValue) }
+        } else {
+            signUpAttributes = []
+        }
 
         // parse `verificationMechanisms`
         let verificationMechanisms: [UserPoolConfigurationData.VerificationMechanism] = config
-            .userVerificationMechanisms
-            .compactMap { .init(rawValue: $0) }
+            .userVerificationTypes?
+            .compactMap { .init(rawValue: $0) } ?? []
 
         return UserPoolConfigurationData(poolId: config.userPoolId,
                                          clientId: config.userPoolClientId,
@@ -284,8 +289,12 @@ struct ConfigurationHelper {
     }
 
     static func parseIdentityPoolData(_ config: AmplifyConfigurationV2.Auth) -> IdentityPoolConfigurationData? {
-        IdentityPoolConfigurationData(poolId: config.identityPoolId,
-                                      region: config.awsRegion) // TODO: IdentityPool used to have its own region, now it is shared.
+        if let identityPoolId = config.identityPoolId {
+            return IdentityPoolConfigurationData(poolId: identityPoolId,
+                                                 region: config.awsRegion)
+        } else {
+            return nil
+        }
     }
 
     static func authConfiguration(_ config: JSONValue) throws -> AuthConfiguration {

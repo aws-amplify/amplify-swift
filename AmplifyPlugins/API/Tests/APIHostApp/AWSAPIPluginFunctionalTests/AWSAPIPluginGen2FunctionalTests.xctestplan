@@ -1,0 +1,43 @@
+{
+  "configurations" : [
+    {
+      "id" : "6E06C857-C898-436F-B50F-466A538EE080",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "GraphQLConnectionScenario1Tests",
+        "GraphQLConnectionScenario2Tests",
+        "GraphQLConnectionScenario3Tests",
+        "GraphQLConnectionScenario4Tests",
+        "GraphQLConnectionScenario5Tests",
+        "GraphQLConnectionScenario6Tests",
+        "GraphQLModelBasedTests\/testCustomQueryPostWithComments()",
+        "GraphQLModelBasedTests\/testOnCreateCommentSubscriptionWithModel()",
+        "GraphQLModelBasedTests\/testOnUpdatePostSubscriptionWithModel()",
+        "GraphQLModelBasedTests\/testUpdatePostWithModel()",
+        "GraphQLScalarTests",
+        "GraphQLTestBase"
+      ],
+      "target" : {
+        "containerPath" : "container:APIHostApp.xcodeproj",
+        "identifier" : "21698A7A28899804004BD994",
+        "name" : "AWSAPIPluginFunctionalTests"
+      }
+    }
+  ],
+  "version" : 1
+}

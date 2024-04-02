@@ -37,18 +37,18 @@ public struct AmplifyConfigurationV2: Codable {
     @_spi(InternalAmplifyConfiguration)
     public struct Auth: Codable {
         public let awsRegion: AWSRegion
-        public let authenticationFlowType: String
+        public let authenticationFlowType: String?
         public let userPoolId: String
         public let userPoolClientId: String
-        public let identityPoolId: String
+        public let identityPoolId: String?
         public let passwordPolicy: PasswordPolicy?
         public let oauth: OAuth?
-        public let standardAttributes: [AmazonCognitoStandardAttributes]
-        public let usernameAttributes: [String]
-        public let userVerificationMechanisms: [String]
+        public let standardRequiredAttributes: [AmazonCognitoStandardAttributes]?
+        public let usernameAttributes: [String]?
+        public let userVerificationTypes: [String]?
         public let unauthenticatedIdentitiesEnabled: Bool?
         public let mfaConfiguration: String?
-        public let mfaMethods: [String]
+        public let mfaMethods: [String]?
 
         public struct PasswordPolicy: Codable {
             public let minLength: UInt
@@ -68,6 +68,7 @@ public struct AmplifyConfigurationV2: Codable {
         }
     }
 
+    @_spi(InternalAmplifyConfiguration)
     public struct DataCategory: Codable {
         public let awsRegion: AWSRegion
         public let url: String
@@ -210,7 +211,8 @@ extension Amplify {
     /// - Parameter configuration: The AmplifyConfigurationV2 for specified Categories
     ///
     /// - Tag: Amplify.configure
-    static func configure(_ configuration: AmplifyConfigurationV2) throws {
+    @_spi(InternalAmplifyConfiguration)
+    public static func configure(_ configuration: AmplifyConfigurationV2) throws {
         // Always configure logging first since Auth dependings on logging
         try configure(CategoryType.logging.category, using: configuration)
 

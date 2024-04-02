@@ -2,7 +2,7 @@
 
 The following steps demonstrate how to setup the integration tests for auth plugin. 
 
-## CLI setup
+## (Gen1) CLI setup
 
 The integration test require auth configured with AWS Cognito User Pool and AWS Cognito Identity Pool. 
 
@@ -86,3 +86,23 @@ This will create a amplifyconfiguration.json file in your local, copy that file 
 
 For Auth Device tests:
 Follow steps here (https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category)[https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category] and select "Always" for "Do you want to remember your user's devices?"
+
+
+## (Gen2) CLI setup
+
+1. Set up backend with the following functionality
+
+```ts
+
+```
+This enables certain Cognito features such as sign in with email
+
+2. Generate the backend
+
+3. Copy the file over to the test directory as x.
+
+2. Switch to AuthGen2IntegrationTests to run the tests
+
+3. (Optional) If increasing coverage on auth use cases, update the backend `ts` file from step 1 and go to the testing plan file `AuthGen2IntegrationTests` to enable additional tests.
+
+

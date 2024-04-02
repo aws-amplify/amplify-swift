@@ -1,4 +1,4 @@
-## Model Based GraphQL 
+## Schema: AWSAPIPluginFunctionalTests 
 
 The following steps demonstrate how to set up a GraphQL endpoint with AppSync. The auth configured will be API key.
 
@@ -249,3 +249,4 @@ Keep in mind that the API.swift file in the tests has been manually modified to 
 cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLModelBasedTests-amplifyconfiguration.json
 ```
 You can now run the tests!
+
