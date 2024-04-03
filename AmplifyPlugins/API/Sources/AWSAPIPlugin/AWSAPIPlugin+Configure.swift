@@ -65,10 +65,12 @@ extension AWSAPIPlugin {
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,
-            authService: AWSAuthServiceBehavior = AWSAuthService(),
-            subscriptionConnectionFactory: SubscriptionConnectionFactory = AWSSubscriptionConnectionFactory(),
-            logLevel: Amplify.LogLevel = Amplify.Logging.logLevel
+            authService: AWSAuthServiceBehavior? = nil,
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
+            logLevel: Amplify.LogLevel? = nil
         ) throws {
+            let authService = authService
+            ?? AWSAuthService()
 
             let pluginConfig = try AWSAPICategoryPluginConfiguration(
                 jsonValue: configurationValues,
@@ -76,10 +78,13 @@ extension AWSAPIPlugin {
                 authService: authService
             )
 
+            let logLevel = logLevel ?? Amplify.Logging.logLevel
+
             self.init(
                 pluginConfig: pluginConfig,
                 authService: authService,
-                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                appSyncRealTimeClientFactory: appSyncRealTimeClientFactory
+                ?? AppSyncRealTimeClientFactory(),
                 logLevel: logLevel
             )
         }
@@ -88,7 +93,7 @@ extension AWSAPIPlugin {
             configuration: AmplifyConfigurationV2,
             apiAuthProviderFactory: APIAuthProviderFactory,
             authService: AWSAuthServiceBehavior = AWSAuthService(),
-            subscriptionConnectionFactory: SubscriptionConnectionFactory = AWSSubscriptionConnectionFactory(),
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
             logLevel: Amplify.LogLevel = Amplify.Logging.logLevel
         ) throws {
             let pluginConfig = try AWSAPICategoryPluginConfiguration(

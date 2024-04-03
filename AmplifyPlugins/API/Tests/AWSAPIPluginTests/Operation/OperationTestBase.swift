@@ -24,7 +24,7 @@ class OperationTestBase: XCTestCase {
 
     func setUpPlugin(
         sessionFactory: URLSessionBehaviorFactory? = nil,
-        subscriptionConnectionFactory: SubscriptionConnectionFactory = AWSSubscriptionConnectionFactory(),
+        appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
         endpointType: AWSAPICategoryPluginEndpointType
     ) throws {
         apiPlugin = AWSAPIPlugin(sessionFactory: sessionFactory)
