@@ -20,12 +20,14 @@ enum AuthSignInHelper {
     static func signUpUser(
         username: String,
         password: String,
-        email: String,
+        email: String? = nil,
         phoneNumber: String? = nil) async throws -> Bool {
 
-            var userAttributes = [
-                AuthUserAttribute(.email, value: email)
-            ]
+            var userAttributes: [AuthUserAttribute] = []
+            if let email {
+                userAttributes.append(AuthUserAttribute(.email, value: email))
+            }
+
             if let phoneNumber = phoneNumber {
                 userAttributes.append(AuthUserAttribute(.phoneNumber, value: phoneNumber))
             }

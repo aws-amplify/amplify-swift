@@ -201,9 +201,9 @@ struct ConfigurationHelper {
         return UserPoolConfigurationData(poolId: config.userPoolId,
                                          clientId: config.userPoolClientId,
                                          region: config.awsRegion,
-                                         endpoint: nil, // TODO: Custom Endpoint support, options object perhaps?
-                                         clientSecret: nil, // TODO: confirm this is not needed
-                                         pinpointAppId: nil, // TODO: confirm this is not needed
+                                         endpoint: nil, // Gen2 does not support this field
+                                         clientSecret: nil, // Gen2 does not support this field
+                                         pinpointAppId: nil, // Gen2 does not support this field
                                          authFlowType: .userSRP, // TODO: may be missing `authenticationFlowType`
                                          hostedUIConfig: hostedUIConfig,
                                          passwordProtectionSettings: passwordProtectionSettings,
@@ -250,7 +250,7 @@ struct ConfigurationHelper {
         }
 
         return createHostedConfiguration(appClientId: "TODO", // TODO: Missing Auth.Default.OAuth.AppClientId
-                                         clientSecret: nil, // TODO: Auth.Default.OAuth.AppClientSecret no longer needed?
+                                         clientSecret: nil, // Gen2 does not support this field
                                          domain: oauth.domain,
                                          scopes: oauth.scopes,
                                          signInRedirectURI: signInRedirectURI,

@@ -37,9 +37,6 @@ class AuthSignOutTests: AWSAuthBaseTest {
     ///    - I should get a completed signout flow.
     ///
     func testGlobalSignOut() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                     password: password,
                                     email: defaultTestEmail)
@@ -59,8 +56,6 @@ class AuthSignOutTests: AWSAuthBaseTest {
     ///    - I should get a completed signout flow.
     ///
     func testNonGlobalSignOut() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                     password: password,
                                     email: defaultTestEmail)

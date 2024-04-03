@@ -30,9 +30,6 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///    - The request should be successful and the email attribute should have the correct value
     ///
     func testSuccessfulFetchAttribute() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
                                                email: defaultTestEmail)
@@ -93,9 +90,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///    - The request should be successful and the email, name specified should receive a confirmation code
     ///
     func testSuccessfulUpdateOfMultipleAttributes() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-        let updatedFamilyName = "\(username)@amazon.com"
+        let updatedFamilyName = "\(UUID().uuidString)@amazon.com"
         let updatedName = "Name\(UUID().uuidString)"
 
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
@@ -132,9 +127,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///    - The confirmation request should fail with a Auth service error
     ///
     func testSuccessfulUserAttributesConfirmation() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-        let updatedEmail = "\(username)@amazon.com"
+        let updatedEmail = "\(UUID().uuidString)@amazon.com"
 
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
@@ -176,9 +169,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///    - The request should be successful and the email specified should receive a second confirmation code
     ///
     func testSuccessfulSendVerificationCodeWithUpdatedEmail() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-        let updatedEmail = "\(username)@amazon.com"
+        let updatedEmail = "\(UUID().uuidString)@amazon.com"
 
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
@@ -204,9 +195,6 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///    - The request should be successful and the email specified should receive a second confirmation code
     ///
     func testSuccessfulSendVerificationCode() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
                                                email: defaultTestEmail)
@@ -226,9 +214,8 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     ///    - The request should be successful and the password should be updated
     ///
     func testSuccessfulChangePassword() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let oldPassword = "P123@\(UUID().uuidString)"
-        let updatedPassword = "P123@\(UUID().uuidString)"
+        let oldPassword = password
+        let updatedPassword = password
 
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: oldPassword,

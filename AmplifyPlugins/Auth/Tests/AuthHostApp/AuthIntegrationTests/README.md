@@ -1,4 +1,4 @@
-#  AWSCognitoAuthPlugin Integration tests
+#  Schema: AuthIntegrationTests - AWSCognitoAuthPlugin Integration tests
 
 The following steps demonstrate how to setup the integration tests for auth plugin. 
 
@@ -88,21 +88,91 @@ For Auth Device tests:
 Follow steps here (https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category)[https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category] and select "Always" for "Do you want to remember your user's devices?"
 
 
-## (Gen2) CLI setup
+#  Schema: AuthGen2IntegrationTests
 
-1. Set up backend with the following functionality
+## Schema: AuthGen2IntegrationTests
 
-```ts
+The following steps demonstrate how to setup the integration tests for auth plugin using Amplify CLI (Gen2).
+
+### Set-up
+
+At the time this was written, it follows the steps from here https://docs.amplify.aws/gen2/deploy-and-host/fullstack-branching/mono-and-multi-repos/
+
+1. From a new folder, run `npm create amplify@beta`. This uses the following versions of the Amplify CLI, see `package.json` file below.
+
+```json
+{
+  ...
+  "devDependencies": {
+    "@aws-amplify/backend": "^0.13.0-beta.14",
+    "@aws-amplify/backend-cli": "^0.12.0-beta.16",
+    "aws-cdk": "^2.134.0",
+    "aws-cdk-lib": "^2.134.0",
+    "constructs": "^10.3.0",
+    "esbuild": "^0.20.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3"
+  },
+  "dependencies": {
+    "aws-amplify": "^6.0.25"
+  }
+}
 
 ```
-This enables certain Cognito features such as sign in with email
+2. Update `amplify/auth/resource.ts`. The resulting file should look like this
 
-2. Generate the backend
+```ts
+import { defineAuth, defineFunction } from '@aws-amplify/backend';
 
-3. Copy the file over to the test directory as x.
+/**
+ * Define and configure your auth resource
+ * @see https://docs.amplify.aws/gen2/build-a-backend/auth
+ */
+export const auth = defineAuth({
+  loginWith: {
+    email: true
+  },
+  triggers: {
+    // configure a trigger to point to a function definition
+    preSignUp: defineFunction({
+      entry: './pre-sign-up-handler.ts'
+    })
+  }
+});
 
-2. Switch to AuthGen2IntegrationTests to run the tests
+```
 
-3. (Optional) If increasing coverage on auth use cases, update the backend `ts` file from step 1 and go to the testing plan file `AuthGen2IntegrationTests` to enable additional tests.
+```ts
+import type { PreSignUpTriggerHandler } from 'aws-lambda';
 
+export const handler: PreSignUpTriggerHandler = async (event) => {
+  // your code here
+  event.response.autoConfirmUser = true
+  return event;
+};
+```
+
+4. Commit and push the files to a git repository.
+
+5. Navigate to the AWS Amplify console (https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/)
+
+6. Click on "Try Amplify Gen 2" button.
+
+7. Choose "Option 2: Start with an existing app", and choose Github, and press Next.
+
+8. Find the repository and branch, and click Next
+
+9. Click "Save and deploy" and wait for deployment to finish.  
+
+10. Generate the `amplify_outputs.json` configuration file
+
+```
+npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
+```
+
+12. Copy the `amplify_outputs.json` file over to the test directory as `AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
+
+```
+cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json
+```
 

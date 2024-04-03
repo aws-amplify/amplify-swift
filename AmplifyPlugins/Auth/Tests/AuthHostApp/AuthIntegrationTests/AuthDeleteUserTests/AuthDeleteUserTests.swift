@@ -25,8 +25,8 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
     ///    - I should get successful result, the user should no longer exist, and the auth session should be signedOut
     ///
     func testDeleteUserFromAuthState() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
+        let username = username
+        let password = password
 
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,

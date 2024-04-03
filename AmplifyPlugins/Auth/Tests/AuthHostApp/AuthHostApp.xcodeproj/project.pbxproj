@@ -125,6 +125,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21D165BF2BBDAD4E001E3D4B /* AuthGen2IntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AuthGen2IntegrationTests.xctestplan; sourceTree = "<group>"; };
 		4821B2F1286B5F74000EC1D7 /* AuthDeleteUserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthDeleteUserTests.swift; sourceTree = "<group>"; };
 		4821B2F328737130000EC1D7 /* AuthCustomSignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCustomSignInTests.swift; sourceTree = "<group>"; };
 		4834D7C028B0770800DD564B /* FederatedSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FederatedSessionTests.swift; sourceTree = "<group>"; };
@@ -316,6 +317,7 @@
 				485CB5B227B61EB4006CCEC7 /* Helpers */,
 				978291FF286B7F61000DE190 /* ResetPasswordTests */,
 				485CB5AF27B61EAA006CCEC7 /* AWSAuthBaseTest.swift */,
+				21D165BF2BBDAD4E001E3D4B /* AuthGen2IntegrationTests.xctestplan */,
 				485CB5AE27B61EAA006CCEC7 /* README.md */,
 			);
 			path = AuthIntegrationTests;

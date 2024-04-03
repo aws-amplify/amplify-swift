@@ -1,0 +1,54 @@
+{
+  "configurations" : [
+    {
+      "id" : "EA0E885E-8FDB-4753-83A7-61C2D3E3ACB6",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "AWSAuthBaseTest",
+        "AuthConfirmResetPasswordTests",
+        "AuthConfirmSignUpTests",
+        "AuthCustomSignInTests",
+        "AuthDeleteUserTests",
+        "AuthEventIntegrationTests",
+        "AuthFetchDeviceTests",
+        "AuthForgetDeviceTests",
+        "AuthRememberDeviceTests",
+        "AuthResendSignUpCodeTests",
+        "AuthResetPasswordTests",
+        "AuthSRPSignInTests\/testNewPasswordRequired()",
+        "AuthSignUpTests\/testRegisterExistingUser()",
+        "AuthUserAttributesTests\/testSuccessfulUpdateEmailAttribute()",
+        "AuthUserAttributesTests\/testSuccessfulUserAttributesConfirmation()",
+        "CredentialStoreConfigurationTests",
+        "FederatedSessionTests",
+        "GetCurrentUserTests",
+        "MFAPreferenceTests",
+        "MFASignInTests",
+        "SignedInAuthSessionTests",
+        "SignedOutAuthSessionTests",
+        "TOTPSetupWhenAuthenticatedTests",
+        "TOTPSetupWhenUnauthenticatedTests"
+      ],
+      "target" : {
+        "containerPath" : "container:AuthHostApp.xcodeproj",
+        "identifier" : "485CB59E27B61E04006CCEC7",
+        "name" : "AuthIntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

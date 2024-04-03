@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 import AWSCognitoAuthPlugin
 
 class AWSAuthBaseTest: XCTestCase {
@@ -27,10 +27,25 @@ class AWSAuthBaseTest: XCTestCase {
     }
 
     var amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
+    let amplifyOutputsFile =
+        "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
 
     var amplifyConfiguration: AmplifyConfiguration!
-    
+    var amplifyOutputs: AmplifyConfigurationV2!
+
+    var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
+
+    var username: String {
+        useGen2Configuration ? defaultTestEmail : "integTest\(UUID().uuidString)"
+    }
+
+    var password: String {
+        "Pp123@\(UUID().uuidString)"
+    }
+
     override func setUp() async throws {
         try await super.setUp()
         initializeAmplify()
@@ -44,16 +59,26 @@ class AWSAuthBaseTest: XCTestCase {
 
     func initializeAmplify() {
         do {
-            let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: amplifyConfigurationFile)
-            amplifyConfiguration = configuration
-
+            if useGen2Configuration {
+                let configuration = try TestConfigHelper.retrieveAmplifyConfigurationV2(
+                    forResource: amplifyOutputsFile)
+                amplifyOutputs = configuration
+            } else {
+                let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
+                    forResource: amplifyConfigurationFile)
+                amplifyConfiguration = configuration
+            }
             let credentialsConfiguration = (try? TestConfigHelper.retrieveCredentials(forResource: credentialsFile)) ?? [:]
             defaultTestEmail = credentialsConfiguration["test_email_1"] ?? defaultTestEmail
             defaultTestPassword = credentialsConfiguration["password"] ?? defaultTestPassword
             let authPlugin = AWSCognitoAuthPlugin()
             try Amplify.add(plugin: authPlugin)
-            try Amplify.configure(configuration)
+
+            if useGen2Configuration {
+                try Amplify.configure(amplifyOutputs)
+            } else {
+                try Amplify.configure(amplifyConfiguration)
+            }
             Amplify.Logging.logLevel = .verbose
             print("Amplify configured with auth plugin")
         } catch {
@@ -109,6 +134,12 @@ class TestConfigHelper {
 
         let data = try retrieve(forResource: forResource)
         return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
+    }
+
+    static func retrieveAmplifyConfigurationV2(forResource: String) throws -> AmplifyConfigurationV2 {
+
+        let data = try retrieve(forResource: forResource)
+        return try AmplifyConfigurationV2.decodeAmplifyConfiguration(from: data)
     }
 
     static func retrieveCredentials(forResource: String) throws -> [String: String] {

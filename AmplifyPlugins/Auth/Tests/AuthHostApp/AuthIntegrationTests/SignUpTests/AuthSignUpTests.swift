@@ -20,8 +20,6 @@ class AuthSignUpTests: AWSAuthBaseTest {
     ///    - I should get a signup complete step.
     ///
     func testSuccessfulRegisterUser() async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(userAttributes: [
             AuthUserAttribute(.email, value: defaultTestEmail)])
         let signUpResult = try await Amplify.Auth.signUp(username: username,
@@ -39,14 +37,13 @@ class AuthSignUpTests: AWSAuthBaseTest {
         for _ in 0..<signUpExpectation.expectedFulfillmentCount {
 
             Task {
-                let username = "integTest\(UUID().uuidString)"
-                let password = "P123@\(UUID().uuidString)"
+                let username = useGen2Configuration ? "test-\(UUID().uuidString)@amazon.com" : "integTest\(UUID().uuidString)"
+                let password = password
 
                 do {
                     let result = try await AuthSignInHelper.signUpUser(
                         username: username,
-                        password: password,
-                        email: defaultTestEmail)
+                        password: password)
                     XCTAssertTrue(result, "Signup should be complete")
                 } catch {
                     XCTFail("Failed to Sign up user \(username): \(error)")
@@ -128,8 +125,8 @@ class AuthSignUpTests: AWSAuthBaseTest {
     ///    - I should get a user exists error
     ///
     func testRegisterExistingUser()  async throws {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
+        let username = username
+        let password = password
 
         let success = try await AuthSignInHelper.signUpUser(username: username, password: password, email: defaultTestEmail)
         XCTAssertTrue(success, "SignUp operation should succeed, but failed")
