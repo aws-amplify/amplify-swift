@@ -7,7 +7,7 @@
 
 import AWSCloudWatchLogs
 import AWSPluginsCore
-@_spi(InternalAmplifyConfiguration) import Amplify
+import Amplify
 import Combine
 import Foundation
 
@@ -114,46 +114,41 @@ public class AWSCloudWatchLoggingPlugin: LoggingCategoryPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-        if self.loggingPluginConfiguration == nil { // configuration was not set on initialization
-            if let config = configuration as? AmplifyConfigurationV2 { // V2 config passed in to the `Amplify.configure(with: .amplifyOutputs)` lifecycle
-                self.loggingPluginConfiguration = try? AWSCloudWatchLoggingPluginConfiguration(config: config)
-            } else if let configuration = try? AWSCloudWatchLoggingPluginConfiguration(bundle: Bundle.main) { // `amplifyconfiguration_logging.json` added to the bundle.
-                self.loggingPluginConfiguration = configuration
+        if self.loggingPluginConfiguration == nil, let configuration = try? AWSCloudWatchLoggingPluginConfiguration(bundle: Bundle.main) {
+            self.loggingPluginConfiguration = configuration
+            let authService = AWSAuthService()
+
+            if let remoteConfig = configuration.defaultRemoteConfiguration, self.remoteLoggingConstraintsProvider == nil {
+                self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(
+                    endpoint: remoteConfig.endpoint,
+                    region: configuration.region,
+                    refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
             }
+
+            self.loggingClient = AWSCloudWatchLoggingCategoryClient(
+                enable: configuration.enable,
+                credentialsProvider: authService.getCredentialsProvider(),
+                authentication: Amplify.Auth,
+                loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
+                logGroupName: configuration.logGroupName,
+                region: configuration.region,
+                localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
+                flushIntervalInSeconds: configuration.flushIntervalInSeconds
+            )
         }
 
-        guard let configuration = self.loggingPluginConfiguration else {
+        if self.loggingPluginConfiguration == nil {
             throw LoggingError.configuration(
                 """
                 Missing configuration for AWSCloudWatchLoggingPlugin
                 """,
                 """
-                Expected to find the file, `amplifyconfiguration_logging.json` or `amplify-outputs.json` in the app bundle, but
-                it was not present. Either the file to your app's "Copy Bundle Resources" build phase or provide the plugin
+                Expected to find the file, `amplifyconfiguration_logging.json` in the app bundle, but
+                it was not present. Either add amplifyconfiguration_logging.json to your app's "Copy Bundle Resources" build phase or provide the plugin
                 configuration when constructing the AWSCloudWatchLoggingPlugin.
                 """
             )
         }
-
-        let authService = AWSAuthService()
-
-        if let remoteConfig = configuration.defaultRemoteConfiguration, self.remoteLoggingConstraintsProvider == nil {
-            self.remoteLoggingConstraintsProvider = DefaultRemoteLoggingConstraintsProvider(
-                endpoint: remoteConfig.endpoint,
-                region: configuration.region,
-                refreshIntervalInSeconds: remoteConfig.refreshIntervalInSeconds)
-        }
-
-        self.loggingClient = AWSCloudWatchLoggingCategoryClient(
-            enable: configuration.enable,
-            credentialsProvider: authService.getCredentialsProvider(),
-            authentication: Amplify.Auth,
-            loggingConstraintsResolver: AWSCloudWatchLoggingConstraintsResolver(loggingPluginConfiguration: configuration),
-            logGroupName: configuration.logGroupName,
-            region: configuration.region,
-            localStoreMaxSizeInMB: configuration.localStoreMaxSizeInMB,
-            flushIntervalInSeconds: configuration.flushIntervalInSeconds
-        )
 
         if self.remoteLoggingConstraintsProvider == nil {
             let localStore: LoggingConstraintsLocalStore = UserDefaults.standard
