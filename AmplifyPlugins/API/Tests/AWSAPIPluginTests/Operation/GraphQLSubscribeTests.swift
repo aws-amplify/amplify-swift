@@ -9,7 +9,6 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-import AppSyncRealTimeClient
 
 class GraphQLSubscribeTests: OperationTestBase {
 
@@ -28,10 +27,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     var receivedSubscriptionEventData: XCTestExpectation!
     var receivedSubscriptionEventError: XCTestExpectation!
 
-    // Handles to the subscription item and event handler used to make mock calls into the
-    // subscription system
-    var subscriptionItem: SubscriptionItem!
-    var subscriptionEventHandler: SubscriptionEventHandler!
+    var mockAppSyncRealTimeClient: MockAppSyncRealTimeClient!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -50,6 +46,30 @@ class GraphQLSubscribeTests: OperationTestBase {
         try setUpMocksAndSubscriptionItems()
     }
 
+    override func tearDown() async throws {
+        onSubscribeInvoked = nil
+        receivedCompletionFinish = nil
+        receivedCompletionFailure = nil
+        receivedConnected = nil
+        receivedDisconnected = nil
+        receivedSubscriptionEventData = nil
+        receivedSubscriptionEventError = nil
+
+        mockAppSyncRealTimeClient = nil
+        try await super.tearDown()
+    }
+
+    private func waitForExpectations(timeout: TimeInterval) async {
+        await fulfillment(of: [
+            receivedCompletionFinish,
+            receivedCompletionFailure,
+            receivedConnected,
+            receivedDisconnected,
+            receivedSubscriptionEventData,
+            receivedSubscriptionEventError
+        ], timeout: timeout)
+    }
+
     /// Lifecycle test
     ///
     /// When:
@@ -62,9 +82,11 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The value handler is invoked with a successfully decoded value
     /// - The value handler is invoked with a disconnection message
     /// - The completion handler is invoked with a normal termination
-    func testHappyPath() throws {
+    func testHappyPath() async throws {
         let testJSON: JSONValue = ["foo": true]
-        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
+        let testData: JSONValue = [
+            "data": [ "foo": true ]
+        ]
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -73,14 +95,14 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe(expecting: testJSON)
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        waitForExpectations(timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
     }
 
     /// Lifecycle test
@@ -94,7 +116,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The value handler is not invoked with with a data value
     /// - The value handler is invoked with a disconnection message
     /// - The completion handler is invoked with a normal termination
-    func testConnectionWithNoData() throws {
+    func testConnectionWithNoData() async throws {
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -103,13 +125,13 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        waitForExpectations(timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
     }
 
     /// Lifecycle test
@@ -122,7 +144,7 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The value handler is not invoked with with a data value
     /// - The value handler is invoked with a disconnection message
     /// - The completion handler is invoked with an error termination
-    func testConnectionError() throws {
+    func testConnectionError() async throws {
         receivedCompletionFinish.shouldTrigger = false
         receivedCompletionFailure.shouldTrigger = true
         receivedConnected.shouldTrigger = false
@@ -131,12 +153,12 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.failed("Error"), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        mockAppSyncRealTimeClient.triggerEvent(.error(["Error"]))
 
-        waitForExpectations(timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
     }
 
     /// Lifecycle test
@@ -151,8 +173,11 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The value handler is invoked with an error
     /// - The value handler is invoked with a disconnection message
     /// - The completion handler is invoked with a normal termination
-    func testDecodingError() throws {
-        let testData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
+    func testDecodingError() async throws {
+        let testData: JSONValue = [
+            "data": [ "foo": true ],
+            "errors": [ ]
+        ]
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -161,19 +186,23 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = true
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        waitForExpectations(timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
     }
 
-    func testMultipleSuccessValues() throws {
+    func testMultipleSuccessValues() async throws {
         let testJSON: JSONValue = ["foo": true]
-        let testData = Data(#"{"data": {"foo": true}}"#.utf8)
+        let testData: JSONValue = [
+            "data": [
+                "foo": true
+            ]
+        ]
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -183,20 +212,29 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = false
 
         subscribe(expecting: testJSON)
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.data(testData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient.triggerEvent(.data(testData))
+        mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        waitForExpectations(timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
     }
 
-    func testMixedSuccessAndErrorValues() throws {
-        let successfulTestData = Data(#"{"data": {"foo": true}}"#.utf8)
-        let invalidTestData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
+    func testMixedSuccessAndErrorValues() async throws {
+        let successfulTestData: JSONValue = [
+            "data": [
+                "foo": true
+            ]
+        ]
+        let invalidTestData: JSONValue = [
+            "data": [
+                "foo": true
+            ],
+            "errors": []
+        ]
         receivedCompletionFinish.shouldTrigger = true
         receivedCompletionFailure.shouldTrigger = false
         receivedConnected.shouldTrigger = true
@@ -206,16 +244,16 @@ class GraphQLSubscribeTests: OperationTestBase {
         receivedSubscriptionEventError.shouldTrigger = true
 
         subscribe()
-        wait(for: [onSubscribeInvoked], timeout: 0.05)
+        await fulfillment(of: [onSubscribeInvoked], timeout: 0.05)
 
-        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.connection(.connected), subscriptionItem)
-        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
-        subscriptionEventHandler(.data(invalidTestData), subscriptionItem)
-        subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
-        subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
+        try await MockAppSyncRealTimeClient.waitForSubscirbing()
+        try await MockAppSyncRealTimeClient.waitForSubscirbed()
+        mockAppSyncRealTimeClient.triggerEvent(.data(successfulTestData))
+        mockAppSyncRealTimeClient.triggerEvent(.data(invalidTestData))
+        mockAppSyncRealTimeClient.triggerEvent(.data(successfulTestData))
+        mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        waitForExpectations(timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
     }
 
     // MARK: - Utilities
@@ -224,25 +262,13 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// self.subscriptionItem and self.subscriptionEventHandler, then fulfills
     /// self.onSubscribeInvoked
     func setUpMocksAndSubscriptionItems() throws {
-        let onSubscribe: MockSubscriptionConnection.OnSubscribe = {
-            requestString, variables, eventHandler in
-            let item = SubscriptionItem(
-                requestString: requestString,
-                variables: variables,
-                eventHandler: eventHandler
-            )
+        defer { onSubscribeInvoked.fulfill() }
+        let mockAppSyncRealTimeClient = MockAppSyncRealTimeClient()
 
-            self.subscriptionItem = item
-            self.subscriptionEventHandler = eventHandler
-            self.onSubscribeInvoked.fulfill()
-            return item
+        self.mockAppSyncRealTimeClient = mockAppSyncRealTimeClient
+        try setUpPluginForSubscriptionResponse { _, _, _, _, _ in
+            mockAppSyncRealTimeClient
         }
-
-        let onGetOrCreateConnection: MockSubscriptionConnectionFactory.OnGetOrCreateConnection = { _, _, _, _, _  in
-            MockSubscriptionConnection(onSubscribe: onSubscribe, onUnsubscribe: { _ in })
-        }
-
-        try setUpPluginForSubscriptionResponse(onGetOrCreateConnection: onGetOrCreateConnection)
     }
 
     /// Calls `Amplify.API.subscribe` with a request made from a generic document, and returns

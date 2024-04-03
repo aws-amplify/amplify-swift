@@ -36,7 +36,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
                 authService: MockAWSAuthService(),
-                subscriptionConnectionFactory: AWSSubscriptionConnectionFactory(),
+                appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory(),
                 logLevel: .error
             )
             apiPlugin.configure(using: dependencies)
@@ -64,7 +64,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
                 authService: MockAWSAuthService(),
-                subscriptionConnectionFactory: AWSSubscriptionConnectionFactory(),
+                appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory(),
                 logLevel: .error
             )
             apiPlugin.configure(using: dependencies)
@@ -92,7 +92,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
             let dependencies = AWSAPIPlugin.ConfigurationDependencies(
                 pluginConfig: pluginConfig,
                 authService: MockAWSAuthService(),
-                subscriptionConnectionFactory: AWSSubscriptionConnectionFactory(),
+                appSyncRealTimeClientFactory: AppSyncRealTimeClientFactory(),
                 logLevel: .error
             )
             apiPlugin.configure(using: dependencies)

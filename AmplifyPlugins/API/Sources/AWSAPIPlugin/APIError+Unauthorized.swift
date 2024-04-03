@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AppSyncRealTimeClient
 
 extension APIError {
 
