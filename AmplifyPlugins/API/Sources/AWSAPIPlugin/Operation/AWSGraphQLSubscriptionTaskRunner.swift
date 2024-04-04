@@ -106,8 +106,8 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             self.subscription = try await appSyncClient?.subscribe(
                 id: subscriptionId,
                 query: encodeRequest(query: request.document, variables: request.variables)
-            ).sink(receiveValue: { [weak self] event in
-                self?.onAsyncSubscriptionEvent(event: event)
+            ).sink(receiveValue: { event in
+                self.onAsyncSubscriptionEvent(event: event)
             })
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)

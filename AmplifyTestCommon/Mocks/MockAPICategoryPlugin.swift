@@ -13,7 +13,7 @@ import Foundation
 class MockAPICategoryPlugin: MessageReporter,
                              APICategoryPlugin,
                              APICategoryReachabilityBehavior,
-                             APICategoryGraphQLBehaviorExtended {
+                             APICategoryGraphQLBehavior {
 
     var authProviderFactory: APIAuthProviderFactory?
 

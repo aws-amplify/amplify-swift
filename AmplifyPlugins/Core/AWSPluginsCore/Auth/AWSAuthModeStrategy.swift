@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 import Amplify
 
 /// Represents different auth strategies supported by a client
@@ -92,6 +93,35 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
         }
         
         return nil
+    }
+}
+
+extension AuthorizationTypeIterator {
+    public var asyncStream: AsyncStream<Self.AuthorizationType> {
+        var it = self
+        return AsyncStream { continuation in
+            while let authType = it.next() {
+                continuation.yield(authType)
+            }
+            continuation.finish()
+        }
+    }
+
+    public var optionalAsyncStream: AsyncStream<Self.AuthorizationType?> {
+        var it = self
+        if it.hasNext {
+            return AsyncStream { continuation in
+                while let authType = it.next() {
+                    continuation.yield(authType)
+                }
+                continuation.finish()
+            }
+        } else {
+            return AsyncStream { continuation in
+                continuation.yield(nil)
+                continuation.finish()
+            }
+        }
     }
 }
 
