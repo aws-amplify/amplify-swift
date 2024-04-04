@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import Amplify
-@_implementationOnly import AmplifyNetwork
+@_spi(WebSocket) @_spi(RetryWithJitter) import AmplifyNetwork
 
 protocol AppSyncRealTimeClientProtocol {
     func connect() async throws

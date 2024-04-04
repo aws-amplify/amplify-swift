@@ -9,7 +9,6 @@ import Amplify
 import Foundation
 import AWSPluginsCore
 import Combine
-@_implementationOnly import AmplifyNetwork
 
 public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
     public typealias Request = GraphQLOperationRequest<R>

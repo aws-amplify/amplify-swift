@@ -14,6 +14,7 @@ import Combine
  WebSocketClient wraps URLSessionWebSocketTask and offers
  an abstraction of the data stream in the form of WebSocketEvent.
  */
+@_spi(WebSocket)
 public final actor WebSocketClient: NSObject {
     public enum Error: Swift.Error {
         case connectionLost

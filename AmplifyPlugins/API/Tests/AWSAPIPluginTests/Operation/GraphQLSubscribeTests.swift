@@ -9,7 +9,6 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-@testable @_implementationOnly import AmplifyNetwork
 
 class GraphQLSubscribeTests: OperationTestBase {
 

@@ -10,7 +10,7 @@ import Amplify
 import AWSClientRuntime
 import ClientRuntime
 import AWSPluginsCore
-@_implementationOnly import AmplifyNetwork
+@_spi(WebSocket) import AmplifyNetwork
 
 class IAMAuthInterceptor {
 

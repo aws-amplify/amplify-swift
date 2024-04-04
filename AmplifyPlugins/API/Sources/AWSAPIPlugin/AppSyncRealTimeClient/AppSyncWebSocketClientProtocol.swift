@@ -8,7 +8,7 @@
 
 import Foundation
 import Combine
-@_implementationOnly import AmplifyNetwork
+@_spi(WebSocket) import AmplifyNetwork
 
 protocol AppSyncWebSocketClientProtocol: AnyObject {
     var isConnected: Bool { get async }

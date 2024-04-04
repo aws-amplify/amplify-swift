@@ -10,7 +10,6 @@ import XCTest
 import Combine
 import Amplify
 @testable import AWSAPIPlugin
-@_implementationOnly import AmplifyNetwork
 
 class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase {
 

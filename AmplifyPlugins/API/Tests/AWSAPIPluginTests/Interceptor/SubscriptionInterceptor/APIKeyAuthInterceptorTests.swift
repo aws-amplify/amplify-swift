@@ -9,7 +9,6 @@
 import XCTest
 import Amplify
 @testable import AWSAPIPlugin
-@testable @_implementationOnly import AmplifyNetwork
 
 class APIKeyAuthInterceptorTests: XCTestCase {
 

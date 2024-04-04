@@ -11,7 +11,6 @@ import Combine
 @testable import Amplify
 @testable import AWSAPIPlugin
 @testable import AWSPluginsCore
-@testable @_implementationOnly import AmplifyNetwork
 
 class AppSyncRealTimeClientTests: XCTestCase {
     let subscriptionRequest = """

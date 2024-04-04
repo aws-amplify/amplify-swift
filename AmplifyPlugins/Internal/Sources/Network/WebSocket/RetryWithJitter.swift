@@ -8,6 +8,7 @@
 
 import Foundation
 
+@_spi(RetryWithJitter)
 public actor RetryWithJitter {
     public enum Error: Swift.Error {
         case maxRetryExceeded([Swift.Error])
