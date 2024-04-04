@@ -6,57 +6,155 @@
 //
 
 import Foundation
+import Combine
 
-/// Convenience protocol to handle any kind of GraphQLOperation
-public protocol AnyGraphQLOperation {
-    associatedtype Success
-    associatedtype Failure: Error
-    typealias ResultListener = (Result<Success, Failure>) -> Void
+
+// MARK: - RetryableGraphQLOperation
+public final class RetryableGraphQLOperation<Payload: Decodable> {
+    public typealias Payload = Payload
+
+    public let requestFactory: AsyncStream<() -> GraphQLRequest<Payload>>
+    public weak var api: APICategoryGraphQLBehavior?
+    private var task: Task<Void, Never>?
+
+    public init<T: AsyncSequence>(
+        requestFactory: T,
+        api: APICategoryGraphQLBehavior
+    ) where T.Element == () -> GraphQLRequest<Payload> {
+        self.requestFactory = requestFactory.asyncStream
+        self.api = api
+    }
+
+    deinit {
+        cancel()
+    }
+
+    public func execute(
+        _ operationType: GraphQLOperationType
+    ) -> Future<GraphQLTask<Payload>.Success, APIError> {
+        Future() { promise in
+            self.task = Task { promise(await self.run(operationType)) }
+        }
+    }
+
+    public func run(_ operationType: GraphQLOperationType) async -> Result<GraphQLTask<Payload>.Success, APIError> {
+        for await request in requestFactory {
+            do {
+                try Task.checkCancellation()
+                switch (self.api, operationType) {
+                case (.some(let api), .query):
+                    return .success(try await api.query(request: request()))
+                case (.some(let api), .mutation):
+                    return .success(try await api.mutate(request: request()))
+                default:
+                    return .failure(.operationError("Unable to run GraphQL operation with type \(operationType)", ""))
+                }
+
+            } catch is CancellationError {
+                return .failure(.operationError("GraphQL operation cancelled", ""))
+            } catch {
+                guard let error = error as? APIError,
+                      let authError = error.underlyingError as? AuthError
+                else {
+                    return .failure(.operationError("Failed to send \(operationType) GraphQL request", "", error))
+                }
+
+                switch authError {
+                case .signedOut, .notAuthorized: break;
+                default: return .failure(error)
+                }
+            }
+        }
+        return .failure(APIError.operationError("Failed to execute GraphQL operation \(operationType)", "", nil))
+    }
+
+    public func cancel() {
+        task?.cancel()
+    }
+
 }
 
-/// Abastraction for a retryable GraphQLOperation.
-public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
-    associatedtype Payload: Decodable
+public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
 
-    /// GraphQLOperation concrete type
-    associatedtype OperationType: AnyGraphQLOperation
+    public typealias Payload = Payload
 
-    typealias RequestFactory = () async -> GraphQLRequest<Payload>
-    typealias OperationFactory = (GraphQLRequest<Payload>, @escaping OperationResultListener) -> OperationType
-    typealias OperationResultListener = OperationType.ResultListener
+    public let requestFactory: AsyncStream<() async -> GraphQLRequest<Payload>>
+    public weak var api: APICategoryGraphQLBehavior?
+    private var task: Task<Void, Error>?
 
-    /// Operation unique identifier
-    var id: UUID { get }
+    public init<T: AsyncSequence>(
+        requestFactory: T,
+        api: APICategoryGraphQLBehavior
+    ) where T.Element == () async -> GraphQLRequest<Payload> {
+        self.requestFactory = requestFactory.asyncStream
+        self.api = api
+    }
 
-    /// Number of attempts (min 1)
-    var attempts: Int { get set }
+    deinit {
+        cancel()
+    }
 
-    /// Underlying GraphQL operation instantiated by `operationFactory`
-    var underlyingOperation: AtomicValue<OperationType?> { get set }
+    public func subscribe() -> AnyPublisher<GraphQLSubscriptionEvent<Payload>, APIError> {
+        let subject = PassthroughSubject<GraphQLSubscriptionEvent<Payload>, APIError>()
+        self.task = Task { await self.trySubscribe(subject) }
+        return subject.eraseToAnyPublisher()
+    }
 
-    /// Maximum number of allowed retries
-    var maxRetries: Int { get }
+    private func trySubscribe(_ subject: PassthroughSubject<GraphQLSubscriptionEvent<Payload>, APIError>) async {
+        var apiError: APIError?
+        for await request in requestFactory {
+            guard let sequence = self.api?.subscribe(request: await request()) else {
+                continue
+            }
+            do {
+                try Task.checkCancellation()
 
-    /// GraphQLRequest factory, invoked to create a new operation
-    var requestFactory: RequestFactory { get }
+                for try await event in sequence {
+                    try Task.checkCancellation()
+                    Self.log.debug("Subscribe event \(event)")
+                    subject.send(event)
+                }
+            } catch is CancellationError {
+                subject.send(completion: .finished)
+            } catch {
+                if let error = error as? APIError {
+                    apiError = error
+                }
+                Self.log.debug("Failed with subscription request: \(error)")
+            }
+            sequence.cancel()
+        }
+        if apiError != nil {
+            subject.send(completion: .failure(apiError!))
+        } else {
+            subject.send(completion: .finished)
+        }
+    }
 
-    /// GraphQL operation factory, invoked with a newly created GraphQL request
-    /// and a wrapped result listener.
-    var operationFactory: OperationFactory { get }
-
-    var resultListener: OperationResultListener { get }
-
-    init(requestFactory: @escaping RequestFactory,
-         maxRetries: Int,
-         resultListener: @escaping OperationResultListener,
-         _ operationFactory: @escaping OperationFactory)
-
-    func start(request: GraphQLRequest<Payload>)
-
-    func shouldRetry(error: APIError?) -> Bool
+    public func cancel() {
+        self.task?.cancel()
+    }
 }
 
-extension RetryableGraphQLOperationBehavior {
+extension AsyncSequence {
+    fileprivate var asyncStream: AsyncStream<Self.Element> {
+        AsyncStream { continuation in
+            Task {
+                var it = self.makeAsyncIterator()
+                do {
+                    while let ele = try await it.next() {
+                        continuation.yield(ele)
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish()
+                }
+            }
+        }
+    }
+}
+
+extension RetryableGraphQLSubscriptionOperation {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.api.displayName, forNamespace: String(describing: self))
     }
@@ -64,125 +162,3 @@ extension RetryableGraphQLOperationBehavior {
         Self.log
     }
 }
-
-// MARK: RetryableGraphQLOperationBehavior + default implementation
-extension RetryableGraphQLOperationBehavior {
-    public func start(request: GraphQLRequest<Payload>) {
-        attempts += 1
-        log.debug("[\(id)] - Try [\(attempts)/\(maxRetries)]")
-        let wrappedResultListener: OperationResultListener = { result in
-            if case let .failure(error) = result, self.shouldRetry(error: error as? APIError) {
-                self.log.debug("\(error)")
-                Task {
-                    self.start(request: await self.requestFactory())
-                }
-                return
-            }
-
-            if case let .failure(error) = result {
-                self.log.debug("\(error)")
-                self.log.debug("[\(self.id)] - Failed")
-            }
-
-            if case .success = result {
-                self.log.debug("[Operation \(self.id)] - Success")
-            }
-            self.resultListener(result)
-        }
-        underlyingOperation.set(operationFactory(request, wrappedResultListener))
-    }
-}
-
-// MARK: - RetryableGraphQLOperation
-public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, RetryableGraphQLOperationBehavior {
-    public typealias Payload = Payload
-    public typealias OperationType = GraphQLOperation<Payload>
-
-    public var id: UUID
-    public var maxRetries: Int
-    public var attempts: Int = 0
-    public var requestFactory: RequestFactory
-    public var underlyingOperation: AtomicValue<GraphQLOperation<Payload>?> = AtomicValue(initialValue: nil)
-    public var resultListener: OperationResultListener
-    public var operationFactory: OperationFactory
-
-    public init(requestFactory: @escaping RequestFactory,
-                maxRetries: Int,
-                resultListener: @escaping OperationResultListener,
-                _ operationFactory: @escaping OperationFactory) {
-        self.id = UUID()
-        self.maxRetries = max(1, maxRetries)
-        self.requestFactory = requestFactory
-        self.operationFactory = operationFactory
-        self.resultListener = resultListener
-    }
-
-    public override func main() {
-        Task {
-            start(request: await requestFactory())
-        }
-    }
-
-    override public func cancel() {
-        self.underlyingOperation.get()?.cancel()
-    }
-
-    public func shouldRetry(error: APIError?) -> Bool {
-        guard case let .operationError(_, _, underlyingError) = error,
-              let authError = underlyingError as? AuthError else {
-                  return false
-              }
-
-        switch authError {
-        case .signedOut, .notAuthorized:
-            return attempts < maxRetries
-        default:
-            return false
-        }
-    }
-}
-
-// MARK: - RetryableGraphQLSubscriptionOperation
-public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Operation,
-                                                                              RetryableGraphQLOperationBehavior {
-    public typealias OperationType = GraphQLSubscriptionOperation<Payload>
-
-    public typealias Payload = Payload
-
-    public var id: UUID
-    public var maxRetries: Int
-    public var attempts: Int = 0
-    public var underlyingOperation: AtomicValue<GraphQLSubscriptionOperation<Payload>?> = AtomicValue(initialValue: nil)
-    public var requestFactory: RequestFactory
-    public var resultListener: OperationResultListener
-    public var operationFactory: OperationFactory
-
-    public init(requestFactory: @escaping RequestFactory,
-                maxRetries: Int,
-                resultListener: @escaping OperationResultListener,
-                _ operationFactory: @escaping OperationFactory) {
-        self.id = UUID()
-        self.maxRetries = max(1, maxRetries)
-        self.requestFactory = requestFactory
-        self.operationFactory = operationFactory
-        self.resultListener = resultListener
-    }
-    public override func main() {
-        Task {
-            start(request: await requestFactory())
-        }
-    }
-
-    public override func cancel() {
-        self.underlyingOperation.get()?.cancel()
-    }
-
-    public func shouldRetry(error: APIError?) -> Bool {
-        return attempts < maxRetries
-    }
-
-}
-
-// MARK: GraphQLOperation - GraphQLSubscriptionOperation + AnyGraphQLOperation
-extension GraphQLOperation: AnyGraphQLOperation {}
-extension GraphQLSubscriptionOperation: AnyGraphQLOperation {}

@@ -52,7 +52,9 @@ class HubEventsIntegrationTestBase: XCTestCase {
         #if os(watchOS)
         try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, configuration: .subscriptionsDisabled))
         #else
-        try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+        try Amplify.add(plugin: AWSDataStorePlugin(
+            modelRegistration: models
+        ))
         #endif
         try Amplify.add(plugin: AWSAPIPlugin(
             modelRegistration: models,
