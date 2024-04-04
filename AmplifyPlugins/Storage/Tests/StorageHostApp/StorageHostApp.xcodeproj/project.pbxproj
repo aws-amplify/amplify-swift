@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0311113528EBED6500D58441 /* Tests.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 0311113428EBED6500D58441 /* Tests.xcconfig */; };
 		031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 031BC3F228EC9B2C0047B2E8 /* AppIcon.xcassets */; };
+		21D165C32BBEF329001E3D4B /* amplify_outputs.json in Resources */ = {isa = PBXBuildFile; fileRef = 21D165C22BBEF329001E3D4B /* amplify_outputs.json */; };
+		21D165C42BBEF329001E3D4B /* amplify_outputs.json in Resources */ = {isa = PBXBuildFile; fileRef = 21D165C22BBEF329001E3D4B /* amplify_outputs.json */; };
 		56043E9329FC4D33003E3424 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */; };
 		562B9AA42A0D703700A96FC6 /* AWSS3StoragePluginRequestRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562B9AA32A0D703700A96FC6 /* AWSS3StoragePluginRequestRecorder.swift */; };
 		562B9AA52A0D734E00A96FC6 /* AWSS3StoragePluginRequestRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562B9AA32A0D703700A96FC6 /* AWSS3StoragePluginRequestRecorder.swift */; };
@@ -101,6 +103,9 @@
 		0311113428EBED6500D58441 /* Tests.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Tests.xcconfig; sourceTree = "<group>"; };
 		0311113828EBEEA700D58441 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		031BC3F228EC9B2C0047B2E8 /* AppIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AppIcon.xcassets; sourceTree = "<group>"; };
+		21D165C02BBEDF0A001E3D4B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		21D165C12BBEEFE8001E3D4B /* AWSS3StoragePluginGen2IntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AWSS3StoragePluginGen2IntegrationTests.xctestplan; sourceTree = "<group>"; };
+		21D165C22BBEF329001E3D4B /* amplify_outputs.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplify_outputs.json; sourceTree = "<group>"; };
 		562B9AA32A0D703700A96FC6 /* AWSS3StoragePluginRequestRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginRequestRecorder.swift; sourceTree = "<group>"; };
 		565DF16F2953BAEA000DCCF7 /* AWSS3StoragePluginAccelerateIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginAccelerateIntegrationTests.swift; sourceTree = "<group>"; };
 		681D7D392A42637700F7C310 /* StorageWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StorageWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -256,6 +261,8 @@
 		684FB07D28BEAF8E00C8A6EB /* AWSS3StoragePluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				21D165C02BBEDF0A001E3D4B /* README.md */,
+				21D165C12BBEEFE8001E3D4B /* AWSS3StoragePluginGen2IntegrationTests.xctestplan */,
 				684FB0C128BEB44700C8A6EB /* Helpers */,
 				684FB08628BEAF8E00C8A6EB /* AWSS3StoragePluginAccessLevelTests.swift */,
 				565DF16F2953BAEA000DCCF7 /* AWSS3StoragePluginAccelerateIntegrationTests.swift */,
@@ -303,6 +310,7 @@
 		830883E72D40B8E1A9AFB5F0 /* AmplifyConfig */ = {
 			isa = PBXGroup;
 			children = (
+				21D165C22BBEF329001E3D4B /* amplify_outputs.json */,
 				D5C0382101A0E23943FDF4CB /* amplifyconfiguration.json */,
 			);
 			name = AmplifyConfig;
@@ -370,7 +378,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 684FB07828BEAF1600C8A6EB /* Build configuration list for PBXNativeTarget "StorageHostApp" */;
 			buildPhases = (
-				56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration */,
+				56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration and amplify_outputs */,
 				684FB06628BEAF1500C8A6EB /* Sources */,
 				684FB06728BEAF1500C8A6EB /* Frameworks */,
 				684FB06828BEAF1500C8A6EB /* Resources */,
@@ -481,6 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				681D7D852A426FF500F7C310 /* amplifyconfiguration.json in Resources */,
+				21D165C42BBEF329001E3D4B /* amplify_outputs.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,6 +505,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				031BC3F328EC9B2C0047B2E8 /* AppIcon.xcassets in Resources */,
+				21D165C32BBEF329001E3D4B /* amplify_outputs.json in Resources */,
 				56043E9329FC4D33003E3424 /* amplifyconfiguration.json in Resources */,
 				0311113528EBED6500D58441 /* Tests.xcconfig in Resources */,
 			);
@@ -519,7 +529,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration */ = {
+		56B54B1F29FC365C0000DF7D /* Copy amplifyconfiguration and amplify_outputs */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -528,7 +538,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy amplifyconfiguration";
+			name = "Copy amplifyconfiguration and amplify_outputs";
 			outputFileListPaths = (
 			);
 			outputPaths = (

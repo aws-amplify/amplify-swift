@@ -77,7 +77,7 @@ extension AmplifyConfiguration {
 
 extension AmplifyConfigurationV2 {
     init(bundle: Bundle) throws {
-        guard let path = bundle.path(forResource: "amplify-outputs", ofType: "json") else {
+        guard let path = bundle.path(forResource: "amplify_outputs", ofType: "json") else {
             throw ConfigurationError.invalidAmplifyConfigurationFile(
                 """
                 Could not load default `amplify-outputs.json` file

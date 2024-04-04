@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "693C4C1F-BAF3-48A5-9DEB-A9D491F459CA",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:StorageHostApp.xcodeproj",
+        "identifier" : "684FB0A828BEB07200C8A6EB",
+        "name" : "AWSS3StoragePluginIntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
