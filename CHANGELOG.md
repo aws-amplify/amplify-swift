@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.29.0 (2024-04-03)
+
+### Features
+
+- **API**: implement AppSyncRealTimeClient and WebSocketClient with URLSession (#3575)
+
+### Bug Fixes
+
+- **api**: add user-agent header to appsync websocket handshake request (#3586)
+
 ## 2.28.0 (2024-03-21)
 
 ### Features
