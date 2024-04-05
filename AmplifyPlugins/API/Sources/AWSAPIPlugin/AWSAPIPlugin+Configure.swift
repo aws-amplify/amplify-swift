@@ -20,7 +20,7 @@ public extension AWSAPIPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
     func configure(using configuration: Any?) throws {
         let dependencies: ConfigurationDependencies
-        if let configuration = configuration as? AmplifyConfigurationV2 {
+        if let configuration = configuration as? AmplifyOutputsData {
             dependencies = try ConfigurationDependencies(configuration: configuration,
                                                          apiAuthProviderFactory: authProviderFactory)
         } else {
@@ -90,7 +90,7 @@ extension AWSAPIPlugin {
         }
 
         init(
-            configuration: AmplifyConfigurationV2,
+            configuration: AmplifyOutputsData,
             apiAuthProviderFactory: APIAuthProviderFactory,
             authService: AWSAuthServiceBehavior = AWSAuthService(),
             appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,

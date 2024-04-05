@@ -75,9 +75,9 @@ extension AmplifyConfiguration {
 }
 
 
-extension AmplifyConfigurationV2 {
-    init(bundle: Bundle) throws {
-        guard let path = bundle.path(forResource: "amplify_outputs", ofType: "json") else {
+extension AmplifyOutputsData {
+    init(bundle: Bundle, resource: String) throws {
+        guard let path = bundle.path(forResource: resource, ofType: "json") else {
             throw ConfigurationError.invalidAmplifyConfigurationFile(
                 """
                 Could not load default `amplify-outputs.json` file
@@ -93,10 +93,10 @@ extension AmplifyConfigurationV2 {
 
         let url = URL(fileURLWithPath: path)
 
-        self = try AmplifyConfigurationV2.loadAmplifyConfiguration(from: url)
+        self = try AmplifyOutputsData.loadAmplifyConfiguration(from: url)
     }
 
-    static func loadAmplifyConfiguration(from url: URL) throws -> AmplifyConfigurationV2 {
+    static func loadAmplifyConfiguration(from url: URL) throws -> AmplifyOutputsData {
         let fileData: Data
         do {
             fileData = try Data(contentsOf: url)
@@ -118,12 +118,12 @@ extension AmplifyConfigurationV2 {
         return try decodeAmplifyConfiguration(from: fileData)
     }
 
-    static func decodeAmplifyConfiguration(from data: Data) throws -> AmplifyConfigurationV2 {
+    static func decodeAmplifyConfiguration(from data: Data) throws -> AmplifyOutputsData {
         let jsonDecoder = JSONDecoder()
 
         do {
             jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-            let configuration = try jsonDecoder.decode(AmplifyConfigurationV2.self, from: data)
+            let configuration = try jsonDecoder.decode(AmplifyOutputsData.self, from: data)
             return configuration
         } catch {
             throw ConfigurationError.unableToDecode(

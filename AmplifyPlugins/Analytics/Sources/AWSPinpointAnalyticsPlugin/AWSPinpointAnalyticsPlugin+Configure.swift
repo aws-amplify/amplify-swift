@@ -21,7 +21,7 @@ extension AWSPinpointAnalyticsPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSPinpointAnalyticsPluginConfiguration
-        if let configuration = configuration as? AmplifyConfigurationV2 {
+        if let configuration = configuration as? AmplifyOutputsData {
             pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(configuration, options)
         } else {
             guard let config = configuration as? JSONValue else {

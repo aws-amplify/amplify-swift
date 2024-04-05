@@ -12,7 +12,7 @@ import Foundation
 extension CoreMLPredictionsPlugin {
 
     public func configure(using configuration: Any?) throws {
-        guard configuration is JSONValue || configuration is AmplifyConfigurationV2 else {
+        guard configuration is JSONValue || configuration is AmplifyOutputsData else {
             let errorDescription = CoreMLPluginErrorString.decodeConfigurationError.errorDescription
             let recoverySuggestion = CoreMLPluginErrorString.decodeConfigurationError.recoverySuggestion
             throw PluginError.pluginConfigurationError(errorDescription, recoverySuggestion)

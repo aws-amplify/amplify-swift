@@ -63,7 +63,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
                   autoSessionTrackingInterval: autoSessionTrackingInterval)
     }
 
-    init(_ configuration: AmplifyConfigurationV2,
+    init(_ configuration: AmplifyOutputsData,
          _ options: AWSPinpointAnalyticsPluginOptions) throws {
         guard let analyticsConfig = configuration.analytics,
               let pinpointAnalyticsConfig = analyticsConfig.amazonPinpoint else {

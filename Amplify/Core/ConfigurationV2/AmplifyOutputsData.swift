@@ -14,7 +14,7 @@ import Foundation
 /// - Tag: AmplifyConfigurationV2
 ///
 @_spi(InternalAmplifyConfiguration)
-public struct AmplifyConfigurationV2: Codable {
+public struct AmplifyOutputsData: Codable {
     public let version: String
     public let analytics: Analytics?
     public let auth: Auth?
@@ -167,8 +167,27 @@ public struct AmplifyConfigurationV2: Codable {
 }
 
 // MARK: - Configure
-public enum ConfigurationFormat {
-    case amplifyOutputs
+
+public struct AmplifyOutputs {
+    let resolveConfiguration: () throws -> AmplifyOutputsData
+
+    public static let amplifyOutputs: AmplifyOutputs = {
+        .init {
+            try AmplifyOutputsData.init(bundle: Bundle.main, resource: "amplify_outputs")
+        }
+    }()
+
+    public static func data(_ data: Data) -> AmplifyOutputs {
+        .init {
+            try AmplifyOutputsData.decodeAmplifyConfiguration(from: data)
+        }
+    }
+
+    public static func resource(named resource: String) -> AmplifyOutputs {
+        .init {
+            try AmplifyOutputsData.init(bundle: Bundle.main, resource: resource)
+        }
+    }
 }
 
 extension Amplify {
@@ -177,10 +196,10 @@ extension Amplify {
     /// 
     /// - Parameter with: format of the configuration file
     ///     Only one explicit format is supported,`.amplifyOutputs`.
-    public static func configure(with: ConfigurationFormat) throws {
-        let resolvedConfiguration: AmplifyConfigurationV2
+    public static func configure(with amplifyOutputs: AmplifyOutputs) throws {
         do {
-            resolvedConfiguration = try AmplifyConfigurationV2(bundle: Bundle.main)
+            let resolvedConfiguration = try amplifyOutputs.resolveConfiguration()
+            try configure(resolvedConfiguration)
         } catch {
             log.info("Failed to find Amplify configuration.")
             if isRunningForSwiftUIPreviews {
@@ -190,8 +209,6 @@ extension Amplify {
                 throw error
             }
         }
-
-        try configure(resolvedConfiguration)
     }
 
     /// Configures Amplify with the specified configuration.
@@ -212,7 +229,7 @@ extension Amplify {
     ///
     /// - Tag: Amplify.configure
     @_spi(InternalAmplifyConfiguration)
-    public static func configure(_ configuration: AmplifyConfigurationV2) throws {
+    public static func configure(_ configuration: AmplifyOutputsData) throws {
         // Always configure logging first since Auth dependings on logging
         try configure(CategoryType.logging.category, using: configuration)
 
@@ -253,7 +270,7 @@ extension Amplify {
 
 
     /// If `candidate` is `CategoryConfigurable`, then invokes `candidate.configure(using: configuration)`.
-    private static func configure(_ candidate: Category, using configuration: AmplifyConfigurationV2) throws {
+    private static func configure(_ candidate: Category, using configuration: AmplifyOutputsData) throws {
         guard let configurable = candidate as? CategoryConfigurable else {
             return
         }

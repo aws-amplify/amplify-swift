@@ -32,7 +32,7 @@ public struct AWSPinpointPluginConfiguration {
         )
     }
 
-    public init(_ config: AmplifyConfigurationV2) throws {
+    public init(_ config: AmplifyOutputsData) throws {
         guard let notifications = config.notifications else {
             throw PluginError.pluginConfigurationError(
                 AWSPinpointErrorConstants.pinpointConfigurationExpected.errorDescription,

@@ -25,7 +25,7 @@ extension AWSCognitoAuthPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
         let authConfiguration: AuthConfiguration
-        if let configuration = configuration as? AmplifyConfigurationV2 {
+        if let configuration = configuration as? AmplifyOutputsData {
             authConfiguration = try ConfigurationHelper.authConfiguration(configuration)
             jsonConfiguration = try ConfigurationHelper.jsonConfiguration(authConfiguration)
         } else {

@@ -21,7 +21,7 @@ extension AWSPinpointPushNotificationsPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSPinpointPluginConfiguration
-        if let config = configuration as? AmplifyConfigurationV2 {
+        if let config = configuration as? AmplifyOutputsData {
             pluginConfiguration = try AWSPinpointPluginConfiguration(config)
         } else {
             guard let config = configuration as? JSONValue else {

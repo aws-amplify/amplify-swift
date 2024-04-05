@@ -25,7 +25,7 @@ extension PredictionsCategory: CategoryConfigurable {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
 
-    func configure(using amplifyConfiguration: AmplifyConfigurationV2) throws {
+    func configure(using amplifyConfiguration: AmplifyOutputsData) throws {
         for plugin in Array(plugins.values) {
             try plugin.configure(using: amplifyConfiguration)
         }

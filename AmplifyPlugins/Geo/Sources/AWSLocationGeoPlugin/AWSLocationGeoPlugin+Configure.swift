@@ -22,7 +22,7 @@ extension AWSLocationGeoPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty.
     public func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSLocationGeoPluginConfiguration
-        if let configuration = configuration as? AmplifyConfigurationV2 {
+        if let configuration = configuration as? AmplifyOutputsData {
             pluginConfiguration = try AWSLocationGeoPluginConfiguration(config: configuration)
         } else {
             guard let configJSON = configuration as? JSONValue else {

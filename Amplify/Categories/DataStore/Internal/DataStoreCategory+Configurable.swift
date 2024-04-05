@@ -15,7 +15,7 @@ extension DataStoreCategory: CategoryConfigurable {
         }
     }
 
-    func configure(using amplifyConfiguration: AmplifyConfigurationV2) throws {
+    func configure(using amplifyConfiguration: AmplifyOutputsData) throws {
         try configureFirstWithEmptyConfiguration()
     }
 

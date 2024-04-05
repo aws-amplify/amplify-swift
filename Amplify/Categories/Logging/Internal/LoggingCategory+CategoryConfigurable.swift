@@ -39,7 +39,7 @@ extension LoggingCategory: CategoryConfigurable {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
 
-    func configure(using amplifyConfiguration: AmplifyConfigurationV2) throws {
+    func configure(using amplifyConfiguration: AmplifyOutputsData) throws {
         let plugin: LoggingCategoryPlugin
         switch configurationState {
         case .default:

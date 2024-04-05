@@ -25,7 +25,7 @@ extension AWSS3StoragePlugin {
         let region: String
         let bucket: String
         var defaultAccessLevel: StorageAccessLevel = .guest
-        if let config = configuration as? AmplifyConfigurationV2 {
+        if let config = configuration as? AmplifyOutputsData {
             guard let storage = config.storage else {
                 throw PluginError.pluginConfigurationError("Missing storage category in configuration",
                                                            "")

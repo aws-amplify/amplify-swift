@@ -60,7 +60,7 @@ public extension AWSAPICategoryPluginConfiguration {
         }
 
         init(name: String,
-             config: AmplifyConfigurationV2.DataCategory,
+             config: AmplifyOutputsData.DataCategory,
              apiAuthProviderFactory: APIAuthProviderFactory,
              authService: AWSAuthServiceBehavior? = nil) throws {
 

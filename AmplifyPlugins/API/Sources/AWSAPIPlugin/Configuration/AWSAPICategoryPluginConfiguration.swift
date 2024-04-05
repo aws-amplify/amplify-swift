@@ -48,7 +48,7 @@ public struct AWSAPICategoryPluginConfiguration {
 
     }
 
-    init(configuration: AmplifyConfigurationV2,
+    init(configuration: AmplifyOutputsData,
          apiAuthProviderFactory: APIAuthProviderFactory,
          authService: AWSAuthServiceBehavior) throws {
 
@@ -181,7 +181,7 @@ public struct AWSAPICategoryPluginConfiguration {
     }
 
     private static func endpointsFromConfig(
-        config: AmplifyConfigurationV2,
+        config: AmplifyOutputsData,
         apiAuthProviderFactory: APIAuthProviderFactory,
         authService: AWSAuthServiceBehavior
     ) throws -> [APIEndpointName: EndpointConfig] {

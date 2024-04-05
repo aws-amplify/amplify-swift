@@ -150,7 +150,7 @@ struct ConfigurationHelper {
                                          verificationMechanisms: verificationMechanisms)
     }
 
-    static func parseUserPoolData(_ config: AmplifyConfigurationV2.Auth) throws -> UserPoolConfigurationData? {
+    static func parseUserPoolData(_ config: AmplifyOutputsData.Auth) throws -> UserPoolConfigurationData? {
         let hostedUIConfig = parseHostedConfiguration(configuration: config)
 
         // parse `passwordProtectionSettings`
@@ -242,7 +242,7 @@ struct ConfigurationHelper {
                                          signOutRedirectURI: signOutRedirectURI)
     }
 
-    static func parseHostedConfiguration(configuration: AmplifyConfigurationV2.Auth) -> HostedUIConfigurationData? {
+    static func parseHostedConfiguration(configuration: AmplifyOutputsData.Auth) -> HostedUIConfigurationData? {
         guard let oauth = configuration.oauth,
               let signInRedirectURI = oauth.redirectSignInUri.first,
               let signOutRedirectURI = oauth.redirectSignOutUri.first else {
@@ -288,7 +288,7 @@ struct ConfigurationHelper {
         return IdentityPoolConfigurationData(poolId: poolId, region: region)
     }
 
-    static func parseIdentityPoolData(_ config: AmplifyConfigurationV2.Auth) -> IdentityPoolConfigurationData? {
+    static func parseIdentityPoolData(_ config: AmplifyOutputsData.Auth) -> IdentityPoolConfigurationData? {
         if let identityPoolId = config.identityPoolId {
             return IdentityPoolConfigurationData(poolId: identityPoolId,
                                                  region: config.awsRegion)
@@ -305,7 +305,7 @@ struct ConfigurationHelper {
                                            identityPoolConfig: identityPoolConfig)
     }
 
-    static func authConfiguration(_ config: AmplifyConfigurationV2) throws -> AuthConfiguration {
+    static func authConfiguration(_ config: AmplifyOutputsData) throws -> AuthConfiguration {
         guard let config = config.auth else {
             throw AuthError.configuration(
                 "Error configuring \(String(describing: self))",

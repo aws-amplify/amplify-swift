@@ -61,7 +61,7 @@ public struct AWSLocationGeoPluginConfiguration {
                   searchIndices: searchIndices)
     }
     
-    init(config: AmplifyConfigurationV2) throws {
+    init(config: AmplifyOutputsData) throws {
         guard let geo = config.geo else {
             throw GeoPluginConfigError.configurationInvalid(section: .plugin)
         }
@@ -194,7 +194,7 @@ public struct AWSLocationGeoPluginConfiguration {
         return mapStyles
     }
 
-    private static func getMaps(mapConfig: AmplifyConfigurationV2.Geo.Maps,
+    private static func getMaps(mapConfig: AmplifyOutputsData.Geo.Maps,
                                 regionName: String) throws -> [String: Geo.MapStyle] {
         let mapTuples: [(String, Geo.MapStyle)] = try mapConfig.items.map { map in
             let url = URL(string: AWSLocationGeoPluginConfiguration.urlString(regionName: regionName,
