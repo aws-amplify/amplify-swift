@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "6E2C232D-B423-44B5-B7E4-E0BE483DF682",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AnalyticsHostApp.xcodeproj",
+        "identifier" : "6857647528AE95ED000CE2E9",
+        "name" : "AWSPinpointAnalyticsPluginIntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

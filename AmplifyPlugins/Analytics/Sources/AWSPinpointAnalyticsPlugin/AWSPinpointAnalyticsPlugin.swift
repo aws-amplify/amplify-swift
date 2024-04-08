@@ -25,7 +25,7 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An observer to monitor connectivity changes
     var networkMonitor: NetworkMonitor!
 
-    var options: AWSPinpointAnalyticsPluginOptions!
+    var options: AWSPinpointAnalyticsPluginOptions?
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {

@@ -18,14 +18,25 @@ import Network
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
+    static let amplifyOutputs = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs"
     static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
     
+    var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
+
     override func setUp() {
         do {
-            let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
-            try Amplify.configure(config)
+
+            if useGen2Configuration {
+                let data = try TestConfigHelper.retrieve(forResource: Self.amplifyOutputs)
+                try Amplify.configure(with: .data(data))
+            } else {
+                let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
+                try Amplify.configure(config)
+            }
         } catch {
             XCTFail("Failed to initialize and configure Amplify \(error)")
         }

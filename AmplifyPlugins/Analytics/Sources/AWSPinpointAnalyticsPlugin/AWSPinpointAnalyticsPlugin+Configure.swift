@@ -21,8 +21,16 @@ extension AWSPinpointAnalyticsPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSPinpointAnalyticsPluginConfiguration
-        if let configuration = configuration as? AmplifyOutputsData {
-            pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(configuration, options)
+        if let config = configuration as? AmplifyOutputsData {
+            print(config)
+
+            if let configuredOptions = options {
+                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, configuredOptions)
+            } else {
+                let defaultOptions = AWSPinpointAnalyticsPluginOptions()
+                options = defaultOptions
+                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, defaultOptions)
+            }
         } else {
             guard let config = configuration as? JSONValue else {
                 throw PluginError.pluginConfigurationError(
@@ -30,7 +38,7 @@ extension AWSPinpointAnalyticsPlugin {
                     AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion
                 )
             }
-            pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config)
+            pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options)
         }
 
         try configure(using: pluginConfiguration)
