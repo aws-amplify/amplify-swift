@@ -22,33 +22,32 @@ extension AWSS3StoragePlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.configure
     public func configure(using configuration: Any?) throws {
-        let region: String
-        let bucket: String
-        var defaultAccessLevel: StorageAccessLevel = .guest
-        if let config = configuration as? AmplifyOutputsData {
-            guard let storage = config.storage else {
-                throw PluginError.pluginConfigurationError("Missing storage category in configuration",
-                                                           "")
-            }
-            region = storage.awsRegion
-            bucket = storage.bucketName
-        } else {
-            guard let config = configuration as? JSONValue else {
-                throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
-                                                           PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
-            }
-            guard case let .object(configObject) = config else {
-                throw StorageError.configuration(
-                    PluginErrorConstants.configurationObjectExpected.errorDescription,
-                    PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
-            }
-
-            region = try AWSS3StoragePlugin.getRegion(configObject)
-            bucket = try AWSS3StoragePlugin.getBucket(configObject)
-            defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
-        }
-
         do {
+            let region: String
+            let bucket: String
+            var defaultAccessLevel: StorageAccessLevel = .guest
+            if let config = configuration as? AmplifyOutputsData {
+                guard let storage = config.storage else {
+                    throw PluginError.pluginConfigurationError("Missing storage category in configuration",
+                                                               "")
+                }
+                region = storage.awsRegion
+                bucket = storage.bucketName
+            } else {
+                guard let config = configuration as? JSONValue else {
+                    throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
+                                                               PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+                }
+                guard case let .object(configObject) = config else {
+                    throw StorageError.configuration(
+                        PluginErrorConstants.configurationObjectExpected.errorDescription,
+                        PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
+                }
+
+                region = try AWSS3StoragePlugin.getRegion(configObject)
+                bucket = try AWSS3StoragePlugin.getBucket(configObject)
+                defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
+            }
             let authService = AWSAuthService()
             let storageService = try AWSS3StorageService(authService: authService,
                                                          region: region,

@@ -32,7 +32,7 @@ class AWSAuthBaseTest: XCTestCase {
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
 
     var amplifyConfiguration: AmplifyConfiguration!
-    var amplifyOutputs: AmplifyConfigurationV2!
+    var amplifyOutputs: AmplifyOutputsData!
 
     var useGen2Configuration: Bool {
         ProcessInfo.processInfo.arguments.contains("GEN2")
@@ -59,15 +59,6 @@ class AWSAuthBaseTest: XCTestCase {
 
     func initializeAmplify() {
         do {
-            if useGen2Configuration {
-                let configuration = try TestConfigHelper.retrieveAmplifyConfigurationV2(
-                    forResource: amplifyOutputsFile)
-                amplifyOutputs = configuration
-            } else {
-                let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
-                    forResource: amplifyConfigurationFile)
-                amplifyConfiguration = configuration
-            }
             let credentialsConfiguration = (try? TestConfigHelper.retrieveCredentials(forResource: credentialsFile)) ?? [:]
             defaultTestEmail = credentialsConfiguration["test_email_1"] ?? defaultTestEmail
             defaultTestPassword = credentialsConfiguration["password"] ?? defaultTestPassword
@@ -75,8 +66,12 @@ class AWSAuthBaseTest: XCTestCase {
             try Amplify.add(plugin: authPlugin)
 
             if useGen2Configuration {
-                try Amplify.configure(amplifyOutputs)
+                let data = try TestConfigHelper.retrieve(forResource: amplifyOutputsFile)
+                try Amplify.configure(with: .data(data))
             } else {
+                let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
+                    forResource: amplifyConfigurationFile)
+                amplifyConfiguration = configuration
                 try Amplify.configure(amplifyConfiguration)
             }
             Amplify.Logging.logLevel = .verbose
@@ -131,15 +126,8 @@ class AWSAuthBaseTest: XCTestCase {
 class TestConfigHelper {
 
     static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-
         let data = try retrieve(forResource: forResource)
         return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
-    }
-
-    static func retrieveAmplifyConfigurationV2(forResource: String) throws -> AmplifyConfigurationV2 {
-
-        let data = try retrieve(forResource: forResource)
-        return try AmplifyConfigurationV2.decodeAmplifyConfiguration(from: data)
     }
 
     static func retrieveCredentials(forResource: String) throws -> [String: String] {
@@ -153,7 +141,7 @@ class TestConfigHelper {
         return json
     }
 
-    private static func retrieve(forResource: String) throws -> Data {
+    static func retrieve(forResource: String) throws -> Data {
         guard let path = Bundle(for: self).path(forResource: forResource, ofType: "json") else {
             throw TestConfigError.bundlePathError("Could not retrieve configuration file: \(forResource)")
         }

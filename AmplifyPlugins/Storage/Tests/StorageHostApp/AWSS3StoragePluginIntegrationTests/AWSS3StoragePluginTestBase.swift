@@ -115,18 +115,30 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         XCTAssertNotNil(result)
     }
 
-    static func getBucketFromConfig(forResource: String) throws -> String {
+    func getBucketFromConfig(forResource: String) throws -> String {
         let data = try TestConfigHelper.retrieve(forResource: forResource)
         let json = try JSONDecoder().decode(JSONValue.self, from: data)
-        guard let bucket = json["storage"]?["plugins"]?["awsS3StoragePlugin"]?["bucket"] else {
-            throw "Could not retrieve bucket from config"
-        }
+        if useGen2Configuration {
+            guard let bucket = json["storage"]?["bucket_name"] else {
+                throw "Could not retrieve bucket from config"
+            }
 
-        guard case let .string(bucketValue) = bucket else {
-            throw "bucket is not a string value"
-        }
+            guard case let .string(bucketValue) = bucket else {
+                throw "bucket is not a string value"
+            }
 
-        return bucketValue
+            return bucketValue
+        } else {
+            guard let bucket = json["storage"]?["plugins"]?["awsS3StoragePlugin"]?["bucket"] else {
+                throw "Could not retrieve bucket from config"
+            }
+
+            guard case let .string(bucketValue) = bucket else {
+                throw "bucket is not a string value"
+            }
+
+            return bucketValue
+        }
     }
 
     func signUp() async {
