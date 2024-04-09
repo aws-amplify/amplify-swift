@@ -46,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21FC9E762BC5918500F86FD7 /* AWSCloudWatchLoggingPluginGen2IntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AWSCloudWatchLoggingPluginGen2IntegrationTests.xctestplan; sourceTree = "<group>"; };
 		730C2E762AAA8A4B00878E67 /* AWSCloudWatchClientHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCloudWatchClientHelper.swift; sourceTree = "<group>"; };
 		733390D32AAB8A3B006E3625 /* CloudWatchLoggingWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CloudWatchLoggingWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73578A322AAB94D100505FB3 /* AWSCloudWatchLoggingPluginIntegrationTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSCloudWatchLoggingPluginIntegrationTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,6 +144,7 @@
 		97DB823C282339B700FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				21FC9E762BC5918500F86FD7 /* AWSCloudWatchLoggingPluginGen2IntegrationTests.xctestplan */,
 				97DB824628233A1D00FC2228 /* AWSCloudWatchLoggingPluginIntegrationTests.swift */,
 				730C2E762AAA8A4B00878E67 /* AWSCloudWatchClientHelper.swift */,
 				97DB82542823466800FC2228 /* TestConfigHelper.swift */,

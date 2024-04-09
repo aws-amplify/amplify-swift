@@ -170,7 +170,7 @@ export const handler: PreSignUpTriggerHandler = async (event) => {
 npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
 ```
 
-12. Copy the `amplify_outputs.json` file over to the test directory as `AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
+11. Copy the `amplify_outputs.json` file over to the test directory as `AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
 
 ```
 cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplify_outputs.json
