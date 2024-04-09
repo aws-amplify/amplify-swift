@@ -81,16 +81,15 @@ public struct AmplifyOutputsData: Codable {
     @_spi(InternalAmplifyConfiguration)
     public struct Geo: Codable {
         public let awsRegion: AWSRegion
-        public let maps: Maps
-        public let searchIndices: SearchIndices
-        public let geofenceCollections: GeofenceCollections
+        public let maps: Maps?
+        public let searchIndices: SearchIndices?
+        public let geofenceCollections: GeofenceCollections?
 
         public struct Maps: Codable {
             public let items: [String: AmazonLocationServiceConfig]
             public let `default`: String
 
             public struct AmazonLocationServiceConfig: Codable {
-                public let name: String
                 public let style: String
             }
         }

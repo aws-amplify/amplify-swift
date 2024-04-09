@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "43EA03C2-7DF8-4E52-9D32-D411507A50F3",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:GeoHostApp.xcodeproj",
+        "identifier" : "97DB823A282339B700FC2228",
+        "name" : "AWSLocationGeoPluginIntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

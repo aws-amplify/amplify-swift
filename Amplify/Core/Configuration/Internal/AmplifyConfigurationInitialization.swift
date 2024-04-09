@@ -132,8 +132,8 @@ extension AmplifyOutputsData {
                 """,
 
                 """
-                `amplify_outputs.json` was found, but could not be converted to an AmplifyConfigurationV2 object
-                using the default JSONDecoder. The system reported the following error:
+                `amplify_outputs.json` was found, but could not be converted to an object
+                using JSONDecoder. The system reported the following error:
                 \(error.localizedDescription)
                 """,
                 error

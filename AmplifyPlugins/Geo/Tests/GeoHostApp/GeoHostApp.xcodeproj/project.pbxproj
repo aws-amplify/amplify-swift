@@ -67,6 +67,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21FC9E752BC5821D00F86FD7 /* AWSLocationGeoPluginGen2IntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AWSLocationGeoPluginGen2IntegrationTests.xctestplan; sourceTree = "<group>"; };
 		685777C32A3CC08B001CE5C1 /* GeoWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		685778072A3CC0D8001CE5C1 /* AWSLocationGeoPluginIntegrationTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSLocationGeoPluginIntegrationTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		978B1D5E29515DEF0079E55A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
@@ -205,6 +206,7 @@
 				97DB824628233A1D00FC2228 /* AWSLocationGeoPluginIntegrationTests.swift */,
 				97DB82542823466800FC2228 /* TestConfigHelper.swift */,
 				97DB8244282339D200FC2228 /* README.md */,
+				21FC9E752BC5821D00F86FD7 /* AWSLocationGeoPluginGen2IntegrationTests.xctestplan */,
 			);
 			path = AWSLocationGeoPluginIntegrationTests;
 			sourceTree = "<group>";
