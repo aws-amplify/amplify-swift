@@ -378,6 +378,31 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
         (hasAuthorizationError ? ": \(APIError.UnauthorizedMessageString)" : "")
     }
 
+#if swift(<5.8)
+    if let errors = castArray(errors, withElementType: AppSyncRealTimeRequest.Error.self) {
+        let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            errors.first
+        )
+    } else if let errors = castArray(errors, withElementType: GraphQLError.self) {
+        let hasAuthorizationError = errors.map(\.extensions)
+            .compactMap { $0.flatMap { $0["errorType"]?.stringValue } }
+            .contains(where: { AppSyncErrorType($0) == .unauthorized })
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            GraphQLResponseError<R>.error(errors)
+        )
+    } else {
+        return APIError.operationError(
+            errorDescription(),
+            "",
+            errors.first
+        )
+    }
+#else
     switch errors {
     case let errors as [AppSyncRealTimeRequest.Error]:
         let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
@@ -402,5 +427,16 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
             errors.first
         )
     }
-
+#endif
 }
+
+#if swift(<5.8)
+fileprivate func castArray<T>(_ arr: Array<Any>, withElementType: T.Type) -> [T]? {
+    arr.reduce([]) { result, ele in
+        if let result, let ele = ele as? T {
+            return result + [ele]
+        }
+        return nil
+    }
+}
+#endif
