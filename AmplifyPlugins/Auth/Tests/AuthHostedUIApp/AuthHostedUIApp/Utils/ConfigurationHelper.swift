@@ -47,7 +47,7 @@ class ConfigurationHelper {
         return AmplifyConfiguration(auth: authConfiguration)
     }
 
-    private static func retrieve(forResource: String) throws -> Data {
+    static func retrieve(forResource: String) throws -> Data {
         guard let path = Bundle(for: self).path(forResource: forResource, ofType: "json") else {
             throw ConfigurationError.bundlePathError(
                 "Could not retrieve configuration file: \(forResource)")
