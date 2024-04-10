@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.29.1 (2024-04-10)
+
+### Bug Fixes
+
+- **api**: add collection type casting in swift 5.7 (#3602)
+- **Auth**: throw correct error for an unknown session error (#3591)
+- **DataStore**: Fixing a crash when attempting to create a model with a predicate. (#3600)
+
 ## 2.29.0 (2024-04-03)
 
 ### Features
