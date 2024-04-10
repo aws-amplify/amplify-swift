@@ -16,6 +16,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
     public let requestFactory: AsyncStream<() -> GraphQLRequest<Payload>>
     public weak var api: APICategoryGraphQLBehavior?
     private var task: Task<Void, Never>?
+    private var cancellables = Set<AnyCancellable>()
 
     public init<T: AsyncSequence>(
         requestFactory: T,
@@ -23,6 +24,21 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
     ) where T.Element == () -> GraphQLRequest<Payload> {
         self.requestFactory = requestFactory.asyncStream
         self.api = api
+    }
+
+    public convenience init(
+        requestStream: AnyPublisher<() -> GraphQLRequest<Payload>, Never>,
+        api: APICategoryGraphQLBehavior
+    ) {
+        var cancellables = Set<AnyCancellable>()
+        self.init(requestFactory: AsyncStream { continuation in
+            requestStream.sink { completion in
+                continuation.finish()
+            } receiveValue: { value in
+                continuation.yield(value)
+            }.store(in: &cancellables)
+        }, api: api)
+        self.cancellables = cancellables
     }
 
     deinit {
@@ -60,7 +76,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
                 }
 
                 switch authError {
-                case .signedOut, .notAuthorized: break;
+                case .signedOut, .notAuthorized: break
                 default: return .failure(error)
                 }
             }
@@ -70,6 +86,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
 
     public func cancel() {
         task?.cancel()
+        cancellables = Set()
     }
 
 }
@@ -81,6 +98,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
     public let requestFactory: AsyncStream<() async -> GraphQLRequest<Payload>>
     public weak var api: APICategoryGraphQLBehavior?
     private var task: Task<Void, Error>?
+    private var cancellables = Set<AnyCancellable>()
 
     public init<T: AsyncSequence>(
         requestFactory: T,
@@ -88,6 +106,21 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
     ) where T.Element == () async -> GraphQLRequest<Payload> {
         self.requestFactory = requestFactory.asyncStream
         self.api = api
+    }
+
+    public convenience init(
+        requestStream: AnyPublisher<() async -> GraphQLRequest<Payload>, Never>,
+        api: APICategoryGraphQLBehavior
+    ) {
+        var cancellables = Set<AnyCancellable>()
+        self.init(requestFactory: AsyncStream { continuation in
+            requestStream.sink { completion in
+                continuation.finish()
+            } receiveValue: { value in
+                continuation.yield(value)
+            }.store(in: &cancellables)
+        }, api: api)
+        self.cancellables = cancellables
     }
 
     deinit {
@@ -133,6 +166,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
 
     public func cancel() {
         self.task?.cancel()
+        self.cancellables = Set()
     }
 }
 

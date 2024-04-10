@@ -170,19 +170,24 @@ final class InitialSyncOperation: AsynchronousOperation {
         let minSyncPageSize = Int(min(syncMaxRecords - recordsReceived, syncPageSize))
         let limit = minSyncPageSize < 0 ? Int(syncPageSize) : minSyncPageSize
         let authTypes = await authModeStrategy.authTypesFor(schema: modelSchema, operation: .read)
-            .optionalAsyncStream.map { authType in {
-                GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
-                                                          where: self.syncPredicate,
-                                                          limit: limit,
-                                                          nextToken: nextToken,
-                                                          lastSync: lastSyncTime,
-                                                          authType: authType
+            .publisher()
+            .map { Optional.some($0) } // map to optional to have nil as element
+            .replaceEmpty(with: nil) // use a nil element to trigger default auth if no auth provided
+            .map { authType in {
+                GraphQLRequest<SyncQueryResult>.syncQuery(
+                    modelSchema: self.modelSchema,
+                    where: self.syncPredicate,
+                    limit: limit,
+                    nextToken: nextToken,
+                    lastSync: lastSyncTime,
+                    authType: authType
                 )
             }}
+            .eraseToAnyPublisher()
 
 
         let result: Result<GraphQLResponse<SyncQueryResult>, APIError> = await RetryableGraphQLOperation(
-            requestFactory: authTypes,
+            requestStream: authTypes,
             api: api
         ).run(.query)
 

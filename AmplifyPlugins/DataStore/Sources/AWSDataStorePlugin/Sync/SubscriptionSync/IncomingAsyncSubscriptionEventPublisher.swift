@@ -124,16 +124,20 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         )
 
         return RetryableGraphQLSubscriptionOperation(
-            requestFactory: authTypeProvider.optionalAsyncStream.map { authType in {
-                await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(
-                    for: modelSchema,
-                    subscriptionType: subscriptionType.subscriptionType,
-                    api: api,
-                    auth: auth,
-                    authType: authType,
-                    awsAuthService: self.awsAuthService
-                )
-            }},
+            requestStream: authTypeProvider.publisher()
+                .map { Optional.some($0) } // map to optional to have nil as element
+                .replaceEmpty(with: nil) // use a nil element to trigger default auth if no auth provided
+                .map { authType in {
+                    await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(
+                        for: modelSchema,
+                        subscriptionType: subscriptionType.subscriptionType,
+                        api: api,
+                        auth: auth,
+                        authType: authType,
+                        awsAuthService: self.awsAuthService
+                    )
+                }}
+                .eraseToAnyPublisher(),
             api: api
         )
     }

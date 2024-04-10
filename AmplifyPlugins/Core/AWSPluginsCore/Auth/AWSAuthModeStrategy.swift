@@ -97,31 +97,15 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator {
 }
 
 extension AuthorizationTypeIterator {
-    public var asyncStream: AsyncStream<Self.AuthorizationType> {
+    public func publisher() -> AnyPublisher<AuthorizationType, Never> {
         var it = self
-        return AsyncStream { continuation in
+        return Deferred {
+            var authTypes = [AuthorizationType]()
             while let authType = it.next() {
-                continuation.yield(authType)
+                authTypes.append(authType)
             }
-            continuation.finish()
-        }
-    }
-
-    public var optionalAsyncStream: AsyncStream<Self.AuthorizationType?> {
-        var it = self
-        if it.hasNext {
-            return AsyncStream { continuation in
-                while let authType = it.next() {
-                    continuation.yield(authType)
-                }
-                continuation.finish()
-            }
-        } else {
-            return AsyncStream { continuation in
-                continuation.yield(nil)
-                continuation.finish()
-            }
-        }
+            return Publishers.MergeMany(authTypes.map { Just($0) })
+        }.eraseToAnyPublisher()
     }
 }
 
