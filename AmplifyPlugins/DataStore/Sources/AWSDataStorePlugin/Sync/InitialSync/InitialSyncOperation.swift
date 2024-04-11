@@ -173,25 +173,23 @@ final class InitialSyncOperation: AsynchronousOperation {
             .publisher()
             .map { Optional.some($0) } // map to optional to have nil as element
             .replaceEmpty(with: nil) // use a nil element to trigger default auth if no auth provided
-            .map { authType in {
-                GraphQLRequest<SyncQueryResult>.syncQuery(
+            .map { authType in { [weak self] in
+                guard let self, let api = self.api else {
+                    throw APIError.operationError("Operation cancelled", "")
+                }
+
+                return try await api.query(request: GraphQLRequest<SyncQueryResult>.syncQuery(
                     modelSchema: self.modelSchema,
                     where: self.syncPredicate,
                     limit: limit,
                     nextToken: nextToken,
                     lastSync: lastSyncTime,
                     authType: authType
-                )
+                ))
             }}
             .eraseToAnyPublisher()
 
-
-        let result: Result<GraphQLResponse<SyncQueryResult>, APIError> = await RetryableGraphQLOperation(
-            requestStream: authTypes,
-            api: api
-        ).run(.query)
-
-        switch result {
+        switch await RetryableGraphQLOperation(requestStream: authTypes).run() {
         case .success(let graphQLResult):
             await handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
         case .failure(let apiError):
