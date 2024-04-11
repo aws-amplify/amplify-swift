@@ -13,80 +13,56 @@ import Combine
 public final class RetryableGraphQLOperation<Payload: Decodable> {
     public typealias Payload = Payload
 
-    public let requestFactory: AsyncStream<() -> GraphQLRequest<Payload>>
-    public weak var api: APICategoryGraphQLBehavior?
-    private var task: Task<Void, Never>?
-    private var cancellables = Set<AnyCancellable>()
+    private let nondeterminsticOperation: NondeterminsticOperation<GraphQLTask<Payload>.Success>
 
-    public init<T: AsyncSequence>(
-        requestFactory: T,
-        api: APICategoryGraphQLBehavior
-    ) where T.Element == () -> GraphQLRequest<Payload> {
-        self.requestFactory = requestFactory.asyncStream
-        self.api = api
-    }
-
-    public convenience init(
-        requestStream: AnyPublisher<() -> GraphQLRequest<Payload>, Never>,
-        api: APICategoryGraphQLBehavior
+    public init(
+        requestStream: AnyPublisher<() async throws -> GraphQLTask<Payload>.Success, Never>
     ) {
-        var cancellables = Set<AnyCancellable>()
-        self.init(requestFactory: AsyncStream { continuation in
-            requestStream.sink { completion in
-                continuation.finish()
-            } receiveValue: { value in
-                continuation.yield(value)
-            }.store(in: &cancellables)
-        }, api: api)
-        self.cancellables = cancellables
+        self.nondeterminsticOperation = NondeterminsticOperation(
+            operationStream: requestStream,
+            shouldTryNextOnError: Self.onError(_:)
+        )
     }
 
     deinit {
         cancel()
     }
 
-    public func execute(
-        _ operationType: GraphQLOperationType
-    ) -> Future<GraphQLTask<Payload>.Success, APIError> {
-        Future() { promise in
-            self.task = Task { promise(await self.run(operationType)) }
+    static func onError(_ error: Error) -> Bool {
+        guard let error = error as? APIError,
+              let authError = error.underlyingError as? AuthError
+        else {
+            return false
+        }
+
+        switch authError {
+        case .signedOut, .notAuthorized: return true
+        default: return false
         }
     }
 
-    public func run(_ operationType: GraphQLOperationType) async -> Result<GraphQLTask<Payload>.Success, APIError> {
-        for await request in requestFactory {
-            do {
-                try Task.checkCancellation()
-                switch (self.api, operationType) {
-                case (.some(let api), .query):
-                    return .success(try await api.query(request: request()))
-                case (.some(let api), .mutation):
-                    return .success(try await api.mutate(request: request()))
-                default:
-                    return .failure(.operationError("Unable to run GraphQL operation with type \(operationType)", ""))
-                }
-
-            } catch is CancellationError {
-                return .failure(.operationError("GraphQL operation cancelled", ""))
-            } catch {
-                guard let error = error as? APIError,
-                      let authError = error.underlyingError as? AuthError
-                else {
-                    return .failure(.operationError("Failed to send \(operationType) GraphQL request", "", error))
-                }
-
-                switch authError {
-                case .signedOut, .notAuthorized: break
-                default: return .failure(error)
-                }
+    public func execute(
+        _ operationType: GraphQLOperationType
+    ) -> AnyPublisher<GraphQLTask<Payload>.Success, APIError> {
+        nondeterminsticOperation.execute().mapError {
+            if let apiError = $0 as? APIError {
+                return apiError
+            } else {
+                return APIError.operationError("Failed to execute GraphQL operation", "", $0)
             }
+        }.eraseToAnyPublisher()
+    }
+
+    public func run() async -> Result<GraphQLTask<Payload>.Success, APIError> {
+        do {
+            return .success(try await nondeterminsticOperation.run())
+        } catch {
+            return .failure(.operationError("Failed to execute GraphQL operation", "", error))
         }
-        return .failure(APIError.operationError("Failed to execute GraphQL operation \(operationType)", "", nil))
     }
 
     public func cancel() {
-        task?.cancel()
-        cancellables = Set()
+        nondeterminsticOperation.cancel()
     }
 
 }
@@ -94,69 +70,45 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
 public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
 
     public typealias Payload = Payload
+    public typealias SubscriptionEvents = GraphQLSubscriptionEvent<Payload>
+    private var task: Task<Void, Never>?
+    private let nondeterminsticOperation: NondeterminsticOperation<AmplifyAsyncThrowingSequence<SubscriptionEvents>>
 
-    public let requestFactory: AsyncStream<() async -> GraphQLRequest<Payload>>
-    public weak var api: APICategoryGraphQLBehavior?
-    private var task: Task<Void, Error>?
-    private var cancellables = Set<AnyCancellable>()
-
-    public init<T: AsyncSequence>(
-        requestFactory: T,
-        api: APICategoryGraphQLBehavior
-    ) where T.Element == () async -> GraphQLRequest<Payload> {
-        self.requestFactory = requestFactory.asyncStream
-        self.api = api
-    }
-
-    public convenience init(
-        requestStream: AnyPublisher<() async -> GraphQLRequest<Payload>, Never>,
-        api: APICategoryGraphQLBehavior
+    public init(
+        requestStream: AnyPublisher<() async throws -> AmplifyAsyncThrowingSequence<SubscriptionEvents>, Never>
     ) {
-        var cancellables = Set<AnyCancellable>()
-        self.init(requestFactory: AsyncStream { continuation in
-            requestStream.sink { completion in
-                continuation.finish()
-            } receiveValue: { value in
-                continuation.yield(value)
-            }.store(in: &cancellables)
-        }, api: api)
-        self.cancellables = cancellables
+        self.nondeterminsticOperation = NondeterminsticOperation(operationStream: requestStream)
     }
 
     deinit {
         cancel()
     }
 
-    public func subscribe() -> AnyPublisher<GraphQLSubscriptionEvent<Payload>, APIError> {
-        let subject = PassthroughSubject<GraphQLSubscriptionEvent<Payload>, APIError>()
+    public func subscribe() -> AnyPublisher<SubscriptionEvents, APIError> {
+        let subject = PassthroughSubject<SubscriptionEvents, APIError>()
         self.task = Task { await self.trySubscribe(subject) }
         return subject.eraseToAnyPublisher()
     }
 
-    private func trySubscribe(_ subject: PassthroughSubject<GraphQLSubscriptionEvent<Payload>, APIError>) async {
+    private func trySubscribe(_ subject: PassthroughSubject<SubscriptionEvents, APIError>) async {
         var apiError: APIError?
-        for await request in requestFactory {
-            guard let sequence = self.api?.subscribe(request: await request()) else {
-                continue
-            }
-            do {
+        do {
+            try Task.checkCancellation()
+            let sequence = try await self.nondeterminsticOperation.run()
+            defer { sequence.cancel() }
+            for try await event in sequence {
                 try Task.checkCancellation()
-
-                for try await event in sequence {
-                    try Task.checkCancellation()
-                    Self.log.debug("Subscribe event \(event)")
-                    subject.send(event)
-                }
-            } catch is CancellationError {
-                subject.send(completion: .finished)
-            } catch {
-                if let error = error as? APIError {
-                    apiError = error
-                }
-                Self.log.debug("Failed with subscription request: \(error)")
+                subject.send(event)
             }
-            sequence.cancel()
+        } catch is CancellationError {
+            subject.send(completion: .finished)
+        } catch {
+            if let error = error as? APIError {
+                apiError = error
+            }
+            Self.log.debug("Failed with subscription request: \(error)")
         }
+
         if apiError != nil {
             subject.send(completion: .failure(apiError!))
         } else {
@@ -166,7 +118,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable> {
 
     public func cancel() {
         self.task?.cancel()
-        self.cancellables = Set()
+        self.nondeterminsticOperation.cancel()
     }
 }
 
