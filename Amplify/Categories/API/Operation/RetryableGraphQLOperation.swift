@@ -170,7 +170,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     public var errorListener: OperationErrorListener
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
-    private var filterLimitRetried: Bool = false
+    private var retriedRTFErrors: [RTFError: Bool] = [:]
     
     public init(requestFactory: @escaping RequestFactory,
                 maxRetries: Int,
@@ -195,9 +195,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     }
 
     public func shouldRetry(error: APIError?) -> Bool {
-//        return attempts < maxRetries
-        
-        guard case let .operationError(errorDescription, recoverySuggestion, underlyingError) = error else {
+        guard case let .operationError(_, _, underlyingError) = error else {
             return false
         }
         
@@ -209,16 +207,18 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
                 return false
             }
         }
-        
-        // TODO: - How to distinguish errors?
-        // TODO: - Handle other errors
-        if error.debugDescription.contains("Filters combination exceed maximum limit 10 for subscription.") &&
-            filterLimitRetried == false {
+
+        if let rtfError = RTFError(description: error.debugDescription) {
             
-            // Just to be sure that endless retry won't happen
-            filterLimitRetried = true
+            // Do not retry the same RTF error more than once
+            guard retriedRTFErrors[rtfError] == nil else { return false }
+            retriedRTFErrors[rtfError] = true
+                
+            // maxRetries represent the number of auth types to attempt.
+            // (maxRetries is set to the number of auth types to attempt in multi-auth rules scenarios)
+            // Increment by 1 to account for that as this is not a "change auth" retry attempt            
             maxRetries += 1
-            
+                
             return true
         }
         

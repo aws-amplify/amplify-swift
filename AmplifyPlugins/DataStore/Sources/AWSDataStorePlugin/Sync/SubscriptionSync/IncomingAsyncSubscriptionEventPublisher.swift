@@ -90,19 +90,16 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                 authTypeProvider: { onCreateAuthType }),
             maxRetries: onCreateAuthTypeProvider.count,
             errorListener: { error in
-                // TODO: - How to distinguish errors?
-                // TODO: - Handle other errors
-                if error.debugDescription.contains("Filters combination exceed maximum limit 10 for subscription.") {
+                                
+                if let _ = RTFError(description: error.debugDescription) {
                     onCreateModelPredicate = nil
                     
-                } else if case let .operationError(errorDescription, recoverySuggestion, underlyingError) = error,
-                  let authError = underlyingError as? AuthError  {
-                    
+                } else if case let .operationError(_, _, underlyingError) = error, let authError = underlyingError as? AuthError {
                     switch authError {
                     case .signedOut, .notAuthorized:
                         onCreateAuthType = onCreateAuthTypeProvider.next()
                     default:
-                        return
+                        break
                     }
                 }
             },
@@ -132,19 +129,16 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                 authTypeProvider: { onUpdateAuthType }),
             maxRetries: onUpdateAuthTypeProvider.count,
             errorListener: { error in
-                // TODO: - How to distinguish errors?
-                // TODO: - Handle other errors
-                if error.debugDescription.contains("Filters combination exceed maximum limit 10 for subscription.") {
+                
+                if let _ = RTFError(description: error.debugDescription) {
                     onUpdateModelPredicate = nil
                     
-                } else if case let .operationError(errorDescription, recoverySuggestion, underlyingError) = error,
-                  let authError = underlyingError as? AuthError  {
-                    
+                } else if case let .operationError(_, _, underlyingError) = error, let authError = underlyingError as? AuthError {
                     switch authError {
                     case .signedOut, .notAuthorized:
                         onUpdateAuthType = onUpdateAuthTypeProvider.next()
                     default:
-                        return
+                        break
                     }
                 }
             },
@@ -174,19 +168,16 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                 authTypeProvider: { onDeleteAuthType }),
             maxRetries: onUpdateAuthTypeProvider.count,
             errorListener: { error in
-                // TODO: - How to distinguish errors?
-                // TODO: - Handle other errors
-                if error.debugDescription.contains("Filters combination exceed maximum limit 10 for subscription.") {
+                
+                if let _ = RTFError(description: error.debugDescription) {
                     onDeleteModelPredicate = nil
                     
-                } else if case let .operationError(errorDescription, recoverySuggestion, underlyingError) = error,
-                  let authError = underlyingError as? AuthError  {
-                    
+                } else if case let .operationError(_, _, underlyingError) = error, let authError = underlyingError as? AuthError {
                     switch authError {
                     case .signedOut, .notAuthorized:
                         onDeleteAuthType = onDeleteAuthTypeProvider.next()
                     default:
-                        return
+                        break
                     }
                 }
             },
