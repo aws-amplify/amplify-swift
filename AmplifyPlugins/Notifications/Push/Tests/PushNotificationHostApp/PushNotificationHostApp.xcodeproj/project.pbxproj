@@ -56,6 +56,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21D41D1B2BC7306D0019D811 /* PushNotificationGen2HostApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationGen2HostApp.xctestplan; sourceTree = "<group>"; };
 		5C4EA90F29B919D800ED7924 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../../..; sourceTree = "<group>"; };
 		6084F1AC2967B87200434CBF /* PushNotificationHostAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PushNotificationHostAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6084F1AE2967B87200434CBF /* PushNotificationHostAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationHostAppUITests.swift; sourceTree = "<group>"; };
@@ -151,6 +152,7 @@
 		60F60D862965040600B2D13D = {
 			isa = PBXGroup;
 			children = (
+				21D41D1B2BC7306D0019D811 /* PushNotificationGen2HostApp.xctestplan */,
 				68A3120C2A3D0DBA00D60A17 /* PushNotificationsWatchApp-Info.plist */,
 				68A3120B2A3D0AEF00D60A17 /* PushNotificationsWatchApp.entitlements */,
 				6875F9AA2A3CE1E9001C9AAF /* PushNotificationWatchTests.xctestplan */,
