@@ -41,6 +41,7 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
         XCTAssertEqual(value.nextToken, "continuationToken")
         XCTAssertEqual(value.items[0].eTag, "tag")
         XCTAssertEqual(value.items[0].key, "key")
+        XCTAssertEqual(value.items[0].path, "key")
         XCTAssertNotNil(value.items[0].lastModified)
 
     }
