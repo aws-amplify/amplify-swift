@@ -28,7 +28,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     private static let logger = Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: Self.self))
 
-    init(_ configuration: JSONValue, _ options: AWSPinpointAnalyticsPluginOptions?) throws {
+    init(_ configuration: JSONValue, _ options: AWSPinpointAnalyticsPlugin.Options? = nil) throws {
         guard case let .object(configObject) = configuration else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.configurationObjectExpected.errorDescription,
@@ -72,7 +72,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     }
 
     init(_ configuration: AmplifyOutputsData,
-         _ options: AWSPinpointAnalyticsPluginOptions) throws {
+         _ options: AWSPinpointAnalyticsPlugin.Options) throws {
         guard let analyticsConfig = configuration.analytics,
               let pinpointAnalyticsConfig = analyticsConfig.amazonPinpoint else {
             throw PluginError.pluginConfigurationError(
@@ -102,7 +102,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     private static func getAutoFlushEventsInterval(_ configuration: [String: JSONValue]) throws -> UInt {
         guard let autoFlushEventsInterval = configuration[autoFlushEventsIntervalKey] else {
-            return AWSPinpointAnalyticsPluginOptions.defaultAutoFlushEventsInterval
+            return AWSPinpointAnalyticsPlugin.Options.defaultAutoFlushEventsInterval
         }
 
         guard case let .number(autoFlushEventsIntervalValue) = autoFlushEventsInterval else {
@@ -124,7 +124,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     private static func getTrackAppSessions(_ configuration: [String: JSONValue]) throws -> Bool {
         guard let trackAppSessions = configuration[trackAppSessionsKey] else {
-            return AWSPinpointAnalyticsPluginOptions.defaultTrackAppSession
+            return AWSPinpointAnalyticsPlugin.Options.defaultTrackAppSession
         }
 
         guard case let .boolean(trackAppSessionsValue) = trackAppSessions else {
@@ -139,7 +139,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> UInt {
         guard let autoSessionTrackingInterval = configuration[autoSessionTrackingIntervalKey] else {
-            return AWSPinpointAnalyticsPluginOptions.defaultAutoSessionTrackingInterval
+            return AWSPinpointAnalyticsPlugin.Options.defaultAutoSessionTrackingInterval
         }
 
         guard case let .number(autoSessionTrackingIntervalValue) = autoSessionTrackingInterval else {

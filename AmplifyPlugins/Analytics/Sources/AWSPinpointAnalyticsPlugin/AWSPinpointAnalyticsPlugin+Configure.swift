@@ -27,7 +27,7 @@ extension AWSPinpointAnalyticsPlugin {
             if let configuredOptions = options {
                 pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, configuredOptions)
             } else {
-                let defaultOptions = AWSPinpointAnalyticsPluginOptions()
+                let defaultOptions = AWSPinpointAnalyticsPlugin.Options.default
                 options = defaultOptions
                 pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, defaultOptions)
             }

@@ -25,7 +25,7 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An observer to monitor connectivity changes
     var networkMonitor: NetworkMonitor!
 
-    var options: AWSPinpointAnalyticsPluginOptions?
+    var options: Options?
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {
@@ -33,7 +33,7 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     }
 
     /// Instantiates an instance of the AWSPinpointAnalyticsPlugin
-    public init(options: AWSPinpointAnalyticsPluginOptions? = nil) {
+    public init(options: Options? = nil) {
         self.options = options
     }
 }

@@ -115,6 +115,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         _ = Amplify.Storage.downloadData(key: "", options: nil)
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1.0)
     }
 
     func testCanUseSpecifiedPlugin() async throws {
