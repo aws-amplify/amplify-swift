@@ -37,7 +37,7 @@ public struct AmplifyOutputsData: Codable {
     @_spi(InternalAmplifyConfiguration)
     public struct Auth: Codable {
         public let awsRegion: AWSRegion
-        public let authenticationFlowType: String?
+        public let authenticationFlowType: AuthenticationFlowType?
         public let userPoolId: String
         public let userPoolClientId: String
         public let identityPoolId: String?
@@ -65,6 +65,11 @@ public struct AmplifyOutputsData: Codable {
             public let redirectSignInUri: [String]
             public let redirectSignOutUri: [String]
             public let responseType: String
+        }
+
+        public enum AuthenticationFlowType: String, Codable {
+            case userSRP = "USER_SRP_AUTH"
+            case custom = "CUSTOM_AUTH"
         }
     }
 

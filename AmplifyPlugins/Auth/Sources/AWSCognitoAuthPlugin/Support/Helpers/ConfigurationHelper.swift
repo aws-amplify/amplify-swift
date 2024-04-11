@@ -198,13 +198,24 @@ struct ConfigurationHelper {
             .userVerificationTypes?
             .compactMap { .init(rawValue: $0) } ?? []
 
+        // map `authenticationFlowType`
+        let authFlowType: AuthFlowType
+        switch config.authenticationFlowType {
+        case .userSRP:
+            authFlowType = .userSRP
+        case .custom:
+            authFlowType = .customWithoutSRP
+        default:
+            authFlowType = .userSRP
+        }
+
         return UserPoolConfigurationData(poolId: config.userPoolId,
                                          clientId: config.userPoolClientId,
                                          region: config.awsRegion,
                                          endpoint: nil, // Gen2 does not support this field
                                          clientSecret: nil, // Gen2 does not support this field
                                          pinpointAppId: nil, // Gen2 does not support this field
-                                         authFlowType: .userSRP, // TODO: may be missing `authenticationFlowType`
+                                         authFlowType: authFlowType,
                                          hostedUIConfig: hostedUIConfig,
                                          passwordProtectionSettings: passwordProtectionSettings,
                                          usernameAttributes: usernameAttributes,
