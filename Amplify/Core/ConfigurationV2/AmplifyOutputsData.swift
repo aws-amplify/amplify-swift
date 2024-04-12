@@ -60,7 +60,8 @@ public struct AmplifyOutputsData: Codable {
 
         public struct OAuth: Codable {
             public let identityProviders: [String]
-            public let domain: String
+            public let cognitoDomain: String
+            public let customDomain: String?
             public let scopes: [String]
             public let redirectSignInUri: [String]
             public let redirectSignOutUri: [String]

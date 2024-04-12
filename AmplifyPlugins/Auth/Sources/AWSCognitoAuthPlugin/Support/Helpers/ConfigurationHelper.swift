@@ -262,7 +262,7 @@ struct ConfigurationHelper {
 
         return createHostedConfiguration(appClientId: "TODO", // TODO: Missing Auth.Default.OAuth.AppClientId
                                          clientSecret: nil, // Gen2 does not support this field
-                                         domain: oauth.domain,
+                                         domain: oauth.customDomain ?? oauth.cognitoDomain,
                                          scopes: oauth.scopes,
                                          signInRedirectURI: signInRedirectURI,
                                          signOutRedirectURI: signOutRedirectURI)
