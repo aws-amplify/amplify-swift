@@ -38,7 +38,7 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
         guard let path = try await request.path?.resolvePath() else {
             throw StorageError.validation(
                 "path",
-                "`path` is required for removing an object",
+                "`path` is required for listing objects",
                 "Make sure that a valid `path` is passed for removing an object")
         }
         let input = ListObjectsV2Input(bucket: storageBehaviour.bucket,
@@ -51,12 +51,11 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
             let response = try await storageBehaviour.client.listObjectsV2(input: input)
             let contents: S3BucketContents = response.contents ?? []
             let items = try contents.map { s3Object in
-                guard let key = s3Object.key else {
+                guard let path = s3Object.key else {
                     throw StorageError.unknown("Missing key in response")
                 }
                 return StorageListResult.Item(
                     path: path,
-                    key: key,
                     eTag: s3Object.eTag,
                     lastModified: s3Object.lastModified)
             }
