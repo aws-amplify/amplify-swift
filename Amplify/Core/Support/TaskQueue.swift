@@ -8,11 +8,26 @@
 import Foundation
 
 /// A helper for executing asynchronous work serially.
-public actor TaskQueue<Success> {
-    private var previousTask: Task<Success, Error>?
-
-    public init() {}
-
+public class TaskQueue<Success> {
+    typealias Block = @Sendable () async -> Void
+    private var streamContinuation: AsyncStream<Block>.Continuation!
+       
+    public init() {
+        let stream = AsyncStream<Block>.init { continuation in
+            streamContinuation = continuation
+        }
+        
+        Task {
+            for await block in stream {
+                _ = await block()
+            }
+        }
+    }
+    
+    deinit {
+        streamContinuation.finish()
+    }
+    
     /// Serializes asynchronous requests made from an async context
     ///
     /// Given an invocation like
@@ -25,17 +40,22 @@ public actor TaskQueue<Success> {
     /// TaskQueue serializes this work so that `doAsync1` is performed before `doAsync2`,
     /// which is performed before `doAsync3`.
     public func sync(block: @Sendable @escaping () async throws -> Success) async throws -> Success {
-        let currentTask: Task<Success, Error> = Task { [previousTask] in
-            _ = await previousTask?.result
-            return try await block()
+        try await withCheckedThrowingContinuation { continuation in
+            streamContinuation.yield {
+                do {
+                    let value = try await block()
+                    continuation.resume(returning: value)
+                
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
         }
-        previousTask = currentTask
-        return try await currentTask.value
     }
 
-    public nonisolated func async(block: @Sendable @escaping () async throws -> Success) rethrows {
-        Task {
-            try await sync(block: block)
+    public func async(block: @Sendable @escaping () async -> Success) {
+        streamContinuation.yield {
+            _ = await block()
         }
     }
 }
