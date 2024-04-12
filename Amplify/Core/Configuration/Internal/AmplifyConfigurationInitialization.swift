@@ -78,15 +78,17 @@ extension AmplifyConfiguration {
 extension AmplifyOutputsData {
     init(bundle: Bundle, resource: String) throws {
         guard let path = bundle.path(forResource: resource, ofType: "json") else {
-            throw ConfigurationError.invalidAmplifyConfigurationFile(
+            throw ConfigurationError.invalidAmplifyOutputsFile(
                 """
-                Could not load default `amplify-outputs.json` file
+                Could not load default `\(resource).json` file
                 """,
 
                 """
-                Expected to find the file, `amplify-outputs.json` in the app bundle at `\(bundle.bundlePath)`, but
-                it was not present. Add `amplify-outputs.json` to your app's "Copy Bundle Resources" build
-                phase and invoke `Amplify.configure(with: .amplifyOutputs)` with a configuration object that you load
+                Expected to find the file, `\(resource).json` in the app bundle at `\(bundle.bundlePath)`, but
+                it was not present. Add `\(resource).json` to your app's "Copy Bundle Resources" build
+                phase and invoke `Amplify.configure(with: resource(named: "\(resource)")` with a configuration
+                object that you load. If your resource file is the default `amplify_outputs.json`, you can
+                invoke `Amplify.configure(with: .amplifyOutputs)` instead.
                 """
             )
         }
@@ -101,7 +103,7 @@ extension AmplifyOutputsData {
         do {
             fileData = try Data(contentsOf: url)
         } catch {
-            throw ConfigurationError.invalidAmplifyConfigurationFile(
+            throw ConfigurationError.invalidAmplifyOutputsFile(
                 """
                 Could not extract UTF-8 data from `\(url.path)`
                 """,

@@ -169,25 +169,50 @@ public struct AmplifyOutputsData: Codable {
         case email = "EMAIL"
         case sms = "SMS"
     }
+
+    // Internal init used for testing
+    init(version: String = "",
+         analytics: Analytics? = nil,
+         auth: Auth? = nil,
+         data: DataCategory? = nil,
+         geo: Geo? = nil,
+         notifications: Notifications? = nil,
+         storage: Storage? = nil,
+         custom: CustomOutput? = nil) {
+        self.version = version
+        self.analytics = analytics
+        self.auth = auth
+        self.data = data
+        self.geo = geo
+        self.notifications = notifications
+        self.storage = storage
+        self.custom = custom
+    }
 }
 
 // MARK: - Configure
 
+/// Represents helper methods to configure with `AmplifyOutputsData`.
 public struct AmplifyOutputs {
+
+    /// A closure that resolves the `AmplifyOutputsData` configuration
     let resolveConfiguration: () throws -> AmplifyOutputsData
 
+    /// Resolves configuration with `amplify_outputs.json` in the main bundle.
     public static let amplifyOutputs: AmplifyOutputs = {
         .init {
             try AmplifyOutputsData.init(bundle: Bundle.main, resource: "amplify_outputs")
         }
     }()
 
+    /// Resolves configuration with a data object, from the contents of an `amplify_outputs.json` file.
     public static func data(_ data: Data) -> AmplifyOutputs {
         .init {
             try AmplifyOutputsData.decodeAmplifyConfiguration(from: data)
         }
     }
 
+    /// Resolves configuration with the resource in the main bundle.
     public static func resource(named resource: String) -> AmplifyOutputs {
         .init {
             try AmplifyOutputsData.init(bundle: Bundle.main, resource: resource)
