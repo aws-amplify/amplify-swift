@@ -53,9 +53,19 @@ public class TaskQueue<Success> {
         }
     }
 
-    public func async(block: @Sendable @escaping () async -> Success) {
+    public func async(block: @Sendable @escaping () async throws -> Success) {
         streamContinuation.yield {
-            _ = await block()
+            do {
+                _ = try await block()
+            } catch {
+                Self.log.warn("Failed to handle async task in TaskQueue<\(Success.self)> with error: \(error)")
+            }
         }
+    }
+}
+
+extension TaskQueue {
+    public static var log: Logger {
+        Amplify.Logging.logger(forNamespace: String(describing: self))
     }
 }
