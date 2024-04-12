@@ -22,40 +22,48 @@ extension AWSS3StoragePlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.configure
     public func configure(using configuration: Any?) throws {
-        do {
-            let region: String
-            let bucket: String
-            var defaultAccessLevel: StorageAccessLevel = .guest
-            if let config = configuration as? AmplifyOutputsData {
-                guard let storage = config.storage else {
-                    throw PluginError.pluginConfigurationError("Missing storage category in configuration",
-                                                               "")
-                }
-                region = storage.awsRegion
-                bucket = storage.bucketName
-            } else {
-                guard let config = configuration as? JSONValue else {
-                    throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
-                                                               PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
-                }
-                guard case let .object(configObject) = config else {
-                    throw StorageError.configuration(
-                        PluginErrorConstants.configurationObjectExpected.errorDescription,
-                        PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
-                }
-
-                region = try AWSS3StoragePlugin.getRegion(configObject)
-                bucket = try AWSS3StoragePlugin.getBucket(configObject)
-                defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
+        // The reason for the complexity of deferring the region/bucket/accessLevel resolution to
+        // the do-try-catch block below is to achieve backwards compatibility in error behavior
+        // The relevant behavior:
+        //  1. PluginError is thrown for casting the configuration to the correct value while
+        //  2. PluginError is the underlying error of a StorageError when accessing the plugin fields like `region` and `bucket`.
+        let region: () throws -> String
+        let bucket: () throws -> String
+        var defaultAccessLevel: () throws -> StorageAccessLevel = { .guest }
+        if let config = configuration as? AmplifyOutputsData {
+            guard let storage = config.storage else {
+                throw PluginError.pluginConfigurationError("Missing storage category in configuration",
+                                                           "")
             }
+            region = { storage.awsRegion }
+            bucket = { storage.bucketName }
+        } else {
+            guard let config = configuration as? JSONValue else {
+                throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
+                                                           PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+            }
+            guard case let .object(configObject) = config else {
+                throw StorageError.configuration(
+                    PluginErrorConstants.configurationObjectExpected.errorDescription,
+                    PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
+            }
+
+            region = { try AWSS3StoragePlugin.getRegion(configObject) }
+            bucket = { try AWSS3StoragePlugin.getBucket(configObject) }
+            defaultAccessLevel = { try AWSS3StoragePlugin.getDefaultAccessLevel(configObject) }
+        }
+
+        do {
             let authService = AWSAuthService()
             let storageService = try AWSS3StorageService(authService: authService,
-                                                         region: region,
-                                                         bucket: bucket,
+                                                         region: region(),
+                                                         bucket: bucket(),
                                                          httpClientEngineProxy: self.httpClientEngineProxy)
             storageService.urlRequestDelegate = self.urlRequestDelegate
 
-            configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
+            configure(storageService: storageService, 
+                      authService: authService,
+                      defaultAccessLevel: try defaultAccessLevel())
         } catch let storageError as StorageError {
             throw storageError
         } catch {
