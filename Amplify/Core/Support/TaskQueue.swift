@@ -11,23 +11,23 @@ import Foundation
 public class TaskQueue<Success> {
     typealias Block = @Sendable () async -> Void
     private var streamContinuation: AsyncStream<Block>.Continuation!
-       
+
     public init() {
         let stream = AsyncStream<Block>.init { continuation in
             streamContinuation = continuation
         }
-        
+
         Task {
             for await block in stream {
                 _ = await block()
             }
         }
     }
-    
+
     deinit {
         streamContinuation.finish()
     }
-    
+
     /// Serializes asynchronous requests made from an async context
     ///
     /// Given an invocation like
@@ -45,7 +45,6 @@ public class TaskQueue<Success> {
                 do {
                     let value = try await block()
                     continuation.resume(returning: value)
-                
                 } catch {
                     continuation.resume(throwing: error)
                 }
