@@ -145,4 +145,56 @@ extension GraphQLModelBasedTests {
             XCTAssertNotNil(error)
         }
     }
+
+    /**
+     - Given: API with Post schema and optional field 'draft'
+     - When:
+        - create a new post with optional field 'draft' value .none
+     - Then:
+        - query Posts with filter {eq : null} shouldn't include the post
+     */
+    func test_listModelsWithNilOptionalField_failedWithEqFilter() async throws {
+        let post = Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
+        _ = try await Amplify.API.mutate(request: .create(post))
+        let posts = try await list(.list(
+            Post.self,
+            where: Post.keys.draft == nil && Post.keys.createdAt >= post.createdAt
+        ))
+
+        XCTAssertFalse(posts.map(\.id).contains(post.id))
+    }
+
+    /**
+     - Given: DataStore with Post schema and optional field 'draft'
+     - When:
+        - create a new post with optional field 'draft' value .none
+     - Then:
+        - query Posts with filter {attributeExists : false} should include the post
+     */
+    func test_listModelsWithNilOptionalField_successWithAttributeExistsFilter() async throws {
+        let post = Post(title: UUID().uuidString, content: UUID().uuidString, createdAt: .now())
+        _ = try await Amplify.API.mutate(request: .create(post))
+        let listPosts = try await list(
+            .list(
+                Post.self,
+                where: Post.keys.draft.attributeExists(false) 
+                    && Post.keys.createdAt >= post.createdAt
+            )
+        )
+
+        XCTAssertTrue(listPosts.map(\.id).contains(post.id))
+    }
+
+    func list<M: Model>(_ request: GraphQLRequest<List<M>>) async throws -> [M] {
+        func getAllPages(_ list: List<M>) async throws -> [M] {
+            if list.hasNextPage() {
+                return list.elements + (try await getAllPages(list.getNextPage()))
+            } else {
+                return list.elements
+            }
+        }
+
+        return try await getAllPages(try await Amplify.API.query(request: request).get())
+    }
+
 }

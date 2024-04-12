@@ -231,7 +231,7 @@ class GraphQLListQueryTests: XCTestCase {
     func test_listQuery_withAttributeExistsFilter_correctlyBuildGraphQLQueryStatement() {
         let post = Post.keys
         let predicate = post.id.eq("id")
-        && (post.draft.attributeExists(false) || post.draft.eq("null"))
+        && (post.draft.attributeExists(false) || post.draft.eq(nil))
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
@@ -292,7 +292,7 @@ class GraphQLListQueryTests: XCTestCase {
                 },
                 {
                   "draft" : {
-                    "eq" : "null"
+                    "eq" : null
                   }
                 }
               ]
