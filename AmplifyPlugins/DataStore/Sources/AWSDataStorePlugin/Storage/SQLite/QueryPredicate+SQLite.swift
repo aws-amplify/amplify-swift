@@ -34,7 +34,7 @@ extension QueryOperator {
         case .notContains:
             return "instr(\(column), ?) = 0"
         case .attributeExists(let value):
-            return "\(column) is \(value ? "not" : "") null"
+            return "\(column) is\(value ? " not" : "") null"
         }
     }
 
@@ -53,8 +53,8 @@ extension QueryOperator {
             .beginsWith(let value),
             .notContains(let value):
             return [value.asBinding()]
-        case .attributeExists:
-            return []
+        case .attributeExists(let value):
+            return [value.asBinding()]
         }
     }
 }
