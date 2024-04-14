@@ -104,7 +104,7 @@ public struct AmplifyOutputsData: Codable {
     public struct DataCategory: Codable {
         public let awsRegion: AWSRegion
         public let url: String
-        public let modelIntrospection: JSONValue
+        public let modelIntrospection: JSONValue?
         public let apiKey: String?
         public let defaultAuthorizationType: AWSAppSyncAuthorizationType
         public let authorizationTypes: [AWSAppSyncAuthorizationType]

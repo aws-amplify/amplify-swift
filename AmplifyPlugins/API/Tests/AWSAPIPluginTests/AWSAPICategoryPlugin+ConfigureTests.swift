@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AWSAPIPlugin
 
 class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
@@ -53,4 +53,50 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
         }
     }
 
+    /// Configure with data category and assert expected endpoint configured.
+    func testConfigureAmplifyOutputs() throws {
+        let config = AmplifyOutputsData(data: .init(
+            awsRegion: "us-east-1",
+            url: "http://www.example.com",
+            modelIntrospection: nil,
+            apiKey: "apiKey123",
+            defaultAuthorizationType: .amazonCognitoUserPools,
+            authorizationTypes: [.apiKey, .awsIAM]))
+
+        let plugin = AWSAPIPlugin()
+        try plugin.configure(using: config)
+        guard let endpoint = plugin.pluginConfig.endpoints.first else {
+            XCTFail("Missing endpoint configuration")
+            return
+        }
+        XCTAssertEqual(endpoint.key, "dataCategory")
+        XCTAssertEqual(endpoint.value.name, "dataCategory")
+        XCTAssertEqual(endpoint.value.endpointType, .graphQL)
+        XCTAssertEqual(endpoint.value.apiKey, "apiKey123")
+        XCTAssertEqual(endpoint.value.baseURL, URL(string: "http://www.example.com"))
+        XCTAssertEqual(endpoint.value.region, "us-east-1")
+        XCTAssertEqual(endpoint.value.authorizationType, .amazonCognitoUserPools)
+    }
+
+    /// Configuring `.apiKey` auth without the `apiKey` value will fail.
+    func testConfigureAmplifyOutputs_APIKeyMissing() throws {
+        let config = AmplifyOutputsData(data: .init(
+            awsRegion: "us-east-1",
+            url: "http://www.example.com",
+            modelIntrospection: nil,
+            apiKey: nil,
+            defaultAuthorizationType: .apiKey,
+            authorizationTypes: []))
+
+        let plugin = AWSAPIPlugin()
+        do {
+            try plugin.configure(using: config)
+        } catch {
+            guard let apiError = error as? PluginError,
+                case .pluginConfigurationError = apiError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
+        }
+    }
 }
