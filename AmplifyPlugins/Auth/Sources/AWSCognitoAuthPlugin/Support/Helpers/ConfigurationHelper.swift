@@ -188,7 +188,7 @@ struct ConfigurationHelper {
         // parse `signUpAttributes`
         let signUpAttributes: [UserPoolConfigurationData.SignUpAttributeType]
         if let configStandardRequiredAttributes = config.standardRequiredAttributes {
-            signUpAttributes = configStandardRequiredAttributes.compactMap { .init(rawValue: $0.rawValue) }
+            signUpAttributes = try configStandardRequiredAttributes.map { try $0.toSignUpAttribute() }
         } else {
             signUpAttributes = []
         }
@@ -198,24 +198,13 @@ struct ConfigurationHelper {
             .userVerificationTypes?
             .compactMap { .init(rawValue: $0) } ?? []
 
-        // map `authenticationFlowType`
-        let authFlowType: AuthFlowType
-        switch config.authenticationFlowType {
-        case .userSRP:
-            authFlowType = .userSRP
-        case .custom:
-            authFlowType = .customWithoutSRP
-        default:
-            authFlowType = .userSRP
-        }
-
         return UserPoolConfigurationData(poolId: config.userPoolId,
                                          clientId: config.userPoolClientId,
                                          region: config.awsRegion,
                                          endpoint: nil, // Gen2 does not support this field
                                          clientSecret: nil, // Gen2 does not support this field
                                          pinpointAppId: nil, // Gen2 does not support this field
-                                         authFlowType: authFlowType,
+                                         authFlowType: .userSRP,
                                          hostedUIConfig: hostedUIConfig,
                                          passwordProtectionSettings: passwordProtectionSettings,
                                          usernameAttributes: usernameAttributes,
@@ -260,8 +249,8 @@ struct ConfigurationHelper {
             return nil
         }
 
-        return createHostedConfiguration(appClientId: "TODO", // TODO: Missing Auth.Default.OAuth.AppClientId
-                                         clientSecret: nil, // Gen2 does not support this field
+        return createHostedConfiguration(appClientId: configuration.userPoolClientId,
+                                         clientSecret: nil,
                                          domain: oauth.customDomain ?? oauth.cognitoDomain,
                                          scopes: oauth.scopes,
                                          signInRedirectURI: signInRedirectURI,
@@ -392,3 +381,47 @@ struct ConfigurationHelper {
                             ["Default": authConfigObject])])])])])
     }
 }
+
+extension AmplifyOutputsData.AmazonCognitoStandardAttributes {
+    func toSignUpAttribute() throws -> UserPoolConfigurationData.SignUpAttributeType {
+        switch self {
+        case .address:
+            return .address
+        case .birthdate:
+            return .birthDate
+        case .email:
+            return .email
+        case .familyName:
+            return .familyName
+        case .gender:
+            return .gender
+        case .givenName:
+            return .givenName
+        case .locale:
+            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
+        case .middleName:
+            return .middleName
+        case .name:
+            return .name
+        case .nickname:
+            return .nickname
+        case .phoneNumber:
+            return .phoneNumber
+        case .picture:
+            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
+        case .preferredUsername:
+            return .preferredUsername
+        case .profile:
+            return .profile
+        case .sub:
+            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
+        case .updatedAt:
+            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
+        case .website:
+            return .website
+        case .zoneinfo:
+            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
+        }
+    }
+}
+

@@ -37,7 +37,6 @@ public struct AmplifyOutputsData: Codable {
     @_spi(InternalAmplifyConfiguration)
     public struct Auth: Codable {
         public let awsRegion: AWSRegion
-        public let authenticationFlowType: AuthenticationFlowType?
         public let userPoolId: String
         public let userPoolClientId: String
         public let identityPoolId: String?
@@ -72,6 +71,33 @@ public struct AmplifyOutputsData: Codable {
             case userSRP = "USER_SRP_AUTH"
             case custom = "CUSTOM_AUTH"
         }
+
+        init(awsRegion: AWSRegion,
+             userPoolId: String,
+             userPoolClientId: String,
+             identityPoolId: String? = nil,
+             passwordPolicy: PasswordPolicy? = nil,
+             oauth: OAuth? = nil,
+             standardRequiredAttributes: [AmazonCognitoStandardAttributes]? = nil,
+             usernameAttributes: [String]? = nil,
+             userVerificationTypes: [String]? = nil,
+             unauthenticatedIdentitiesEnabled: Bool? = nil,
+             mfaConfiguration: String? = nil,
+             mfaMethods: [String]? = nil) {
+            self.awsRegion = awsRegion
+            self.userPoolId = userPoolId
+            self.userPoolClientId = userPoolClientId
+            self.identityPoolId = identityPoolId
+            self.passwordPolicy = passwordPolicy
+            self.oauth = oauth
+            self.standardRequiredAttributes = standardRequiredAttributes
+            self.usernameAttributes = usernameAttributes
+            self.userVerificationTypes = userVerificationTypes
+            self.unauthenticatedIdentitiesEnabled = unauthenticatedIdentitiesEnabled
+            self.mfaConfiguration = mfaConfiguration
+            self.mfaMethods = mfaMethods
+        }
+
     }
 
     @_spi(InternalAmplifyConfiguration)
@@ -201,7 +227,7 @@ public struct AmplifyOutputs {
     /// Resolves configuration with `amplify_outputs.json` in the main bundle.
     public static let amplifyOutputs: AmplifyOutputs = {
         .init {
-            try AmplifyOutputsData.init(bundle: Bundle.main, resource: "amplify_outputs")
+            try AmplifyOutputsData(bundle: Bundle.main, resource: "amplify_outputs")
         }
     }()
 
@@ -215,7 +241,7 @@ public struct AmplifyOutputs {
     /// Resolves configuration with the resource in the main bundle.
     public static func resource(named resource: String) -> AmplifyOutputs {
         .init {
-            try AmplifyOutputsData.init(bundle: Bundle.main, resource: resource)
+            try AmplifyOutputsData(bundle: Bundle.main, resource: resource)
         }
     }
 }
