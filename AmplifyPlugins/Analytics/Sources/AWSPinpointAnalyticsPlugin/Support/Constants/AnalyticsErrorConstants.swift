@@ -26,6 +26,16 @@ struct AnalyticsPluginErrorConstant {
         "Add the `PinpointAnalytics` section to the plugin."
     )
 
+    static let missingAnalyticsCategoryConfiguration: AnalyticsPluginErrorString = (
+        "Plugin is missing `Analytics` category in configuration.",
+        "Add the `Analytics` section to the plugin."
+    )
+
+    static let missingAmazonPinpointConfiguration: AnalyticsPluginErrorString = (
+        "Plugin is missing `amazon_pinpoint` section under `Analytics` category configuration.",
+        "Add the `amazon_pinpoint` section to the plugin."
+    )
+
     static let invalidAutoFlushEventsInterval: AnalyticsPluginErrorString = (
         "AutoFlushEventsInterval is not a number or is less than 0",
         "Ensure AutoFlushEventsInterval is zero or positive number"

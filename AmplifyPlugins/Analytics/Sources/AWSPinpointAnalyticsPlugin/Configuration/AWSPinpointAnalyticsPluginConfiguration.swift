@@ -22,9 +22,8 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     let appId: String
     let region: String
-    let autoFlushEventsInterval: UInt
-    let trackAppSessions: Bool
-    let autoSessionTrackingInterval: UInt
+
+    let options: AWSPinpointAnalyticsPlugin.Options
 
     private static let logger = Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: Self.self))
 
@@ -45,17 +44,14 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
         let pluginConfiguration = try AWSPinpointPluginConfiguration(pinpointAnalyticsConfig)
 
-        let autoFlushEventsInterval: UInt
-        let trackAppSessions: Bool
-        let autoSessionTrackingInterval: UInt
+        let configOptions: AWSPinpointAnalyticsPlugin.Options
         if let options {
-            autoFlushEventsInterval = options.autoFlushEventsInerval
-            trackAppSessions = options.trackAppSessions
-            autoSessionTrackingInterval = options.autoSessionTrackingInterval
+            configOptions = options
         } else {
-            autoFlushEventsInterval = try Self.getAutoFlushEventsInterval(configObject)
-            trackAppSessions = try Self.getTrackAppSessions(configObject)
-            autoSessionTrackingInterval = try Self.getAutoSessionTrackingInterval(configObject)
+            configOptions = .init(
+                autoFlushEventsInterval: try Self.getAutoFlushEventsInterval(configObject),
+                trackAppSessions: try Self.getTrackAppSessions(configObject),
+                autoSessionTrackingInterval: try Self.getAutoSessionTrackingInterval(configObject))
         }
         // Warn users in case they set different regions between pinpointTargeting and pinpointAnalytics
         if let pinpointTargetingJson = configObject[Self.pinpointTargetingConfigKey],
@@ -66,38 +62,36 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
         self.init(appId: pluginConfiguration.appId,
                   region: pluginConfiguration.region,
-                  autoFlushEventsInterval: autoFlushEventsInterval,
-                  trackAppSessions: trackAppSessions,
-                  autoSessionTrackingInterval: autoSessionTrackingInterval)
+                  options: configOptions)
     }
 
     init(_ configuration: AmplifyOutputsData,
-         _ options: AWSPinpointAnalyticsPlugin.Options) throws {
-        guard let analyticsConfig = configuration.analytics,
-              let pinpointAnalyticsConfig = analyticsConfig.amazonPinpoint else {
+         options: AWSPinpointAnalyticsPlugin.Options) throws {
+        guard let analyticsConfig = configuration.analytics else {
             throw PluginError.pluginConfigurationError(
-                AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.errorDescription,
-                AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.recoverySuggestion
+                AnalyticsPluginErrorConstant.missingAnalyticsCategoryConfiguration.errorDescription,
+                AnalyticsPluginErrorConstant.missingAnalyticsCategoryConfiguration.recoverySuggestion
+            )
+        }
+
+        guard let pinpointAnalyticsConfig = analyticsConfig.amazonPinpoint else {
+            throw PluginError.pluginConfigurationError(
+                AnalyticsPluginErrorConstant.missingAmazonPinpointConfiguration.errorDescription,
+                AnalyticsPluginErrorConstant.missingAmazonPinpointConfiguration.recoverySuggestion
             )
         }
 
         self.init(appId: pinpointAnalyticsConfig.appId,
                   region: pinpointAnalyticsConfig.awsRegion,
-                  autoFlushEventsInterval: options.autoFlushEventsInerval,
-                  trackAppSessions: options.trackAppSessions,
-                  autoSessionTrackingInterval: options.autoSessionTrackingInterval)
+                  options: options)
     }
 
     init(appId: String,
          region: String,
-         autoFlushEventsInterval: UInt,
-         trackAppSessions: Bool,
-         autoSessionTrackingInterval: UInt) {
+         options: AWSPinpointAnalyticsPlugin.Options) {
         self.appId = appId
         self.region = region
-        self.autoFlushEventsInterval = autoFlushEventsInterval
-        self.trackAppSessions = trackAppSessions
-        self.autoSessionTrackingInterval = autoSessionTrackingInterval
+        self.options = options
     }
 
     private static func getAutoFlushEventsInterval(_ configuration: [String: JSONValue]) throws -> UInt {

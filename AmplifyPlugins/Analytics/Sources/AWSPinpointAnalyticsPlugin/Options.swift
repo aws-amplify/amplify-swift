@@ -19,14 +19,14 @@ extension AWSPinpointAnalyticsPlugin {
         #endif
         }()
 
-        public let autoFlushEventsInerval: UInt
+        public let autoFlushEventsInterval: UInt
         public let trackAppSessions: Bool
         public let autoSessionTrackingInterval: UInt
 
-        public init(autoFlushEventsInerval: UInt = defaultAutoFlushEventsInterval,
+        public init(autoFlushEventsInterval: UInt = defaultAutoFlushEventsInterval,
                     trackAppSessions: Bool = defaultTrackAppSession,
                     autoSessionTrackingInterval: UInt = defaultAutoSessionTrackingInterval) {
-            self.autoFlushEventsInerval = autoFlushEventsInerval
+            self.autoFlushEventsInterval = autoFlushEventsInterval
             self.trackAppSessions = trackAppSessions
             self.autoSessionTrackingInterval = autoSessionTrackingInterval
         }

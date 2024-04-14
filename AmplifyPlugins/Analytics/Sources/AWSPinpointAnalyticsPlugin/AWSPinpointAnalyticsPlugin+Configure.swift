@@ -25,11 +25,11 @@ extension AWSPinpointAnalyticsPlugin {
             print(config)
 
             if let configuredOptions = options {
-                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, configuredOptions)
+                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options: configuredOptions)
             } else {
                 let defaultOptions = AWSPinpointAnalyticsPlugin.Options.default
                 options = defaultOptions
-                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, defaultOptions)
+                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options: defaultOptions)
             }
         } else {
             guard let config = configuration as? JSONValue else {
@@ -39,6 +39,7 @@ extension AWSPinpointAnalyticsPlugin {
                 )
             }
             pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options)
+            options = pluginConfiguration.options
         }
 
         try configure(using: pluginConfiguration)
@@ -51,7 +52,7 @@ extension AWSPinpointAnalyticsPlugin {
             region: configuration.region
         )
 
-        let interval = TimeInterval(configuration.autoFlushEventsInterval)
+        let interval = TimeInterval(configuration.options.autoFlushEventsInterval)
         pinpoint.setAutomaticSubmitEventsInterval(interval) { result in
             switch result {
             case .success(let events):
@@ -61,12 +62,12 @@ extension AWSPinpointAnalyticsPlugin {
             }
         }
 
-        if configuration.trackAppSessions {
+        if configuration.options.trackAppSessions {
             let sessionBackgroundTimeout: TimeInterval
-            if configuration.autoSessionTrackingInterval == .max {
+            if configuration.options.autoSessionTrackingInterval == .max {
                 sessionBackgroundTimeout = .infinity
             } else {
-                sessionBackgroundTimeout = TimeInterval(configuration.autoSessionTrackingInterval)
+                sessionBackgroundTimeout = TimeInterval(configuration.options.autoSessionTrackingInterval)
             }
 
             pinpoint.startTrackingSessions(backgroundTimeout: sessionBackgroundTimeout)

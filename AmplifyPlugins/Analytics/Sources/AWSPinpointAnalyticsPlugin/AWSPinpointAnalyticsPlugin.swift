@@ -25,6 +25,7 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An observer to monitor connectivity changes
     var networkMonitor: NetworkMonitor!
 
+    /// Optional passed in `options`, overrides JSON configuration if exists.
     var options: Options?
 
     /// The unique key of the plugin within the analytics category
