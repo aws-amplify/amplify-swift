@@ -58,10 +58,10 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
     }
 
     func testConfiguration_throwsMissingAnalytics() {
-        do {
-            let config = AmplifyOutputsData(analytics: nil)
-            _ = try AWSPinpointAnalyticsPluginConfiguration(config, options: .init())
-        } catch {
+        let config = AmplifyOutputsData(analytics: nil)
+        XCTAssertThrowsError(
+            try AWSPinpointAnalyticsPluginConfiguration(config, options: .init())
+        ) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected to catch PluginError.pluginConfigurationError.")
                 return
@@ -72,10 +72,10 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
     }
 
     func testConfiguration_throwAmazonPinpoint() {
-        do {
-            let config = AmplifyOutputsData(analytics: .init(amazonPinpoint: nil))
-            _ = try AWSPinpointAnalyticsPluginConfiguration(config, options: .init())
-        } catch {
+        let config = AmplifyOutputsData(analytics: .init(amazonPinpoint: nil))
+        XCTAssertThrowsError(
+            try AWSPinpointAnalyticsPluginConfiguration(config, options: .init())
+        ) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected to catch PluginError.pluginConfigurationError.")
                 return
@@ -84,6 +84,5 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
                            AnalyticsPluginErrorConstant.missingAmazonPinpointConfiguration.errorDescription)
         }
     }
-
 }
 

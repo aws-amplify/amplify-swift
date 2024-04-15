@@ -66,18 +66,36 @@ public struct AWSLocationGeoPluginConfiguration {
             throw GeoPluginConfigError.configurationInvalid(section: .plugin)
         }
 
-        guard let geoMaps = geo.maps else {
-            throw GeoPluginConfigError.configurationInvalid(section: .plugin)
+        var maps = [String: Geo.MapStyle]()
+        var defaultMap: String?
+        if let geoMaps = geo.maps {
+            maps = try AWSLocationGeoPluginConfiguration.getMaps(
+                mapConfig: geoMaps,
+                regionName: geo.awsRegion)
+            defaultMap = geoMaps.default
+
+            // Validate that the default map exists in `maps`
+            guard let map = defaultMap, maps[map] != nil else {
+                throw GeoPluginConfigError.mapDefaultNotFound(mapName: defaultMap)
+            }
         }
-        let maps = try AWSLocationGeoPluginConfiguration.getMaps(
-            mapConfig: geoMaps,
-            regionName: geo.awsRegion)
+
+        var searchIndices = [String]()
+        var defaultSearchIndex: String?
+        // Validate that the default search index exists in `searchIndices`
+        if let geoSearchIndices = geo.searchIndices {
+            searchIndices = geoSearchIndices.items
+            defaultSearchIndex = geoSearchIndices.default
+            guard searchIndices.contains(geoSearchIndices.default) else {
+                throw GeoPluginConfigError.searchDefaultNotFound(indexName: geoSearchIndices.default)
+            }
+        }
 
         self.init(regionName: geo.awsRegion,
-                  defaultMap: geoMaps.default,
+                  defaultMap: defaultMap,
                   maps: maps,
-                  defaultSearchIndex: geo.searchIndices?.default,
-                  searchIndices: geo.searchIndices?.items ?? [])
+                  defaultSearchIndex: defaultSearchIndex,
+                  searchIndices: searchIndices)
     }
 
     init(regionName: String,

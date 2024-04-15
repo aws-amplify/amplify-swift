@@ -135,6 +135,17 @@ public struct AmplifyOutputsData: Codable {
             public let items: [String]
             public let `default`: String
         }
+
+        // Internal init used for testing
+        init(awsRegion: AWSRegion,
+             maps: Maps? = nil,
+             searchIndices: SearchIndices? = nil,
+             geofenceCollections: GeofenceCollections? = nil) {
+            self.awsRegion = awsRegion
+            self.maps = maps
+            self.searchIndices = searchIndices
+            self.geofenceCollections = geofenceCollections
+        }
     }
 
     @_spi(InternalAmplifyConfiguration)

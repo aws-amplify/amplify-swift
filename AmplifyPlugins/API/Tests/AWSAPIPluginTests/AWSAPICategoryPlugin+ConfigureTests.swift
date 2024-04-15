@@ -41,10 +41,7 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
 
     func testConfigureFailureForNilConfiguration() throws {
         let plugin = AWSAPIPlugin()
-        do {
-            try plugin.configure(using: nil)
-            XCTFail("Api configuration should not succeed")
-        } catch {
+        XCTAssertThrowsError(try plugin.configure(using: nil)) { error in
             guard let apiError = error as? PluginError,
                 case .pluginConfigurationError = apiError else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
@@ -89,9 +86,7 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
             authorizationTypes: []))
 
         let plugin = AWSAPIPlugin()
-        do {
-            try plugin.configure(using: config)
-        } catch {
+        XCTAssertThrowsError(try plugin.configure(using: config)) { error in
             guard let apiError = error as? PluginError,
                 case .pluginConfigurationError = apiError else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
