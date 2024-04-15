@@ -27,9 +27,9 @@ extension AuthCategory: CategoryConfigurable {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
 
-    func configure(using amplifyConfiguration: AmplifyOutputsData) throws {
+    func configure(using amplifyOutputs: AmplifyOutputsData) throws {
         for plugin in Array(plugins.values) {
-            try plugin.configure(using: amplifyConfiguration)
+            try plugin.configure(using: amplifyOutputs)
         }
         isConfigured = true
     }

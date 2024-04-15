@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class LoggingCategoryConfigurationTests: XCTestCase {
@@ -35,6 +35,19 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(Amplify.Logging)
         XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
     }
+
+    func testCanConfigureLoggingPluginWithAmplifyOutputs() throws {
+        let plugin = MockLoggingCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
+
+        XCTAssertNotNil(Amplify.Logging)
+        XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
+    }
+
 
     func testCanResetLoggingPlugin() async throws {
         let plugin = MockLoggingCategoryPlugin()

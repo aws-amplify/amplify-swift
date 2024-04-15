@@ -27,7 +27,7 @@ extension HubCategory: CategoryConfigurable {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
 
-    func configure(using amplifyConfiguration: AmplifyOutputsData) throws {
+    func configure(using amplifyOutputs: AmplifyOutputsData) throws {
         guard configurationState.get() != .configured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "\(categoryType.displayName) has already been configured.",
@@ -36,8 +36,9 @@ extension HubCategory: CategoryConfigurable {
             throw error
         }
 
-        try plugin.configure(using: amplifyConfiguration)
-
+        for plugin in Array(plugins.values) {
+            try plugin.configure(using: amplifyOutputs)
+        }
         configurationState.set(.configured)
     }
 

@@ -11,7 +11,7 @@ import Foundation
 ///
 /// See: [Amplify.configure](x-source-tag://Amplify.configure)
 ///
-/// - Tag: AmplifyConfigurationV2
+/// - Tag: AmplifyOutputs
 ///
 @_spi(InternalAmplifyConfiguration)
 public struct AmplifyOutputsData: Codable {
@@ -229,7 +229,7 @@ public struct AmplifyOutputsData: Codable {
 
 // MARK: - Configure
 
-/// Represents helper methods to configure with `AmplifyOutputsData`.
+/// Represents helper methods to configure with Amplify CLI Gen2 configuration.
 public struct AmplifyOutputs {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
@@ -259,16 +259,15 @@ public struct AmplifyOutputs {
 
 extension Amplify {
 
-    /// Explicit API to configure with `amplify-outputs.json`.
-    /// 
-    /// - Parameter with: format of the configuration file
-    ///     Only one explicit format is supported,`.amplifyOutputs`.
+    /// API to configure with Amplify CLI Gen2's configuration.
+    ///
+    /// - Parameter with: `AmplifyOutputs` configuration resolver
     public static func configure(with amplifyOutputs: AmplifyOutputs) throws {
         do {
             let resolvedConfiguration = try amplifyOutputs.resolveConfiguration()
             try configure(resolvedConfiguration)
         } catch {
-            log.info("Failed to find Amplify configuration.")
+            log.info("Failed to find configuration.")
             if isRunningForSwiftUIPreviews {
                 log.info("Running for SwiftUI previews with no configuration file present, skipping configuration.")
                 return

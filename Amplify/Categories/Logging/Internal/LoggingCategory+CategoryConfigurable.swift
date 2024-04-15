@@ -39,7 +39,7 @@ extension LoggingCategory: CategoryConfigurable {
         try configure(using: categoryConfiguration(from: amplifyConfiguration))
     }
 
-    func configure(using amplifyConfiguration: AmplifyOutputsData) throws {
+    func configure(using amplifyOutputs: AmplifyOutputsData) throws {
         let plugin: LoggingCategoryPlugin
         switch configurationState {
         case .default:
@@ -56,11 +56,11 @@ extension LoggingCategory: CategoryConfigurable {
             throw error
         }
 
-        try plugin.configure(using: amplifyConfiguration)
+        try plugin.configure(using: amplifyOutputs)
         self.plugins[plugin.key] = plugin
 
         if plugin.key != AWSUnifiedLoggingPlugin.key, let consolePlugin = try? self.getPlugin(for: AWSUnifiedLoggingPlugin.key) {
-            try consolePlugin.configure(using: amplifyConfiguration)
+            try consolePlugin.configure(using: amplifyOutputs)
         }
 
         configurationState = .configured
