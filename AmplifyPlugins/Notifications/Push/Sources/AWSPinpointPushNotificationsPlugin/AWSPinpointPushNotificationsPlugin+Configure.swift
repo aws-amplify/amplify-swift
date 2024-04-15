@@ -22,7 +22,16 @@ extension AWSPinpointPushNotificationsPlugin {
     public func configure(using configuration: Any?) throws {
         let pluginConfiguration: AWSPinpointPluginConfiguration
         if let config = configuration as? AmplifyOutputsData {
-            pluginConfiguration = try AWSPinpointPluginConfiguration(config)
+            guard let notifications = config.notifications else {
+                throw PluginError.pluginConfigurationError(
+                    PushNotificationsPluginErrorConstants.missinAmplifyOutputsPinpointNotificationsConfiguration.errorDescription,
+                    PushNotificationsPluginErrorConstants.missinAmplifyOutputsPinpointNotificationsConfiguration.errorDescription
+                )
+            }
+
+            pluginConfiguration = AWSPinpointPluginConfiguration(
+                appId: notifications.amazonPinpointAppId,
+                region: notifications.awsRegion)
         } else {
             guard let config = configuration as? JSONValue else {
                 throw PluginError.pluginConfigurationError(

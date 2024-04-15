@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointPushNotificationsPlugin
@@ -40,6 +40,16 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
     func testConfigure_withValidConfiguration_shouldSucceed() {
         do {
             try plugin.configure(using: createPushNotificationsPluginConfig())
+            XCTAssertNotNil(plugin.pinpoint)
+            XCTAssertEqual(plugin.options, authorizationOptions)
+        } catch {
+            XCTFail("Failed to configure Push Notifications plugin")
+        }
+    }
+
+    func testConfigure_withValidAmplifyOutputsConfiguration_shouldSucceed() {
+        do {
+            try plugin.configure(using: createPushNotificationsPluginAmplifyOutputsConfig())
             XCTAssertNotNil(plugin.pinpoint)
             XCTAssertEqual(plugin.options, authorizationOptions)
         } catch {
@@ -169,5 +179,12 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         )
 
         return pinpointConfiguration
+    }
+
+    private func createPushNotificationsPluginAmplifyOutputsConfig() -> AmplifyOutputsData {
+        .init(notifications: .init(
+            awsRegion: testRegion,
+            amazonPinpointAppId: testAppId,
+            channels: [.apns]))
     }
 }
