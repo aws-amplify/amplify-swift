@@ -41,15 +41,9 @@ extension StoragePath {
     }
 
     func validate(_ path: String) throws {
-        guard !path.isEmpty else {
-            let errorDescription = "Invalid StoragePath specified."
-            let recoverySuggestion = "Please specify a valid StoragePath"
-            throw StorageError.validation("path", errorDescription, recoverySuggestion, nil)
-        }
-
-        if path.hasPrefix("/") {
-            let errorDescription = "Invalid StoragePath specified."
-            let recoverySuggestion = "Please specify a valid StoragePath that does not contain the prefix / "
+        if path.isEmpty || path.hasPrefix("/") {
+            let errorDescription = "Invalid StoragePath provided."
+            let recoverySuggestion = "StoragePath must not be empty or start with /"
             throw StorageError.validation("path", errorDescription, recoverySuggestion, nil)
         }
     }
