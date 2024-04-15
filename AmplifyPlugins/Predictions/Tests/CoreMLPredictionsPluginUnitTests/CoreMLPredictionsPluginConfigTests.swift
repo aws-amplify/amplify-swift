@@ -7,7 +7,7 @@
 
 #if canImport(Speech) && canImport(Vision)
 import XCTest
-import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 import CoreMLPredictionsPlugin
 
 class CoreMLPredictionsPluginConfigTests: XCTestCase {
@@ -29,5 +29,12 @@ class CoreMLPredictionsPluginConfigTests: XCTestCase {
         }
     }
 
+    func testConfigureWithAmplifyOutputs() throws {
+        let plugin = CoreMLPredictionsPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let amplifyConfig = AmplifyOutputsData()
+        try Amplify.configure(amplifyConfig)
+    }
 }
 #endif
