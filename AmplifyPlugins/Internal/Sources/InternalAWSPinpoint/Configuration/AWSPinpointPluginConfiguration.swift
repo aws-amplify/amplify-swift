@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAmplifyConfiguration) import Amplify
+import Amplify
 import AWSPinpoint
 import AWSClientRuntime
 import Foundation
@@ -29,20 +29,6 @@ public struct AWSPinpointPluginConfiguration {
         self.init(
             appId: try AWSPinpointPluginConfiguration.getAppId(configObject),
             region: try AWSPinpointPluginConfiguration.getRegion(configObject)
-        )
-    }
-
-    public init(_ config: AmplifyOutputsData) throws {
-        guard let notifications = config.notifications else {
-            throw PluginError.pluginConfigurationError(
-                AWSPinpointErrorConstants.pinpointConfigurationExpected.errorDescription,
-                AWSPinpointErrorConstants.pinpointConfigurationExpected.recoverySuggestion
-            )
-        }
-
-        self.init(
-            appId: notifications.amazonPinpointAppId,
-            region: notifications.awsRegion
         )
     }
 
