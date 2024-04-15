@@ -18,29 +18,34 @@ extension AWSS3StoragePlugin {
     ///
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
-    ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
+    ///   - `PluginError` is thrown if the AmplifyConfiguration is an invalid JSON, or AmplifyOutputsData's `storage` category is missing.
+    ///   - `PluginError` is wrapped as the underlying error of a `StorageError` for other validation logic related to retrieving
+    ///   configuration fields such as `region` and `bucket`.
     ///
     /// - Tag: AWSS3StoragePlugin.configure
     public func configure(using configuration: Any?) throws {
-        // The reason for the complexity of deferring the region/bucket/accessLevel resolution to
-        // the do-try-catch block below is to achieve backwards compatibility in error behavior
-        // The relevant behavior:
-        //  1. PluginError is thrown for casting the configuration to the correct value while
-        //  2. PluginError is the underlying error of a StorageError when accessing the plugin fields like `region` and `bucket`.
         let region: () throws -> String
         let bucket: () throws -> String
         var defaultAccessLevel: () throws -> StorageAccessLevel = { .guest }
         if let config = configuration as? AmplifyOutputsData {
             guard let storage = config.storage else {
-                throw PluginError.pluginConfigurationError("Missing storage category in configuration",
-                                                           "")
+                throw PluginError.pluginConfigurationError(
+                    PluginErrorConstants.missingStorageCategoryConfiguration.errorDescription,
+                    PluginErrorConstants.missingStorageCategoryConfiguration.recoverySuggestion)
             }
-            region = { storage.awsRegion }
-            bucket = { storage.bucketName }
+            region = {
+                try AWSS3StoragePlugin.validateRegionNonEmpty(storage.awsRegion)
+                return storage.awsRegion
+            }
+            bucket = {
+                try AWSS3StoragePlugin.validateBucketNonEmpty(storage.bucketName)
+                return storage.bucketName
+            }
         } else {
             guard let config = configuration as? JSONValue else {
-                throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
-                                                           PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+                throw PluginError.pluginConfigurationError(
+                    PluginErrorConstants.decodeConfigurationError.errorDescription,
+                    PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
             }
             guard case let .object(configObject) = config else {
                 throw StorageError.configuration(
@@ -112,12 +117,16 @@ extension AWSS3StoragePlugin {
                                                        PluginErrorConstants.invalidRegion.recoverySuggestion)
         }
 
-        if regionValue.isEmpty {
+        try validateRegionNonEmpty(regionValue)
+
+        return regionValue
+    }
+
+    private static func validateRegionNonEmpty(_ region: String) throws {
+        if region.isEmpty {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyRegion.errorDescription,
                                                        PluginErrorConstants.emptyRegion.recoverySuggestion)
         }
-
-        return regionValue
     }
 
     /// Retrieves the bucket from configuration, validates, and returns it.
@@ -132,12 +141,16 @@ extension AWSS3StoragePlugin {
                                                        PluginErrorConstants.invalidBucket.recoverySuggestion)
         }
 
-        if bucketValue.isEmpty {
+        try validateBucketNonEmpty(bucketValue)
+
+        return bucketValue
+    }
+
+    private static func validateBucketNonEmpty(_ bucket: String) throws {
+        if bucket.isEmpty {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyBucket.errorDescription,
                                                        PluginErrorConstants.emptyBucket.recoverySuggestion)
         }
-
-        return bucketValue
     }
 
     /// Checks if the access level is specified in the configurationand and retrieves it. Returns the default
