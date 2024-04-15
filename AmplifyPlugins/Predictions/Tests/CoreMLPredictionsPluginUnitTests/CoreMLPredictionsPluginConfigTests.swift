@@ -12,6 +12,10 @@ import CoreMLPredictionsPlugin
 
 class CoreMLPredictionsPluginConfigTests: XCTestCase {
 
+    override func setUp() async throws {
+        await Amplify.reset()
+    }
+    
     func testThrowsOnMissingConfig() throws {
         let plugin = CoreMLPredictionsPlugin()
         try Amplify.add(plugin: plugin)

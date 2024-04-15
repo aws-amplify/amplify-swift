@@ -11,6 +11,10 @@ import XCTest
 
 class PredictionsPluginConfigurationTests: XCTestCase {
 
+    override func setUp() async throws {
+        await Amplify.reset()
+    }
+
     /// Test basic configuration parsing works
     ///
     /// - Given: A valid json data for predictions
