@@ -20,12 +20,11 @@ extension AWSPredictionsPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
         let predictionsConfiguration: PredictionsPluginConfiguration
-        if let configuration = configuration as? AmplifyOutputsData {
-            // TODO: Implement
-            predictionsConfiguration = PredictionsPluginConfiguration(defaultRegion: "",
-                                                                      identify: .init(""),
-                                                                      interpret: .init(""),
-                                                                      convert: .init(""))
+        if configuration is AmplifyOutputsData {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorMessage.amplifyOutputsConfigurationNotSupportedError.errorDescription,
+                PluginErrorMessage.amplifyOutputsConfigurationNotSupportedError.recoverySuggestion
+            )
         } else {
             guard let jsonValueConfiguration = configuration as? JSONValue else {
                 throw PluginError.pluginConfigurationError(
