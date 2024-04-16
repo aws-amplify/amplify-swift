@@ -60,7 +60,6 @@ struct UserPoolConfigurationData: Equatable {
 
 extension UserPoolConfigurationData: Codable { }
 
-// TODO: this should be updated with the newly added properties
 extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
@@ -70,7 +69,11 @@ extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
             "endpoint": endpoint ?? "N/A",
             "clientSecret": clientSecret.masked(interiorCount: 4),
             "pinpointAppId": pinpointAppId.masked(interiorCount: 4, retainingCount: 4),
-            "hostedUI": hostedUIConfig?.debugDescription ?? "N/A"
+            "hostedUI": hostedUIConfig?.debugDescription ?? "N/A",
+            "passwordProtectionSettings": passwordProtectionSettings.debugDescription,
+            "usernameAttributes": usernameAttributes.debugDescription,
+            "signUpAttributes": signUpAttributes.debugDescription,
+            "verificationMechanisms": verificationMechanisms.debugDescription
         ]
     }
 }
