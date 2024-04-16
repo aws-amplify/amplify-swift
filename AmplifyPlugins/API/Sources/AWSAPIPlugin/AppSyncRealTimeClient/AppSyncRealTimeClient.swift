@@ -54,6 +54,10 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         self.state.value == .connected
     }
 
+    internal var numOfSubscriptions: Int {
+        self.subscriptions.count
+    }
+
     /**
      Creates a new AppSyncRealTimeClient with endpoint, requestInterceptor and webSocketClient.
      - Parameters:

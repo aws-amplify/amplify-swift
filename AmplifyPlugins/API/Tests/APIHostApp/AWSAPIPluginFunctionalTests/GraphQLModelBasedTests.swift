@@ -448,6 +448,65 @@ class GraphQLModelBasedTests: XCTestCase {
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
+
+    /// Given: Several subscriptions with Amplify API plugin
+    /// When: Cancel subscriptions
+    /// Then: AppSync real time client automatically unsubscribe and remove the subscription
+    func testCancelledSubscription_automaticallyUnsubscribeAndRemoved() async throws {
+        let numberOfSubscription = 5
+        let allSubscribedExpectation = expectation(description: "All subscriptions are subscribed")
+        allSubscribedExpectation.expectedFulfillmentCount = numberOfSubscription
+
+        let subscriptions = (0..<5).map { _ in
+            Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
+        }
+        subscriptions.forEach { subscription in
+            Task {
+                do {
+                    for try await subscriptionEvent in subscription {
+                        switch subscriptionEvent {
+                        case .connection(let state):
+                            switch state {
+                            case .connecting:
+                                break
+                            case .connected:
+                                allSubscribedExpectation.fulfill()
+                            case .disconnected:
+                                break
+                            }
+                        case .data(let result):
+                            switch result {
+                            case .success: break
+                            case .failure(let error):
+                                XCTFail("\(error)")
+                            }
+                        }
+                    }
+                } catch {
+                    XCTFail("Unexpected subscription failure")
+                }
+            }
+        }
+
+        await fulfillment(of: [allSubscribedExpectation], timeout: 3)
+        if let appSyncRealTimeClientFactory =
+            getUnderlyingAPIPlugin()?.appSyncRealTimeClientFactory as? AppSyncRealTimeClientFactory,
+           let appSyncRealTimeClient =
+            await appSyncRealTimeClientFactory.apiToClientCache.values.first as? AppSyncRealTimeClient
+        {
+            var appSyncSubscriptions = await appSyncRealTimeClient.numOfSubscriptions
+            XCTAssertEqual(appSyncSubscriptions, numberOfSubscription)
+
+            subscriptions.forEach { $0.cancel() }
+            try await Task.sleep(seconds: 2)
+            appSyncSubscriptions = await appSyncRealTimeClient.numOfSubscriptions
+            XCTAssertEqual(appSyncSubscriptions, 0)
+
+        } else {
+            XCTFail("There should be at least one AppSyncRealTimeClient instance")
+        }
+    }
+
     // MARK: Helpers
 
     func createPost(id: String, title: String) async throws -> Post? {
@@ -498,5 +557,9 @@ class GraphQLModelBasedTests: XCTestCase {
         case .failure(let error):
             throw error
         }
+    }
+
+    func getUnderlyingAPIPlugin() -> AWSAPIPlugin? {
+        return Amplify.API.plugins["awsAPIPlugin"] as? AWSAPIPlugin
     }
 }

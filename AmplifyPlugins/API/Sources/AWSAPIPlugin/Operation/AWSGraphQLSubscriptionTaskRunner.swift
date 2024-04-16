@@ -44,6 +44,9 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.apiAuthProviderFactory = apiAuthProviderFactory
     }
 
+    /// When the top-level AmplifyThrowingSequence is canceled, this cancel method is invoked.
+    /// In this situation, we need to send the disconnected event because
+    /// the top-level AmplifyThrowingSequence is terminated immediately upon cancellation.
     public func cancel() {
         self.send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
         Task {
@@ -210,12 +213,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     override public func cancel() {
         super.cancel()
-
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
-
+        Task {
             guard let appSyncRealTimeClient = self.appSyncRealTimeClient else {
                 return
             }
