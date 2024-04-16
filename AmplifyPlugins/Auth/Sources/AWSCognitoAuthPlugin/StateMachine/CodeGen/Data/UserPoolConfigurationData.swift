@@ -218,7 +218,7 @@ extension UserPoolConfigurationData {
 
 extension UserPoolConfigurationData {
 
-    /// Supported username attributes used in the Authenticator.
+    /// Supported verification mechanisms used in the Authenticator.
     enum VerificationMechanism: String, Codable {
         case email = "EMAIL"
         case phoneNumber = "PHONE_NUMBER"

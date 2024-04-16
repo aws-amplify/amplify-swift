@@ -39,7 +39,7 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertNil(result.pinpointAppId)
     }
 
-    // Testing the OAuth mapping logic, such as taking the first redirect URI in the array.
+    /// Testing the OAuth mapping logic, such as taking the first redirect URI in the array.
     func testParseUserPoolData_WithOAuth() throws {
         let config = AmplifyOutputsData.Auth(
             awsRegion: "us-east-1",
@@ -95,7 +95,7 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertEqual(hostedUIConfig.oauth.signOutRedirectURI, "signOut1")
     }
 
-    // Test that password policy is parsed correctly
+    /// Test that password policy is parsed correctly
     func testParseUserPoolData_WithPasswordPolicy() throws {
         let config = AmplifyOutputsData.Auth(
             awsRegion: "us-east-1",
@@ -120,7 +120,7 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertTrue(result.characterPolicy.contains(.symbols))
     }
 
-    // Test that the username attribute is parsed corrctly
+    /// Test that the username attribute is parsed corrctly
     func testParseUserPoolData_WithUsernameAttributes() throws {
         let config = AmplifyOutputsData.Auth(
             awsRegion: "us-east-1",
@@ -178,7 +178,7 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertTrue(result.signUpAttributes.contains(.website))
     }
 
-    // Test that some sign up attributes do not correspond to any standard attribute.
+    /// Test that some sign up attributes do not correspond to any standard attribute.
     func testParseUserPoolData_WithMissingStandardToSignUpAttributeMapping() throws {
         let config = AmplifyOutputsData.Auth(
             awsRegion: "us-east-1",
@@ -200,7 +200,7 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertEqual(result.signUpAttributes.count, 0)
     }
 
-    // Test that the verification mechanisms are parsed correctly.
+    /// Test that the verification mechanisms are parsed correctly.
     func testParseUserPoolData_WithVerificationMechanisms() throws {
         let config = AmplifyOutputsData.Auth(
             awsRegion: "us-east-1",
@@ -214,6 +214,79 @@ final class ConfigurationHelperTests: XCTestCase {
         }
 
         XCTAssertEqual(result.verificationMechanisms, [.phoneNumber, .email])
+    }
+
+    // MARK: - `jsonConfiguration` tests
+
+    /// Test that the AuthConfiguration can be translated back to the expected JSON
+    /// for the authenticator to parse.
+    func testJsonConfiguration() throws {
+        let config = AuthConfiguration
+            .userPools(.init(
+                poolId: "",
+                clientId: "", 
+                region: "",
+                passwordProtectionSettings: .init(from: .init(
+                    minLength: 8,
+                    requireNumbers: true,
+                    requireLowercase: true,
+                    requireUppercase: true,
+                    requireSymbols: true)), 
+                usernameAttributes: [
+                    .init(from: .email),
+                    .init(from: .phoneNumber)
+                ],
+                signUpAttributes: [
+                    .init(from: .email)!,
+                    .init(from: .address)!,
+                ],
+                verificationMechanisms: [
+                    .init(from: .email),
+                    .init(from: .phoneNumber)
+                ]))
+        let json = try ConfigurationHelper.jsonConfiguration(config)
+
+        guard let authConfig = json.auth?.plugins?.awsCognitoAuthPlugin?.Auth?.Default else {
+            XCTFail("Could not retrieve auth configuration from json")
+            return
+        }
+
+        XCTAssertEqual(authConfig.passwordProtectionSettings?.passwordPolicyMinLength, 8)
+        guard let passwordPolicyCharacters = authConfig.passwordProtectionSettings?.passwordPolicyCharacters?.asArray else {
+            XCTFail("Could not retrieve passwordPolicyCharacters from json")
+            return
+        }
+        XCTAssertTrue(passwordPolicyCharacters.contains("REQUIRES_LOWERCASE"))
+        XCTAssertTrue(passwordPolicyCharacters.contains("REQUIRES_UPPERCASE"))
+        XCTAssertTrue(passwordPolicyCharacters.contains("REQUIRES_NUMBERS"))
+        XCTAssertTrue(passwordPolicyCharacters.contains("REQUIRES_SYMBOLS"))
+
+        guard let usernameAttributes = authConfig.usernameAttributes?.asArray else {
+            XCTFail("Could not retrieve usernameAttributes from json")
+            return
+        }
+
+        XCTAssertEqual(usernameAttributes.count, 2)
+        XCTAssertTrue(usernameAttributes.contains("EMAIL"))
+        XCTAssertTrue(usernameAttributes.contains("PHONE_NUMBER"))
+
+        guard let signupAttributes = authConfig.signupAttributes?.asArray else {
+            XCTFail("Could not retrieve signupAttributes from json")
+            return
+        }
+
+        XCTAssertEqual(signupAttributes.count, 2)
+        XCTAssertTrue(signupAttributes.contains("EMAIL"))
+        XCTAssertTrue(signupAttributes.contains("ADDRESS"))
+
+        guard let verificationMechanism = authConfig.verificationMechanism?.asArray else {
+            XCTFail("Could not retrieve verificationMechanism from json")
+            return
+        }
+
+        XCTAssertEqual(verificationMechanism.count, 2)
+        XCTAssertTrue(verificationMechanism.contains("EMAIL"))
+        XCTAssertTrue(verificationMechanism.contains("PHONE_NUMBER"))
     }
 }
 
