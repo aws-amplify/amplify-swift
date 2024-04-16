@@ -19,8 +19,8 @@ final class ConfigurationHelperTests: XCTestCase {
             userPoolClientId: "clientId",
             identityPoolId: "identityPoolId",
             standardRequiredAttributes: [.email],
-            usernameAttributes: ["EMAIL"],
-            userVerificationTypes: ["email"],
+            usernameAttributes: [.email],
+            userVerificationTypes: [.email],
             unauthenticatedIdentitiesEnabled: true,
             mfaConfiguration: nil,
             mfaMethods: nil)
@@ -126,41 +126,35 @@ final class ConfigurationHelperTests: XCTestCase {
             awsRegion: "us-east-1",
             userPoolId: "poolId",
             userPoolClientId: "clientId",
-            usernameAttributes: ["EMAIL", "PHONE_NUMBER", "USERNAME"])
+            usernameAttributes: [.email, .phoneNumber])
 
         guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
 
-        XCTAssertEqual(result.usernameAttributes, [.email, .phoneNumber, .username])
+        XCTAssertEqual(result.usernameAttributes, [.email, .phoneNumber])
     }
 
-    // Test the standard attributes are mapped to sign up attributes correctly.
     func testParseUserPoolData_WithStandardAttributes() throws {
-        // Attributes which are commented out are ones that will fail the parsing, and tested separately
         let config = AmplifyOutputsData.Auth(
             awsRegion: "us-east-1",
             userPoolId: "poolId",
             userPoolClientId: "clientId",
-            standardRequiredAttributes: [.address,
-                                         .birthdate,
-                                         .email,
-                                         .familyName,
-                                         .gender,
-                                         .givenName,
-                                         //.locale,
-                                         .middleName,
-                                         .name,
-                                         .nickname,
-                                         .phoneNumber,
-                                         //.picture,
-                                         .preferredUsername,
-                                         .profile,
-                                         //.sub,
-                                         //.updatedAt,
-                                         .website,
-                                         //.zoneinfo
+            standardRequiredAttributes: [
+                .address,
+                .birthdate,
+                .email,
+                .familyName,
+                .gender,
+                .givenName,
+                .middleName,
+                .name,
+                .nickname,
+                .phoneNumber,
+                .preferredUsername,
+                .profile,
+                .website
             ])
 
         guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
@@ -184,28 +178,26 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertTrue(result.signUpAttributes.contains(.website))
     }
 
-    // Test that missing sign up attributes throw for the corresponding standard attribute.
+    // Test that some sign up attributes do not correspond to any standard attribute.
     func testParseUserPoolData_WithMissingStandardToSignUpAttributeMapping() throws {
-        let missingStandardToSignUpAttributes: [AmplifyOutputsData.AmazonCognitoStandardAttributes] =
-        [.locale,
-         .picture,
-         .sub,
-         .updatedAt,
-         .zoneinfo]
-        for attribute in missingStandardToSignUpAttributes {
-            let config = AmplifyOutputsData.Auth(
-                awsRegion: "us-east-1",
-                userPoolId: "poolId",
-                userPoolClientId: "clientId",
-                standardRequiredAttributes: [attribute])
-            do {
-                _ = try ConfigurationHelper.parseUserPoolData(config)
-            } catch {
-                XCTAssertNotNil(error)
-                continue
-            }
-            XCTFail("Should catch and continue with error")
+        let config = AmplifyOutputsData.Auth(
+            awsRegion: "us-east-1",
+            userPoolId: "poolId",
+            userPoolClientId: "clientId",
+            standardRequiredAttributes: [
+                .locale,
+                .picture,
+                .sub,
+                .updatedAt,
+                .zoneinfo
+            ])
+
+        guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
+            XCTFail("Expected to parse UserPoolData into object")
+            return
         }
+
+        XCTAssertEqual(result.signUpAttributes.count, 0)
     }
 
     // Test that the verification mechanisms are parsed correctly.
@@ -214,7 +206,7 @@ final class ConfigurationHelperTests: XCTestCase {
             awsRegion: "us-east-1",
             userPoolId: "poolId",
             userPoolClientId: "clientId",
-            userVerificationTypes: ["PHONE_NUMBER", "EMAIL"])
+            userVerificationTypes: [.phoneNumber, .email])
 
         guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")

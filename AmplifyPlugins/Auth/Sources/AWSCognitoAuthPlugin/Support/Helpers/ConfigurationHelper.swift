@@ -178,25 +178,19 @@ struct ConfigurationHelper {
         }
 
         // parse `usernameAttributes`
-        let usernameAttributes: [UserPoolConfigurationData.UsernameAttribute]
-        if let configUsernameAttributes = config.usernameAttributes {
-            usernameAttributes = configUsernameAttributes.compactMap { .init(rawValue: $0) }
-        } else {
-            usernameAttributes = []
-        }
+        let usernameAttributes: [UserPoolConfigurationData.UsernameAttribute] = config
+            .usernameAttributes?
+            .compactMap { .init(from: $0) } ?? []
 
         // parse `signUpAttributes`
-        let signUpAttributes: [UserPoolConfigurationData.SignUpAttributeType]
-        if let configStandardRequiredAttributes = config.standardRequiredAttributes {
-            signUpAttributes = try configStandardRequiredAttributes.map { try $0.toSignUpAttribute() }
-        } else {
-            signUpAttributes = []
-        }
+        let signUpAttributes: [UserPoolConfigurationData.SignUpAttributeType] = config
+            .standardRequiredAttributes?
+            .compactMap { .init(from: $0) } ?? []
 
         // parse `verificationMechanisms`
         let verificationMechanisms: [UserPoolConfigurationData.VerificationMechanism] = config
             .userVerificationTypes?
-            .compactMap { .init(rawValue: $0) } ?? []
+            .compactMap { .init(from: $0) } ?? []
 
         return UserPoolConfigurationData(poolId: config.userPoolId,
                                          clientId: config.userPoolClientId,
@@ -381,47 +375,3 @@ struct ConfigurationHelper {
                             ["Default": authConfigObject])])])])])
     }
 }
-
-extension AmplifyOutputsData.AmazonCognitoStandardAttributes {
-    func toSignUpAttribute() throws -> UserPoolConfigurationData.SignUpAttributeType {
-        switch self {
-        case .address:
-            return .address
-        case .birthdate:
-            return .birthDate
-        case .email:
-            return .email
-        case .familyName:
-            return .familyName
-        case .gender:
-            return .gender
-        case .givenName:
-            return .givenName
-        case .locale:
-            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
-        case .middleName:
-            return .middleName
-        case .name:
-            return .name
-        case .nickname:
-            return .nickname
-        case .phoneNumber:
-            return .phoneNumber
-        case .picture:
-            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
-        case .preferredUsername:
-            return .preferredUsername
-        case .profile:
-            return .profile
-        case .sub:
-            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
-        case .updatedAt:
-            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
-        case .website:
-            return .website
-        case .zoneinfo:
-            throw AuthError.configuration("Could not map a sign up attribute to  \(self)", "", nil)
-        }
-    }
-}
-

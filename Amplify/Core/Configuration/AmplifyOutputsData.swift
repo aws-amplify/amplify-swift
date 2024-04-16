@@ -43,8 +43,8 @@ public struct AmplifyOutputsData: Codable {
         public let passwordPolicy: PasswordPolicy?
         public let oauth: OAuth?
         public let standardRequiredAttributes: [AmazonCognitoStandardAttributes]?
-        public let usernameAttributes: [String]?
-        public let userVerificationTypes: [String]?
+        public let usernameAttributes: [UsernameAttributes]?
+        public let userVerificationTypes: [UserVerificationType]?
         public let unauthenticatedIdentitiesEnabled: Bool?
         public let mfaConfiguration: String?
         public let mfaMethods: [String]?
@@ -67,9 +67,14 @@ public struct AmplifyOutputsData: Codable {
             public let responseType: String
         }
 
-        public enum AuthenticationFlowType: String, Codable {
-            case userSRP = "USER_SRP_AUTH"
-            case custom = "CUSTOM_AUTH"
+        public enum UsernameAttributes: String, Codable {
+            case email = "email"
+            case phoneNumber = "phone_number"
+        }
+
+        public enum UserVerificationType: String, Codable {
+            case email = "email"
+            case phoneNumber = "phone_number"
         }
 
         init(awsRegion: AWSRegion,
@@ -79,8 +84,8 @@ public struct AmplifyOutputsData: Codable {
              passwordPolicy: PasswordPolicy? = nil,
              oauth: OAuth? = nil,
              standardRequiredAttributes: [AmazonCognitoStandardAttributes]? = nil,
-             usernameAttributes: [String]? = nil,
-             userVerificationTypes: [String]? = nil,
+             usernameAttributes: [UsernameAttributes]? = nil,
+             userVerificationTypes: [UserVerificationType]? = nil,
              unauthenticatedIdentitiesEnabled: Bool? = nil,
              mfaConfiguration: String? = nil,
              mfaMethods: [String]? = nil) {

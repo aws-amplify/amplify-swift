@@ -6,7 +6,7 @@
 //
 
 import ClientRuntime
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 
 struct UserPoolConfigurationData: Equatable {
 
@@ -124,20 +124,20 @@ extension UserPoolConfigurationData {
         case email = "EMAIL"
         case phoneNumber = "PHONE_NUMBER"
 
-        init?(from authUserAttributeKey: AuthUserAttributeKey) {
-            switch authUserAttributeKey {
+        init?(from attribute: AmplifyOutputsData.Auth.UsernameAttributes) {
+            switch attribute {
             case .email:
                 self = .email
             case .phoneNumber:
                 self = .phoneNumber
-            default:
-                return nil
             }
         }
     }
 }
 
 extension UserPoolConfigurationData {
+
+    /// Supported sign up attributes used in the Authenticator. This was copied directly
     enum SignUpAttributeType: String, Codable {
         case address = "ADDRESS"
         case birthDate = "BIRTHDATE"
@@ -152,6 +152,47 @@ extension UserPoolConfigurationData {
         case preferredUsername = "PREFERRED_USERNAME"
         case profile = "PROFILE"
         case website = "WEBSITE"
+
+        init?(from attribute: AmplifyOutputsData.AmazonCognitoStandardAttributes) {
+            switch attribute {
+            case .address:
+                self = .address
+            case .birthdate:
+                self = .birthDate
+            case .email:
+                self = .email
+            case .familyName:
+                self = .familyName
+            case .gender:
+                self = .gender
+            case .givenName:
+                self = .givenName
+            case .locale:
+                return nil
+            case .middleName:
+                self = .middleName
+            case .name:
+                self = .name
+            case .nickname:
+                self = .nickname
+            case .phoneNumber:
+                self = .phoneNumber
+            case .picture:
+                return nil
+            case .preferredUsername:
+                self = .preferredUsername
+            case .profile:
+                self = .profile
+            case .sub:
+                return nil
+            case .updatedAt:
+                return nil
+            case .website:
+                self = .website
+            case .zoneinfo:
+                return nil
+            }
+        }
     }
 }
 
@@ -159,5 +200,14 @@ extension UserPoolConfigurationData {
     enum VerificationMechanism: String, Codable {
         case email = "EMAIL"
         case phoneNumber = "PHONE_NUMBER"
+
+        init?(from attribute: AmplifyOutputsData.Auth.UserVerificationType) {
+            switch attribute {
+            case .email:
+                self = .email
+            case .phoneNumber:
+                self = .phoneNumber
+            }
+        }
     }
 }
