@@ -30,7 +30,7 @@ extension LivenessEvent where T == FreshnessEvent {
         let clientEvent = ClientSessionInformationEvent(
             challenge: .init(
                 clientChallengeType: .faceMovementAndLightChallenge(
-                    challenge:.init(
+                    challenge: .init(
                         challengeID: event.challengeID,
                         targetFace: nil,
                         initialFace: nil,

@@ -29,7 +29,7 @@ struct ServerChallenge: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let value = try? container.decode(FaceMovementServerChallenge.self, forKey: .faceMovementChallenge) {
             self.type = .faceMovementChallenge(challenge: value)
-        } else if let value = try? container.decode(FaceMovementAndLightServerChallenge.self, forKey: .faceMovementAndLightChallenge){
+        } else if let value = try? container.decode(FaceMovementAndLightServerChallenge.self, forKey: .faceMovementAndLightChallenge) {
             self.type = .faceMovementAndLightChallenge(challenge: value)
         } else {
             throw DecodingError.dataCorrupted(

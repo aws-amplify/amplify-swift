@@ -32,7 +32,7 @@ extension LivenessEvent where T == FinalClientEvent {
         switch challenge.type {
         case .faceMovementAndLightChallenge:
             clientChallengeType = .faceMovementAndLightChallenge(
-                challenge:.init(
+                challenge: .init(
                     challengeID: event.initialClientEvent.challengeID,
                     targetFace: .init(
                         boundingBox: .init(boundingBox: event.targetFace.initialEvent.boundingBox),
@@ -50,7 +50,7 @@ extension LivenessEvent where T == FinalClientEvent {
             )
         case .faceMovementChallenge:
             clientChallengeType = .faceMovementChallenge(
-                challenge:.init(
+                challenge: .init(
                     challengeID: event.initialClientEvent.challengeID,
                     targetFace: .init(
                         boundingBox: .init(boundingBox: event.targetFace.initialEvent.boundingBox),

@@ -39,7 +39,7 @@ extension LivenessEvent where T == InitialClientEvent {
         switch challenge.type {
         case .faceMovementAndLightChallenge:
             clientChallengeType = .faceMovementAndLightChallenge(
-                challenge:.init(
+                challenge: .init(
                     challengeID: event.challengeID,
                     targetFace: nil,
                     initialFace: initialFace,
@@ -50,7 +50,7 @@ extension LivenessEvent where T == InitialClientEvent {
             )
         case .faceMovementChallenge:
             clientChallengeType = .faceMovementChallenge(
-                challenge:.init(
+                challenge: .init(
                     challengeID: event.challengeID,
                     targetFace: nil,
                     initialFace: initialFace,
@@ -61,7 +61,7 @@ extension LivenessEvent where T == InitialClientEvent {
         }
         
         let clientSessionInformationEvent = ClientSessionInformationEvent(
-            challenge: .init(clientChallengeType:clientChallengeType)
+            challenge: .init(clientChallengeType: clientChallengeType)
         )
         
         let payload = try JSONEncoder().encode(clientSessionInformationEvent)

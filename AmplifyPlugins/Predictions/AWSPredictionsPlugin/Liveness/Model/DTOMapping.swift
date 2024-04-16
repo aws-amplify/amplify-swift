@@ -8,7 +8,7 @@
 import Foundation
 
 func ovalChallenge(from event: ServerSessionInformationEvent) -> FaceLivenessSession.OvalMatchChallenge {
-    let challengeConfig : ChallengeConfig
+    let challengeConfig: ChallengeConfig
     let ovalParameters: OvalParameters
     
     switch event.sessionInformation.challenge.type {

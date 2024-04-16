@@ -153,7 +153,6 @@ public final class FaceLivenessSession: LivenessService {
     }
 
     private func receive(result: Result<URLSessionWebSocketTask.Message, Error>) -> Bool {
-        print("[FaceLivenessSession] receive: \(result)")
         switch result {
         case .success(.data(let data)):
             do {
