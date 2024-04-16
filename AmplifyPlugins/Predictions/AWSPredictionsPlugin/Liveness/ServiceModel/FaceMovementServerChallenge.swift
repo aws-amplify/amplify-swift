@@ -1,8 +1,18 @@
 //
-//  File.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Singh, Abhash Kumar on 4/16/24.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
+
+struct FaceMovementServerChallenge: Codable {
+    let ovalParameters: OvalParameters
+    let challengeConfig: ChallengeConfig
+
+    enum CodingKeys: String, CodingKey {
+        case challengeConfig = "ChallengeConfig"
+        case ovalParameters = "OvalParameters"
+    }
+}

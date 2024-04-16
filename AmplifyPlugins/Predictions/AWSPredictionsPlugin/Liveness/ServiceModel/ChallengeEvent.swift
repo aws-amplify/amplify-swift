@@ -1,8 +1,18 @@
 //
-//  File.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Singh, Abhash Kumar on 4/16/24.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
+
+struct ChallengeEvent: Codable {
+    let version: String
+    let type: ChallengeType
+
+    enum CodingKeys: String, CodingKey {
+        case version = "Version"
+        case type = "Type"
+    }
+}
