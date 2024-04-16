@@ -102,13 +102,28 @@ extension UserPoolConfigurationData.CustomEndpoint {
 }
 
 extension UserPoolConfigurationData {
+
+    /// settings used in the Authenticator
     struct PasswordProtectionSettings: Equatable, Codable {
         let minLength: UInt
         let characterPolicy: [PasswordCharacterPolicy]
 
-        init(minLength: UInt,
-             characterPolicy: [PasswordCharacterPolicy]) {
-            self.minLength = minLength
+        init(from passwordPolicy: AmplifyOutputsData.Auth.PasswordPolicy) {
+            var characterPolicy = [UserPoolConfigurationData.PasswordCharacterPolicy]()
+            if passwordPolicy.requireLowercase {
+                characterPolicy.append(.lowercase)
+            }
+            if passwordPolicy.requireUppercase {
+                characterPolicy.append(.uppercase)
+            }
+            if passwordPolicy.requireNumbers {
+                characterPolicy.append(.numbers)
+            }
+            if passwordPolicy.requireSymbols {
+                characterPolicy.append(.symbols)
+            }
+
+            self.minLength = passwordPolicy.minLength
             self.characterPolicy = characterPolicy
         }
     }
@@ -122,12 +137,14 @@ extension UserPoolConfigurationData {
 }
 
 extension UserPoolConfigurationData {
+
+    /// Supported username attributes used in the Authenticator.
     enum UsernameAttribute: String, Codable {
         case username = "USERNAME"
         case email = "EMAIL"
         case phoneNumber = "PHONE_NUMBER"
 
-        init?(from attribute: AmplifyOutputsData.Auth.UsernameAttributes) {
+        init(from attribute: AmplifyOutputsData.Auth.UsernameAttributes) {
             switch attribute {
             case .email:
                 self = .email
@@ -140,7 +157,7 @@ extension UserPoolConfigurationData {
 
 extension UserPoolConfigurationData {
 
-    /// Supported sign up attributes used in the Authenticator. This was copied directly
+    /// Supported sign up attributes used in the Authenticator.
     enum SignUpAttributeType: String, Codable {
         case address = "ADDRESS"
         case birthDate = "BIRTHDATE"
@@ -200,11 +217,13 @@ extension UserPoolConfigurationData {
 }
 
 extension UserPoolConfigurationData {
+
+    /// Supported username attributes used in the Authenticator.
     enum VerificationMechanism: String, Codable {
         case email = "EMAIL"
         case phoneNumber = "PHONE_NUMBER"
 
-        init?(from attribute: AmplifyOutputsData.Auth.UserVerificationType) {
+        init(from attribute: AmplifyOutputsData.Auth.UserVerificationType) {
             switch attribute {
             case .email:
                 self = .email

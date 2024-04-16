@@ -68,74 +68,6 @@ struct ConfigurationHelper {
         let hostedUIConfig = parseHostedConfiguration(
             configuration: config.value(at: "Auth.Default.OAuth"))
 
-        // parse `passwordProtectionSettings`
-        let cognitoConfiguration = config.value(at: "Auth.Default")
-        var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings?
-        if case .object(let passwordSettings) = cognitoConfiguration?.value(at: "passwordProtectionSettings") {
-
-            // parse `minLength`
-            var minLength: UInt = 0
-            if case .number(let value) = passwordSettings["passwordPolicyMinLength"] {
-                minLength = UInt(value)
-            } else if case .string(let value) = passwordSettings["passwordPolicyMinLength"],
-                      let intValue = UInt(value) {
-                minLength = intValue
-            }
-
-            // parse `characterPolicy`
-            var characterPolicy: [UserPoolConfigurationData.PasswordCharacterPolicy] = []
-            if case .array(let characters) = passwordSettings["passwordPolicyCharacters"] {
-                characterPolicy = characters.compactMap { value in
-                    guard case .string(let string) = value else {
-                        return nil
-                    }
-
-                    return .init(rawValue: string)
-                }
-            }
-
-            passwordProtectionSettings = UserPoolConfigurationData.PasswordProtectionSettings(
-                minLength: minLength,
-                characterPolicy: characterPolicy
-            )
-        }
-
-        // parse `usernameAttributes`
-        var usernameAttributes: [UserPoolConfigurationData.UsernameAttribute] = []
-        if case .array(let attributes) = cognitoConfiguration?["usernameAttributes"] {
-            usernameAttributes = attributes.compactMap { value in
-                guard case .string(let string) = value else {
-                    return nil
-                }
-
-                return .init(rawValue: string)
-            }
-        }
-
-        // parse `signUpAttributes`
-        var signUpAttributes: [UserPoolConfigurationData.SignUpAttributeType] = []
-        if case .array(let attributes) = cognitoConfiguration?["signupAttributes"] {
-            signUpAttributes = attributes.compactMap { value in
-                guard case .string(let string) = value else {
-                    return nil
-                }
-
-                return .init(rawValue: string)
-            }
-        }
-
-        // parse `verificationMechanisms`
-        var verificationMechanisms: [UserPoolConfigurationData.VerificationMechanism] = []
-        if case .array(let attributes) = cognitoConfiguration?["verificationMechanisms"] {
-            verificationMechanisms = attributes.compactMap { value in
-                guard case .string(let string) = value else {
-                    return nil
-                }
-
-                return .init(rawValue: string)
-            }
-        }
-
         return UserPoolConfigurationData(poolId: poolId,
                                          clientId: appClientId,
                                          region: region,
@@ -144,10 +76,10 @@ struct ConfigurationHelper {
                                          pinpointAppId: pinpointId,
                                          authFlowType: authFlowType,
                                          hostedUIConfig: hostedUIConfig,
-                                         passwordProtectionSettings: passwordProtectionSettings,
-                                         usernameAttributes: usernameAttributes,
-                                         signUpAttributes: signUpAttributes,
-                                         verificationMechanisms: verificationMechanisms)
+                                         passwordProtectionSettings: nil,
+                                         usernameAttributes: [],
+                                         signUpAttributes: [],
+                                         verificationMechanisms: [])
     }
 
     static func parseUserPoolData(_ config: AmplifyOutputsData.Auth) throws -> UserPoolConfigurationData? {
@@ -156,25 +88,7 @@ struct ConfigurationHelper {
         // parse `passwordProtectionSettings`
         var passwordProtectionSettings: UserPoolConfigurationData.PasswordProtectionSettings? = nil
         if let passwordPolicy = config.passwordPolicy {
-
-            var characterPolicy = [UserPoolConfigurationData.PasswordCharacterPolicy]()
-            if passwordPolicy.requireLowercase {
-                characterPolicy.append(.lowercase)
-            }
-            if passwordPolicy.requireUppercase {
-                characterPolicy.append(.uppercase)
-            }
-            if passwordPolicy.requireNumbers {
-                characterPolicy.append(.numbers)
-            }
-            if passwordPolicy.requireSymbols {
-                characterPolicy.append(.symbols)
-            }
-
-            passwordProtectionSettings = UserPoolConfigurationData.PasswordProtectionSettings(
-                minLength: passwordPolicy.minLength,
-                characterPolicy: characterPolicy
-            )
+            passwordProtectionSettings = .init(from: passwordPolicy)
         }
 
         // parse `usernameAttributes`
