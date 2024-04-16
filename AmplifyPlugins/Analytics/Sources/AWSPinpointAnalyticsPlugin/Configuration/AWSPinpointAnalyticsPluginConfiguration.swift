@@ -94,7 +94,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         self.options = options
     }
 
-    private static func getAutoFlushEventsInterval(_ configuration: [String: JSONValue]) throws -> UInt {
+    private static func getAutoFlushEventsInterval(_ configuration: [String: JSONValue]) throws -> TimeInterval {
         guard let autoFlushEventsInterval = configuration[autoFlushEventsIntervalKey] else {
             return AWSPinpointAnalyticsPlugin.Options.defaultAutoFlushEventsInterval
         }
@@ -113,7 +113,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
-        return UInt(autoFlushEventsIntervalValue)
+        return TimeInterval(autoFlushEventsIntervalValue)
     }
 
     private static func getTrackAppSessions(_ configuration: [String: JSONValue]) throws -> Bool {
@@ -131,7 +131,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         return trackAppSessionsValue
     }
 
-    private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> UInt {
+    private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> TimeInterval {
         guard let autoSessionTrackingInterval = configuration[autoSessionTrackingIntervalKey] else {
             return AWSPinpointAnalyticsPlugin.Options.defaultAutoSessionTrackingInterval
         }
@@ -151,6 +151,6 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
-        return UInt(autoSessionTrackingIntervalValue)
+        return autoSessionTrackingIntervalValue
     }
 }

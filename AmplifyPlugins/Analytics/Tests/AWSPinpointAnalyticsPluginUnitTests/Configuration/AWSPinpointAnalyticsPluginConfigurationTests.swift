@@ -16,11 +16,11 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     let appId: JSONValue = "testAppId"
     let testRegion = "us-east-1"
     let region: JSONValue = "us-east-1"
-    let testAutoFlushInterval: UInt = 300
+    let testAutoFlushInterval: TimeInterval = 300
     let autoFlushInterval: JSONValue = 300
     let testTrackAppSession = false
     let trackAppSession: JSONValue = false
-    let testAutoSessionTrackingInterval: UInt = 100
+    let testAutoSessionTrackingInterval: TimeInterval = 100
     let autoSessionTrackingInterval: JSONValue = 100
     let pinpointAnalyticsPluginConfiguration = JSONValue(
         dictionaryLiteral:

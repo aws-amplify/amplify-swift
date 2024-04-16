@@ -9,9 +9,9 @@ import Foundation
 
 extension AWSPinpointAnalyticsPlugin {
     public struct Options {
-        public static let defaultAutoFlushEventsInterval: UInt = 60
+        public static let defaultAutoFlushEventsInterval: TimeInterval = 60
         public static let defaultTrackAppSession = true
-        public static let defaultAutoSessionTrackingInterval: UInt = {
+        public static let defaultAutoSessionTrackingInterval: TimeInterval = {
         #if os(macOS)
             .max
         #else
@@ -19,13 +19,13 @@ extension AWSPinpointAnalyticsPlugin {
         #endif
         }()
 
-        public let autoFlushEventsInterval: UInt
+        public let autoFlushEventsInterval: TimeInterval
         public let trackAppSessions: Bool
-        public let autoSessionTrackingInterval: UInt
+        public let autoSessionTrackingInterval: TimeInterval
 
-        public init(autoFlushEventsInterval: UInt = defaultAutoFlushEventsInterval,
+        public init(autoFlushEventsInterval: TimeInterval = defaultAutoFlushEventsInterval,
                     trackAppSessions: Bool = defaultTrackAppSession,
-                    autoSessionTrackingInterval: UInt = defaultAutoSessionTrackingInterval) {
+                    autoSessionTrackingInterval: TimeInterval = defaultAutoSessionTrackingInterval) {
             self.autoFlushEventsInterval = autoFlushEventsInterval
             self.trackAppSessions = trackAppSessions
             self.autoSessionTrackingInterval = autoSessionTrackingInterval
