@@ -36,19 +36,30 @@ extension AWSPredictionsPlugin {
         let session = FaceLivenessSession(
             websocket: WebSocketSession(),
             signer: signer,
-            baseURL: url
+            baseURL: url,
+            options: options
         )
 
         session.onServiceException = { completion(.failure($0)) }
 
         return session
+
     }
 }
 
 extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
     public struct Options {
-        public init() {}
+        public let viewId: String
+        public let preCheckViewEnabled: Bool
+        
+        public init(
+            faceLivenessDetectorViewId: String,
+            preCheckViewEnabled: Bool
+        ) {
+            self.viewId = faceLivenessDetectorViewId
+            self.preCheckViewEnabled = preCheckViewEnabled
+        }
     }
 }
 
