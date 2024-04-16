@@ -14,31 +14,31 @@ import Combine
 class RetryableGraphQLOperationTests: XCTestCase {
     let testApiName = "apiName"
 
-    /// Given: a RetryableGraphQLOperation with 2 operations
-    /// When: the first one fails with a .signedOut error, the next one succeed with response
-    /// Then: return the success response
-    func testShouldRetryOperationWithSignedOutAuthError() async throws {
-        let expectation1 = expectation(description: "Operation 1 throws signed out auth error")
-        let operation1: () async throws -> GraphQLResponse<String> = {
-            expectation1.fulfill()
-            throw APIError.operationError("", "", AuthError.signedOut("", ""))
-        }
-
-        let expectation2 = expectation(description: "Operation 2 successfully finished")
-        let operation2: () async throws -> GraphQLResponse<String> = {
-            expectation2.fulfill()
-            return .success("operation 2")
-        }
-
-        let publisher = Publishers.MergeMany([operation1, operation2].map { Just($0) }).eraseToAnyPublisher()
-        let result = await RetryableGraphQLOperation(requestStream: publisher).run()
-        if case .success(.success(let string)) = result {
-            XCTAssertEqual(string, "operation 2")
-        } else {
-            XCTFail("Wrong result")
-        }
-        await fulfillment(of: [expectation1, expectation2], timeout: 1)
-    }
+//    /// Given: a RetryableGraphQLOperation with 2 operations
+//    /// When: the first one fails with a .signedOut error, the next one succeed with response
+//    /// Then: return the success response
+//    func testShouldRetryOperationWithSignedOutAuthError() async throws {
+//        let expectation1 = expectation(description: "Operation 1 throws signed out auth error")
+//        let operation1: () async throws -> GraphQLResponse<String> = {
+//            expectation1.fulfill()
+//            throw APIError.operationError("", "", AuthError.signedOut("", ""))
+//        }
+//
+//        let expectation2 = expectation(description: "Operation 2 successfully finished")
+//        let operation2: () async throws -> GraphQLResponse<String> = {
+//            expectation2.fulfill()
+//            return .success("operation 2")
+//        }
+//
+//        let publisher = Publishers.MergeMany([operation1, operation2].map { Just($0) }).eraseToAnyPublisher()
+//        let result = await RetryableGraphQLOperation(requestStream: publisher).run()
+//        if case .success(.success(let string)) = result {
+//            XCTAssertEqual(string, "operation 2")
+//        } else {
+//            XCTFail("Wrong result")
+//        }
+//        await fulfillment(of: [expectation1, expectation2], timeout: 1)
+//    }
 
     /// Given: a RetryableGraphQLOperation with 2 operations
     /// When: the first one fails with a .notAuthorized error, the next one succeed with response

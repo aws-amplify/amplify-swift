@@ -36,7 +36,7 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
         }
 
         switch authError {
-        case .signedOut, .notAuthorized: return true
+        case .notAuthorized: return true
         default: return false
         }
     }
@@ -55,9 +55,14 @@ public final class RetryableGraphQLOperation<Payload: Decodable> {
 
     public func run() async -> Result<GraphQLTask<Payload>.Success, APIError> {
         do {
-            return .success(try await nondeterminsticOperation.run())
+            let result = try await nondeterminsticOperation.run()
+            return .success(result)
         } catch {
-            return .failure(.operationError("Failed to execute GraphQL operation", "", error))
+            if let apiError = error as? APIError {
+                return .failure(apiError)
+            } else {
+                return .failure(.operationError("Failed to execute GraphQL operation", "", error))
+            }
         }
     }
 

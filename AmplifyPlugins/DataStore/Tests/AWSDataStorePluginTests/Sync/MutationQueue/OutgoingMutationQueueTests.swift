@@ -28,9 +28,21 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                                                                     dataStoreConfiguration: .testDefault(),
                                                                     authModeStrategy: AWSDefaultAuthModeStrategy()))
         }
+
         let post = Post(title: "Post title",
                         content: "Post content",
                         createdAt: .now())
+
+        apiPlugin.responders[.mutateRequestResponse] = MutateRequestResponder { request in
+            let anyModel = try! post.eraseToAnyModel()
+            let remoteSyncMetadata = MutationSyncMetadata(modelId: post.id,
+                                                          modelName: Post.modelName,
+                                                          deleted: false,
+                                                          lastChangedAt: Date().unixSeconds,
+                                                          version: 2)
+            let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+            return .success(remoteMutationSync)
+        }
 
         let outboxStatusReceivedCurrentCount = AtomicValue(initialValue: 0)
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
@@ -48,12 +60,17 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                     return
                 }
 
-                if outboxStatusReceivedCurrentCount.get() == 1 {
+                switch outboxStatusReceivedCurrentCount.get() {
+                case 1:
                     XCTAssertTrue(outboxStatusEvent.isEmpty)
                     outboxStatusOnStart.fulfill()
-                } else {
+                case 2:
                     XCTAssertFalse(outboxStatusEvent.isEmpty)
                     outboxStatusOnMutationEnqueued.fulfill()
+                case 3:
+                    XCTAssertTrue(outboxStatusEvent.isEmpty)
+                default:
+                    XCTFail("Should not trigger outbox status event")
                 }
             }
 
@@ -163,13 +180,28 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                 return
             }
 
-            if outboxStatusReceivedCurrentCount == 1 {
+            switch outboxStatusReceivedCurrentCount {
+            case 1:
                 XCTAssertFalse(outboxStatusEvent.isEmpty)
                 outboxStatusOnStart.fulfill()
-            } else {
+            case 2:
                 XCTAssertFalse(outboxStatusEvent.isEmpty)
                 outboxStatusOnMutationEnqueued.fulfill()
+            case 3, 4:
+                XCTAssertFalse(outboxStatusEvent.isEmpty)
+            case 5:
+                XCTAssertTrue(outboxStatusEvent.isEmpty)
+            default:
+                XCTFail("Should not trigger outbox status event")
             }
+
+//            if outboxStatusReceivedCurrentCount == 1 {
+//                XCTAssertFalse(outboxStatusEvent.isEmpty)
+//                outboxStatusOnStart.fulfill()
+//            } else {
+//                XCTAssertFalse(outboxStatusEvent.isEmpty)
+//                outboxStatusOnMutationEnqueued.fulfill()
+//            }
         }
 
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
