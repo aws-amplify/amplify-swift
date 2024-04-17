@@ -73,7 +73,7 @@ public final class FaceLivenessSession: LivenessService {
 
     public func initializeLivenessStream(withSessionID sessionID: String, 
                                          userAgent: String = "",
-                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges) throws {
+                                         challenges: [Challenge]? = FaceLivenessSession.supportedChallenges) throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
 
         components?.queryItems = [
@@ -82,7 +82,7 @@ public final class FaceLivenessSession: LivenessService {
             // TODO: Change this after confirmation
             URLQueryItem(name: "attempt-id", value: options.viewId),
             URLQueryItem(name: "challenge-versions",
-                         value: challenges.map({$0.queryParameterString()}).joined(separator: ",")),
+                         value: challenges?.map({$0.queryParameterString()}).joined(separator: ",")),
             URLQueryItem(name: "video-width", value: "480"),
             URLQueryItem(name: "video-height", value: "640"),
             URLQueryItem(name: "x-amz-user-agent", value: userAgent)

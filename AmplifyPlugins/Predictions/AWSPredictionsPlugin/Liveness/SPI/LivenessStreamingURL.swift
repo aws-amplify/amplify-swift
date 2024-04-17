@@ -8,8 +8,7 @@
 import Foundation
 
 func streamingSessionURL(for region: String) throws -> URL {
-    // TODO: Change before merge to main
-    let urlString = "wss://streaming-rekognition-gamma.\(region).amazonaws.com/start-face-liveness-session-websocket"
+    let urlString = "wss://streaming-rekognition.\(region).amazonaws.com/start-face-liveness-session-websocket"
     guard let url = URL(string: urlString) else {
         throw FaceLivenessSessionError.invalidRegion
     }
