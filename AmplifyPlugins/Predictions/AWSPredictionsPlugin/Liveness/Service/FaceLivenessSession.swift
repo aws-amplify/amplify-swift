@@ -16,7 +16,9 @@ public final class FaceLivenessSession: LivenessService {
     let signer: SigV4Signer
     let baseURL: URL
     var serverEventListeners: [LivenessEventKind.Server: (FaceLivenessSession.SessionConfiguration) -> Void] = [:]
+    var challengeTypeListeners: [LivenessEventKind.Server: (Challenge) -> Void] = [:]
     var onComplete: (ServerDisconnection) -> Void = { _ in }
+    let options: FaceLivenessSession.Options
     
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
@@ -26,12 +28,14 @@ public final class FaceLivenessSession: LivenessService {
     init(
         websocket: WebSocketSession,
         signer: SigV4Signer,
-        baseURL: URL
+        baseURL: URL,
+        options: FaceLivenessSession.Options
     ) {
         self.eventStreamEncoder = EventStream.Encoder()
         self.eventStreamDecoder = EventStream.Decoder()
         self.signer = signer
         self.baseURL = baseURL
+        self.options = options
 
         self.websocket = websocket
 
@@ -58,16 +62,27 @@ public final class FaceLivenessSession: LivenessService {
     ) {
         serverEventListeners[event] = listener
     }
+    
+    public func register(listener: @escaping (Challenge) -> Void, on event: LivenessEventKind.Server) {
+        challengeTypeListeners[event] = listener
+    }
 
     public func closeSocket(with code: URLSessionWebSocketTask.CloseCode) {
         websocket.close(with: code)
     }
 
-    public func initializeLivenessStream(withSessionID sessionID: String, userAgent: String = "") throws {
+    public func initializeLivenessStream(withSessionID sessionID: String, 
+                                         userAgent: String = "",
+                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges) throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
+
         components?.queryItems = [
             URLQueryItem(name: "session-id", value: sessionID),
-            URLQueryItem(name: "challenge-versions", value: "FaceMovementAndLightChallenge_1.0.0"),
+            URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1":"0"),
+            // TODO: Change this after confirmation
+            URLQueryItem(name: "attempt-id", value: options.viewId),
+            URLQueryItem(name: "challenge-versions",
+                         value: challenges.map({$0.queryParameterString()}).joined(separator: ",")),
             URLQueryItem(name: "video-width", value: "480"),
             URLQueryItem(name: "video-height", value: "640"),
             URLQueryItem(name: "x-amz-user-agent", value: userAgent)
@@ -123,6 +138,9 @@ public final class FaceLivenessSession: LivenessService {
         if let payload = try? JSONDecoder().decode(ServerSessionInformationEvent.self, from: message.payload) {
             let sessionConfiguration = sessionConfiguration(from: payload)
             self.serverEventListeners[.challenge]?(sessionConfiguration)
+        } else if let payload = try? JSONDecoder().decode(ChallengeEvent.self, from: message.payload) {
+            let challengeType = challengeType(from: payload)
+            self.challengeTypeListeners[.challenge]?(challengeType)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
             return false
@@ -140,6 +158,14 @@ public final class FaceLivenessSession: LivenessService {
                     let serverEvent = LivenessEventKind.Server(rawValue: eventType.value)
                     switch serverEvent {
                     case .challenge:
+                        // :event-type ChallengeEvent
+                        let payload = try JSONDecoder().decode(
+                            ChallengeEvent.self, from: message.payload
+                        )
+                        let challengeType = challengeType(from: payload)
+                        challengeTypeListeners[.challenge]?(challengeType)
+                        return true
+                    case .sessionInformation:
                         // :event-type ServerSessionInformationEvent
                         let payload = try JSONDecoder().decode(
                             ServerSessionInformationEvent.self, from: message.payload
