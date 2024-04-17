@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.29.2 (2024-04-17)
+
+### Bug Fixes
+
+- **api**: AWSGraphQLSubscriptionTaskRunner failing to cancel AppSyncRealTimeSubscription (#3615)
+- **Core**: TaskQueue async execution (#3611)
+
 ## 2.29.1 (2024-04-10)
 
 ### Bug Fixes
