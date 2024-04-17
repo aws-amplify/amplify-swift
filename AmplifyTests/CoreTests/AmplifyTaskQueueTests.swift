@@ -66,4 +66,20 @@ final class AmplifyTaskQueueTests: XCTestCase {
         await fulfillment(of: [expectation1, expectation2, expectation3], enforceOrder: true)
     }
 
+    func testAsync() async throws {
+        let taskCount = 1_000
+        let expectations: [XCTestExpectation] = (0..<taskCount).map {
+            expectation(description: "Expected execution of a task number \($0)")
+        }
+        
+        let taskQueue = TaskQueue<Void>()
+        
+        for i in 0..<taskCount {
+            taskQueue.async {
+                expectations[i].fulfill()
+            }
+        }
+        
+        await fulfillment(of: expectations, enforceOrder: true)
+    }
 }

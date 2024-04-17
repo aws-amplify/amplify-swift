@@ -46,10 +46,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 
     public func cancel() {
         self.send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
+        Task {
             guard let appSyncClient = self.appSyncClient else {
                 return
             }
