@@ -43,7 +43,6 @@ extension AWSPredictionsPlugin {
         session.onServiceException = { completion(.failure($0)) }
 
         return session
-
     }
 }
 

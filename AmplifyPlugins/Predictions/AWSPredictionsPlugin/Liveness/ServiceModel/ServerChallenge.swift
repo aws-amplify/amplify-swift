@@ -9,7 +9,7 @@ import Foundation
 
 struct ServerChallenge: Codable {
     let type: ChallengeType
-    
+
     enum CodingKeys: String, CodingKey {
         case faceMovementAndLightChallenge = "FaceMovementAndLightChallenge"
         case faceMovementChallenge = "FaceMovementChallenge"
@@ -48,5 +48,3 @@ extension ServerChallenge {
         case faceMovementAndLightChallenge(challenge: FaceMovementAndLightServerChallenge)
     }
 }
-
-

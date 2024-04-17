@@ -63,7 +63,6 @@ extension LivenessEvent where T == InitialClientEvent {
         let clientSessionInformationEvent = ClientSessionInformationEvent(
             challenge: .init(clientChallengeType: clientChallengeType)
         )
-        
         let payload = try JSONEncoder().encode(clientSessionInformationEvent)
         return .init(
             payload: payload,

@@ -73,20 +73,16 @@ public final class FaceLivenessSession: LivenessService {
 
     public func initializeLivenessStream(withSessionID sessionID: String, 
                                          userAgent: String = "",
-                                         challenges: [Challenge]? = nil) throws {
+                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges) throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
-        let challengeList: [Challenge]
-        if let challenges = challenges {
-            challengeList = challenges
-        } else {
-            challengeList = FaceLivenessSession.supportedChallenges
-        }
+
         components?.queryItems = [
             URLQueryItem(name: "session-id", value: sessionID),
             URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1":"0"),
+            // TODO: Change this after confirmation
             URLQueryItem(name: "attempt-id", value: options.viewId),
             URLQueryItem(name: "challenge-versions",
-                         value: challengeList.map({$0.queryParameterString()}).joined(separator: ",")),
+                         value: challenges.map({$0.queryParameterString()}).joined(separator: ",")),
             URLQueryItem(name: "video-width", value: "480"),
             URLQueryItem(name: "video-height", value: "640"),
             URLQueryItem(name: "x-amz-user-agent", value: userAgent)
