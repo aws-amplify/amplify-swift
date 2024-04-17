@@ -1426,6 +1426,7 @@
 		97CABB4B28C921A30041E213 /* AWSDataStoreMultiAuthCombinationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADF289BFE4E00B32A39 /* AWSDataStoreMultiAuthCombinationTests.swift */; };
 		97CABB4C28C921A30041E213 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADB289BFE4E00B32A39 /* AWSDataStoreMultiAuthThreeRulesTests.swift */; };
 		97CABB4D28C921A30041E213 /* AWSDataStoreMultiAuthTwoRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADD289BFE4E00B32A39 /* AWSDataStoreMultiAuthTwoRulesTests.swift */; };
+		D89B12772BC6F8C500348051 /* DataStoreSyncExpressionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89B12762BC6F8C500348051 /* DataStoreSyncExpressionsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2265,6 +2266,7 @@
 		97914C2529563539002000EA /* DataStoreStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStressTests.swift; sourceTree = "<group>"; };
 		97914D0E29563544002000EA /* DatastoreStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatastoreStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		97914D1129563C3D002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D89B12762BC6F8C500348051 /* DataStoreSyncExpressionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreSyncExpressionsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2908,6 +2910,7 @@
 				21BBFA0A289BFE3400B32A39 /* DataStoreModelWithDefaultValueTests.swift */,
 				21BBF9FF289BFE3400B32A39 /* DataStoreModelWithSecondaryIndexTests.swift */,
 				21BBF9FD289BFE3400B32A39 /* DataStoreSchemaDriftTests.swift */,
+				D89B12762BC6F8C500348051 /* DataStoreSyncExpressionsTests.swift */,
 				21BBFA07289BFE3400B32A39 /* README.md */,
 				97731F0428B68DAC006F180B /* schema.graphql */,
 			);
@@ -5546,6 +5549,7 @@
 				97731E8428B3BD39006F180B /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */,
 				97731EB928B3BD39006F180B /* Comment3aV2+Schema.swift in Sources */,
 				97731EB728B3BD39006F180B /* Comment3aV2.swift in Sources */,
+				D89B12772BC6F8C500348051 /* DataStoreSyncExpressionsTests.swift in Sources */,
 				97731EC728B3BD39006F180B /* Team2V2.swift in Sources */,
 				97731D5728B3BD25006F180B /* DataStoreTestBase.swift in Sources */,
 				97731ECB28B3BD39006F180B /* Post6V2.swift in Sources */,

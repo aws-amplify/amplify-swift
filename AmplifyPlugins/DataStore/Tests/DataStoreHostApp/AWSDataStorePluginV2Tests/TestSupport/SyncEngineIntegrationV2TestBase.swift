@@ -44,7 +44,7 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
-    func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
+    func setUp(withModels models: AmplifyModelRegistration, syncExpressions: [DataStoreSyncExpression] = [], logLevel: LogLevel = .error) async {
 
         Amplify.Logging.logLevel = logLevel
 
@@ -55,10 +55,17 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
             ))
             #if os(watchOS)
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
-                                                       configuration: .custom(syncMaxRecords: 100, disableSubscriptions: { false })))
+                                                       configuration: .custom(
+                                                        syncMaxRecords: 100,
+                                                        syncExpressions: syncExpressions,
+                                                        disableSubscriptions: { false }
+                                                       )))
             #else
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
-                                                       configuration: .custom(syncMaxRecords: 100)))
+                                                       configuration: .custom(
+                                                        syncMaxRecords: 100,
+                                                        syncExpressions: syncExpressions
+                                                       )))
             #endif
         } catch {
             XCTFail(String(describing: error))

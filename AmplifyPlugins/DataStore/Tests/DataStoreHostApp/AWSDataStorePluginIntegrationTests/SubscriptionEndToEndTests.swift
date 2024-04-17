@@ -97,6 +97,91 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         let deleteSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNil(deleteSyncData)
     }
+    
+    /// Given: DataStore configured with syncExpressions which causes error "Validation error of type UnknownArgument: Unknown field argument filter @ \'onCreatePost\'" when connecting to sync subscriptions
+    /// When: Adding, editing, removing model
+    /// Then: Receives create, update, delete mutation
+    func testRestartsSubscriptionAfterFailureAndReceivesCreateMutateDelete() async throws {
+
+        // Filter all events to ensure they have this ID. This prevents us from overfulfilling on
+        // unrelated subscriptions
+        let id = UUID().uuidString
+
+        let originalContent = "Original content from SubscriptionTests at \(Date())"
+        let updatedContent = "UPDATED CONTENT from SubscriptionTests at \(Date())"
+
+        let createReceived = expectation(description: "createReceived")
+        let updateReceived = expectation(description: "updateReceived")
+        let deleteReceived = expectation(description: "deleteReceived")
+        
+        let syncExpressions: [DataStoreSyncExpression] = [
+            .syncExpression(Post.schema) {
+                QueryPredicateGroup(type: .or, predicates: [
+                    Post.keys.id.eq(id)
+                ])
+            }
+        ]
+        
+        #if os(watchOS)
+        let dataStoreConfiguration = DataStoreConfiguration.custom(syncMaxRecords: 100, syncExpressions: syncExpressions, disableSubscriptions: { false })
+        #else
+        let dataStoreConfiguration = DataStoreConfiguration.custom(syncMaxRecords: 100, syncExpressions: syncExpressions)
+        #endif
+        
+        await setUp(withModels: TestModelRegistration(), dataStoreConfiguration: dataStoreConfiguration)
+        try await startAmplifyAndWaitForSync()
+        
+        var cancellables = Set<AnyCancellable>()
+        Amplify.Hub.publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .compactMap { $0.data as? MutationEvent }
+            .filter { $0.modelId == id }
+            .map(\.mutationType)
+            .sink {
+                switch $0 {
+                case GraphQLMutationType.create.rawValue:
+                    createReceived.fulfill()
+                case GraphQLMutationType.update.rawValue:
+                    updateReceived.fulfill()
+                case GraphQLMutationType.delete.rawValue:
+                    deleteReceived.fulfill()
+                default:
+                    break
+                }
+            }
+            .store(in: &cancellables)
+
+        // Act: send create mutation
+        try await sendCreateRequest(withId: id, content: originalContent)
+        await fulfillment(of: [createReceived], timeout: 10)
+        // Assert
+        let createSyncData = await getMutationSync(forPostWithId: id)
+        XCTAssertNotNil(createSyncData)
+        let createdPost = createSyncData?.model.instance as? Post
+        XCTAssertNotNil(createdPost)
+        XCTAssertEqual(createdPost?.content, originalContent)
+        XCTAssertEqual(createSyncData?.syncMetadata.version, 1)
+        XCTAssertEqual(createSyncData?.syncMetadata.deleted, false)
+        
+        // Act: send update mutation
+        try await sendUpdateRequest(forId: id, content: updatedContent, version: 1)
+        await fulfillment(of: [updateReceived], timeout: 10)
+        // Assert
+        let updateSyncData = await getMutationSync(forPostWithId: id)
+        XCTAssertNotNil(updateSyncData)
+        let updatedPost = updateSyncData?.model.instance as? Post
+        XCTAssertNotNil(updatedPost)
+        XCTAssertEqual(updatedPost?.content, updatedContent)
+        XCTAssertEqual(updateSyncData?.syncMetadata.version, 2)
+        XCTAssertEqual(updateSyncData?.syncMetadata.deleted, false)
+        
+        // Act: send delete mutation
+        try await sendDeleteRequest(forId: id, version: 2)
+        await fulfillment(of: [deleteReceived], timeout: 10)
+        // Assert
+        let deleteSyncData = await getMutationSync(forPostWithId: id)
+        XCTAssertNil(deleteSyncData)
+    }
 
     // MARK: - Utilities
 

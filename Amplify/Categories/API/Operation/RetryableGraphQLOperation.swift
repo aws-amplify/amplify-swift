@@ -12,6 +12,7 @@ public protocol AnyGraphQLOperation {
     associatedtype Success
     associatedtype Failure: Error
     typealias ResultListener = (Result<Success, Failure>) -> Void
+    typealias ErrorListener = (Failure) -> Void
 }
 
 /// Abastraction for a retryable GraphQLOperation.
@@ -24,6 +25,7 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     typealias RequestFactory = () async -> GraphQLRequest<Payload>
     typealias OperationFactory = (GraphQLRequest<Payload>, @escaping OperationResultListener) -> OperationType
     typealias OperationResultListener = OperationType.ResultListener
+    typealias OperationErrorListener = OperationType.ErrorListener
 
     /// Operation unique identifier
     var id: UUID { get }
@@ -45,9 +47,12 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     var operationFactory: OperationFactory { get }
 
     var resultListener: OperationResultListener { get }
+    
+    var errorListener: OperationErrorListener { get }
 
     init(requestFactory: @escaping RequestFactory,
          maxRetries: Int,
+         errorListener: @escaping OperationErrorListener,
          resultListener: @escaping OperationResultListener,
          _ operationFactory: @escaping OperationFactory)
 
@@ -71,6 +76,11 @@ extension RetryableGraphQLOperationBehavior {
         attempts += 1
         log.debug("[\(id)] - Try [\(attempts)/\(maxRetries)]")
         let wrappedResultListener: OperationResultListener = { result in
+            if case let .failure(error) = result {
+                // Give an operation a chance to prepare itself for a retry after a failure
+                self.errorListener(error)
+            }
+            
             if case let .failure(error) = result, self.shouldRetry(error: error as? APIError) {
                 self.log.debug("\(error)")
                 Task {
@@ -103,17 +113,20 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     public var attempts: Int = 0
     public var requestFactory: RequestFactory
     public var underlyingOperation: AtomicValue<GraphQLOperation<Payload>?> = AtomicValue(initialValue: nil)
+    public var errorListener: OperationErrorListener
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
 
     public init(requestFactory: @escaping RequestFactory,
                 maxRetries: Int,
+                errorListener: @escaping OperationErrorListener,
                 resultListener: @escaping OperationResultListener,
                 _ operationFactory: @escaping OperationFactory) {
         self.id = UUID()
         self.maxRetries = max(1, maxRetries)
         self.requestFactory = requestFactory
         self.operationFactory = operationFactory
+        self.errorListener = errorListener
         self.resultListener = resultListener
     }
 
@@ -154,17 +167,21 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     public var attempts: Int = 0
     public var underlyingOperation: AtomicValue<GraphQLSubscriptionOperation<Payload>?> = AtomicValue(initialValue: nil)
     public var requestFactory: RequestFactory
+    public var errorListener: OperationErrorListener
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
-
+    private var retriedRTFErrors: [RTFError: Bool] = [:]
+    
     public init(requestFactory: @escaping RequestFactory,
                 maxRetries: Int,
+                errorListener: @escaping OperationErrorListener,
                 resultListener: @escaping OperationResultListener,
                 _ operationFactory: @escaping OperationFactory) {
         self.id = UUID()
         self.maxRetries = max(1, maxRetries)
         self.requestFactory = requestFactory
         self.operationFactory = operationFactory
+        self.errorListener = errorListener
         self.resultListener = resultListener
     }
     public override func main() {
@@ -178,9 +195,35 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     }
 
     public func shouldRetry(error: APIError?) -> Bool {
-        return attempts < maxRetries
-    }
+        guard case let .operationError(_, _, underlyingError) = error else {
+            return false
+        }
+        
+        if let authError = underlyingError as? AuthError {
+            switch authError {
+            case .signedOut, .notAuthorized:
+                return attempts < maxRetries
+            default:
+                return false
+            }
+        }
 
+        if let rtfError = RTFError(description: error.debugDescription) {
+            
+            // Do not retry the same RTF error more than once
+            guard retriedRTFErrors[rtfError] == nil else { return false }
+            retriedRTFErrors[rtfError] = true
+                
+            // maxRetries represent the number of auth types to attempt.
+            // (maxRetries is set to the number of auth types to attempt in multi-auth rules scenarios)
+            // Increment by 1 to account for that as this is not a "change auth" retry attempt            
+            maxRetries += 1
+                
+            return true
+        }
+        
+        return false
+    }
 }
 
 // MARK: GraphQLOperation - GraphQLSubscriptionOperation + AnyGraphQLOperation
