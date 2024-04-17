@@ -10,10 +10,13 @@ import Foundation
 extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
     public struct SessionConfiguration {
-        public let colorChallenge: ColorChallenge
+        public let colorChallenge: ColorChallenge?
         public let ovalMatchChallenge: OvalMatchChallenge
 
-        public init(colorChallenge: ColorChallenge, ovalMatchChallenge: OvalMatchChallenge) {
+        public init(
+            colorChallenge: ColorChallenge? = nil,
+            ovalMatchChallenge: OvalMatchChallenge
+        ) {
             self.colorChallenge = colorChallenge
             self.ovalMatchChallenge = ovalMatchChallenge
         }
