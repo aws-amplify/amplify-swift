@@ -38,14 +38,6 @@ class AWSAuthBaseTest: XCTestCase {
         ProcessInfo.processInfo.arguments.contains("GEN2")
     }
 
-    var username: String {
-        useGen2Configuration ? defaultTestEmail : "integTest\(UUID().uuidString)"
-    }
-
-    var password: String {
-        "Pp123@\(UUID().uuidString)"
-    }
-
     override func setUp() async throws {
         try await super.setUp()
         initializeAmplify()

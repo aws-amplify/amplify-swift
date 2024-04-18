@@ -31,8 +31,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///    - I should get a completed signIn flow.
     ///
     func testSuccessfulSignIn() async throws {
-        let username = username
-        let password = password
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.signUpUser(username: username,
                                                                password: password,
                                                                email: defaultTestEmail)
@@ -54,8 +54,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///    - I should get a completed signIn flow.
     ///
     func testSignInWithWrongPassword() async throws {
-        let username = username
-        let password = password
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.signUpUser(username: username,
                                     password: password,
                                     email: defaultTestEmail)
@@ -126,8 +126,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///
     func testSignInWithSignInOptions() async throws {
 
-        let username = username
-        let password = password
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
 
         let didSucceed = try await AuthSignInHelper.signUpUser(username: username, password: password,
                                     email: defaultTestEmail)
@@ -153,7 +153,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///
     func testSignInWithInvalidUser() async {
         do {
-            _ = try await Amplify.Auth.signIn(username: username, password: "password")
+            _ = try await Amplify.Auth.signIn(username: "username-doesnot-exist", password: "password")
             XCTFail("SignIn with unknown user should not succeed")
         } catch AuthError.notAuthorized {
             // App clients with "Prevent user existence errors" enabled will return this.
@@ -183,8 +183,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///    - I should get a invalid state error
     ///
     func testSignInWhenAlreadySignedIn() async throws {
-        let username = username
-        let password = password
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
@@ -305,8 +305,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         }
 
         Task {
-            let username = username
-            let password = password
+            let username = "integTest\(UUID().uuidString)"
+            let password = "P123@\(UUID().uuidString)"
             let didSucceed = try await AuthSignInHelper.signUpUser(
                 username: username,
                 password: password,

@@ -152,6 +152,27 @@ export const handler: PreSignUpTriggerHandler = async (event) => {
 };
 ```
 
+Update `backend.ts`
+
+```ts
+const { cfnUserPool } = backend.auth.resources.cfnResources
+cfnUserPool.usernameAttributes = []
+
+cfnUserPool.addPropertyOverride(
+  "Policies",
+  {
+    PasswordPolicy: {
+      MinimumLength: 10,
+      RequireLowercase: false,
+      RequireNumbers: true,
+      RequireSymbols: true,
+      RequireUppercase: true,
+      TemporaryPasswordValidityDays: 20,
+    },
+  }
+);
+```
+
 4. Commit and push the files to a git repository.
 
 5. Navigate to the AWS Amplify console (https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/)
