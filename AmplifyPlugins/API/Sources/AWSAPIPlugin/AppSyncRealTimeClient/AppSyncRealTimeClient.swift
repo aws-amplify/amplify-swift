@@ -54,7 +54,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         self.state.value == .connected
     }
 
-    internal var numOfSubscriptions: Int {
+    internal var numberOfSubscriptions: Int {
         self.subscriptions.count
     }
 

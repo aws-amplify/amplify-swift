@@ -494,12 +494,12 @@ class GraphQLModelBasedTests: XCTestCase {
            let appSyncRealTimeClient =
             await appSyncRealTimeClientFactory.apiToClientCache.values.first as? AppSyncRealTimeClient
         {
-            var appSyncSubscriptions = await appSyncRealTimeClient.numOfSubscriptions
+            var appSyncSubscriptions = await appSyncRealTimeClient.numberOfSubscriptions
             XCTAssertEqual(appSyncSubscriptions, numberOfSubscription)
 
             subscriptions.forEach { $0.cancel() }
             try await Task.sleep(seconds: 2)
-            appSyncSubscriptions = await appSyncRealTimeClient.numOfSubscriptions
+            appSyncSubscriptions = await appSyncRealTimeClient.numberOfSubscriptions
             XCTAssertEqual(appSyncSubscriptions, 0)
 
         } else {
