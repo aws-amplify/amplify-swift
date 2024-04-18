@@ -250,7 +250,7 @@ public struct AmplifyOutputs {
     /// Resolves configuration with a data object, from the contents of an `amplify_outputs.json` file.
     public static func data(_ data: Data) -> AmplifyOutputs {
         .init {
-            try AmplifyOutputsData.decodeAmplifyConfiguration(from: data)
+            try AmplifyOutputsData.decodeAmplifyOutputsData(from: data)
         }
     }
 
@@ -296,7 +296,7 @@ extension Amplify {
     /// After Amplify has configured all of its categories, it will dispatch a `HubPayload.EventName.Amplify.configured`
     /// event to each Amplify Hub channel. After this point, plugins may invoke calls on other Amplify categories.
     ///
-    /// - Parameter configuration: The AmplifyConfigurationV2 for specified Categories
+    /// - Parameter configuration: The AmplifyOutputsData object
     ///
     /// - Tag: Amplify.configure
     @_spi(InternalAmplifyConfiguration)

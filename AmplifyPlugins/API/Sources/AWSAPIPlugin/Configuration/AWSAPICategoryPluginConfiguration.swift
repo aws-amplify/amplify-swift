@@ -52,8 +52,18 @@ public struct AWSAPICategoryPluginConfiguration {
          apiAuthProviderFactory: APIAuthProviderFactory,
          authService: AWSAuthServiceBehavior) throws {
 
+        guard let data = configuration.data else {
+            throw PluginError.pluginConfigurationError(
+                "Missing `data` category in the configuration.",
+                """
+                The specified configuration does not contain `data` category. Review the configuration and ensure it \
+                contains the expected values.
+                """
+            )
+        }
+
         let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(
-            config: configuration,
+            config: data,
             apiAuthProviderFactory: apiAuthProviderFactory,
             authService: authService)
         let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(
@@ -181,21 +191,17 @@ public struct AWSAPICategoryPluginConfiguration {
     }
 
     private static func endpointsFromConfig(
-        config: AmplifyOutputsData,
+        config: AmplifyOutputsData.DataCategory,
         apiAuthProviderFactory: APIAuthProviderFactory,
         authService: AWSAuthServiceBehavior
     ) throws -> [APIEndpointName: EndpointConfig] {
         var endpoints = [APIEndpointName: EndpointConfig]()
-
-        if let data = config.data {
-            let name = "dataCategory"
-            let endpointConfig = try EndpointConfig(name: name,
-                                                    config: data,
-                                                    apiAuthProviderFactory: apiAuthProviderFactory,
-                                                    authService: authService)
-            endpoints[name] = endpointConfig
-        }
-
+        let name = "dataCategory"
+        let endpointConfig = try EndpointConfig(name: name,
+                                                config: config,
+                                                apiAuthProviderFactory: apiAuthProviderFactory,
+                                                authService: authService)
+        endpoints[name] = endpointConfig
         return endpoints
     }
 

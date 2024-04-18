@@ -14,6 +14,8 @@ import AWSPinpoint
 import AWSCognitoAuthPlugin
 import Network
 
+import AmplifyTestCommon
+
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
@@ -377,6 +379,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         guard let context = plugin().pinpoint as? PinpointContext else {
             fatalError("Unable to retrieve Pinpoint Context")
         }
+        AuthSignInHelper.signInUser(username: "", password: "")
         return context.endpointClient
     }
 }

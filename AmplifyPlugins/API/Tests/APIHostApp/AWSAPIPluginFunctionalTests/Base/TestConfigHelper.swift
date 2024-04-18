@@ -20,9 +20,9 @@ class TestConfigHelper {
         return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
     }
 
-    static func retrieveAmplifyConfigurationV2(forResource: String) throws -> AmplifyConfigurationV2 {
+    static func retrieveAmplifyOutputsData(forResource: String) throws -> AmplifyOutputsData {
         let data = try retrieve(forResource: forResource)
-        return try AmplifyConfigurationV2.decodeAmplifyConfiguration(from: data)
+        return try AmplifyOutputsData.decodeAmplifyOutputsData(from: data)
     }
 
     static func retrieveCredentials(forResource: String) throws -> [String: String] {

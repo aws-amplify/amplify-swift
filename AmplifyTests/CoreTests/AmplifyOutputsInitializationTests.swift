@@ -91,7 +91,7 @@ class AmplifyOutputsInitializationTests: XCTestCase {
         let configData = Data(validAmplifyOutputsJSON.utf8)
 
         try Amplify.configure(with: .data(configData))
-        let config = try AmplifyOutputsData.decodeAmplifyConfiguration(from: configData)
+        let config = try AmplifyOutputsData.decodeAmplifyOutputsData(from: configData)
         XCTAssertEqual(config.version, "1")
         XCTAssertEqual(config.analytics?.amazonPinpoint?.appId, "app123")
         XCTAssertEqual(config.analytics?.amazonPinpoint?.awsRegion, "us-east-1")

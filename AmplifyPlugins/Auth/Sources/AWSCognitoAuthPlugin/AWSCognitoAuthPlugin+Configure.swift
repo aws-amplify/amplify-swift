@@ -27,7 +27,7 @@ extension AWSCognitoAuthPlugin {
         let authConfiguration: AuthConfiguration
         if let configuration = configuration as? AmplifyOutputsData {
             authConfiguration = try ConfigurationHelper.authConfiguration(configuration)
-            jsonConfiguration = try ConfigurationHelper.jsonConfiguration(authConfiguration)
+            jsonConfiguration = try ConfigurationHelper.createUserPoolJsonConfiguration(authConfiguration)
         } else {
             guard let jsonValueConfiguration = configuration as? JSONValue else {
                 throw PluginError.pluginConfigurationError(

@@ -9,11 +9,11 @@ import Foundation
 
 extension AWSPinpointAnalyticsPlugin {
     public struct Options {
-        public static let defaultAutoFlushEventsInterval: TimeInterval = 60
-        public static let defaultTrackAppSession = true
-        public static let defaultAutoSessionTrackingInterval: TimeInterval = {
+        static let defaultAutoFlushEventsInterval: TimeInterval = 60
+        static let defaultTrackAppSession = true
+        static let defaultAutoSessionTrackingInterval: TimeInterval = {
         #if os(macOS)
-            .max
+            .infinity
         #else
             5
         #endif
@@ -23,13 +23,23 @@ extension AWSPinpointAnalyticsPlugin {
         public let trackAppSessions: Bool
         public let autoSessionTrackingInterval: TimeInterval
 
-        public init(autoFlushEventsInterval: TimeInterval = defaultAutoFlushEventsInterval,
-                    trackAppSessions: Bool = defaultTrackAppSession,
-                    autoSessionTrackingInterval: TimeInterval = defaultAutoSessionTrackingInterval) {
+        #if os(macOS)
+        public init(autoFlushEventsInterval: TimeInterval = 60,
+                    trackAppSessions: Bool = true,
+                    autoSessionTrackingInterval: TimeInterval = .infinity) {
             self.autoFlushEventsInterval = autoFlushEventsInterval
             self.trackAppSessions = trackAppSessions
             self.autoSessionTrackingInterval = autoSessionTrackingInterval
         }
+        #else
+        public init(autoFlushEventsInterval: TimeInterval = 60,
+                    trackAppSessions: Bool = true,
+                    autoSessionTrackingInterval: TimeInterval = 5) {
+            self.autoFlushEventsInterval = autoFlushEventsInterval
+            self.trackAppSessions = trackAppSessions
+            self.autoSessionTrackingInterval = autoSessionTrackingInterval
+        }
+        #endif
 
         public static var `default`: Options {
             .init()

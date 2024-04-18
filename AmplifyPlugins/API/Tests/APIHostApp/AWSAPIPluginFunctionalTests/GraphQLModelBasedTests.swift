@@ -39,7 +39,7 @@ class GraphQLModelBasedTests: XCTestCase {
             try Amplify.add(plugin: plugin)
             
             if TestConfigHelper.useGen2Configuration {
-                let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfigurationV2(
+                let amplifyConfig = try TestConfigHelper.retrieveAmplifyOutputsData(
                     forResource: GraphQLModelBasedTests.amplifyOutputs)
                 try Amplify.configure(amplifyConfig)
             } else {

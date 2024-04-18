@@ -25,7 +25,7 @@ final class ConfigurationHelperTests: XCTestCase {
             mfaConfiguration: nil,
             mfaMethods: nil)
 
-        guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
+        guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
@@ -34,9 +34,9 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertEqual(result.clientId, "clientId")
         XCTAssertEqual(result.region, "us-east-1")
         XCTAssertEqual(result.authFlowType, .userSRP)
-        XCTAssertNil(result.endpoint)
-        XCTAssertNil(result.clientSecret)
-        XCTAssertNil(result.pinpointAppId)
+        XCTAssertNil(result.endpoint, "Gen2 currently does not support custom endpoints")
+        XCTAssertNil(result.clientSecret, "Gen2 currently does not support using client secret")
+        XCTAssertNil(result.pinpointAppId, "Gen2 currently does not support automatically sending auth events through Pinpoint.")
     }
 
     /// Testing the OAuth mapping logic, such as taking the first redirect URI in the array.
@@ -53,14 +53,14 @@ final class ConfigurationHelperTests: XCTestCase {
                                                  redirectSignOutUri: ["signOut1", "signOut2"],
                                                  responseType: "responseType"))
 
-        guard let config = try ConfigurationHelper.parseUserPoolData(config),
+        guard let config = ConfigurationHelper.parseUserPoolData(config),
               let hostedUIConfig = config.hostedUIConfig else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
         
         XCTAssertEqual(hostedUIConfig.clientId, "clientId")
-        XCTAssertNil(hostedUIConfig.clientSecret)
+        XCTAssertNil(hostedUIConfig.clientSecret, "Client secret should be nil as its not supported in Gen2")
         XCTAssertEqual(hostedUIConfig.oauth.scopes, ["scope1", "scope2"])
         XCTAssertEqual(hostedUIConfig.oauth.domain, "cognitoDomain")
         XCTAssertEqual(hostedUIConfig.oauth.signInRedirectURI, "redirect1")
@@ -81,7 +81,7 @@ final class ConfigurationHelperTests: XCTestCase {
                                                  redirectSignOutUri: ["signOut1", "signOut2"],
                                                  responseType: "responseType"))
 
-        guard let config = try ConfigurationHelper.parseUserPoolData(config),
+        guard let config = ConfigurationHelper.parseUserPoolData(config),
               let hostedUIConfig = config.hostedUIConfig else {
             XCTFail("Expected to parse UserPoolData into object")
             return
@@ -107,7 +107,7 @@ final class ConfigurationHelperTests: XCTestCase {
                                   requireUppercase: true,
                                   requireSymbols: true))
 
-        guard let config = try ConfigurationHelper.parseUserPoolData(config),
+        guard let config = ConfigurationHelper.parseUserPoolData(config),
               let result = config.passwordProtectionSettings else {
             XCTFail("Expected to parse UserPoolData into object")
             return
@@ -128,7 +128,7 @@ final class ConfigurationHelperTests: XCTestCase {
             userPoolClientId: "clientId",
             usernameAttributes: [.email, .phoneNumber])
 
-        guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
+        guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
@@ -157,7 +157,7 @@ final class ConfigurationHelperTests: XCTestCase {
                 .website
             ])
 
-        guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
+        guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
@@ -192,7 +192,7 @@ final class ConfigurationHelperTests: XCTestCase {
                 .zoneinfo
             ])
 
-        guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
+        guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
@@ -208,7 +208,7 @@ final class ConfigurationHelperTests: XCTestCase {
             userPoolClientId: "clientId",
             userVerificationTypes: [.phoneNumber, .email])
 
-        guard let result = try ConfigurationHelper.parseUserPoolData(config) else {
+        guard let result = ConfigurationHelper.parseUserPoolData(config) else {
             XCTFail("Expected to parse UserPoolData into object")
             return
         }
@@ -216,11 +216,11 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertEqual(result.verificationMechanisms, [.phoneNumber, .email])
     }
 
-    // MARK: - `jsonConfiguration` tests
+    // MARK: - `createUserPoolJsonConfiguration` tests
 
     /// Test that the AuthConfiguration can be translated back to the expected JSON
     /// for the authenticator to parse.
-    func testJsonConfiguration() throws {
+    func testCreateUserPoolJsonConfiguration() throws {
         let config = AuthConfiguration
             .userPools(.init(
                 poolId: "",
@@ -244,7 +244,7 @@ final class ConfigurationHelperTests: XCTestCase {
                     .init(from: .email),
                     .init(from: .phoneNumber)
                 ]))
-        let json = try ConfigurationHelper.jsonConfiguration(config)
+        let json = ConfigurationHelper.createUserPoolJsonConfiguration(config)
 
         guard let authConfig = json.auth?.plugins?.awsCognitoAuthPlugin?.Auth?.Default else {
             XCTFail("Could not retrieve auth configuration from json")

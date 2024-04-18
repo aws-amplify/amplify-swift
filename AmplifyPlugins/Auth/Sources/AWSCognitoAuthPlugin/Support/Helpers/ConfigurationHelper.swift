@@ -82,7 +82,7 @@ struct ConfigurationHelper {
                                          verificationMechanisms: [])
     }
 
-    static func parseUserPoolData(_ config: AmplifyOutputsData.Auth) throws -> UserPoolConfigurationData? {
+    static func parseUserPoolData(_ config: AmplifyOutputsData.Auth) -> UserPoolConfigurationData? {
         let hostedUIConfig = parseHostedConfiguration(configuration: config)
 
         // parse `passwordProtectionSettings`
@@ -247,7 +247,7 @@ struct ConfigurationHelper {
         )
     }
 
-    static func jsonConfiguration(_ authConfig: AuthConfiguration) throws -> JSONValue {
+    static func createUserPoolJsonConfiguration(_ authConfig: AuthConfiguration) -> JSONValue {
         let config: UserPoolConfigurationData
         switch authConfig {
         case .userPools(let userPoolConfig):

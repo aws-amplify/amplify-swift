@@ -75,6 +75,20 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(endpoint.value.authorizationType, .amazonCognitoUserPools)
     }
 
+    /// Configure with missing data category and throws plugin configuration error.
+    func testConfigureAmplifyOutputs_DataCategoryMissing() throws {
+        let config = AmplifyOutputsData(data: nil)
+
+        let plugin = AWSAPIPlugin()
+        XCTAssertThrowsError(try plugin.configure(using: config)) { error in
+            guard let apiError = error as? PluginError,
+                case .pluginConfigurationError = apiError else {
+                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                    return
+            }
+        }
+    }
+
     /// Configuring `.apiKey` auth without the `apiKey` value will fail.
     func testConfigureAmplifyOutputs_APIKeyMissing() throws {
         let config = AmplifyOutputsData(data: .init(

@@ -74,7 +74,6 @@ extension AmplifyConfiguration {
 
 }
 
-
 extension AmplifyOutputsData {
     init(bundle: Bundle, resource: String) throws {
         guard let path = bundle.path(forResource: resource, ofType: "json") else {
@@ -95,10 +94,10 @@ extension AmplifyOutputsData {
 
         let url = URL(fileURLWithPath: path)
 
-        self = try AmplifyOutputsData.loadAmplifyConfiguration(from: url)
+        self = try AmplifyOutputsData.loadAmplifyOutputsData(from: url)
     }
 
-    static func loadAmplifyConfiguration(from url: URL) throws -> AmplifyOutputsData {
+    static func loadAmplifyOutputsData(from url: URL) throws -> AmplifyOutputsData {
         let fileData: Data
         do {
             fileData = try Data(contentsOf: url)
@@ -117,10 +116,10 @@ extension AmplifyOutputsData {
             )
         }
 
-        return try decodeAmplifyConfiguration(from: fileData)
+        return try decodeAmplifyOutputsData(from: fileData)
     }
 
-    static func decodeAmplifyConfiguration(from data: Data) throws -> AmplifyOutputsData {
+    static func decodeAmplifyOutputsData(from data: Data) throws -> AmplifyOutputsData {
         let jsonDecoder = JSONDecoder()
 
         do {
@@ -130,7 +129,7 @@ extension AmplifyOutputsData {
         } catch {
             throw ConfigurationError.unableToDecode(
                 """
-                Could not decode `amplify_outputs.json` into a valid AmplifyConfigurationV2 object
+                Could not decode `amplify_outputs.json`.
                 """,
 
                 """
