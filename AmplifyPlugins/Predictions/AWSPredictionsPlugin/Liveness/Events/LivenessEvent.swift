@@ -52,6 +52,7 @@ public enum LivenessEventKind {
         public static let serviceQuotaExceeded = Self(rawValue: "ServiceQuotaExceededException")
         public static let serviceUnavailable = Self(rawValue: "ServiceUnavailableException")
         public static let sessionNotFound = Self(rawValue: "SessionNotFoundException")
+        public static let invalidSignature = Self(rawValue: "InvalidSignatureException")
     }
 }
 
