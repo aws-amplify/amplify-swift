@@ -64,6 +64,7 @@
 		6084F1BF2968A7ED00434CBF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6084F1C12968A82C00434CBF /* LocalServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalServer.swift; sourceTree = "<group>"; };
 		6084F1C32968AA3A00434CBF /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		60E1FB6F2BD340DB00EC344D /* PushNotificationHostApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationHostApp.xctestplan; sourceTree = "<group>"; };
 		60EB64272967479C00B327C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		60F60D8F2965040600B2D13D /* PushNotificationHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PushNotificationHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60F60D922965040600B2D13D /* PushNotificationHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationHostAppApp.swift; sourceTree = "<group>"; };
@@ -152,6 +153,7 @@
 		60F60D862965040600B2D13D = {
 			isa = PBXGroup;
 			children = (
+				60E1FB6F2BD340DB00EC344D /* PushNotificationHostApp.xctestplan */,
 				21D41D1B2BC7306D0019D811 /* PushNotificationGen2HostApp.xctestplan */,
 				68A3120C2A3D0DBA00D60A17 /* PushNotificationsWatchApp-Info.plist */,
 				68A3120B2A3D0AEF00D60A17 /* PushNotificationsWatchApp.entitlements */,

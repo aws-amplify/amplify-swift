@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "21A56A53-1924-4BE4-954E-90BC345DBE1B",
+      "id" : "CB3F9EFB-30F4-4A86-9CFA-FC09721AA85D",
       "name" : "Configuration 1",
       "options" : {
 
@@ -9,11 +9,7 @@
     }
   ],
   "defaultOptions" : {
-    "commandLineArgumentEntries" : [
-      {
-        "argument" : "GEN2"
-      }
-    ]
+
   },
   "testTargets" : [
     {
