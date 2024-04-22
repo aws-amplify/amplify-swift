@@ -1,8 +1,8 @@
 {
   "configurations" : [
     {
-      "id" : "EA0E885E-8FDB-4753-83A7-61C2D3E3ACB6",
-      "name" : "Configuration 1",
+      "id" : "450D74A7-6EBF-40F5-87CE-BB73E08C2008",
+      "name" : "Test Scheme Action",
       "options" : {
 
       }
@@ -17,17 +17,10 @@
   },
   "testTargets" : [
     {
-      "skippedTests" : [
-        "AuthConfirmSignUpTests\/testUserNotFoundConfirmSignUp()",
-        "AuthDeleteUserTests\/testDeleteUserFromAuthState()",
-        "MFASignInTests",
-        "TOTPSetupWhenAuthenticatedTests",
-        "TOTPSetupWhenUnauthenticatedTests"
-      ],
       "target" : {
         "containerPath" : "container:AuthHostApp.xcodeproj",
-        "identifier" : "485CB59E27B61E04006CCEC7",
-        "name" : "AuthIntegrationTests"
+        "identifier" : "21F7629F2BD6B1AA0048845A",
+        "name" : "AuthGen2IntegrationTests"
       }
     }
   ],
