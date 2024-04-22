@@ -147,26 +147,39 @@ backend.addOutput({
 });
 ```
 
-4. Commit and push the files to a git repository.
+4. Deploy the backend with npx amplify sandbox
 
-5. Navigate to the AWS Amplify console (https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/)
+For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
 
-6. Click on "Try Amplify Gen 2" button.
+```
+npx amplify sandbox --config-out-dir ./config --config-version 1 --profile [PROFILE]
+```
 
-7. Choose "Option 2: Start with an existing app", and choose Github, and press Next.
+5. Copy the `amplify_outputs.json` file over to the test directory as `AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
 
-8. Find the repository and branch, and click Next
+```
+cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs.json
+```
 
-9. Click "Save and deploy" and wait for deployment to finish.  
+### Deploying from a branch (Optional)
 
-10. Generate the `amplify_outputs.json` configuration file
+If you want to be able utilize Git commits for deployments
+
+1. Commit and push the files to a git repository.
+
+2. Navigate to the AWS Amplify console (https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/)
+
+3. Click on "Try Amplify Gen 2" button.
+
+4. Choose "Option 2: Start with an existing app", and choose Github, and press Next.
+
+5. Find the repository and branch, and click Next
+
+6. Click "Save and deploy" and wait for deployment to finish.  
+
+7. Generate the `amplify_outputs.json` configuration file
 
 ```
 npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
 ```
 
-12. Copy the `amplify_outputs.json` file over to the test directory as `AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
-
-```
-cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs.json
-```
