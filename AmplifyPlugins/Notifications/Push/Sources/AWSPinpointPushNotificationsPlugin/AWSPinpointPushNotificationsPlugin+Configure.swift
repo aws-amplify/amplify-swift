@@ -32,14 +32,13 @@ extension AWSPinpointPushNotificationsPlugin {
             pluginConfiguration = AWSPinpointPluginConfiguration(
                 appId: notifications.amazonPinpointAppId,
                 region: notifications.awsRegion)
-        } else {
-            guard let config = configuration as? JSONValue else {
-                throw PluginError.pluginConfigurationError(
-                    PushNotificationsPluginErrorConstants.decodeConfigurationError.errorDescription,
-                    PushNotificationsPluginErrorConstants.decodeConfigurationError.recoverySuggestion
-                )
-            }
+        } else if let config = configuration as? JSONValue {
             pluginConfiguration = try AWSPinpointPluginConfiguration(config)
+        } else {
+            throw PluginError.pluginConfigurationError(
+                PushNotificationsPluginErrorConstants.decodeConfigurationError.errorDescription,
+                PushNotificationsPluginErrorConstants.decodeConfigurationError.recoverySuggestion
+            )
         }
 
         try configure(using: pluginConfiguration)

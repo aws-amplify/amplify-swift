@@ -31,15 +31,14 @@ extension AWSPinpointAnalyticsPlugin {
                 options = defaultOptions
                 pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options: defaultOptions)
             }
-        } else {
-            guard let config = configuration as? JSONValue else {
-                throw PluginError.pluginConfigurationError(
-                    AnalyticsPluginErrorConstant.decodeConfigurationError.errorDescription,
-                    AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion
-                )
-            }
+        } else if let config = configuration as? JSONValue {
             pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options)
             options = pluginConfiguration.options
+        } else {
+            throw PluginError.pluginConfigurationError(
+                AnalyticsPluginErrorConstant.decodeConfigurationError.errorDescription,
+                AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion
+            )
         }
 
         try configure(using: pluginConfiguration)

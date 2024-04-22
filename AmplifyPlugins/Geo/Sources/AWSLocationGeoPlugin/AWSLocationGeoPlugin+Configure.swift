@@ -24,11 +24,10 @@ extension AWSLocationGeoPlugin {
         let pluginConfiguration: AWSLocationGeoPluginConfiguration
         if let configuration = configuration as? AmplifyOutputsData {
             pluginConfiguration = try AWSLocationGeoPluginConfiguration(config: configuration)
-        } else {
-            guard let configJSON = configuration as? JSONValue else {
-                throw GeoPluginConfigError.configurationInvalid(section: .plugin)
-            }
+        } else if let configJSON = configuration as? JSONValue {
             pluginConfiguration = try AWSLocationGeoPluginConfiguration(config: configJSON)
+        } else {
+            throw GeoPluginConfigError.configurationInvalid(section: .plugin)
         }
 
         try configure(using: pluginConfiguration)

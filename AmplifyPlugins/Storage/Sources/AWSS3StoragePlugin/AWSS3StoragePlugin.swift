@@ -24,8 +24,8 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
-    /// Options object, including library specific configuration such as default access level.
-    var options: AWSS3StoragePluginOptions!
+    /// The default access level used for API calls.
+    var defaultAccessLevel: StorageAccessLevel!
 
     /// The unique key of the plugin within the storage category.
     ///
@@ -47,8 +47,7 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.init
     public init(configuration
-                storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration(),
-                options: AWSS3StoragePluginOptions? = nil) {
+                storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
         self.storageConfiguration = storageConfiguration
     }
 }

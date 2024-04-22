@@ -23,22 +23,20 @@ public extension AWSAPIPlugin {
         if let configuration = configuration as? AmplifyOutputsData {
             dependencies = try ConfigurationDependencies(configuration: configuration,
                                                          apiAuthProviderFactory: authProviderFactory)
-        } else {
-            guard let jsonValue = configuration as? JSONValue else {
-                throw PluginError.pluginConfigurationError(
-                    "Could not cast incoming configuration to JSONValue",
-                    """
-                    The specified configuration is either nil, or not convertible to a JSONValue. Review the configuration \
-                    and ensure it contains the expected values, and does not use any types that aren't convertible to a \
-                    corresponding JSONValue:
-                    \(String(describing: configuration))
-                    """
-                )
-            }
-
+        } else if let jsonValue = configuration as? JSONValue {
             dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
                                                          apiAuthProviderFactory: authProviderFactory)
 
+        } else {
+            throw PluginError.pluginConfigurationError(
+                "Could not cast incoming configuration to JSONValue",
+                """
+                The specified configuration is either nil, or not convertible to a JSONValue. Review the configuration \
+                and ensure it contains the expected values, and does not use any types that aren't convertible to a \
+                corresponding JSONValue:
+                \(String(describing: configuration))
+                """
+            )
         }
 
         configure(using: dependencies)

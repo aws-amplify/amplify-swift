@@ -25,17 +25,16 @@ extension AWSPredictionsPlugin {
                 PluginErrorMessage.amplifyOutputsConfigurationNotSupportedError.errorDescription,
                 PluginErrorMessage.amplifyOutputsConfigurationNotSupportedError.recoverySuggestion
             )
-        } else {
-            guard let jsonValueConfiguration = configuration as? JSONValue else {
-                throw PluginError.pluginConfigurationError(
-                    PluginErrorMessage.decodeConfigurationError.errorDescription,
-                    PluginErrorMessage.decodeConfigurationError.recoverySuggestion
-                )
-            }
-            let configurationData =  try JSONEncoder().encode(jsonValueConfiguration)
+        } else if let jsonValueConfiguration = configuration as? JSONValue {
+            let configurationData = try JSONEncoder().encode(jsonValueConfiguration)
             predictionsConfiguration = try JSONDecoder().decode(
                 PredictionsPluginConfiguration.self,
                 from: configurationData
+            )
+        } else {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorMessage.decodeConfigurationError.errorDescription,
+                PluginErrorMessage.decodeConfigurationError.recoverySuggestion
             )
         }
 
