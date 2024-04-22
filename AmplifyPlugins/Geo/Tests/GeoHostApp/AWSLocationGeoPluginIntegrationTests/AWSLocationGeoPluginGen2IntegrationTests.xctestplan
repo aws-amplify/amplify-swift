@@ -1,15 +1,14 @@
 {
   "configurations" : [
     {
-      "id" : "43EA03C2-7DF8-4E52-9D32-D411507A50F3",
-      "name" : "Configuration 1",
+      "id" : "49A89DBA-18FF-47BC-BF6B-90B7DBA9D44B",
+      "name" : "Test Scheme Action",
       "options" : {
 
       }
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
     "commandLineArgumentEntries" : [
       {
         "argument" : "GEN2"
@@ -20,8 +19,8 @@
     {
       "target" : {
         "containerPath" : "container:GeoHostApp.xcodeproj",
-        "identifier" : "97DB823A282339B700FC2228",
-        "name" : "AWSLocationGeoPluginIntegrationTests"
+        "identifier" : "21F762CD2BD6B3A10048845A",
+        "name" : "AWSLocationGeoPluginGen2IntegrationTests"
       }
     }
   ],
