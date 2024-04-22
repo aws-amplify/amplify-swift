@@ -48,8 +48,8 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         } catch {
             XCTFail("Failed to initialize and configure Amplify: \(error)")
         }
-        //XCTAssertNotNil(Amplify.Auth.plugin)
-        //XCTAssertTrue(Amplify.Auth.isConfigured)
+        XCTAssertNotNil(Amplify.Auth.plugin)
+        XCTAssertTrue(Amplify.Auth.isConfigured)
     }
 
     override func tearDown() async throws {

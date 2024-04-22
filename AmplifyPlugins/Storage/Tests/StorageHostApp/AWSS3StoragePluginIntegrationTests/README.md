@@ -187,6 +187,27 @@ export const handler: PreSignUpTriggerHandler = async (event) => {
 };
 ```
 
+`backend.ts`
+
+```ts
+const { cfnUserPool } = backend.auth.resources.cfnResources
+cfnUserPool.usernameAttributes = []
+
+cfnUserPool.addPropertyOverride(
+  "Policies",
+  {
+    PasswordPolicy: {
+      MinimumLength: 10,
+      RequireLowercase: false,
+      RequireNumbers: true,
+      RequireSymbols: true,
+      RequireUppercase: true,
+      TemporaryPasswordValidityDays: 20,
+    },
+  }
+);
+```
+
 4. Deploy the backend with npx amplify sandbox
 
 For example, this deploys to a sandbox env and generates the amplify_outputs.json file.

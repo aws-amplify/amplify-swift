@@ -69,7 +69,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             let result = try await Amplify.Auth.signIn(username: username, password: password)
             XCTAssertTrue(result.isSignedIn)
             let currentUser = try await Amplify.Auth.getCurrentUser()
-            //XCTAssertEqual(username, currentUser.username)
+            XCTAssertEqual(username, currentUser.username)
         } catch {
             logger.error(error: error)
             XCTFail("Error: \(error)")
@@ -126,7 +126,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let result = try await Amplify.Auth.signIn(username: username, password: password)
         XCTAssertTrue(result.isSignedIn)
         let currentUser = try await Amplify.Auth.getCurrentUser()
-        // XCTAssertEqual(username, currentUser.username)
+         XCTAssertEqual(username, currentUser.username)
         let isSignedIn = result.isSignedIn
 
         // must be signed in to continue
