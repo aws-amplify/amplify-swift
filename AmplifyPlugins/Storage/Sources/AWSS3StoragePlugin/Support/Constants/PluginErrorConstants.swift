@@ -21,7 +21,7 @@ struct PluginErrorConstants {
 
     static let missingStorageCategoryConfiguration: PluginErrorString = (
         "Plugin is missing `Storage` category in configuration.",
-        "Add the `Storage` section to the plugin.")
+        "Add the `Storage` section to the configuration.")
 
     static let missingBucket: PluginErrorString = (
         "The 'Bucket' key is missing from the configuration",
