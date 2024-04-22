@@ -7,14 +7,14 @@
 
 import XCTest
 @testable import AWSAPIPlugin
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import APIHostApp
 @testable import AWSPluginsCore
 
 class GraphQLLazyLoadBaseTest: XCTestCase {
     
     var amplifyConfig: AmplifyConfiguration!
-    
+
     override func setUp() {
         continueAfterFailure = false
     }
@@ -28,7 +28,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         let basePath = "testconfiguration"
         let baseFileName = "GraphQLLazyLoadTests"
         let configFile = "\(basePath)/\(baseFileName)-amplifyconfiguration"
-        
+
         do {
             amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFile)
         } catch {
@@ -49,11 +49,16 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
     func setup(withModels models: AmplifyModelRegistration,
                logLevel: LogLevel = .verbose) async {
         do {
-            setupConfig()
             Amplify.Logging.logLevel = logLevel
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
-            try Amplify.configure(amplifyConfig)
-            
+            if TestConfigHelper.useGen2Configuration {
+                let amplifyOutputs = "testconfiguration/GraphQLLazyLoadTests-amplify_outputs"
+                let config = try TestConfigHelper.retrieveAmplifyOutputsData(forResource: amplifyOutputs)
+                try Amplify.configure(config)
+            } else {
+                setupConfig()
+                try Amplify.configure(amplifyConfig)
+            }
         } catch {
             XCTFail("Error during setup: \(error)")
         }

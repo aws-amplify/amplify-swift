@@ -1,0 +1,48 @@
+{
+  "configurations" : [
+    {
+      "id" : "7169AD8C-84C4-4CEF-8A02-C00E9821B107",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "GraphQLLazyLoadBaseTest",
+        "GraphQLLazyLoadBlogPostComment8V2Tests",
+        "GraphQLLazyLoadCompositePKTests",
+        "GraphQLLazyLoadDefaultPKTests",
+        "GraphQLLazyLoadHasOneTests",
+        "GraphQLLazyLoadPhoneCallTests",
+        "GraphQLLazyLoadPostComment4Tests",
+        "GraphQLLazyLoadPostComment4V2Tests\/testCommentWithEagerLoadPostAndPostCommentsAndPostCommentsPost()",
+        "GraphQLLazyLoadPostComment7Tests",
+        "GraphQLLazyLoadPostComment8Tests",
+        "GraphQLLazyLoadPostCommentWithCompositeKeyTests",
+        "GraphQLLazyLoadPostTagTests",
+        "GraphQLLazyLoadProjectTeam1Tests",
+        "GraphQLLazyLoadProjectTeam2Tests",
+        "GraphQLLazyLoadProjectTeam5Tests",
+        "GraphQLLazyLoadProjectTeam6Tests",
+        "GraphQLLazyLoadUserPostCommentTests"
+      ],
+      "target" : {
+        "containerPath" : "container:APIHostApp.xcodeproj",
+        "identifier" : "21EA887228F9BC600000BA75",
+        "name" : "AWSAPIPluginLazyLoadTests"
+      }
+    }
+  ],
+  "version" : 1
+}

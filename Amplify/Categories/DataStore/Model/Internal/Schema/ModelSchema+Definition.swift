@@ -233,7 +233,7 @@ public enum ModelFieldDefinition {
                                is nullability: ModelFieldNullability = .required,
                                isReadOnly: Bool = false,
                                ofType type: Model.Type,
-                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+                               associatedWith associatedKey: CodingKey? = nil) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
