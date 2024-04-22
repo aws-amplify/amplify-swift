@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.29.3 (2024-04-22)
+
+### Bug Fixes
+
+- **API**: make sure unsubscribe is invoked when subscription cancelled (#3619)
+
 ## 2.29.2 (2024-04-17)
 
 ### Bug Fixes
