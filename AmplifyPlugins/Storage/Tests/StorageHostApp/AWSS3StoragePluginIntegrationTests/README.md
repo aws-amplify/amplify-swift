@@ -187,6 +187,24 @@ export const handler: PreSignUpTriggerHandler = async (event) => {
 };
 ```
 
+4. Deploy the backend with npx amplify sandbox
+
+For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
+
+```
+npx amplify sandbox --config-out-dir ./config --config-version 1 --profile [PROFILE]
+```
+
+5. Copy the `amplify_outputs.json` file over to the test directory as `AWSS3StoragePluginTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
+
+```
+cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSS3StoragePluginTests-amplify_outputs.json
+```
+
+### Deploying from a branch (Optional)
+
+If you want to be able utilize Git commits for deployments
+
 4. Commit and push the files to a git repository.
 
 5. Navigate to the AWS Amplify console (https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/)
@@ -203,10 +221,4 @@ export const handler: PreSignUpTriggerHandler = async (event) => {
 
 ```
 npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
-```
-
-12. Copy the `amplify_outputs.json` file over to the test directory as `AWSS3StoragePluginTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
-
-```
-cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSS3StoragePluginTests-amplify_outputs.json
 ```

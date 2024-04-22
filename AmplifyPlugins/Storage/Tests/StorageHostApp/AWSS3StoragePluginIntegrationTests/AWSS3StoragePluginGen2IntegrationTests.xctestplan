@@ -1,15 +1,14 @@
 {
   "configurations" : [
     {
-      "id" : "693C4C1F-BAF3-48A5-9DEB-A9D491F459CA",
-      "name" : "Configuration 1",
+      "id" : "0FBDC955-0CBB-4E06-B071-1A55189542CE",
+      "name" : "Test Scheme Action",
       "options" : {
 
       }
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
     "commandLineArgumentEntries" : [
       {
         "argument" : "GEN2"
@@ -20,8 +19,8 @@
     {
       "target" : {
         "containerPath" : "container:StorageHostApp.xcodeproj",
-        "identifier" : "684FB0A828BEB07200C8A6EB",
-        "name" : "AWSS3StoragePluginIntegrationTests"
+        "identifier" : "21F763092BD6B8640048845A",
+        "name" : "AWSS3StoragePluginGen2IntegrationTests"
       }
     }
   ],
