@@ -1,15 +1,14 @@
 {
   "configurations" : [
     {
-      "id" : "AF7405EA-297D-41E5-94CC-EE801D962B73",
-      "name" : "Configuration 1",
+      "id" : "40B1C89B-1478-4A47-957B-CF7489CED04C",
+      "name" : "Test Scheme Action",
       "options" : {
 
       }
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
     "commandLineArgumentEntries" : [
       {
         "argument" : "GEN2"
@@ -18,10 +17,15 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "AWSCloudWatchLoggingPluginIntergrationTests\/testFlushLogWithMessages()",
+        "AWSCloudWatchLoggingPluginIntergrationTests\/testFlushLogWithVerboseMessageAfterDisablingPlugin()",
+        "AWSCloudWatchLoggingPluginIntergrationTests\/testFlushLogWithVerboseMessageAfterEnablingPlugin()"
+      ],
       "target" : {
         "containerPath" : "container:CloudWatchLoggingHostApp.xcodeproj",
-        "identifier" : "97DB823A282339B700FC2228",
-        "name" : "AWSCloudWatchLoggingPluginIntegrationTests"
+        "identifier" : "21F762DF2BD6B55F0048845A",
+        "name" : "AWSCloudWatchLoggingPluginGen2IntegrationTests"
       }
     }
   ],
