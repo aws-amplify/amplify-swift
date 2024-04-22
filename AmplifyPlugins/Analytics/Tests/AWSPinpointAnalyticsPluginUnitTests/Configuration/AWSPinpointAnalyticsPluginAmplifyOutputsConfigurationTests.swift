@@ -38,8 +38,8 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
                        AWSPinpointAnalyticsPlugin.Options.defaultAutoFlushEventsInterval)
         XCTAssertEqual(result.options.trackAppSessions,
                        AWSPinpointAnalyticsPlugin.Options.defaultTrackAppSession)
-        XCTAssertEqual(result.options.autoSessionTrackingInterval,
-                       AWSPinpointAnalyticsPlugin.Options.defaultAutoSessionTrackingInterval)
+        XCTAssertEqual(result.autoSessionTrackingInterval,
+                       AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
     }
 
     func testConfiguration_OptionsOverride() throws {
@@ -47,14 +47,13 @@ class AWSPinpointAnalyticsPluginAmplifyOutputsConfigurationTests: XCTestCase {
         let result = try AWSPinpointAnalyticsPluginConfiguration(
             config,
             options: .init(autoFlushEventsInterval: 100,
-                           trackAppSessions: false,
-                           autoSessionTrackingInterval: 200))
+                           trackAppSessions: false))
         XCTAssertNotNil(result)
         XCTAssertEqual(result.appId, testAppId)
         XCTAssertEqual(result.region, testRegion)
         XCTAssertEqual(result.options.autoFlushEventsInterval, 100)
         XCTAssertFalse(result.options.trackAppSessions)
-        XCTAssertEqual(result.options.autoSessionTrackingInterval, 200)
+        XCTAssertEqual(result.autoSessionTrackingInterval, AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
     }
 
     func testConfiguration_throwsMissingAnalytics() {

@@ -60,7 +60,6 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             XCTAssertNotNil(analyticsPlugin.globalProperties)
             XCTAssertNotNil(analyticsPlugin.isEnabled)
             XCTAssertEqual(analyticsPlugin.options?.autoFlushEventsInterval, testAutoFlushInterval)
-            XCTAssertEqual(analyticsPlugin.options?.autoSessionTrackingInterval, testAutoSessionTrackingInterval)
             XCTAssertEqual(analyticsPlugin.options?.trackAppSessions, false)
         } catch {
             XCTFail("Failed to configure analytics plugin")
@@ -96,15 +95,13 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
             let analyticsPlugin = AWSPinpointAnalyticsPlugin(
                 options: .init(
                     autoFlushEventsInterval: 50,
-                    trackAppSessions: true,
-                    autoSessionTrackingInterval: 60))
+                    trackAppSessions: true))
             try analyticsPlugin.configure(using: analyticsPluginConfig)
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)
             XCTAssertNotNil(analyticsPlugin.globalProperties)
             XCTAssertNotNil(analyticsPlugin.isEnabled)
             XCTAssertEqual(analyticsPlugin.options?.autoFlushEventsInterval, 50)
-            XCTAssertEqual(analyticsPlugin.options?.autoSessionTrackingInterval, 60)
             XCTAssertEqual(analyticsPlugin.options?.trackAppSessions, true)
         } catch {
             XCTFail("Failed to configure analytics plugin")
@@ -142,7 +139,6 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
 
             // Verify default options when none are passed in with the plugin's instantiation
             XCTAssertEqual(analyticsPlugin.options?.autoFlushEventsInterval, AWSPinpointAnalyticsPlugin.Options.defaultAutoFlushEventsInterval)
-            XCTAssertEqual(analyticsPlugin.options?.autoSessionTrackingInterval, AWSPinpointAnalyticsPlugin.Options.defaultAutoSessionTrackingInterval)
             XCTAssertEqual(analyticsPlugin.options?.trackAppSessions, AWSPinpointAnalyticsPlugin.Options.defaultTrackAppSession)
 
         } catch {
@@ -156,7 +152,9 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
                                   appId: testAppId)))
 
         do {
-            let analyticsPlugin = AWSPinpointAnalyticsPlugin(options: .init(autoFlushEventsInterval: 100, trackAppSessions: false, autoSessionTrackingInterval: 200))
+            let analyticsPlugin = AWSPinpointAnalyticsPlugin(options: .init(
+                autoFlushEventsInterval: 100,
+                trackAppSessions: false))
             try analyticsPlugin.configure(using: config)
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)
@@ -165,7 +163,6 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
 
             // Verify options override when passed in with the plugin's instantiation
             XCTAssertEqual(analyticsPlugin.options?.autoFlushEventsInterval, 100)
-            XCTAssertEqual(analyticsPlugin.options?.autoSessionTrackingInterval, 200)
             XCTAssertEqual(analyticsPlugin.options?.trackAppSessions, false)
 
         } catch {

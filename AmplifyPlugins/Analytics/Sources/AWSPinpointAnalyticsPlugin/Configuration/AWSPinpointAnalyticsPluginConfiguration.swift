@@ -20,8 +20,18 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     static let appIdConfigKey = "appId"
     static let regionConfigKey = "region"
 
+    static let defaultAutoSessionTrackingInterval: TimeInterval = {
+    #if os(macOS)
+        .infinity
+    #else
+        5
+    #endif
+    }()
+
     let appId: String
     let region: String
+
+    let autoSessionTrackingInterval: TimeInterval
 
     let options: AWSPinpointAnalyticsPlugin.Options
 
@@ -50,9 +60,10 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         } else {
             configOptions = .init(
                 autoFlushEventsInterval: try Self.getAutoFlushEventsInterval(configObject),
-                trackAppSessions: try Self.getTrackAppSessions(configObject),
-                autoSessionTrackingInterval: try Self.getAutoSessionTrackingInterval(configObject))
+                trackAppSessions: try Self.getTrackAppSessions(configObject))
         }
+        let autoSessionTrackingInterval = try Self.getAutoSessionTrackingInterval(configObject)
+
         // Warn users in case they set different regions between pinpointTargeting and pinpointAnalytics
         if let pinpointTargetingJson = configObject[Self.pinpointTargetingConfigKey],
            let pinpointTargetingConfig = try? AWSPinpointPluginConfiguration(pinpointTargetingJson),
@@ -62,6 +73,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
         self.init(appId: pluginConfiguration.appId,
                   region: pluginConfiguration.region,
+                  autoSessionTrackingInterval: autoSessionTrackingInterval,
                   options: configOptions)
     }
 
@@ -83,14 +95,17 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
         self.init(appId: pinpointAnalyticsConfig.appId,
                   region: pinpointAnalyticsConfig.awsRegion,
+                  autoSessionTrackingInterval: Self.defaultAutoSessionTrackingInterval,
                   options: options)
     }
 
     init(appId: String,
          region: String,
+         autoSessionTrackingInterval: TimeInterval,
          options: AWSPinpointAnalyticsPlugin.Options) {
         self.appId = appId
         self.region = region
+        self.autoSessionTrackingInterval = autoSessionTrackingInterval
         self.options = options
     }
 
@@ -133,7 +148,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> TimeInterval {
         guard let autoSessionTrackingInterval = configuration[autoSessionTrackingIntervalKey] else {
-            return AWSPinpointAnalyticsPlugin.Options.defaultAutoSessionTrackingInterval
+            return Self.defaultAutoSessionTrackingInterval
         }
 
         guard case let .number(autoSessionTrackingIntervalValue) = autoSessionTrackingInterval else {

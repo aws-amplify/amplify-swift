@@ -62,7 +62,7 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         if configuration.options.trackAppSessions {
-            pinpoint.startTrackingSessions(backgroundTimeout: configuration.options.autoSessionTrackingInterval)
+            pinpoint.startTrackingSessions(backgroundTimeout: configuration.autoSessionTrackingInterval)
         }
 
         let networkMonitor = NWPathMonitor()
