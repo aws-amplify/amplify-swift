@@ -318,32 +318,44 @@ export const data = defineData({
 });
 ```
 
-4. Commit and push the files to a git repository.
+4. Deploy the backend with npx amplify sandbox
 
-5. Navigate to the AWS Amplify console (https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/)
-
-6. Click on "Try Amplify Gen 2" button.
-
-7. Choose "Option 2: Start with an existing app", and choose Github, and press Next.
-
-8. Find the repository and branch, and click Next
-
-9. Click "Save and deploy" and wait for deployment to finish.  
-
-10. Generate the `amplify_outputs.json` configuration file
+For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
 
 ```
-npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
+npx amplify sandbox --config-out-dir ./config --config-version 1 --profile [PROFILE]
 ```
 
-11. (Optional) The code generated model files are already checked into the tests so you will only have to re-generate them if you are expecting modifications to them and replace the existing ones checked in.
+5. Copy the `amplify_outputs.json` file over to the test directory as `GraphQLModelBasedTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
+
+```
+cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLModelBasedTests-amplify_outputs.json
+```
+
+6. (Optional) The code generated model files are already checked into the tests so you will only have to re-generate them if you are expecting modifications to them and replace the existing ones checked in.
 
 ```
 npx amplify generate graphql-client-code --format=modelgen --model-target=swift --branch main --app-id [APP_ID] --profile [AWS_PROFILE]
 ```
 
-12. Copy the `amplify_outputs.json` file over to the test directory as `GraphQLModelBasedTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
+### Deploying from a branch (Optional)
+
+If you want to be able utilize Git commits for deployments
+
+1. Commit and push the files to a git repository.
+
+2. Navigate to the AWS Amplify console (https://us-east-1.console.aws.amazon.com/amplify/home?region=us-east-1#/)
+
+3. Click on "Try Amplify Gen 2" button.
+
+4. Choose "Option 2: Start with an existing app", and choose Github, and press Next.
+
+5. Find the repository and branch, and click Next
+
+6. Click "Save and deploy" and wait for deployment to finish.  
+
+7. Generate the `amplify_outputs.json` configuration file
 
 ```
-cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLModelBasedTests-amplify_outputs.json
+npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
 ```

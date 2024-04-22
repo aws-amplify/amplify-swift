@@ -173,7 +173,6 @@ cfnUserPool.addPropertyOverride(
 );
 ```
 
-
 4. Deploy the backend with npx amplify sandbox
 
 For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
