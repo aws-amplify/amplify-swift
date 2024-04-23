@@ -91,14 +91,20 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
-        // Retrieve the subscription connection
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let pluginOptions = request.options.pluginOptions as? AppSyncGraphQLRequestOptions {
+            authType = pluginOptions.authType
+        } else {
+            authType = nil
+        }
         do {
             self.appSyncClient = try await appSyncClientFactory.getAppSyncRealTimeClient(
                 for: endpointConfig,
                 endpoint: endpointConfig.baseURL,
                 authService: authService,
-                authType: pluginOptions?.authType,
+                authType: authType,
                 apiAuthProviderFactory: apiAuthProviderFactory
             )
 
@@ -262,14 +268,21 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let pluginOptions = request.options.pluginOptions as? AppSyncGraphQLRequestOptions {
+            authType = pluginOptions.authType
+        } else {
+            authType = nil
+        }
         Task {
             do {
                 appSyncRealTimeClient = try await appSyncRealTimeClientFactory.getAppSyncRealTimeClient(
                     for: endpointConfig,
                     endpoint: endpointConfig.baseURL,
                     authService: authService,
-                    authType: pluginOptions?.authType,
+                    authType: authType,
                     apiAuthProviderFactory: apiAuthProviderFactory
                 )
 

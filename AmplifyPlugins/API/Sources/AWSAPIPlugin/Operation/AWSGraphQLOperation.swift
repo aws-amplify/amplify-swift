@@ -159,6 +159,12 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                         withConfig: endpointConfig,
                         authType: authType
                     ))
+                } else if let pluginOptions = request.options.pluginOptions as? AppSyncGraphQLRequestOptions,
+                          let authType = pluginOptions.authType {
+                    return .success(try pluginConfig.interceptorsForEndpoint(
+                        withConfig: endpointConfig,
+                        authType: authType
+                    ))
                 } else {
                     return .success(pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig))
                 }
