@@ -23,10 +23,6 @@ actor StateMachine<
     EnvironmentType: Environment
 > where StateType: State {
 
-    /// AsyncSequences are invoked a minimum of one time: Each sequence receives the current
-    /// state as soon as `listen()` is invoked, and will receive each subsequent state change.
-    typealias StateChangeSequence = CancellableAsyncStream<StateType>
-
     private let environment: EnvironmentType
     private let resolver: AnyResolver<StateType>
 
@@ -53,7 +49,7 @@ actor StateMachine<
     /// Start listening to state change updates. The current state and all subsequent state changes will be sent to the sequence.
     ///
     /// - Returns: An async sequence that get states asynchronously
-    func listen() -> StateChangeSequence {
+    func listen() -> CancellableAsyncStream<StateType> {
         CancellableAsyncStream(with: currentStateSubject.eraseToAnyPublisher())
     }
 
