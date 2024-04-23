@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 import AWSPluginsCore
 
 public struct AppSyncGraphQLRequestOptions {
@@ -15,5 +16,11 @@ public struct AppSyncGraphQLRequestOptions {
 
     public init(authType: AWSAuthorizationType? = nil) {
         self.authType = authType
+    }
+}
+
+public extension GraphQLRequest.Options {
+    static func withAuthType(_ authType: AWSAuthorizationType) -> GraphQLRequest.Options {
+        .init(pluginOptions: AppSyncGraphQLRequestOptions(authType: authType))
     }
 }

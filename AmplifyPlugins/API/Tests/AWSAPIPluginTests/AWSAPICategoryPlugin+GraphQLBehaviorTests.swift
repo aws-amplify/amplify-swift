@@ -18,7 +18,8 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
-                                     responseType: JSONValue.self)
+                                     responseType: JSONValue.self,
+                                     options: .withAuthType(.apiKey))
         let operation = apiPlugin.query(request: request) { _ in
             operationFinished.fulfill()
         }
@@ -35,7 +36,11 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.apiName, apiName)
         XCTAssertEqual(operationRequest.document, testDocument)
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.query)
-        XCTAssertNotNil(operationRequest.options)
+        guard let options = request.options?.pluginOptions as? AppSyncGraphQLRequestOptions else {
+            XCTFail("Missing AppSyncGraphQLRequestOptions options")
+            return
+        }
+        XCTAssertEqual(options.authType, .apiKey)
         XCTAssertNil(operationRequest.variables)
         waitForExpectations(timeout: 1)
     }
@@ -47,7 +52,8 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
-                                     responseType: JSONValue.self)
+                                     responseType: JSONValue.self,
+                                     options: .withAuthType(.apiKey))
         let operation = apiPlugin.mutate(request: request) { _ in
             operationFinished.fulfill()
         }
@@ -64,7 +70,11 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.apiName, apiName)
         XCTAssertEqual(operationRequest.document, testDocument)
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.mutation)
-        XCTAssertNotNil(operationRequest.options)
+        guard let options = request.options?.pluginOptions as? AppSyncGraphQLRequestOptions else {
+            XCTFail("Missing AppSyncGraphQLRequestOptions options")
+            return
+        }
+        XCTAssertEqual(options.authType, .apiKey)
         XCTAssertNil(operationRequest.variables)
         waitForExpectations(timeout: 1)
     }
@@ -76,7 +86,8 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
-                                     responseType: JSONValue.self)
+                                     responseType: JSONValue.self,
+                                     options: .withAuthType(.apiKey))
         let operation = apiPlugin.subscribe(request: request, valueListener: nil) { _ in
             operationFinished.fulfill()
         }
@@ -93,7 +104,11 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.apiName, apiName)
         XCTAssertEqual(operationRequest.document, testDocument)
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.subscription)
-        XCTAssertNotNil(operationRequest.options)
+        guard let options = request.options?.pluginOptions as? AppSyncGraphQLRequestOptions else {
+            XCTFail("Missing AppSyncGraphQLRequestOptions options")
+            return
+        }
+        XCTAssertEqual(options.authType, .apiKey)
         XCTAssertNil(operationRequest.variables)
         waitForExpectations(timeout: 1)
     }
