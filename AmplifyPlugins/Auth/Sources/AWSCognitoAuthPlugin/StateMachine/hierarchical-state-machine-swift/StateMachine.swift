@@ -34,7 +34,7 @@ actor StateMachine<
         currentStateSubject.value
     }
 
-    private(set) var currentStateSubject: CurrentValueSubject<StateType, Never>
+    private let currentStateSubject: CurrentValueSubject<StateType, Never>
 
     deinit {
         currentStateSubject.send(completion: .finished)
