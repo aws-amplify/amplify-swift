@@ -16,6 +16,7 @@ extension GraphQLRequest {
                                           variables: variables,
                                           responseType: responseType,
                                           decodePath: decodePath,
+                                          authorizationMode: authorizationMode,
                                           options: requestOptions)
     }
 }

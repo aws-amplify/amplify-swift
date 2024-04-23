@@ -15,10 +15,11 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
     func testQuery() {
         let operationFinished = expectation(description: "Operation should finish")
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest<JSONValue>.appSync(apiName: apiName,
+                                                        document: testDocument,
+                                                        variables: nil,
+                                                        responseType: JSONValue.self,
+                                                        authorizationMode: .apiKey)
         let operation = apiPlugin.query(request: request) { _ in
             operationFinished.fulfill()
         }

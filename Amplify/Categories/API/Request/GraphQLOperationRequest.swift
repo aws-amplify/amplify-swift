@@ -25,6 +25,9 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     /// The path to traverse before decoding to `responseType`.
     public let decodePath: String?
 
+    /// The authorization mode
+    public let authorizationMode: AuthorizationMode?
+
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
@@ -35,6 +38,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
                 variables: [String: Any]? = nil,
                 responseType: R.Type,
                 decodePath: String? = nil,
+                authorizationMode: AuthorizationMode? = nil,
                 options: Options) {
         self.apiName = apiName
         self.operationType = operationType
@@ -42,6 +46,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
         self.variables = variables
         self.responseType = responseType
         self.decodePath = decodePath
+        self.authorizationMode = authorizationMode
         self.options = options
     }
 }
