@@ -47,7 +47,7 @@ jobs:
         id: dependencies-cache
         if: inputs.use_cache
         timeout-minutes: 4
-        continue-on-error: ${{ inputs.use_cache }}
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
@@ -59,7 +59,7 @@ jobs:
         id: build-cache
         if: inputs.use_cache
         timeout-minutes: 4
-        continue-on-error: ${{ inputs.use_cache }}
+        continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build
@@ -67,7 +67,7 @@ jobs:
 
       - name: Build ${{ inputs.scheme }}
         id: build-package
-        continue-on-error: ${{ inputs.use_cache }}
+        continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild
         with:
           scheme: ${{ inputs.scheme }}
@@ -89,7 +89,7 @@ jobs:
         if: inputs.use_cache && steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
-        continue-on-error: ${{ inputs.use_cache }}
+        continue-on-error: true
         run: |
           gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
 
