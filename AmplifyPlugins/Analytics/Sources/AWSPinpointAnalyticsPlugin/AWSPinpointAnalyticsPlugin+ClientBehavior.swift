@@ -122,8 +122,8 @@ extension AWSPinpointAnalyticsPlugin {
 
     private func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) async {
         for (key, value) in properties {
-            globalProperties[key] = value
             await pinpoint.addGlobalProperty(value, forKey: key)
+            globalProperties[key] = value
         }
     }
 

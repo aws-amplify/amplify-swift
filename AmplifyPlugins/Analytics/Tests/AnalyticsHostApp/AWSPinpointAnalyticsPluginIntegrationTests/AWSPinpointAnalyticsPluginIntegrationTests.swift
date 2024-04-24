@@ -14,8 +14,6 @@ import AWSPinpoint
 import AWSCognitoAuthPlugin
 import Network
 
-import AmplifyTestCommon
-
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
@@ -27,10 +25,17 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         ProcessInfo.processInfo.arguments.contains("GEN2")
     }
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
+
+            let configurationExpectation = expectation(description: "Amplify was configured")
+            let token = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+                if payload.eventName == HubPayload.EventName.Amplify.configured {
+                    configurationExpectation.fulfill()
+                }
+            }
 
             if useGen2Configuration {
                 let data = try TestConfigHelper.retrieve(forResource: Self.amplifyOutputs)
@@ -39,8 +44,12 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                 let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
                 try Amplify.configure(config)
             }
+
+            await fulfillment(of: [configurationExpectation], timeout: TestCommonConstants.networkTimeout)
+            Amplify.Hub.removeListener(token)
         } catch {
             XCTFail("Failed to initialize and configure Amplify \(error)")
+            throw error
         }
     }
 
@@ -54,10 +63,11 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     func testIdentifyUser() async throws {
         let userId = "userId"
         let identifyUserEvent = expectation(description: "Identify User event was received on the hub plugin")
-        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+        let token = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
                 guard let data = payload.data as? (String, AnalyticsUserProfile?) else {
                     XCTFail("Missing data")
+                    identifyUserEvent.fulfill()
                     return
                 }
 
@@ -85,6 +95,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         Amplify.Analytics.identifyUser(userId: userId, userProfile: userProfile)
 
         await fulfillment(of: [identifyUserEvent], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(token)
 
         // Remove userId from the current endpoint
         let endpointClient = endpointClient()
@@ -122,7 +133,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
         
         let flushEventsInvoked = expectation(description: "Flush events invoked")
-        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+        let token = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
                     XCTFail("Missing data")
@@ -151,6 +162,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         Amplify.Analytics.flushEvents()
 
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(token)
     }
     
     /// Given: Analytics plugin
@@ -167,7 +179,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
         
         let flushEventsInvoked = expectation(description: "Flush events invoked")
-        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+        let token = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
                     XCTFail("Missing data")
@@ -199,6 +211,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         Amplify.Analytics.flushEvents()
 
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(token)
     }
     
     /// Given: Analytics plugin
@@ -215,7 +228,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
         
         let flushEventsInvoked = expectation(description: "Flush events invoked")
-        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+        let token = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 flushEventsInvoked.fulfill()
             }
@@ -240,13 +253,13 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         Amplify.Analytics.flushEvents()
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(token)
     }
     
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed with global properties registered
     /// Then: Flush Hub event is received with global properties
     func testRegisterGlobalProperties() async throws {
-        throw XCTSkip("Race condition - registerGlobalProperties does async work in a Task")
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -257,7 +270,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
         
         let flushEventsInvoked = expectation(description: "Flush events invoked")
-        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+        let token = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
                     XCTFail("Missing data")
@@ -282,7 +295,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                                 "globalPropertyIntKey": 321,
                                 "globalPropertyDoubleKey": 43.21,
                                 "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
-        Amplify.Analytics.registerGlobalProperties(globalProperties)
+        await registerGlobalProperties(globalProperties)
         let properties = ["eventPropertyStringKey": "eventProperyStringValue",
                           "eventPropertyIntKey": 123,
                           "eventPropertyDoubleKey": 12.34,
@@ -294,13 +307,13 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         Amplify.Analytics.flushEvents()
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(token)
     }
 
     /// Given: Analytics plugin
     /// When: An analytics event is recorded and flushed with global properties registered and then unregistered
     /// Then: Flush Hub event is received without global properties
     func testUnRegisterGlobalProperties() async throws {
-        throw XCTSkip("Race condition - unregisterGlobalProperties does async work in a Task")
         let onlineExpectation = expectation(description: "Device is online")
         let networkMonitor = NWPathMonitor()
         networkMonitor.pathUpdateHandler = { newPath in
@@ -311,7 +324,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
         
         let flushEventsInvoked = expectation(description: "Flush events invoked")
-        _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
+        let token = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
                     XCTFail("Missing data")
@@ -336,8 +349,8 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                                 "globalPropertyIntKey": 321,
                                 "globalPropertyDoubleKey": 43.21,
                                 "globalPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
-        Amplify.Analytics.registerGlobalProperties(globalProperties)
-        Amplify.Analytics.unregisterGlobalProperties()
+        await registerGlobalProperties(globalProperties)
+        await unregisterGlobalProperties()
         let properties = ["eventPropertyStringKey": "eventProperyStringValue",
                           "eventPropertyIntKey": 123,
                           "eventPropertyDoubleKey": 12.34,
@@ -349,6 +362,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         Amplify.Analytics.flushEvents()
         await fulfillment(of: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(token)
     }
 
     func testGetEscapeHatch() throws {
@@ -379,7 +393,22 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         guard let context = plugin().pinpoint as? PinpointContext else {
             fatalError("Unable to retrieve Pinpoint Context")
         }
-        AuthSignInHelper.signInUser(username: "", password: "")
         return context.endpointClient
+    }
+
+    private func registerGlobalProperties(_ globalProperties: [String: AnalyticsPropertyValue]) async {
+        Amplify.Analytics.registerGlobalProperties(globalProperties)
+        let pluginGlobalProperties = plugin().globalProperties!
+        while globalProperties.count != pluginGlobalProperties.count {
+            try? await Task.sleep(seconds: 0.01)
+        }
+    }
+
+    private func unregisterGlobalProperties() async {
+        Amplify.Analytics.unregisterGlobalProperties()
+        let pluginGlobalProperties = plugin().globalProperties!
+        while pluginGlobalProperties.count != 0 {
+            try? await Task.sleep(seconds: 0.01)
+        }
     }
 }
