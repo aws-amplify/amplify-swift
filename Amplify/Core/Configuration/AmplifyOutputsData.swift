@@ -244,6 +244,7 @@ public struct AmplifyOutputsData: Codable {
         self.custom = custom
     }
 }
+// swiftlint:enable nesting
 
 // MARK: - Configure
 
@@ -351,7 +352,6 @@ extension Amplify {
 
         notifyAllHubChannels()
     }
-
 
     /// If `candidate` is `CategoryConfigurable`, then invokes `candidate.configure(using: configuration)`.
     private static func configure(_ candidate: Category, using configuration: AmplifyOutputsData) throws {
