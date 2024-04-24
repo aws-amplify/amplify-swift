@@ -1,6 +1,12 @@
 name: Build with Minimum Supported Xcode Versions
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -14,12 +20,13 @@ jobs:
       matrix:
         platform: [iOS, macOS, tvOS, watchOS]
 
-    uses: ./.github/workflows/build_amplify_swift.yml
+    uses: ./.github/workflows/build_scheme.yml
     with:
-      os-runner: macos-12
+      scheme: Amplify
+      os-runner: ${{ (matrix.platform == 'tvOS' || matrix.platform == 'watchOS') && 'macos-13' || 'macos-12' }}
       xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
-      cacheable: false
+      use_cache: false
 
   confirm-pass:
     runs-on: ubuntu-latest
