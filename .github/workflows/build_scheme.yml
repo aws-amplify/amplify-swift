@@ -18,7 +18,7 @@ on:
         type: string
         default: 'macos-13'
 
-      use_cache:
+      save_build_cache:
         type: boolean
         default: true
 
@@ -45,7 +45,6 @@ jobs:
 
       - name: Attempt to use the dependencies cache
         id: dependencies-cache
-        if: inputs.use_cache
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -57,7 +56,6 @@ jobs:
 
       - name: Attempt to restore the build cache from main
         id: build-cache
-        if: inputs.use_cache
         timeout-minutes: 4
         continue-on-error: true
         uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
@@ -67,7 +65,6 @@ jobs:
 
       - name: Build ${{ inputs.scheme }}
         id: build-package
-        continue-on-error: true
         uses: ./.github/composite_actions/run_xcodebuild
         with:
           scheme: ${{ inputs.scheme }}
@@ -79,14 +76,14 @@ jobs:
           disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
 
       - name: Save the dependencies cache in main
-        if: inputs.use_cache && steps.dependencies-cache.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        if: inputs.save_build_cache && steps.dependencies-cache.outputs.cache-hit != 'true' && github.ref_name == 'main'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ~/Library/Developer/Xcode/DerivedData/Amplify
           key: ${{ steps.dependencies-cache.outputs.cache-primary-key }}
 
       - name: Delete the old build cache
-        if: inputs.use_cache && steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
+        if: inputs.save_build_cache && steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
@@ -94,7 +91,7 @@ jobs:
           gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
 
       - name: Save the build cache
-        if: inputs.use_cache && github.ref_name == 'main'
+        if: inputs.save_build_cache && github.ref_name == 'main'
         uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ github.workspace }}/Build

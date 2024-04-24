@@ -26,7 +26,7 @@ jobs:
       os-runner: ${{ (matrix.platform == 'tvOS' || matrix.platform == 'watchOS') && 'macos-13' || 'macos-12' }}
       xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
-      use_cache: false
+      save_build_cache: false
 
   confirm-pass:
     runs-on: ubuntu-latest
