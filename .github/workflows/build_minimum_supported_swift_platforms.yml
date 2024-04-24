@@ -22,7 +22,7 @@ jobs:
 
     uses: ./.github/workflows/build_scheme.yml
     with:
-      scheme: Amplify
+      scheme: Amplify-Build
       os-runner: ${{ (matrix.platform == 'tvOS' || matrix.platform == 'watchOS') && 'macos-13' || 'macos-12' }}
       xcode-version: 'minimum'
       platform: ${{ matrix.platform }}
