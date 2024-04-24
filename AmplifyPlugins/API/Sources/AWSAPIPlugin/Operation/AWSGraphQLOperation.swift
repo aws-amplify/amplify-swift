@@ -46,7 +46,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         }
 
         let urlRequest = validateRequest(request).flatMap(buildURLRequest(from:))
-        let finalRequest = await getEndpointInterceptors(from: request).flatMapAsync { requestInterceptors in
+        let finalRequest = await getEndpointInterceptors().flatMapAsync { requestInterceptors in
             let preludeInterceptors = requestInterceptors?.preludeInterceptors ?? []
             let customerInterceptors = requestInterceptors?.interceptors ?? []
             let postludeInterceptors = requestInterceptors?.postludeInterceptors ?? []
@@ -150,7 +150,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         }
     }
 
-    private func getEndpointInterceptors(from request: GraphQLOperationRequest<R>) -> Result<AWSAPIEndpointInterceptors?, APIError> {
+    func getEndpointInterceptors() -> Result<AWSAPIEndpointInterceptors?, APIError> {
         getEndpointConfig(from: request).flatMap { endpointConfig in
             do {
                 if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions,

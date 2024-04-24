@@ -9,6 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
+@testable import AWSPluginsTestCommon
 
 class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
 
@@ -37,4 +38,44 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
         XCTAssertNil(task)
     }
 
+
+    /// Request for `.amazonCognitoUserPool` at runtime with `request` while passing in what
+    /// is configured as `.apiKey`. Expect that the interceptor is the token interceptor
+    func testGetEndpointInterceptors() throws {
+        let request = GraphQLRequest<JSONValue>.appSync(apiName: apiName,
+                                                        document: testDocument,
+                                                        variables: nil,
+                                                        responseType: JSONValue.self,
+                                                        authorizationMode: .amazonCognitoUserPools)
+        let task = try OperationTestBase.makeSingleValueErrorMockTask()
+        let mockSession = MockURLSession(onTaskForRequest: { _ in task })
+        let pluginConfig = AWSAPICategoryPluginConfiguration(
+            endpoints: [
+                apiName: try .init(
+                    name: apiName,
+                    baseURL: URL(string: "url")!,
+                    region: "us-test-1",
+                    authorizationType: .apiKey,
+                    endpointType: .graphQL,
+                    apiKey: "apiKey",
+                    apiAuthProviderFactory: .init())],
+            apiAuthProviderFactory: .init(),
+            authService: MockAWSAuthService())
+        let operation = AWSGraphQLOperation(request: request.toOperationRequest(operationType: .query),
+                                            session: mockSession,
+                                            mapper: OperationTaskMapper(),
+                                            pluginConfig: pluginConfig,
+                                            resultListener: { _ in })
+
+        // Act
+        let results = operation.getEndpointInterceptors()
+
+        // Assert
+        guard case let .success(interceptors) = results,
+              let interceptor = interceptors?.preludeInterceptors.first,
+              (interceptor as? AuthTokenURLRequestInterceptor) != nil else {
+            XCTFail("Should be token interceptor for Cognito User Pool")
+            return
+        }
+    }
 }

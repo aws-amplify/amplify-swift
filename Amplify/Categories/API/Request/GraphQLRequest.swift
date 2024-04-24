@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// Empty protocol for plugins to define specific `AuthorizationMode` types for the request.
+public protocol AuthorizationMode { }
+
 /// GraphQL Request
 public struct GraphQLRequest<R: Decodable> {
 
@@ -48,8 +51,6 @@ public struct GraphQLRequest<R: Decodable> {
         self.options = options
     }
 }
-
-public protocol AuthorizationMode { }
 
 // MARK: GraphQLRequest + Options
 
