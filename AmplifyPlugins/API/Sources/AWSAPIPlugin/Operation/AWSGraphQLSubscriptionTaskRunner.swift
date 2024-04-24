@@ -44,12 +44,12 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.apiAuthProviderFactory = apiAuthProviderFactory
     }
 
+    /// When the top-level AmplifyThrowingSequence is canceled, this cancel method is invoked.
+    /// In this situation, we need to send the disconnected event because
+    /// the top-level AmplifyThrowingSequence is terminated immediately upon cancellation.
     public func cancel() {
         self.send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
+        Task {
             guard let appSyncClient = self.appSyncClient else {
                 return
             }
@@ -213,12 +213,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     override public func cancel() {
         super.cancel()
-
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
-
+        Task {
             guard let appSyncRealTimeClient = self.appSyncRealTimeClient else {
                 return
             }
@@ -378,6 +373,31 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
         (hasAuthorizationError ? ": \(APIError.UnauthorizedMessageString)" : "")
     }
 
+#if swift(<5.8)
+    if let errors = errors.cast(to: AppSyncRealTimeRequest.Error.self) {
+        let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            errors.first
+        )
+    } else if let errors = errors.cast(to: GraphQLError.self) {
+        let hasAuthorizationError = errors.map(\.extensions)
+            .compactMap { $0.flatMap { $0["errorType"]?.stringValue } }
+            .contains(where: { AppSyncErrorType($0) == .unauthorized })
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            GraphQLResponseError<R>.error(errors)
+        )
+    } else {
+        return APIError.operationError(
+            errorDescription(),
+            "",
+            errors.first
+        )
+    }
+#else
     switch errors {
     case let errors as [AppSyncRealTimeRequest.Error]:
         let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
@@ -402,5 +422,5 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
             errors.first
         )
     }
-
+#endif
 }

@@ -157,13 +157,21 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
             }
 
         case .service(let error):
-            if let authError = (error as? AuthErrorConvertible)?.authError {
-                let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
-                                                    identityIdResult: .failure(authError),
-                                                    awsCredentialsResult: .failure(authError),
-                                                    cognitoTokensResult: .failure(authError))
-                return session
+            var authError: AuthError
+            if let convertedAuthError = (error as? AuthErrorConvertible)?.authError {
+                authError = convertedAuthError
+            } else {
+                authError = AuthError.service(
+                    "Unknown service error occurred",
+                    "See the attached error for more details",
+                    error)
             }
+            let session = AWSAuthCognitoSession(
+                isSignedIn: isSignedIn,
+                identityIdResult: .failure(authError),
+                awsCredentialsResult: .failure(authError),
+                cognitoTokensResult: .failure(authError))
+            return session
         default: break
 
         }
