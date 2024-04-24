@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable nesting
 /// Represents Amplify's Gen2 configuration for all categories intended to be used in an application.
 ///
 /// See: [Amplify.configure](x-source-tag://Amplify.configure)
@@ -49,6 +50,7 @@ public struct AmplifyOutputsData: Codable {
         public let mfaConfiguration: String?
         public let mfaMethods: [String]?
 
+        @_spi(InternalAmplifyConfiguration)
         public struct PasswordPolicy: Codable {
             public let minLength: UInt
             public let requireNumbers: Bool
@@ -57,6 +59,7 @@ public struct AmplifyOutputsData: Codable {
             public let requireSymbols: Bool
         }
 
+        @_spi(InternalAmplifyConfiguration)
         public struct OAuth: Codable {
             public let identityProviders: [String]
             public let cognitoDomain: String
@@ -67,11 +70,13 @@ public struct AmplifyOutputsData: Codable {
             public let responseType: String
         }
 
+        @_spi(InternalAmplifyConfiguration)
         public enum UsernameAttributes: String, Codable {
             case email = "email"
             case phoneNumber = "phone_number"
         }
 
+        @_spi(InternalAmplifyConfiguration)
         public enum UserVerificationType: String, Codable {
             case email = "email"
             case phoneNumber = "phone_number"
@@ -122,20 +127,24 @@ public struct AmplifyOutputsData: Codable {
         public let searchIndices: SearchIndices?
         public let geofenceCollections: GeofenceCollections?
 
+        @_spi(InternalAmplifyConfiguration)
         public struct Maps: Codable {
             public let items: [String: AmazonLocationServiceConfig]
             public let `default`: String
 
+            @_spi(InternalAmplifyConfiguration)
             public struct AmazonLocationServiceConfig: Codable {
                 public let style: String
             }
         }
 
+        @_spi(InternalAmplifyConfiguration)
         public struct SearchIndices: Codable {
             public let items: [String]
             public let `default`: String
         }
 
+        @_spi(InternalAmplifyConfiguration)
         public struct GeofenceCollections: Codable {
             public let items: [String]
             public let `default`: String
