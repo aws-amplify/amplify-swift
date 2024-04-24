@@ -8,6 +8,10 @@
 import Foundation
 
 // swiftlint:disable nesting
+// `nesting` is disabled to best represent `AmplifyOutputsData` as close as possible
+// to the JSON schema which is derived from. The JSON schema is hosted at
+// https://github.com/aws-amplify/amplify-backend/blob/main/packages/client-config/src/client-config-schema/schema_v1.json
+
 /// Represents Amplify's Gen2 configuration for all categories intended to be used in an application.
 ///
 /// See: [Amplify.configure](x-source-tag://Amplify.configure)
