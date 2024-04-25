@@ -1,4 +1,4 @@
-name: Build with Minimum Supported Xcode Versions
+name: Build with minimum Xcode version | Amplify Swift
 on:
   workflow_dispatch:
   pull_request:
