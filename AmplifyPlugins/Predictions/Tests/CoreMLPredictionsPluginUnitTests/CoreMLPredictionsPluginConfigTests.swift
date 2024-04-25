@@ -7,11 +7,15 @@
 
 #if canImport(Speech) && canImport(Vision)
 import XCTest
-import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 import CoreMLPredictionsPlugin
 
 class CoreMLPredictionsPluginConfigTests: XCTestCase {
 
+    override func setUp() async throws {
+        await Amplify.reset()
+    }
+    
     func testThrowsOnMissingConfig() throws {
         let plugin = CoreMLPredictionsPlugin()
         try Amplify.add(plugin: plugin)
@@ -29,5 +33,12 @@ class CoreMLPredictionsPluginConfigTests: XCTestCase {
         }
     }
 
+    func testConfigureWithAmplifyOutputs() throws {
+        let plugin = CoreMLPredictionsPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let amplifyConfig = AmplifyOutputsData()
+        try Amplify.configure(amplifyConfig)
+    }
 }
 #endif

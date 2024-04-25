@@ -47,7 +47,7 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.init
     public init(configuration
-                    storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
+                storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
         self.storageConfiguration = storageConfiguration
     }
 }

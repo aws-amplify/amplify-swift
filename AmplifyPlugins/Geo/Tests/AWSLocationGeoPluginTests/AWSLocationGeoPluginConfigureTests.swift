@@ -34,6 +34,21 @@ class AWSLocationGeoPluginConfigureTests: AWSLocationGeoPluginTestBase {
         }
     }
 
+    func testConfigureAmplifyOutputsSuccess() async {
+        let resettable = geoPlugin as Resettable
+        await resettable.reset()
+
+        do {
+            try geoPlugin.configure(using: GeoPluginTestConfig.geoPluginConfigAmplifyOutputs)
+
+            XCTAssertNotNil(geoPlugin.locationService)
+            XCTAssertNotNil(geoPlugin.authService)
+            XCTAssertNotNil(geoPlugin.pluginConfig)
+        } catch {
+            XCTFail("Failed to configure geo plugin with error: \(error)")
+        }
+    }
+
     func testConfigureFailureForNilConfiguration() throws {
         let plugin = AWSLocationGeoPlugin()
         do {

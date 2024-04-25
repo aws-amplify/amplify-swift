@@ -22,7 +22,7 @@ class AWSS3StoragePluginBaseConfigTests: XCTestCase {
             XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
         } catch {
             guard case PluginError.pluginConfigurationError = error else {
-                XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
+                XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config, but threw error: \(error)")
                 return
             }
         }
