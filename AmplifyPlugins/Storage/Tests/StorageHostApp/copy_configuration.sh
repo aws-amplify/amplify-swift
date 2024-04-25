@@ -20,9 +20,8 @@ mkdir -p "$DESTINATION_DIR"
 
 if [ -f "$SOURCE_DIR/AWSAmplifyStressTests-amplifyconfiguration.json" ]; then
     cp "$SOURCE_DIR/AWSAmplifyStressTests-amplifyconfiguration.json" "$DESTINATION_DIR/amplifyconfiguration.json"
+    touch "$DESTINATION_DIR/amplify_outputs.json"
     exit 0
-else
-    touch "$DESTINATION_DIR/amplifyconfiguration.json"
 fi
 
 if [ -f "$SOURCE_DIR/AWSS3StoragePluginTests-amplifyconfiguration.json" ]; then
