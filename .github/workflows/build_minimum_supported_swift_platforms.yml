@@ -12,6 +12,10 @@ permissions:
   contents: read
   actions: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_name != 'main'}}
+
 jobs:
   build-amplify-with-minimum-supported-xcode:
     name: Build Amplify Swift for ${{ matrix.platform }}
