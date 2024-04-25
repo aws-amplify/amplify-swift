@@ -25,7 +25,7 @@ public struct GraphQLRequest<R: Decodable> {
     public let responseType: R.Type
 
     /// The authorization mode
-    public let authorizationMode: AuthorizationMode?
+    public let authMode: AuthorizationMode?
 
     /// The path to decode to the graphQL response data to `responseType`. Delimited by `.` The decode path
     /// "listTodos.items" will traverse to the object at `listTodos`, and decode the object at `items` to `responseType`
@@ -40,13 +40,13 @@ public struct GraphQLRequest<R: Decodable> {
                 variables: [String: Any]? = nil,
                 responseType: R.Type,
                 decodePath: String? = nil,
-                authorizationMode: AuthorizationMode? = nil,
+                authMode: AuthorizationMode? = nil,
                 options: GraphQLRequest<R>.Options? = nil) {
         self.apiName = apiName
         self.document = document
         self.variables = variables
         self.responseType = responseType
-        self.authorizationMode = authorizationMode
+        self.authMode = authMode
         self.decodePath = decodePath
         self.options = options
     }

@@ -272,7 +272,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                  variables: document.variables,
                                  responseType: M.self,
                                  decodePath: document.name,
-                                 authorizationMode: authMode)
+                                 authMode: authMode)
     }
 
     public static func get<M: Model>(_ modelType: M.Type,
@@ -295,7 +295,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                   variables: document.variables,
                                   responseType: M?.self,
                                   decodePath: document.name, 
-                                  authorizationMode: authMode)
+                                  authMode: authMode)
     }
 
     public static func get<M: Model>(_ modelType: M.Type,
@@ -326,7 +326,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                       variables: document.variables,
                                       responseType: M?.self,
                                       decodePath: document.name, 
-                                      authorizationMode: authMode)
+                                      authMode: authMode)
     }
 
     public static func list<M: Model>(_ modelType: M.Type,
@@ -355,7 +355,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                        variables: document.variables,
                                        responseType: List<M>.self,
                                        decodePath: document.name,
-                                       authorizationMode: authMode)
+                                       authMode: authMode)
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,
@@ -377,6 +377,6 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                  variables: document.variables,
                                  responseType: modelType,
                                  decodePath: document.name,
-                                 authorizationMode: authMode)
+                                 authMode: authMode)
     }
 }

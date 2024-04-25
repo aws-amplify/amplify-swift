@@ -159,7 +159,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                         withConfig: endpointConfig,
                         authType: authType
                     ))
-                } else if let authType = request.authorizationMode as? AWSAuthorizationType {
+                } else if let authType = request.authMode as? AWSAuthorizationType {
                     return .success(try pluginConfig.interceptorsForEndpoint(
                         withConfig: endpointConfig,
                         authType: authType

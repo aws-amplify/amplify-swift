@@ -34,7 +34,7 @@ class GraphQLRequestModelTest: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
         XCTAssert(request.variables != nil)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testUpdateMutationGraphQLRequest() {
@@ -49,7 +49,7 @@ class GraphQLRequestModelTest: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
         XCTAssert(request.variables != nil)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testDeleteMutationGraphQLRequest() {
@@ -64,7 +64,7 @@ class GraphQLRequestModelTest: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
         XCTAssert(request.variables != nil)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testQueryByIdGraphQLRequest() {
@@ -78,7 +78,7 @@ class GraphQLRequestModelTest: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post?.self)
         XCTAssert(request.variables != nil)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testListQueryGraphQLRequest() {
@@ -96,7 +96,7 @@ class GraphQLRequestModelTest: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == List<Post>.self)
         XCTAssertNotNil(request.variables)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testPaginatedListQueryGraphQLRequest() {
@@ -114,7 +114,7 @@ class GraphQLRequestModelTest: XCTestCase {
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == List<Post>.self)
         XCTAssertNotNil(request.variables)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testOnCreateSubscriptionGraphQLRequest() {
@@ -126,7 +126,7 @@ class GraphQLRequestModelTest: XCTestCase {
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() {
@@ -138,7 +138,7 @@ class GraphQLRequestModelTest: XCTestCase {
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() {
@@ -150,7 +150,7 @@ class GraphQLRequestModelTest: XCTestCase {
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
-        assertEquals(actualAuthMode: request.authorizationMode, expectedAuthMode: .amazonCognitoUserPools)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     // MARK: - Helpers

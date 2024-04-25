@@ -19,7 +19,7 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
                                                         document: testDocument,
                                                         variables: nil,
                                                         responseType: JSONValue.self,
-                                                        authorizationMode: .apiKey)
+                                                        authMode: .apiKey)
         let operation = apiPlugin.query(request: request) { _ in
             operationFinished.fulfill()
         }

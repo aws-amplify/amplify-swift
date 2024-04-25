@@ -94,7 +94,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         let authType: AWSAuthorizationType?
         if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
             authType = pluginOptions.authType
-        } else if let authorizationMode = request.authorizationMode as? AWSAuthorizationType {
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
             authType = authorizationMode
         } else {
             authType = nil
@@ -272,7 +272,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         let authType: AWSAuthorizationType?
         if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
             authType = pluginOptions.authType
-        } else if let authorizationMode = request.authorizationMode as? AWSAuthorizationType {
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
             authType = authorizationMode
         } else {
             authType = nil

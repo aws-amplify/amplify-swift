@@ -46,7 +46,7 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
                                                         document: testDocument,
                                                         variables: nil,
                                                         responseType: JSONValue.self,
-                                                        authorizationMode: .amazonCognitoUserPools)
+                                                        authMode: .amazonCognitoUserPools)
         let task = try OperationTestBase.makeSingleValueErrorMockTask()
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
         let pluginConfig = AWSAPICategoryPluginConfiguration(

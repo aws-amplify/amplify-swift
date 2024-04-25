@@ -14,14 +14,14 @@ extension GraphQLRequest {
                                                  variables: [String: Any]? = nil,
                                                  responseType: ResponseType.Type,
                                                  decodePath: String? = nil,
-                                                 authorizationMode: AWSAuthorizationType? = nil,
+                                                 authMode: AWSAuthorizationType? = nil,
                                                  options: GraphQLRequest<ResponseType>.Options? = nil) -> GraphQLRequest<ResponseType> {
         return GraphQLRequest<ResponseType>(apiName: apiName,
                                             document: document,
                                             variables: variables,
                                             responseType: responseType.self,
                                             decodePath: decodePath,
-                                            authorizationMode: authorizationMode,
+                                            authMode: authMode,
                                             options: options)
     }
 }
