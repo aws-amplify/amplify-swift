@@ -85,13 +85,8 @@ class RetryableGraphQLOperationTests: XCTestCase {
 
         let publisher = Publishers.MergeMany([operation1, operation2].map { Just($0) }).eraseToAnyPublisher()
         let result = await RetryableGraphQLOperation(requestStream: publisher).run()
-        if case .failure(.operationError(_, _, let error)) = result {
-            XCTAssert(error is APIError)
-            if case .unknown(let description, _, _) = error as! APIError {
-                XCTAssertEqual(description, "~Unknown~")
-            } else {
-                XCTFail("Wrong result")
-            }
+        if case .failure(.unknown(let description, _, _)) = result {
+            XCTAssertEqual(description, "~Unknown~")
         } else {
             XCTFail("Wrong result")
         }

@@ -140,21 +140,45 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         // pre-load the MutationEvent table with mutation data
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
         mutationEventSaved.expectedFulfillmentCount = 2
-        for id in 1 ... 2 {
-            let postId = "pendingPost-\(id)"
-            let pendingPost = Post(id: postId,
-                                   title: "pendingPost-\(id) title",
-                content: "pendingPost-\(id) content",
-                createdAt: .now())
 
-            let pendingPostJSON = try pendingPost.toJSON()
-            let event = MutationEvent(id: "mutation-\(id)",
-                modelId: "pendingPost-\(id)",
+        let posts = (1...2).map { Post(
+            id: "pendingPost-\($0)",
+            title: "pendingPost-\($0) title",
+            content: "pendingPost-\($0) content",
+            createdAt: .now()
+        )}
+
+        let postMutationEvents = try posts.map {
+            let pendingPostJSON = try $0.toJSON()
+            return MutationEvent(
+                id: "mutation-\($0.id)",
+                modelId: $0.id,
                 modelName: Post.modelName,
                 json: pendingPostJSON,
                 mutationType: .create,
-                createdAt: .now())
+                createdAt: .now()
+            )
+        }
 
+        apiPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            if let variables = request.variables?["input"] as? [String: Any],
+               let postId = variables["id"] as? String,
+               let post = posts.first(where: { $0.id == postId })
+            {
+                let anyModel = try! post.eraseToAnyModel()
+                let remoteSyncMetadata = MutationSyncMetadata(modelId: post.id,
+                                                              modelName: Post.modelName,
+                                                              deleted: false,
+                                                              lastChangedAt: Date().unixSeconds,
+                                                              version: 2)
+                let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+                return .success(remoteMutationSync)
+            }
+            return .failure(.unknown("No matching post found", "", nil))
+        }
+
+
+        postMutationEvents.forEach { event in
             storageAdapter.save(event) { result in
                 switch result {
                 case .failure(let dataStoreError):
@@ -163,7 +187,6 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                     mutationEventSaved.fulfill()
                 }
             }
-
         }
 
         await fulfillment(of: [mutationEventSaved], timeout: 1.0)
@@ -195,13 +218,6 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                 XCTFail("Should not trigger outbox status event")
             }
 
-//            if outboxStatusReceivedCurrentCount == 1 {
-//                XCTAssertFalse(outboxStatusEvent.isEmpty)
-//                outboxStatusOnStart.fulfill()
-//            } else {
-//                XCTAssertFalse(outboxStatusEvent.isEmpty)
-//                outboxStatusOnMutationEnqueued.fulfill()
-//            }
         }
 
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
@@ -211,7 +227,6 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         let mutation1Sent = expectation(description: "Create mutation 1 sent to API category")
         let mutation2Sent = expectation(description: "Create mutation 2 sent to API category")
-        mutation2Sent.isInverted = true
         apiPlugin.listeners.append { message in
             if message.contains("createPost") && message.contains("pendingPost-1") {
                 mutation1Sent.fulfill()
@@ -227,17 +242,9 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             try await startAmplify()
         }
 
+        await fulfillment(of: [outboxStatusOnStart, outboxStatusOnMutationEnqueued],timeout: 5.0)
 
-
-        await fulfillment(
-            of: [
-                outboxStatusOnStart,
-                outboxStatusOnMutationEnqueued,
-                mutation1Sent,
-                mutation2Sent
-            ],
-            timeout: 5.0
-        )
+        await fulfillment(of: [mutation1Sent, mutation2Sent], timeout: 5, enforceOrder: true)
 
         Amplify.Hub.removeListener(hubListener)
     }
