@@ -52,8 +52,7 @@ extension AppSyncListProviderTests {
                 let nextPage = List(elements: [Comment4(content: "content"),
                                                Comment4(content: "content"),
                                                Comment4(content: "content")])
-                let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(.success(nextPage))
-                return event
+                return .success(nextPage)
         }
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
@@ -84,10 +83,8 @@ extension AppSyncListProviderTests {
     }
 
     func testLoadedStateGetNextPageFailure_APIError() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-            QueryRequestResponder<List<Comment4>> { _ in
-                let event: GraphQLOperation<List<Comment4>>.OperationResult = .failure(APIError.unknown("", "", nil))
-                return event
+        mockAPIPlugin.responders[.queryRequestResponse] = QueryRequestResponder<List<Comment4>> { _ in
+                throw APIError.unknown("", "", nil)
         }
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
@@ -108,12 +105,10 @@ extension AppSyncListProviderTests {
     }
 
     func testLoadedStateGetNextPageFailure_GraphQLErrorResponse() async {
-        mockAPIPlugin.responders[.queryRequestResponse] =
-            QueryRequestResponder<List<Comment4>> { _ in
-                let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(
-                    .failure(GraphQLResponseError.error([GraphQLError]())))
-                return event
+        mockAPIPlugin.responders[.queryRequestResponse] = QueryRequestResponder<List<Comment4>> { _ in
+            return .failure(GraphQLResponseError.error([GraphQLError]()))
         }
+        
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
         guard case .loaded = provider.loadedState else {
