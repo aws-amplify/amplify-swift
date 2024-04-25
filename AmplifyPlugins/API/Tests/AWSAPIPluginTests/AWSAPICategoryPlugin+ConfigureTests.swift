@@ -66,8 +66,8 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
             XCTFail("Missing endpoint configuration")
             return
         }
-        XCTAssertEqual(endpoint.key, defaultGraphQLAPI)
-        XCTAssertEqual(endpoint.value.name, defaultGraphQLAPI)
+        XCTAssertEqual(endpoint.key, AWSAPIPlugin.defaultGraphQLAPI)
+        XCTAssertEqual(endpoint.value.name, AWSAPIPlugin.defaultGraphQLAPI)
         XCTAssertEqual(endpoint.value.endpointType, .graphQL)
         XCTAssertEqual(endpoint.value.apiKey, "apiKey123")
         XCTAssertEqual(endpoint.value.baseURL, URL(string: "http://www.example.com"))

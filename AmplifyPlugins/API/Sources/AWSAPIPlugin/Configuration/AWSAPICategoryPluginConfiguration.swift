@@ -196,7 +196,7 @@ public struct AWSAPICategoryPluginConfiguration {
         authService: AWSAuthServiceBehavior
     ) throws -> [APIEndpointName: EndpointConfig] {
         var endpoints = [APIEndpointName: EndpointConfig]()
-        let name = defaultGraphQLAPI
+        let name = AWSAPIPlugin.defaultGraphQLAPI
         let endpointConfig = try EndpointConfig(name: name,
                                                 config: config,
                                                 apiAuthProviderFactory: apiAuthProviderFactory,
