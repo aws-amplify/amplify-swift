@@ -27,7 +27,7 @@ fi
 
 if [ -f "$SOURCE_DIR/AWSS3StoragePluginTests-amplifyconfiguration.json" ]; then
     cp "$SOURCE_DIR/AWSS3StoragePluginTests-amplifyconfiguration.json" "$DESTINATION_DIR/amplifyconfiguration.json"
-fi
+else
     touch "$DESTINATION_DIR/amplifyconfiguration.json"
 fi
 
