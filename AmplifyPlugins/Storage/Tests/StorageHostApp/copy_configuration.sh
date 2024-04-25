@@ -27,19 +27,15 @@ fi
 
 if [ -f "$SOURCE_DIR/AWSS3StoragePluginTests-amplifyconfiguration.json" ]; then
     cp "$SOURCE_DIR/AWSS3StoragePluginTests-amplifyconfiguration.json" "$DESTINATION_DIR/amplifyconfiguration.json"
-    exit 0
 fi
     touch "$DESTINATION_DIR/amplifyconfiguration.json"
 fi
 
 if [ -f "$SOURCE_DIR/AWSS3StoragePluginTests-amplify_outputs.json" ]; then
     cp "$SOURCE_DIR/AWSS3StoragePluginTests-amplify_outputs.json" "$DESTINATION_DIR/amplify_outputs.json"
-    exit 0
 else
     touch "$DESTINATION_DIR/amplify_outputs.json"
 fi
-
-
 
 exit 0
 
