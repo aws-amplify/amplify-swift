@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class AuthCategoryConfigurationTests: XCTestCase {
@@ -48,6 +48,25 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(auth: config)
 
         try Amplify.configure(amplifyConfig)
+
+        XCTAssertNotNil(Amplify.Auth)
+        XCTAssertNotNil(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"))
+    }
+
+    /// Test if Auth plugin can be configured with AmplifyOutputs
+    ///
+    /// - Given: UnConfigured Amplify framework
+    /// - When:
+    ///    - I add a new Auth plugin and add configuration
+    /// - Then:
+    ///    - Auth plugin should be configured correctly
+    ///
+    func testCanConfigureCategoryWithAmplifyOutputs() throws {
+        let plugin = MockAuthCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        
+        let config = AmplifyOutputsData()
+        try Amplify.configure(config)
 
         XCTAssertNotNil(Amplify.Auth)
         XCTAssertNotNil(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"))

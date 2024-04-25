@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "450D74A7-6EBF-40F5-87CE-BB73E08C2008",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AuthHostApp.xcodeproj",
+        "identifier" : "21F7629F2BD6B1AA0048845A",
+        "name" : "AuthGen2IntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

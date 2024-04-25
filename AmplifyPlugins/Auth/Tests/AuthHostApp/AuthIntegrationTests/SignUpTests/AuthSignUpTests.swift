@@ -22,6 +22,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
     func testSuccessfulRegisterUser() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
+
         let options = AuthSignUpRequest.Options(userAttributes: [
             AuthUserAttribute(.email, value: defaultTestEmail)])
         let signUpResult = try await Amplify.Auth.signUp(username: username,

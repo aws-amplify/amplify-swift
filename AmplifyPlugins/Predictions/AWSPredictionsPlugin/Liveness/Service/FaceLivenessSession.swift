@@ -17,6 +17,11 @@ public final class FaceLivenessSession: LivenessService {
     let baseURL: URL
     var serverEventListeners: [LivenessEventKind.Server: (FaceLivenessSession.SessionConfiguration) -> Void] = [:]
     var onComplete: (ServerDisconnection) -> Void = { _ in }
+    
+    private let livenessServiceDispatchQueue = DispatchQueue(
+        label: "com.amazon.aws.amplify.liveness.service",
+        target: .global()
+    )
 
     init(
         websocket: WebSocketSession,
@@ -77,36 +82,38 @@ public final class FaceLivenessSession: LivenessService {
 
     public func send<T>(
         _ event: LivenessEvent<T>,
-        eventDate: () -> Date = Date.init
+        eventDate: @escaping () -> Date = Date.init
     ) {
-        let encodedPayload = eventStreamEncoder.encode(
-            payload: event.payload,
-            headers: [
-                ":content-type": .string("application/json"),
-                ":event-type": .string(event.eventTypeHeader),
-                ":message-type": .string("event")
-            ]
-        )
+        livenessServiceDispatchQueue.async {
+            let encodedPayload = self.eventStreamEncoder.encode(
+                payload: event.payload,
+                headers: [
+                    ":content-type": .string("application/json"),
+                    ":event-type": .string(event.eventTypeHeader),
+                    ":message-type": .string("event")
+                ]
+            )
 
-        let eventDate = eventDate()
+            let eventDate = eventDate()
 
-        let signedPayload = signer.signWithPreviousSignature(
-            payload: encodedPayload,
-            dateHeader: (key: ":date", value: eventDate)
-        )
+            let signedPayload = self.signer.signWithPreviousSignature(
+                payload: encodedPayload,
+                dateHeader: (key: ":date", value: eventDate)
+            )
 
-        let encodedEvent = eventStreamEncoder.encode(
-            payload: encodedPayload,
-            headers: [
-                ":date": .timestamp(eventDate),
-                ":chunk-signature": .data(signedPayload)
-            ]
-        )
+            let encodedEvent = self.eventStreamEncoder.encode(
+                payload: encodedPayload,
+                headers: [
+                    ":date": .timestamp(eventDate),
+                    ":chunk-signature": .data(signedPayload)
+                ]
+            )
 
-        websocket.send(
-            message: .data(encodedEvent),
-            onError: { _ in }
-        )
+            self.websocket.send(
+                message: .data(encodedEvent),
+                onError: { _ in }
+            )
+        }
     }
 
     private func fallbackDecoding(_ message: EventStream.Message) -> Bool {

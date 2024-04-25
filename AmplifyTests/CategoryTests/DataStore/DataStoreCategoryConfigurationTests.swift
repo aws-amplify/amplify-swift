@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class DataStoreCategoryConfigurationTests: XCTestCase {
@@ -32,6 +32,24 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
         let amplifyConfig = AmplifyConfiguration()
         try Amplify.configure(amplifyConfig)
+
+        XCTAssertNotNil(Amplify.DataStore)
+        XCTAssertNotNil(Amplify.DataStore.plugin)
+        wait(for: [methodInvokedOnDefaultPlugin], timeout: 1.0)
+    }
+
+    func testCanConfigureWithAmplifyOutputs() throws {
+        let plugin = MockDataStoreCategoryPlugin()
+        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
+        plugin.listeners.append { message in
+            if message == "configure(using:)" {
+                methodInvokedOnDefaultPlugin.fulfill()
+            }
+        }
+
+        try Amplify.add(plugin: plugin)
+        let amplifyOutputs = AmplifyOutputsData()
+        try Amplify.configure(amplifyOutputs)
 
         XCTAssertNotNil(Amplify.DataStore)
         XCTAssertNotNil(Amplify.DataStore.plugin)

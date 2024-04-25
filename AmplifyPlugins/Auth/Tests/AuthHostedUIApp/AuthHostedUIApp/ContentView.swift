@@ -42,7 +42,6 @@ struct ContentView: View {
         }
         self.loading = false
     }
-
 }
 
 struct ContentView_Previews: PreviewProvider {

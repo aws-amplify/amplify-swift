@@ -54,4 +54,9 @@ struct PluginErrorMessage {
         "Could not initialize service configuration",
         "This should not happen"
     )
+
+    static let amplifyOutputsConfigurationNotSupportedError: PluginErrorString = (
+        "Configuring with Amplify CLI Gen2 configuration is currently not supported.",
+        "Do not add the predictions plugin to Amplify, remove call to add predictions via `Amplify.add(plugin:)`."
+    )
 }

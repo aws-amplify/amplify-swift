@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21F762D12BD6B3A10048845A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5E29515DEF0079E55A /* AsyncTesting.swift */; };
+		21F762D22BD6B3A10048845A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */; };
+		21F762D32BD6B3A10048845A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */; };
+		21F762D42BD6B3A10048845A /* AWSLocationGeoPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB824628233A1D00FC2228 /* AWSLocationGeoPluginIntegrationTests.swift */; };
+		21F762D52BD6B3A10048845A /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB82542823466800FC2228 /* TestConfigHelper.swift */; };
+		21F762D82BD6B3A10048845A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97DB8244282339D200FC2228 /* README.md */; };
 		685777D92A3CC0AB001CE5C1 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 685777D82A3CC0AB001CE5C1 /* Amplify */; };
 		685777DB2A3CC0AB001CE5C1 /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 685777DA2A3CC0AB001CE5C1 /* AWSLocationGeoPlugin */; };
 		685777DD2A3CC0B0001CE5C1 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 685777DC2A3CC0B0001CE5C1 /* AWSCognitoAuthPlugin */; };
@@ -43,6 +49,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		21F762CF2BD6B3A10048845A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97AD222628230B98001AFCC1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97AD222D28230B98001AFCC1;
+			remoteInfo = GeoHostApp;
+		};
 		685778082A3CC0E1001CE5C1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97AD222628230B98001AFCC1 /* Project object */;
@@ -67,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21F762DD2BD6B3A10048845A /* AWSLocationGeoPluginGen2IntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSLocationGeoPluginGen2IntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		21F762DE2BD6B3CE0048845A /* AWSLocationGeoPluginGen2IntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AWSLocationGeoPluginGen2IntegrationTests.xctestplan; sourceTree = "<group>"; };
 		685777C32A3CC08B001CE5C1 /* GeoWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		685778072A3CC0D8001CE5C1 /* AWSLocationGeoPluginIntegrationTestsWatch.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSLocationGeoPluginIntegrationTestsWatch.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		978B1D5E29515DEF0079E55A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
@@ -88,6 +103,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		21F762D62BD6B3A10048845A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		685777C02A3CC08B001CE5C1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -175,6 +197,7 @@
 				97914B8E295570E1002000EA /* GeoStressTests.xctest */,
 				685777C32A3CC08B001CE5C1 /* GeoWatchApp.app */,
 				685778072A3CC0D8001CE5C1 /* AWSLocationGeoPluginIntegrationTestsWatch.xctest */,
+				21F762DD2BD6B3A10048845A /* AWSLocationGeoPluginGen2IntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -202,6 +225,7 @@
 		97DB823C282339B700FC2228 /* AWSLocationGeoPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				21F762DE2BD6B3CE0048845A /* AWSLocationGeoPluginGen2IntegrationTests.xctestplan */,
 				97DB824628233A1D00FC2228 /* AWSLocationGeoPluginIntegrationTests.swift */,
 				97DB82542823466800FC2228 /* TestConfigHelper.swift */,
 				97DB8244282339D200FC2228 /* README.md */,
@@ -227,6 +251,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		21F762CD2BD6B3A10048845A /* AWSLocationGeoPluginGen2IntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21F762DA2BD6B3A10048845A /* Build configuration list for PBXNativeTarget "AWSLocationGeoPluginGen2IntegrationTests" */;
+			buildPhases = (
+				21F762D02BD6B3A10048845A /* Sources */,
+				21F762D62BD6B3A10048845A /* Frameworks */,
+				21F762D72BD6B3A10048845A /* Resources */,
+				21F762D92BD6B3A10048845A /* Copy Configuration Folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				21F762CE2BD6B3A10048845A /* PBXTargetDependency */,
+			);
+			name = AWSLocationGeoPluginGen2IntegrationTests;
+			productName = AWSLocationGeoPluginIntegrationTests;
+			productReference = 21F762DD2BD6B3A10048845A /* AWSLocationGeoPluginGen2IntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		685777C22A3CC08B001CE5C1 /* GeoWatchApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 685777D62A3CC08C001CE5C1 /* Build configuration list for PBXNativeTarget "GeoWatchApp" */;
@@ -377,11 +420,20 @@
 				97914B7E295570E1002000EA /* GeoStressTests */,
 				685777C22A3CC08B001CE5C1 /* GeoWatchApp */,
 				685777F72A3CC0D8001CE5C1 /* AWSLocationGeoPluginIntegrationTestsWatch */,
+				21F762CD2BD6B3A10048845A /* AWSLocationGeoPluginGen2IntegrationTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		21F762D72BD6B3A10048845A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21F762D82BD6B3A10048845A /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		685777C12A3CC08B001CE5C1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -425,6 +477,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		21F762D92BD6B3A10048845A /* Copy Configuration Folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
 		685778032A3CC0D8001CE5C1 /* Copy Configuration Folder */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -482,6 +552,18 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		21F762D02BD6B3A10048845A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21F762D12BD6B3A10048845A /* AsyncTesting.swift in Sources */,
+				21F762D22BD6B3A10048845A /* AsyncExpectation.swift in Sources */,
+				21F762D32BD6B3A10048845A /* XCTestCase+AsyncTesting.swift in Sources */,
+				21F762D42BD6B3A10048845A /* AWSLocationGeoPluginIntegrationTests.swift in Sources */,
+				21F762D52BD6B3A10048845A /* TestConfigHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		685777BF2A3CC08B001CE5C1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -539,6 +621,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		21F762CE2BD6B3A10048845A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97AD222D28230B98001AFCC1 /* GeoHostApp */;
+			targetProxy = 21F762CF2BD6B3A10048845A /* PBXContainerItemProxy */;
+		};
 		685778092A3CC0E1001CE5C1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 685777C22A3CC08B001CE5C1 /* GeoWatchApp */;
@@ -557,6 +644,59 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		21F762DB2BD6B3A10048845A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.com.AWSLocationGeoPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoHostApp.app/GeoHostApp";
+			};
+			name = Debug;
+		};
+		21F762DC2BD6B3A10048845A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.com.AWSLocationGeoPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoHostApp.app/GeoHostApp";
+			};
+			name = Release;
+		};
 		685777D42A3CC08C001CE5C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -959,6 +1099,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		21F762DA2BD6B3A10048845A /* Build configuration list for PBXNativeTarget "AWSLocationGeoPluginGen2IntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21F762DB2BD6B3A10048845A /* Debug */,
+				21F762DC2BD6B3A10048845A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		685777D62A3CC08C001CE5C1 /* Build configuration list for PBXNativeTarget "GeoWatchApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

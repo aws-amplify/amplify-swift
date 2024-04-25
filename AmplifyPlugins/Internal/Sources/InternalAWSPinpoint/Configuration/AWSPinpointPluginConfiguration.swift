@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPinpoint
 import AWSClientRuntime
 import Foundation
@@ -32,8 +32,8 @@ public struct AWSPinpointPluginConfiguration {
         )
     }
 
-    private init(appId: String,
-                 region: String) {
+    public init(appId: String,
+                region: String) {
         self.appId = appId
         self.region = region
     }

@@ -29,6 +29,11 @@ final class PushNotificationHostAppUITests: XCTestCase {
     #if os(iOS)
         XCUIDevice.shared.orientation = .portrait
     #endif
+
+        if ProcessInfo.processInfo.arguments.contains("GEN2") {
+            app.launchArguments.append("GEN2")
+        }
+
         app.launch()
     }
 

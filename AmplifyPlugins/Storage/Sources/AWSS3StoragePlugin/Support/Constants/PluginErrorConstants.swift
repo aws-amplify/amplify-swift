@@ -19,6 +19,10 @@ struct PluginErrorConstants {
         "Configuration was not a dictionary literal",
         "Make sure the value for the plugin is a dictionary literal with keys 'Bucket' and 'Region'")
 
+    static let missingStorageCategoryConfiguration: PluginErrorString = (
+        "Plugin is missing `Storage` category in configuration.",
+        "Add the `Storage` section to the configuration.")
+
     static let missingBucket: PluginErrorString = (
         "The 'Bucket' key is missing from the configuration",
         "Make sure 'Bucket' is in the dictionary for the plugin configuration")

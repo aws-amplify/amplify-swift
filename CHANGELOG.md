@@ -1,5 +1,63 @@
 # Changelog
 
+## 2.29.3 (2024-04-22)
+
+### Bug Fixes
+
+- **API**: make sure unsubscribe is invoked when subscription cancelled (#3619)
+
+## 2.29.2 (2024-04-17)
+
+### Bug Fixes
+
+- **api**: AWSGraphQLSubscriptionTaskRunner failing to cancel AppSyncRealTimeSubscription (#3615)
+- **Core**: TaskQueue async execution (#3611)
+
+## 2.29.1 (2024-04-10)
+
+### Bug Fixes
+
+- **api**: add collection type casting in swift 5.7 (#3602)
+- **Auth**: throw correct error for an unknown session error (#3591)
+- **DataStore**: Fixing a crash when attempting to create a model with a predicate. (#3600)
+
+## 2.29.0 (2024-04-03)
+
+### Features
+
+- **API**: implement AppSyncRealTimeClient and WebSocketClient with URLSession (#3575)
+
+### Bug Fixes
+
+- **api**: add user-agent header to appsync websocket handshake request (#3586)
+
+## 2.28.0 (2024-03-21)
+
+### Features
+
+- **Auth**: Adding forceAliasCreation option during confirmSignUp (#3382)
+
+## 2.27.3 (2024-03-18)
+
+### Bug Fixes
+
+- **Logging**: Updating the required reason API usage (#3570)
+
+## 2.27.2 (2024-03-11)
+
+### Bug Fixes
+
+- **DataStore**: created and deleted model on one device appears as created on the other (#3554)
+- **predictions**: Serialize the dispatch of web socket events (#3558)
+
+## 2.27.1 (2024-03-07)
+
+### Bug Fixes
+
+- add collected data types to privacy manifests (#3531)
+- **DataStore**: endless retry of mutation request when server responds with 401 error code (#3511) (#3512)
+- **amplify-xcode**: Fixing errors during amplify pull (#3536)
+
 ## 2.27.0 (2024-02-22)
 
 ### Features

@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class APICategoryConfigurationTests: XCTestCase {
@@ -36,6 +36,19 @@ class APICategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"))
     }
 
+    func testCanConfigureAPIPluginWithAmplifyOutputs() throws {
+        let plugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
+
+        XCTAssertNotNil(Amplify.API)
+        XCTAssertNotNil(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"))
+    }
+
+
     func testCanResetAPIPlugin() async throws {
         let plugin = MockAPICategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
@@ -53,6 +66,23 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
+        await Amplify.reset()
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
+    }
+
+    func testCanResetAPIPluginFromAmplifyOutputs() async throws {
+        let plugin = MockAPICategoryPlugin()
+        let resetWasInvoked = expectation(description: "reset() was invoked")
+        plugin.listeners.append { message in
+            if message == "reset" {
+                resetWasInvoked.fulfill()
+            }
+        }
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
         await Amplify.reset()
         await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }

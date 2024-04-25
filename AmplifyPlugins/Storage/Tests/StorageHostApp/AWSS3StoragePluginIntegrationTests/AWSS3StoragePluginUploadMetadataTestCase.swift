@@ -238,9 +238,16 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
             "Cast to `AWSS3StoragePlugin` failed"
         )
         let s3Client = storagePlugin.getEscapeHatch()
-        let bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
-            forResource: "amplifyconfiguration"
-        )
+        let bucket: String
+        if useGen2Configuration {
+            bucket = try getBucketFromConfig(
+                forResource: "amplify_outputs"
+            )
+        } else {
+            bucket = try getBucketFromConfig(
+                forResource: "amplifyconfiguration"
+            )
+        }
         let input = HeadObjectInput(
             bucket: bucket,
             key: key

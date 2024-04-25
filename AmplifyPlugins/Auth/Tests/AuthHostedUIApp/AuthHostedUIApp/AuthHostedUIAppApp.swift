@@ -13,7 +13,12 @@ import AWSCognitoAuthPlugin
 struct AuthHostedUIAppApp: App {
 
     let amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration"
+    let amplifyOutputsFile = "testconfiguration/AWSCognitoAuthPluginHostedUIIntegrationTests-amplify_outputs"
     var amplifyConfiguration: AmplifyConfiguration!
+
+    var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -23,16 +28,21 @@ struct AuthHostedUIAppApp: App {
 
     init() {
         do {
-            let configuration = retreiveConfiguration()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            try Amplify.configure(configuration)
+            if useGen2Configuration {
+                let data = try ConfigurationHelper.retrieve(forResource: amplifyOutputsFile)
+                try Amplify.configure(with: .data(data))
+            } else {
+                let configuration = retreiveConfiguration()
+                try Amplify.configure(configuration)
+            }
+
             print("Amplify configured with auth plugin")
         } catch {
             print("Failed to initialize Amplify with \(error)")
         }
     }
-
-
+    
     func retreiveConfiguration() -> AmplifyConfiguration {
         do {
             return try ConfigurationHelper.retrieveAmplifyConfiguration(

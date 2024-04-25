@@ -28,5 +28,9 @@ extension AWSPinpointAnalyticsPlugin {
             networkMonitor.stopMonitoring()
             networkMonitor = nil
         }
+
+        if options != nil {
+            options = nil
+        }
     }
 }

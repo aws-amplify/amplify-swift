@@ -18,6 +18,7 @@ struct URLRequestConstants {
         static let userAgent = "User-Agent"
         static let xApiKey = "x-api-key"
         static let host = "Host"
+        static let webSocketSubprotocols = "Sec-WebSocket-Protocol"
     }
 
     struct ContentType {

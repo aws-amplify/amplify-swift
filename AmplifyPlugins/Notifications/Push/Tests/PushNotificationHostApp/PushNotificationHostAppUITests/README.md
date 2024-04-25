@@ -1,8 +1,10 @@
 # Push Notification plugin Integration Test
 
-The following steps demostrate how to set up Push Notification Category. Auth category is also required for signing with AWS Pinpoint service and requesting with IAM credentials to allow unauthenticated and authenticated access.
+## Schema: PushNotificationsHostApp
 
-## Set up Amplify
+The following steps demonstrate how to set up Push Notification Category. Auth category is also required for signing with AWS Pinpoint service and requesting with IAM credentials to allow unauthenticated and authenticated access.
+
+### Set up Amplify
 
 1. `amplify init`
 
@@ -30,6 +32,17 @@ The following steps demostrate how to set up Push Notification Category. Auth ca
 ```
 cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSPushNotificationPluginIntegrationTest-amplifyconfiguration.json 
 ```
+
+## Schema: PushNotificationsGen2HostApp
+
+The following steps demonstrate to set up the same as above with Amplify CLI Gen2.
+
+
+1. Copy `amplify_outputs.json` to `AWSPushNotificationPluginIntegrationTest-amplify_outputs.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+```
+cp amplify_outputs.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSPushNotificationPluginIntegrationTest-amplify_outputs.json 
+```
+
 
 ## Run Integration Tests
 

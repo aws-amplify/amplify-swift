@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@testable @_spi(InternalAmplifyConfiguration) import Amplify
 @testable import AWSLocationGeoPlugin
 
 struct GeoPluginTestConfig {
@@ -55,4 +55,11 @@ struct GeoPluginTestConfig {
         (AWSLocationGeoPluginConfiguration.Node.region.key, regionJSON),
         (AWSLocationGeoPluginConfiguration.Section.maps.key, mapsConfigJSON),
         (AWSLocationGeoPluginConfiguration.Section.searchIndices.key, searchConfigJSON))
+
+    static let geoPluginConfigAmplifyOutputs = AmplifyOutputsData(
+        geo: .init(
+            awsRegion: regionName,
+            maps: .init(items: [map: .init(style: style)], default: map),
+            searchIndices: .init(items: [searchIndex], default: searchIndex),
+            geofenceCollections: nil))
 }

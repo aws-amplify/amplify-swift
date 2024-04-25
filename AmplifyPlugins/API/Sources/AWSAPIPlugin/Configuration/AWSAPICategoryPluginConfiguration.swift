@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import Foundation
 import AWSPluginsCore
 
@@ -40,6 +40,36 @@ public struct AWSAPICategoryPluginConfiguration {
         let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(forEndpoints: endpoints,
                                                                                   apiAuthProviderFactory: apiAuthProviderFactory,
                                                                                   authService: authService)
+
+        self.init(endpoints: endpoints,
+                  interceptors: interceptors,
+                  apiAuthProviderFactory: apiAuthProviderFactory,
+                  authService: authService)
+
+    }
+
+    init(configuration: AmplifyOutputsData,
+         apiAuthProviderFactory: APIAuthProviderFactory,
+         authService: AWSAuthServiceBehavior) throws {
+
+        guard let data = configuration.data else {
+            throw PluginError.pluginConfigurationError(
+                "Missing `data` category in the configuration.",
+                """
+                The specified configuration does not contain `data` category. Review the configuration and ensure it \
+                contains the expected values.
+                """
+            )
+        }
+
+        let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(
+            config: data,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService)
+        let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(
+            forEndpoints: endpoints,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService)
 
         self.init(endpoints: endpoints,
                   interceptors: interceptors,
@@ -157,6 +187,21 @@ public struct AWSAPICategoryPluginConfiguration {
             endpoints[name] = endpointConfig
         }
 
+        return endpoints
+    }
+
+    private static func endpointsFromConfig(
+        config: AmplifyOutputsData.DataCategory,
+        apiAuthProviderFactory: APIAuthProviderFactory,
+        authService: AWSAuthServiceBehavior
+    ) throws -> [APIEndpointName: EndpointConfig] {
+        var endpoints = [APIEndpointName: EndpointConfig]()
+        let name = AWSAPIPlugin.defaultGraphQLAPI
+        let endpointConfig = try EndpointConfig(name: name,
+                                                config: config,
+                                                apiAuthProviderFactory: apiAuthProviderFactory,
+                                                authService: authService)
+        endpoints[name] = endpointConfig
         return endpoints
     }
 
