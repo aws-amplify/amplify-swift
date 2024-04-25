@@ -10,6 +10,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
+import AWSPluginsCore
 
 class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
 
@@ -42,11 +43,11 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
     /// Request for `.amazonCognitoUserPool` at runtime with `request` while passing in what
     /// is configured as `.apiKey`. Expect that the interceptor is the token interceptor
     func testGetEndpointInterceptors() throws {
-        let request = GraphQLRequest<JSONValue>.appSync(apiName: apiName,
-                                                        document: testDocument,
-                                                        variables: nil,
-                                                        responseType: JSONValue.self,
-                                                        authMode: .amazonCognitoUserPools)
+        let request = GraphQLRequest<JSONValue>(apiName: apiName,
+                                                document: testDocument,
+                                                variables: nil,
+                                                responseType: JSONValue.self,
+                                                authMode: AWSAuthorizationType.amazonCognitoUserPools)
         let task = try OperationTestBase.makeSingleValueErrorMockTask()
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
         let pluginConfig = AWSAPICategoryPluginConfiguration(
