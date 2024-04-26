@@ -30,10 +30,23 @@ let amplifyTargets: [Target] = [
     .target(
         name: "AWSPluginsCore",
         dependencies: [
+            "Amplify"
+        ],
+        path: "AmplifyPlugins/Core/AWSPluginsCore",
+        exclude: [
+            "Info.plist"
+        ],
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ]
+    ),
+    .target(
+        name: "AWSPluginsSDKCore",
+        dependencies: [
             "Amplify",
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
-        path: "AmplifyPlugins/Core/AWSPluginsCore",
+        path: "AmplifyPlugins/Core/AWSPluginsSDKCore",
         exclude: [
             "Info.plist"
         ],
@@ -161,6 +174,7 @@ let authTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "AWSPluginsSDKCore"),
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
@@ -234,6 +248,7 @@ let storageTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "AWSPluginsSDKCore"),
             .product(name: "AWSS3", package: "aws-sdk-swift")],
         path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
@@ -264,6 +279,7 @@ let geoTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "AWSPluginsSDKCore"),
             .product(name: "AWSLocation", package: "aws-sdk-swift")],
         path: "AmplifyPlugins/Geo/Sources/AWSLocationGeoPlugin",
         exclude: [
@@ -295,6 +311,7 @@ let internalPinpointTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "AWSPluginsSDKCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
             .product(name: "AmplifyUtilsNotifications", package: "amplify-swift-utils-notifications")
@@ -363,6 +380,7 @@ let predictionsTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "AWSPluginsSDKCore"),
             .target(name: "CoreMLPredictionsPlugin"),
             .product(name: "AWSComprehend", package: "aws-sdk-swift"),
             .product(name: "AWSPolly", package: "aws-sdk-swift"),
@@ -413,6 +431,7 @@ let loggingTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "AWSPluginsSDKCore"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
@@ -457,6 +476,10 @@ let package = Package(
         .library(
             name: "AWSPluginsCore",
             targets: ["AWSPluginsCore"]
+        ),
+        .library(
+            name: "AWSPluginsSDKCore",
+            targets: ["AWSPluginsSDKCore"]
         ),
         .library(
             name: "AWSAPIPlugin",

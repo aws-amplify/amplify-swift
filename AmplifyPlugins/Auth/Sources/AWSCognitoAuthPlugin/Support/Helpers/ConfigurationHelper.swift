@@ -220,7 +220,7 @@ struct ConfigurationHelper {
                 AuthPluginErrorConstants.configurationMissingError
             )
         }
-        let userPoolConfig = try parseUserPoolData(config)
+        let userPoolConfig = parseUserPoolData(config)
         let identityPoolConfig = parseIdentityPoolData(config)
 
         return try createAuthConfiguration(userPoolConfig: userPoolConfig,
@@ -281,11 +281,10 @@ struct ConfigurationHelper {
                  "verificationMechanism": .array(verificationMechanisms)])
         }
 
-        return JSONValue.object(
-            ["auth": .object(
-                ["plugins": .object(
-                    ["awsCognitoAuthPlugin": .object(
-                        ["Auth": .object(
-                            ["Default": authConfigObject])])])])])
+        return JSONValue.object([
+            "Auth": .object([
+                "Default": authConfigObject
+            ])
+        ])
     }
 }
