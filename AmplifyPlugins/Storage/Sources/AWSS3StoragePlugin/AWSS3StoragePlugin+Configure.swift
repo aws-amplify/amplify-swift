@@ -37,6 +37,7 @@ extension AWSS3StoragePlugin {
 
         do {
             let authService = AWSAuthService()
+            let defaultAccessLevel = try configClosures.retrieveDefaultAccessLevel()
             let storageService = try AWSS3StorageService(authService: authService,
                                                          region: configClosures.retrieveRegion(),
                                                          bucket: configClosures.retrieveBucket(),
@@ -45,7 +46,7 @@ extension AWSS3StoragePlugin {
 
             configure(storageService: storageService, 
                       authService: authService,
-                      defaultAccessLevel: try configClosures.retrieveDefaultAccessLevel())
+                      defaultAccessLevel: defaultAccessLevel)
         } catch let storageError as StorageError {
             throw storageError
         } catch {
