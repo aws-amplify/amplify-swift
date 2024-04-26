@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import AWSAPIPlugin
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -18,7 +18,8 @@ import XCTest
 class GraphQLModelBasedTests: XCTestCase {
     
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
-    
+    static let amplifyOutputs = "testconfiguration/GraphQLModelBasedTests-amplify_outputs"
+
     final public class PostCommentModelRegistration: AmplifyModelRegistration {
         public func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
@@ -37,10 +38,15 @@ class GraphQLModelBasedTests: XCTestCase {
         do {
             try Amplify.add(plugin: plugin)
             
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: GraphQLModelBasedTests.amplifyConfiguration)
-            try Amplify.configure(amplifyConfig)
-            
+            if TestConfigHelper.useGen2Configuration {
+                let amplifyConfig = try TestConfigHelper.retrieveAmplifyOutputsData(
+                    forResource: GraphQLModelBasedTests.amplifyOutputs)
+                try Amplify.configure(amplifyConfig)
+            } else {
+                let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                    forResource: GraphQLModelBasedTests.amplifyConfiguration)
+                try Amplify.configure(amplifyConfig)
+            }
             ModelRegistry.register(modelType: Comment.self)
             ModelRegistry.register(modelType: Post.self)
             
@@ -225,7 +231,7 @@ class GraphQLModelBasedTests: XCTestCase {
                               post: post)
         let createdCommentResult = try await Amplify.API.mutate(request: .create(comment))
         guard case .success(let resultComment) = createdCommentResult else {
-            XCTFail("Error creating a Comment")
+            XCTFail("Error creating a Comment \(createdCommentResult)")
             return
         }
         XCTAssertEqual(resultComment.content, "commentContent")

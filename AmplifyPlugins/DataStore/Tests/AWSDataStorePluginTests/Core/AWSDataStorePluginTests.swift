@@ -9,11 +9,29 @@ import XCTest
 import AmplifyTestCommon
 @_implementationOnly import AmplifyAsyncTesting
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AWSDataStorePlugin
 
 // swiftlint:disable type_body_length
 class AWSDataStorePluginTests: XCTestCase {
+
+    /// Ensure that DataStore configures successfully, regardless of what configuration is passed to `configure(using:)`
+    func testConfigureWithAmplifyOutputs() throws {
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return MockStorageEngineBehavior()
+        }
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: DataStorePublisher(),
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+
+        let config = AmplifyOutputsData()
+        do {
+            try plugin.configure(using: config)
+        }
+    }
+
     func testStorageEngineDoesNotStartsOnConfigure() throws {
         let startExpectation = expectation(description: "Start Sync should not be called")
         startExpectation.isInverted = true

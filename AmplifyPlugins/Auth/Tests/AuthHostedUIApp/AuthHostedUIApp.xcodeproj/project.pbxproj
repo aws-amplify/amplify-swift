@@ -36,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21D41D1A2BC728190019D811 /* AuthHostedUIGen2App.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AuthHostedUIGen2App.xctestplan; sourceTree = "<group>"; };
 		B41080DE291ACF7E00297354 /* AuthHostedUIAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthHostedUIAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41080EA291ACFDB00297354 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 		B41080F4291AD10700297354 /* ConfigurationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationHelper.swift; sourceTree = "<group>"; };
@@ -161,6 +162,7 @@
 		B4EB96AA291ACF4400B73755 /* AuthHostedUIApp */ = {
 			isa = PBXGroup;
 			children = (
+				21D41D1A2BC728190019D811 /* AuthHostedUIGen2App.xctestplan */,
 				B4B978C5291C9A3B005B465D /* Views */,
 				B4B978C2291C8F76005B465D /* Info.plist */,
 				B41080F3291AD0F100297354 /* Utils */,

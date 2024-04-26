@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "49A89DBA-18FF-47BC-BF6B-90B7DBA9D44B",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:GeoHostApp.xcodeproj",
+        "identifier" : "21F762CD2BD6B3A10048845A",
+        "name" : "AWSLocationGeoPluginGen2IntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

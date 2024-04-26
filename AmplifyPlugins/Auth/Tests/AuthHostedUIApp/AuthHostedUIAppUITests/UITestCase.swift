@@ -16,6 +16,9 @@ class UITestCase: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
+        if ProcessInfo.processInfo.arguments.contains("GEN2") {
+            app.launchArguments.append("GEN2")
+        }
         app.launch()
 
         AuthenticatedScreen.signOutIfAuthenticated(app: app)

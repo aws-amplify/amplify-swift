@@ -14,7 +14,7 @@ struct GeoPluginConfigError {
     static func configurationInvalid(section: AWSLocationGeoPluginConfiguration.Section) -> PluginError {
         PluginError.pluginConfigurationError(
             "Unable to decode \(section.key) configuration.",
-            "Make sure the \(section.key) configuration is a JSONValue."
+            "Make sure the \(section.key) configuration is valid JSON."
         )
     }
 
