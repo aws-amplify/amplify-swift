@@ -52,7 +52,7 @@ class AWSRESTOperationTests: OperationTestBase {
         await fulfillment(of: [listenerWasInvoked], timeout: 3)
     }
 
-    func testGetFailsWithBadAPIName() throws {
+    func testGetFailsWithBadAPIName() async throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
         try setUpPluginForSingleResponse(sending: sentData, for: .rest)
 
@@ -69,14 +69,13 @@ class AWSRESTOperationTests: OperationTestBase {
                 receivedFailure.fulfill()
             }
         }
-
-        waitForExpectations(timeout: 1.00)
+        await fulfillment(of: [receivedSuccess, receivedFailure], timeout: 1)
     }
 
     /// - Given: A configured plugin
     /// - When: I invoke `APICategory.get(apiName:path:listener:)`
     /// - Then: The listener is invoked with the successful value
-    func testGetReturnsValue() throws {
+    func testGetReturnsValue() async throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
         try setUpPluginForSingleResponse(sending: sentData, for: .rest)
 
@@ -92,10 +91,10 @@ class AWSRESTOperationTests: OperationTestBase {
             callbackInvoked.fulfill()
         }
 
-        wait(for: [callbackInvoked], timeout: 1.0)
+        await fulfillment(of: [callbackInvoked], timeout: 1.0)
     }
 
-    func testRESTOperation_withCustomHeader_shouldOverrideDefaultAmplifyHeaders() throws {
+    func testRESTOperation_withCustomHeader_shouldOverrideDefaultAmplifyHeaders() async throws {
         let expectedHeaderValue = "text/plain"
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
         try setUpPluginForSingleResponse(sending: sentData, for: .rest)
@@ -117,7 +116,7 @@ class AWSRESTOperationTests: OperationTestBase {
             }
             callbackInvoked.fulfill()
         }
-        wait(for: [callbackInvoked, validated], timeout: 1.0)
+        await fulfillment(of: [callbackInvoked, validated], timeout: 1.0)
     }
 
 }

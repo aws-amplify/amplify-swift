@@ -24,67 +24,57 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         await tryOrFail {
             try setUpStorageAdapter()
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
-                                                                    dataStoreConfiguration: .testDefault(),
-                                                                    authModeStrategy: AWSDefaultAuthModeStrategy()))
+            try setUpDataStore(
+                mutationQueue: OutgoingMutationQueue(
+                    storageAdapter: storageAdapter,
+                    dataStoreConfiguration: .testDefault(),
+                    authModeStrategy: AWSDefaultAuthModeStrategy()
+                )
+            )
         }
 
-        let post = Post(title: "Post title",
-                        content: "Post content",
-                        createdAt: .now())
-
-        apiPlugin.responders[.mutateRequestResponse] = MutateRequestResponder { request in
-            let anyModel = try! post.eraseToAnyModel()
-            let remoteSyncMetadata = MutationSyncMetadata(modelId: post.id,
-                                                          modelName: Post.modelName,
-                                                          deleted: false,
-                                                          lastChangedAt: Date().unixSeconds,
-                                                          version: 2)
-            let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-            return .success(remoteMutationSync)
-        }
-
+        let post = Post(title: "Post title", content: "Post content", createdAt: .now())
         let outboxStatusReceivedCurrentCount = AtomicValue(initialValue: 0)
         let outboxStatusOnStart = expectation(description: "On DataStore start, outboxStatus received")
         let outboxStatusOnMutationEnqueued = expectation(description: "Mutation enqueued, outboxStatus received")
         let outboxMutationEnqueued = expectation(description: "Mutation enqueued, outboxMutationEnqueued received")
 
-        let outboxStatusFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxStatus)
-        let outboxMutationEnqueuedFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.outboxMutationEnqueued)
-        let filters = HubFilters.any(filters: outboxStatusFilter, outboxMutationEnqueuedFilter)
-        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
-            if payload.eventName == HubPayload.EventName.DataStore.outboxStatus {
-                _ = outboxStatusReceivedCurrentCount.increment(by: 1)
-                guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
-                    XCTFail("Failed to cast payload data as OutboxStatusEvent")
-                    return
-                }
-
-                switch outboxStatusReceivedCurrentCount.get() {
-                case 1:
-                    XCTAssertTrue(outboxStatusEvent.isEmpty)
-                    outboxStatusOnStart.fulfill()
-                case 2:
-                    XCTAssertFalse(outboxStatusEvent.isEmpty)
-                    outboxStatusOnMutationEnqueued.fulfill()
-                case 3:
-                    XCTAssertTrue(outboxStatusEvent.isEmpty)
-                default:
-                    XCTFail("Should not trigger outbox status event")
-                }
+        let hubListener0 = Amplify.Hub.listen(to: .dataStore, eventName: HubPayload.EventName.DataStore.outboxStatus) { payload in
+            defer { _ = outboxStatusReceivedCurrentCount.increment(by: 1) }
+            guard let outboxStatusEvent = payload.data as? OutboxStatusEvent else {
+                XCTFail("Failed to cast payload data as OutboxStatusEvent")
+                return
             }
 
-            if payload.eventName == HubPayload.EventName.DataStore.outboxMutationEnqueued {
-                guard let outboxStatusEvent = payload.data as? OutboxMutationEvent else {
-                    XCTFail("Failed to cast payload data as OutboxMutationEvent")
-                    return
-                }
-                XCTAssertEqual(outboxStatusEvent.modelName, "Post")
-                outboxMutationEnqueued.fulfill()
+            switch outboxStatusReceivedCurrentCount.get() {
+            case 0:
+                XCTAssertTrue(outboxStatusEvent.isEmpty)
+                outboxStatusOnStart.fulfill()
+            case 1:
+                XCTAssertFalse(outboxStatusEvent.isEmpty)
+                outboxStatusOnMutationEnqueued.fulfill()
+            case 2:
+                XCTAssertTrue(outboxStatusEvent.isEmpty)
+            default:
+                XCTFail("Should not trigger outbox status event")
             }
         }
 
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        let hubListener1 = Amplify.Hub.listen(to: .dataStore, eventName: HubPayload.EventName.DataStore.outboxMutationEnqueued) { payload in
+            guard let outboxStatusEvent = payload.data as? OutboxMutationEvent else {
+                XCTFail("Failed to cast payload data as OutboxMutationEvent")
+                return
+            }
+            XCTAssertEqual(outboxStatusEvent.modelName, "Post")
+            outboxMutationEnqueued.fulfill()
+        }
+
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener0, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener1, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -96,6 +86,19 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             }
         }
 
+        apiPlugin.responders[.mutateRequestResponse] = MutateRequestResponder { request in
+            let anyModel = try! post.eraseToAnyModel()
+            let remoteSyncMetadata = MutationSyncMetadata(
+                modelId: post.id,
+                modelName: Post.modelName,
+                deleted: false,
+                lastChangedAt: Date().unixSeconds,
+                version: 2
+            )
+            let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+            return .success(remoteMutationSync)
+        }
+
         try await startAmplifyAndWaitForSync()
 
         let saveSuccess = expectation(description: "save success")
@@ -103,10 +106,10 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             _ = try await Amplify.DataStore.save(post)
             saveSuccess.fulfill()
         }
-        await fulfillment(of: [saveSuccess], timeout: 1.0)
 
         await fulfillment(
             of: [
+                saveSuccess,
                 outboxStatusOnStart,
                 outboxStatusOnMutationEnqueued,
                 outboxMutationEnqueued,
@@ -114,7 +117,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             ],
             timeout: 5.0
         )
-        Amplify.Hub.removeListener(hubListener)
+        Amplify.Hub.removeListener(hubListener0)
+        Amplify.Hub.removeListener(hubListener1)
     }
 
     /// - Given: A sync-configured DataStore
