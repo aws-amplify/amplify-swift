@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.30.0 (2024-04-26)
+
+### Features
+
+- **all**: Configure plugins with AmplifyOutputs (#3567)
+
 ## 2.29.3 (2024-04-22)
 
 ### Bug Fixes
