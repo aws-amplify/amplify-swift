@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   prepare-for-test:
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -88,7 +88,7 @@ jobs:
   api-graphqliam-integration-test:
     if: ${{ false }}
     needs: [api-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -144,7 +144,7 @@ jobs:
   api-restiam-integration-test:
     if: ${{ false }}
     needs: [api-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -172,7 +172,7 @@ jobs:
   api-restuserpool-integration-test:
     if: ${{ false }}
     needs: [api-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -200,7 +200,7 @@ jobs:
   api-graphqllambda-integration-test:
     if: ${{ false }}
     needs: [api-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -284,7 +284,7 @@ jobs:
   datastore-integration-hub-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -367,7 +367,7 @@ jobs:
   datastore-integration-V1-S2-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -394,7 +394,7 @@ jobs:
   datastore-integration-V1-S3-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -421,7 +421,7 @@ jobs:
   datastore-integration-V1-S4-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -448,7 +448,7 @@ jobs:
   datastore-integration-V1-S5-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -475,7 +475,7 @@ jobs:
   datastore-integration-V1-S6-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -502,7 +502,7 @@ jobs:
   datastore-integration-V2-S1-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -529,7 +529,7 @@ jobs:
   datastore-integration-V2-S2-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -556,7 +556,7 @@ jobs:
   datastore-integration-V2-S3a-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -583,7 +583,7 @@ jobs:
   datastore-integration-V2-S3-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -610,7 +610,7 @@ jobs:
   datastore-integration-V2-S4-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -637,7 +637,7 @@ jobs:
   datastore-integration-V2-S5-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -664,7 +664,7 @@ jobs:
   datastore-integration-V2-S6-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -691,7 +691,7 @@ jobs:
   datastore-integration-V2-S7-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -718,7 +718,7 @@ jobs:
   datastore-integration-V2-S8-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -773,7 +773,7 @@ jobs:
   datastore-integration-observe-query-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -801,7 +801,7 @@ jobs:
   datastore-auth-integration-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -829,7 +829,7 @@ jobs:
   datastore-flutter-integration-test:
     if: ${{ false }}
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b

@@ -30,7 +30,7 @@ jobs:
     name: Release new ${{ inputs.type }} version
     environment: Release
     needs: [build-and-test-amplify, unit-tests, fortify]
-    runs-on: macos-latest
+    runs-on: macos-12
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 #v2
