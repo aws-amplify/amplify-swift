@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.31.0 (2024-04-26)
+
+### Features
+
+- **api**: add authorizationMode to GraphQLRequest (#3630)
+
 ## 2.30.0 (2024-04-26)
 
 ### Features
