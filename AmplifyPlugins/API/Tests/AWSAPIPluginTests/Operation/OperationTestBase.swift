@@ -59,7 +59,7 @@ class OperationTestBase: XCTestCase {
     }
 
     func setUpPluginForSingleError(for endpointType: AWSAPICategoryPluginEndpointType) throws {
-        let task = try makeSingleValueErrorMockTask()
+        let task = try Self.makeSingleValueErrorMockTask()
         let mockSession = MockURLSession(onTaskForRequest: { _ in task })
         let sessionFactory = MockSessionFactory(returning: mockSession)
         try setUpPlugin(sessionFactory: sessionFactory, endpointType: endpointType)
@@ -102,7 +102,7 @@ class OperationTestBase: XCTestCase {
         return task
     }
 
-    func makeSingleValueErrorMockTask() throws -> MockURLSessionTask {
+    static func makeSingleValueErrorMockTask() throws -> MockURLSessionTask {
         var mockTask: MockURLSessionTask!
         mockTask = MockURLSessionTask(onResume: {
             guard let mockSession = mockTask.mockSession,
