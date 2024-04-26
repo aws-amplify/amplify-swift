@@ -17,14 +17,25 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     let searchText = "coffee shop"
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
     let amplifyConfigurationFile = "testconfiguration/AWSLocationGeoPluginIntegrationTests-amplifyconfiguration"
+    let amplifyOutputsFile = "testconfiguration/AWSLocationGeoPluginIntegrationTests-amplify_outputs"
+
+    var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
 
     override func setUp() {
         continueAfterFailure = false
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSLocationGeoPlugin())
-            let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
-            try Amplify.configure(configuration)
+
+            if useGen2Configuration {
+                let data = try TestConfigHelper.retrieve(forResource: amplifyOutputsFile)
+                try Amplify.configure(with: .data(data))
+            } else {
+                let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
+                try Amplify.configure(configuration)
+            }
         } catch {
             XCTFail("Failed to initialize and configure Amplify: \(error)")
         }

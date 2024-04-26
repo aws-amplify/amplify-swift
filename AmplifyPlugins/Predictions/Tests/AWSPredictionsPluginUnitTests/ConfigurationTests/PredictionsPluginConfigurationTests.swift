@@ -6,10 +6,14 @@
 //
 
 import XCTest
-import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AWSPredictionsPlugin
 
 class PredictionsPluginConfigurationTests: XCTestCase {
+
+    override func setUp() async throws {
+        await Amplify.reset()
+    }
 
     /// Test basic configuration parsing works
     ///
@@ -186,6 +190,22 @@ class PredictionsPluginConfigurationTests: XCTestCase {
 
         let categoryConfig = PredictionsCategoryConfiguration(plugins: ["NonExistentPlugin": true])
         let amplifyConfig = AmplifyConfiguration(predictions: categoryConfig)
+        do {
+            try Amplify.configure(amplifyConfig)
+            XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
+        } catch {
+            guard case PluginError.pluginConfigurationError = error else {
+                XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")
+                return
+            }
+        }
+    }
+
+    func testThrowsOnAmplifyOutputsConfiguration() throws {
+        let plugin = AWSPredictionsPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let amplifyConfig = AmplifyOutputsData()
         do {
             try Amplify.configure(amplifyConfig)
             XCTFail("Should have thrown a pluginConfigurationError if not supplied with a plugin-specific config.")

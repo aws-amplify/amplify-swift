@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 import XCTest
 
@@ -127,6 +127,22 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
     }
 
     // MARK: - Category tests
+
+    func testUsingAmplifyOutputs_withConfiguredPlugin_shouldSucceed() async throws {
+        let plugin = MockPushNotificationsCategoryPlugin()
+        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
+        plugin.listeners.append { message in
+            if message == "identifyUser(userId:test)" {
+                methodInvokedOnDefaultPlugin.fulfill()
+            }
+        }
+        try Amplify.add(plugin: plugin)
+        let config = AmplifyOutputsData()
+        try Amplify.configure(config)
+
+        try await Amplify.Notifications.Push.identifyUser(userId: "test")
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1.0)
+    }
 
     func testUsingCategory_withConfiguredPlugin_shouldSucceed() async throws {
         let plugin = MockPushNotificationsCategoryPlugin()

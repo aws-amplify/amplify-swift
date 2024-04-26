@@ -91,14 +91,21 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
+            authType = authorizationMode
+        } else {
+            authType = nil
+        }
         // Retrieve the subscription connection
         do {
             self.appSyncClient = try await appSyncClientFactory.getAppSyncRealTimeClient(
                 for: endpointConfig,
                 endpoint: endpointConfig.baseURL,
                 authService: authService,
-                authType: pluginOptions?.authType,
+                authType: authType,
                 apiAuthProviderFactory: apiAuthProviderFactory
             )
 
@@ -262,14 +269,21 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
+            authType = authorizationMode
+        } else {
+            authType = nil
+        }
         Task {
             do {
                 appSyncRealTimeClient = try await appSyncRealTimeClientFactory.getAppSyncRealTimeClient(
                     for: endpointConfig,
                     endpoint: endpointConfig.baseURL,
                     authService: authService,
-                    authType: pluginOptions?.authType,
+                    authType: authType,
                     apiAuthProviderFactory: apiAuthProviderFactory
                 )
 

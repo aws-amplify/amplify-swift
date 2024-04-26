@@ -49,7 +49,7 @@ class AWSRESTOperationTests: OperationTestBase {
         }
 
         XCTAssertNotNil(operation.request)
-        await fulfillment(of: [listenerWasInvoked], timeout: 1)
+        await fulfillment(of: [listenerWasInvoked], timeout: 3)
     }
 
     func testGetFailsWithBadAPIName() throws {

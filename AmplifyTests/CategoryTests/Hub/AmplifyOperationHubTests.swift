@@ -299,6 +299,93 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return try await taskAdapter.value
     }
 
+    @discardableResult
+    func getURL(
+        path: any StoragePath,
+        options: StorageGetURLOperation.Request.Options?
+    ) async throws -> URL {
+        let options = options ?? StorageGetURLRequest.Options()
+        let request = StorageGetURLRequest(key: key, options: options)
+        let operation = MockStorageGetURLOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
+    @discardableResult
+    public func downloadData(
+        path: any StoragePath,
+        options: StorageDownloadDataOperation.Request.Options? = nil
+    ) -> StorageDownloadDataTask {
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(key: key, options: options)
+        let operation = MockDispatchingStorageDownloadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
+    public func downloadFile(
+        path: any StoragePath,
+        local: URL,
+        options: StorageDownloadFileOperation.Request.Options?
+    ) -> StorageDownloadFileTask {
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+        let operation = MockDispatchingStorageDownloadFileOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
+    public func uploadData(
+        path: any StoragePath,
+        data: Data,
+        options: StorageUploadDataOperation.Request.Options?
+    ) -> StorageUploadDataTask {
+        let options = options ?? StorageUploadDataRequest.Options()
+        let request = StorageUploadDataRequest(key: key, data: data, options: options)
+        let operation = MockDispatchingStorageUploadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
+    public func uploadFile(
+        path: any StoragePath,
+        local: URL,
+        options: StorageUploadFileOperation.Request.Options?
+    ) -> StorageUploadFileTask {
+        let options = options ?? StorageUploadFileRequest.Options()
+        let request = StorageUploadFileRequest(key: key, local: local, options: options)
+        let operation = MockDispatchingStorageUploadFileOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
+    public func remove(
+        path: any StoragePath,
+        options: StorageRemoveRequest.Options? = nil
+    ) async throws -> String {
+        let options = options ?? StorageRemoveRequest.Options()
+        let request = StorageRemoveRequest(key: key, options: options)
+        let operation = MockDispatchingStorageRemoveOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
+    @discardableResult
+    func list(
+        path: any StoragePath,
+        options: StorageListOperation.Request.Options?
+    ) async throws -> StorageListResult {
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(options: options)
+        let operation = MockDispatchingStorageListOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
 }
 
 // swiftlint:disable:next type_name

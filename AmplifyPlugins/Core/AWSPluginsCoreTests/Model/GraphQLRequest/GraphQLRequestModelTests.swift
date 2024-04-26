@@ -29,11 +29,12 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.create(post)
+        let request = GraphQLRequest<Post>.create(post, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
         XCTAssert(request.variables != nil)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testUpdateMutationGraphQLRequest() {
@@ -43,11 +44,12 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .update))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.update(post)
+        let request = GraphQLRequest<Post>.update(post, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
         XCTAssert(request.variables != nil)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testDeleteMutationGraphQLRequest() {
@@ -57,11 +59,12 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .delete))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.delete(post)
+        let request = GraphQLRequest<Post>.delete(post, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
         XCTAssert(request.variables != nil)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testQueryByIdGraphQLRequest() {
@@ -70,11 +73,12 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.get(Post.self, byId: "id")
+        let request = GraphQLRequest<Post>.get(Post.self, byId: "id", authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post?.self)
         XCTAssert(request.variables != nil)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testListQueryGraphQLRequest() {
@@ -87,11 +91,12 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: PaginationDecorator())
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.list(Post.self, where: predicate)
+        let request = GraphQLRequest<Post>.list(Post.self, where: predicate, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == List<Post>.self)
         XCTAssertNotNil(request.variables)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testPaginatedListQueryGraphQLRequest() {
@@ -104,11 +109,12 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: PaginationDecorator(limit: 10))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.list(Post.self, where: predicate, limit: 10)
+        let request = GraphQLRequest<Post>.list(Post.self, where: predicate, limit: 10, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == List<Post>.self)
         XCTAssertNotNil(request.variables)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testOnCreateSubscriptionGraphQLRequest() {
@@ -116,11 +122,11 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onCreate)
+        let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onCreate, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
-
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() {
@@ -128,10 +134,11 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onUpdate)
+        let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onUpdate, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() {
@@ -139,9 +146,20 @@ class GraphQLRequestModelTest: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onDelete)
+        let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onDelete, authMode: .amazonCognitoUserPools)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
+        assertEquals(actualAuthMode: request.authMode, expectedAuthMode: .amazonCognitoUserPools)
+    }
+
+    // MARK: - Helpers
+
+    func assertEquals(actualAuthMode: AuthorizationMode?, expectedAuthMode: AWSAuthorizationType) {
+        guard let authMode = actualAuthMode as? AWSAuthorizationType else {
+            XCTFail("Missing authorizationMode on request")
+            return
+        }
+        XCTAssertEqual(authMode, expectedAuthMode)
     }
 }

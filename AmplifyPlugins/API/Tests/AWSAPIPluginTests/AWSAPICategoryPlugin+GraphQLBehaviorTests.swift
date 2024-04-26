@@ -8,6 +8,7 @@
 import XCTest
 import Amplify
 @testable import AWSAPIPlugin
+import AWSPluginsCore
 
 class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
@@ -15,10 +16,11 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
     func testQuery() {
         let operationFinished = expectation(description: "Operation should finish")
-        let request = GraphQLRequest(apiName: apiName,
-                                     document: testDocument,
-                                     variables: nil,
-                                     responseType: JSONValue.self)
+        let request = GraphQLRequest<JSONValue>(apiName: apiName,
+                                                document: testDocument,
+                                                variables: nil,
+                                                responseType: JSONValue.self,
+                                                authMode: AWSAuthorizationType.apiKey)
         let operation = apiPlugin.query(request: request) { _ in
             operationFinished.fulfill()
         }
