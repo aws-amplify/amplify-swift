@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPluginsCore
 import AwsCommonRuntimeKit
 
@@ -19,8 +19,15 @@ public extension AWSAPIPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
     func configure(using configuration: Any?) throws {
+        let dependencies: ConfigurationDependencies
+        if let configuration = configuration as? AmplifyOutputsData {
+            dependencies = try ConfigurationDependencies(configuration: configuration,
+                                                         apiAuthProviderFactory: authProviderFactory)
+        } else if let jsonValue = configuration as? JSONValue {
+            dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
+                                                         apiAuthProviderFactory: authProviderFactory)
 
-        guard let jsonValue = configuration as? JSONValue else {
+        } else {
             throw PluginError.pluginConfigurationError(
                 "Could not cast incoming configuration to JSONValue",
                 """
@@ -32,8 +39,6 @@ public extension AWSAPIPlugin {
             )
         }
 
-        let dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
-                                                         apiAuthProviderFactory: authProviderFactory)
         configure(using: dependencies)
 
         // Initialize SwiftSDK's CRT dependency for SigV4 signing functionality
@@ -63,7 +68,7 @@ extension AWSAPIPlugin {
             logLevel: Amplify.LogLevel? = nil
         ) throws {
             let authService = authService
-                ?? AWSAuthService()
+            ?? AWSAuthService()
 
             let pluginConfig = try AWSAPICategoryPluginConfiguration(
                 jsonValue: configurationValues,
@@ -72,6 +77,28 @@ extension AWSAPIPlugin {
             )
 
             let logLevel = logLevel ?? Amplify.Logging.logLevel
+
+            self.init(
+                pluginConfig: pluginConfig,
+                authService: authService,
+                appSyncRealTimeClientFactory: appSyncRealTimeClientFactory
+                ?? AppSyncRealTimeClientFactory(),
+                logLevel: logLevel
+            )
+        }
+
+        init(
+            configuration: AmplifyOutputsData,
+            apiAuthProviderFactory: APIAuthProviderFactory,
+            authService: AWSAuthServiceBehavior = AWSAuthService(),
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
+            logLevel: Amplify.LogLevel = Amplify.Logging.logLevel
+        ) throws {
+            let pluginConfig = try AWSAPICategoryPluginConfiguration(
+                configuration: configuration,
+                apiAuthProviderFactory: apiAuthProviderFactory,
+                authService: authService
+            )
 
             self.init(
                 pluginConfig: pluginConfig,

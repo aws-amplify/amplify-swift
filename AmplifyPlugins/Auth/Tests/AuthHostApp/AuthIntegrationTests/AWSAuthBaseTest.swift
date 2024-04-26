@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 import AWSCognitoAuthPlugin
 
 class AWSAuthBaseTest: XCTestCase {
@@ -27,10 +27,17 @@ class AWSAuthBaseTest: XCTestCase {
     }
 
     var amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
+    let amplifyOutputsFile =
+        "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
 
     var amplifyConfiguration: AmplifyConfiguration!
-    
+    var amplifyOutputs: AmplifyOutputsData!
+
+    var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
+
     override func setUp() async throws {
         try await super.setUp()
         initializeAmplify()
@@ -44,16 +51,21 @@ class AWSAuthBaseTest: XCTestCase {
 
     func initializeAmplify() {
         do {
-            let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: amplifyConfigurationFile)
-            amplifyConfiguration = configuration
-
             let credentialsConfiguration = (try? TestConfigHelper.retrieveCredentials(forResource: credentialsFile)) ?? [:]
             defaultTestEmail = credentialsConfiguration["test_email_1"] ?? defaultTestEmail
             defaultTestPassword = credentialsConfiguration["password"] ?? defaultTestPassword
             let authPlugin = AWSCognitoAuthPlugin()
             try Amplify.add(plugin: authPlugin)
-            try Amplify.configure(configuration)
+
+            if useGen2Configuration {
+                let data = try TestConfigHelper.retrieve(forResource: amplifyOutputsFile)
+                try Amplify.configure(with: .data(data))
+            } else {
+                let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
+                    forResource: amplifyConfigurationFile)
+                amplifyConfiguration = configuration
+                try Amplify.configure(amplifyConfiguration)
+            }
             Amplify.Logging.logLevel = .verbose
             print("Amplify configured with auth plugin")
         } catch {
@@ -106,7 +118,6 @@ class AWSAuthBaseTest: XCTestCase {
 class TestConfigHelper {
 
     static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-
         let data = try retrieve(forResource: forResource)
         return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
     }
@@ -122,7 +133,7 @@ class TestConfigHelper {
         return json
     }
 
-    private static func retrieve(forResource: String) throws -> Data {
+    static func retrieve(forResource: String) throws -> Data {
         guard let path = Bundle(for: self).path(forResource: forResource, ofType: "json") else {
             throw TestConfigError.bundlePathError("Could not retrieve configuration file: \(forResource)")
         }

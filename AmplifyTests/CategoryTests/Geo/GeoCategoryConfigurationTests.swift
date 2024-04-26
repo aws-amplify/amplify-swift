@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class GeoCategoryConfigurationTests: XCTestCase {
@@ -31,6 +31,17 @@ class GeoCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(geo: geoConfig)
 
         try Amplify.configure(amplifyConfig)
+
+        XCTAssertNotNil(Amplify.Geo)
+        XCTAssertNotNil(try Amplify.Geo.getPlugin(for: "MockGeoCategoryPlugin"))
+    }
+
+    func testCanConfigureGeoPluginWithAmplifyOutputs() throws {
+        let plugin = MockGeoCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+        try Amplify.configure(config)
 
         XCTAssertNotNil(Amplify.Geo)
         XCTAssertNotNil(try Amplify.Geo.getPlugin(for: "MockGeoCategoryPlugin"))

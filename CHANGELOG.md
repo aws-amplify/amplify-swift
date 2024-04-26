@@ -1,5 +1,54 @@
 # Changelog
 
+## 2.31.1 (2024-04-26)
+
+### Bug Fixes
+
+- **storage**: retrieve accesslevel before storage service (#3641)
+
+## 2.31.0 (2024-04-26)
+
+### Features
+
+- **api**: add authorizationMode to GraphQLRequest (#3630)
+
+## 2.30.0 (2024-04-26)
+
+### Features
+
+- **all**: Configure plugins with AmplifyOutputs (#3567)
+
+## 2.29.3 (2024-04-22)
+
+### Bug Fixes
+
+- **API**: make sure unsubscribe is invoked when subscription cancelled (#3619)
+
+## 2.29.2 (2024-04-17)
+
+### Bug Fixes
+
+- **api**: AWSGraphQLSubscriptionTaskRunner failing to cancel AppSyncRealTimeSubscription (#3615)
+- **Core**: TaskQueue async execution (#3611)
+
+## 2.29.1 (2024-04-10)
+
+### Bug Fixes
+
+- **api**: add collection type casting in swift 5.7 (#3602)
+- **Auth**: throw correct error for an unknown session error (#3591)
+- **DataStore**: Fixing a crash when attempting to create a model with a predicate. (#3600)
+
+## 2.29.0 (2024-04-03)
+
+### Features
+
+- **API**: implement AppSyncRealTimeClient and WebSocketClient with URLSession (#3575)
+
+### Bug Fixes
+
+- **api**: add user-agent header to appsync websocket handshake request (#3586)
+
 ## 2.28.0 (2024-03-21)
 
 ### Features

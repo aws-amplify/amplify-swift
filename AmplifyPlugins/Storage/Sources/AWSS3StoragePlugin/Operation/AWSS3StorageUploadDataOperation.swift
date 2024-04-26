@@ -26,7 +26,7 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     let authService: AWSAuthServiceBehavior
 
     var storageTaskReference: StorageTaskReference?
-
+    private var resolvedPath: String?
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
@@ -84,13 +84,22 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
             return
         }
 
-        let prefixResolver = storageConfiguration.prefixResolver ??
-        StorageAccessLevelAwarePrefixResolver(authService: authService)
+
 
         Task {
             do {
-                let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
-                let serviceKey = prefix + request.key
+
+                let serviceKey: String
+                if let path = request.path {
+                    serviceKey = try await path.resolvePath(authService: self.authService)
+                    resolvedPath = serviceKey
+                } else {
+                    let prefixResolver = storageConfiguration.prefixResolver ??
+                    StorageAccessLevelAwarePrefixResolver(authService: authService)
+                    let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
+                    serviceKey = prefix + request.key
+                }
+
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
                 if request.data.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold {
                     storageService.multiPartUpload(
@@ -134,7 +143,11 @@ class AWSS3StorageUploadDataOperation: AmplifyInProcessReportingOperation<
         case .inProcess(let progress):
             dispatch(progress)
         case .completed:
-            dispatch(request.key)
+            if let path = resolvedPath {
+                dispatch(path)
+            } else {
+                dispatch(request.key)
+            }
             finish()
         case .failed(let error):
             dispatch(error)

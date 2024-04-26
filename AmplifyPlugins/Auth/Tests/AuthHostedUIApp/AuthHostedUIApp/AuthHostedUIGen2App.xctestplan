@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "30D3C91B-B890-4F80-A290-A937B0782750",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AuthHostedUIApp.xcodeproj",
+        "identifier" : "B41080DD291ACF7E00297354",
+        "name" : "AuthHostedUIAppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

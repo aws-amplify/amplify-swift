@@ -26,6 +26,11 @@ struct PushNotificationsPluginErrorConstants {
         "Add the `PinpointPushNotifications` section to the plugin."
     )
 
+    static let missinAmplifyOutputsPinpointNotificationsConfiguration: PushNotificationsPluginErrorString = (
+        "Plugin is missing `notifications` category section.",
+        "Add the `notifications` category section in the configuration."
+    )
+
     static let deviceOffline: PushNotificationsPluginErrorString = (
         "The device does not have internet access.",
         "Please ensure the device is online and try again."
