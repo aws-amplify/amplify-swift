@@ -10,7 +10,7 @@
 $AMPLIFY_VERSION = '1.30.9'
 $AMPLIFY_RELEASE_TAG = "#{$AMPLIFY_VERSION}"
 
-$AWS_SDK_VERSION = '2.35.0'
+$AWS_SDK_VERSION = '2.36.0'
 $OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 
 Pod::Spec.new do |s|
@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'AWSAPIPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
-    ss.dependency 'AppSyncRealTimeClient', "~> 3.1"
+    ss.dependency 'AppSyncRealTimeClient', "~> 3.2"
   end
 
   s.subspec 'AWSCognitoAuthPlugin' do |ss|
