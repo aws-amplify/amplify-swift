@@ -51,29 +51,6 @@ class MockAPICategoryPlugin: MessageReporter,
 
     // MARK: - Request-based GraphQL methods
 
-//    func mutate<R>(request: GraphQLRequest<R>,
-//                   listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
-//        // This is a really weighty notification message, but needed for tests to be able to assert that a particular
-//        // model is being mutated
-//        notify("mutate(request) document: \(request.document); variables: \(String(describing: request.variables))")
-//
-//        if let responder = responders[.mutateRequestListener] as? MutateRequestListenerResponder<R> {
-//            if let operation = responder.callback((request, listener)) {
-//                return operation
-//            }
-//        }
-//        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
-//        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
-//                                                 operationType: .mutation,
-//                                                 document: request.document,
-//                                                 variables: request.variables,
-//                                                 responseType: request.responseType,
-//                                                 options: requestOptions)
-//        let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
-//
-//        return operation
-//    }
-    
     func mutate<R>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
         // This is a really weighty notification message, but needed for tests to be able to assert that a particular
         // model is being mutated
@@ -85,27 +62,6 @@ class MockAPICategoryPlugin: MessageReporter,
         return .failure(.unknown("No request responder configured", "", nil))
     }
 
-//    func query<R: Decodable>(request: GraphQLRequest<R>,
-//                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
-//        notify("query(request:listener:) request: \(request)")
-//
-//        if let responder = responders[.queryRequestListener] as? QueryRequestListenerResponder<R> {
-//            if let operation = responder.callback((request, listener)) {
-//                return operation
-//            }
-//        }
-//
-//        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
-//        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
-//                                                 operationType: .query,
-//                                                 document: request.document,
-//                                                 variables: request.variables,
-//                                                 responseType: request.responseType,
-//                                                 options: requestOptions)
-//        let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
-//
-//        return operation
-//    }
 
     func query<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
         notify("query(request:) request: \(request)")
@@ -114,44 +70,8 @@ class MockAPICategoryPlugin: MessageReporter,
             return try await responder.callback(request)
         }
 
-//        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
-//        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
-//                                                 operationType: .query,
-//                                                 document: request.document,
-//                                                 variables: request.variables,
-//                                                 responseType: request.responseType,
-//                                                 options: requestOptions)
-//        
         return .failure(.unknown("", "", nil))
     }
-    
-//    func subscribe<R: Decodable>(request: GraphQLRequest<R>,
-//                                 valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
-//                                 completionListener: GraphQLSubscriptionOperation<R>.ResultListener?)
-//        -> GraphQLSubscriptionOperation<R> {
-//            notify(
-//                """
-//                subscribe(request:listener:) document: \(request.document); \
-//                variables: \(String(describing: request.variables))
-//                """
-//            )
-//
-//            if let responder = responders[.subscribeRequestListener] as? SubscribeRequestListenerResponder<R> {
-//                if let operation = responder.callback((request, valueListener, completionListener)) {
-//                    return operation
-//                }
-//            }
-//
-//            let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
-//            let request = GraphQLOperationRequest<R>(apiName: request.apiName,
-//                                                     operationType: .subscription,
-//                                                     document: request.document,
-//                                                     variables: request.variables,
-//                                                     responseType: request.responseType,
-//                                                     options: requestOptions)
-//            let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
-//            return operation
-//    }
 
     func subscribe<R: Decodable>(request: GraphQLRequest<R>) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>> {
         notify(
