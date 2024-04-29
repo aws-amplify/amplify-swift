@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.32.0 (2024-04-29)
+
+### Features
+
+- **storage**: update Storage APIs with StoragePath parameter
+- **Storage**: Adding integration tests for getURL, remove and list (#3584)
+- **Storage**: Refactor list objects API to include `path` (#3580)
+- **storage**: update storage upload APIs to use storage path (#3574)
+- **Storage**: Refactor GetURL API to include `path` (#3573)
+- **storage**: update storage download api (#3561)
+- **storage**: refactor storage remove api by including path (#3571)
+- **storage**: add new storage gen2 APIs (#3559)
+
+### Bug Fixes
+
+- **Auth**: Fixing the Gen2 json configuration used by the Authenticator (#3647)
+
 ## 2.31.1 (2024-04-26)
 
 ### Bug Fixes
