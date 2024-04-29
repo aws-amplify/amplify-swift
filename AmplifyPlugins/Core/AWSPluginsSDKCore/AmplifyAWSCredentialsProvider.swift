@@ -8,6 +8,7 @@
 import Amplify
 import AWSClientRuntime
 import AwsCommonRuntimeKit
+import AWSPluginsCore
 import Foundation
 
 public class AmplifyAWSCredentialsProvider: AWSClientRuntime.CredentialsProviding {
@@ -24,7 +25,7 @@ public class AmplifyAWSCredentialsProvider: AWSClientRuntime.CredentialsProvidin
     }
 }
 
-extension AWSCredentials {
+extension AWSPluginsCore.AWSCredentials {
 
     func toAWSSDKCredentials() -> AWSClientRuntime.AWSCredentials {
         if let tempCredentials = self as? AWSTemporaryCredentials {

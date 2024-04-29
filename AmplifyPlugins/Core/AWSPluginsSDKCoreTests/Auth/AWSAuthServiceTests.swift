@@ -9,6 +9,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSPluginsCore
+@testable import AWSPluginsSDKCore
 import AWSClientRuntime
 
 class AWSAuthServiceTests: XCTestCase {

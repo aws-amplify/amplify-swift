@@ -44,12 +44,10 @@ let amplifyTargets: [Target] = [
         name: "AWSPluginsSDKCore",
         dependencies: [
             "Amplify",
+            "AWSPluginsCore",
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsSDKCore",
-        exclude: [
-            "Info.plist"
-        ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
         ]
@@ -59,7 +57,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "CwlPreconditionTesting",
-            "AWSPluginsCore"
+            "AWSPluginsSDKCore"
         ],
         path: "AmplifyTestCommon",
         exclude: [
@@ -102,6 +100,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "AWSPluginsCore",
+            "AWSPluginsSDKCore",
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
@@ -113,13 +112,21 @@ let amplifyTargets: [Target] = [
         name: "AWSPluginsCoreTests",
         dependencies: [
             "AWSPluginsCore",
-            "AmplifyTestCommon",
-            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+            "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
             "Info.plist"
         ]
+    ),
+    .testTarget(
+        name: "AWSPluginsSDKCoreTests",
+        dependencies: [
+            "AWSPluginsSDKCore",
+            "AmplifyTestCommon",
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyPlugins/Core/AWSPluginsSDKCoreTests"
     )
 ]
 
@@ -128,7 +135,7 @@ let apiTargets: [Target] = [
         name: "AWSAPIPlugin",
         dependencies: [
             .target(name: "Amplify"),
-            .target(name: "AWSPluginsCore")
+            .target(name: "AWSPluginsSDKCore")
         ],
         path: "AmplifyPlugins/API/Sources/AWSAPIPlugin",
         exclude: [

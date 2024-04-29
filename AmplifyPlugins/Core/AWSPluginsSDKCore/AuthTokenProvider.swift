@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 
 public protocol AuthTokenProvider {
     func getUserPoolAccessToken() async throws -> String

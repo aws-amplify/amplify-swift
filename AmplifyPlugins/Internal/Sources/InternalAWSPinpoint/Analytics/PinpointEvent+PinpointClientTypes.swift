@@ -7,6 +7,7 @@
 
 import AWSPinpoint
 import AWSPluginsCore
+import AWSPluginsSDKCore
 import Foundation
 
 extension PinpointEvent {

@@ -8,9 +8,10 @@
 import Foundation
 import Amplify
 import AWSClientRuntime
+import AWSPluginsCore
 
-public class AWSAuthCredentialsProvider: AWSAuthCredentialsProviderBehavior {
-    public func getCredentialsProvider() -> CredentialsProviding {
+extension AWSAuthService: AWSAuthCredentialsProviderBehavior {
+    public func getCredentialsProvider() -> AWSClientRuntime.CredentialsProviding {
         return AmplifyAWSCredentialsProvider()
     }
 }

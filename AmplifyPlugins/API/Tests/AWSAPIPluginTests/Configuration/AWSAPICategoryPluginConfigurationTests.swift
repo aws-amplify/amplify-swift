@@ -12,6 +12,7 @@ import Foundation
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
 import AWSPluginsCore
+import AWSPluginsSDKCore
 
 class AWSAPICategoryPluginConfigurationTests: XCTestCase {
     let graphQLAPI = "graphQLAPI"
