@@ -246,7 +246,7 @@ final class ConfigurationHelperTests: XCTestCase {
                 ]))
         let json = ConfigurationHelper.createUserPoolJsonConfiguration(config)
 
-        guard let authConfig = json.auth?.plugins?.awsCognitoAuthPlugin?.Auth?.Default else {
+        guard let authConfig = json.Auth?.Default else {
             XCTFail("Could not retrieve auth configuration from json")
             return
         }
