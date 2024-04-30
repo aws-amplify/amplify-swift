@@ -72,7 +72,7 @@ runs:
           "minimum": {
             "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.1",
             "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (2nd generation),OS=16.1",
-            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.1",
+            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4",
             "macOS": "platform=macOS,arch=x86_64"
           },
           "latest": {
