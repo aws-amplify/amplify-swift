@@ -39,8 +39,8 @@ runs:
     - id: get-xcode-version
       run: |
         LATEST_XCODE_VERSION=15.3.0
-        MINIMUM_XCODE_VERSION_IOS_MAC=15.0.0
-        MINIMUM_XCODE_VERSION_WATCH_TV=15.0.0
+        MINIMUM_XCODE_VERSION_IOS_MAC=15.0.1
+        MINIMUM_XCODE_VERSION_WATCH_TV=15.0.1
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
