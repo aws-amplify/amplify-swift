@@ -39,8 +39,7 @@ runs:
     - id: get-xcode-version
       run: |
         LATEST_XCODE_VERSION=15.3.0
-        MINIMUM_XCODE_VERSION_IOS_MAC=15.0.1
-        MINIMUM_XCODE_VERSION_WATCH_TV=15.0.1
+        MINIMUM_XCODE_VERSION=15.0.1
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
@@ -48,13 +47,7 @@ runs:
           latest)
             XCODE_VERSION=$LATEST_XCODE_VERSION ;;
           minimum)
-            INPUT_PLATFORM=${{ inputs.platform }}
-            case $INPUT_PLATFORM in
-              iOS|macOS)
-                XCODE_VERSION=$MINIMUM_XCODE_VERSION_IOS_MAC ;;
-              tvOS|watchOS)
-                XCODE_VERSION=$MINIMUM_XCODE_VERSION_WATCH_TV ;;
-            esac ;;
+            XCODE_VERSION=$MINIMUM_XCODE_VERSION ;;
           *)
             XCODE_VERSION=$INPUT_XCODE_VERSION ;;
         esac
@@ -84,7 +77,12 @@ runs:
         }'
 
         if [ -z "$INPUT_DESTINATION" ]; then
-          DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"$INPUT_XCODE_VERSION\".$INPUT_PLATFORM")
+          case $INPUT_XCODE_VERSION in
+            latest|minimum)
+              DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"$INPUT_XCODE_VERSION\".$INPUT_PLATFORM") ;;
+            *)
+              DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"latest\".$INPUT_PLATFORM") ;;
+          esac
         else
           DESTINATION=$INPUT_DESTINATION
         fi
