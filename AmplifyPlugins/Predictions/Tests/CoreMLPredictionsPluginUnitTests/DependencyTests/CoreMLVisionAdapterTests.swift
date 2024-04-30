@@ -17,20 +17,19 @@ class CoreMLVisionAdapterTests: XCTestCase {
         coreMLVisionAdapter = CoreMLVisionAdapter()
     }
 
-    func testDetectText() throws {
-        let url = try XCTUnwrap(
-            Bundle.module.url(forResource: "screenshotWithText", withExtension: "png", subdirectory: "TestImages")
-        )
-        let result = try coreMLVisionAdapter.detectText(url)
-        XCTAssertNotNil(result, "The result should be nil")
-    }
-
-#if !os(macOS)
     func testDetectLabels() throws {
         let url = try XCTUnwrap(
             Bundle.module.url(forResource: "people", withExtension: "jpg", subdirectory: "TestImages")
         )
         let result = try coreMLVisionAdapter.detectLabels(url)
+        XCTAssertNotNil(result, "The result should be nil")
+    }
+
+    func testDetectText() throws {
+        let url = try XCTUnwrap(
+            Bundle.module.url(forResource: "screenshotWithText", withExtension: "png", subdirectory: "TestImages")
+        )
+        let result = try coreMLVisionAdapter.detectText(url)
         XCTAssertNotNil(result, "The result should be nil")
     }
 
@@ -42,6 +41,5 @@ class CoreMLVisionAdapterTests: XCTestCase {
         XCTAssertNotNil(result, "The result should be nil")
         XCTAssertTrue(result?.entities.isEmpty != true, "The result should contain values for the image provided.")
     }
-#endif
 }
 #endif

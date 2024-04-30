@@ -70,8 +70,7 @@ jobs:
           AWSPredictionsPlugin,
           AWSPinpointAnalyticsPlugin,
           AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin,
-          CoreMLPredictionsPlugin
+          AWSS3StoragePlugin
         ]
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
@@ -96,8 +95,7 @@ jobs:
           { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
           { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
           { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
-          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
-          { scheme: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
+          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' }
         ]
     uses: ./.github/workflows/upload_coverage_report.yml
     with:
