@@ -32,7 +32,7 @@ on:
         required: false
         type: string
         default: '-test-iterations 3 -retry-tests-on-failure'
-      runner:
+      os-runner:
         description: 'runs-on input'
         type: string
 
@@ -42,7 +42,7 @@ permissions:
 jobs:
   unit-tests:
     name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ inputs.os-runner }}
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - name: Checkout repository

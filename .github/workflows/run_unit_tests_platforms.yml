@@ -21,7 +21,7 @@ on:
         required: false
         type: string
         default: '-test-iterations 3 -retry-tests-on-failure'
-      runner:
+      os-runner:
         description: 'runs-on input'
         type: string
         default: 'macos-latest'
@@ -48,4 +48,4 @@ jobs:
       generate_coverage_report: ${{ github.event_name != 'workflow_dispatch' && matrix.platform == 'iOS' && inputs.generate_coverage_report }}
       timeout-minutes: ${{ inputs.timeout-minutes }}
       test_iterations_flags: ${{ inputs.test_iterations_flags }}
-      runner: ${{ inputs.runner }}
+      runner: ${{ inputs.os-runner }}
