@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.32.1 (2024-04-30)
+
+### Bug Fixes
+
+- **Auth**: Refactoring state machine logic to fix memory leak (#3613)
+
 ## 2.32.0 (2024-04-29)
 
 ### Features
