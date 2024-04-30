@@ -63,8 +63,8 @@ runs:
 
         DESTINATION_MAPPING='{
           "minimum": {
-            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.1",
-            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (2nd generation),OS=16.1",
+            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=17.0",
+            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4",
             "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4",
             "macOS": "platform=macOS,arch=x86_64"
           },
@@ -81,7 +81,7 @@ runs:
             latest|minimum)
               DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"$INPUT_XCODE_VERSION\".$INPUT_PLATFORM") ;;
             *)
-              DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"latest\".$INPUT_PLATFORM") ;;
+              DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"minimum\".$INPUT_PLATFORM") ;;
           esac
         else
           DESTINATION=$INPUT_DESTINATION

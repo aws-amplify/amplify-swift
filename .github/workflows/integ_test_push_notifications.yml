@@ -26,7 +26,7 @@ permissions:
 jobs:
   push-notification-integration-tests:
     name: ${{ matrix.platform }} Tests | PushNotificationHostApp
-    runs-on: macos-latest
+    runs-on: macos-13
     timeout-minutes: 30
     environment: IntegrationTest
     strategy:
@@ -48,6 +48,7 @@ jobs:
         uses: ./.github/composite_actions/get_platform_parameters
         with:
           platform: ${{ matrix.platform }}
+          xcode_version: 'minimum'
 
       - name: Create the test configuration directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/

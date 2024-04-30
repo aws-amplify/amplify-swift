@@ -36,4 +36,3 @@ jobs:
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: CoreMLPredictionsPlugin
-      os-runner: 'macos-13'
