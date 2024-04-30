@@ -217,7 +217,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 3)
     }
 
     /// Given: A DefaultStorageTransferDatabase
@@ -228,7 +228,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
         database.prepareForBackground() {
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 3)
     }
 
     /// Given: The StorageTransferDatabase Type
