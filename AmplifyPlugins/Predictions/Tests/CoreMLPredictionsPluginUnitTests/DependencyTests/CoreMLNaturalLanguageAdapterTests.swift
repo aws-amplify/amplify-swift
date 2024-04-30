@@ -52,6 +52,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
     /// - Then:
     ///    - I should get back correct tokens
     ///
+#if !os(watchOS) && !os(iOS)
     func testSyntaxToken() {
         let text = "The ripe taste of cheese improves with age."
         let result = coreMLNaturalLanguageAdapter.getSyntaxTokens(for: text)
@@ -64,7 +65,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
             "First word in the input should be determiner"
         )
     }
-
+#endif
     /// Test syntax token with invalid text
     ///
     /// - Given: CoreML Adapter
@@ -88,7 +89,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
     /// - Then:
     ///    - I should get back valid result
     ///
-#if !os(watchOS)
+#if !os(watchOS) && !os(iOS)
     func testEntityToken() {
         let text = "The American Red Cross was established in Washington, D.C., by Clara Barton."
         let result = coreMLNaturalLanguageAdapter.getEntities(for: text)
