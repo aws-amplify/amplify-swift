@@ -48,4 +48,4 @@ jobs:
       generate_coverage_report: ${{ github.event_name != 'workflow_dispatch' && matrix.platform == 'iOS' && inputs.generate_coverage_report }}
       timeout-minutes: ${{ inputs.timeout-minutes }}
       test_iterations_flags: ${{ inputs.test_iterations_flags }}
-      runner: ${{ inputs.os-runner }}
+      os-runner: ${{ inputs.os-runner }}
