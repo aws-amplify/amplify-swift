@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
         "state": {
           "branch": null,
-          "revision": "a08684c5004e2049c29f57a5938beae9695a1ef7",
-          "version": "3.1.2"
+          "revision": "9fd77b043e06193848a68740dfde0836648b2b4e",
+          "version": "3.2.0"
         }
       },
       {
@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/aws-amplify/aws-sdk-ios-spm.git",
         "state": {
           "branch": null,
-          "revision": "6e23b91609f9ddf988fda58bf711896a6062d4ff",
-          "version": "2.35.0"
+          "revision": "5be5f7982f37ea0605c7cfdbb3c9c81af4dafc13",
+          "version": "2.36.0"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/daltoniam/Starscream",
         "state": {
           "branch": null,
-          "revision": "df8d82047f6654d8e4b655d1b1525c64e1059d21",
-          "version": "4.0.4"
+          "revision": "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
+          "version": "4.0.8"
         }
       }
     ]
