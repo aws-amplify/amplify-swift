@@ -21,7 +21,8 @@ public protocol LivenessService {
 
     func initializeLivenessStream(withSessionID sessionID: String, 
                                   userAgent: String,
-                                  challenges: [Challenge]) throws
+                                  challenges: [Challenge],
+                                  options: FaceLivenessSession.Options) throws
 
     func register(
         listener: @escaping (FaceLivenessSession.SessionConfiguration) -> Void,
