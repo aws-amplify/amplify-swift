@@ -39,7 +39,7 @@ permissions:
 jobs:
   unit-tests:
     name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
-    runs-on: macos-13
+    runs-on: macos-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - name: Checkout repository

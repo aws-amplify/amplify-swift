@@ -4,7 +4,7 @@ on:
     inputs:
       os-runner:
         type: string
-        default: 'macos-13'
+        default: 'macos-latest'
       scheme:
         description: 'The scheme to run the tests'
         required: true
