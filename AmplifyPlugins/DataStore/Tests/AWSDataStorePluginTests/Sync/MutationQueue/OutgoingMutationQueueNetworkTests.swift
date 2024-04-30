@@ -284,7 +284,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         listenerDelay: TimeInterval
     ) -> MutateRequestResponder<MutationSync<AnyModel>> {
         MutateRequestResponder<MutationSync<AnyModel>> { _ in
-            try! await Task.sleep(seconds: listenerDelay)
+            try? await Task.sleep(seconds: listenerDelay)
             return .failure(.unknown("", "", self.connectionError))
         }
     }

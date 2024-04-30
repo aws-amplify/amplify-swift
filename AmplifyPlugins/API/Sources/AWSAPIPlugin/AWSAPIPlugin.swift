@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import AWSPluginsSDKCore
 import Foundation
 
 final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformation {
@@ -25,7 +26,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformat
 
     /// The provider for Auth services required to access protected APIs. This will be
     /// populated during the configuration phase, and is clearable by `reset()`.
-    var authService: AWSAuthServiceBehavior!
+    var authService: AWSAuthCredentialsProviderBehavior!
 
     /// The provider for network connections and operations. This will be populated
     /// during initialization, and is clearable by `reset()`.

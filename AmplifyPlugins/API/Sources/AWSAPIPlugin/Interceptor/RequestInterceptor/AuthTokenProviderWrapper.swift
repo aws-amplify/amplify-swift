@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import AWSPluginsSDKCore
 import Foundation
 
 class AuthTokenProviderWrapper: AuthTokenProvider {

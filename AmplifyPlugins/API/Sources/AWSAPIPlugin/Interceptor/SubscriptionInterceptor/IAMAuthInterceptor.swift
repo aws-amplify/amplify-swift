@@ -7,6 +7,7 @@
 
 import Foundation
 @_spi(WebSocket) import AWSPluginsCore
+import AWSPluginsSDKCore
 import Amplify
 import AWSClientRuntime
 import ClientRuntime

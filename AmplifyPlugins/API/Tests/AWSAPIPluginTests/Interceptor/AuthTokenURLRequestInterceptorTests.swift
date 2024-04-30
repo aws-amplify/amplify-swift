@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSPluginsCore
+import AWSPluginsSDKCore
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin

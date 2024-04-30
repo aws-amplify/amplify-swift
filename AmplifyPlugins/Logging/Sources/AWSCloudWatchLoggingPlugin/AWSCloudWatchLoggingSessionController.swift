@@ -6,7 +6,7 @@
 //
 
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import AWSPluginsSDKCore
 import Amplify
 import Combine
 import Foundation

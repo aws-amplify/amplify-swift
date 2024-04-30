@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import AWSPluginsSDKCore
 import Foundation
 
 struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
