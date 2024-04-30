@@ -5,15 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-/// Captures a weak reference to the value
-class WeakWrapper<T> where T: AnyObject {
-    private(set) weak var value: T?
-    init(_ value: T) {
-        self.value = value
-    }
-}
+import Combine
 
 /// Models, evolves, and processes effects for a system.
 ///
@@ -31,15 +23,18 @@ actor StateMachine<
     EnvironmentType: Environment
 > where StateType: State {
 
-    /// AsyncSequences are invoked a minimum of one time: Each sequence receives the current
-    /// state as soon as `listen()` is invoked, and will receive each subsequent state change.
-    typealias StateChangeSequence = StateAsyncSequence<StateType>
-
     private let environment: EnvironmentType
     private let resolver: AnyResolver<StateType>
 
-    private(set) var currentState: StateType
-    private var subscribers: [WeakWrapper<StateAsyncSequence<StateType>>]
+    public var currentState: StateType {
+        currentStateSubject.value
+    }
+
+    private let currentStateSubject: CurrentValueSubject<StateType, Never>
+
+    deinit {
+        currentStateSubject.send(completion: .finished)
+    }
 
     init<ResolverType>(
         resolver: ResolverType,
@@ -48,22 +43,16 @@ actor StateMachine<
     ) where ResolverType: StateMachineResolver, ResolverType.StateType == StateType {
         self.resolver = resolver.eraseToAnyResolver()
         self.environment = environment
-        self.currentState = initialState ?? resolver.defaultState
-
-        self.subscribers = []
+        self.currentStateSubject = CurrentValueSubject(initialState ?? resolver.defaultState)
     }
 
     /// Start listening to state change updates. The current state and all subsequent state changes will be sent to the sequence.
     ///
     /// - Returns: An async sequence that get states asynchronously
-    func listen() -> StateChangeSequence {
-        let sequence = StateAsyncSequence<StateType>()
-        let currentState = self.currentState
-        let wrappedSequence = WeakWrapper(sequence)
-        subscribers.append(wrappedSequence)
-        sequence.send(currentState)
-        return sequence
+    func listen() -> CancellableAsyncStream<StateType> {
+        CancellableAsyncStream(with: currentStateSubject.eraseToAnyPublisher())
     }
+
 }
 
 extension StateMachine: EventDispatcher {
@@ -88,31 +77,9 @@ extension StateMachine: EventDispatcher {
         )
 
         if currentState != resolution.newState {
-            currentState = resolution.newState
-            subscribers.removeAll { item in
-                !notify(subscriberElement: item, about: resolution.newState)
-            }
+            currentStateSubject.send(resolution.newState)
         }
         execute(resolution.actions)
-    }
-
-    /// - Parameters:
-    ///   - subscriberElement: A weak wrapped async sequence
-    ///   - newState: The new state to be sent
-    /// - Returns: true if the subscriber was notified, false if the wrapper reference was nil or a cancellation was pending
-    private func notify(
-        subscriberElement: WeakWrapper<StateChangeSequence>,
-        about newState: StateType
-    ) -> Bool {
-
-        // If weak reference has become nil, do not process, and return false so caller can remove
-        // the subscription from the subscribers list
-        guard let sequence = subscriberElement.value else {
-            return false
-        }
-
-        sequence.send(newState)
-        return true
     }
 
     private func execute(_ actions: [Action]) {
