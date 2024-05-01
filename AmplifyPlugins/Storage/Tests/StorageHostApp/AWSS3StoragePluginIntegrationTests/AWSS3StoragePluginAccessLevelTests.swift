@@ -16,8 +16,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let label: String
         let key: String
         let accessLevel: StorageAccessLevel
-        let user1: (String, String) // (username/email and password)
-        let user2: (String, String) // (username/email and password)
     }
 
     /// Given: An unauthenticated user
@@ -51,17 +49,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func testUploadAndRemoveForGuestOnly() async throws {
         let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
 
-        let username: String
-        let password: String
-        if useGen2Configuration {
-            username = "\(UUID().uuidString)@amazon.com"
-            password = "Pp123!@\(UUID().uuidString)"
-            _ = try await Amplify.Auth.signUp(username: username, password: password)
-        } else {
-            username = AWSS3StoragePluginTestBase.user1.lowercased()
-            password = AWSS3StoragePluginTestBase.password
-        }
-
+        let username = AWSS3StoragePluginTestBase.user1.lowercased()
+        let password = AWSS3StoragePluginTestBase.password
         let accessLevel: StorageAccessLevel = .guest
 
         do {
@@ -112,21 +101,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             .guest
         ]
 
-        let username: String
-        let password: String
-        if useGen2Configuration {
-            username = "\(UUID().uuidString)@amazon.com"
-            password = "Pp123!@\(UUID().uuidString)"
-            _ = try await Amplify.Auth.signUp(username: username, password: password)
-        } else {
-            username = AWSS3StoragePluginTestBase.user1.lowercased()
-            password = AWSS3StoragePluginTestBase.password
-        }
+        let username = AWSS3StoragePluginTestBase.user1.lowercased()
+        let password = AWSS3StoragePluginTestBase.password
         logger.debug("Signing in as user1")
         let result = try await Amplify.Auth.signIn(username: username, password: password)
         XCTAssertTrue(result.isSignedIn)
         let currentUser = try await Amplify.Auth.getCurrentUser()
-         XCTAssertEqual(username, currentUser.username)
+        XCTAssertEqual(username, currentUser.username)
         let isSignedIn = result.isSignedIn
 
         // must be signed in to continue
@@ -176,39 +157,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func testAccessLevelsBetweenTwoUsers() async throws {
         let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
 
-        let username1: String
-        let username2: String
-        let password: String
-        if useGen2Configuration {
-            username1 = "\(UUID().uuidString)@amazon.com"
-            password = "Pp123!@\(UUID().uuidString)"
-            _ = try await Amplify.Auth.signUp(username: username1, password: password)
-            username2 = "\(UUID().uuidString)@amazon.com"
-            _ = try await Amplify.Auth.signUp(username: username2, password: password)
-        } else {
-            username1 = AWSS3StoragePluginTestBase.user1
-            username2 = AWSS3StoragePluginTestBase.user2
-            password = AWSS3StoragePluginTestBase.password
-        }
         let testRuns: [StorageAccessLevelsTestRun] = [
             // user 2 can read upload by user 1 with guest access
-            .init(label: "Guest",
-                  key: UUID().uuidString,
-                  accessLevel: .guest,
-                  user1: (username1, password),
-                  user2: (username2, password)),
+            .init(label: "Guest", key: UUID().uuidString, accessLevel: .guest),
             // user 2 can read upload by user 1 with protected access
-            .init(label: "Protected", 
-                  key: UUID().uuidString,
-                  accessLevel: .protected,
-                  user1: (username1, password),
-                  user2: (username2, password)),
+            .init(label: "Protected", key: UUID().uuidString, accessLevel: .protected),
             // user 2 can get access denied error from upload by user 1 with private access
-            .init(label: "Private", 
-                  key: UUID().uuidString,
-                  accessLevel: .private,
-                  user1: (username1, password),
-                  user2: (username2, password)),
+            .init(label: "Private", key: UUID().uuidString, accessLevel: .private),
         ]
 
         for testRun in testRuns {
@@ -218,8 +173,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     await signOut()
 
                     logger.debug("Signing in user1")
-                    let user1SignedIn = try await Amplify.Auth.signIn(username: testRun.user1.0,
-                                                                      password: testRun.user1.1).isSignedIn
+                    let user1SignedIn = try await Amplify.Auth.signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password).isSignedIn
                     XCTAssertTrue(user1SignedIn)
 
                     logger.debug("Getting identity for user1")
@@ -242,8 +196,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     await signOut()
 
                     logger.debug("Signing in as user2")
-                    let user2SignedIn = try await Amplify.Auth.signIn(username: testRun.user2.0,
-                                                                      password: testRun.user2.1).isSignedIn
+                    let user2SignedIn = try await Amplify.Auth.signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password).isSignedIn
                     XCTAssertTrue(user2SignedIn)
 
                     logger.debug("Getting identity for user2")

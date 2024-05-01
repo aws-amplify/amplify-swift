@@ -118,27 +118,31 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     func getBucketFromConfig(forResource: String) throws -> String {
         let data = try TestConfigHelper.retrieve(forResource: forResource)
         let json = try JSONDecoder().decode(JSONValue.self, from: data)
-        if useGen2Configuration {
-            guard let bucket = json["storage"]?["bucket_name"] else {
-                throw "Could not retrieve bucket from config"
-            }
 
-            guard case let .string(bucketValue) = bucket else {
-                throw "bucket is not a string value"
-            }
-
-            return bucketValue
-        } else {
-            guard let bucket = json["storage"]?["plugins"]?["awsS3StoragePlugin"]?["bucket"] else {
-                throw "Could not retrieve bucket from config"
-            }
-
-            guard case let .string(bucketValue) = bucket else {
-                throw "bucket is not a string value"
-            }
-
-            return bucketValue
+        guard let bucket = json["storage"]?["plugins"]?["awsS3StoragePlugin"]?["bucket"] else {
+            throw "Could not retrieve bucket from config"
         }
+
+        guard case let .string(bucketValue) = bucket else {
+            throw "bucket is not a string value"
+        }
+
+        return bucketValue
+    }
+
+    func getBucketFromAmplifyOutputs(forResource: String) throws -> String {
+        let data = try TestConfigHelper.retrieve(forResource: forResource)
+        let json = try JSONDecoder().decode(JSONValue.self, from: data)
+
+        guard let bucket = json["storage"]?["bucket_name"] else {
+            throw "Could not retrieve bucket from config"
+        }
+
+        guard case let .string(bucketValue) = bucket else {
+            throw "bucket is not a string value"
+        }
+
+        return bucketValue
     }
 
     func signUp() async {
@@ -149,15 +153,9 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
-                if useGen2Configuration {
-                    try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.email1,
-                                                          password: AWSS3StoragePluginTestBase.password,
-                                                          email: AWSS3StoragePluginTestBase.email1)
-                } else {
-                    try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
-                                                          password: AWSS3StoragePluginTestBase.password,
-                                                          email: AWSS3StoragePluginTestBase.email1)
-                }
+                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
+                                                      password: AWSS3StoragePluginTestBase.password,
+                                                      email: AWSS3StoragePluginTestBase.email1)
                 Self.isFirstUserSignedUp = true
                 registerFirstUserComplete.fulfill()
             } catch {
@@ -169,15 +167,9 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
-                if useGen2Configuration {
-                    try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.email2,
-                                                          password: AWSS3StoragePluginTestBase.password,
-                                                          email: AWSS3StoragePluginTestBase.email2)
-                } else {
-                    try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
-                                                          password: AWSS3StoragePluginTestBase.password,
-                                                          email: AWSS3StoragePluginTestBase.email2)
-                }
+                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
+                                                      password: AWSS3StoragePluginTestBase.password,
+                                                      email: AWSS3StoragePluginTestBase.email2)
                 Self.isSecondUserSignedUp = true
                 registerSecondUserComplete.fulfill()
             } catch {
