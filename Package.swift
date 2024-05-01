@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Amplify",
-    platforms: [.iOS(.v11)],
+    platforms: [.iOS(.v12)],
     products: [
         .library(
             name: "Amplify",
@@ -34,8 +34,8 @@ let package = Package(
 
     ],
     dependencies: [
-        .package(name: "AWSiOSSDKV2", url: "https://github.com/aws-amplify/aws-sdk-ios-spm.git", .upToNextMinor(from: "2.35.0")),
-        .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.1.0"),
+        .package(name: "AWSiOSSDKV2", url: "https://github.com/aws-amplify/aws-sdk-ios-spm.git", .upToNextMinor(from: "2.36.0")),
+        .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.2.0"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.13.2"))
     ],
     targets: [

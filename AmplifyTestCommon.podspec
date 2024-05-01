@@ -10,7 +10,7 @@
 $AMPLIFY_VERSION = '1.30.9'
 $AMPLIFY_RELEASE_TAG = "#{$AMPLIFY_VERSION}"
 
-$AWS_SDK_VERSION = '2.35.0'
+$AWS_SDK_VERSION = '2.36.0'
 $OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 
 Pod::Spec.new do |s|
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => $AMPLIFY_RELEASE_TAG }
 
-  s.platform     = :ios, '11.0'
+  s.platform     = :ios, '12.0'
   s.swift_version = '5.0'
 
   s.source_files = 'AmplifyTestCommon/**/*.swift'
