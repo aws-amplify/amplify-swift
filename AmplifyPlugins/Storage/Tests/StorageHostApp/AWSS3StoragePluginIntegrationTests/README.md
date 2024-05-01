@@ -128,7 +128,7 @@ At the time this was written, it follows the steps from here https://docs.amplif
     "aws-amplify": "^6.2.0"
   },
 }
-
+```
 
 2. Update `amplify/storage/resource.ts`. The resulting file should look like this
 
@@ -213,7 +213,7 @@ cfnUserPool.addPropertyOverride(
 For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
 
 ```
-npx amplify sandbox --config-out-dir ./config --config-version 1 --profile [PROFILE]
+npx amplify sandbox --config-out-dir ./config --profile [PROFILE]
 ```
 
 5. Copy the `amplify_outputs.json` file over to the test directory as `AWSS3StoragePluginTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
@@ -241,5 +241,5 @@ If you want to be able utilize Git commits for deployments
 10. Generate the `amplify_outputs.json` configuration file
 
 ```
-npx amplify generate outputs --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
+npx amplify generate outputs --branch main --app-id [APP_ID] --profile [AWS_PROFILE]
 ```

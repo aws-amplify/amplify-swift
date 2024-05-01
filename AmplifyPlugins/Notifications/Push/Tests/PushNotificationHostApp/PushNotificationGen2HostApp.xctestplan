@@ -23,6 +23,7 @@
   },
   "testTargets" : [
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:PushNotificationHostApp.xcodeproj",
         "identifier" : "6084F1AB2967B87200434CBF",

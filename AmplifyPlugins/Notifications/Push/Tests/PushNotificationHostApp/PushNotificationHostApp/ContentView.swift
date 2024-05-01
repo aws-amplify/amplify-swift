@@ -13,7 +13,7 @@ import AWSPinpointPushNotificationsPlugin
 import AWSPinpointAnalyticsPlugin
 
 let amplifyConfigurationFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplifyconfiguration"
-let amplifyOutputsFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplifyconfiguration"
+let amplifyOutputsFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplify_outputs"
 
 var pushNotificationHubSubscription: UnsubscribeToken?
 var analyticsHubSubscription: UnsubscribeToken?
