@@ -46,8 +46,7 @@ final class ConfigurationHelperTests: XCTestCase {
             userPoolId: "poolId",
             userPoolClientId: "clientId",
             oauth: AmplifyOutputsData.Auth.OAuth(identityProviders: ["provider1", "provider2"],
-                                                 cognitoDomain: "cognitoDomain",
-                                                 customDomain: nil,
+                                                 domain: "domain",
                                                  scopes: ["scope1", "scope2"],
                                                  redirectSignInUri: ["redirect1", "redirect2"],
                                                  redirectSignOutUri: ["signOut1", "signOut2"],
@@ -62,35 +61,7 @@ final class ConfigurationHelperTests: XCTestCase {
         XCTAssertEqual(hostedUIConfig.clientId, "clientId")
         XCTAssertNil(hostedUIConfig.clientSecret, "Client secret should be nil as its not supported in Gen2")
         XCTAssertEqual(hostedUIConfig.oauth.scopes, ["scope1", "scope2"])
-        XCTAssertEqual(hostedUIConfig.oauth.domain, "cognitoDomain")
-        XCTAssertEqual(hostedUIConfig.oauth.signInRedirectURI, "redirect1")
-        XCTAssertEqual(hostedUIConfig.oauth.signOutRedirectURI, "signOut1")
-    }
-
-    /// Test Oauth section's `customDomain` overwrites `cognitoDomain`
-    func testParseUserPoolData_WithOAuth_CustomDomain() throws {
-        let config = AmplifyOutputsData.Auth(
-            awsRegion: "us-east-1",
-            userPoolId: "poolId",
-            userPoolClientId: "clientId",
-            oauth: AmplifyOutputsData.Auth.OAuth(identityProviders: ["provider1", "provider2"],
-                                                 cognitoDomain: "cognitoDomain",
-                                                 customDomain: "customDomain",
-                                                 scopes: ["scope1", "scope2"],
-                                                 redirectSignInUri: ["redirect1", "redirect2"],
-                                                 redirectSignOutUri: ["signOut1", "signOut2"],
-                                                 responseType: "responseType"))
-
-        guard let config = ConfigurationHelper.parseUserPoolData(config),
-              let hostedUIConfig = config.hostedUIConfig else {
-            XCTFail("Expected to parse UserPoolData into object")
-            return
-        }
-
-        XCTAssertEqual(hostedUIConfig.clientId, "clientId")
-        XCTAssertNil(hostedUIConfig.clientSecret)
-        XCTAssertEqual(hostedUIConfig.oauth.scopes, ["scope1", "scope2"])
-        XCTAssertEqual(hostedUIConfig.oauth.domain, "customDomain")
+        XCTAssertEqual(hostedUIConfig.oauth.domain, "domain")
         XCTAssertEqual(hostedUIConfig.oauth.signInRedirectURI, "redirect1")
         XCTAssertEqual(hostedUIConfig.oauth.signOutRedirectURI, "signOut1")
     }
