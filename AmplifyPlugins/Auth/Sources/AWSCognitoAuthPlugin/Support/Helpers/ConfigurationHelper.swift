@@ -159,7 +159,7 @@ struct ConfigurationHelper {
 
         return createHostedConfiguration(appClientId: configuration.userPoolClientId,
                                          clientSecret: nil,
-                                         domain: oauth.customDomain ?? oauth.cognitoDomain,
+                                         domain: oauth.domain,
                                          scopes: oauth.scopes,
                                          signInRedirectURI: signInRedirectURI,
                                          signOutRedirectURI: signOutRedirectURI)
