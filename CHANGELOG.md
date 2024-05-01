@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.31.0 (2024-05-01)
+
+### Features
+
+- Updating minimum deployment target to iOS 12 (#3562)
+
 ## 1.30.9 (2024-04-11)
 
 ## 1.30.8 (2024-02-27)
