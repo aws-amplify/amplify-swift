@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.33.1 (2024-05-01)
+
+### Bug Fixes
+
+- **auth**: gen2 config oauth domain (#3663)
+
 ## 2.33.0 (2024-05-01)
 
 ### Features
