@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.33.0 (2024-05-01)
+
+### Features
+
+- Updating to SQLite.swift 0.15.0 (#3659)
+
 ## 2.32.1 (2024-04-30)
 
 ### Bug Fixes
