@@ -123,7 +123,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             log.verbose("[KeychainStore] Successfully retrieved `Data` from the store with key=\(key)")
             return data
         case errSecItemNotFound:
-            log.verbose("[KeychainStore] The keychain item not found for key=\(key)")
+            log.verbose("[KeychainStore] No Keychain item found for key=\(key)")
             throw KeychainStoreError.itemNotFound
         default:
             log.error("[KeychainStore] Error of status=\(status) occurred when attempting to retrieve a Keychain item for key=\(key)")
