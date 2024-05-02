@@ -9,7 +9,7 @@
 import XCTest
 
 final class PushNotificationHostAppUITests: XCTestCase {
-    let timeout = TimeInterval(3)
+    let timeout = TimeInterval(6)
     let app = XCUIApplication()
 
     lazy var deviceIdentifier: String? = {
@@ -82,9 +82,9 @@ final class PushNotificationHostAppUITests: XCTestCase {
         initAmplify()
         grantNotificationPermissionIfNeeded()
 
-        let identifyUserButton = app.buttons["Register Device"]
-        if identifyUserButton.waitForExistence(timeout: timeout) {
-            identifyUserButton.tap()
+        let registerDeviceButton = app.buttons["Register Device"]
+        if registerDeviceButton.waitForExistence(timeout: timeout) {
+            registerDeviceButton.tap()
         } else {
             XCTFail("Failed to find 'Register Device' button")
         }

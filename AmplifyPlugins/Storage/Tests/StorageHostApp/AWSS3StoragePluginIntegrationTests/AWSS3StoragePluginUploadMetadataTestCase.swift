@@ -240,7 +240,7 @@ class AWSS3StoragePluginUploadMetadataTestCase: AWSS3StoragePluginTestBase {
         let s3Client = storagePlugin.getEscapeHatch()
         let bucket: String
         if useGen2Configuration {
-            bucket = try getBucketFromConfig(
+            bucket = try getBucketFromAmplifyOutputs(
                 forResource: "amplify_outputs"
             )
         } else {
