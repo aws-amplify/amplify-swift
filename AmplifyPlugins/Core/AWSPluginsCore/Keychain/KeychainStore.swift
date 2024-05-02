@@ -126,7 +126,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             log.verbose("[KeychainStore] The keychain item not found for key=\(key)")
             throw KeychainStoreError.itemNotFound
         default:
-            log.error("[KeychainStore] The keychain item not found with keychainStoreError=\(status) for key=\(key)")
+            log.error("[KeychainStore] Error of status=\(status) occurred when attempting to retrieve a Keychain item for key=\(key)")
             throw KeychainStoreError.securityError(status)
         }
     }
