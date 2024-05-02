@@ -59,10 +59,10 @@ Amplify requires the following Xcode versions, according to the targeted platfor
 
 | Platform      | Xcode Version |
 | -------------:| ------------: |
-| iOS           | 14.1+         |
-| macOS         | 14.1+         |
-| tvOS          | 14.3+         |
-| watchOS       | 14.3+         |
+| iOS           | 15+         |
+| macOS         | 15+         |
+| tvOS          | 15+         |
+| watchOS       | 15+         |
 | visionOS      | 15 beta 2+    |
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
