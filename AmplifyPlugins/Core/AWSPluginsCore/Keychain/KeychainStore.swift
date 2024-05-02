@@ -144,7 +144,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             throw KeychainStoreError.conversionError("Unable to create Data from String retrieved")
         }
         try _set(data, key: key)
-        log.verbose("[KeychainStore] Successfully `String` for key=\(key)")
+        log.verbose("[KeychainStore] Successfully added `String` for key=\(key)")
     }
 
     @_spi(KeychainStore)
