@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.33.2 (2024-05-02)
+
+### Bug Fixes
+
+- **Auth**: Add keychain logging for better debugging (#3669)
+- **core**: potential memory leak in WebSocketClient (#3624)
+
 ## 2.33.1 (2024-05-01)
 
 ### Bug Fixes
