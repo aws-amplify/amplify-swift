@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.33.3 (2024-05-03)
+
+### Bug Fixes
+
+- **auth**: Using a custom Foundation-based HTTPClient for HTTP Requests (#3582)
+
 ## 2.33.2 (2024-05-02)
 
 ### Bug Fixes
