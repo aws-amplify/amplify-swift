@@ -48,6 +48,9 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
         do {
             _ = try await AuthSignInHelper.signInUser(username: username, password: password)
             XCTFail("signIn after account deletion should fail")
+        } catch AuthError.notAuthorized {
+            // App clients with "Prevent user existence errors" enabled will return this.
+            // https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-managing-errors.html
         } catch let error as AuthError {
             switch error {
             case .service(_, _, let underlying):
