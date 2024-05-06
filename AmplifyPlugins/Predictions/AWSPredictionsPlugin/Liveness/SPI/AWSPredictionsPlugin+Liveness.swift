@@ -15,7 +15,6 @@ extension AWSPredictionsPlugin {
         withID sessionID: String,
         credentialsProvider: AWSCredentialsProvider? = nil,
         region: String,
-        options: FaceLivenessSession.Options,
         completion: @escaping (Result<Void, FaceLivenessSessionError>) -> Void
     ) async throws -> FaceLivenessSession {
 
@@ -36,8 +35,7 @@ extension AWSPredictionsPlugin {
         let session = FaceLivenessSession(
             websocket: WebSocketSession(),
             signer: signer,
-            baseURL: url,
-            options: options
+            baseURL: url
         )
 
         session.onServiceException = { completion(.failure($0)) }
@@ -49,14 +47,14 @@ extension AWSPredictionsPlugin {
 extension FaceLivenessSession {
     @_spi(PredictionsFaceLiveness)
     public struct Options {
-        public let viewId: String
+        public let attemptCount: Int
         public let preCheckViewEnabled: Bool
         
         public init(
-            faceLivenessDetectorViewId: String,
+            attemptCount: Int,
             preCheckViewEnabled: Bool
         ) {
-            self.viewId = faceLivenessDetectorViewId
+            self.attemptCount = attemptCount
             self.preCheckViewEnabled = preCheckViewEnabled
         }
     }

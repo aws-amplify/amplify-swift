@@ -18,7 +18,6 @@ public final class FaceLivenessSession: LivenessService {
     var serverEventListeners: [LivenessEventKind.Server: (FaceLivenessSession.SessionConfiguration) -> Void] = [:]
     var challengeTypeListeners: [LivenessEventKind.Server: (Challenge) -> Void] = [:]
     var onComplete: (ServerDisconnection) -> Void = { _ in }
-    let options: FaceLivenessSession.Options
     
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
@@ -27,14 +26,12 @@ public final class FaceLivenessSession: LivenessService {
     init(
         websocket: WebSocketSession,
         signer: SigV4Signer,
-        baseURL: URL,
-        options: FaceLivenessSession.Options
+        baseURL: URL
     ) {
         self.eventStreamEncoder = EventStream.Encoder()
         self.eventStreamDecoder = EventStream.Decoder()
         self.signer = signer
         self.baseURL = baseURL
-        self.options = options
 
         self.websocket = websocket
 
@@ -72,14 +69,13 @@ public final class FaceLivenessSession: LivenessService {
 
     public func initializeLivenessStream(withSessionID sessionID: String, 
                                          userAgent: String = "",
-                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges) throws {
+                                         challenges: [Challenge] = FaceLivenessSession.supportedChallenges,
+                                         options: FaceLivenessSession.Options) throws {
         var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
-
         components?.queryItems = [
             URLQueryItem(name: "session-id", value: sessionID),
             URLQueryItem(name: "precheck-view-enabled", value: options.preCheckViewEnabled ? "1":"0"),
-            // TODO: Change this after confirmation
-            URLQueryItem(name: "attempt-id", value: options.viewId),
+            URLQueryItem(name: "attempt-count", value: String(options.attemptCount)),
             URLQueryItem(name: "challenge-versions",
                          value: challenges.map({$0.queryParameterString()}).joined(separator: ",")),
             URLQueryItem(name: "video-width", value: "480"),

@@ -8,7 +8,7 @@
 import Foundation
 
 @_spi(PredictionsFaceLiveness)
-public struct Challenge {
+public struct Challenge: Codable {
     public let version: String
     public let type: ChallengeType
     
@@ -19,6 +19,11 @@ public struct Challenge {
     
     public func queryParameterString() -> String {
         return self.type.rawValue + "_" + self.version
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case version = "Version"
+        case type = "Type"
     }
 }
 
