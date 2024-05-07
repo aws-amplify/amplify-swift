@@ -46,9 +46,9 @@ struct SignInScreen: Screen {
     }
 
     func signIn(username: String, password: String) -> Self {
-        _ = app.webViews.textFields["Username"].waitForExistence(timeout: 60)
-        app.webViews.textFields["Username"].tap()
-        app.webViews.textFields["Username"].typeText(username)
+        _ = app.webViews.textFields["Email Email"].waitForExistence(timeout: 60)
+        app.webViews.textFields["Email Email"].tap()
+        app.webViews.textFields["Email Email"].typeText(username)
 
         app.webViews.secureTextFields["Password"].tap()
         app.webViews.secureTextFields["Password"].typeText(password)
