@@ -16,7 +16,7 @@ The following steps demonstrate how to setup the integration tests for auth plug
 cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSCognitoAuthPluginHostedUIIntegrationTests-amplifyconfiguration.json
 ```
 
-## Schema: AuthHostedUIApp
+## Schema: AuthHostedUIAppGen2
 
 The following steps demonstrate how to setup the integration tests for auth plugin using Amplify CLI (Gen2).
 
