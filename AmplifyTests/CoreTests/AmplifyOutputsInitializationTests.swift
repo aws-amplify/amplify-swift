@@ -82,7 +82,6 @@ class AmplifyOutputsInitializationTests: XCTestCase {
         }
     }
 
-
     /// Given: A data object with valid AmplifyOutputs JSON
     /// When: Amplify.configure(with: .data(:)) is invoked
     /// Then: Decoded data should contain the correct data, decoding snake case to camel case.
@@ -95,6 +94,27 @@ class AmplifyOutputsInitializationTests: XCTestCase {
         XCTAssertEqual(config.version, "1")
         XCTAssertEqual(config.analytics?.amazonPinpoint?.appId, "app123")
         XCTAssertEqual(config.analytics?.amazonPinpoint?.awsRegion, "us-east-1")
+    }
+
+    /// Given: A data object with valid AmplifyOutputs JSON containing snake case values.
+    /// When: Amplify.configure(with: .data(:)) is invoked
+    /// Then: Decoded data should contain the correct data, decoding snake case values to camel case enum cases.
+    func testSnakeCaseJSONValues() throws {
+        let validAmplifyOutputsJSON = #"{"version": "1", "auth": { "aws_region": "us-east-1", "user_pool_id": "poolId123", "user_pool_client_id": "clientId123", "standard_required_attributes": [ "family_name", "given_name", "middle_name", "phone_number", "preferred_username", "updated_at" ]}}"#
+        let configData = Data(validAmplifyOutputsJSON.utf8)
+
+        try Amplify.configure(with: .data(configData))
+        let config = try AmplifyOutputsData.decodeAmplifyOutputsData(from: configData)
+        XCTAssertEqual(config.version, "1")
+
+        guard let auth = config.auth, let attributes = auth.standardRequiredAttributes else {
+            XCTFail("Missing auth config after decoding")
+            return
+        }
+        XCTAssertEqual(auth.awsRegion, "us-east-1")
+        XCTAssertEqual(auth.userPoolId, "poolId123")
+        XCTAssertEqual(auth.userPoolClientId, "clientId123")
+        XCTAssertEqual(attributes.count, 6)
     }
 
     /// - Given: A valid configuration
