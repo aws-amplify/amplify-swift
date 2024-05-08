@@ -2,11 +2,50 @@
 
 ## Schema: AuthHostedUIApp 
 
-The following steps demonstrate how to setup the integration tests for auth plugin using Amplify CLI (Gen1).
+The following steps demonstrate how to setup the integration tests for auth plugin using Amplify CLI (Gen1). The steps were ran with version 12.10.3.
 
-1. Run `amplify init` and then `amplify add auth` and enable HostedUI.
+1. Run `amplify init` and then `amplify add auth` 
 
-2. Enter `myapp://` for the callback urls
+- enable HostedUI
+- add sign in redirect URLs for "myapp://"
+- add pre-sign up lambda to auto confirm the user
+
+```
+What do you want to do? `Walkthrough all the auth configurations`
+ Select the authentication/authorization services that you want to use: `User Sign-Up, Sign-In, connected with AWS IAM controls (Enables per-user Storage features for images or other content, Analytics, and more)`
+ Allow unauthenticated logins? (Provides scoped down permissions that you can control via AWS IAM) `No`
+ Do you want to enable 3rd party authentication providers in your identity pool? `N`o
+ Do you want to add User Pool Groups? `No`
+ Do you want to add an admin queries API? `No`
+ Multifactor authentication (MFA) user login options: `OFF`
+ Email based user registration/forgot password: `Enabled (Requires per-user email entry at registration)`
+ Specify an email verification subject: `Your verification code`
+ Specify an email verification message: `Your verification code is {####}`
+ Do you want to override the default password policy for this User Pool? `No`
+ Specify the app's refresh token expiration period (in days): `30`
+ Do you want to specify the user attributes this app can read and write? `No`
+ Do you want to enable any of the following capabilities? 
+ Do you want to use an OAuth flow? `Yes`
+ What domain name prefix do you want to use? `authintegbf03a97b-xxxx`
+ Enter your redirect signin URI: `myapp://`
+? Do you want to add another redirect signin URI `No`
+ Enter your redirect signout URI: `myapp://`
+? Do you want to add another redirect signout URI `No`
+ Select the OAuth scopes enabled for this project. `Phone, Email, OpenID, Profile, aws.cognito.signin.user.admin`
+ Select the identity providers you want to configure for your user pool: 
+? Do you want to configure Lambda Triggers for Cognito? `Yes`
+? Which triggers do you want to enable for Cognito `Pre Sign-up`
+? What functionality do you want to use for Pre Sign-up `Create your own module`
+```
+
+Pre Sign-up code
+```
+exports.handler = async (event, context) => {
+  
+  event.response.autoConfirmUser = true;
+  return event;
+};
+```
 
 3. `amplify push` to provision the backend
 
