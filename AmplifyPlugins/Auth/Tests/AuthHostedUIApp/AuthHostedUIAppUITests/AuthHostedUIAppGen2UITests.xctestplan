@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "40B1C89B-1478-4A47-957B-CF7489CED04C",
+      "id" : "E36588F7-6C54-4EB4-BDF6-DFE09B98BAF6",
       "name" : "Test Scheme Action",
       "options" : {
 
@@ -18,9 +18,9 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:CloudWatchLoggingHostApp.xcodeproj",
-        "identifier" : "21F762DF2BD6B55F0048845A",
-        "name" : "AWSCloudWatchLoggingPluginGen2IntegrationTests"
+        "containerPath" : "container:AuthHostedUIApp.xcodeproj",
+        "identifier" : "2163D6312BEAB577009689B1",
+        "name" : "AuthHostedUIAppGen2UITests"
       }
     }
   ],

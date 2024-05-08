@@ -32,6 +32,7 @@ jobs:
           path: ${{ github.workspace }}
 
       - name: Upload report to Codecov
-        shell: bash
-        run: |
-          build-support/codecov.sh -F '${{ inputs.flags }}'
+        uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed # v4.3.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ inputs.flags }}
