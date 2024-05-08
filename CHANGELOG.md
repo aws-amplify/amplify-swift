@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.33.4 (2024-05-08)
+
+### Bug Fixes
+
+- **auth**: configure with standardAttributes snake case values (#3686)
+- **datastore**: memory leak in ModelSyncedEventEmitter (#3675)
+
 ## 2.33.3 (2024-05-03)
 
 ### Bug Fixes
