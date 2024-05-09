@@ -13,5 +13,5 @@ import AWSClientRuntime
 public func baseClientEngine(
     for configuration: AWSClientConfiguration<some AWSServiceSpecificConfiguration>
 ) -> HTTPClient {
-    return FoundationClientEngine()
+    return configuration.httpClientEngine
 }
