@@ -18,7 +18,6 @@ import XCTest
 class GraphQLModelBasedTests: XCTestCase {
     
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
-    static let amplifyOutputs = "testconfiguration/GraphQLModelBasedTests-amplify_outputs"
 
     final public class PostCommentModelRegistration: AmplifyModelRegistration {
         public func registerModels(registry: ModelRegistry.Type) {
@@ -37,16 +36,10 @@ class GraphQLModelBasedTests: XCTestCase {
         
         do {
             try Amplify.add(plugin: plugin)
-            
-            if TestConfigHelper.useGen2Configuration {
-                let amplifyConfig = try TestConfigHelper.retrieveAmplifyOutputsData(
-                    forResource: GraphQLModelBasedTests.amplifyOutputs)
-                try Amplify.configure(amplifyConfig)
-            } else {
-                let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                    forResource: GraphQLModelBasedTests.amplifyConfiguration)
-                try Amplify.configure(amplifyConfig)
-            }
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: GraphQLModelBasedTests.amplifyConfiguration)
+            try Amplify.configure(amplifyConfig)
+
             ModelRegistry.register(modelType: Comment.self)
             ModelRegistry.register(modelType: Post.self)
             

@@ -6,25 +6,13 @@
 //
 
 import Foundation
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 
 class TestConfigHelper {
 
-    static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
-
+    static func retrieveAmplifyOutputsData(forResource: String) throws -> AmplifyOutputsData {
         let data = try retrieve(forResource: forResource)
-        return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
-    }
-
-    static func retrieveCredentials(forResource: String) throws -> [String: String] {
-        let data = try retrieve(forResource: forResource)
-
-        let jsonOptional = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
-        guard let json = jsonOptional else {
-            throw "Could not deserialize `\(forResource)` into JSON object"
-        }
-
-        return json
+        return try AmplifyOutputsData.decodeAmplifyOutputsData(from: data)
     }
 
     static func retrieve(forResource: String) throws -> Data {

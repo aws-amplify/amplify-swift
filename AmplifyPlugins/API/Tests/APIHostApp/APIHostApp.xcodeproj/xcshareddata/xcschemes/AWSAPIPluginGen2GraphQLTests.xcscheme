@@ -10,21 +10,17 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <TestPlans>
-         <TestPlanReference
-            reference = "container:AWSAPIPluginFunctionalTests/AWSAPIPluginGen2FunctionalTests.xctestplan"
-            default = "YES">
-         </TestPlanReference>
-      </TestPlans>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21F7624D2BD6B0710048845A"
-               BuildableName = "AWSAPIPluginGen2FunctionalTests.xctest"
-               BlueprintName = "AWSAPIPluginGen2FunctionalTests"
+               BlueprintIdentifier = "2163D60B2BE96C90009689B1"
+               BuildableName = "AWSAPIPluginGen2GraphQLTests.xctest"
+               BlueprintName = "AWSAPIPluginGen2GraphQLTests"
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
