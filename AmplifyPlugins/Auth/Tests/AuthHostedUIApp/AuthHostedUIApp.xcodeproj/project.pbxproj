@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2163D6352BEAB577009689B1 /* SignInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978CD291C9C35005B465D /* SignInScreen.swift */; };
+		2163D6362BEAB577009689B1 /* UITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978CB291C9C07005B465D /* UITestCase.swift */; };
+		2163D6372BEAB577009689B1 /* HostedUISignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080F7291AD4D600297354 /* HostedUISignInTests.swift */; };
+		2163D6382BEAB577009689B1 /* SignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978CF291CA085005B465D /* SignUpScreen.swift */; };
+		2163D6392BEAB577009689B1 /* AuthenticatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978D3291DB1D1005B465D /* AuthenticatedScreen.swift */; };
 		B41080ED291AD02500297354 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B41080EC291AD02500297354 /* Amplify */; };
 		B41080EF291AD02500297354 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B41080EE291AD02500297354 /* AWSCognitoAuthPlugin */; };
 		B41080F5291AD10700297354 /* ConfigurationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080F4291AD10700297354 /* ConfigurationHelper.swift */; };
@@ -26,6 +31,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2163D6332BEAB577009689B1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B4EB96A0291ACF4400B73755 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4EB96A7291ACF4400B73755;
+			remoteInfo = AuthHostedUIApp;
+		};
 		B41080E4291ACF7E00297354 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B4EB96A0291ACF4400B73755 /* Project object */;
@@ -36,6 +48,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2163D62F2BEAADD0009689B1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		2163D63F2BEAB577009689B1 /* AuthHostedUIAppGen2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthHostedUIAppGen2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2163D6402BEAB5B4009689B1 /* AuthHostedUIAppGen2UITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AuthHostedUIAppGen2UITests.xctestplan; sourceTree = "<group>"; };
 		21D41D1A2BC728190019D811 /* AuthHostedUIGen2App.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AuthHostedUIGen2App.xctestplan; sourceTree = "<group>"; };
 		B41080DE291ACF7E00297354 /* AuthHostedUIAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthHostedUIAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41080EA291ACFDB00297354 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
@@ -58,6 +73,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2163D63A2BEAB577009689B1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B41080DB291ACF7E00297354 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -80,6 +102,7 @@
 		B41080DF291ACF7E00297354 /* AuthHostedUIAppUITests */ = {
 			isa = PBXGroup;
 			children = (
+				2163D6402BEAB5B4009689B1 /* AuthHostedUIAppGen2UITests.xctestplan */,
 				B4B978CB291C9C07005B465D /* UITestCase.swift */,
 				B4B978CA291C9BE5005B465D /* Screen */,
 				B41080F6291AD4C200297354 /* AuthenticationTest */,
@@ -155,6 +178,7 @@
 			children = (
 				B4EB96A8291ACF4400B73755 /* AuthHostedUIApp.app */,
 				B41080DE291ACF7E00297354 /* AuthHostedUIAppUITests.xctest */,
+				2163D63F2BEAB577009689B1 /* AuthHostedUIAppGen2UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,6 +194,7 @@
 				B4EB96AD291ACF4400B73755 /* ContentView.swift */,
 				B4EB96AF291ACF4600B73755 /* Assets.xcassets */,
 				B4EB96B1291ACF4600B73755 /* Preview Content */,
+				2163D62F2BEAADD0009689B1 /* README.md */,
 			);
 			path = AuthHostedUIApp;
 			sourceTree = "<group>";
@@ -185,6 +210,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2163D6312BEAB577009689B1 /* AuthHostedUIAppGen2UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2163D63C2BEAB577009689B1 /* Build configuration list for PBXNativeTarget "AuthHostedUIAppGen2UITests" */;
+			buildPhases = (
+				2163D6342BEAB577009689B1 /* Sources */,
+				2163D63A2BEAB577009689B1 /* Frameworks */,
+				2163D63B2BEAB577009689B1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2163D6322BEAB577009689B1 /* PBXTargetDependency */,
+			);
+			name = AuthHostedUIAppGen2UITests;
+			productName = AuthHostedUIAppUITests;
+			productReference = 2163D63F2BEAB577009689B1 /* AuthHostedUIAppGen2UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		B41080DD291ACF7E00297354 /* AuthHostedUIAppUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B41080E8291ACF7E00297354 /* Build configuration list for PBXNativeTarget "AuthHostedUIAppUITests" */;
@@ -259,11 +302,19 @@
 			targets = (
 				B4EB96A7291ACF4400B73755 /* AuthHostedUIApp */,
 				B41080DD291ACF7E00297354 /* AuthHostedUIAppUITests */,
+				2163D6312BEAB577009689B1 /* AuthHostedUIAppGen2UITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2163D63B2BEAB577009689B1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B41080DC291ACF7E00297354 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -304,6 +355,18 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2163D6342BEAB577009689B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2163D6352BEAB577009689B1 /* SignInScreen.swift in Sources */,
+				2163D6362BEAB577009689B1 /* UITestCase.swift in Sources */,
+				2163D6372BEAB577009689B1 /* HostedUISignInTests.swift in Sources */,
+				2163D6382BEAB577009689B1 /* SignUpScreen.swift in Sources */,
+				2163D6392BEAB577009689B1 /* AuthenticatedScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B41080DA291ACF7E00297354 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -333,6 +396,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2163D6322BEAB577009689B1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4EB96A7291ACF4400B73755 /* AuthHostedUIApp */;
+			targetProxy = 2163D6332BEAB577009689B1 /* PBXContainerItemProxy */;
+		};
 		B41080E5291ACF7E00297354 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B4EB96A7291ACF4400B73755 /* AuthHostedUIApp */;
@@ -341,6 +409,38 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		2163D63D2BEAB577009689B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.AuthHostedUIAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AuthHostedUIApp;
+			};
+			name = Debug;
+		};
+		2163D63E2BEAB577009689B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.AuthHostedUIAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AuthHostedUIApp;
+			};
+			name = Release;
+		};
 		B41080E6291ACF7E00297354 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -548,6 +648,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2163D63C2BEAB577009689B1 /* Build configuration list for PBXNativeTarget "AuthHostedUIAppGen2UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2163D63D2BEAB577009689B1 /* Debug */,
+				2163D63E2BEAB577009689B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B41080E8291ACF7E00297354 /* Build configuration list for PBXNativeTarget "AuthHostedUIAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

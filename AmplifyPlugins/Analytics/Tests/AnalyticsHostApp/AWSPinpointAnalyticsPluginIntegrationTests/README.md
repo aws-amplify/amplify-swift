@@ -42,20 +42,19 @@ At the time this was written, it follows the steps from here https://docs.amplif
 {
   ...
   "devDependencies": {
-    "@aws-amplify/backend": "^0.13.0-beta.14",
-    "@aws-amplify/backend-cli": "^0.12.0-beta.16",
-    "aws-cdk": "^2.134.0",
-    "aws-cdk-lib": "^2.134.0",
+    "@aws-amplify/backend": "^0.15.0",
+    "@aws-amplify/backend-cli": "^0.15.0",
+    "aws-cdk": "^2.139.0",
+    "aws-cdk-lib": "^2.139.0",
     "constructs": "^10.3.0",
     "esbuild": "^0.20.2",
-    "tsx": "^4.7.1",
-    "typescript": "^5.4.3"
+    "tsx": "^4.7.3",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
-    "aws-amplify": "^6.0.25"
-  }
+    "aws-amplify": "^6.2.0"
+  },
 }
-
 ```
 2. Update `amplify/auth/resource.ts`. The resulting file should look like this
 
@@ -69,25 +68,9 @@ import { defineAuth, defineFunction } from '@aws-amplify/backend';
 export const auth = defineAuth({
   loginWith: {
     email: true
-  },
-  triggers: {
-    // configure a trigger to point to a function definition
-    preSignUp: defineFunction({
-      entry: './pre-sign-up-handler.ts'
-    })
   }
 });
 
-```
-
-```ts
-import type { PreSignUpTriggerHandler } from 'aws-lambda';
-
-export const handler: PreSignUpTriggerHandler = async (event) => {
-  // your code here
-  event.response.autoConfirmUser = true
-  return event;
-};
 ```
 
 3. Update `amplify/backend.ts` to create the analytics stack (https://docs.amplify.aws/gen2/build-a-backend/add-aws-services/analytics/)
@@ -104,10 +87,7 @@ Create `backend` const
 
 ```ts
 const backend = defineBackend({
-  auth,
-  // data,
-  // storage
-  // additional resource
+  auth
 });
 ```
 
@@ -152,7 +132,7 @@ backend.addOutput({
 For example, this deploys to a sandbox env and generates the amplify_outputs.json file.
 
 ```
-npx amplify sandbox --config-out-dir ./config --config-version 1 --profile [PROFILE]
+npx amplify sandbox --config-out-dir ./config --profile [PROFILE]
 ```
 
 5. Copy the `amplify_outputs.json` file over to the test directory as `AWSPinpointAnalyticsPluginIntegrationTests-amplify_outputs.json`. The tests will automatically pick this file up. Create the directories in this path first if it currently doesn't exist.
@@ -180,6 +160,6 @@ If you want to be able utilize Git commits for deployments
 7. Generate the `amplify_outputs.json` configuration file
 
 ```
-npx amplify generate config --branch main --app-id [APP_ID] --profile [AWS_PROFILE] --config-version 1
+npx amplify generate outputs --branch main --app-id [APP_ID] --profile [AWS_PROFILE]
 ```
 

@@ -157,6 +157,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             XCTFail("SignIn with unknown user should not succeed")
         } catch AuthError.notAuthorized {
             // App clients with "Prevent user existence errors" enabled will return this.
+            // https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-managing-errors.html
         } catch let error as AuthError {
             let underlyingError = error.underlyingError as? AWSCognitoAuthError
             switch underlyingError {

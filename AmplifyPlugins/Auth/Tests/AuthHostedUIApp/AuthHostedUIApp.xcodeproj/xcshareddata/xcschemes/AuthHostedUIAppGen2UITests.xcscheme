@@ -13,7 +13,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:AWSAPIPluginFunctionalTests/AWSAPIPluginGen2FunctionalTests.xctestplan"
+            reference = "container:AuthHostedUIAppUITests/AuthHostedUIAppGen2UITests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
@@ -22,10 +22,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21F7624D2BD6B0710048845A"
-               BuildableName = "AWSAPIPluginGen2FunctionalTests.xctest"
-               BlueprintName = "AWSAPIPluginGen2FunctionalTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
+               BlueprintIdentifier = "2163D6312BEAB577009689B1"
+               BuildableName = "AuthHostedUIAppGen2UITests.xctest"
+               BlueprintName = "AuthHostedUIAppGen2UITests"
+               ReferencedContainer = "container:AuthHostedUIApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

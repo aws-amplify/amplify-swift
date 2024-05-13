@@ -14,6 +14,7 @@ class TOTPSetupWhenUnauthenticatedTests: AWSAuthBaseTest {
     override func setUp() async throws {
         // Use a custom configuration these tests
         amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginMFARequiredIntegrationTests-amplifyconfiguration"
+        amplifyOutputsFile = "testconfiguration/AWSCognitoAuthPluginMFARequiredIntegrationTests-amplify_outputs"
         try await super.setUp()
         AuthSessionHelper.clearSession()
     }

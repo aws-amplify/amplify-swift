@@ -21,8 +21,19 @@ class AuthResendSignUpCodeTests: AWSAuthBaseTest {
     ///
     func testUserNotFoundResendSignUpCode() async throws {
         do {
-            _ = try await Amplify.Auth.resendSignUpCode(for: "user-non-exists")
-            XCTFail("resendSignUpCode with non existing user should not return result")
+            let result = try await Amplify.Auth.resendSignUpCode(for: "user-non-exists")
+
+            // App clients with "Prevent user existence errors" enabled will return a simulated result
+            // https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-managing-errors.html#cognito-user-pool-managing-errors-password-reset
+            // Gen2 configuration is enabled with Prevent User existence errors, while Gen1 backend is not.
+            if useGen2Configuration {
+                guard case .email = result.destination else {
+                    XCTFail("Expected email detination in result, result: \(result)")
+                    return
+                }
+            } else {
+                XCTFail("resendSignUpCode with non existing user should not return result, result returned: \(result)")
+            }
         } catch let error as AuthError {
             let underlyingError = error.underlyingError as? AWSCognitoAuthError
             switch underlyingError {
