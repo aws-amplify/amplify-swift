@@ -43,22 +43,25 @@ extension SQLiteStorageEngineAdapter {
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
-            query(modelSchema: modelSchema,
-                  predicate: untypedModel.identifier(schema: modelSchema).predicate,
-                  eagerLoad: eagerLoad) {
-                switch $0 {
-                case .success(let result):
-                    if let saved = result.first {
-                        completion(.success(saved))
-                    } else {
-                        completion(.failure(.nonUniqueResult(model: modelSchema.name,
-                                                             count: result.count)))
+            if eagerLoad {
+                completion(.success(untypedModel))
+            } else {
+                query(modelSchema: modelSchema,
+                      predicate: untypedModel.identifier(schema: modelSchema).predicate,
+                      eagerLoad: eagerLoad) {
+                    switch $0 {
+                    case .success(let result):
+                        if let saved = result.first {
+                            completion(.success(saved))
+                        } else {
+                            completion(.failure(.nonUniqueResult(model: modelSchema.name,
+                                                                 count: result.count)))
+                        }
+                    case .failure(let error):
+                        completion(.failure(error))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
                 }
             }
-
         } catch {
             completion(.failure(causedBy: error))
         }
