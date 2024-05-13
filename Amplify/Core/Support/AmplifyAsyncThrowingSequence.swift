@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 public typealias WeakAmplifyAsyncThrowingSequenceRef<Element> = WeakRef<AmplifyAsyncThrowingSequence<Element>>
 
