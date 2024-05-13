@@ -20,6 +20,7 @@ import AppKit
 #endif
 
 /// Responsible for creating pre-formatted CloudWatch stream names.
+@MainActor
 struct CloudWatchLoggingStreamNameFormatter {
 
     let userIdentifier: String?

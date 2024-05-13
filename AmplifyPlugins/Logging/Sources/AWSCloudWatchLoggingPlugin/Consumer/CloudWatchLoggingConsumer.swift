@@ -22,11 +22,11 @@ class CloudWatchLoggingConsumer {
         client: CloudWatchLogsClientProtocol,
         logGroupName: String,
         userIdentifier: String?
-    ) throws {
+    ) async throws {
         self.client = client
-        let formatter = CloudWatchLoggingStreamNameFormatter(userIdentifier: userIdentifier)
+        let formatter = await CloudWatchLoggingStreamNameFormatter(userIdentifier: userIdentifier)
         self.logGroupName = logGroupName
-        self.logStreamName = formatter.formattedStreamName()
+        self.logStreamName = await formatter.formattedStreamName()
     }
 }
 
