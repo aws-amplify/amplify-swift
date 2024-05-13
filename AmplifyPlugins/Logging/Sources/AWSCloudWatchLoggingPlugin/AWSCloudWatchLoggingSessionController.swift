@@ -90,7 +90,6 @@ final class AWSCloudWatchLoggingSessionController {
             await updateConsumer()
             connectProducerAndConsumer()
         }
-
     }
 
     func disable() {
@@ -118,9 +117,9 @@ final class AWSCloudWatchLoggingSessionController {
         }
 
         guard let cloudWatchClient = client else { return nil }
-        return try await CloudWatchLoggingConsumer(client: cloudWatchClient,
-                                             logGroupName: self.logGroupName,
-                                             userIdentifier: self.userIdentifier)
+        return await CloudWatchLoggingConsumer(client: cloudWatchClient,
+                                               logGroupName: self.logGroupName,
+                                               userIdentifier: self.userIdentifier)
     }
 
     private func connectProducerAndConsumer() {
