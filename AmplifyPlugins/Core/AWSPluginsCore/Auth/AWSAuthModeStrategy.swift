@@ -78,6 +78,10 @@ public struct AWSAuthorizationTypeIterator: AuthorizationTypeIterator, Sequence,
         self._position = 0
     }
 
+    public init(withValues values: [AmplifyAuthorizationType], valuesOnEmpty defaults: [AmplifyAuthorizationType]) {
+        self.init(withValues: values.isEmpty ? defaults : values)
+    }
+
     public var count: Int {
         _count
     }
@@ -128,20 +132,18 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     required public init() {}
 
     private static func defaultAuthTypeFor(authStrategy: AuthStrategy) -> AWSAuthorizationType {
-        var defaultAuthType: AWSAuthorizationType
         switch authStrategy {
         case .owner:
-            defaultAuthType = .amazonCognitoUserPools
+            return .amazonCognitoUserPools
         case .groups:
-            defaultAuthType = .amazonCognitoUserPools
+            return .amazonCognitoUserPools
         case .private:
-            defaultAuthType = .amazonCognitoUserPools
+            return .amazonCognitoUserPools
         case .public:
-            defaultAuthType = .apiKey
+            return .apiKey
         case .custom:
-            defaultAuthType = .function
+            return .function
         }
-        return defaultAuthType
     }
 
     /// Given an auth rule, returns the corresponding AWSAuthorizationType
@@ -240,7 +242,7 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
             AWSMultiAuthModeStrategy.authTypeFor(authRule: $0)
         }.map { .designated($0) }
 
-        return AWSAuthorizationTypeIterator(withValues: applicableAuthTypes)
+        return AWSAuthorizationTypeIterator(withValues: applicableAuthTypes, valuesOnEmpty: [.inferred])
     }
 
 }
