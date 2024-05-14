@@ -30,7 +30,7 @@ extension PredictionsError {
     }
 }
 
-extension PredictionsError.ClientError {
+extension PredictionsError.ClientError: Sendable {
     public static let imageNotFound = Self(
         description: "Something was wrong with the image file, make sure it exists.",
         recoverySuggestion: "Try choosing an image and sending it again."

@@ -16,7 +16,7 @@ import AWSS3
 
 class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
-    func testDownloadDataOperationValidationError() {
+    func testDownloadDataOperationValidationError() async {
         let request = StorageDownloadDataRequest(key: "", options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(request,
@@ -37,7 +37,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -177,7 +177,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     /// Given: Storage Download Data Operation
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
-    func testDownloadDataOperationStringStoragePathValidationError() {
+    func testDownloadDataOperationStringStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return "/my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -200,14 +200,14 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: Storage Download Data Operation
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
-    func testDownloadDataOperationEmptyStoragePathValidationError() {
+    func testDownloadDataOperationEmptyStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return " " })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -230,14 +230,14 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: Storage Download Data Operation
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
-    func testDownloadDataOperationIdentityIdStoragePathValidationError() {
+    func testDownloadDataOperationIdentityIdStoragePathValidationError() async {
         let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -259,14 +259,14 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: Storage Download Data Operation
     /// When: The operation is executed with a request that has an a custom implementation of StoragePath
     /// Then: The operation will fail with a validation error
-    func testDownloadDataOperationCustomStoragePathValidationError() {
+    func testDownloadDataOperationCustomStoragePathValidationError() async {
         let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
         let request = StorageDownloadDataRequest(path: path, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -288,7 +288,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
