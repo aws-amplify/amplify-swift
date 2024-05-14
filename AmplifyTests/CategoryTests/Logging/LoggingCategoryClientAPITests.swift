@@ -24,7 +24,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     // MARK: - Test passthrough delegations
 
-    func testErrorWithString() throws {
+    func testErrorWithString() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
@@ -38,10 +38,10 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         Amplify.Logging.error("Test")
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testErrorWithError() throws {
+    func testErrorWithError() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
@@ -56,10 +56,10 @@ class LoggingCategoryClientAPITests: XCTestCase {
         let error = ConfigurationError.amplifyAlreadyConfigured("Test", "Test")
         Amplify.Logging.error(error: error)
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testWarn() throws {
+    func testWarn() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
@@ -74,10 +74,10 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         Amplify.Logging.warn("Test")
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testInfo() throws {
+    func testInfo() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
@@ -91,10 +91,10 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         Amplify.Logging.info("Test")
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testDebug() throws {
+    func testDebug() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
@@ -108,10 +108,10 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         Amplify.Logging.debug("Test")
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testVerbose() throws {
+    func testVerbose() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
@@ -128,12 +128,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         Amplify.Logging.verbose("Testing verbose logging")
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
     // MARK: - Other tests
 
-    func testAmplifyDoesNotEvaluateMessageAutoclosureForLoggingStatements() throws {
+    func testAmplifyDoesNotEvaluateMessageAutoclosureForLoggingStatements() async throws {
         let plugin = NonEvaluatingLoggingPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -145,7 +145,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
         messageWasEvaluated.isInverted = true
         Amplify.Logging.warn("Should not evaluate \(messageWasEvaluated.fulfill())")
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [messageWasEvaluated], timeout: 0.5)
     }
 
 }

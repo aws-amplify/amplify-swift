@@ -70,7 +70,7 @@ class AtomicValueTests: XCTestCase {
         }
     }
 
-    func testWithNullable() {
+    func testWithNullable() async {
         let deinitialized = expectation(description: "deinitialized")
         let atomicNotifier = AtomicValue<InvocationCounter?>(
             initialValue: InvocationCounter(fulfillingOnDeinit: deinitialized)
@@ -83,7 +83,7 @@ class AtomicValueTests: XCTestCase {
             }
         }
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [deinitialized], timeout: 1)
     }
 }
 
