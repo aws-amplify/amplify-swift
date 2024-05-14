@@ -14,7 +14,7 @@ import XCTest
 
 class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
-    func testRemoveOperationValidationError() {
+    func testRemoveOperationValidationError() async {
         let options = StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: "", options: options)
 
@@ -38,7 +38,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
     }
 
     func testRemoveOperationGetIdentityIdError() async throws {

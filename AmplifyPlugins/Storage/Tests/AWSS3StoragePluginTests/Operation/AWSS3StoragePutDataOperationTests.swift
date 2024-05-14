@@ -16,7 +16,7 @@ import AWSS3
 
 class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
 
-    func testUploadDataOperationValidationError() {
+    func testUploadDataOperationValidationError() async {
         let options = StorageUploadDataRequest.Options(accessLevel: .protected)
         let request = StorageUploadDataRequest(key: "", data: testData, options: options)
 
@@ -40,7 +40,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
