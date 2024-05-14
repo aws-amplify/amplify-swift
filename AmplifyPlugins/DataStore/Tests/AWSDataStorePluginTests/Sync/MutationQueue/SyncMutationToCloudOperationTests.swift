@@ -308,6 +308,9 @@ class SyncMutationToCloudOperationTests: XCTestCase {
     }
     
     func testGetRetryAdvice_OperationErrorAuthErrorWithSingleAuth_RetryFalse() async throws {
+        let expectation = expectation(description: "operation completed")
+        var numberOfTimesEntered = 0
+        var error: APIError?
         let operation = await SyncMutationToCloudOperation(
             mutationEvent: try createMutationEvent(),
             getLatestSyncMetadata: { nil },
@@ -315,13 +318,30 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             authModeStrategy: AWSDefaultAuthModeStrategy(),
             networkReachabilityPublisher: publisher,
             currentAttemptNumber: 1,
-            completion: { _ in }
+            completion: { result in
+                XCTAssertEqual(numberOfTimesEntered, 1)
+                switch result {
+                case .failure(let apiError):
+                    error = apiError
+                default:
+                    XCTFail("Wrong result")
+                }
+                expectation.fulfill()
+            }
         )
-        
-        let authError = AuthError.notAuthorized("", "", nil)
-        let error = APIError.operationError("", "", authError)
-        let advice = operation.getRetryAdviceIfRetryable(error: error)
-        XCTAssertFalse(advice.shouldRetry)
+
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            defer { numberOfTimesEntered += 1 }
+            let authError = AuthError.notAuthorized("", "", nil)
+            return .failure(.unknown("", "", APIError.operationError("", "", authError)))
+        }
+
+        mockAPIPlugin.responders[.mutateRequestResponse] = responder
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        await fulfillment(of: [expectation])
+        XCTAssertEqual(false, operation.getRetryAdviceIfRetryable(error: error!).shouldRetry)
     }
     
     func testGetRetryAdvice_OperationErrorAuthErrorSessionExpired_RetryTrue() async throws {
@@ -371,12 +391,18 @@ public class MockMultiAuthModeStrategy: AuthModeStrategy {
 
     public func authTypesFor(schema: ModelSchema,
                              operation: ModelOperation) -> AWSAuthorizationTypeIterator {
-        return AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools, .apiKey])
+        return AWSAuthorizationTypeIterator(withValues: [
+            .designated(.amazonCognitoUserPools),
+            .designated(.apiKey)
+        ])
     }
 
     public func authTypesFor(schema: ModelSchema,
                              operations: [ModelOperation]) -> AWSAuthorizationTypeIterator {
-        return AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools, .apiKey])
+        return AWSAuthorizationTypeIterator(withValues: [
+            .designated(.amazonCognitoUserPools),
+            .designated(.apiKey)
+        ])
     }
 }
 

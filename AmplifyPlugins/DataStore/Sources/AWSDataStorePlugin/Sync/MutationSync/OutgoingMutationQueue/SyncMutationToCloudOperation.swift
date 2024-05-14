@@ -58,7 +58,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     override func main() {
         log.verbose(#function)
 
-        sendMutationToCloud(withAuthType: authTypesIterator?.next())
+        sendMutationToCloud(withAuthType: authTypesIterator?.next()?.awsAuthType)
     }
 
     override func cancel() {
@@ -253,7 +253,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             resolveReachabilityPublisher(request: request)
             if let pluginOptions = request.options?.pluginOptions as? AWSAPIPluginDataStoreOptions, pluginOptions.authType != nil,
                let nextAuthType = authTypesIterator?.next() {
-                scheduleRetry(advice: advice, withAuthType: nextAuthType)
+                scheduleRetry(advice: advice, withAuthType: nextAuthType.awsAuthType)
             } else {
                 scheduleRetry(advice: advice)
             }
