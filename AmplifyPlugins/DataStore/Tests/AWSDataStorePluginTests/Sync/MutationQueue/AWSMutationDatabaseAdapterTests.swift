@@ -151,7 +151,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     }
     
     /// Retrieve the first MutationEvent
-    func test_getNextMutationEvent_AlreadyInProcess() {
+    func test_getNextMutationEvent_AlreadyInProcess() async {
         let queryExpectation = expectation(description: "query called")
         let getMutationEventCompleted = expectation(description: "getNextMutationEvent completed")
         var mutationEvent1 = MutationEvent(modelId: "1111-22",
@@ -178,11 +178,11 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             getMutationEventCompleted.fulfill()
         }
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [getMutationEventCompleted, queryExpectation], timeout: 1)
     }
     
     /// Retrieve the first MutationEvent
-    func test_getNextMutationEvent_MarkInProcess() {
+    func test_getNextMutationEvent_MarkInProcess() async {
         let queryExpectation = expectation(description: "query called")
         let getMutationEventCompleted = expectation(description: "getNextMutationEvent completed")
         let mutationEvent1 = MutationEvent(modelId: "1111-22",
@@ -210,7 +210,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             getMutationEventCompleted.fulfill()
         }
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [getMutationEventCompleted, queryExpectation], timeout: 1)
     }
 
     /// This tests uses an in-memory SQLite connection to save and query mutation events.
@@ -219,7 +219,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     /// 2. The second query will also return `m2` since `inProcess` does not impact the results
     /// 3. Delete `m2` from the storage
     /// 4. The third query will return `m1` since `m2` was dequeued
-    func testGetNextMutationEvent_WithInMemoryStorage() throws {
+    func testGetNextMutationEvent_WithInMemoryStorage() async throws {
         let connection = try Connection(.inMemory)
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas)
@@ -263,7 +263,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             firstQueryCompleted.fulfill()
         }
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [firstQueryCompleted], timeout: 1)
 
         // (2)
         let secondQueryCompleted = expectation(description: "getNextMutationEvent completed")
@@ -279,7 +279,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             secondQueryCompleted.fulfill()
         }
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [secondQueryCompleted], timeout: 1)
 
         // (3)
         storageAdapter.delete(MutationEvent.self, 
@@ -307,7 +307,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
             thirdQueryCompleted.fulfill()
         }
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [thirdQueryCompleted], timeout: 1)
     }
 }
 
