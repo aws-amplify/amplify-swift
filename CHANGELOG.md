@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.33.5 (2024-05-14)
+
+### Bug Fixes
+
+- **predictions**: update liveness websocket send event to be synchronous (#3693)
+
 ## 2.33.4 (2024-05-08)
 
 ### Bug Fixes
