@@ -705,16 +705,16 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testApplyRemoteModels_deleteDisposition() {
+    func testApplyRemoteModels_deleteDisposition() async {
         let expect = expectation(description: "operation should send value and complete successfully")
         expect.expectedFulfillmentCount = 2
-        let stoargeExpect = expectation(description: "storage delete should be called")
+        let storageExpect = expectation(description: "storage delete should be called")
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         let notifyExpect = expectation(description: "mutation event should be emitted")
         let hubExpect = expectation(description: "Hub is notified")
         let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
@@ -758,24 +758,33 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
-        
+
+        await fulfillment(of: [
+            expect,
+            storageExpect,
+            storageMetadataExpect,
+            notifyExpect,
+            hubExpect
+        ], timeout: 1)
     }
 
-    func testApplyRemoteModels_multipleDispositions() {
-        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync)]
+    func testApplyRemoteModels_multipleDispositions() async {
+        let dispositions: [RemoteSyncReconciler.Disposition] = [
+            .create(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync)
+        ]
+
         let expect = expectation(description: "should complete successfully")
         expect.expectedFulfillmentCount = 2
-        let stoargeExpect = expectation(description: "storage save/delete should be called")
-        stoargeExpect.expectedFulfillmentCount = dispositions.count
+        let storageExpect = expectation(description: "storage save/delete should be called")
+        storageExpect.expectedFulfillmentCount = dispositions.count
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         storageMetadataExpect.expectedFulfillmentCount = dispositions.count
         let notifyExpect = expectation(description: "mutation event should be emitted")
@@ -784,14 +793,14 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         hubExpect.expectedFulfillmentCount = dispositions.count
 
         let saveResponder = SaveUntypedModelResponder { _, completion in
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             completion(.success(self.anyPostMutationSync.model))
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
 
         let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
@@ -835,10 +844,16 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [
+            expect,
+            storageExpect,
+            storageMetadataExpect,
+            notifyExpect,
+            hubExpect
+        ], timeout: 1)
     }
 
-    func testApplyRemoteModels_skipFailedOperations() throws {
+    func testApplyRemoteModels_skipFailedOperations() async throws {
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
@@ -890,7 +905,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
 
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+
+        await fulfillment(of: [
+            expect,
+            expectedDropped,
+            expectedDeleteSuccess
+        ], timeout: 1)
     }
 
     func testApplyRemoteModels_failWithConstraintViolationShouldBeSuccessful() {
