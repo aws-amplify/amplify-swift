@@ -32,7 +32,7 @@ extension Customer4 {
     model.fields(
       .field(customer4.id, is: .required, ofType: .string),
       .field(customer4.name, is: .optional, ofType: .string),
-      .hasOne(customer4.activeCart, is: .optional, ofType: Cart4.self, associatedWith: Cart4.keys.customer),
+      .hasOne(customer4.activeCart, is: .optional, ofType: Cart4.self, associatedFields: [Cart4.keys.customer]),
       .field(customer4.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(customer4.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
