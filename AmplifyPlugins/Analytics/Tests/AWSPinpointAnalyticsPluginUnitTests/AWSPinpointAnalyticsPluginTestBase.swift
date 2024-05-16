@@ -18,9 +18,9 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
 
     let testAppId = "56e6f06fd4f244c6b202bc1234567890"
     let testRegion = "us-east-1"
-    let testAutoFlushInterval = 30
+    let testAutoFlushInterval: TimeInterval = 30
     let testTrackAppSession = true
-    let testAutoSessionTrackingInterval = 10
+    let testAutoSessionTrackingInterval: TimeInterval = 10
 
     var plugin: HubCategoryPlugin {
         guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),

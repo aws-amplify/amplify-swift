@@ -31,13 +31,11 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///    - I should get a completed signIn flow.
     ///
     func testSuccessfulSignIn() async throws {
-
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-
         let didSucceed = try await AuthSignInHelper.signUpUser(username: username,
-                                    password: password,
-                                    email: defaultTestEmail)
+                                                               password: password,
+                                                               email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "Signup operation failed")
         do {
             let signInResult = try await Amplify.Auth.signIn(username: username, password: password)
@@ -56,10 +54,8 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     ///    - I should get a completed signIn flow.
     ///
     func testSignInWithWrongPassword() async throws {
-
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-
         let didSucceed = try await AuthSignInHelper.signUpUser(username: username,
                                     password: password,
                                     email: defaultTestEmail)
@@ -159,6 +155,9 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         do {
             _ = try await Amplify.Auth.signIn(username: "username-doesnot-exist", password: "password")
             XCTFail("SignIn with unknown user should not succeed")
+        } catch AuthError.notAuthorized {
+            // App clients with "Prevent user existence errors" enabled will return this.
+            // https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-managing-errors.html
         } catch let error as AuthError {
             let underlyingError = error.underlyingError as? AWSCognitoAuthError
             switch underlyingError {
@@ -187,7 +186,6 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
     func testSignInWhenAlreadySignedIn() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
@@ -310,7 +308,6 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         Task {
             let username = "integTest\(UUID().uuidString)"
             let password = "P123@\(UUID().uuidString)"
-
             let didSucceed = try await AuthSignInHelper.signUpUser(
                 username: username,
                 password: password,

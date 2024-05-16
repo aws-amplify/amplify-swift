@@ -1,1 +1,8 @@
-* @aws-amplify/amplify-ios 
+# Amplify iOS / Swift team has general approval permissions.
+* @aws-amplify/amplify-ios
+
+# Changes to this file requires admin approval.
+/.github/CODEOWNERS @aws-amplify/amplify-ios-admins
+
+# Changes to Xcode / OS runtime versions run in CI/CD requires admin approval.
+/.github/composite_actions/get_platform_parameters/action.yml @aws-amplify/amplify-ios-admins

@@ -12,7 +12,8 @@ import AWSCognitoAuthPlugin
 import AWSPinpointPushNotificationsPlugin
 import AWSPinpointAnalyticsPlugin
 
-let configFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplifyconfiguration"
+let amplifyConfigurationFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplifyconfiguration"
+let amplifyOutputsFilePath = "testconfiguration/AWSPushNotificationPluginIntegrationTest-amplify_outputs"
 
 var pushNotificationHubSubscription: UnsubscribeToken?
 var analyticsHubSubscription: UnsubscribeToken?
@@ -22,6 +23,10 @@ struct ContentView: View {
     @State var hubEvents: [String] = []
     @State var showIdentifyUserDone: Bool = false
     @State var showRegisterTokenDone: Bool = false
+
+    var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
 
     var body: some View {
         ScrollView {
@@ -47,12 +52,17 @@ struct ContentView: View {
 
     func initAmplify() {
         do {
-            let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: configFilePath)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
             try Amplify.add(plugin: AWSPinpointPushNotificationsPlugin(options: [.alert, .badge, .sound]))
-            try Amplify.configure(config)
 
+            if useGen2Configuration {
+                let data = try TestConfigHelper.retrieve(forResource: amplifyOutputsFilePath)
+                try Amplify.configure(with: .data(data))
+            } else {
+                let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFilePath)
+                try Amplify.configure(config)
+            }
             listenHubEvent()
         } catch {
             print("Failed to init Amplify", error)

@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class AnalyticsCategoryConfigurationTests: XCTestCase {
@@ -36,6 +36,18 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin"))
     }
 
+    func testCanConfigureAnalyticsPluginWithAmplifyOutputs() throws {
+        let plugin = MockAnalyticsCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
+
+        XCTAssertNotNil(Amplify.Analytics)
+        XCTAssertNotNil(try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin"))
+    }
+
     func testCanResetAnalyticsPlugin() async throws {
         let plugin = MockAnalyticsCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
@@ -53,6 +65,23 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
+        await Amplify.reset()
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
+    }
+
+    func testCanResetAnalyticsPluginFromAmplifyOutputs() async throws {
+        let plugin = MockAnalyticsCategoryPlugin()
+        let resetWasInvoked = expectation(description: "reset() was invoked")
+        plugin.listeners.append { message in
+            if message == "reset" {
+                resetWasInvoked.fulfill()
+            }
+        }
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
         await Amplify.reset()
         await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }

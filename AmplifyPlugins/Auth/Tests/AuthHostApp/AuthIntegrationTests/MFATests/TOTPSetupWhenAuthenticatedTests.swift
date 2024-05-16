@@ -23,7 +23,6 @@ class TOTPSetupWhenAuthenticatedTests: AWSAuthBaseTest {
             password: password,
             email: randomEmail
         )
-
         XCTAssertTrue(didSucceed, "Signup and sign in should succeed")
     }
 

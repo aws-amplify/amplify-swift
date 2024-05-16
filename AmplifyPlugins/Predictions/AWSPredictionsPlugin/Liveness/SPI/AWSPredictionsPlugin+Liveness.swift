@@ -66,6 +66,7 @@ public struct FaceLivenessSessionError: Swift.Error, Equatable {
     public static let accessDenied = Self(code: 7)
     public static let invalidRegion = Self(code: 8)
     public static let invalidURL = Self(code: 9)
+    public static let invalidSignature = Self(code: 10)
 }
 
 extension FaceLivenessSessionError {
@@ -85,6 +86,8 @@ extension FaceLivenessSessionError {
             self = .serviceUnavailable
         case .sessionNotFound:
             self = .sessionNotFound
+        case .invalidSignature:
+            self = .invalidSignature
         default:
             self = .unknown
         }

@@ -1,5 +1,107 @@
 # Changelog
 
+## 2.33.6 (2024-05-15)
+
+## 2.33.5 (2024-05-14)
+
+### Bug Fixes
+
+- **predictions**: update liveness websocket send event to be synchronous (#3693)
+
+## 2.33.4 (2024-05-08)
+
+### Bug Fixes
+
+- **auth**: configure with standardAttributes snake case values (#3686)
+- **datastore**: memory leak in ModelSyncedEventEmitter (#3675)
+
+## 2.33.3 (2024-05-03)
+
+### Bug Fixes
+
+- **auth**: Using a custom Foundation-based HTTPClient for HTTP Requests (#3582)
+
+## 2.33.2 (2024-05-02)
+
+### Bug Fixes
+
+- **Auth**: Add keychain logging for better debugging (#3669)
+- **core**: potential memory leak in WebSocketClient (#3624)
+
+## 2.33.1 (2024-05-01)
+
+### Bug Fixes
+
+- **auth**: gen2 config oauth domain (#3663)
+
+## 2.33.0 (2024-05-01)
+
+### Features
+
+- Updating to SQLite.swift 0.15.0 (#3659)
+
+## 2.32.1 (2024-04-30)
+
+### Bug Fixes
+
+- **Auth**: Refactoring state machine logic to fix memory leak (#3613)
+
+## 2.32.0 (2024-04-29)
+
+### Features
+
+- **storage**: update Storage APIs with StoragePath parameter
+- **Storage**: Adding integration tests for getURL, remove and list (#3584)
+- **Storage**: Refactor list objects API to include `path` (#3580)
+- **storage**: update storage upload APIs to use storage path (#3574)
+- **Storage**: Refactor GetURL API to include `path` (#3573)
+- **storage**: update storage download api (#3561)
+- **storage**: refactor storage remove api by including path (#3571)
+- **storage**: add new storage gen2 APIs (#3559)
+
+### Bug Fixes
+
+- **Auth**: Fixing the Gen2 json configuration used by the Authenticator (#3647)
+
+## 2.31.1 (2024-04-26)
+
+### Bug Fixes
+
+- **storage**: retrieve accesslevel before storage service (#3641)
+
+## 2.31.0 (2024-04-26)
+
+### Features
+
+- **api**: add authorizationMode to GraphQLRequest (#3630)
+
+## 2.30.0 (2024-04-26)
+
+### Features
+
+- **all**: Configure plugins with AmplifyOutputs (#3567)
+
+## 2.29.3 (2024-04-22)
+
+### Bug Fixes
+
+- **API**: make sure unsubscribe is invoked when subscription cancelled (#3619)
+
+## 2.29.2 (2024-04-17)
+
+### Bug Fixes
+
+- **api**: AWSGraphQLSubscriptionTaskRunner failing to cancel AppSyncRealTimeSubscription (#3615)
+- **Core**: TaskQueue async execution (#3611)
+
+## 2.29.1 (2024-04-10)
+
+### Bug Fixes
+
+- **api**: add collection type casting in swift 5.7 (#3602)
+- **Auth**: throw correct error for an unknown session error (#3591)
+- **DataStore**: Fixing a crash when attempting to create a model with a predicate. (#3600)
+
 ## 2.29.0 (2024-04-03)
 
 ### Features

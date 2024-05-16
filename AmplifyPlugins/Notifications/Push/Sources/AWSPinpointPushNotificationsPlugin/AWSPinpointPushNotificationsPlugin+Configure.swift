@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AmplifyUtilsNotifications
 import AWSPluginsCore
 import Foundation
@@ -20,14 +20,27 @@ extension AWSPinpointPushNotificationsPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-        guard let config = configuration as? JSONValue else {
+        let pluginConfiguration: AWSPinpointPluginConfiguration
+        if let config = configuration as? AmplifyOutputsData {
+            guard let notifications = config.notifications else {
+                throw PluginError.pluginConfigurationError(
+                    PushNotificationsPluginErrorConstants.missinAmplifyOutputsPinpointNotificationsConfiguration.errorDescription,
+                    PushNotificationsPluginErrorConstants.missinAmplifyOutputsPinpointNotificationsConfiguration.errorDescription
+                )
+            }
+
+            pluginConfiguration = AWSPinpointPluginConfiguration(
+                appId: notifications.amazonPinpointAppId,
+                region: notifications.awsRegion)
+        } else if let config = configuration as? JSONValue {
+            pluginConfiguration = try AWSPinpointPluginConfiguration(config)
+        } else {
             throw PluginError.pluginConfigurationError(
                 PushNotificationsPluginErrorConstants.decodeConfigurationError.errorDescription,
                 PushNotificationsPluginErrorConstants.decodeConfigurationError.recoverySuggestion
             )
         }
 
-        let pluginConfiguration = try AWSPinpointPluginConfiguration(config)
         try configure(using: pluginConfiguration)
     }
 

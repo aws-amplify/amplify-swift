@@ -25,6 +25,7 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     var queue: OperationQueue!
 
     /// The default access level used for API calls.
+    @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
     var defaultAccessLevel: StorageAccessLevel!
 
     /// The unique key of the plugin within the storage category.
@@ -47,7 +48,7 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.init
     public init(configuration
-                    storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
+                storageConfiguration: AWSS3StoragePluginConfiguration = AWSS3StoragePluginConfiguration()) {
         self.storageConfiguration = storageConfiguration
     }
 }

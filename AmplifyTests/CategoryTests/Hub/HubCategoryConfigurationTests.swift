@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class HubCategoryConfigurationTests: XCTestCase {
@@ -36,6 +36,18 @@ class HubCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin"))
     }
 
+    func testCanConfigureHubPluginWithAmplifyOutputs() throws {
+        let plugin = MockHubCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
+
+        XCTAssertNotNil(Amplify.Hub)
+        XCTAssertNotNil(try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin"))
+    }
+
     func testCanResetHubPlugin() async throws {
         let plugin = MockHubCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
@@ -53,6 +65,23 @@ class HubCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
+        await Amplify.reset()
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
+    }
+
+    func testCanResetHubPluginFromAmplifyOutputs() async throws {
+        let plugin = MockHubCategoryPlugin()
+        let resetWasInvoked = expectation(description: "reset() was invoked")
+        plugin.listeners.append { message in
+            if message == "reset" {
+                resetWasInvoked.fulfill()
+            }
+        }
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
         await Amplify.reset()
         await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }

@@ -45,6 +45,34 @@ extension AWSS3StoragePlugin {
         return result
     }
 
+    public func getURL(
+        path: any StoragePath,
+        options: StorageGetURLOperation.Request.Options? = nil
+    ) async throws -> URL {
+        let options = options ?? StorageGetURLRequest.Options()
+        let request = StorageGetURLRequest(path: path, options: options)
+        let task = AWSS3StorageGetURLTask(
+            request,
+            storageBehaviour: storageService)
+        return try await task.value
+    }
+
+    public func downloadData(
+        path: any StoragePath,
+        options: StorageDownloadDataOperation.Request.Options? = nil
+    ) -> StorageDownloadDataTask {
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(path: path, options: options)
+        let operation = AWSS3StorageDownloadDataOperation(request,
+                                                          storageConfiguration: storageConfiguration,
+                                                          storageService: storageService,
+                                                          authService: authService)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        queue.addOperation(operation)
+
+        return taskAdapter
+    }
+
     @discardableResult
     public func downloadData(
         key: String,
@@ -81,6 +109,24 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
+    public func downloadFile(
+        path: any StoragePath,
+        local: URL,
+        options: StorageDownloadFileOperation.Request.Options? = nil
+    ) -> StorageDownloadFileTask {
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(path: path, local: local, options: options)
+        let operation = AWSS3StorageDownloadFileOperation(request,
+                                                          storageConfiguration: storageConfiguration,
+                                                          storageService: storageService,
+                                                          authService: authService)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        queue.addOperation(operation)
+
+        return taskAdapter
+    }
+
+    @discardableResult
     public func uploadData(
         key: String,
         data: Data,
@@ -88,6 +134,24 @@ extension AWSS3StoragePlugin {
     ) -> StorageUploadDataTask {
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
+        let operation = AWSS3StorageUploadDataOperation(request,
+                                                        storageConfiguration: storageConfiguration,
+                                                        storageService: storageService,
+                                                        authService: authService)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        queue.addOperation(operation)
+
+        return taskAdapter
+    }
+
+    @discardableResult
+    public func uploadData(
+        path: any StoragePath,
+        data: Data,
+        options: StorageUploadDataOperation.Request.Options? = nil
+    ) -> StorageUploadDataTask {
+        let options = options ?? StorageUploadDataRequest.Options()
+        let request = StorageUploadDataRequest(path: path, data: data, options: options)
         let operation = AWSS3StorageUploadDataOperation(request,
                                                         storageConfiguration: storageConfiguration,
                                                         storageService: storageService,
@@ -117,6 +181,24 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
+    public func uploadFile(
+        path: any StoragePath,
+        local: URL,
+        options: StorageUploadFileOperation.Request.Options? = nil
+    ) -> StorageUploadFileTask {
+        let options = options ?? StorageUploadFileRequest.Options()
+        let request = StorageUploadFileRequest(path: path, local: local, options: options)
+        let operation = AWSS3StorageUploadFileOperation(request,
+                                                        storageConfiguration: storageConfiguration,
+                                                        storageService: storageService,
+                                                        authService: authService)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        queue.addOperation(operation)
+
+        return taskAdapter
+    }
+
+    @discardableResult
     public func remove(
         key: String,
         options: StorageRemoveOperation.Request.Options? = nil
@@ -133,6 +215,20 @@ extension AWSS3StoragePlugin {
         return try await taskAdapter.value
     }
 
+    @discardableResult
+    public func remove(
+        path: any StoragePath,
+        options: StorageRemoveOperation.Request.Options? = nil
+    ) async throws -> String {
+        let options = options ?? StorageRemoveRequest.Options()
+        let request = StorageRemoveRequest(path: path, options: options)
+        let task = AWSS3StorageRemoveTask(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageBehaviour: storageService)
+        return try await task.value
+    }
+
     public func list(
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {
@@ -146,6 +242,19 @@ extension AWSS3StoragePlugin {
         Amplify.Hub.dispatch(to: channel, payload: payload)
 
         return result
+    }
+
+    public func list(
+        path: any StoragePath,
+        options: StorageListRequest.Options? = nil
+    ) async throws -> StorageListResult {
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(path: path, options: options)
+        let task = AWSS3StorageListObjectsTask(
+            request,
+            storageConfiguration: storageConfiguration,
+            storageBehaviour: storageService)
+        return try await task.value
     }
 
     public func handleBackgroundEvents(identifier: String) async -> Bool {

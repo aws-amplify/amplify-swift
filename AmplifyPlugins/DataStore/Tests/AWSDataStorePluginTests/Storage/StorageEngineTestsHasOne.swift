@@ -70,6 +70,28 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
         }
     }
 
+    /// Given: A model that does not exist
+    /// When: save is called with a predicate
+    /// Then: A DataStoreError.invalidCondition error is returned
+    func testSaveModelWithPredicate_shouldFail() {
+        let team = Team(name: "Team")
+        let saveFinished = expectation(description: "Save finished")
+        storageEngine.save(team, condition: Team.keys.name.beginsWith("T")) { result in
+            defer {
+                saveFinished.fulfill()
+            }
+            guard case .failure(let error) = result,
+                  case . invalidCondition(let errorDescription, let recoverySuggestion, _) = error else {
+                XCTFail("Expected failure with .invalidCondition, got \(result)")
+                return
+            }
+
+            XCTAssertEqual(errorDescription, "Cannot apply a condition on model which does not exist.")
+            XCTAssertEqual(recoverySuggestion, "Save the model instance without a condition first.")
+        }
+        wait(for: [saveFinished], timeout: defaultTimeout)
+    }
+
     func testBelongsToRelationshipWithoutOwner() {
         let teamA = Team(name: "A-Team")
         let projectA = Project(name: "ProjectA", team: teamA)

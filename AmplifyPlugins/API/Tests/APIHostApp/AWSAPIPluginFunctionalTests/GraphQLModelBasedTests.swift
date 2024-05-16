@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import AWSAPIPlugin
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 #if os(watchOS)
 @testable import APIWatchApp
 #else
@@ -18,7 +18,7 @@ import XCTest
 class GraphQLModelBasedTests: XCTestCase {
     
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
-    
+
     final public class PostCommentModelRegistration: AmplifyModelRegistration {
         public func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
@@ -36,11 +36,10 @@ class GraphQLModelBasedTests: XCTestCase {
         
         do {
             try Amplify.add(plugin: plugin)
-            
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: GraphQLModelBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
-            
+
             ModelRegistry.register(modelType: Comment.self)
             ModelRegistry.register(modelType: Post.self)
             
@@ -225,7 +224,7 @@ class GraphQLModelBasedTests: XCTestCase {
                               post: post)
         let createdCommentResult = try await Amplify.API.mutate(request: .create(comment))
         guard case .success(let resultComment) = createdCommentResult else {
-            XCTFail("Error creating a Comment")
+            XCTFail("Error creating a Comment \(createdCommentResult)")
             return
         }
         XCTAssertEqual(resultComment.content, "commentContent")
@@ -448,6 +447,65 @@ class GraphQLModelBasedTests: XCTestCase {
         await fulfillment(of: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
+
+    /// Given: Several subscriptions with Amplify API plugin
+    /// When: Cancel subscriptions
+    /// Then: AppSync real time client automatically unsubscribe and remove the subscription
+    func testCancelledSubscription_automaticallyUnsubscribeAndRemoved() async throws {
+        let numberOfSubscription = 5
+        let allSubscribedExpectation = expectation(description: "All subscriptions are subscribed")
+        allSubscribedExpectation.expectedFulfillmentCount = numberOfSubscription
+
+        let subscriptions = (0..<5).map { _ in
+            Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
+        }
+        subscriptions.forEach { subscription in
+            Task {
+                do {
+                    for try await subscriptionEvent in subscription {
+                        switch subscriptionEvent {
+                        case .connection(let state):
+                            switch state {
+                            case .connecting:
+                                break
+                            case .connected:
+                                allSubscribedExpectation.fulfill()
+                            case .disconnected:
+                                break
+                            }
+                        case .data(let result):
+                            switch result {
+                            case .success: break
+                            case .failure(let error):
+                                XCTFail("\(error)")
+                            }
+                        }
+                    }
+                } catch {
+                    XCTFail("Unexpected subscription failure")
+                }
+            }
+        }
+
+        await fulfillment(of: [allSubscribedExpectation], timeout: 3)
+        if let appSyncRealTimeClientFactory =
+            getUnderlyingAPIPlugin()?.appSyncRealTimeClientFactory as? AppSyncRealTimeClientFactory,
+           let appSyncRealTimeClient =
+            await appSyncRealTimeClientFactory.apiToClientCache.values.first as? AppSyncRealTimeClient
+        {
+            var appSyncSubscriptions = await appSyncRealTimeClient.numberOfSubscriptions
+            XCTAssertEqual(appSyncSubscriptions, numberOfSubscription)
+
+            subscriptions.forEach { $0.cancel() }
+            try await Task.sleep(seconds: 2)
+            appSyncSubscriptions = await appSyncRealTimeClient.numberOfSubscriptions
+            XCTAssertEqual(appSyncSubscriptions, 0)
+
+        } else {
+            XCTFail("There should be at least one AppSyncRealTimeClient instance")
+        }
+    }
+
     // MARK: Helpers
 
     func createPost(id: String, title: String) async throws -> Post? {
@@ -498,5 +556,9 @@ class GraphQLModelBasedTests: XCTestCase {
         case .failure(let error):
             throw error
         }
+    }
+
+    func getUnderlyingAPIPlugin() -> AWSAPIPlugin? {
+        return Amplify.API.plugins["awsAPIPlugin"] as? AWSAPIPlugin
     }
 }

@@ -65,7 +65,7 @@ final class ModelSyncedEventEmitter {
         self.syncOrchestratorSink = initialSyncOrchestrator?
             .publisher
             .receive(on: queue)
-            .filter(filterSyncOperationEvent(_:))
+            .filter { [weak self] in self?.filterSyncOperationEvent($0) == true }
             .sink(receiveCompletion: { _ in },
                   receiveValue: { [weak self] value in
                     self?.onReceiveSyncOperationEvent(value: value)
@@ -74,7 +74,7 @@ final class ModelSyncedEventEmitter {
         self.reconciliationQueueSink = reconciliationQueue?
             .publisher
             .receive(on: queue)
-            .filter(filterReconciliationQueueEvent(_:))
+            .filter { [weak self] in self?.filterReconciliationQueueEvent($0) == true }
             .sink(receiveCompletion: { _ in },
                   receiveValue: { [weak self] value in
                     self?.onReceiveReconciliationEvent(value: value)

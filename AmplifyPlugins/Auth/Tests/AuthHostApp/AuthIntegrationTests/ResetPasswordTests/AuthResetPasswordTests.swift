@@ -21,8 +21,21 @@ class AuthResetPasswordTests: AWSAuthBaseTest {
     ///
     func testUserNotFoundResetPassword() async throws {
         do {
-            _ = try await Amplify.Auth.resetPassword(for: "user-non-exists", options: nil)
-            XCTFail("resetPassword with non existing user should not return result")
+            let randomUserNotExists = UUID().uuidString
+            let result = try await Amplify.Auth.resetPassword(for: randomUserNotExists, options: nil)
+
+            // App clients with "Prevent user existence errors" enabled will return a simulated result
+            // https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-managing-errors.html#cognito-user-pool-managing-errors-password-reset
+            // Gen2 configuration is enabled with Prevent User existence errors, while Gen1 backend is not.
+            if useGen2Configuration {
+                XCTAssertFalse(result.isPasswordReset)
+                guard case .confirmResetPasswordWithCode = result.nextStep else {
+                    XCTFail("Expected confirmResultPasswordCode in result, result: \(result)")
+                    return
+                }
+            } else {
+                XCTFail("resetPassword with non existing user should not return result, result returned: \(result)")
+            }
         } catch AuthError.service(_, _, let error as AWSCognitoAuthError) where [.userNotFound, .limitExceeded].contains(error) {
             return
         } catch {

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPluginsCore
 import Foundation
 @_spi(InternalAWSPinpoint) import InternalAWSPinpoint
@@ -20,14 +20,27 @@ extension AWSPinpointAnalyticsPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-        guard let config = configuration as? JSONValue else {
+        let pluginConfiguration: AWSPinpointAnalyticsPluginConfiguration
+        if let config = configuration as? AmplifyOutputsData {
+            print(config)
+
+            if let configuredOptions = options {
+                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options: configuredOptions)
+            } else {
+                let defaultOptions = AWSPinpointAnalyticsPlugin.Options.default
+                options = defaultOptions
+                pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options: defaultOptions)
+            }
+        } else if let config = configuration as? JSONValue {
+            pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config, options)
+            options = pluginConfiguration.options
+        } else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.decodeConfigurationError.errorDescription,
                 AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion
             )
         }
 
-        let pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config)
         try configure(using: pluginConfiguration)
     }
 
@@ -38,8 +51,7 @@ extension AWSPinpointAnalyticsPlugin {
             region: configuration.region
         )
 
-        let interval = TimeInterval(configuration.autoFlushEventsInterval)
-        pinpoint.setAutomaticSubmitEventsInterval(interval) { result in
+        pinpoint.setAutomaticSubmitEventsInterval(configuration.options.autoFlushEventsInterval) { result in
             switch result {
             case .success(let events):
                 Amplify.Hub.dispatchFlushEvents(events.asAnalyticsEventArray())
@@ -48,15 +60,8 @@ extension AWSPinpointAnalyticsPlugin {
             }
         }
 
-        if configuration.trackAppSessions {
-            let sessionBackgroundTimeout: TimeInterval
-            if configuration.autoSessionTrackingInterval == .max {
-                sessionBackgroundTimeout = .infinity
-            } else {
-                sessionBackgroundTimeout = TimeInterval(configuration.autoSessionTrackingInterval)
-            }
-
-            pinpoint.startTrackingSessions(backgroundTimeout: sessionBackgroundTimeout)
+        if configuration.options.trackAppSessions {
+            pinpoint.startTrackingSessions(backgroundTimeout: configuration.autoSessionTrackingInterval)
         }
 
         let networkMonitor = NWPathMonitor()

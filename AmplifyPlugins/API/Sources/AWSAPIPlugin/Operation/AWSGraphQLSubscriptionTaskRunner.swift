@@ -44,12 +44,12 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.apiAuthProviderFactory = apiAuthProviderFactory
     }
 
+    /// When the top-level AmplifyThrowingSequence is canceled, this cancel method is invoked.
+    /// In this situation, we need to send the disconnected event because
+    /// the top-level AmplifyThrowingSequence is terminated immediately upon cancellation.
     public func cancel() {
         self.send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
+        Task {
             guard let appSyncClient = self.appSyncClient else {
                 return
             }
@@ -91,14 +91,21 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
+            authType = authorizationMode
+        } else {
+            authType = nil
+        }
         // Retrieve the subscription connection
         do {
             self.appSyncClient = try await appSyncClientFactory.getAppSyncRealTimeClient(
                 for: endpointConfig,
                 endpoint: endpointConfig.baseURL,
                 authService: authService,
-                authType: pluginOptions?.authType,
+                authType: authType,
                 apiAuthProviderFactory: apiAuthProviderFactory
             )
 
@@ -141,7 +148,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
             finish()
         case .error(let payload):
-            fail(toAPIError(decodeAppSyncRealTimeResponseError(payload), type: R.self))
+            fail(toAPIError(Self.decodeAppSyncRealTimeResponseError(payload), type: R.self))
         }
     }
 
@@ -169,6 +176,39 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
 
             fail(APIError.operationError("Failed to deserialize", "", error))
         }
+    }
+
+
+    internal static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
+        let knownAppSyncRealTimeRequestErorrs =
+            decodeAppSyncRealTimeRequestError(data)
+            .filter { !$0.isUnknown }
+        if knownAppSyncRealTimeRequestErorrs.isEmpty {
+            let graphQLErrors = decodeGraphQLErrors(data)
+            return graphQLErrors.isEmpty
+                ? [APIError.operationError("Failed to decode AppSync error response", "", nil)]
+                : graphQLErrors
+        } else {
+            return knownAppSyncRealTimeRequestErorrs
+        }
+    }
+
+    internal static func decodeGraphQLErrors(_ data: JSONValue?) -> [GraphQLError] {
+        do {
+            return try GraphQLErrorDecoder.decodeAppSyncErrors(data)
+        } catch {
+            print("Failed to decode errors: \(error)")
+            return []
+        }
+    }
+
+    internal static func decodeAppSyncRealTimeRequestError(_ data: JSONValue?) -> [AppSyncRealTimeRequest.Error] {
+        guard let errorsJson = data?.errors else {
+            print("No 'errors' field found in response json")
+            return []
+        }
+        let errors = errorsJson.asArray ?? [errorsJson]
+        return errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
     }
 
 }
@@ -213,12 +253,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     override public func cancel() {
         super.cancel()
-
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
-
+        Task {
             guard let appSyncRealTimeClient = self.appSyncRealTimeClient else {
                 return
             }
@@ -267,14 +302,21 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
+            authType = authorizationMode
+        } else {
+            authType = nil
+        }
         Task {
             do {
                 appSyncRealTimeClient = try await appSyncRealTimeClientFactory.getAppSyncRealTimeClient(
                     for: endpointConfig,
                     endpoint: endpointConfig.baseURL,
                     authService: authService,
-                    authType: pluginOptions?.authType,
+                    authType: authType,
                     apiAuthProviderFactory: apiAuthProviderFactory
                 )
 
@@ -321,7 +363,10 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             dispatch(result: .successfulVoid)
             finish()
         case .error(let payload):
-            dispatch(result: .failure(toAPIError(decodeAppSyncRealTimeResponseError(payload), type: R.self)))
+            dispatch(result: .failure(toAPIError(
+                AWSGraphQLSubscriptionTaskRunner<R>.decodeAppSyncRealTimeResponseError(payload),
+                type: R.self
+            )))
             finish()
         }
     }
@@ -378,6 +423,31 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
         (hasAuthorizationError ? ": \(APIError.UnauthorizedMessageString)" : "")
     }
 
+#if swift(<5.8)
+    if let errors = errors.cast(to: AppSyncRealTimeRequest.Error.self) {
+        let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            errors.first
+        )
+    } else if let errors = errors.cast(to: GraphQLError.self) {
+        let hasAuthorizationError = errors.map(\.extensions)
+            .compactMap { $0.flatMap { $0["errorType"]?.stringValue } }
+            .contains(where: { AppSyncErrorType($0) == .unauthorized })
+        return APIError.operationError(
+            errorDescription(hasAuthorizationError),
+            "",
+            GraphQLResponseError<R>.error(errors)
+        )
+    } else {
+        return APIError.operationError(
+            errorDescription(),
+            "",
+            errors.first
+        )
+    }
+#else
     switch errors {
     case let errors as [AppSyncRealTimeRequest.Error]:
         let hasAuthorizationError = errors.contains(where: { $0 == .unauthorized})
@@ -402,36 +472,6 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
             errors.first
         )
     }
+#endif
 }
 
-fileprivate func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
-    let knownAppSyncRealTimeRequestErorrs =
-        decodeAppSyncRealTimeRequestError(data)
-        .filter { !$0.isUnknown }
-    if knownAppSyncRealTimeRequestErorrs.isEmpty {
-        let graphQLErrors = decodeGraphQLErrors(data)
-        return graphQLErrors.isEmpty
-            ? [APIError.operationError("Failed to decode AppSync error response", "", nil)]
-            : graphQLErrors
-    } else {
-        return knownAppSyncRealTimeRequestErorrs
-    }
-}
-
-fileprivate func decodeGraphQLErrors(_ data: JSONValue?) -> [GraphQLError] {
-    do {
-        return try GraphQLErrorDecoder.decodeAppSyncErrors(data)
-    } catch {
-        print("Failed to decode errors: \(error)")
-        return []
-    }
-}
-
-fileprivate func decodeAppSyncRealTimeRequestError(_ data: JSONValue?) -> [AppSyncRealTimeRequest.Error] {
-    guard let errorsJson = data?.errors else {
-        print("No 'errors' field found in response json")
-        return []
-    }
-    let errors = errorsJson.asArray ?? [errorsJson]
-    return errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
-}

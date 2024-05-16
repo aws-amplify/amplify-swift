@@ -26,6 +26,7 @@ enum AuthSignInHelper {
             var userAttributes = [
                 AuthUserAttribute(.email, value: email)
             ]
+
             if let phoneNumber = phoneNumber {
                 userAttributes.append(AuthUserAttribute(.phoneNumber, value: phoneNumber))
             }

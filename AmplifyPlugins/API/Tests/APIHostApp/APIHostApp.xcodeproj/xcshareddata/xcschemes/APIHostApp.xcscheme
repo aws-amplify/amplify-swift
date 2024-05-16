@@ -49,6 +49,28 @@
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "212371272BBB0279003B1B44"
+               BuildableName = "AWSAPIPluginGen2TestsTests.xctest"
+               BlueprintName = "AWSAPIPluginGen2TestsTests"
+               ReferencedContainer = "container:APIHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2163D60B2BE96C90009689B1"
+               BuildableName = "AWSAPIPluginGen2GraphQLTests.xctest"
+               BlueprintName = "AWSAPIPluginGen2GraphQLTests"
+               ReferencedContainer = "container:APIHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

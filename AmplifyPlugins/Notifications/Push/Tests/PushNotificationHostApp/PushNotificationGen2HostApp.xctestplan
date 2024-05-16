@@ -1,0 +1,35 @@
+{
+  "configurations" : [
+    {
+      "id" : "AE2D8AAB-E43A-4E85-AD6E-0248BEF877FF",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:PushNotificationHostApp.xcodeproj",
+      "identifier" : "21F762EF2BD6B7410048845A",
+      "name" : "PushNotificationGen2HostApp"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:PushNotificationHostApp.xcodeproj",
+        "identifier" : "6084F1AB2967B87200434CBF",
+        "name" : "PushNotificationHostAppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -11,6 +11,10 @@ struct SignInScreen: Screen {
 
     let app: XCUIApplication
 
+    var useGen2Configuration: Bool {
+        ProcessInfo.processInfo.arguments.contains("GEN2")
+    }
+
     private enum Identifiers {
         static let signUpNav = "hostedUI_signUp_view_nav"
         static let signInButton = "hostedUI_signIn_button"
@@ -45,10 +49,24 @@ struct SignInScreen: Screen {
         return self
     }
 
+
     func signIn(username: String, password: String) -> Self {
-        _ = app.webViews.textFields["Username"].waitForExistence(timeout: 60)
-        app.webViews.textFields["Username"].tap()
-        app.webViews.textFields["Username"].typeText(username)
+        let signInTextFieldName: String
+        // Ideally we align the provisioning of Gen1 and Gen2 backends
+        // to create a HostedUI endpoint that has the same username text field.
+        // The Gen1 steps are updated in the README already, we re-provision the backend
+        // in Gen1 according to those steps, this check can be removed and expect
+        // "Email Email" to be the text field.
+        if useGen2Configuration {
+            signInTextFieldName = "Email Email"
+        } else {
+            signInTextFieldName = "Username"
+        }
+
+        _ = app.webViews.textFields[signInTextFieldName].waitForExistence(timeout: 60)
+        app.webViews.textFields[signInTextFieldName].tap()
+        app.webViews.textFields[signInTextFieldName].typeText(username)
+
 
         app.webViews.secureTextFields["Password"].tap()
         app.webViews.secureTextFields["Password"].typeText(password)
