@@ -174,7 +174,10 @@ final class InitialSyncOperation: AsynchronousOperation {
             for authType in authTypes {
                 continuation.yield({ [weak self] in
                     guard let self, let api = self.api else {
-                        throw APIError.operationError("Operation cancelled", "")
+                        throw APIError.operationError(
+                            "The initial synchronization process can no longer be accessed or referred to",
+                            "The initial synchronization process may be cancelled or terminated"
+                        )
                     }
 
                     return try await api.query(request: GraphQLRequest<SyncQueryResult>.syncQuery(
