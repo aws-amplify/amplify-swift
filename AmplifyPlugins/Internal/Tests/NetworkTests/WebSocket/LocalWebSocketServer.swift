@@ -37,7 +37,7 @@ class LocalWebSocketServer {
         stack.applicationProtocols.insert(ws, at: 0)
         let port = NWEndpoint.Port(rawValue: portNumber)!
         guard let listener = try? NWListener(using: params, on: port) else {
-            throw "unable to start the listener at: localhost:\(port)"
+            throw LocalWebSocketServerError.error("unable to start the listener at: localhost:\(port)")
         }
 
         listener.newConnectionHandler = { [weak self] conn in
@@ -93,7 +93,7 @@ class LocalWebSocketServer {
 
     func sendTransientFailureToConnections() {
         self.connections.forEach {
-            var metadata = NWProtocolWebSocket.Metadata(opcode: .close)
+            let metadata = NWProtocolWebSocket.Metadata(opcode: .close)
             metadata.closeCode = .protocolCode(NWProtocolWebSocket.CloseCode.Defined.internalServerError)
             $0.send(
                 content: nil,
@@ -102,4 +102,8 @@ class LocalWebSocketServer {
             )
         }
     }
+}
+
+enum LocalWebSocketServerError: Error {
+    case error(String)
 }

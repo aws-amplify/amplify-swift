@@ -178,7 +178,6 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         }
     }
 
-
     internal static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
         let knownAppSyncRealTimeRequestErorrs =
             decodeAppSyncRealTimeRequestError(data)

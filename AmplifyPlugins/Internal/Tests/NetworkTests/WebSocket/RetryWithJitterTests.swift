@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import AWSPluginsCore
+@testable @_spi(RetryWithJitter) import AmplifyNetwork
 
 class RetryWithJitterTests: XCTestCase {
     struct TestError: Error {

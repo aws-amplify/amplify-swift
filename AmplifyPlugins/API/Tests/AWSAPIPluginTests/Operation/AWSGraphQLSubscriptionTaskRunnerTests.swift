@@ -14,7 +14,7 @@ import XCTest
 @testable import AWSPluginsTestCommon
 
 // swiftlint:disable:next type_name
-class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
+class AWSGraphQLSubscriptionTaskRunnerTests: XCTestCase {
     var apiPlugin: AWSAPIPlugin!
     var authService: MockAWSAuthService!
     var pluginConfig: AWSAPICategoryPluginConfiguration!
@@ -182,5 +182,103 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
         await fulfillment(of: [receivedValue, connectionCreation], timeout: 5)
         subscriptionEvents.cancel()
         await fulfillment(of: [receivedFailure, receivedCompletion], timeout: 5)
+    }
+
+    func testDecodeAppSyncRealTimeResponseError_withEmptyJsonValue_failedToDecode() {
+        let errors = AWSGraphQLSubscriptionTaskRunner<String>.decodeAppSyncRealTimeResponseError(nil)
+        XCTAssertEqual(errors.count, 1)
+        if case .some(.operationError(let description, _, _)) = errors.first as? APIError {
+            XCTAssertTrue(description.contains("Failed to decode AppSync error response"))
+        } else {
+            XCTFail("Should be failed with APIError")
+        }
+    }
+
+    func testDecodeAppSYncRealTimeResponseError_withKnownAppSyncRealTimeRequestError_returnKnownErrors() {
+        let errorJson: JSONValue = [
+            "errors": [[
+                "message": "test1",
+                "errorType": "MaxSubscriptionsReachedError"
+            ]]
+        ]
+
+        let errors = AWSGraphQLSubscriptionTaskRunner<String>.decodeAppSyncRealTimeResponseError(errorJson)
+        XCTAssertEqual(errors.count, 1)
+        guard case .maxSubscriptionsReached = errors.first as? AppSyncRealTimeRequest.Error else {
+            XCTFail("Should be AppSyncRealTimeRequestError")
+            return
+        }
+    }
+
+    func testDecodeAppSYncRealTimeResponseError_withUnknownError_returnParsedGraphQLError() {
+        let errorJson: JSONValue = [
+            "errors": [[
+                "message": "test1",
+                "errorType": "Unknown"
+            ]]
+        ]
+
+        let errors = AWSGraphQLSubscriptionTaskRunner<String>.decodeAppSyncRealTimeResponseError(errorJson)
+        XCTAssertEqual(errors.count, 1)
+        XCTAssertTrue(errors.first is GraphQLError)
+    }
+
+    func testDecodeAppSyncRealTimeRequestError_withoutErrorsField_returnEmptyErrors() {
+        let errorJson: JSONValue = [
+            "noErrors": [[
+                "message": "test1",
+                "errorType": "Unknown"
+            ]]
+        ]
+
+        let errors = AWSGraphQLSubscriptionTaskRunner<String>.decodeAppSyncRealTimeRequestError(errorJson)
+        XCTAssertEqual(errors.count, 0)
+    }
+
+    func testDecodeAppSyncRealTimeRequestError_withWellFormatErrors_parseErrors() {
+        let errorJson: JSONValue = [
+            "errors": [[
+                "message": "test1",
+                "errorType": "MaxSubscriptionsReachedError"
+            ], [
+                "message": "test2",
+                "errorType": "LimitExceededError"
+            ], [
+                "message": "test3",
+                "errorType": "Unauthorized"
+            ]]
+        ]
+
+        let errors = AWSGraphQLSubscriptionTaskRunner<String>.decodeAppSyncRealTimeRequestError(errorJson)
+        XCTAssertEqual(errors.count, 3)
+    }
+
+    func testDecodeAppSyncRealTimeRequestError_withSomeWellFormatErrors_parseErrors() {
+        let errorJson: JSONValue = [
+            "errors": [[
+                "message": "test1",
+                "errorType": "MaxSubscriptionsReachedError"
+            ], [
+                "message": "test2",
+                "errorType": "LimitExceededError"
+            ], [
+                "random": "123"
+            ]]
+        ]
+
+        let errors = AWSGraphQLSubscriptionTaskRunner<String>.decodeAppSyncRealTimeRequestError(errorJson)
+        XCTAssertEqual(errors.count, 2)
+    }
+
+    func testDecodeAppSyncRealTimeRequestError_withSingletonErrors_parseErrors() {
+        let errorJson: JSONValue = [
+            "errors": [
+                "message": "test1",
+                "errorType": "MaxSubscriptionsReachedError"
+            ]
+        ]
+
+        let errors = AWSGraphQLSubscriptionTaskRunner<String>.decodeAppSyncRealTimeRequestError(errorJson)
+        XCTAssertEqual(errors.count, 1)
     }
 }

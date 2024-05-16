@@ -327,6 +327,7 @@ let internalNetworkingTargets: [Target] = [
     .testTarget(
         name: "AmplifyNetworkUnitTests",
         dependencies: [
+            "AmplifyTestCommon",
             "AmplifyNetwork"
         ],
         path: "AmplifyPlugins/Internal/Tests/NetworkTests"
