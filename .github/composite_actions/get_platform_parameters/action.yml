@@ -17,6 +17,9 @@ outputs:
   destination:
     description: "The destination associated with the given platform and Xcode version"
     value: ${{ steps.get-destination.outputs.destination }}
+  device:
+      description: "The device name used in the destination"
+      value: ${{ steps.get-destination.outputs.device }}
   sdk:
     description: "The SDK associated with the given platform"
     value: ${{ steps.get-sdk.outputs.sdk }}
@@ -38,9 +41,8 @@ runs:
 
     - id: get-xcode-version
       run: |
-        LATEST_XCODE_VERSION=14.3.1
-        MINIMUM_XCODE_VERSION_IOS_MAC=14.1.0
-        MINIMUM_XCODE_VERSION_WATCH_TV=14.3.1
+        LATEST_XCODE_VERSION=15.3.0
+        MINIMUM_XCODE_VERSION=15.0.1
 
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
@@ -48,13 +50,7 @@ runs:
           latest)
             XCODE_VERSION=$LATEST_XCODE_VERSION ;;
           minimum)
-            INPUT_PLATFORM=${{ inputs.platform }}
-            case $INPUT_PLATFORM in
-              iOS|macOS)
-                XCODE_VERSION=$MINIMUM_XCODE_VERSION_IOS_MAC ;;
-              tvOS|watchOS)
-                XCODE_VERSION=$MINIMUM_XCODE_VERSION_WATCH_TV ;;
-            esac ;;
+            XCODE_VERSION=$MINIMUM_XCODE_VERSION ;;
           *)
             XCODE_VERSION=$INPUT_XCODE_VERSION ;;
         esac
@@ -68,23 +64,42 @@ runs:
         INPUT_DESTINATION='${{ inputs.destination }}'
         INPUT_XCODE_VERSION=${{ inputs.xcode_version }}
 
-        DESTINATION_MAPPING='{
-          "minimum": {
-            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.1",
-            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (2nd generation),OS=16.1",
-            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.1",
-            "macOS": "platform=macOS,arch=x86_64"
-          },
-          "latest": {
-            "iOS": "platform=iOS Simulator,name=iPhone 14,OS=16.4",
-            "tvOS": "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=16.4",
-            "watchOS": "platform=watchOS Simulator,name=Apple Watch Series 8 (45mm),OS=9.4",
-            "macOS": "platform=macOS,arch=x86_64"
-          }
-        }'
+        case $INPUT_PLATFORM/$INPUT_XCODE_VERSION in
+          iOS/latest) 
+            DEVICE="iPhone 15"
+            OS_VERSION="17.4"
+            ;;
+          iOS/*)
+            DEVICE="iPhone 14"
+            OS_VERSION="17.0.1"
+            ;;
+          tvOS/latest)
+            DEVICE="Apple TV 4K (3rd generation)"
+            OS_VERSION="17.4"
+            ;;
+          tvOS/*)
+            DEVICE="Apple TV 4K (3rd generation)"
+            OS_VERSION="17.0"
+            ;;
+          watchOS/latest)
+            DEVICE="Apple Watch Series 9 (45mm)"
+            OS_VERSION="10.4"
+            ;;
+          watchOS/*)
+            DEVICE="Apple Watch Series 8 (45mm)"
+            OS_VERSION="10.0"
+            ;;
+        esac
+
+        DESTINATION_MAPPING="{
+          \"iOS\": \"platform=iOS Simulator,name=$DEVICE,OS=$OS_VERSION\",
+          \"tvOS\": \"platform=tvOS Simulator,name=$DEVICE,OS=$OS_VERSION\",
+          \"watchOS\": \"platform=watchOS Simulator,name=$DEVICE,OS=$OS_VERSION\",
+          \"macOS\": \"platform=macOS,arch=arm64\"
+        }"
 
         if [ -z "$INPUT_DESTINATION" ]; then
-          DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".\"$INPUT_XCODE_VERSION\".$INPUT_PLATFORM")
+          DESTINATION=$(echo $DESTINATION_MAPPING | jq -r ".$INPUT_PLATFORM")
         else
           DESTINATION=$INPUT_DESTINATION
         fi
@@ -94,6 +109,7 @@ runs:
           exit 1
         fi
         echo "destination=$DESTINATION" >> $GITHUB_OUTPUT
+        echo "device=$DEVICE" >> $GITHUB_OUTPUT
       shell: bash
 
     - id: get-sdk

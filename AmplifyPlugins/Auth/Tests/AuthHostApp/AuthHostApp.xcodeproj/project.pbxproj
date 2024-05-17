@@ -100,8 +100,6 @@
 		681B76BB2A3CBBAE004B59D9 /* AuthConfirmResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */; };
 		681B76BC2A3CBBAE004B59D9 /* AuthDeleteUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4821B2F1286B5F74000EC1D7 /* AuthDeleteUserTests.swift */; };
 		681B76BF2A3CBBAE004B59D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 485CB5AE27B61EAA006CCEC7 /* README.md */; };
-		681B76C62A3CBE11004B59D9 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B76C52A3CBE11004B59D9 /* Amplify */; };
-		681B76C82A3CBE11004B59D9 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B76C72A3CBE11004B59D9 /* AWSCognitoAuthPlugin */; };
 		681DFEAB28E747B80000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA828E747B80000C36A /* AsyncTesting.swift */; };
 		681DFEAC28E747B80000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA928E747B80000C36A /* AsyncExpectation.swift */; };
 		681DFEAD28E747B80000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -257,8 +255,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				681B76C62A3CBE11004B59D9 /* Amplify in Frameworks */,
-				681B76C82A3CBE11004B59D9 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -591,8 +587,6 @@
 			);
 			name = AuthIntegrationTestsWatch;
 			packageProductDependencies = (
-				681B76C52A3CBE11004B59D9 /* Amplify */,
-				681B76C72A3CBE11004B59D9 /* AWSCognitoAuthPlugin */,
 			);
 			productName = AuthIntegrationTests;
 			productReference = 681B76C42A3CBBAE004B59D9 /* AuthIntegrationTestsWatch.xctest */;
@@ -1478,14 +1472,6 @@
 			productName = Amplify;
 		};
 		681B769B2A3CBA97004B59D9 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		681B76C52A3CBE11004B59D9 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		681B76C72A3CBE11004B59D9 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
 		};
