@@ -46,7 +46,7 @@ public struct AppSyncListPayload: Codable {
         // `GraphQLFilter`.
         guard let filterVariablesData = try? encoder.encode(filterValue),
               let filterVariablesJSON = try? JSONSerialization.jsonObject(with: filterVariablesData)
-                as? [String: Any] else {
+                as? GraphQLFilter else {
 
             assertionFailure("Filter variables is not a valid JSON object: \(filterValue)")
             return nil
