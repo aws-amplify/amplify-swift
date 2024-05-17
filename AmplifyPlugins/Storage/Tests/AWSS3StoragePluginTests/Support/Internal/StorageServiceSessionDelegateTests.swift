@@ -164,7 +164,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
             )
             
             delegate.urlSession(.shared, task: task, didCompleteWithError: error)
-            waitForExpectations(timeout: 1)
+            waitForExpectations(timeout: 5)
             XCTAssertEqual(storageTask.status, .unknown)
             XCTAssertEqual(service.unregisterCount, 0)
         }

@@ -16,11 +16,14 @@ public struct AppSyncListPayload: Codable {
 
     let graphQLData: JSONValue
     let apiName: String?
+    let authMode: AWSAuthorizationType?
 
     public init(graphQLData: JSONValue,
                 apiName: String?,
+                authMode: AWSAuthorizationType?,
                 variables: [String: JSONValue]?) {
         self.apiName = apiName
+        self.authMode = authMode
         self.variables = variables
         self.graphQLData = graphQLData
     }

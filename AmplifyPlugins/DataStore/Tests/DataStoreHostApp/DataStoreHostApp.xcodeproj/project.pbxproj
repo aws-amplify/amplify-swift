@@ -640,10 +640,6 @@
 		681DFE9628E746FE0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
 		681DFE9728E746FE0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
 		682D184B2A43DEF400BD034E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 682D184A2A43DEF400BD034E /* XCTest.framework */; };
-		682D184D2A43DF9E00BD034E /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 682D184C2A43DF9E00BD034E /* Amplify */; };
-		682D184F2A43DFB700BD034E /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 682D184E2A43DFB700BD034E /* AWSAPIPlugin */; };
-		682D18512A43DFB700BD034E /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 682D18502A43DFB700BD034E /* AWSCognitoAuthPlugin */; };
-		682D18532A43DFB700BD034E /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 682D18522A43DFB700BD034E /* AWSDataStorePlugin */; };
 		68826CD12A439C2F005E85A7 /* DataStoreHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2118212F289BFB4B001B5945 /* DataStoreHostAppApp.swift */; };
 		68826CD22A439C2F005E85A7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21182131289BFB4B001B5945 /* ContentView.swift */; };
 		68826CD42A43A149005E85A7 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68826CD32A43A149005E85A7 /* Amplify */; };
@@ -1018,22 +1014,6 @@
 		68826E782A43A1DB005E85A7 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA92289BFE4E00B32A39 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift */; };
 		68826E792A43A1DB005E85A7 /* TodoCustomOwnerImplicit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA9C289BFE4E00B32A39 /* TodoCustomOwnerImplicit.swift */; };
 		68826E7A2A43A1DB005E85A7 /* AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAA0289BFE4E00B32A39 /* AWSDataStoreCategoryPluginAuthOwnerIntegrationTests.swift */; };
-		68826E852A43A224005E85A7 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E842A43A224005E85A7 /* Amplify */; };
-		68826E872A43A224005E85A7 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E862A43A224005E85A7 /* AWSAPIPlugin */; };
-		68826E892A43A224005E85A7 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E882A43A224005E85A7 /* AWSCognitoAuthPlugin */; };
-		68826E8B2A43A224005E85A7 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E8A2A43A224005E85A7 /* AWSDataStorePlugin */; };
-		68826E8F2A43A238005E85A7 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E8E2A43A238005E85A7 /* Amplify */; };
-		68826E912A43A238005E85A7 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E902A43A238005E85A7 /* AWSAPIPlugin */; };
-		68826E932A43A238005E85A7 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E922A43A238005E85A7 /* AWSCognitoAuthPlugin */; };
-		68826E952A43A238005E85A7 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E942A43A238005E85A7 /* AWSDataStorePlugin */; };
-		68826E992A43A251005E85A7 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E982A43A251005E85A7 /* Amplify */; };
-		68826E9B2A43A251005E85A7 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E9A2A43A251005E85A7 /* AWSAPIPlugin */; };
-		68826E9D2A43A251005E85A7 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E9C2A43A251005E85A7 /* AWSCognitoAuthPlugin */; };
-		68826E9F2A43A251005E85A7 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826E9E2A43A251005E85A7 /* AWSDataStorePlugin */; };
-		68826EAD2A43A280005E85A7 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68826EAC2A43A280005E85A7 /* Amplify */; };
-		68826EAF2A43A280005E85A7 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826EAE2A43A280005E85A7 /* AWSAPIPlugin */; };
-		68826EB12A43A280005E85A7 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826EB02A43A280005E85A7 /* AWSCognitoAuthPlugin */; };
-		68826EB32A43A280005E85A7 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68826EB22A43A280005E85A7 /* AWSDataStorePlugin */; };
 		68E9EB1D2A448C23001F713D /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC4289C06E300B32A39 /* Record.swift */; };
 		68E9EB1E2A448C23001F713D /* PostEditor5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF3289C06E300B32A39 /* PostEditor5+Schema.swift */; };
 		68E9EB1F2A448C23001F713D /* UserFollowers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC95289C06E300B32A39 /* UserFollowers.swift */; };
@@ -1313,14 +1293,6 @@
 		68E9EC3C2A448C47001F713D /* PrivatePrivateUPIAMPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAD9289BFE4E00B32A39 /* PrivatePrivateUPIAMPost+Schema.swift */; };
 		68E9EC3D2A448C47001F713D /* GroupUPPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAAA289BFE4E00B32A39 /* GroupUPPost+Schema.swift */; };
 		68E9EC3E2A448C47001F713D /* AWSDataStoreMultiAuthSingleRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAA4289BFE4E00B32A39 /* AWSDataStoreMultiAuthSingleRuleTests.swift */; };
-		68E9EC4B2A448C87001F713D /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC4A2A448C87001F713D /* Amplify */; };
-		68E9EC4D2A448C87001F713D /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC4C2A448C87001F713D /* AWSAPIPlugin */; };
-		68E9EC4F2A448C87001F713D /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC4E2A448C87001F713D /* AWSCognitoAuthPlugin */; };
-		68E9EC512A448C87001F713D /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC502A448C87001F713D /* AWSDataStorePlugin */; };
-		68E9EC532A448C8D001F713D /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC522A448C8D001F713D /* Amplify */; };
-		68E9EC552A448C8D001F713D /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC542A448C8D001F713D /* AWSAPIPlugin */; };
-		68E9EC572A448C8D001F713D /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC562A448C8D001F713D /* AWSCognitoAuthPlugin */; };
-		68E9EC592A448C8D001F713D /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68E9EC582A448C8D001F713D /* AWSDataStorePlugin */; };
 		970333C5295C5B160019981E /* DataStoreStressBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333C4295C5B160019981E /* DataStoreStressBaseTest.swift */; };
 		970333E3295CCE490019981E /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333DF295CCE490019981E /* AmplifyModels.swift */; };
 		970333E4295CCE490019981E /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333E0295CCE490019981E /* PostStatus.swift */; };
@@ -2352,10 +2324,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68826E872A43A224005E85A7 /* AWSAPIPlugin in Frameworks */,
-				68826E852A43A224005E85A7 /* Amplify in Frameworks */,
-				68826E892A43A224005E85A7 /* AWSCognitoAuthPlugin in Frameworks */,
-				68826E8B2A43A224005E85A7 /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2363,10 +2331,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68826E912A43A238005E85A7 /* AWSAPIPlugin in Frameworks */,
-				68826E8F2A43A238005E85A7 /* Amplify in Frameworks */,
-				68826E932A43A238005E85A7 /* AWSCognitoAuthPlugin in Frameworks */,
-				68826E952A43A238005E85A7 /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2374,10 +2338,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68826E9B2A43A251005E85A7 /* AWSAPIPlugin in Frameworks */,
-				68826E992A43A251005E85A7 /* Amplify in Frameworks */,
-				68826E9D2A43A251005E85A7 /* AWSCognitoAuthPlugin in Frameworks */,
-				68826E9F2A43A251005E85A7 /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2385,10 +2345,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				682D184F2A43DFB700BD034E /* AWSAPIPlugin in Frameworks */,
-				682D184D2A43DF9E00BD034E /* Amplify in Frameworks */,
-				682D18512A43DFB700BD034E /* AWSCognitoAuthPlugin in Frameworks */,
-				682D18532A43DFB700BD034E /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2396,10 +2352,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68826EAF2A43A280005E85A7 /* AWSAPIPlugin in Frameworks */,
-				68826EAD2A43A280005E85A7 /* Amplify in Frameworks */,
-				68826EB12A43A280005E85A7 /* AWSCognitoAuthPlugin in Frameworks */,
-				68826EB32A43A280005E85A7 /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2407,10 +2359,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68E9EC4D2A448C87001F713D /* AWSAPIPlugin in Frameworks */,
-				68E9EC4B2A448C87001F713D /* Amplify in Frameworks */,
-				68E9EC4F2A448C87001F713D /* AWSCognitoAuthPlugin in Frameworks */,
-				68E9EC512A448C87001F713D /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2418,10 +2366,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68E9EC552A448C8D001F713D /* AWSAPIPlugin in Frameworks */,
-				68E9EC532A448C8D001F713D /* Amplify in Frameworks */,
-				68E9EC572A448C8D001F713D /* AWSCognitoAuthPlugin in Frameworks */,
-				68E9EC592A448C8D001F713D /* AWSDataStorePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4256,10 +4200,6 @@
 			);
 			name = AWSDataStorePluginAuthIAMTestsWatch;
 			packageProductDependencies = (
-				68826E842A43A224005E85A7 /* Amplify */,
-				68826E862A43A224005E85A7 /* AWSAPIPlugin */,
-				68826E882A43A224005E85A7 /* AWSCognitoAuthPlugin */,
-				68826E8A2A43A224005E85A7 /* AWSDataStorePlugin */,
 			);
 			productName = AWSDataStorePluginAuthIAMTests;
 			productReference = 68826CEF2A43A1B0005E85A7 /* AWSDataStorePluginAuthIAMTestsWatch.xctest */;
@@ -4281,10 +4221,6 @@
 			);
 			name = AWSDataStorePluginCPKTestsWatch;
 			packageProductDependencies = (
-				68826E8E2A43A238005E85A7 /* Amplify */,
-				68826E902A43A238005E85A7 /* AWSAPIPlugin */,
-				68826E922A43A238005E85A7 /* AWSCognitoAuthPlugin */,
-				68826E942A43A238005E85A7 /* AWSDataStorePlugin */,
 			);
 			productName = AWSDataStorePluginCPKTests;
 			productReference = 68826D622A43A1BA005E85A7 /* AWSDataStorePluginCPKTestsWatch.xctest */;
@@ -4306,10 +4242,6 @@
 			);
 			name = AWSDataStorePluginLazyLoadTestsWatch;
 			packageProductDependencies = (
-				68826E982A43A251005E85A7 /* Amplify */,
-				68826E9A2A43A251005E85A7 /* AWSAPIPlugin */,
-				68826E9C2A43A251005E85A7 /* AWSCognitoAuthPlugin */,
-				68826E9E2A43A251005E85A7 /* AWSDataStorePlugin */,
 			);
 			productName = AWSDataStorePluginLazyLoadTests;
 			productReference = 68826DF92A43A1C3005E85A7 /* AWSDataStorePluginLazyLoadTestsWatch.xctest */;
@@ -4331,10 +4263,6 @@
 			);
 			name = AWSDataStorePluginV2TestsWatch;
 			packageProductDependencies = (
-				682D184C2A43DF9E00BD034E /* Amplify */,
-				682D184E2A43DFB700BD034E /* AWSAPIPlugin */,
-				682D18502A43DFB700BD034E /* AWSCognitoAuthPlugin */,
-				682D18522A43DFB700BD034E /* AWSDataStorePlugin */,
 			);
 			productName = AWSDataStorePluginV2Tests;
 			productReference = 68826E642A43A1D1005E85A7 /* AWSDataStorePluginV2TestsWatch.xctest */;
@@ -4356,10 +4284,6 @@
 			);
 			name = AWSDataStorePluginAuthCognitoTestsWatch;
 			packageProductDependencies = (
-				68826EAC2A43A280005E85A7 /* Amplify */,
-				68826EAE2A43A280005E85A7 /* AWSAPIPlugin */,
-				68826EB02A43A280005E85A7 /* AWSCognitoAuthPlugin */,
-				68826EB22A43A280005E85A7 /* AWSDataStorePlugin */,
 			);
 			productName = AWSDataStorePluginAuthCognitoTests;
 			productReference = 68826E812A43A1DB005E85A7 /* AWSDataStorePluginAuthCognitoTestsWatch.xctest */;
@@ -4381,10 +4305,6 @@
 			);
 			name = AWSDataStorePluginIntegrationTestsWatch;
 			packageProductDependencies = (
-				68E9EC4A2A448C87001F713D /* Amplify */,
-				68E9EC4C2A448C87001F713D /* AWSAPIPlugin */,
-				68E9EC4E2A448C87001F713D /* AWSCognitoAuthPlugin */,
-				68E9EC502A448C87001F713D /* AWSDataStorePlugin */,
 			);
 			productName = AWSDataStorePluginIntegrationTests;
 			productReference = 68E9EBFA2A448C23001F713D /* AWSDataStorePluginIntegrationTestsWatch.xctest */;
@@ -4406,10 +4326,6 @@
 			);
 			name = AWSDataStorePluginMultiAuthTestsWatch;
 			packageProductDependencies = (
-				68E9EC522A448C8D001F713D /* Amplify */,
-				68E9EC542A448C8D001F713D /* AWSAPIPlugin */,
-				68E9EC562A448C8D001F713D /* AWSCognitoAuthPlugin */,
-				68E9EC582A448C8D001F713D /* AWSDataStorePlugin */,
 			);
 			productName = AWSDataStorePluginMultiAuthTests;
 			productReference = 68E9EC452A448C47001F713D /* AWSDataStorePluginMultiAuthTestsWatch.xctest */;
@@ -7651,22 +7567,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSDataStorePlugin;
 		};
-		682D184C2A43DF9E00BD034E /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		682D184E2A43DFB700BD034E /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		682D18502A43DFB700BD034E /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		682D18522A43DFB700BD034E /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSDataStorePlugin;
-		};
 		68826CD32A43A149005E85A7 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
@@ -7680,102 +7580,6 @@
 			productName = AWSCognitoAuthPlugin;
 		};
 		68826CD92A43A149005E85A7 /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSDataStorePlugin;
-		};
-		68826E842A43A224005E85A7 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68826E862A43A224005E85A7 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		68826E882A43A224005E85A7 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68826E8A2A43A224005E85A7 /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSDataStorePlugin;
-		};
-		68826E8E2A43A238005E85A7 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68826E902A43A238005E85A7 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		68826E922A43A238005E85A7 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68826E942A43A238005E85A7 /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSDataStorePlugin;
-		};
-		68826E982A43A251005E85A7 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68826E9A2A43A251005E85A7 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		68826E9C2A43A251005E85A7 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68826E9E2A43A251005E85A7 /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSDataStorePlugin;
-		};
-		68826EAC2A43A280005E85A7 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68826EAE2A43A280005E85A7 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		68826EB02A43A280005E85A7 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68826EB22A43A280005E85A7 /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSDataStorePlugin;
-		};
-		68E9EC4A2A448C87001F713D /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68E9EC4C2A448C87001F713D /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		68E9EC4E2A448C87001F713D /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68E9EC502A448C87001F713D /* AWSDataStorePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSDataStorePlugin;
-		};
-		68E9EC522A448C8D001F713D /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68E9EC542A448C8D001F713D /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		68E9EC562A448C8D001F713D /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68E9EC582A448C8D001F713D /* AWSDataStorePlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSDataStorePlugin;
 		};

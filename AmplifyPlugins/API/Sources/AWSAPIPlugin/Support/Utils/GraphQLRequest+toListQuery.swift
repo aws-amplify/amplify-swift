@@ -16,7 +16,8 @@ extension GraphQLRequest {
                                                    filter: [String: Any]? = nil,
                                                    limit: Int? = nil,
                                                    nextToken: String? = nil,
-                                                   apiName: String? = nil) -> GraphQLRequest<ResponseType> {
+                                                   apiName: String? = nil,
+                                                   authMode: AWSAuthorizationType?) -> GraphQLRequest<ResponseType> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
@@ -29,12 +30,14 @@ extension GraphQLRequest {
                                             document: document.stringValue,
                                             variables: document.variables,
                                             responseType: responseType.self,
-                                            decodePath: document.name)
+                                            decodePath: document.name,
+                                            authMode: authMode)
     }
 
     static func getRequest<M: Model>(_ modelType: M.Type,
                                      byIdentifiers identifiers: [LazyReferenceIdentifier],
-                                     apiName: String?) -> GraphQLRequest<M?> {
+                                     apiName: String?,
+                                     authMode: AWSAuthorizationType?) -> GraphQLRequest<M?> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
@@ -46,6 +49,7 @@ extension GraphQLRequest {
                                   document: document.stringValue,
                                   variables: document.variables,
                                   responseType: M?.self,
-                                  decodePath: document.name)
+                                  decodePath: document.name,
+                                  authMode: authMode)
     }
 }

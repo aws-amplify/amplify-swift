@@ -15,14 +15,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-13
-            xcode-version: 14.3.1
-            device: iPhone 14 Pro
-            version: 16.4
-          - os: macos-12
-            xcode-version: 14.1
-            device: iPhone 13 Pro
-            version: 16.1
+          - os: macos-latest
+            xcode-version: 15.3.0
+            device: iPhone 15
+            version: 17.4
+          - os: macos-latest
+            xcode-version: 15.0.1
+            device: iPhone 14
+            version: 17.0.1
     name: Canary Test - Xcode ${{ matrix.xcode-version }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -39,7 +39,7 @@ jobs:
         run: amplify init --quickstart --frontend ios
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@250fcd6a742febb1123a77a841497ccaa8b9e939 # v1.152.0
+        uses: ruby/setup-ruby@22fdc77bf4148f810455b226c90fb81b5cbc00a7 # v1.171.0
         with:
           ruby-version: '3.2.1'
           bundler-cache: true

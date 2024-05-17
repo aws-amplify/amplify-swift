@@ -4,7 +4,7 @@ on:
     inputs:
       os-runner:
         type: string
-        default: 'macos-13'
+        default: 'macos-latest'
       scheme:
         description: 'The scheme to run the tests'
         required: true
@@ -17,7 +17,7 @@ on:
         required: false
         type: string
       xcode_version:
-        description: 'The verion of Xcode used to run these tests'
+        description: 'The version of Xcode used to run these tests'
         default: 'latest'
         type: string
       destination:

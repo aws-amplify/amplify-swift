@@ -319,20 +319,11 @@
 		681B35A52A4396F00074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35A42A4396F00074F369 /* Amplify */; };
 		681B35A72A4396F00074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35A62A4396F00074F369 /* AWSAPIPlugin */; };
 		681B35A92A4396F00074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35A82A4396F00074F369 /* AWSCognitoAuthPlugin */; };
-		681B35AB2A4396F90074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35AA2A4396F90074F369 /* Amplify */; };
-		681B35AD2A4396F90074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35AC2A4396F90074F369 /* AWSAPIPlugin */; };
-		681B35AF2A4396F90074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35AE2A4396F90074F369 /* AWSCognitoAuthPlugin */; };
-		681B35B12A4397000074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35B02A4397000074F369 /* Amplify */; };
-		681B35B32A4397000074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35B22A4397000074F369 /* AWSAPIPlugin */; };
-		681B35B52A4397000074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35B42A4397000074F369 /* AWSCognitoAuthPlugin */; };
 		681B35BA2A43970A0074F369 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
 		681B35BB2A43970A0074F369 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		681B35BC2A43970A0074F369 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */; };
 		681B35BD2A43970A0074F369 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
 		681B35BE2A43970A0074F369 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
-		681B35C92A4397180074F369 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35C82A4397180074F369 /* Amplify */; };
-		681B35CB2A4397180074F369 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35CA2A4397180074F369 /* AWSAPIPlugin */; };
-		681B35CD2A4397180074F369 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 681B35CC2A4397180074F369 /* AWSCognitoAuthPlugin */; };
 		681DFE7228E7451E0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		681DFE7328E7451E0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		681DFE7428E7451E0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
@@ -832,9 +823,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				681B35AD2A4396F90074F369 /* AWSAPIPlugin in Frameworks */,
-				681B35AB2A4396F90074F369 /* Amplify in Frameworks */,
-				681B35AF2A4396F90074F369 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,9 +830,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				681B35B32A4397000074F369 /* AWSAPIPlugin in Frameworks */,
-				681B35B12A4397000074F369 /* Amplify in Frameworks */,
-				681B35B52A4397000074F369 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -852,9 +837,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				681B35CB2A4397180074F369 /* AWSAPIPlugin in Frameworks */,
-				681B35C92A4397180074F369 /* Amplify in Frameworks */,
-				681B35CD2A4397180074F369 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1735,9 +1717,6 @@
 			);
 			name = AWSAPIPluginFunctionalTestsWatch;
 			packageProductDependencies = (
-				681B35AA2A4396F90074F369 /* Amplify */,
-				681B35AC2A4396F90074F369 /* AWSAPIPlugin */,
-				681B35AE2A4396F90074F369 /* AWSCognitoAuthPlugin */,
 			);
 			productName = AWSAPIPluginFunctionalTests;
 			productReference = 681B35892A43962D0074F369 /* AWSAPIPluginFunctionalTestsWatch.xctest */;
@@ -1759,9 +1738,6 @@
 			);
 			name = AWSAPIPluginGraphQLLambdaAuthTestsWatch;
 			packageProductDependencies = (
-				681B35B02A4397000074F369 /* Amplify */,
-				681B35B22A4397000074F369 /* AWSAPIPlugin */,
-				681B35B42A4397000074F369 /* AWSCognitoAuthPlugin */,
 			);
 			productName = AWSAPIPluginGraphQLLambdaAuthTests;
 			productReference = 681B35A12A4396CF0074F369 /* AWSAPIPluginGraphQLLambdaAuthTestsWatch.xctest */;
@@ -1783,9 +1759,6 @@
 			);
 			name = AWSAPIPluginRESTIAMTestsWatch;
 			packageProductDependencies = (
-				681B35C82A4397180074F369 /* Amplify */,
-				681B35CA2A4397180074F369 /* AWSAPIPlugin */,
-				681B35CC2A4397180074F369 /* AWSCognitoAuthPlugin */,
 			);
 			productName = AWSAPIPluginRESTIAMTests;
 			productReference = 681B35C52A43970A0074F369 /* AWSAPIPluginRESTIAMTestsWatch.xctest */;
@@ -3812,42 +3785,6 @@
 			productName = AWSAPIPlugin;
 		};
 		681B35A82A4396F00074F369 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		681B35AA2A4396F90074F369 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		681B35AC2A4396F90074F369 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		681B35AE2A4396F90074F369 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		681B35B02A4397000074F369 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		681B35B22A4397000074F369 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		681B35B42A4397000074F369 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		681B35C82A4397180074F369 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		681B35CA2A4397180074F369 /* AWSAPIPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSAPIPlugin;
-		};
-		681B35CC2A4397180074F369 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
 		};
