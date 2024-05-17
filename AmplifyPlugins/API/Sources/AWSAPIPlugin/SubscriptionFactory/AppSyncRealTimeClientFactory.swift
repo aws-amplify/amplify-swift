@@ -9,7 +9,7 @@
 import Foundation
 import Amplify
 import Combine
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 @_spi(WebSocket) import AWSPluginsCore
 
 protocol AppSyncRealTimeClientFactoryProtocol {

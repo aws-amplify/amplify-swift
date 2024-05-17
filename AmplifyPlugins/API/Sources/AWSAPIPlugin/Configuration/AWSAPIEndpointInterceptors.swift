@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 
 /// The order of interceptor decoration is as follows:
 /// 1. **prelude interceptors**

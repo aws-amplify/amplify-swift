@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 import AWSClientRuntime
 import ClientRuntime
 

@@ -7,7 +7,7 @@
 
 @_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPluginsCore
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 import AwsCommonRuntimeKit
 
 public extension AWSAPIPlugin {

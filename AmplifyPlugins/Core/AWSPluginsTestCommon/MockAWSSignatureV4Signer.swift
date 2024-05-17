@@ -8,7 +8,7 @@
 import AWSPluginsCore
 import ClientRuntime
 import AWSClientRuntime
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 import Foundation
 
 class MockAWSSignatureV4Signer: AWSSignatureV4Signer {

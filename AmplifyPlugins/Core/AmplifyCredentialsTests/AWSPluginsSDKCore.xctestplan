@@ -15,8 +15,8 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "AWSPluginsSDKCoreTests",
-        "name" : "AWSPluginsSDKCoreTests"
+        "identifier" : "InternalAmplifyCredentialsTests",
+        "name" : "InternalAmplifyCredentialsTests"
       }
     }
   ],

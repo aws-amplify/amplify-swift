@@ -11,7 +11,7 @@ import Combine
 @testable import Amplify
 @testable import AWSAPIPlugin
 @testable @_spi(WebSocket) import AWSPluginsCore
-@testable import AWSPluginsSDKCore
+@testable import InternalAmplifyCredentials
 
 class AppSyncRealTimeClientTests: XCTestCase {
     let subscriptionRequest = """

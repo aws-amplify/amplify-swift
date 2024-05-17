@@ -10,7 +10,7 @@ import AWSS3
 import Amplify
 import AWSPluginsCore
 import ClientRuntime
-@_spi(PluginHTTPClientEngine) import AWSPluginsSDKCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 /// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {

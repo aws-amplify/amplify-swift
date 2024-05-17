@@ -13,7 +13,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import AWSClientRuntime
-@_spi(PluginHTTPClientEngine) import AWSPluginsSDKCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {

@@ -7,7 +7,7 @@
 
 import AWSPinpoint
 import AWSPluginsCore
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 import Foundation
 
 extension PinpointEvent {

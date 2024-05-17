@@ -8,7 +8,7 @@
 @_spi(InternalAmplifyConfiguration) import Amplify
 import Foundation
 import AWSPluginsCore
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 
 // Convenience typealias
 typealias APIEndpointName = String

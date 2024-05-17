@@ -8,7 +8,7 @@
 import ClientRuntime
 import AWSClientRuntime
 import Amplify
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 
 public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
 

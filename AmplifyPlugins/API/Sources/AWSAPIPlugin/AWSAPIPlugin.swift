@@ -7,7 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
-import AWSPluginsSDKCore
+import InternalAmplifyCredentials
 import Foundation
 
 final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformation {
