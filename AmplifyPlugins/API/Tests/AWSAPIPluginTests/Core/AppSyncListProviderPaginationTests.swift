@@ -108,12 +108,10 @@ extension AppSyncListProviderTests {
     func testLoadedStateGetNextPageFailure_GraphQLErrorResponse() async {
         mockAPIPlugin.responders[.queryRequestResponse] =
             QueryRequestResponder<List<Comment4>> { request in
-
                 XCTAssertEqual(request.apiName, "apiName")
                 XCTAssertEqual(request.authMode as? AWSAuthorizationType, .amazonCognitoUserPools)
-                let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(
-                    .failure(GraphQLResponseError.error([GraphQLError]())))
-                return event
+
+                return .failure(GraphQLResponseError.error([GraphQLError]()))
         }
 
         let elements = [Comment4(content: "content")]
