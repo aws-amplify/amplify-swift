@@ -46,6 +46,8 @@ public enum AWSAuthorizationType: String, AuthorizationMode {
 
 extension AWSAuthorizationType: CaseIterable { }
 
+extension AWSAuthorizationType: Codable { }
+
 /// Indicates whether the authotization type requires the auth plugin to operate.
 extension AWSAuthorizationType {
     public var requiresAuthPlugin: Bool {
