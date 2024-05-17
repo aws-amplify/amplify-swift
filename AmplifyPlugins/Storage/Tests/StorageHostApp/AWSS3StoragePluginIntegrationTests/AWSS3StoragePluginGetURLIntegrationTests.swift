@@ -25,7 +25,8 @@ class AWSS3StoragePluginGetURLIntegrationTests: AWSS3StoragePluginTestBase {
         _ = try await Amplify.Storage.uploadData(
             path: .fromString(key),
             data: Data(key.utf8),
-            options: .init())
+            options: .init()
+        ).value
 
         let remoteURL = try await Amplify.Storage.getURL(path: .fromString(key))
 

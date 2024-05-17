@@ -25,6 +25,7 @@ jobs:
     uses: ./.github/workflows/unit_test.yml
     with:
       identifier: 'workflow-call-unit-test'
+    secrets: inherit
 
   fortify:
     name: Run Fortify Scan

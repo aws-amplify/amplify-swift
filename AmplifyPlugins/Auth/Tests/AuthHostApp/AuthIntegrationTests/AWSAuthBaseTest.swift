@@ -27,7 +27,7 @@ class AWSAuthBaseTest: XCTestCase {
     }
 
     var amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
-    let amplifyOutputsFile =
+    var amplifyOutputsFile =
         "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
 

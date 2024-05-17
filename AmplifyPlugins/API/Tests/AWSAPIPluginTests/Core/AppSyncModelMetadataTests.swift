@@ -54,19 +54,23 @@ class ModelMetadataTests: XCTestCase {
                 "__typename": "Post4"
             ]
         ]
-        let posts = AppSyncModelMetadataUtils.addMetadata(toModelArray: jsonArray, apiName: "apiName")
+        let posts = AppSyncModelMetadataUtils.addMetadata(toModelArray: jsonArray, 
+                                                          apiName: "apiName",
+                                                          authMode: .amazonCognitoUserPools)
         XCTAssertEqual(posts.count, 2)
         for post in posts {
             guard case .object(let associationData) = post["comments"],
                   case .array(let associatedFields) = associationData["appSyncAssociatedFields"],
                   case .array(let associatedIdentifiers) = associationData["appSyncAssociatedIdentifiers"],
-                  case .string(let apiName) = associationData["apiName"] else {
+                  case .string(let apiName) = associationData["apiName"],
+                  case .string(let authMode) = associationData["authMode"] else {
                 XCTFail("Missing association metadata for comments")
                 return
             }
             XCTAssertEqual(associatedIdentifiers[0], "postId")
             XCTAssertEqual(associatedFields, ["post"])
             XCTAssertEqual(apiName, "apiName")
+            XCTAssertEqual(authMode, "AMAZON_COGNITO_USER_POOLS")
         }
     }
 
@@ -77,22 +81,24 @@ class ModelMetadataTests: XCTestCase {
             "__typename": "Post4"
         ]
 
-        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName")
+        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: .apiKey)
         guard case .object(let associationData) = post["comments"],
               case .array(let associatedFields) = associationData["appSyncAssociatedFields"],
               case .array(let associatedIdentifiers) = associationData["appSyncAssociatedIdentifiers"],
-              case .string(let apiName) = associationData["apiName"] else {
+              case .string(let apiName) = associationData["apiName"],
+              case .string(let authMode) = associationData["authMode"] else {
             XCTFail("Missing association metadata for comments")
             return
         }
         XCTAssertEqual(associatedIdentifiers[0], "postId")
         XCTAssertEqual(associatedFields, ["post"])
         XCTAssertEqual(apiName, "apiName")
+        XCTAssertEqual(authMode, "API_KEY")
     }
 
     func testAddMetadataToModelNoOp_NotAnObject() {
         let json: JSONValue = "notAnObject"
-        let result = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName")
+        let result = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: nil)
         XCTAssertEqual(result, "notAnObject")
     }
 
@@ -102,7 +108,7 @@ class ModelMetadataTests: XCTestCase {
             "title": JSONValue.init(stringLiteral: "title")
         ]
 
-        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName")
+        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: nil)
         guard case .object(let postObject) = post,
               case .string = postObject["id"],
               case .string = postObject["title"] else {
@@ -119,7 +125,7 @@ class ModelMetadataTests: XCTestCase {
             "__typename": "InvalidModelName"
         ]
 
-        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName")
+        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: nil)
         guard case .object(let postObject) = post,
               case .string = postObject["id"],
               case .string = postObject["title"],
@@ -136,7 +142,7 @@ class ModelMetadataTests: XCTestCase {
             "__typename": "Post4"
         ]
 
-        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName")
+        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: nil)
         guard case .object(let postObject) = post,
               case .string = postObject["title"],
               case .string = postObject["__typename"] else {
@@ -159,7 +165,7 @@ class ModelMetadataTests: XCTestCase {
             ]
         ]
 
-        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName")
+        let post = AppSyncModelMetadataUtils.addMetadata(toModel: json, apiName: "apiName", authMode: nil)
         guard case .object(let associationData) = post["comments"],
               associationData["appSyncAssociatedField"] == nil,
               associationData["appSyncAssociatedIdentifiers"] == nil,

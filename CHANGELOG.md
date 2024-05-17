@@ -1,5 +1,33 @@
 # Changelog
 
+## 2.33.6 (2024-05-15)
+
+## 2.33.5 (2024-05-14)
+
+### Bug Fixes
+
+- **predictions**: update liveness websocket send event to be synchronous (#3693)
+
+## 2.33.4 (2024-05-08)
+
+### Bug Fixes
+
+- **auth**: configure with standardAttributes snake case values (#3686)
+- **datastore**: memory leak in ModelSyncedEventEmitter (#3675)
+
+## 2.33.3 (2024-05-03)
+
+### Bug Fixes
+
+- **auth**: Using a custom Foundation-based HTTPClient for HTTP Requests (#3582)
+
+## 2.33.2 (2024-05-02)
+
+### Bug Fixes
+
+- **Auth**: Add keychain logging for better debugging (#3669)
+- **core**: potential memory leak in WebSocketClient (#3624)
+
 ## 2.33.1 (2024-05-01)
 
 ### Bug Fixes

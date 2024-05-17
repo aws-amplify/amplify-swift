@@ -14,6 +14,9 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     /// The API friendly name used to reference the API to call
     let apiName: String?
 
+    /// The auth mode used for this API call
+    let authMode: AWSAuthorizationType?
+
     /// The limit for each page size
     var limit: Int? = 1_000
 
@@ -42,7 +45,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     convenience init(payload: AppSyncListPayload) throws {
         let listResponse = try AppSyncListResponse.initWithMetadata(type: Element.self,
                                                                     graphQLData: payload.graphQLData,
-                                                                    apiName: payload.apiName)
+                                                                    apiName: payload.apiName,
+                                                                    authMode: payload.authMode)
 
         self.init(elements: listResponse.items,
                   nextToken: listResponse.nextToken,
@@ -59,27 +63,34 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     convenience init(metadata: AppSyncListDecoder.Metadata) {
         self.init(associatedIdentifiers: metadata.appSyncAssociatedIdentifiers,
                   associatedFields: metadata.appSyncAssociatedFields,
-                  apiName: metadata.apiName)
+                  apiName: metadata.apiName,
+                  authMode: metadata.authMode)
     }
 
     // Internal initializer for testing
     init(elements: [Element],
          nextToken: String? = nil,
          apiName: String? = nil,
+         authMode: AWSAuthorizationType? = nil,
          limit: Int? = nil,
          filter: [String: Any]? = nil) {
         self.loadedState = .loaded(elements: elements,
                                    nextToken: nextToken,
                                    filter: filter)
         self.apiName = apiName
+        self.authMode = authMode
         self.limit = limit
     }
 
     // Internal initializer for testing
-    init(associatedIdentifiers: [String], associatedFields: [String], apiName: String? = nil) {
+    init(associatedIdentifiers: [String],
+         associatedFields: [String], 
+         apiName: String? = nil,
+         authMode: AWSAuthorizationType? = nil) {
         self.loadedState = .notLoaded(associatedIdentifiers: associatedIdentifiers,
                                       associatedFields: associatedFields)
         self.apiName = apiName
+        self.authMode = authMode
     }
 
     // MARK: APIs
@@ -128,14 +139,16 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                                                           modelSchema: Element.schema,
                                                           filter: filter,
                                                           limit: limit,
-                                                          apiName: apiName)
+                                                          apiName: apiName,
+                                                          authMode: authMode)
         do {
             let graphQLResponse = try await Amplify.API.query(request: request)
             switch graphQLResponse {
             case .success(let graphQLData):
                 guard let listResponse = try? AppSyncListResponse.initWithMetadata(type: Element.self,
                                                                                    graphQLData: graphQLData,
-                                                                                   apiName: self.apiName) else {
+                                                                                   apiName: self.apiName, 
+                                                                                   authMode: self.authMode) else {
                     throw CoreError.listOperation("""
                                             The AppSync response return successfully, but could not decode to
                                             AWSAppSyncListResponse from: \(graphQLData)
@@ -196,7 +209,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                                                               filter: filter,
                                                               limit: limit,
                                                               nextToken: nextToken,
-                                                              apiName: apiName)
+                                                              apiName: apiName,
+                                                              authMode: authMode)
         do {
             let graphQLResponse = try await Amplify.API.query(request: request)
             switch graphQLResponse {
@@ -225,7 +239,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             let metadata = AppSyncListDecoder.Metadata.init(
                 appSyncAssociatedIdentifiers: associatedIdentifiers,
                 appSyncAssociatedFields: associatedFields,
-                apiName: apiName)
+                apiName: apiName,
+                authMode: authMode)
             var container = encoder.singleValueContainer()
             try container.encode(metadata)
         case .loaded(let elements, _, _):

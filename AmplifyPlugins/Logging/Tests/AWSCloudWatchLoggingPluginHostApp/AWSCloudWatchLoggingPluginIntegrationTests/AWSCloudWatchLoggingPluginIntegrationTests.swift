@@ -15,11 +15,11 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     let amplifyConfigurationFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration"
     let amplifyOutputsFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplify_outputs"
     #if os(tvOS)
-    let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_tvOS"
+    var amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_tvOS"
     #elseif os(watchOS)
-    let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_watchOS"
+    var amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging_watchOS"
     #else
-    let amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging"
+    var amplifyConfigurationLoggingFile = "testconfiguration/AWSCloudWatchLoggingPluginIntegrationTests-amplifyconfiguration_logging"
     #endif
     var loggingConfiguration: AWSCloudWatchLoggingPluginConfiguration?
     
@@ -31,6 +31,11 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
         continueAfterFailure = false
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
+
+            if useGen2Configuration {
+                amplifyConfigurationLoggingFile += "_gen2"
+            }
+
             let loggingConfigurationFile = try TestConfigHelper.retrieveLoggingConfiguration(forResource: amplifyConfigurationLoggingFile)
             loggingConfiguration = try AWSCloudWatchLoggingPluginConfiguration.loadConfiguration(from: loggingConfigurationFile)
             let loggingPlugin = AWSCloudWatchLoggingPlugin(loggingPluginConfiguration: loggingConfiguration)

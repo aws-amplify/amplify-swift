@@ -101,6 +101,7 @@ jobs:
     with:
       scheme: ${{ matrix.file.scheme }}
       flags: ${{ matrix.file.flags }}
+    secrets: inherit
 
   unit-test-pass-confirmation:
     runs-on: ubuntu-latest

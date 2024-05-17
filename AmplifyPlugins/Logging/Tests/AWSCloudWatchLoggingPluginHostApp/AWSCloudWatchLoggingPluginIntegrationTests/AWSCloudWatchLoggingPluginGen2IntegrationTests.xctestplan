@@ -17,11 +17,6 @@
   },
   "testTargets" : [
     {
-      "skippedTests" : [
-        "AWSCloudWatchLoggingPluginIntergrationTests\/testFlushLogWithMessages()",
-        "AWSCloudWatchLoggingPluginIntergrationTests\/testFlushLogWithVerboseMessageAfterDisablingPlugin()",
-        "AWSCloudWatchLoggingPluginIntergrationTests\/testFlushLogWithVerboseMessageAfterEnablingPlugin()"
-      ],
       "target" : {
         "containerPath" : "container:CloudWatchLoggingHostApp.xcodeproj",
         "identifier" : "21F762DF2BD6B55F0048845A",
