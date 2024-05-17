@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 import Amplify
-@_spi(RetryWithJitter) import AmplifyNetwork
+@_spi(RetryWithJitter) import InternalAmplifyNetwork
 
 /**
  AppSyncRealTimeSubscription reprensents one realtime subscription to AppSync realtime server.

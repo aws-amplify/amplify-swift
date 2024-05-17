@@ -8,7 +8,7 @@
 
 import Foundation
 import Amplify
-@_spi(WebSocket) import AmplifyNetwork
+@_spi(WebSocket) import InternalAmplifyNetwork
 
 class APIKeyAuthInterceptor {
     private let apiKey: String

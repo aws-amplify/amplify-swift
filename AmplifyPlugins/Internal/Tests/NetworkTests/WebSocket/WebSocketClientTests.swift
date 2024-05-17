@@ -9,7 +9,7 @@
 import XCTest
 import Combine
 @testable import AWSPluginsCore
-@testable @_spi(WebSocket) @_spi(NetworkReachability) import AmplifyNetwork
+@testable @_spi(WebSocket) @_spi(NetworkReachability) import InternalAmplifyNetwork
 
 fileprivate let timeout: TimeInterval = 5
 

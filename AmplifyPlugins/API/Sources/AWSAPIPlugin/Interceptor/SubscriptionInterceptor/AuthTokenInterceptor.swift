@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-@_spi(WebSocket) import AmplifyNetwork
+@_spi(WebSocket) import InternalAmplifyNetwork
 
 /// General purpose authenticatication subscriptions interceptor for providers whose only
 /// requirement is to provide an authentication token via the "Authorization" header

@@ -10,7 +10,7 @@ import Foundation
 import Amplify
 import Combine
 import AWSPluginsCore
-@_spi(WebSocket) import AmplifyNetwork
+@_spi(WebSocket) import InternalAmplifyNetwork
 
 
 protocol AppSyncRealTimeClientFactoryProtocol {
