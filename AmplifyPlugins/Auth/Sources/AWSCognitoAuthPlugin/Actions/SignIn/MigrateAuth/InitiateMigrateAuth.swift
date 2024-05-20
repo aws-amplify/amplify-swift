@@ -36,7 +36,7 @@ struct InitiateMigrateAuth: Action {
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient)
-            let request = InitiateAuthInput.migrateAuth(
+            let request = await InitiateAuthInput.migrateAuth(
                 username: username,
                 password: password,
                 clientMetadata: clientMetadata,

@@ -21,7 +21,7 @@ extension SignUpInput {
          validationData: [String: String]?,
          attributes: [String: String],
          asfDeviceId: String?,
-         environment: UserPoolEnvironment) {
+         environment: UserPoolEnvironment) async {
 
         let configuration = environment.userPoolConfiguration
         let secretHash = ClientSecretHelper.calculateSecretHash(username: username,
@@ -30,7 +30,7 @@ extension SignUpInput {
         let convertedAttributes = Self.convertAttributes(attributes)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId = asfDeviceId,
-           let encodedData = CognitoUserPoolASF.encodedContext(
+           let encodedData = await CognitoUserPoolASF.encodedContext(
             username: username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),

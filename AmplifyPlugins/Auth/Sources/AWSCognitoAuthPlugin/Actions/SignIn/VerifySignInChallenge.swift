@@ -39,7 +39,7 @@ struct VerifySignInChallenge: Action {
                             for: username,
                             with: environment)
 
-            let input = RespondToAuthChallengeInput.verifyChallenge(
+            let input = await RespondToAuthChallengeInput.verifyChallenge(
                 username: username,
                 challengeType: challengeType,
                 session: session,

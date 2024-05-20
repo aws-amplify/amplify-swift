@@ -53,7 +53,7 @@ struct CompleteTOTPSetup: Action {
                 credentialStoreClient: authEnv.credentialsClient)
 
             var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
-            if let encodedData = CognitoUserPoolASF.encodedContext(
+            if let encodedData = await CognitoUserPoolASF.encodedContext(
                 username: username,
                 asfDeviceId: asfDeviceId,
                 asfClient: userpoolEnv.cognitoUserPoolASFFactory(),

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 /// Helper class to fetch information for Device Information Screen
+@MainActor
 struct DeviceInfoHelper {
 
     static func getDeviceInformation() -> [DeviceInfoItem] {

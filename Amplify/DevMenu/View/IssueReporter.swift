@@ -14,6 +14,7 @@ import AppKit
 
 /// Issue report screen in developer menu
 #if os(iOS)
+@MainActor
 struct IssueReporter: View {
     @State var issueDescription: String = ""
     @State var includeLogs = true

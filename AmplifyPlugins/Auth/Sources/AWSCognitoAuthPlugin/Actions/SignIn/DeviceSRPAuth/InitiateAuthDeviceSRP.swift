@@ -45,7 +45,7 @@ struct InitiateAuthDeviceSRP: Action {
                 srpKeyPair: srpKeyPair,
                 clientTimestamp: Date())
 
-            let request = RespondToAuthChallengeInput.deviceSRP(
+            let request = await RespondToAuthChallengeInput.deviceSRP(
                 username: username,
                 environment: userPoolEnv,
                 deviceMetadata: deviceMetadata,

@@ -19,14 +19,14 @@ extension RespondToAuthChallengeInput {
                                  clientMetadata: ClientMetadata,
                                  deviceMetadata: DeviceMetadata,
                                  asfDeviceId: String?,
-                                 environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {
+                                 environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
         let dateStr = stateData.clientTimestamp.utcString
         let challengeResponses = [
             "USERNAME": username,
             "TIMESTAMP": dateStr,
             "PASSWORD_CLAIM_SECRET_BLOCK": secretBlock,
             "PASSWORD_CLAIM_SIGNATURE": signature]
-        return buildInput(
+        return await buildInput(
             username: username,
             challengeType: .passwordVerifier,
             challengeResponses: challengeResponses,
@@ -43,12 +43,12 @@ extension RespondToAuthChallengeInput {
                           deviceMetadata: DeviceMetadata,
                           asfDeviceId: String?,
                           session: String?,
-                          publicHexValue: String) -> RespondToAuthChallengeInput {
+                          publicHexValue: String) async -> RespondToAuthChallengeInput {
         let challengeResponses = [
             "USERNAME": username,
             "SRP_A": publicHexValue
         ]
-        return buildInput(
+        return await buildInput(
             username: username,
             challengeType: .deviceSrpAuth,
             challengeResponses: challengeResponses,
@@ -66,7 +66,7 @@ extension RespondToAuthChallengeInput {
                                        signature: String,
                                        deviceMetadata: DeviceMetadata,
                                        asfDeviceId: String?,
-                                       environment: UserPoolEnvironment)
+                                       environment: UserPoolEnvironment) async
     -> RespondToAuthChallengeInput {
         let dateStr = stateData.clientTimestamp.utcString
         let challengeResponses = [
@@ -74,7 +74,7 @@ extension RespondToAuthChallengeInput {
             "TIMESTAMP": dateStr,
             "PASSWORD_CLAIM_SECRET_BLOCK": secretBlock,
             "PASSWORD_CLAIM_SIGNATURE": signature]
-        return buildInput(
+        return await buildInput(
             username: username,
             challengeType: .devicePasswordVerifier,
             challengeResponses: challengeResponses,
@@ -96,7 +96,7 @@ extension RespondToAuthChallengeInput {
         asfDeviceId: String?,
         attributes: [String: String],
         deviceMetadata: DeviceMetadata,
-        environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {
+        environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
 
             var challengeResponses = [
                 "USERNAME": username,
@@ -107,7 +107,7 @@ extension RespondToAuthChallengeInput {
             attributes.forEach {
                 challengeResponses[$0.key] = $0.value
             }
-            return buildInput(
+            return await buildInput(
                 username: username,
                 challengeType: challengeType,
                 challengeResponses: challengeResponses,
@@ -126,7 +126,7 @@ extension RespondToAuthChallengeInput {
         clientMetadata: ClientMetadata,
         asfDeviceId: String?,
         deviceMetadata: DeviceMetadata,
-        environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {
+        environment: UserPoolEnvironment) async -> RespondToAuthChallengeInput {
             var challengeResponses = challengeResponses
             let userPoolClientId = environment.userPoolConfiguration.clientId
             if let clientSecret = environment.userPoolConfiguration.clientSecret {
@@ -145,7 +145,7 @@ extension RespondToAuthChallengeInput {
 
             var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
             if let asfDeviceId = asfDeviceId,
-               let encodedData = CognitoUserPoolASF.encodedContext(
+               let encodedData = await CognitoUserPoolASF.encodedContext(
                 username: username,
                 asfDeviceId: asfDeviceId,
                 asfClient: environment.cognitoUserPoolASFFactory(),

@@ -16,7 +16,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
     private let archiver = AmplifyArchiver()
     private let userDefaults = UserDefaults.standard
     private let pinpointClient = MockPinpointClient()
-    private let endpointInformation = MockEndpointInformation()
+    private let endpointInformationProvider = MockEndpointInformationProvider()
     private let currentApplicationId = "applicationId"
     private let currentEndpointId = "endpointId"
 
@@ -45,7 +45,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                                              isDebug: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        endpointInformation: endpointInformation,
+                                        endpointInformationProvider: endpointInformationProvider,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
         
@@ -68,7 +68,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                                              isDebug: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        endpointInformation: endpointInformation,
+                                        endpointInformationProvider: endpointInformationProvider,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
         
