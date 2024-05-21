@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   prepare-for-test:
-    runs-on: macos-13
+    runs-on: macos-latest
     environment: IntegrationTest
     outputs:
       destination: ${{ steps.platform.outputs.destination }}
@@ -40,7 +40,7 @@ jobs:
 
   auth-stress-test:
     needs: prepare-for-test
-    runs-on: macos-13
+    runs-on: macos-latest
     environment: IntegrationTest
     env:
       DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
@@ -71,7 +71,7 @@ jobs:
 
   geo-stress-test:
     needs: prepare-for-test
-    runs-on: macos-13
+    runs-on: macos-latest
     environment: IntegrationTest
     env:
       DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
@@ -102,7 +102,7 @@ jobs:
 
   storage-stress-test:
     needs: prepare-for-test
-    runs-on: macos-13
+    runs-on: macos-latest
     environment: IntegrationTest
     env:
       DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
@@ -133,7 +133,7 @@ jobs:
 
   datastore-stress-test:
     needs: prepare-for-test
-    runs-on: macos-13
+    runs-on: macos-latest
     environment: IntegrationTest
     env:
       DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
@@ -164,7 +164,7 @@ jobs:
 
   graphql-api-stress-test:
     needs: prepare-for-test
-    runs-on: macos-13
+    runs-on: macos-latest
     environment: IntegrationTest
     env:
       DESTINATION: ${{ needs.prepare-for-test.outputs.destination }}
