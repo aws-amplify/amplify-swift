@@ -38,6 +38,13 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 > To use Amplify Swift with visionOS, you'll need to target the `visionos-preview` branch.
 > For more information, see [Platform Support](https://github.com/aws-amplify/amplify-swift/tree/visionos-preview#platform-support) on the `visionos-preview` branch.
 
+### Swift Version Support
+
+The current minimum supported Swift language version is **Swift 5.9**.
+
+> [!NOTE]
+> The minimum Swift language version supported by Amplify Swift matches the version included in the minimum Xcode version allowed by Apple to upload apps to App Store Connect. Historically, Apple updates the minimum allowed Xcode version in April each year. You can expect Amplify Swift to update the minimum supported Swift version within the following 60 days. This is done to ensure Amplify Swift can provide modern Swift APIs and take advantage of Swift language improvements.
+
 ## Semantic versioning
 
 We follow [semantic versioning](https://semver.org/) for our releases.
@@ -51,7 +58,7 @@ Applications that evaluate all members of an enumeration using a `switch` statem
 
 ## License
 
-This library is licensed under the Apache 2.0 License. 
+This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
@@ -59,10 +66,10 @@ Amplify requires the following Xcode versions, according to the targeted platfor
 
 | Platform      | Xcode Version |
 | -------------:| ------------: |
-| iOS           | 14.1+         |
-| macOS         | 14.1+         |
-| tvOS          | 14.3+         |
-| watchOS       | 14.3+         |
+| iOS           | 15.0+         |
+| macOS         | 15.0+         |
+| tvOS          | 15.0+         |
+| watchOS       | 15.0+         |
 | visionOS      | 15 beta 2+    |
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |

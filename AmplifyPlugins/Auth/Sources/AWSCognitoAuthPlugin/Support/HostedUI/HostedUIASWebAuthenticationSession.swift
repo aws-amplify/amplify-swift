@@ -67,6 +67,8 @@ class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
                 }
                 if canStart {
                     aswebAuthenticationSession.start()
+                } else {
+                    continuation.resume( throwing: HostedUIError.unableToStartASWebAuthenticationSession)
                 }
             }
         }

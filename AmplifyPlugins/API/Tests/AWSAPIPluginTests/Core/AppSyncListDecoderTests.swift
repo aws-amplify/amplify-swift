@@ -42,7 +42,7 @@ class AppSyncListDecoderTests: XCTestCase {
             ],
             "nextToken": "nextToken"
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil)
+        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, authMode: nil, variables: nil)
         let data = try encoder.encode(appSyncPayload)
 
         let harness = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
@@ -70,7 +70,7 @@ class AppSyncListDecoderTests: XCTestCase {
             ],
             "nextToken": "nextToken"
         ]
-        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil)
+        let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, authMode: nil, variables: nil)
         let data = try encoder.encode(appSyncPayload)
         let result = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
         XCTAssertNil(result.listProvider)
@@ -79,7 +79,8 @@ class AppSyncListDecoderTests: XCTestCase {
     func testShouldDecodeFromModelMetadata() throws {
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName")
+                                                        apiName: "apiName", 
+                                                        authMode: nil)
         let data = try encoder.encode(modelMetadata)
         let harness = try decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
         XCTAssertNotNil(harness.listProvider)

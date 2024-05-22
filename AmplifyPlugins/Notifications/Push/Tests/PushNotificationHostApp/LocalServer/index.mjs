@@ -69,6 +69,19 @@ app.post('/uninstall', async (req, res) => {
     }
 })
 
+app.post('/boot', async (req, res) => {
+    console.log("POST /boot ")
+    const { deviceId } = req.body
+    try {
+        const cmd = `xcrun simctl --set testing bootstatus ${deviceId} -b`
+        await run(cmd)
+        res.send("Done")
+    } catch (error) {
+        console.error("Failed to boot the device", error)
+        res.sendStatus(500)
+    }
+})
+
 app.listen(9293, () => {
     console.log("Starting server")
 })

@@ -36,7 +36,8 @@ extension AppSyncListProviderTests {
     func testNotLoadedStateHasNextPageFalse() {
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName")
+                                                        apiName: "apiName", 
+                                                        authMode: nil)
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -109,13 +110,16 @@ extension AppSyncListProviderTests {
 
     func testLoadedStateGetNextPageFailure_GraphQLErrorResponse() async {
         mockAPIPlugin.responders[.queryRequestResponse] =
-            QueryRequestResponder<List<Comment4>> { _ in
+            QueryRequestResponder<List<Comment4>> { request in
+
+                XCTAssertEqual(request.apiName, "apiName")
+                XCTAssertEqual(request.authMode as? AWSAuthorizationType, .amazonCognitoUserPools)
                 let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(
                     .failure(GraphQLResponseError.error([GraphQLError]())))
                 return event
         }
         let elements = [Comment4(content: "content")]
-        let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
+        let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken", apiName: "apiName", authMode: .amazonCognitoUserPools)
         guard case .loaded = provider.loadedState else {
             XCTFail("Should be loaded")
             return
@@ -138,7 +142,8 @@ extension AppSyncListProviderTests {
     func testNotLoadedStateGetNextPageFailure() async {
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                         appSyncAssociatedFields: ["post"],
-                                                        apiName: "apiName")
+                                                        apiName: "apiName", 
+                                                        authMode: nil)
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")

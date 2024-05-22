@@ -23,14 +23,14 @@ class CancellableAsyncStream<Element>: AsyncSequence {
     }
 
     convenience init(with publisher: AnyPublisher<Element, Never>) {
-        var cancellable: AnyCancellable?
-        self.init(asyncStream: AsyncStream { continuation in
-            cancellable = publisher.sink { _ in
-                continuation.finish()
-            } receiveValue: {
-                continuation.yield($0)
-            }
-        }, cancellable: cancellable)
+        let (asyncStream, contiuation) = AsyncStream.makeStream(of: Element.self)
+        let cancellable = publisher.sink { _ in
+            contiuation.finish()
+        } receiveValue: {
+            contiuation.yield($0)
+        }
+
+        self.init(asyncStream: asyncStream, cancellable: cancellable)
     }
 
     func makeAsyncIterator() -> AsyncStream<Element>.AsyncIterator {

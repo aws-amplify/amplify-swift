@@ -24,8 +24,10 @@ final class PushNotificationHostAppUITests: XCTestCase {
         return identifier
     }()
 
-    override func setUpWithError() throws {
+    @MainActor
+    override func setUp() async throws {
         continueAfterFailure = false
+        try await bootDevice()
     #if os(iOS)
         XCUIDevice.shared.orientation = .portrait
     #endif
@@ -64,7 +66,12 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let identifyUserButton = app.buttons["Identify User"]
         if identifyUserButton.waitForExistence(timeout: timeout) {
+        #if os(tvOS)
+            identifyUserButton.select(direction: .vertical)
+        #else
             identifyUserButton.tap()
+        #endif
+
         } else {
             XCTFail("Failed to find 'Identify User' button")
         }
@@ -84,7 +91,12 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
         let registerDeviceButton = app.buttons["Register Device"]
         if registerDeviceButton.waitForExistence(timeout: timeout) {
+        #if os(tvOS)
+            registerDeviceButton.select(direction: .vertical)
+        #else
             registerDeviceButton.tap()
+        #endif
+
         } else {
             XCTFail("Failed to find 'Register Device' button")
         }
@@ -235,7 +247,12 @@ final class PushNotificationHostAppUITests: XCTestCase {
     private func initAmplify() {
         let initAmplifyButton = app.buttons["Init Amplify"]
         if initAmplifyButton.waitForExistence(timeout: timeout) {
+        #if os(tvOS)
+            initAmplifyButton.select(direction: .vertical)
+        #else
             initAmplifyButton.tap()
+        #endif
+
         } else {
             XCTFail("Failed to find `Init Amplify` button")
         }
@@ -249,7 +266,14 @@ final class PushNotificationHostAppUITests: XCTestCase {
     #endif
         if alert.waitForExistence(timeout: timeout) {
             XCTAssertTrue(anyElementContains(text: "Would Like to Send You Notifications", scope: alert).exists)
+        #if os(tvOS)
+            alert.buttons["Allow"].firstMatch.select(direction: .horizontal)
+        #elseif os(watchOS)
+            alert.swipeUp()
             alert.buttons["Allow"].tap()
+        #else
+            alert.buttons["Allow"].tap()
+        #endif
         }
     }
     
@@ -280,6 +304,12 @@ final class PushNotificationHostAppUITests: XCTestCase {
         let request = LocalServer.uninstall(deviceIdentifier!).urlRequest
         let (_, response) = try await URLSession.shared.data(for: request)
         XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to uninstall the App")
+    }
+
+    private func bootDevice() async throws {
+        let request = LocalServer.boot(deviceIdentifier!).urlRequest
+        let (_, response) = try await URLSession.shared.data(for: request)
+        XCTAssertTrue((response as! HTTPURLResponse).statusCode < 300, "Failed to boot the device")
     }
 
     private func pressHomeButton() {
@@ -314,18 +344,41 @@ final class PushNotificationHostAppUITests: XCTestCase {
 
 #if os(tvOS)
 extension XCUIElement {
-    func tap() {
-        XCUIRemote.shared.select(self)
+    func select(direction: Direction) {
+        XCUIRemote.shared.select(self, direction: direction)
+    }
+}
+
+enum Direction {
+    case horizontal
+    case vertical
+
+    func next() -> XCUIRemote.Button {
+        switch self {
+        case .horizontal:
+            return .right
+        case .vertical:
+            return .down
+        }
+    }
+
+    func previous() -> XCUIRemote.Button {
+        switch self {
+        case .horizontal:
+            return .left
+        case .vertical:
+            return .up
+        }
     }
 }
 
 extension XCUIRemote {
-    func select(_ element: XCUIElement) {
+    func select(_ element: XCUIElement, direction: Direction) {
         let app = XCUIApplication()
         var isEndReached = false
         while !element.hasFocus {
             let previousElement = app.focusedElement
-            press(isEndReached ? .up : .down)
+            press(isEndReached ? direction.previous() : direction.next())
             if previousElement == app.focusedElement {
                 if isEndReached {
                     XCTFail("Element \(element) was not found.")
