@@ -12,6 +12,7 @@ import AWSPluginsCore
 public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
 
     let apiName: String?
+    let authMode: AWSAuthorizationType?
     let source: String
     var loadedState: ModelProviderState<ModelType>
 
@@ -20,12 +21,14 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
         self.loadedState = .notLoaded(identifiers: metadata.identifiers)
         self.apiName = metadata.apiName
         self.source = metadata.source
+        self.authMode = metadata.authMode
     }
 
     // Creates a "loaded" provider
     init(model: ModelType?) {
         self.loadedState = .loaded(model: model)
         self.apiName = nil
+        self.authMode = nil
         self.source = ModelProviderRegistry.DecoderSource.appSync
     }
 
@@ -41,7 +44,8 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
             }
             let request = GraphQLRequest<ModelType?>.getRequest(ModelType.self,
                                                                 byIdentifiers: identifiers,
-                                                                apiName: apiName)
+                                                                apiName: apiName, 
+                                                                authMode: authMode)
             log.verbose("Loading \(ModelType.modelName) with \(identifiers)")
             let graphQLResponse = try await Amplify.API.query(request: request)
             switch graphQLResponse {
@@ -67,6 +71,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
             let metadata = AppSyncModelDecoder.Metadata(
                 identifiers: identifiers ?? [],
                 apiName: apiName,
+                authMode: authMode,
                 source: source)
             try metadata.encode(to: encoder)
 

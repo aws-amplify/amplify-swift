@@ -29,9 +29,6 @@
 		68DBE9592A3B6EAE002B73E3 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */; };
 		68DBE95A2A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
 		68DBE95B2A3B6EAE002B73E3 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857648828AE9951000CE2E9 /* TestConfigHelper.swift */; };
-		68DBE9662A3B6F2A002B73E3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68DBE9652A3B6F2A002B73E3 /* Amplify */; };
-		68DBE9682A3B6F2A002B73E3 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68DBE9672A3B6F2A002B73E3 /* AWSCognitoAuthPlugin */; };
-		68DBE96A2A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68DBE9692A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin */; };
 		9737697629519E050074B63A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697029519DEC0074B63A /* AsyncTesting.swift */; };
 		9737697729519E050074B63A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697129519DEC0074B63A /* AsyncExpectation.swift */; };
 		9737697829519E050074B63A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */; };
@@ -134,9 +131,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68DBE9662A3B6F2A002B73E3 /* Amplify in Frameworks */,
-				68DBE96A2A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin in Frameworks */,
-				68DBE9682A3B6F2A002B73E3 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,9 +326,6 @@
 			);
 			name = AWSPinpointAnalyticsPluginIntegrationTestsWatch;
 			packageProductDependencies = (
-				68DBE9652A3B6F2A002B73E3 /* Amplify */,
-				68DBE9672A3B6F2A002B73E3 /* AWSCognitoAuthPlugin */,
-				68DBE9692A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin */,
 			);
 			productName = AWSPinpointAnalyticsPluginIntegrationTests;
 			productReference = 68DBE9622A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch.xctest */;
@@ -1115,18 +1106,6 @@
 			productName = AWSCognitoAuthPlugin;
 		};
 		68DBE9512A3B6A82002B73E3 /* AWSPinpointAnalyticsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSPinpointAnalyticsPlugin;
-		};
-		68DBE9652A3B6F2A002B73E3 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68DBE9672A3B6F2A002B73E3 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68DBE9692A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSPinpointAnalyticsPlugin;
 		};

@@ -16,7 +16,7 @@ on:
 
       os-runner:
         type: string
-        default: 'macos-13'
+        default: 'macos-latest'
 
       save_build_cache:
         type: boolean

@@ -22,6 +22,7 @@ class GestureRecognizerTests: XCTestCase {
     /// - Then:
     ///    - It should return true
 
+    @MainActor
     func testGestureRecognizerAddedToWindow() {
         let contextProvider = MockDevMenuContextProvider()
         let longPressGestureRecognizer =

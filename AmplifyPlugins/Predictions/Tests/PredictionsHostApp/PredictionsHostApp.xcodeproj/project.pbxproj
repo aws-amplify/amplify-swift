@@ -27,6 +27,7 @@
 		6875F91E2A3CCCB7001C9AAF /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9054235F291425630000D108 /* testImageLabels.jpg */; };
 		6875F91F2A3CCCB7001C9AAF /* testImageEntities.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542362291425630000D108 /* testImageEntities.jpg */; };
 		6875F9202A3CCCB7001C9AAF /* testImageTextAll.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542361291425630000D108 /* testImageTextAll.jpg */; };
+		68C1547A2BE2B11A003C4CF8 /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68C154792BE2B11A003C4CF8 /* CoreMLPredictionsPlugin */; };
 		902830062914027000897087 /* PredictionsHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830052914027000897087 /* PredictionsHostAppApp.swift */; };
 		902830082914027000897087 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902830072914027000897087 /* ContentView.swift */; };
 		9028300A2914027100897087 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 902830092914027100897087 /* Assets.xcassets */; };
@@ -52,18 +53,6 @@
 		90542370291425630000D108 /* testImageCeleb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542363291425630000D108 /* testImageCeleb.jpg */; };
 		90542371291425630000D108 /* testImageTextForms.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90542364291425630000D108 /* testImageTextForms.jpg */; };
 		90542372291425630000D108 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 90542365291425630000D108 /* audio.wav */; };
-		90CF304A2AD47A71006B6FF3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF30492AD47A71006B6FF3 /* Amplify */; };
-		90CF304C2AD47A74006B6FF3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF304B2AD47A74006B6FF3 /* Amplify */; };
-		90CF304E2AD47A78006B6FF3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF304D2AD47A78006B6FF3 /* Amplify */; };
-		90CF30502AD47B0E006B6FF3 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF304F2AD47B0E006B6FF3 /* AWSCognitoAuthPlugin */; };
-		90CF30522AD47B0E006B6FF3 /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF30512AD47B0E006B6FF3 /* AWSPredictionsPlugin */; };
-		90CF30542AD47B0E006B6FF3 /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF30532AD47B0E006B6FF3 /* CoreMLPredictionsPlugin */; };
-		90CF30562AD47B19006B6FF3 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF30552AD47B19006B6FF3 /* AWSCognitoAuthPlugin */; };
-		90CF30582AD47B19006B6FF3 /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF30572AD47B19006B6FF3 /* AWSPredictionsPlugin */; };
-		90CF305A2AD47B19006B6FF3 /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF30592AD47B19006B6FF3 /* CoreMLPredictionsPlugin */; };
-		90CF305C2AD47B24006B6FF3 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF305B2AD47B24006B6FF3 /* AWSCognitoAuthPlugin */; };
-		90CF305E2AD47B24006B6FF3 /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF305D2AD47B24006B6FF3 /* AWSPredictionsPlugin */; };
-		90CF30602AD47B24006B6FF3 /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 90CF305F2AD47B24006B6FF3 /* CoreMLPredictionsPlugin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68C1547A2BE2B11A003C4CF8 /* CoreMLPredictionsPlugin in Frameworks */,
 				681D7D8B2A42710F00F7C310 /* Amplify in Frameworks */,
 				681D7D8F2A42710F00F7C310 /* AWSPredictionsPlugin in Frameworks */,
 				681D7D8D2A42710F00F7C310 /* AWSCognitoAuthPlugin in Frameworks */,
@@ -137,10 +127,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90CF30602AD47B24006B6FF3 /* CoreMLPredictionsPlugin in Frameworks */,
-				90CF304E2AD47A78006B6FF3 /* Amplify in Frameworks */,
-				90CF305E2AD47B24006B6FF3 /* AWSPredictionsPlugin in Frameworks */,
-				90CF305C2AD47B24006B6FF3 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,10 +145,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90CF30542AD47B0E006B6FF3 /* CoreMLPredictionsPlugin in Frameworks */,
-				90CF304A2AD47A71006B6FF3 /* Amplify in Frameworks */,
-				90CF30522AD47B0E006B6FF3 /* AWSPredictionsPlugin in Frameworks */,
-				90CF30502AD47B0E006B6FF3 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,10 +152,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				90CF305A2AD47B19006B6FF3 /* CoreMLPredictionsPlugin in Frameworks */,
-				90CF304C2AD47A74006B6FF3 /* Amplify in Frameworks */,
-				90CF30582AD47B19006B6FF3 /* AWSPredictionsPlugin in Frameworks */,
-				90CF30562AD47B19006B6FF3 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +294,7 @@
 				681D7D8A2A42710F00F7C310 /* Amplify */,
 				681D7D8C2A42710F00F7C310 /* AWSCognitoAuthPlugin */,
 				681D7D8E2A42710F00F7C310 /* AWSPredictionsPlugin */,
+				68C154792BE2B11A003C4CF8 /* CoreMLPredictionsPlugin */,
 			);
 			productName = "NewApp Watch App";
 			productReference = 6875F8F02A3CCC84001C9AAF /* PredictionsWatchApp.app */;
@@ -336,10 +315,6 @@
 			);
 			name = AWSPredictionsPluginIntegrationTestsWatch;
 			packageProductDependencies = (
-				90CF304D2AD47A78006B6FF3 /* Amplify */,
-				90CF305B2AD47B24006B6FF3 /* AWSCognitoAuthPlugin */,
-				90CF305D2AD47B24006B6FF3 /* AWSPredictionsPlugin */,
-				90CF305F2AD47B24006B6FF3 /* CoreMLPredictionsPlugin */,
 			);
 			productName = AWSPredictionsPluginIntegrationTests;
 			productReference = 6875F9242A3CCCB7001C9AAF /* AWSPredictionsPluginIntegrationTestsWatch.xctest */;
@@ -384,10 +359,6 @@
 			);
 			name = CoreMLPredictionsPluginIntegrationTests;
 			packageProductDependencies = (
-				90CF30492AD47A71006B6FF3 /* Amplify */,
-				90CF304F2AD47B0E006B6FF3 /* AWSCognitoAuthPlugin */,
-				90CF30512AD47B0E006B6FF3 /* AWSPredictionsPlugin */,
-				90CF30532AD47B0E006B6FF3 /* CoreMLPredictionsPlugin */,
 			);
 			productName = CoreMLPredictionsPluginIntegrationTests;
 			productReference = 90283033291402D500897087 /* CoreMLPredictionsPluginIntegrationTests.xctest */;
@@ -408,10 +379,6 @@
 			);
 			name = AWSPredictionsPluginIntegrationTests;
 			packageProductDependencies = (
-				90CF304B2AD47A74006B6FF3 /* Amplify */,
-				90CF30552AD47B19006B6FF3 /* AWSCognitoAuthPlugin */,
-				90CF30572AD47B19006B6FF3 /* AWSPredictionsPlugin */,
-				90CF30592AD47B19006B6FF3 /* CoreMLPredictionsPlugin */,
 			);
 			productName = AWSPredictionsPluginIntegrationTests;
 			productReference = 903555F829141355004B83C2 /* AWSPredictionsPluginIntegrationTests.xctest */;
@@ -1140,6 +1107,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSPredictionsPlugin;
 		};
+		68C154792BE2B11A003C4CF8 /* CoreMLPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreMLPredictionsPlugin;
+		};
 		9028304B2914042800897087 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
@@ -1153,54 +1124,6 @@
 			productName = AWSPredictionsPlugin;
 		};
 		902830512914042800897087 /* CoreMLPredictionsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CoreMLPredictionsPlugin;
-		};
-		90CF30492AD47A71006B6FF3 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		90CF304B2AD47A74006B6FF3 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		90CF304D2AD47A78006B6FF3 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		90CF304F2AD47B0E006B6FF3 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		90CF30512AD47B0E006B6FF3 /* AWSPredictionsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSPredictionsPlugin;
-		};
-		90CF30532AD47B0E006B6FF3 /* CoreMLPredictionsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CoreMLPredictionsPlugin;
-		};
-		90CF30552AD47B19006B6FF3 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		90CF30572AD47B19006B6FF3 /* AWSPredictionsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSPredictionsPlugin;
-		};
-		90CF30592AD47B19006B6FF3 /* CoreMLPredictionsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CoreMLPredictionsPlugin;
-		};
-		90CF305B2AD47B24006B6FF3 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		90CF305D2AD47B24006B6FF3 /* AWSPredictionsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSPredictionsPlugin;
-		};
-		90CF305F2AD47B24006B6FF3 /* CoreMLPredictionsPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CoreMLPredictionsPlugin;
 		};

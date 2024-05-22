@@ -32,6 +32,9 @@ on:
         required: false
         type: string
         default: '-test-iterations 3 -retry-tests-on-failure'
+      os-runner:
+        description: 'runs-on input'
+        type: string
 
 permissions:
     contents: read
@@ -39,7 +42,7 @@ permissions:
 jobs:
   unit-tests:
     name: ${{ inputs.platform }} Tests | ${{ inputs.scheme }}
-    runs-on: macos-13
+    runs-on: ${{ inputs.os-runner }}
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
       - name: Checkout repository
