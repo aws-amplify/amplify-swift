@@ -229,6 +229,22 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         await fulfillment(of: [expectation], timeout: networkTimeout)
     }
 
+    func testUnableToStartASWebAuthenticationSession() async {
+        mockHostedUIResult = .failure(.unableToStartASWebAuthenticationSession)
+        let expectation  = expectation(description: "SignIn operation should complete")
+        do {
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service = error else {
+                XCTFail("Should not fail with error = \(error)")
+                return
+            }
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: networkTimeout)
+    }
+
     @MainActor
     func testTokenParsingFailure() async {
         mockHostedUIResult = .success([
