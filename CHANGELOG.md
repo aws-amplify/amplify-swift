@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.34.1 (2024-05-22)
+
+### Bug Fixes
+
+- **Auth**: Fix Hosted UI continuation error (#3715)
+
 ## 2.34.0 (2024-05-22)
 
 ### Features
