@@ -380,7 +380,7 @@ class AWSS3StorageServiceTests: XCTestCase {
             }
         )
         
-        await fulfillment(of: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 1)
     }
 }
 
