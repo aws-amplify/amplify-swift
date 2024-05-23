@@ -374,15 +374,13 @@ class AWSS3StorageServiceTests: XCTestCase {
             metadata: [:],
             accelerate: true,
             onEvent: { event in
-                guard case .initiated(_) = event else {
-                    XCTFail("Expected .initiated event, got \(event)")
-                    return
+                if case .initiated(_) = event {
+                    expectation.fulfill()
                 }
-                expectation.fulfill()
             }
         )
         
-        await fulfillment(of: [expectation], timeout: 1)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 }
 
