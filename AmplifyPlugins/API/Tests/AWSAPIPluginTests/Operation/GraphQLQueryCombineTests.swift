@@ -14,7 +14,7 @@ import XCTest
 class GraphQLQueryCombineTests: OperationTestBase {
     let testDocument = "query { getTodo { id name description }}"
 
-    func testQuerySucceeds() throws {
+    func testQuerySucceeds() async throws {
         let testJSONData: JSONValue = ["foo": true]
         let sentData = Data(#"{"data": {"foo": true}}"#.utf8)
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
@@ -47,11 +47,16 @@ class GraphQLQueryCombineTests: OperationTestBase {
             }
         })
         
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue,
+                               receivedFinish,
+                               receivedFailure,
+                               receivedResponseError
+                              ],
+                          timeout: 0.05)
         sink.cancel()
     }
 
-    func testQueryHandlesResponseError() throws {
+    func testQueryHandlesResponseError() async throws {
         let sentData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
 
@@ -82,12 +87,17 @@ class GraphQLQueryCombineTests: OperationTestBase {
             }
         })
         
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue,
+                               receivedFinish,
+                               receivedFailure,
+                               receivedResponseError
+                              ],
+                          timeout: 0.05)
         sink.cancel()
 
     }
 
-    func testQueryFails() throws {
+    func testQueryFails() async throws {
         try setUpPluginForSingleError(for: .graphQL)
 
         let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
@@ -118,7 +128,12 @@ class GraphQLQueryCombineTests: OperationTestBase {
             }
         })
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue,
+                               receivedFinish,
+                               receivedFailure,
+                               receivedResponseError
+                              ],
+                          timeout: 0.05)
         sink.cancel()
     }
 }

@@ -204,7 +204,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
     /// Given: A DefaultStorageTransferDatabase
     /// When: recover is invoked with a StorageURLSession that returns a session
     /// Then: A .success is returned
-    func testLoadPersistableTasks() {
+    func testLoadPersistableTasks() async {
         let urlSession = MockStorageURLSession(
             sessionTasks: [
                 session
@@ -217,18 +217,18 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// Given: A DefaultStorageTransferDatabase
     /// When: prepareForBackground is invoked
     /// Then: A callback is invoked
-    func testPrepareForBackground() {
+    func testPrepareForBackground() async {
         let expectation = self.expectation(description: "Prepare for Background")
         database.prepareForBackground() {
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// Given: The StorageTransferDatabase Type

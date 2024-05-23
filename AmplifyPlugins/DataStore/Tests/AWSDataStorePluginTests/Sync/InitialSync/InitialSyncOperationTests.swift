@@ -24,7 +24,7 @@ class InitialSyncOperationTests: XCTestCase {
 
     // MARK: - GetLastSyncTime
 
-    func testFullSyncWhenLastSyncPredicateNilAndCurrentSyncPredicateNonNil() {
+    func testFullSyncWhenLastSyncPredicateNilAndCurrentSyncPredicateNonNil() async {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = nil
         let currentSyncPredicate: DataStoreConfiguration
@@ -79,11 +79,11 @@ class InitialSyncOperationTests: XCTestCase {
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived], timeout: 1)
         sink.cancel()
     }
 
-    func testFullSyncWhenLastSyncPredicateNonNilAndCurrentSyncPredicateNil() {
+    func testFullSyncWhenLastSyncPredicateNonNilAndCurrentSyncPredicateNil() async {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = "non nil"
         let expectedSyncType = SyncType.fullSync
@@ -116,11 +116,11 @@ class InitialSyncOperationTests: XCTestCase {
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived], timeout: 1)
         sink.cancel()
     }
 
-    func testFullSyncWhenLastSyncPredicateDifferentFromCurrentSyncPredicate() {
+    func testFullSyncWhenLastSyncPredicateDifferentFromCurrentSyncPredicate() async {
         let lastSyncTime: Int64 = 123456
         let lastSyncPredicate: String? = "non nil different from current predicate"
         let currentSyncPredicate: DataStoreConfiguration
@@ -175,11 +175,11 @@ class InitialSyncOperationTests: XCTestCase {
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived], timeout: 1)
         sink.cancel()
     }
 
-    func testDeltaSyncWhenLastSyncPredicateSameAsCurrentSyncPredicate() {
+    func testDeltaSyncWhenLastSyncPredicateSameAsCurrentSyncPredicate() async {
         let startDateSeconds = (Int64(Date().timeIntervalSince1970) - 100)
         let lastSyncTime: Int64 = startDateSeconds * 1_000
         let lastSyncPredicate: String? = "{\"field\":\"id\",\"operator\":{\"type\":\"equals\",\"value\":\"123\"}}"
@@ -235,7 +235,7 @@ class InitialSyncOperationTests: XCTestCase {
                                                             syncPredicate: lastSyncPredicate)
         XCTAssertEqual(operation.getLastSyncTime(lastSyncMetadataLastSyncNil), expectedLastSync)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived], timeout: 1)
         sink.cancel()
     }
 
@@ -246,7 +246,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main()
     /// - Then:
     ///    - It reads sync metadata from storage
-    func testReadsMetadata() {
+    func testReadsMetadata() async {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
@@ -297,7 +297,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, metadataQueryReceived], timeout: 1)
         sink.cancel()
     }
 
@@ -306,7 +306,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main()
     /// - Then:
     ///    - It performs a sync query against the API category
-    func testQueriesAPI() {
+    func testQueriesAPI() async {
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
@@ -356,7 +356,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 
@@ -365,7 +365,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main()
     /// - Then:
     ///    - The method invokes a completion callback when complete
-    func testInvokesPublisherCompletion() {
+    func testInvokesPublisherCompletion() async {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
@@ -406,7 +406,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        wait(for: [syncCompletionReceived, finishedReceived], timeout: 1.0)
+        await fulfillment(of: [syncCompletionReceived, finishedReceived], timeout: 1)
         sink.cancel()
     }
 
@@ -415,7 +415,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main() against an API that returns paginated data
     /// - Then:
     ///    - The method invokes a completion callback
-    func testRetrievesPaginatedData() {
+    func testRetrievesPaginatedData() async {
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         apiWasQueried.expectedFulfillmentCount = 3
 
@@ -463,7 +463,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 
@@ -472,7 +472,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main() against an API that returns data
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
-    func testSubmitsToReconciliationQueue() {
+    func testSubmitsToReconciliationQueue() async {
         let startedAtMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
         let model = MockSynced(id: "1")
         let anyModel = AnyModel(model)
@@ -540,7 +540,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, itemSubmitted, offeredValueReceived], timeout: 1)
         sink.cancel()
     }
 
@@ -549,7 +549,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main() against an API that returns data
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
-    func testUpdatesSyncMetadata() throws {
+    func testUpdatesSyncMetadata() async throws {
         let startDateMilliseconds = Int64(Date().timeIntervalSince1970) * 1_000
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startedAt = startDateMilliseconds
@@ -598,7 +598,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived], timeout: 1)
         sink.cancel()
 
         guard let syncMetadata = try storageAdapter.queryModelSyncMetadata(for: MockSynced.schema) else {
@@ -614,7 +614,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - I invoke main() against an API that returns .signedOut error
     /// - Then:
     ///    - The method completes with a failure result, error handler is called.
-    func testQueriesAPIReturnSignedOutError() throws {
+    func testQueriesAPIReturnSignedOutError() async throws {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let authError = AuthError.signedOut("", "", nil)
             let apiError = APIError.operationError("", "", authError)
@@ -704,7 +704,7 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, expectErrorHandlerCalled], timeout: 1)
 
         sink.cancel()
     }
@@ -715,7 +715,7 @@ class InitialSyncOperationTests: XCTestCase {
     /// - Then:
     ///    - It performs a sync query against the API category with a "lastSync" time from the last start time of
     ///      the stored metadata
-    func testQueriesFromLastSync() throws {
+    func testQueriesFromLastSync() async throws {
         let startDateMilliseconds = (Int64(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
@@ -731,7 +731,7 @@ class InitialSyncOperationTests: XCTestCase {
                 syncMetadataSaved.fulfill()
             }
         }
-        wait(for: [syncMetadataSaved], timeout: 1.0)
+        await fulfillment(of: [syncMetadataSaved], timeout: 1)
 
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
@@ -781,11 +781,11 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 
-    func testBaseQueryWhenExpiredLastSync() throws {
+    func testBaseQueryWhenExpiredLastSync() async throws {
         // Set start date to 100 seconds in the past
         let startDateMilliSeconds = (Int64(Date().timeIntervalSince1970) - 100) * 1_000
 
@@ -857,11 +857,11 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 
-    func testBaseQueryWithCustomSyncPageSize() throws {
+    func testBaseQueryWithCustomSyncPageSize() async throws {
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
         try storageAdapter.setUp(modelSchemas: StorageEngine.systemModelSchemas + [MockSynced.schema])
 
@@ -921,7 +921,12 @@ class InitialSyncOperationTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [
+            syncStartedReceived,
+            syncCompletionReceived,
+            finishedReceived,
+            apiWasQueried],
+                          timeout: 1)
         sink.cancel()
     }
 }

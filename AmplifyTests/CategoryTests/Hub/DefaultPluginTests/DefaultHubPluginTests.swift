@@ -153,7 +153,7 @@ class DefaultHubPluginTests: XCTestCase {
     /// Given: The default Hub plugin
     /// When: I invoke listen() for a specified channel and subsequently dispatch a message to a different channel
     /// Then: My listener is not invoked
-    func testMessagesAreDeliveredOnlyToSpecifiedChannel() {
+    func testMessagesAreDeliveredOnlyToSpecifiedChannel() async {
         let messageShouldNotBeReceived = expectation(description: "Message should not be received")
         messageShouldNotBeReceived.isInverted = true
         _ = plugin.listen(to: .storage, isIncluded: nil) { hubPayload in
@@ -164,7 +164,7 @@ class DefaultHubPluginTests: XCTestCase {
             messageShouldNotBeReceived.fulfill()
         }
         plugin.dispatch(to: .custom("DifferentChannel"), payload: HubPayload(eventName: "TEST_EVENT"))
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [messageShouldNotBeReceived], timeout: 0.5)
     }
 
 }
