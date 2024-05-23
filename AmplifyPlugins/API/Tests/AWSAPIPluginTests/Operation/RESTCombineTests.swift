@@ -13,7 +13,7 @@ import XCTest
 
 class RESTCombineTests: OperationTestBase {
 
-    func testGetSucceeds() throws {
+    func testGetSucceeds() async throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
 
@@ -38,11 +38,11 @@ class RESTCombineTests: OperationTestBase {
             receivedValue.fulfill()
         })
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure], timeout: 0.05)
         sink.cancel()
     }
 
-    func testGetFails() throws {
+    func testGetFails() async throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
         try setUpPluginForSingleError(for: .graphQL)
 
@@ -68,7 +68,7 @@ class RESTCombineTests: OperationTestBase {
                 receivedValue.fulfill()
             })
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure], timeout: 0.05)
         sink.cancel()
     }
 }

@@ -174,7 +174,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanUseSpecifiedPlugin() throws {
+    func testCanUseSpecifiedPlugin() async throws {
         let plugin1 = MockHubCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
             expectation(description: "test method should not be invoked on default plugin")
@@ -208,10 +208,10 @@ class HubCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         let unsubscribeToken = UnsubscribeToken(channel: .storage, id: UUID())
         try Amplify.Hub.getPlugin(for: "MockSecondHubCategoryPlugin").removeListener(unsubscribeToken)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodShouldBeInvokedOnSecondPlugin, methodShouldNotBeInvokedOnDefaultPlugin], timeout: 1)
     }
 
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockHubCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
             expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -239,7 +239,7 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 
     func testPreconditionFailureInvokingBeforeConfig() throws {
@@ -294,7 +294,7 @@ class HubCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - I should see a log warning
     ///
-    func testWarnsOnMissingPlugin() throws {
+    func testWarnsOnMissingPlugin() async throws {
         let warningReceived = expectation(description: "Warning message received")
 
         let loggingPlugin = MockLoggingCategoryPlugin()
@@ -316,7 +316,7 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warningReceived], timeout: 0.1)
     }
 
 }

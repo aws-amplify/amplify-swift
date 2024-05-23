@@ -176,7 +176,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             errorExpectation.fulfill()
         }
 
-        waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [errorExpectation], timeout: networkTimeout)
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
@@ -189,7 +189,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         } catch {
             XCTFail("Should not fail with error = \(error)")
         }
-        waitForExpectations(timeout: networkTimeout)
+        await fulfillment(of: [signInExpectation], timeout: networkTimeout)
     }
 
     @MainActor
@@ -221,6 +221,22 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.invalidState = error else {
+                XCTFail("Should not fail with error = \(error)")
+                return
+            }
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: networkTimeout)
+    }
+
+    func testUnableToStartASWebAuthenticationSession() async {
+        mockHostedUIResult = .failure(.unableToStartASWebAuthenticationSession)
+        let expectation  = expectation(description: "SignIn operation should complete")
+        do {
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service = error else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }

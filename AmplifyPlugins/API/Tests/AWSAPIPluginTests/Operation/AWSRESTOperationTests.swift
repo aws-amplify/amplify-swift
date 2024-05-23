@@ -33,7 +33,7 @@ class AWSRESTOperationTests: OperationTestBase {
     }
 
     // TODO: Fix this test
-    func testGetReturnsOperation() throws {
+    func testGetReturnsOperation() async throws {
         try setUpPlugin(endpointType: .rest)
 
         // Use this as a semaphore to ensure the task is cleaned up before proceeding to the next test
@@ -49,11 +49,10 @@ class AWSRESTOperationTests: OperationTestBase {
         }
 
         XCTAssertNotNil(operation.request)
-
-        waitForExpectations(timeout: 1.00)
+        await fulfillment(of: [listenerWasInvoked], timeout: 1)
     }
 
-    func testGetFailsWithBadAPIName() throws {
+    func testGetFailsWithBadAPIName() async throws {
         let sentData = Data([0x00, 0x01, 0x02, 0x03])
         try setUpPluginForSingleResponse(sending: sentData, for: .rest)
 
@@ -71,7 +70,7 @@ class AWSRESTOperationTests: OperationTestBase {
             }
         }
 
-        waitForExpectations(timeout: 1.00)
+        await fulfillment(of: [receivedFailure, receivedSuccess], timeout: 1)
     }
 
     /// - Given: A configured plugin

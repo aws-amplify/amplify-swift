@@ -188,7 +188,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
         XCTAssertTrue(methodInvokedOnSecondPlugin)
     }
 
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockGeoCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
             expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -216,7 +216,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Geo.getPlugin(for: "MockGeoCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 
     func testPreconditionFailureInvokingBeforeConfig() async throws {
@@ -271,7 +271,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - I should see a log warning
     ///
-    func testWarnsOnMissingPlugin() throws {
+    func testWarnsOnMissingPlugin() async throws {
         let warningReceived = expectation(description: "Warning message received")
 
         let loggingPlugin = MockLoggingCategoryPlugin()
@@ -293,7 +293,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warningReceived], timeout: 0.1)
     }
 
     /// Test if adding a plugin after configuration throws an error

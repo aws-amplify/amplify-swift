@@ -129,7 +129,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Analytics.getPlugin(for: "MockSecondAnalyticsCategoryPlugin"))
     }
 
-    func testCanUseDefaultPluginIfOnlyOnePlugin() throws {
+    func testCanUseDefaultPluginIfOnlyOnePlugin() async throws {
         let plugin = MockAnalyticsCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
@@ -147,7 +147,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         Amplify.Analytics.record(eventWithName: "test")
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1)
     }
 
     func testPreconditionFailureInvokingWithMultiplePlugins() throws {
@@ -173,7 +173,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanUseSpecifiedPlugin() throws {
+    func testCanUseSpecifiedPlugin() async throws {
         let plugin1 = MockAnalyticsCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
             expectation(description: "test method should not be invoked on default plugin")
@@ -206,10 +206,10 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Analytics.getPlugin(for: "MockSecondAnalyticsCategoryPlugin").record(eventWithName: "test")
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodShouldBeInvokedOnSecondPlugin, methodShouldNotBeInvokedOnDefaultPlugin], timeout: 1)
     }
 
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockAnalyticsCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
             expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -237,7 +237,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 
     func testPreconditionFailureInvokingBeforeConfig() throws {
@@ -292,7 +292,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - I should see a log warning
     ///
-    func testWarnsOnMissingPlugin() throws {
+    func testWarnsOnMissingPlugin() async throws {
         let warningReceived = expectation(description: "Warning message received")
 
         let loggingPlugin = MockLoggingCategoryPlugin()
@@ -314,7 +314,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warningReceived], timeout: 0.1)
     }
 
     /// Test if adding a plugin after configuration throws an error

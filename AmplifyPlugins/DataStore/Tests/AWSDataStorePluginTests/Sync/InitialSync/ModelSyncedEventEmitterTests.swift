@@ -40,7 +40,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     /// - Then:
     ///    - the order of the events received should be all the mutation events followed by the modelSyncedEvent.
     ///
-    func testReceiveLastMutationEventBeforeModelSyncedEvent() throws {
+    func testReceiveLastMutationEventBeforeModelSyncedEvent() async throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.expectedFulfillmentCount = 3
@@ -106,7 +106,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [modelSyncedReceived, mutationEventAppliedReceived, mutationEventDroppedReceived], timeout: 1)
         XCTAssertTrue(modelSyncedEventReceivedLast)
         emitterSink?.cancel()
     }
@@ -120,7 +120,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     /// - Then:
     ///    - Hub event "ModelSyncedEvent" is sent out and subscriber receives all reconciled events.
     ///
-    func testSuccess() throws {
+    func testSuccess() async throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.expectedFulfillmentCount = 5
@@ -176,7 +176,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
         reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventDropped(modelName: Post.modelName))
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [modelSyncedReceived, mutationEventAppliedReceived, mutationEventDroppedReceived], timeout: 1)
         emitterSink?.cancel()
     }
 
@@ -193,7 +193,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
     /// - Then:
     ///    - `modelSyncedEvent` received and emitter continues to send mutation events
     ///
-    func testConcurrent() throws {
+    func testConcurrent() async throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
         let mutationEventAppliedReceived = expectation(description: "mutationEventApplied received")
         mutationEventAppliedReceived.assertForOverFulfill = false
@@ -253,7 +253,7 @@ class ModelSyncedEventEmitterTests: XCTestCase {
             _ = emitter.dispatchedModelSyncedEvent
         }
 
-        waitForExpectations(timeout: 10)
+        await fulfillment(of: [modelSyncedReceived, mutationEventAppliedReceived, mutationEventDroppedReceived], timeout: 10)
         emitterSink?.cancel()
     }
 }

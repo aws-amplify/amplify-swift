@@ -35,7 +35,7 @@ class SyncEventEmitterTests: XCTestCase {
     /// - Then:
     ///    - One modelSynced event should be received
     ///    - One syncQueriesReady event should be received
-    func testModelSyncedAndSyncQueriesReadyWithOneModelRegistered() throws {
+    func testModelSyncedAndSyncQueriesReadyWithOneModelRegistered() async throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
         let syncQueriesReadyReceived = expectation(description: "syncQueriesReady received")
 
@@ -91,7 +91,7 @@ class SyncEventEmitterTests: XCTestCase {
 
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [modelSyncedReceived, syncQueriesReadyReceived], timeout: 1)
         syncEventEmitter = nil
         syncEventEmitterSink?.cancel()
     }
@@ -107,7 +107,7 @@ class SyncEventEmitterTests: XCTestCase {
     /// - Then:
     ///    - Two modelSynced event should be received
     ///    - One syncQueriesReady event should be received
-    func testModelSyncedAndSyncQueriesReadyWithTwoModelsRegisteredAndNoSyncQueriesComingBack() throws {
+    func testModelSyncedAndSyncQueriesReadyWithTwoModelsRegisteredAndNoSyncQueriesComingBack() async throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
         let syncQueriesReadyReceived = expectation(description: "syncQueriesReady received")
 
@@ -169,7 +169,7 @@ class SyncEventEmitterTests: XCTestCase {
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.started(modelName: Comment.modelName, syncType: .fullSync))
         initialSyncOrchestrator?.initialSyncOrchestratorTopic.send(.finished(modelName: Comment.modelName))
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [modelSyncedReceived, syncQueriesReadyReceived], timeout: 1)
         syncEventEmitter = nil
         syncEventEmitterSink?.cancel()
     }
@@ -185,7 +185,7 @@ class SyncEventEmitterTests: XCTestCase {
     /// - Then:
     ///    - Two modelSynced event should be received
     ///    - One syncQueriesReady event should be received
-    func testModelSyncedAndSyncQueriesReadyWithTwoModelsRegisteredAndSyncQueriesComingBack() throws {
+    func testModelSyncedAndSyncQueriesReadyWithTwoModelsRegisteredAndSyncQueriesComingBack() async throws {
         let modelSyncedReceived = expectation(description: "modelSynced received")
         let syncQueriesReadyReceived = expectation(description: "syncQueriesReady received")
 
@@ -277,7 +277,7 @@ class SyncEventEmitterTests: XCTestCase {
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(postMutationEvent))
         reconciliationQueue?.incomingEventSubject.send(.mutationEventApplied(commentMutationEvent))
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [modelSyncedReceived, syncQueriesReadyReceived], timeout: 1)
         syncEventEmitter = nil
         syncEventEmitterSink?.cancel()
     }

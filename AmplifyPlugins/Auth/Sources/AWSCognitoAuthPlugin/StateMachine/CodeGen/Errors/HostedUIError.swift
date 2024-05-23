@@ -27,6 +27,8 @@ enum HostedUIError: Error {
 
     case invalidContext
 
+    case unableToStartASWebAuthenticationSession
+
     case unknown
 }
 

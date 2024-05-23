@@ -23,7 +23,7 @@ class HubClientAPITests: XCTestCase {
         mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
     }
 
-    func testDispatch() throws {
+    func testDispatch() async throws {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
@@ -34,10 +34,10 @@ class HubClientAPITests: XCTestCase {
 
         Amplify.Hub.dispatch(to: .storage, payload: HubPayload(eventName: ""))
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testListen() throws {
+    func testListen() async throws {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
@@ -47,10 +47,10 @@ class HubClientAPITests: XCTestCase {
         }
 
         _ = Amplify.Hub.listen(to: .storage) { _ in }
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testListenToEventName() throws {
+    func testListenToEventName() async throws {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
@@ -60,10 +60,10 @@ class HubClientAPITests: XCTestCase {
         }
 
         _ = Amplify.Hub.listen(to: .storage, eventName: "testEvent") { _ in }
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
-    func testRemove() throws {
+    func testRemove() async throws {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
@@ -73,7 +73,7 @@ class HubClientAPITests: XCTestCase {
         }
         let unsubscribeToken = UnsubscribeToken(channel: .storage, id: UUID())
         Amplify.Hub.removeListener(unsubscribeToken)
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
     // MARK: - Utilities

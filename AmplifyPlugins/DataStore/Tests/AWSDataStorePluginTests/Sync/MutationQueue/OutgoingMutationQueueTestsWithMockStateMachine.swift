@@ -42,7 +42,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         reconciliationQueue = MockReconciliationQueue()
     }
 
-    func testInitialState() {
+    func testInitialState() async {
         let expect = expectation(description: "state initialized")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.initialized)
@@ -53,12 +53,12 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
                                               storageAdapter: storageAdapter,
                                               dataStoreConfiguration: .testDefault(),
                                               authModeStrategy: AWSDefaultAuthModeStrategy())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
 
         XCTAssertEqual(stateMachine.state, OutgoingMutationQueue.State.notInitialized)
     }
 
-    func testStartingState() {
+    func testStartingState() async {
         let expect = expectation(description: "state receivedSubscription")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
@@ -66,7 +66,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
 
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     func testRequestingEvent_subscriptionSetup() throws {
@@ -123,7 +123,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         wait(for: [processEvent], timeout: 1)
     }
 
-    func testRequestingEvent_nosubscription() {
+    func testRequestingEvent_nosubscription() async {
         let expect = expectation(description: "state requestingEvent, no subscription")
         stateMachine.pushExpectActionCriteria { action in
             let error = DataStoreError.unknown("_", "", nil)
@@ -132,7 +132,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
 
         stateMachine.state = .requestingEvent
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     func testReceivedStartActionWhileExpectingEventProcessedAction() throws {
