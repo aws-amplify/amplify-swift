@@ -27,7 +27,7 @@ final class CloudWatchLogConsumerTests: XCTestCase {
         client = MockCloudWatchLogsClient()
         logGroupName = UUID().uuidString
         logStreamName = UUID().uuidString
-        systemUnderTest = try CloudWatchLoggingConsumer(client: client, logGroupName: logGroupName, userIdentifier: "guest")
+        systemUnderTest = await CloudWatchLoggingConsumer(client: client, logGroupName: logGroupName, userIdentifier: "guest")
     }
     
     override func tearDown() async throws {

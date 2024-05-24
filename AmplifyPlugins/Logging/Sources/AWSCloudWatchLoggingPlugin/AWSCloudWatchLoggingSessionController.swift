@@ -85,9 +85,11 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     func enable() {
-        updateSession()
-        updateConsumer()
-        connectProducerAndConsumer()
+        Task {
+            updateSession()
+            await updateConsumer()
+            connectProducerAndConsumer()
+        }
     }
 
     func disable() {
@@ -97,11 +99,11 @@ final class AWSCloudWatchLoggingSessionController {
         self.consumer = nil
     }
 
-    private func updateConsumer() {
-        self.consumer = try? createConsumer()
+    private func updateConsumer() async {
+        self.consumer = try? await createConsumer()
     }
 
-    private func createConsumer() throws -> LogBatchConsumer? {
+    private func createConsumer() async throws -> LogBatchConsumer? {
         if self.client == nil {
             // TODO: FrameworkMetadata Replacement
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
@@ -115,9 +117,9 @@ final class AWSCloudWatchLoggingSessionController {
         }
 
         guard let cloudWatchClient = client else { return nil }
-        return try CloudWatchLoggingConsumer(client: cloudWatchClient,
-                                             logGroupName: self.logGroupName,
-                                             userIdentifier: self.userIdentifier)
+        return await CloudWatchLoggingConsumer(client: cloudWatchClient,
+                                               logGroupName: self.logGroupName,
+                                               userIdentifier: self.userIdentifier)
     }
 
     private func connectProducerAndConsumer() {
@@ -145,10 +147,12 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     private func userIdentifierDidChange() {
-        resetCurrentLogs()
-        updateSession()
-        updateConsumer()
-        connectProducerAndConsumer()
+        Task {
+            resetCurrentLogs()
+            updateSession()
+            await updateConsumer()
+            connectProducerAndConsumer()
+        }
     }
 
     private func updateSession() {
