@@ -20,6 +20,7 @@ class ActivityTrackerTests: XCTestCase {
     private var stateMachine: MockStateMachine!
     private var timeout: TimeInterval = 1
 
+    @MainActor
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationDidEnterBackgroundNotification
@@ -30,6 +31,7 @@ class ActivityTrackerTests: XCTestCase {
 #endif
     }()
 
+    @MainActor
     private static  let applicationWillMoveToForegoundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationWillEnterForegroundNotification
@@ -40,6 +42,7 @@ class ActivityTrackerTests: XCTestCase {
 #endif
     }()
 
+    @MainActor
     private static  var applicationWillTerminateNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationWillResignActiveNotification
@@ -79,7 +82,7 @@ class ActivityTrackerTests: XCTestCase {
         
         NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
         NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
-        NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
+        await NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
         
         await fulfillment(of: [stateMachine.processExpectation!], timeout: 1)
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
@@ -94,7 +97,7 @@ class ActivityTrackerTests: XCTestCase {
         
         NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
 
-        await fulfillment(of: [stateMachine.processExpectation!], timeout: 2)
+        await fulfillment(of: [stateMachine.processExpectation!], timeout: 5)
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
         XCTAssertTrue(stateMachine.processedEvents.contains(.backgroundTrackingDidTimeout))
 

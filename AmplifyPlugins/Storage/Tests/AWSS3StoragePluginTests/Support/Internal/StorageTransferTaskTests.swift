@@ -123,7 +123,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask with status not being paused
     /// When: resume is invoked
     /// Then: No event is reported and the task is not set to .inProgress
-    func testResume_withTaskNotPaused_shouldNotCallResume_andNotReportEvent() {
+    func testResume_withTaskNotPaused_shouldNotCallResume_andNotReportEvent() async {
         let expectation = expectation(description: "no event is received on resume when the session is not paused")
         expectation.isInverted = true
         let task = createTask(
@@ -137,7 +137,7 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .unknown)
         
         task.resume()
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [expectation], timeout: 0.5)
         
         XCTAssertEqual(task.status, .unknown)
     }

@@ -22,5 +22,6 @@ public class AmplifyAWSServiceConfiguration {
 
     public static let userAgentLib: String = "lib/\(platformName)#\(amplifyVersion)"
 
-    nonisolated(unsafe) public static let userAgentOS: String = "os/\(DeviceInfo.current.operatingSystem.name)#\(DeviceInfo.current.operatingSystem.version)"
+    @MainActor
+    public static let userAgentOS: String = "os/\(DeviceInfo.current.operatingSystem.name)#\(DeviceInfo.current.operatingSystem.version)"
 }

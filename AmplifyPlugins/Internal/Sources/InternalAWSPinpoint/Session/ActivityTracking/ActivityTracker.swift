@@ -81,6 +81,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     private let stateMachine: StateMachine<ApplicationState, ActivityEvent>
     private var stateMachineSubscriberToken: StateMachineSubscriberToken?
 
+    @MainActor
     private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
 #if canImport(WatchKit)
     WKExtension.applicationDidEnterBackgroundNotification
@@ -91,7 +92,8 @@ class ActivityTracker: ActivityTrackerBehaviour {
 #endif
     }()
 
-    private static  let applicationWillMoveToForegoundNotification: Notification.Name = {
+    @MainActor
+    private static let applicationWillMoveToForegoundNotification: Notification.Name = {
     #if canImport(WatchKit)
         WKExtension.applicationWillEnterForegroundNotification
     #elseif canImport(UIKit)
@@ -101,7 +103,8 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
-    private static  var applicationWillTerminateNotification: Notification.Name = {
+    @MainActor
+    private static var applicationWillTerminateNotification: Notification.Name = {
     #if canImport(WatchKit)
         // There's no willTerminateNotification on watchOS, so using applicationWillResignActive instead.
         WKExtension.applicationWillResignActiveNotification
@@ -112,6 +115,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }()
 
+    @MainActor
     private let notifications = [
         applicationDidMoveToBackgroundNotification,
         applicationWillMoveToForegoundNotification,
@@ -144,15 +148,16 @@ class ActivityTracker: ActivityTrackerBehaviour {
         stateMachineSubscriberToken = stateMachine.subscribe(listener)
     }
 
+    @MainActor
     private func beginBackgroundTracking() {
-    #if canImport(UIKit) && !os(watchOS)
+        #if canImport(UIKit) && !os(watchOS)
         if backgroundTrackingTimeout > 0 {
             backgroundTask = UIApplication.shared.beginBackgroundTask(withName: Constants.backgroundTask) { [weak self] in
                 self?.stateMachine.process(.backgroundTrackingDidTimeout)
                 self?.stopBackgroundTracking()
             }
         }
-    #endif
+        #endif
         guard backgroundTrackingTimeout != .infinity else { return }
         backgroundTimer = Timer.scheduledTimer(withTimeInterval: backgroundTrackingTimeout, repeats: false) { [weak self] _ in
             self?.stateMachine.process(.backgroundTrackingDidTimeout)
@@ -160,6 +165,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
         }
     }
 
+    @MainActor
     private func stopBackgroundTracking() {
         backgroundTimer = nil
     #if canImport(UIKit) && !os(watchOS)
@@ -171,6 +177,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     #endif
     }
 
+    @MainActor
     @objc private func handleApplicationStateChange(_ notification: Notification) {
         switch notification.name {
         case Self.applicationDidMoveToBackgroundNotification:

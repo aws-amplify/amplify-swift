@@ -31,7 +31,12 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     /// - Tag: AWSS3StorageService.client
     var client: S3ClientProtocol
 
-    let userAgent: String
+    var userAgent: String {
+        get async {
+            await AmplifyAWSServiceConfiguration.userAgentOS
+        }
+    }
+    
     let storageConfiguration: StorageConfiguration
     let sessionConfiguration: URLSessionConfiguration
     var delegateQueue: OperationQueue?
@@ -133,7 +138,6 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
-        self.userAgent = "\(AmplifyAWSServiceConfiguration.userAgentLib) \(AmplifyAWSServiceConfiguration.userAgentOS)"
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
