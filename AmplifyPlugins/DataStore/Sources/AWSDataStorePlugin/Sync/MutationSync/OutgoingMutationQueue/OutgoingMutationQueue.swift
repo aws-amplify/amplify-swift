@@ -137,7 +137,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         queryMutationEventsFromStorage { [weak self] in
             guard let self = self else { return }
             guard case .starting = self.stateMachine.state else {
-                self.log.debug("Failed to continue doStart operation, current state(\(self.stateMachine.state)) is not starting")
+                self.log.debug("Unexpected state transition while performing `doStart()` during `.starting` state. Current state: \(self.stateMachine.state).")
                 return
             }
 
