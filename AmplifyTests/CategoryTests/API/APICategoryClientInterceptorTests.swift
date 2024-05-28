@@ -25,7 +25,7 @@ class APICategoryClientInterceptorTests: XCTestCase {
         mockAmplifyConfig = AmplifyConfiguration(api: apiConfig)
     }
 
-    func testAddInterceptor() throws {
+    func testAddInterceptor() async throws {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
@@ -37,7 +37,7 @@ class APICategoryClientInterceptorTests: XCTestCase {
         let interceptor = MockURLRequestInterceptor()
         _ = try Amplify.API.add(interceptor: interceptor, for: "apiName")
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 0.5)
     }
 
     // MARK: - Utilities

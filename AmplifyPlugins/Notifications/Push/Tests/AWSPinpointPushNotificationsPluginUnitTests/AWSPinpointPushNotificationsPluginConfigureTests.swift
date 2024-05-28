@@ -57,29 +57,29 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         }
     }
 
-    func testConfigure_withNotificationsPermissionsGranted_shouldRegisterForRemoteNotifications() throws {
+    func testConfigure_withNotificationsPermissionsGranted_shouldRegisterForRemoteNotifications() async throws {
         mockRemoteNotifications.mockedRequestAuthorizationResult = true
         mockRemoteNotifications.registerForRemoteNotificationsExpectation = expectation(description: "Permissions Granted")
         try plugin.configure(using: createPushNotificationsPluginConfig())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [mockRemoteNotifications.registerForRemoteNotificationsExpectation!], timeout: 1)
     }
 
-    func testConfigure_withNotificationsPermissionsDenied_shouldRegisterForRemoteNotifications() throws {
+    func testConfigure_withNotificationsPermissionsDenied_shouldRegisterForRemoteNotifications() async throws {
         mockRemoteNotifications.mockedRequestAuthorizationResult = false
         mockRemoteNotifications.registerForRemoteNotificationsExpectation = expectation(description: "Permissions Denied")
         try plugin.configure(using: createPushNotificationsPluginConfig())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [mockRemoteNotifications.registerForRemoteNotificationsExpectation!], timeout: 1)
     }
 
-    func testConfigure_withNotificationsPermissionsFailed_shouldRegisterForRemoteNotifications() throws {
+    func testConfigure_withNotificationsPermissionsFailed_shouldRegisterForRemoteNotifications() async throws {
         let error = PushNotificationsError.service("Description", "Recovery", nil)
         mockRemoteNotifications.requestAuthorizationError = error
         mockRemoteNotifications.registerForRemoteNotificationsExpectation = expectation(description: "Permissions Failed")
         try plugin.configure(using: createPushNotificationsPluginConfig())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [mockRemoteNotifications.registerForRemoteNotificationsExpectation!], timeout: 1)
     }
 
-    func testConfigure_withEmptyOptions_shouldNotReportToHub() throws {
+    func testConfigure_withEmptyOptions_shouldNotReportToHub() async throws {
         plugin = AWSPinpointPushNotificationsPlugin(options: [])
         try plugin.configure(using: createPushNotificationsPluginConfig())
         let eventWasReported = expectation(description: "Event was reported to Hub")
@@ -89,10 +89,10 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
             }
         }
         eventWasReported.isInverted = true
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [eventWasReported], timeout: 1)
     }
 
-    func testConfigure_withNotificationsPermissionsGranted_shouldReportSuccessToHub() throws {
+    func testConfigure_withNotificationsPermissionsGranted_shouldReportSuccessToHub() async throws {
         mockRemoteNotifications.mockedRequestAuthorizationResult = true
 
         let eventWasReported = expectation(description: "Event was reported to Hub")
@@ -109,10 +109,10 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         }
 
         try plugin.configure(using: createPushNotificationsPluginConfig())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [eventWasReported], timeout: 1)
     }
 
-    func testConfigure_withNotificationsPermissionsDenied_shouldReportFailureToHub() throws {
+    func testConfigure_withNotificationsPermissionsDenied_shouldReportFailureToHub() async throws {
         mockRemoteNotifications.mockedRequestAuthorizationResult = false
 
         let eventWasReported = expectation(description: "Event was reported to Hub")
@@ -129,10 +129,10 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         }
 
         try plugin.configure(using: createPushNotificationsPluginConfig())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [eventWasReported], timeout: 1)
     }
 
-    func testConfigure_withNotificationsPermissionsFailed_shouldReportErrorToHub() throws {
+    func testConfigure_withNotificationsPermissionsFailed_shouldReportErrorToHub() async throws {
         let error = PushNotificationsError.service("Description", "Recovery", nil)
         mockRemoteNotifications.requestAuthorizationError = error
 
@@ -151,7 +151,7 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
         }
 
         try plugin.configure(using: createPushNotificationsPluginConfig())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [eventWasReported], timeout: 1)
 
     }
 

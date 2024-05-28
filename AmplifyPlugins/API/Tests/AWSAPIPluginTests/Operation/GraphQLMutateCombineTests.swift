@@ -14,7 +14,7 @@ import XCTest
 class GraphQLMutateCombineTests: OperationTestBase {
     let testDocument = "mutate { updateTodo { id name description }}"
 
-    func testMutateSucceeds() throws {
+    func testMutateSucceeds() async throws {
         let testJSONData: JSONValue = ["foo": true]
         let sentData = Data(#"{"data": {"foo": true}}"#.utf8)
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
@@ -46,12 +46,11 @@ class GraphQLMutateCombineTests: OperationTestBase {
                 receivedResponseError.fulfill()
             }
         })
-
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure, receivedResponseError], timeout: 0.05)
         sink.cancel()
     }
 
-    func testMutateHandlesResponseError() throws {
+    func testMutateHandlesResponseError() async throws {
         let sentData = Data(#"{"data": {"foo": true}, "errors": []}"#.utf8)
         try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
 
@@ -82,12 +81,12 @@ class GraphQLMutateCombineTests: OperationTestBase {
             }
         })
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure, receivedResponseError], timeout: 0.05)
         sink.cancel()
 
     }
 
-    func testMutateFails() throws {
+    func testMutateFails() async throws {
         try setUpPluginForSingleError(for: .graphQL)
 
         let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
@@ -118,7 +117,7 @@ class GraphQLMutateCombineTests: OperationTestBase {
             }
         })
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [receivedValue, receivedFinish, receivedFailure, receivedResponseError], timeout: 1)
         sink.cancel()
     }
 }

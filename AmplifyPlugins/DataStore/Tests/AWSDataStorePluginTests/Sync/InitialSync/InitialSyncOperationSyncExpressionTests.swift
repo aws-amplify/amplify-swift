@@ -54,7 +54,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             authModeStrategy: AWSDefaultAuthModeStrategy())
     }
 
-    func testBaseQueryWithBasicSyncExpression() throws {
+    func testBaseQueryWithBasicSyncExpression() async throws {
         let responder = APIPluginQueryResponder { request, listener in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($filter: ModelMockSyncedFilterInput, $limit: Int) {
@@ -122,11 +122,11 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 
-    func testBaseQueryWithFilterSyncExpression() throws {
+    func testBaseQueryWithFilterSyncExpression() async throws {
         let responder = APIPluginQueryResponder { request, listener in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($filter: ModelMockSyncedFilterInput, $limit: Int) {
@@ -194,11 +194,11 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, finishedReceived, apiWasQueried, syncCompletionReceived], timeout: 1)
         sink.cancel()
     }
 
-    func testBaseQueryWithSyncExpressionConstantAll() throws {
+    func testBaseQueryWithSyncExpressionConstantAll() async throws {
         let responder = APIPluginQueryResponder { request, listener in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($limit: Int) {
@@ -249,7 +249,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 }

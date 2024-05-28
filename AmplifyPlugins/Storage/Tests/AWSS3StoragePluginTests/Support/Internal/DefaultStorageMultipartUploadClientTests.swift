@@ -62,7 +62,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: createMultipartUpload is invoked and AWSS3Behavior returns .success
     /// Then: A .created event is reported to the session and the session is registered
-    func testCreateMultipartUpload_withSuccess_shouldSucceed() throws {
+    func testCreateMultipartUpload_withSuccess_shouldSucceed() async throws {
         awss3Behavior.createMultipartUploadExpectation = expectation(description: "Create Multipart Upload")
         awss3Behavior.createMultipartUploadResult = .success(.init(
             bucket: "bucket",
@@ -71,7 +71,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         ))
         try client.createMultipartUpload()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [awss3Behavior.createMultipartUploadExpectation!], timeout: 1)
         XCTAssertEqual(awss3Behavior.createMultipartUploadCount, 1)
         XCTAssertEqual(session.handleMultipartUploadCount, 2)
         XCTAssertEqual(session.failCount, 0)
@@ -85,12 +85,12 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: createMultipartUpload is invoked and AWSS3Behavior returns .failure
     /// Then: An .unknown error is reported to the session and the session is not registered
-    func testCreateMultipartUpload_withError_shouldFail() throws {
+    func testCreateMultipartUpload_withError_shouldFail() async throws {
         awss3Behavior.createMultipartUploadExpectation = expectation(description: "Create Multipart Upload")
         awss3Behavior.createMultipartUploadResult = .failure(.unknown("Unknown Error", nil))
         try client.createMultipartUpload()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [awss3Behavior.createMultipartUploadExpectation!], timeout: 1)
         XCTAssertEqual(awss3Behavior.createMultipartUploadCount, 1)
         XCTAssertEqual(session.handleMultipartUploadCount, 1)
         XCTAssertEqual(session.failCount, 1)
@@ -113,7 +113,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: uploadPart is invoked with valid parts
     /// Then: A .started event is reported to the session
-    func testUploadPart_withParts_shouldSucceed() throws {
+    func testUploadPart_withParts_shouldSucceed() async throws {
         session.handleUploadPartExpectation = expectation(description: "Upload Part with parts")
 
         try client.uploadPart(
@@ -134,7 +134,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
             )
         )
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [session.handleUploadPartExpectation!], timeout: 1)
         XCTAssertEqual(session.handleUploadPartCount, 1)
         XCTAssertEqual(session.failCount, 0)
         if case .started(let partNumber, _) = try XCTUnwrap(session.lastUploadEvent) {
@@ -145,7 +145,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: uploadPart is invoked with a non-existing file
     /// Then: An error is reported to the session
-    func testUploadPart_withInvalidFile_shouldFail() throws {
+    func testUploadPart_withInvalidFile_shouldFail() async throws {
         session.failExpectation = expectation(description: "Upload Part with invalid file")
 
         try client.uploadPart(
@@ -169,7 +169,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
             )
         )
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [session.failExpectation!], timeout: 1)
         XCTAssertEqual(session.handleUploadPartCount, 0)
         XCTAssertEqual(session.failCount, 1)
         XCTAssertNil(session.lastUploadEvent)
@@ -225,7 +225,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: completeMultipartUpload is invoked and AWSS3Behaviour returns succees
     /// Then: A .completed event is reported to the session and the session is unregistered
-    func testCompleteMultipartUpload_withSuccess_shouldSucceed() throws {
+    func testCompleteMultipartUpload_withSuccess_shouldSucceed() async throws {
         awss3Behavior.completeMultipartUploadExpectation = expectation(description: "Complete Multipart Upload")
         awss3Behavior.completeMultipartUploadResult = .success(.init(
             bucket: "bucket",
@@ -234,7 +234,7 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
         ))
         try client.completeMultipartUpload(uploadId: "uploadId")
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [awss3Behavior.completeMultipartUploadExpectation!], timeout: 1)
         XCTAssertEqual(awss3Behavior.completeMultipartUploadCount, 1)
         XCTAssertEqual(session.handleMultipartUploadCount, 1)
         XCTAssertEqual(session.failCount, 0)
@@ -247,12 +247,12 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: completeMultipartUpload is invoked and AWSS3Behaviour returns failure
     /// Then: A .unknown error is reported to the session and the session is not unregistered
-    func testCompleteMultipartUpload_withError_shouldFail() throws {
+    func testCompleteMultipartUpload_withError_shouldFail() async throws {
         awss3Behavior.completeMultipartUploadExpectation = expectation(description: "Complete Multipart Upload")
         awss3Behavior.completeMultipartUploadResult = .failure(.unknown("Unknown Error", nil))
         try client.completeMultipartUpload(uploadId: "uploadId")
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [awss3Behavior.completeMultipartUploadExpectation!], timeout: 1)
         XCTAssertEqual(awss3Behavior.completeMultipartUploadCount, 1)
         XCTAssertEqual(session.handleMultipartUploadCount, 0)
         XCTAssertEqual(session.failCount, 1)
@@ -275,12 +275,12 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: abortMultipartUpload is invoked and AWSS3Behaviour returns success
     /// Then: An .aborted event is reported to the session and the session is unregistered
-    func testAbortMultipartUpload_withSuccess_shouldSucceed() throws {
+    func testAbortMultipartUpload_withSuccess_shouldSucceed() async throws {
         awss3Behavior.abortMultipartUploadExpectation = expectation(description: "Abort Multipart Upload")
         awss3Behavior.abortMultipartUploadResult = .success(())
         try client.abortMultipartUpload(uploadId: "uploadId", error: CancellationError())
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [awss3Behavior.abortMultipartUploadExpectation!], timeout: 1)
         XCTAssertEqual(awss3Behavior.abortMultipartUploadCount, 1)
         XCTAssertEqual(session.handleMultipartUploadCount, 1)
         XCTAssertEqual(session.failCount, 0)
@@ -294,12 +294,12 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: abortMultipartUpload is invoked and AWSS3Behaviour returns failure
     /// Then: A .unknown error is reported to the session and the session is not unregistered
-    func testAbortMultipartUpload_withError_shouldFail() throws {
+    func testAbortMultipartUpload_withError_shouldFail() async throws {
         awss3Behavior.abortMultipartUploadExpectation = expectation(description: "Abort Multipart Upload")
         awss3Behavior.abortMultipartUploadResult = .failure(.unknown("Unknown Error", nil))
         try client.abortMultipartUpload(uploadId: "uploadId")
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [awss3Behavior.abortMultipartUploadExpectation!], timeout: 1)
         XCTAssertEqual(awss3Behavior.abortMultipartUploadCount, 1)
         XCTAssertEqual(session.handleMultipartUploadCount, 0)
         XCTAssertEqual(session.failCount, 1)
@@ -322,13 +322,13 @@ class DefaultStorageMultipartUploadClientTests: XCTestCase {
     /// Given: a DefaultStorageMultipartUploadClient
     /// When: cancelUploadTasks is invoked with identifiers
     /// Then: The tasks are unregistered
-    func testCancelUploadTasks_shouldSucceed() throws {
+    func testCancelUploadTasks_shouldSucceed() async throws {
         let cancelExpectation = expectation(description: "Cancel Upload Tasks")
         client.cancelUploadTasks(taskIdentifiers: [0, 1,2], done: {
             cancelExpectation.fulfill()
         })
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [cancelExpectation], timeout: 1)
         XCTAssertEqual(serviceProxy.unregisterTaskIdentifiersCount, 1)
     }
 
