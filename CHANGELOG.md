@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.34.2 (2024-05-28)
+
+### Bug Fixes
+
+- **datastore**: change OutgoingMutationQueue use TaskQueue for state transitions (#3720)
+
 ## 2.34.1 (2024-05-22)
 
 ### Bug Fixes
