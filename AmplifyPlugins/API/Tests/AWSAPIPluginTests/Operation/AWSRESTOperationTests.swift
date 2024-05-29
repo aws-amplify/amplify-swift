@@ -69,7 +69,8 @@ class AWSRESTOperationTests: OperationTestBase {
                 receivedFailure.fulfill()
             }
         }
-        await fulfillment(of: [receivedSuccess, receivedFailure], timeout: 1)
+
+        await fulfillment(of: [receivedFailure, receivedSuccess], timeout: 1)
     }
 
     /// - Given: A configured plugin

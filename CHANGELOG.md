@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.34.2 (2024-05-28)
+
+### Bug Fixes
+
+- **datastore**: change OutgoingMutationQueue use TaskQueue for state transitions (#3720)
+
+## 2.34.1 (2024-05-22)
+
+### Bug Fixes
+
+- **Auth**: Fix Hosted UI continuation error (#3715)
+
+## 2.34.0 (2024-05-22)
+
+### Features
+
+- Updating SQLite.swift to 0.15.3 (#3655)
+
+### Bug Fixes
+
+- **API**: pass authMode used for lazy loading functionality (#3690)
+
 ## 2.33.6 (2024-05-15)
 
 ## 2.33.5 (2024-05-14)

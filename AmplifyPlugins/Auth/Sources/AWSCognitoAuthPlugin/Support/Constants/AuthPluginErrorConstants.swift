@@ -40,6 +40,10 @@ enum AuthPluginErrorConstants {
         "Presentation context provided is invalid or not present",
         "Retry by providing a presentation context to present the webUI")
 
+    static let hostedUIUnableToStartASWebAuthenticationSession: AuthPluginErrorString = (
+        "Unable to start a ASWebAuthenticationSession",
+        "Make sure that the app can present an ASWebAuthenticationSession")
+
     static let hostedUISignInURI: AuthPluginErrorString = (
         "SignIn URI could not be created",
         "Check the configuration to make sure that HostedUI related information are present")
@@ -63,6 +67,7 @@ enum AuthPluginErrorConstants {
     static let userInvalidError: AuthPluginErrorString = (
         "Could not validate the user",
         "Get the current user Auth.getCurrentUser() and make the request")
+    
     static let identityIdSignOutError: AuthPluginErrorString = (
         "There is no user signed in to retreive identity id",
         "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool")

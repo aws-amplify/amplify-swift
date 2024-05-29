@@ -14,7 +14,7 @@ import Combine
 
 class HubCombineTests: XCTestCase {
 
-    func testValue() {
+    func testValue() async {
         let receivedValue = expectation(description: "Received value")
 
         let sink = Amplify.Hub.publisher(for: .auth)
@@ -23,11 +23,11 @@ class HubCombineTests: XCTestCase {
             }
 
         Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: "test"))
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue], timeout: 0.05)
         sink.cancel()
     }
 
-    func testMultipleSubscribersReceiveValue() {
+    func testMultipleSubscribersReceiveValue() async {
         let sub1ReceivedValue = expectation(description: "Subscriber 1 received value")
         let sub2ReceivedValue = expectation(description: "Subscriber 2 received value")
 
@@ -43,13 +43,15 @@ class HubCombineTests: XCTestCase {
 
         Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: "test"))
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [sub1ReceivedValue,
+                               sub2ReceivedValue],
+                          timeout: 0.05)
 
         sub1.cancel()
         sub2.cancel()
     }
 
-    func testCustomChannel() {
+    func testCustomChannel() async {
         let receivedValueForAuth = expectation(description: "receivedValueForAuth")
         let receivedValueForCustom = expectation(description: "receivedValueForCustom")
 
@@ -61,7 +63,9 @@ class HubCombineTests: XCTestCase {
         Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: "test"))
         Amplify.Hub.dispatch(to: .custom("testChannel"), payload: HubPayload(eventName: "test"))
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValueForAuth,
+                               receivedValueForCustom],
+                          timeout: 0.05)
 
         authSink.cancel()
         customSink.cancel()

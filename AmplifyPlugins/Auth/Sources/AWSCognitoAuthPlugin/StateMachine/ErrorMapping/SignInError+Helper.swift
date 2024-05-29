@@ -104,6 +104,11 @@ extension HostedUIError: AuthErrorConvertible {
                 AuthPluginErrorConstants.hostedUIInvalidPresentation.errorDescription,
                 AuthPluginErrorConstants.hostedUIInvalidPresentation.recoverySuggestion)
 
+        case .unableToStartASWebAuthenticationSession:
+            return .service(
+                AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.errorDescription,
+                AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.recoverySuggestion)
+
         case .serviceMessage(let message):
             return .service(message, AuthPluginErrorConstants.serviceError)
 

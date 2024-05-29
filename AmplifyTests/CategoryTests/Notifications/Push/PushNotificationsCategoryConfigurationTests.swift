@@ -86,7 +86,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         XCTAssertNoThrow(try Amplify.Notifications.Push.configure(using: categoryConfig))
     }
 
-    func testConfigure_withConfigurationUsingMissingPlugin_shouldLogWarning() throws {
+    func testConfigure_withConfigurationUsingMissingPlugin_shouldLogWarning() async throws {
         let warningReceived = expectation(description: "Warning message received")
 
         let loggingPlugin = MockLoggingCategoryPlugin()
@@ -107,7 +107,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(logging: loggingConfig, notifications: categoryConfig)
         try Amplify.configure(amplifyConfig)
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warningReceived], timeout: 0.1)
     }
 
     func testReset_shouldSucceed() async throws {
@@ -253,7 +253,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         await fulfillment(of: [methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin], timeout: 1.0)
     }
 
-    func testUsingPlugin_callingConfigure_shouldSucceed() throws {
+    func testUsingPlugin_callingConfigure_shouldSucceed() async throws {
         let plugin = MockPushNotificationsCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
         expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -275,6 +275,6 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(createAmplifyConfig())
 
         try Amplify.Notifications.Push.getPlugin(for: "MockPushNotificationsCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 }

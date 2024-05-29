@@ -26,7 +26,7 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
     var resultSink: AnyCancellable?
     var inProcessSink: AnyCancellable?
 
-    override func setUp() {
+    override func setUp() async throws {
         receivedResultValue = expectation(description: "receivedResultValue")
         receivedResultFinished = expectation(description: "receivedResultFinished")
         receivedResultFailure = expectation(description: "receivedResultFailure")
@@ -40,7 +40,7 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
         receivedInProcessFailure.isInverted = true
     }
 
-    func testResultPublisherSucceeds() {
+    func testResultPublisherSucceeds() async {
         let responder: MockPublisherInProcessOperation.Responder = { operation in
             operation.dispatchInProcess(data: "One")
             operation.dispatch(result: .success(1))
@@ -53,10 +53,16 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
         let operation = makeOperation(using: responder)
         operation.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedResultValue,
+                               receivedResultFailure,
+                               receivedResultFinished,
+                               receivedInProcessValue,
+                               receivedInProcessFailure,
+                               receivedInProcessFinished],
+                          timeout: 0.05)
     }
 
-    func testResultPublisherFails() {
+    func testResultPublisherFails() async {
         let responder: MockPublisherInProcessOperation.Responder = { operation in
             operation.dispatchInProcess(data: "One")
             operation.dispatch(result: .failure(.unknown("Test", "Test")))
@@ -69,10 +75,16 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
         let operation = makeOperation(using: responder)
         operation.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedResultValue,
+                               receivedResultFailure,
+                               receivedResultFinished,
+                               receivedInProcessValue,
+                               receivedInProcessFailure,
+                               receivedInProcessFinished],
+                          timeout: 0.05)
     }
 
-    func testResultPublisherCancels() {
+    func testResultPublisherCancels() async {
         let responder: MockPublisherInProcessOperation.Responder = { operation in
             operation.dispatchInProcess(data: "One")
             operation.dispatch(result: .success(1))
@@ -87,7 +99,13 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
         let operation = makeOperation(using: responder)
         operation.cancel()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedResultValue,
+                               receivedResultFailure,
+                               receivedResultFinished,
+                               receivedInProcessValue,
+                               receivedInProcessFailure,
+                               receivedInProcessFinished],
+                          timeout: 0.05)
     }
 
     func makeOperation(

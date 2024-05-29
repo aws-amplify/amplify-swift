@@ -219,7 +219,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     ///    - The orchestrator starts up
     /// - Then:
     ///    - It performs a sync query for each registered model with concurrency set to count of models
-    func testInvokesCompletionCallback_ModelWithNoAssociations() throws {
+    func testInvokesCompletionCallback_ModelWithNoAssociations() async throws {
         ModelRegistry.reset()
         struct TestModelsWithNoAssociations: AmplifyModelRegistration {
             func registerModels(registry: ModelRegistry.Type) {
@@ -274,7 +274,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncCallbackReceived.fulfill()
         }
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, finishedReceived, syncCallbackReceived], timeout: 1)
         XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 2)
         sink.cancel()
     }
@@ -284,7 +284,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     ///    - The orchestrator starts up
     /// - Then:
     ///    - It queries models in dependency order, from "parent" to "child"
-    func testShouldQueryModelsInDependencyOrder() {
+    func testShouldQueryModelsInDependencyOrder() async {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let postWasQueried = expectation(description: "Post was queried")
@@ -338,7 +338,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         orchestrator.sync { _ in }
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, finishedReceived, postWasQueried, commentWasQueried], timeout: 1)
         XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         sink.cancel()
     }
@@ -349,7 +349,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     /// - Then:
     ///    - It queries models in dependency order, from "parent" to "child", even if parent data is returned in
     ///      multiple pages
-    func testShouldQueryModelsInDependencyOrderWithPaginatedResults() {
+    func testShouldQueryModelsInDependencyOrderWithPaginatedResults() async {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let pageCount = 50
@@ -411,7 +411,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         orchestrator.sync { _ in }
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, finishedReceived, postWasQueried, commentWasQueried], timeout: 1)
         XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         sink.cancel()
     }

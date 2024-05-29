@@ -16,7 +16,7 @@ import AWSS3
 
 class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
-    func testUploadFileOperationValidationError() {
+    func testUploadFileOperationValidationError() async {
         let options = StorageUploadFileRequest.Options(accessLevel: .protected)
         let request = StorageUploadFileRequest(key: "", local: testURL, options: options)
 
@@ -40,11 +40,11 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testUploadFileOperationGetIdentityIdError() {
+    func testUploadFileOperationGetIdentityIdError() async {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -72,11 +72,11 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testvOperationGetSizeForMissingFileError() {
+    func testvOperationGetSizeForMissingFileError() async {
         let url = URL(fileURLWithPath: "missingFile")
         let options = StorageUploadFileRequest.Options(accessLevel: .protected)
         let request = StorageUploadFileRequest(key: testKey, local: url, options: options)
@@ -101,11 +101,11 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testUploadFileOperationUploadSuccess() {
+    func testUploadFileOperationUploadSuccess() async {
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
@@ -145,7 +145,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
@@ -155,7 +155,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                         metadata: metadata)
     }
 
-    func testUploadFileOperationUploadFail() {
+    func testUploadFileOperationUploadFail() async {
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
@@ -192,7 +192,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
@@ -202,7 +202,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
                                         metadata: nil)
     }
 
-    func testUploadFileOperationMultiPartUploadSuccess() {
+    func testUploadFileOperationMultiPartUploadSuccess() async {
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .multiPartUpload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceMultiPartUploadEvents = [
@@ -245,7 +245,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.multiPartUploadCalled, 1)
         mockStorageService.verifyMultiPartUpload(serviceKey: expectedServiceKey,
@@ -258,7 +258,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
     /// Given: Storage Upload File Operation
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
-    func testUploadFileOperationStringStoragePathValidationError() {
+    func testUploadFileOperationStringStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return "/my/path" })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
@@ -297,14 +297,14 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: Storage Upload File Operation
     /// When: The operation is executed with a request that has an invalid StringStoragePath
     /// Then: The operation will fail with a validation error
-    func testUploadFileOperationEmptyStoragePathValidationError() {
+    func testUploadFileOperationEmptyStoragePathValidationError() async {
         let path = StringStoragePath(resolve: { _ in return " " })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
@@ -343,14 +343,14 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: Storage Upload File Operation
     /// When: The operation is executed with a request that has an invalid IdentityIDStoragePath
     /// Then: The operation will fail with a validation error
-    func testUploadFileOperationIdentityIDStoragePathValidationError() {
+    func testUploadFileOperationIdentityIDStoragePathValidationError() async {
         let path = IdentityIDStoragePath(resolve: { _ in return "/my/path" })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
@@ -389,14 +389,14 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: Storage Download File Operation
     /// When: The operation is executed with a request that has an a custom implementation of StoragePath
     /// Then: The operation will fail with a validation error
-    func testUploadFileOperationCustomStoragePathValidationError() {
+    func testUploadFileOperationCustomStoragePathValidationError() async {
         let path = InvalidCustomStoragePath(resolve: { _ in return "my/path" })
         mockAuthService.identityId = testIdentityId
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
@@ -435,7 +435,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [failedInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -482,7 +482,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: "public/\(testKey)",
@@ -534,7 +534,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        await waitForExpectations(timeout: 1)
+        await fulfillment(of: [completeInvoked, inProcessInvoked], timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: "public/\(testIdentityId)/\(testKey)",

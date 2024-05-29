@@ -134,7 +134,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
         XCTAssertTrue(dispositions.isEmpty)
     }
 
-    func testReconcileLocalMetadatas_multiple() {
+    func testReconcileLocalMetadatas_multiple() async {
         // no corresponding local metadata, not deleted remote, should be create
         let createModel = makeRemoteModel(deleted: false, version: 1)
 
@@ -177,7 +177,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                 delete.fulfill()
             }
         }
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [create, update, delete], timeout: 1)
     }
     
     func testGetDispositions_emptyLocal_singleModelAddedAndDeleted() {

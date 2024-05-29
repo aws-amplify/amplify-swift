@@ -27,10 +27,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private let operationQueue: OperationQueue
 
     /// A DispatchQueue for synchronizing state on the mutation queue
-    private let mutationDispatchQueue = DispatchQueue(
-        label: "com.amazonaws.OutgoingMutationQueue",
-        target: DispatchQueue.global()
-    )
+    private let mutationDispatchQueue = TaskQueue<Void>()
 
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
@@ -55,7 +52,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         let operationQueue = OperationQueue()
         operationQueue.name = "com.amazonaws.OutgoingMutationOperationQueue"
-        operationQueue.underlyingQueue = mutationDispatchQueue
+        operationQueue.qualityOfService = .default
         operationQueue.maxConcurrentOperationCount = 1
         operationQueue.isSuspended = true
 
@@ -139,6 +136,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         queryMutationEventsFromStorage { [weak self] in
             guard let self = self else { return }
+            guard case .starting = self.stateMachine.state else {
+                self.log.debug("Unexpected state transition while performing `doStart()` during `.starting` state. Current state: \(self.stateMachine.state).")
+                return
+            }
 
             self.operationQueue.isSuspended = false
             // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`

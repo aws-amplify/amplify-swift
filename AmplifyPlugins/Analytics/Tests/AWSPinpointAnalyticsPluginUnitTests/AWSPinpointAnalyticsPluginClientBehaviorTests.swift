@@ -35,7 +35,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.identifyUser is invoked with the user profile
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with the input data
-    func testIdentifyUser() throws {
+    func testIdentifyUser() async throws {
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -64,7 +64,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: userProfile)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [analyticsEventReceived], timeout: 1)
         mockPinpoint.verifyCurrentEndpointProfile()
         mockPinpoint.verifyUpdate(expectedEndpointProfile)
     }
@@ -85,7 +85,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.identifyUser is invoked with the user profile
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with an error
-    func testIdentifyUserDispatchesErrorForPinpointError() throws {
+    func testIdentifyUserDispatchesErrorForPinpointError() async throws {
         mockPinpoint.updateEndpointProfileResult = .failure(NSError(domain: "domain",
                                                                     code: 1))
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
@@ -115,7 +115,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: userProfile)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [analyticsEventReceived], timeout: 1)
         mockPinpoint.verifyCurrentEndpointProfile()
         mockPinpoint.verifyUpdate(expectedEndpointProfile)
     }
@@ -126,7 +126,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.record is invoked with the basic event
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with the input data
-    func testRecordEvent() {
+    func testRecordEvent() async {
         let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
         expectedPinpointEvent.addProperties(testProperties)
@@ -148,7 +148,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(event: event)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [analyticsEventReceived], timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
     }
@@ -169,7 +169,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.record is invoked with the basic event
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
-    func testRecordEventDispatchesErrorForPinpointError() {
+    func testRecordEventDispatchesErrorForPinpointError() async {
         mockPinpoint.recordResult = .failure(NSError(domain: "domain",
                                                      code: 1,
                                                      userInfo: nil))
@@ -194,7 +194,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(event: event)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [analyticsEventReceived], timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
     }
@@ -205,7 +205,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.record is invoked with the event name
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with the input data
-    func testRecordEventWithName() {
+    func testRecordEventWithName() async {
         let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
 
@@ -225,7 +225,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(eventWithName: testName)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [analyticsEventReceived], timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
     }
@@ -245,7 +245,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.record is invoked with the event name
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
-    func testRecordEventWithNameDispatchesErrorForPinpointError() {
+    func testRecordEventWithNameDispatchesErrorForPinpointError() async {
         mockPinpoint.recordResult = .failure(NSError(domain: "domain",
                                                      code: 1,
                                                      userInfo: nil))
@@ -268,7 +268,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(eventWithName: testName)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [analyticsEventReceived], timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
     }
@@ -278,13 +278,13 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Given: A dictionary of properties with different AnalyticsPropertyValue subclasses
     /// When: AnalyticsPlugin.registerGlobalProperties is invoked with the properties
     /// Then: The properties are set on the AnalyticsPlugin.globalProperties
-    func testRegisterGlobalProperties() {
+    func testRegisterGlobalProperties() async {
         mockPinpoint.addGlobalPropertyExpectation = expectation(description: "Add global property called")
         mockPinpoint.addGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
         
         analyticsPlugin.registerGlobalProperties(testProperties)
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [mockPinpoint.addGlobalPropertyExpectation!], timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, testProperties.count)
         XCTAssertTrue(mockPinpoint.addGlobalMetricCalled > 0)
         XCTAssertTrue(mockPinpoint.addGlobalAttributeCalled > 0)
@@ -307,14 +307,14 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Given: A dictionary of properties with different AnalyticsPropertyValue subclasses
     /// When: AnalyticsPlugin.unregisterGlobalProperties is invoked with some property keys
     /// Then: The corresponding property keys are removed from the AnalyticsPlugin.globalProperties
-    func testUnregisterGlobalProperties() {
+    func testUnregisterGlobalProperties() async {
         mockPinpoint.removeGlobalPropertyExpectation = expectation(description: "Remove global property called")
         mockPinpoint.removeGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
         
         analyticsPlugin.globalProperties = AtomicDictionary(initialValue: testProperties)
         analyticsPlugin.unregisterGlobalProperties(Set<String>(testProperties.keys))
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [mockPinpoint.removeGlobalPropertyExpectation!], timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, 0)
         XCTAssertTrue(mockPinpoint.removeGlobalMetricCalled > 0)
         XCTAssertTrue(mockPinpoint.removeGlobalAttributeCalled > 0)
@@ -323,14 +323,14 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Given: globalProperties set on the AnalyticsPlugin
     /// When: AnalyticsPlugin.unregisterGlobalProperties is invoked with no properties
     /// Then: All of the global properties are removed
-    func testAllUnregisterGlobalProperties() {
+    func testAllUnregisterGlobalProperties() async {
         mockPinpoint.removeGlobalPropertyExpectation = expectation(description: "Remove global property called")
         mockPinpoint.removeGlobalPropertyExpectation?.expectedFulfillmentCount = testProperties.count
         analyticsPlugin.globalProperties = AtomicDictionary(initialValue: testProperties)
 
         analyticsPlugin.unregisterGlobalProperties(nil)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [mockPinpoint.removeGlobalPropertyExpectation!], timeout: 1)
         XCTAssertEqual(analyticsPlugin.globalProperties.count, 0)
         XCTAssertTrue(mockPinpoint.removeGlobalMetricCalled > 0)
         XCTAssertTrue(mockPinpoint.removeGlobalAttributeCalled > 0)
@@ -342,7 +342,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.flushEvents is invoked
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with submitted events
-    func testFlushEvents_isOnline() {
+    func testFlushEvents_isOnline() async {
         let result = [PinpointEvent(eventType: "1", session: PinpointSession(appId: "", uniqueId: "")),
                       PinpointEvent(eventType: "2", session: PinpointSession(appId: "", uniqueId: ""))]
         mockNetworkMonitor.isOnline = true
@@ -362,7 +362,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         }
 
         analyticsPlugin.flushEvents()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 1)
         mockPinpoint.verifySubmitEvents()
     }
     
@@ -370,7 +370,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.flushEvents is invoked
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with submitted events
-    func testFlushEvents_isOffline() {
+    func testFlushEvents_isOffline() async {
         let result = [PinpointEvent(eventType: "1", session: PinpointSession(appId: "", uniqueId: ""))]
         mockNetworkMonitor.isOnline = false
         mockPinpoint.submitEventsResult = .success(result)
@@ -387,7 +387,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         }
 
         analyticsPlugin.flushEvents()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 1)
         XCTAssertEqual(mockPinpoint.submitEventsCalled, 0)
     }
 
@@ -406,7 +406,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.flushEvents is invoked
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with error
-    func testFlushEventsDispatchesErrorForPinpointError() {
+    func testFlushEventsDispatchesErrorForPinpointError() async {
         mockPinpoint.submitEventsResult = .failure(NSError(domain: "domain",
                                                            code: 1,
                                                            userInfo: nil))
@@ -425,7 +425,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         }
 
         analyticsPlugin.flushEvents()
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [methodWasInvokedOnPlugin], timeout: 1)
         mockPinpoint.verifySubmitEvents()
     }
 

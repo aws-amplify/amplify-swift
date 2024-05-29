@@ -64,16 +64,16 @@ class ActivityTrackerTests: XCTestCase {
         stateMachine = nil
     }
 
-    func testBeginTracking() {
+    func testBeginTracking() async {
         let expectation = expectation(description: "Initial state")
         tracker.beginActivityTracking { newState in
             XCTAssertEqual(newState, .initializing)
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
 
-    func testApplicationStateChanged_shouldReportProperEvent() {
+    func testApplicationStateChanged_shouldReportProperEvent() async {
         stateMachine.processExpectation = expectation(description: "Application state changed")
         stateMachine.processExpectation?.expectedFulfillmentCount = 3
         
@@ -81,21 +81,23 @@ class ActivityTrackerTests: XCTestCase {
         NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
         NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [stateMachine.processExpectation!], timeout: 1)
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationWillMoveToForeground))
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationWillTerminate))
     }
 
-    func testBackgroundTracking_afterTimeout_shouldReportBackgroundTimeout() {
+    @MainActor
+    func testBackgroundTracking_afterTimeout_shouldReportBackgroundTimeout() async {
         stateMachine.processExpectation = expectation(description: "Background tracking timeout")
         stateMachine.processExpectation?.expectedFulfillmentCount = 2
         
         NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
-        
-        waitForExpectations(timeout: 2)
+
+        await fulfillment(of: [stateMachine.processExpectation!], timeout: 2)
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
         XCTAssertTrue(stateMachine.processedEvents.contains(.backgroundTrackingDidTimeout))
+
     }
 }
 

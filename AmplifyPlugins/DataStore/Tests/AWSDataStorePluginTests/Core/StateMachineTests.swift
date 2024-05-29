@@ -18,14 +18,14 @@ class StateMachineTests: XCTestCase {
     ///    - I `notify` the state machine
     /// - Then:
     ///    - My reducer is executed
-    func testExecutesResolver() {
+    func testExecutesResolver() async {
         let resolverInvoked = expectation(description: "Resolver was invoked")
         let resolver = makeResolver { resolverInvoked.fulfill() }
         let stateMachine = StateMachine<State, Action>(initialState: .one, resolver: resolver)
 
         stateMachine.notify(action: .increment)
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [resolverInvoked], timeout: 1)
     }
 
     /// - Given: A state machine
@@ -33,7 +33,7 @@ class StateMachineTests: XCTestCase {
     ///    - A caller connects a subscriber to the $state publisher
     /// - Then:
     ///    - The caller receives the current state
-    func testNotifiesListenerOnSubscribe() {
+    func testNotifiesListenerOnSubscribe() async {
         let listenerInvoked = expectation(description: "Listener invoked")
         let resolver = makeResolver()
         let stateMachine = StateMachine<State, Action>(initialState: .one, resolver: resolver)
@@ -43,7 +43,7 @@ class StateMachineTests: XCTestCase {
             XCTAssertEqual(currentState, .two)
         }
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [listenerInvoked], timeout: 1)
         listener.cancel()
     }
 
@@ -52,7 +52,7 @@ class StateMachineTests: XCTestCase {
     ///    - A caller invokes `notify` on the state machine
     /// - Then:
     ///    - The subscriber receives the new state
-    func testNotifiesListenerOnChange() {
+    func testNotifiesListenerOnChange() async {
         let listenerInvoked = expectation(description: "Listener invoked")
         listenerInvoked.expectedFulfillmentCount = 2
         let resolver = makeResolver()
@@ -63,7 +63,7 @@ class StateMachineTests: XCTestCase {
 
         stateMachine.notify(action: .increment)
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [listenerInvoked], timeout: 1)
         listener.cancel()
     }
 
@@ -72,7 +72,7 @@ class StateMachineTests: XCTestCase {
     ///    - A caller notifies the state machine multiple times
     /// - Then:
     ///    - The subscribe receives the new state in order
-    func testNotifiesListenerInOrder() {
+    func testNotifiesListenerInOrder() async {
         let receivedOneOnSubscribe = expectation(description: "Received .one on subscribe")
         let receivedTwoAfterSubscribe = expectation(description: "Received .two after subscribe")
         let receivedThreeAfterSubscribe = expectation(description: "Received .three after subscribe")
@@ -106,16 +106,12 @@ class StateMachineTests: XCTestCase {
             }
         }
 
-        wait(
-            for: [
-                receivedOneOnSubscribe,
-                receivedTwoAfterSubscribe,
-                receivedThreeAfterSubscribe,
-                receivedOneAfterSubscribe
-            ],
-            timeout: 1.0,
-            enforceOrder: true
-        )
+        await fulfillment(of: [receivedOneOnSubscribe,
+                               receivedTwoAfterSubscribe,
+                               receivedThreeAfterSubscribe,
+                               receivedOneAfterSubscribe],
+                          timeout: 1,
+                          enforceOrder: true)
 
         listener.cancel()
     }
@@ -125,7 +121,7 @@ class StateMachineTests: XCTestCase {
     ///    - I `notify` the state machine
     /// - Then:
     ///    - The reducer is invoked on a queue other than the main thread
-    func testResolverNotInvokedOnMainThread() {
+    func testResolverNotInvokedOnMainThread() async {
         let resolverInvoked = expectation(description: "Resolver was invoked")
         let testQueue = DispatchQueue(label: "testQueue")
 
@@ -140,7 +136,7 @@ class StateMachineTests: XCTestCase {
             stateMachine.notify(action: .increment)
         }
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [resolverInvoked], timeout: 1)
     }
 
     /// - Given: A state machine
@@ -148,7 +144,7 @@ class StateMachineTests: XCTestCase {
     ///    - I `notify` the state machine
     /// - Then:
     ///    - The reducer is invoked on a queue other than the one I am running on
-    func testResolverInvokedOnDifferentQueue() {
+    func testResolverInvokedOnDifferentQueue() async {
         let resolverInvoked = expectation(description: "Resolver was invoked")
         let key = DispatchSpecificKey<Bool>()
         let testQueue = DispatchQueue(label: "testQueue")
@@ -165,7 +161,7 @@ class StateMachineTests: XCTestCase {
             stateMachine.notify(action: .increment)
         }
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [resolverInvoked], timeout: 1)
     }
 
     /// Returns a state reducer that executes `block` before resolving the state
