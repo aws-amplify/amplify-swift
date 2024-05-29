@@ -33,7 +33,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     var userAgent: String {
         get async {
-            await AmplifyAWSServiceConfiguration.userAgentOS
+            "\(AmplifyAWSServiceConfiguration.userAgentLib) \(await AmplifyAWSServiceConfiguration.userAgentOS)"
         }
     }
     
