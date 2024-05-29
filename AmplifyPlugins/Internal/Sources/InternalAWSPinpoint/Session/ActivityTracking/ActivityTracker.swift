@@ -116,7 +116,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     }()
 
     @MainActor
-    private let notifications = [
+    private static let notifications = [
         applicationDidMoveToBackgroundNotification,
         applicationWillMoveToForegoundNotification,
         applicationWillTerminateNotification
@@ -127,7 +127,8 @@ class ActivityTracker: ActivityTrackerBehaviour {
         self.backgroundTrackingTimeout = backgroundTrackingTimeout
         self.stateMachine = stateMachine ?? StateMachine(initialState: .initializing,
                                                          resolver: ApplicationState.Resolver.resolve(currentState:event:))
-        for notification in notifications {
+
+        for notification in ActivityTracker.notifications {
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(handleApplicationStateChange),
                                                    name: notification,
@@ -136,7 +137,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
     }
 
     deinit {
-        for notification in notifications {
+        for notification in ActivityTracker.notifications {
             NotificationCenter.default.removeObserver(self,
                                                       name: notification,
                                                       object: nil)
