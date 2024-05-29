@@ -43,7 +43,7 @@ final class LoggingConstraintsLocalStoreTests: XCTestCase {
         localStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraints)
         
         XCTAssertEqual(localStore.getLocalLoggingConstraintsEtag(), "testString")
-        XCTAssertEqual(localStore.getLocalLoggingConstraints()!.defaultLogLevel.rawValue, 0)
+        XCTAssertEqual(localStore.getLocalLoggingConstraints()!.defaultLogLevel.rawValue, LogLevel.error.rawValue)
         XCTAssertTrue(localStore.getLocalLoggingConstraints()!.categoryLogLevel!.isEmpty)
         XCTAssertTrue(localStore.getLocalLoggingConstraints()!.userLogLevel!.isEmpty)
     }
@@ -60,7 +60,7 @@ final class LoggingConstraintsLocalStoreTests: XCTestCase {
         localStore.setLocalLoggingConstraints(loggingConstraints: loggingConstraints)
         
         XCTAssertEqual(localStore.getLocalLoggingConstraintsEtag(), "testString")
-        XCTAssertEqual(localStore.getLocalLoggingConstraints()?.defaultLogLevel.rawValue, 1)
+        XCTAssertEqual(localStore.getLocalLoggingConstraints()?.defaultLogLevel.rawValue, LogLevel.warn.rawValue)
         XCTAssertEqual(localStore.getLocalLoggingConstraints()!.categoryLogLevel!.count, 1)
         XCTAssertTrue(localStore.getLocalLoggingConstraints()!.userLogLevel!.isEmpty)
     }
