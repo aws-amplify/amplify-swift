@@ -30,8 +30,12 @@ class RetryableGraphQLOperationTests: XCTestCase {
             return .success("operation 2")
         }
 
-        let publisher = Publishers.MergeMany([operation1, operation2].map { Just($0) }).eraseToAnyPublisher()
-        let result = await RetryableGraphQLOperation(requestStream: publisher).run()
+        let operationStream = AsyncStream { continuation in
+            continuation.yield(operation1)
+            continuation.yield(operation2)
+            continuation.finish()
+        }
+        let result = await RetryableGraphQLOperation(requestStream: operationStream).run()
         if case .success(.success(let string)) = result {
             XCTAssertEqual(string, "operation 2")
         } else {
@@ -57,8 +61,12 @@ class RetryableGraphQLOperationTests: XCTestCase {
             return .success("operation 2")
         }
 
-        let publisher = Publishers.MergeMany([operation1, operation2].map { Just($0) }).eraseToAnyPublisher()
-        let result = await RetryableGraphQLOperation(requestStream: publisher).run()
+        let operationStream = AsyncStream { continuation in
+            continuation.yield(operation1)
+            continuation.yield(operation2)
+            continuation.finish()
+        }
+        let result = await RetryableGraphQLOperation(requestStream: operationStream).run()
         if case .failure(.unknown(let description, _, _)) = result {
             XCTAssertEqual(description, "~Unknown~")
         } else {
