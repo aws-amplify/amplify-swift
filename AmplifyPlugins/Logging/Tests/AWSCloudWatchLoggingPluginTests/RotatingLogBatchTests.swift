@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 import XCTest
 
 @testable import AWSCloudWatchLoggingPlugin
@@ -43,7 +44,7 @@ final class RotatingLogBatchTests: XCTestCase {
         let entries = try? rotatingLogBatch.readEntries()
         XCTAssertEqual(entries?.count, 1)
         XCTAssertEqual(entries![0].category, "Auth")
-        XCTAssertEqual(entries![0].logLevel.rawValue, 0)
+        XCTAssertEqual(entries![0].logLevel.rawValue, LogLevel.error.rawValue)
         XCTAssertEqual(entries![0].message, "error message")
         XCTAssertEqual(entries![0].namespace, "namespace")
     }

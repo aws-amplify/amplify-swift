@@ -155,4 +155,43 @@ class DefaultLoggingPluginTests: XCTestCase {
                                globalMessageCorrectlyEvaluated],
                           timeout: 0.1)
     }
+
+    /// - Given: default configuration
+    /// - When:
+    ///   - set logLevel to .none
+    /// - Then:
+    ///   - no log is recorded
+    func testLoggerWithNoneLogLevel_noLogsAreRecorded() async {
+        Amplify.Logging.logLevel = .none
+
+        let errorMessageIncorrectlyEvaluated = expectation(description: "error message was incorrectly evaluated")
+        errorMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.error("error \(errorMessageIncorrectlyEvaluated.fulfill())")
+
+        let warnMessageIncorrectlyEvaluated = expectation(description: "warn message was incorrectly evaluated")
+        warnMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.warn("warn \(warnMessageIncorrectlyEvaluated.fulfill())")
+
+        let infoMessageIncorrectlyEvaluated = expectation(description: "info message was incorrectly evaluated")
+        infoMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.info("info \(infoMessageIncorrectlyEvaluated.fulfill())")
+
+        let debugMessageIncorrectlyEvaluated = expectation(description: "debug message was incorrectly evaluated")
+        debugMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.debug("debug \(debugMessageIncorrectlyEvaluated.fulfill())")
+
+        let verboseMessageIncorrectlyEvaluated = expectation(description: "verbose message was incorrectly evaluated")
+        verboseMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.verbose("verbose \(verboseMessageIncorrectlyEvaluated.fulfill())")
+        await fulfillment(
+            of: [
+                errorMessageIncorrectlyEvaluated,
+                warnMessageIncorrectlyEvaluated,
+                infoMessageIncorrectlyEvaluated,
+                debugMessageIncorrectlyEvaluated,
+                verboseMessageIncorrectlyEvaluated
+            ],
+            timeout: 0.3
+        )
+    }
 }
