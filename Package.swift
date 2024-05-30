@@ -15,27 +15,6 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "1.1.0")
 ]
 
-let swift6Settings: [SwiftSetting] = [
-    .enableExperimentalFeature("ConciseMagicFile"),
-    .enableExperimentalFeature("ForwardTrailingClosures"),
-    .enableExperimentalFeature("AccessLevelOnImport"),
-    .enableExperimentalFeature("InternalImportsByDefault"),
-    .enableExperimentalFeature("GlobalConcurrency"),
-    .enableExperimentalFeature("InferSendableFromCaptures"),
-    .enableExperimentalFeature("RegionBasedIsolation"),
-    .enableExperimentalFeature("InternalImportsByDefault"),
-    .enableExperimentalFeature("StrictConcurrency"),
-    .enableExperimentalFeature("ImplicitOpenExistentials"),
-    .enableExperimentalFeature("BareSlashRegexLiterals"),
-    .enableExperimentalFeature("DeprecateApplicationMain"),
-    .enableExperimentalFeature("ImportObjcForwardDeclarations"),
-    .enableExperimentalFeature("DisableOutwardActorInference"),
-    .enableExperimentalFeature("DeprecateApplicationMain"),
-    .enableExperimentalFeature("IsolatedDefaultValues")
-]
-let isSwift6Enabled = true
-let allTargets = false
-
 let amplifyTargets: [Target] = [
     .target(
         name: "Amplify",
@@ -46,8 +25,7 @@ let amplifyTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .target(
         name: "AWSPluginsCore",
@@ -61,8 +39,7 @@ let amplifyTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .target(
         name: "AmplifyTestCommon",
@@ -81,8 +58,7 @@ let amplifyTargets: [Target] = [
             "Models/Collection/connection-schema.graphql",
             "Models/TransformerV2/schema.graphql",
             "Models/CustomPrimaryKey/primarykey_schema.graphql"
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AmplifyTests",
@@ -95,22 +71,19 @@ let amplifyTargets: [Target] = [
         exclude: [
             "Info.plist",
             "CoreTests/README.md"
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .target(
         name: "AmplifyAsyncTesting",
         dependencies: [],
         path: "AmplifyAsyncTesting/Sources/AsyncTesting",
-        swiftSettings: swift6Settings,
         linkerSettings: [.linkedFramework("XCTest")]
 
     ),
     .testTarget(
         name: "AmplifyAsyncTestingTests",
         dependencies: ["AmplifyAsyncTesting"],
-        path: "AmplifyAsyncTesting/Tests/AsyncTestingTests",
-        swiftSettings: swift6Settings
+        path: "AmplifyAsyncTesting/Tests/AsyncTestingTests"
     ),
     .target(
         name: "AWSPluginsTestCommon",
@@ -122,8 +95,7 @@ let amplifyTargets: [Target] = [
         path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
         exclude: [
             "Info.plist"
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSPluginsCoreTests",
@@ -135,8 +107,7 @@ let amplifyTargets: [Target] = [
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
             "Info.plist"
-        ],
-        swiftSettings: swift6Settings
+        ]
     )
 ]
 
@@ -154,8 +125,7 @@ let apiTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSAPIPluginTests",
@@ -168,8 +138,7 @@ let apiTargets: [Target] = [
         path: "AmplifyPlugins/API/Tests/AWSAPIPluginTests",
         exclude: [
             "Info.plist"
-        ],
-        swiftSettings: swift6Settings
+        ]
     )
 ]
 
@@ -178,16 +147,14 @@ let authTargets: [Target] = [
             dependencies: [
                 "libtommathAmplify"
             ],
-            path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger",
-            swiftSettings: swift6Settings
+            path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
            ),
     .target(
         name: "AmplifySRP",
         dependencies: [
             .target(name: "AmplifyBigInteger")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AmplifySRP",
-        swiftSettings: swift6Settings
+        path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
     ),
     .target(
         name: "AWSCognitoAuthPlugin",
@@ -202,8 +169,7 @@ let authTargets: [Target] = [
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .target(
         name: "libtommathAmplify",
@@ -212,8 +178,7 @@ let authTargets: [Target] = [
             "changes.txt",
             "LICENSE",
             "README.md"
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
@@ -223,16 +188,14 @@ let authTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests",
-        resources: [.copy("TestResources")],
-        swiftSettings: swift6Settings
+        resources: [.copy("TestResources")]
     ),
     .testTarget(
         name: "AmplifyBigIntegerTests",
         dependencies: [
             "AmplifyBigInteger"
         ],
-        path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests",
-        swiftSettings: swift6Settings
+        path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
     )
 ]
 
@@ -250,8 +213,7 @@ let dataStoreTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSDataStoreCategoryPluginTests",
@@ -263,8 +225,7 @@ let dataStoreTargets: [Target] = [
         path: "AmplifyPlugins/DataStore/Tests/AWSDataStorePluginTests",
         exclude: [
             "Info.plist"
-        ],
-        swiftSettings: swift6Settings
+        ]
     )
 ]
 
@@ -281,8 +242,7 @@ let storageTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSS3StoragePluginTests",
@@ -295,8 +255,7 @@ let storageTargets: [Target] = [
         path: "AmplifyPlugins/Storage/Tests/AWSS3StoragePluginTests",
         exclude: [
             "Resources/Info.plist"
-        ],
-        swiftSettings: swift6Settings
+        ]
     )
 ]
 
@@ -313,8 +272,7 @@ let geoTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSLocationGeoPluginTests",
@@ -327,8 +285,7 @@ let geoTargets: [Target] = [
         exclude: [
             "Resources/Info.plist"
         ],
-        resources: [],
-        swiftSettings: swift6Settings
+        resources: []
     )
 ]
 
@@ -346,8 +303,7 @@ let internalPinpointTargets: [Target] = [
         path: "AmplifyPlugins/Internal/Sources/InternalAWSPinpoint",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "InternalAWSPinpointUnitTests",
@@ -356,8 +312,7 @@ let internalPinpointTargets: [Target] = [
             "AmplifyTestCommon",
             "AmplifyAsyncTesting"
         ],
-        path: "AmplifyPlugins/Internal/Tests/InternalAWSPinpointUnitTests",
-        swiftSettings: swift6Settings
+        path: "AmplifyPlugins/Internal/Tests/InternalAWSPinpointUnitTests"
     )
 ]
 
@@ -370,8 +325,7 @@ let analyticsTargets: [Target] = [
         path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSPinpointAnalyticsPluginUnitTests",
@@ -379,8 +333,7 @@ let analyticsTargets: [Target] = [
             "AWSPinpointAnalyticsPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests",
-        swiftSettings: swift6Settings
+        path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
     )
 ]
 
@@ -393,8 +346,7 @@ let pushNotificationsTargets: [Target] = [
         path: "AmplifyPlugins/Notifications/Push/Sources/AWSPinpointPushNotificationsPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSPinpointPushNotificationsPluginUnitTests",
@@ -402,8 +354,7 @@ let pushNotificationsTargets: [Target] = [
             "AWSPinpointPushNotificationsPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Notifications/Push/Tests/AWSPinpointPushNotificationsPluginUnitTests",
-        swiftSettings: swift6Settings
+        path: "AmplifyPlugins/Notifications/Push/Tests/AWSPinpointPushNotificationsPluginUnitTests"
     )
 ]
 
@@ -425,15 +376,13 @@ let predictionsTargets: [Target] = [
         exclude: [],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSPredictionsPluginUnitTests",
         dependencies: ["AWSPredictionsPlugin"],
         path: "AmplifyPlugins/Predictions/Tests/AWSPredictionsPluginUnitTests",
-        resources: [.copy("TestResources/TestImages") ],
-        swiftSettings: swift6Settings
+        resources: [.copy("TestResources/TestImages") ]
     ),
     .target(
         name: "CoreMLPredictionsPlugin",
@@ -446,8 +395,7 @@ let predictionsTargets: [Target] = [
         ],
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "CoreMLPredictionsPluginUnitTests",
@@ -456,8 +404,7 @@ let predictionsTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Predictions/Tests/CoreMLPredictionsPluginUnitTests",
-        resources: [.copy("TestResources/TestImages")],
-        swiftSettings: swift6Settings
+        resources: [.copy("TestResources/TestImages")]
     )
 ]
 
@@ -472,8 +419,7 @@ let loggingTargets: [Target] = [
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
         resources: [
             .copy("Resources/PrivacyInfo.xcprivacy")
-        ],
-        swiftSettings: swift6Settings
+        ]
     ),
     .testTarget(
         name: "AWSCloudWatchLoggingPluginTests",
