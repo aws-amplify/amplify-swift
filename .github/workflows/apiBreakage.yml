@@ -36,3 +36,5 @@ jobs:
 
     - name: Swift API Diff
       uses: ltetzlaff/swift-api-diff@v1.0.0
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
