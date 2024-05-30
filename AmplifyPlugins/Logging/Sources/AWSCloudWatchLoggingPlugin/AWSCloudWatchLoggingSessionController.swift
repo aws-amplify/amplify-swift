@@ -85,11 +85,9 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     func enable() {
-        Task {
-            updateSession()
-            await updateConsumer()
-            connectProducerAndConsumer()
-        }
+        updateSession()
+        updateConsumer()
+        connectProducerAndConsumer()
     }
 
     func disable() {
@@ -99,13 +97,12 @@ final class AWSCloudWatchLoggingSessionController {
         self.consumer = nil
     }
 
-    private func updateConsumer() async {
-        self.consumer = try? await createConsumer()
+    private func updateConsumer() {
+        self.consumer = try? createConsumer()
     }
 
-    private func createConsumer() async throws -> LogBatchConsumer? {
+    private func createConsumer() throws -> LogBatchConsumer? {
         if self.client == nil {
-            // TODO: FrameworkMetadata Replacement
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
                 region: region,
                 credentialsProvider: credentialsProvider
@@ -117,7 +114,7 @@ final class AWSCloudWatchLoggingSessionController {
         }
 
         guard let cloudWatchClient = client else { return nil }
-        return await CloudWatchLoggingConsumer(client: cloudWatchClient,
+        return CloudWatchLoggingConsumer(client: cloudWatchClient,
                                                logGroupName: self.logGroupName,
                                                userIdentifier: self.userIdentifier)
     }
@@ -147,12 +144,10 @@ final class AWSCloudWatchLoggingSessionController {
     }
 
     private func userIdentifierDidChange() {
-        Task {
-            resetCurrentLogs()
-            updateSession()
-            await updateConsumer()
-            connectProducerAndConsumer()
-        }
+        resetCurrentLogs()
+        updateSession()
+        updateConsumer()
+        connectProducerAndConsumer()
     }
 
     private func updateSession() {
