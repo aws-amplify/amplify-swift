@@ -172,7 +172,7 @@ final class MultilineTextField: UIViewRepresentable {
         return view
     }
 
-    @MainActor 
+    @MainActor
     @objc func dismissKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                         to: nil, from: nil, for: nil)
