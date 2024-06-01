@@ -12,4 +12,6 @@ enum PluginConstants {
     static let bucket = "bucket"
     static let region = "region"
     static let defaultAccessLevel = "defaultAccessLevel"
+    static let sessionIdentifier = "sessionIdentifier"
+    static let sharedContainerIdentifier = "sharedContainerIdentifier"
 }

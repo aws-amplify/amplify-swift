@@ -181,6 +181,8 @@ public struct AmplifyOutputsData: Codable {
         public let awsRegion: AWSRegion
         public let bucketName: String
         public let buckets: [Bucket]?
+        public let sessionIdentifier: String?
+        public let sharedContainerIdentifier: String?
 
         @_spi(InternalAmplifyConfiguration)
         public struct Bucket: Codable {
@@ -193,11 +195,15 @@ public struct AmplifyOutputsData: Codable {
         init(
             awsRegion: AWSRegion,
             bucketName: String,
-            buckets: [Bucket]? = nil
+            buckets: [Bucket]? = nil,
+            sessionIdentifier: String? = nil,
+            sharedContainerIdentifier: String? = nil
         ) {
             self.awsRegion = awsRegion
             self.bucketName = bucketName
             self.buckets = buckets
+            self.sessionIdentifier = sessionIdentifier
+            self.sharedContainerIdentifier = sharedContainerIdentifier
         }
     }
 
