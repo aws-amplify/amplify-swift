@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.34.3 (2024-05-30)
+
+### Bug Fixes
+
+- **logging**: logLevel `.none` should not produce logs (#3728)
+
 ## 2.34.2 (2024-05-28)
 
 ### Bug Fixes

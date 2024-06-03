@@ -6,7 +6,7 @@
 //
 
 @testable import AWSCloudWatchLoggingPlugin
-
+import Amplify
 import XCTest
 
 final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
@@ -36,7 +36,7 @@ final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.localStoreMaxSizeInMB, 5)
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.logGroupName, "testLogGroup")
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.region, "us-east-1")
-        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.defaultLogLevel.rawValue, 0)
+        XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.defaultLogLevel.rawValue, LogLevel.error.rawValue)
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.categoryLogLevel?.count, 2)
         XCTAssertEqual(config.awsCloudWatchLoggingPlugin.loggingConstraints.userLogLevel?.count, 1)
     }
@@ -56,9 +56,9 @@ final class AWSCloudWatchLoggingPluginConfigurationTests: XCTestCase {
             XCTFail("Unable to decode from data")
             return
         }
-        XCTAssertEqual(loggingConstraints.defaultLogLevel.rawValue, 0)
+        XCTAssertEqual(loggingConstraints.defaultLogLevel.rawValue, LogLevel.error.rawValue)
         XCTAssertEqual(loggingConstraints.categoryLogLevel?.count, 4)
         XCTAssertEqual(loggingConstraints.userLogLevel?.count, 2)
-        XCTAssertEqual(loggingConstraints.userLogLevel?["sub1"]?.defaultLogLevel.rawValue, 2)
+        XCTAssertEqual(loggingConstraints.userLogLevel?["sub1"]?.defaultLogLevel.rawValue, LogLevel.info.rawValue)
     }
 }

@@ -10,9 +10,12 @@ import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import APIHostApp
 @testable import AWSPluginsCore
+import AWSCognitoAuthPlugin
 
 class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
 
+    var defaultTestEmail = "test-\(UUID().uuidString)@amazon.com"
+    
     var amplifyConfig: AmplifyOutputsData!
 
     override func setUp() {
@@ -39,11 +42,15 @@ class AWSAPIPluginGen2GraphQLBaseTest: XCTestCase {
     /// Setup API with given models
     /// - Parameter models: DataStore models
     func setup(withModels models: AmplifyModelRegistration,
-               logLevel: LogLevel = .verbose) async {
+               logLevel: LogLevel = .verbose,
+               withAuthPlugin: Bool = false) async {
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            if withAuthPlugin {
+                try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            }
             try Amplify.configure(amplifyConfig)
 
         } catch {
