@@ -8,7 +8,7 @@
 @_spi(InternalAmplifyPluginExtension) 
 @_spi(PluginHTTPClientEngine)
 @_spi(InternalHttpEngineProxy)
-import AWSPluginsCore
+import InternalAmplifyCredentials
 import ClientRuntime
 import XCTest
 

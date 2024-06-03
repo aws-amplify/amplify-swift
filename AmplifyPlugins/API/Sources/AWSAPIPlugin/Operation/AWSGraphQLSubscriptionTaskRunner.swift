@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
+import InternalAmplifyCredentials
 import Combine
 
 public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
@@ -25,7 +26,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     }
     let appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let authService: AWSAuthServiceBehavior
+    let authService: AWSAuthCredentialsProviderBehavior
     var apiAuthProviderFactory: APIAuthProviderFactory
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
     private let subscriptionId = UUID().uuidString
@@ -35,7 +36,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     init(request: Request,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol,
-         authService: AWSAuthServiceBehavior,
+         authService: AWSAuthCredentialsProviderBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory) {
         self.request = request
         self.pluginConfig = pluginConfig
@@ -185,7 +186,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
-    let authService: AWSAuthServiceBehavior
+    let authService: AWSAuthCredentialsProviderBehavior
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
     var appSyncRealTimeClient: AppSyncRealTimeClientProtocol?
@@ -201,7 +202,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     init(request: GraphQLOperationRequest<R>,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
-         authService: AWSAuthServiceBehavior,
+         authService: AWSAuthCredentialsProviderBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory,
          inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
          resultListener: AWSGraphQLSubscriptionOperation.ResultListener?) {

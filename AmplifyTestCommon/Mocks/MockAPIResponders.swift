@@ -9,33 +9,35 @@ import Amplify
 
 extension MockAPICategoryPlugin {
     enum ResponderKeys {
-        case queryRequestListener
+//        case queryRequestListener
         case queryRequestResponse
         case subscribeRequestListener
-        case mutateRequestListener
+//        case mutateRequestListener
+        case mutateRequestResponse
     }
 }
 
-typealias QueryRequestListenerResponder<R: Decodable> = MockResponder<
-    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
-    GraphQLOperation<R>?
->
+//typealias QueryRequestListenerResponder<R: Decodable> = MockResponder<
+//    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
+//    GraphQLOperation<R>?
+//>
 
-typealias QueryRequestResponder<R: Decodable> = MockResponder<
+typealias QueryRequestResponder<R: Decodable> = MockAsyncThrowingResponder<
     GraphQLRequest<R>,
-    GraphQLOperation<R>.OperationResult
+    GraphQLResponse<R>
 >
 
-typealias MutateRequestListenerResponder<R: Decodable> = MockResponder<
-    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
-    GraphQLOperation<R>?
+//typealias MutateRequestListenerResponder<R: Decodable> = MockResponder<
+//    (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
+//    GraphQLOperation<R>?
+//>
+
+typealias MutateRequestResponder<R: Decodable> = MockAsyncResponder<
+    GraphQLRequest<R>,
+    GraphQLResponse<R>
 >
 
 typealias SubscribeRequestListenerResponder<R: Decodable> = MockResponder<
-    (
     GraphQLRequest<R>,
-    GraphQLSubscriptionOperation<R>.InProcessListener?,
-    GraphQLSubscriptionOperation<R>.ResultListener?
-    ),
-    GraphQLSubscriptionOperation<R>?
+    AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>>
 >

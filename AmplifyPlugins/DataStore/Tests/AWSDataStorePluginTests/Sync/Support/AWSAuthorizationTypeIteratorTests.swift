@@ -18,8 +18,8 @@ class AWSAuthorizationTypeIteratorTests: XCTestCase {
     }
     
     func testOneElementIterator_hasNextValue_once() throws {
-        var iterator = AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools])
-        
+        var iterator = AWSAuthorizationTypeIterator(withValues: [.designated(.amazonCognitoUserPools)])
+
         XCTAssertTrue(iterator.hasNext)
         XCTAssertNotNil(iterator.next())
         
@@ -27,8 +27,11 @@ class AWSAuthorizationTypeIteratorTests: XCTestCase {
     }
     
     func testTwoElementsIterator_hasNextValue_twice() throws {
-        var iterator = AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools, .apiKey])
-        
+        var iterator = AWSAuthorizationTypeIterator(withValues: [
+            .designated(.amazonCognitoUserPools),
+            .designated(.apiKey)
+        ])
+
         XCTAssertTrue(iterator.hasNext)
         XCTAssertNotNil(iterator.next())
         

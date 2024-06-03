@@ -13,7 +13,7 @@ import AWSPluginsCore
 /// Submits outgoing mutation events to the provisioned API
 protocol OutgoingMutationQueueBehavior: AnyObject {
     func stopSyncingToCloud(_ completion: @escaping BasicClosure)
-    func startSyncingToCloud(api: APICategoryGraphQLBehaviorExtended,
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher,
                              reconciliationQueue: IncomingEventReconciliationQueue?)
     var publisher: AnyPublisher<MutationEvent, Never> { get }
@@ -29,7 +29,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// A DispatchQueue for synchronizing state on the mutation queue
     private let mutationDispatchQueue = TaskQueue<Void>()
 
-    private weak var api: APICategoryGraphQLBehaviorExtended?
+    private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
 
     private var subscription: Subscription?
@@ -81,7 +81,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     // MARK: - Public API
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehaviorExtended,
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher,
                              reconciliationQueue: IncomingEventReconciliationQueue?) {
         log.verbose(#function)
@@ -127,7 +127,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// Responder method for `starting`. Starts the operation queue and subscribes to
     /// the publisher. After subscribing to the publisher, return actions:
     /// - receivedSubscription
-    private func doStart(api: APICategoryGraphQLBehaviorExtended,
+    private func doStart(api: APICategoryGraphQLBehavior,
                          mutationEventPublisher: MutationEventPublisher,
                          reconciliationQueue: IncomingEventReconciliationQueue?) {
         log.verbose(#function)
@@ -223,7 +223,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private func processSyncMutationToCloudResult(_ result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,
                                                   mutationEvent: MutationEvent,
-                                                  api: APICategoryGraphQLBehaviorExtended) {
+                                                  api: APICategoryGraphQLBehavior) {
         if case let .success(graphQLResponse) = result {
             if case let .success(graphQLResult) = graphQLResponse {
                 processSuccessEvent(mutationEvent,
@@ -272,7 +272,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     }
 
     private func processMutationErrorFromCloud(mutationEvent: MutationEvent,
-                                               api: APICategoryGraphQLBehaviorExtended,
+                                               api: APICategoryGraphQLBehavior,
                                                apiError: APIError?,
                                                graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>?) {
         if let apiError = apiError, apiError.isOperationCancelledError {

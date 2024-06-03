@@ -7,9 +7,10 @@
 
 import Amplify
 import AWSPluginsCore
+import InternalAmplifyCredentials
 import Foundation
 
-final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQLBehaviorExtended, AWSAPIAuthInformation {
+final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformation {
     /// Used for the default GraphQL API represented by the `data` category in `amplify_outputs.json`
     /// This constant is not used for APIs present in `amplifyconfiguration.json` since they always have names.
     public static let defaultGraphQLAPI = "defaultGraphQLAPI"
@@ -25,7 +26,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, APICategoryGraphQL
 
     /// The provider for Auth services required to access protected APIs. This will be
     /// populated during the configuration phase, and is clearable by `reset()`.
-    var authService: AWSAuthServiceBehavior!
+    var authService: AWSAuthCredentialsProviderBehavior!
 
     /// The provider for network connections and operations. This will be populated
     /// during initialization, and is clearable by `reset()`.

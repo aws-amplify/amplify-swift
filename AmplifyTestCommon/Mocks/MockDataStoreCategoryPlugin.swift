@@ -26,13 +26,15 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func save<M: Model>(_ model: M,
                         where condition: QueryPredicate? = nil,
-                        completion: (DataStoreResult<M>) -> Void) {
+                        completion: @escaping (DataStoreResult<M>) -> Void) {
         notify("save")
 
         if let responder = responders[.saveModelListener] as? SaveModelResponder<M> {
-            if let callback = responder.callback((model: model,
-                                                  where: condition)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((model: model,
+                                                      where: condition)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -45,12 +47,14 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
-                         completion: (DataStoreResult<M?>) -> Void) {
+                         completion: @escaping (DataStoreResult<M?>) -> Void) {
         notify("queryById")
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -63,13 +67,15 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func query<M: Model>(_ modelType: M.Type,
                          byIdentifier id: String,
-                         completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
+                         completion: @escaping (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
                                                                           M.IdentifierFormat == ModelIdentifierFormat.Default {
         notify("queryByIdentifier")
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -85,15 +91,17 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                          where predicate: QueryPredicate?,
                          sort sortInput: QuerySortInput?,
                          paginate paginationInput: QueryPaginationInput?,
-                         completion: (DataStoreResult<[M]>) -> Void) {
+                         completion: @escaping (DataStoreResult<[M]>) -> Void) {
         notify("queryByPredicate")
 
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let result = responder.callback((modelType: modelType,
-                                                  where: predicate,
-                                                  sort: sortInput,
-                                                  paginate: paginationInput)) {
-                completion(result)
+            Task {
+                if let result = await responder.callback((modelType: modelType,
+                                                    where: predicate,
+                                                    sort: sortInput,
+                                                    paginate: paginationInput)) {
+                    completion(result)
+                }
             }
         }
     }
@@ -105,7 +113,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryByPredicate")
         
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let result = responder.callback((modelType: modelType,
+            if let result = await responder.callback((modelType: modelType,
                                                   where: predicate,
                                                   sort: sortInput,
                                                   paginate: paginationInput)) {
@@ -123,12 +131,14 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func query<M>(_ modelType: M.Type,
                   byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                  completion: (DataStoreResult<M?>) -> Void) where M: Model, M: ModelIdentifiable {
+                  completion: @escaping (DataStoreResult<M?>) -> Void) where M: Model, M: ModelIdentifiable {
         notify("queryWithIdentifier")
 
        if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
-           if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
-               completion(callback)
+           Task {
+               if let callback = await responder.callback((modelType: modelType, id: id.stringValue)) {
+                   completion(callback)
+               }
            }
        }
     }
@@ -143,12 +153,14 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           where predicate: QueryPredicate? = nil,
-                          completion: (DataStoreResult<Void>) -> Void) {
+                          completion: @escaping (DataStoreResult<Void>) -> Void) {
         notify("deleteById")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -167,8 +179,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteByIdentifier")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((modelType: modelType, id: id)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -187,8 +201,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteByIdentifier")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
-            if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((modelType: modelType, id: id.stringValue)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -201,12 +217,14 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     
     func delete<M: Model>(_ modelType: M.Type,
                            where predicate: QueryPredicate,
-                           completion: (DataStoreResult<Void>) -> Void) {
+                           completion: @escaping (DataStoreResult<Void>) -> Void) {
         notify("deleteModelTypeByPredicate")
 
         if let responder = responders[.deleteModelTypeListener] as? DeleteModelTypeResponder<M> {
-            if let callback = responder.callback((modelType: modelType, where: predicate)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((modelType: modelType, where: predicate)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -222,9 +240,11 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteByPredicate")
 
         if let responder = responders[.deleteModelListener] as? DeleteModelResponder<M> {
-            if let callback = responder.callback((model: model,
-                                                  where: predicate)) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback((model: model,
+                                                      where: predicate)) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -238,8 +258,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("clear")
 
         if let responder = responders[.clearListener] as? ClearResponder {
-            if let callback = responder.callback(()) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback(()) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -252,8 +274,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("start")
 
         if let responder = responders[.clearListener] as? ClearResponder {
-            if let callback = responder.callback(()) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback(()) {
+                    completion(callback)
+                }
             }
         }
     }
@@ -266,8 +290,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("stop")
 
         if let responder = responders[.stopListener] as? StopResponder {
-            if let callback = responder.callback(()) {
-                completion(callback)
+            Task {
+                if let callback = await responder.callback(()) {
+                    completion(callback)
+                }
             }
         }
     }

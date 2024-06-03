@@ -37,7 +37,6 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///      {modelName: "Some Model name", isFullSync: true/false, isDeltaSync: false/true, createCount: #, updateCount: #, deleteCount: #}
     ///    - syncQueriesReady received, payload should be nil
     func testDataStoreConfiguredDispatchesHubEvents() async throws {
-        Amplify.Logging.logLevel = .verbose
         try configureAmplify(withModels: TestModelRegistration())
         try await Amplify.DataStore.clear()
         await Amplify.reset()

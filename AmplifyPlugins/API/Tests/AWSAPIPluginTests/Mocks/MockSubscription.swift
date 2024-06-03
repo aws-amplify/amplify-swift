@@ -11,14 +11,14 @@ import Amplify
 import Combine
 @testable import AWSAPIPlugin
 @_spi(WebSocket) import AWSPluginsCore
+import InternalAmplifyCredentials
 
 struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
-    
 
     typealias OnGetOrCreateConnection = (
         AWSAPICategoryPluginConfiguration.EndpointConfig,
         URL,
-        AWSAuthServiceBehavior,
+        AWSAuthCredentialsProviderBehavior,
         AWSAuthorizationType?,
         APIAuthProviderFactory
     ) async throws -> AppSyncRealTimeClientProtocol
@@ -32,7 +32,7 @@ struct MockSubscriptionConnectionFactory: AppSyncRealTimeClientFactoryProtocol {
     func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         endpoint: URL,
-        authService: AWSAuthServiceBehavior,
+        authService: AWSAuthCredentialsProviderBehavior,
         authType: AWSAuthorizationType?,
         apiAuthProviderFactory: APIAuthProviderFactory
     ) async throws -> AppSyncRealTimeClientProtocol {

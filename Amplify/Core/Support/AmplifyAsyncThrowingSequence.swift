@@ -47,4 +47,5 @@ public class AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Can
         parent?.cancel()
         finish()
     }
+
 }

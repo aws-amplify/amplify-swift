@@ -8,7 +8,7 @@
 import Foundation
 @_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import AWSLocation
 import AWSClientRuntime
 

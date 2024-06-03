@@ -27,16 +27,14 @@ class InitialSyncOrchestratorTests: XCTestCase {
     func testInvokesCompletionCallback() async throws {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
+        let responder = QueryRequestResponder<PaginatedList<AnyModel>> { _ in
             let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-            listener?(event)
-            return nil
+            return .success(list)
         }
 
         let apiPlugin = MockAPICategoryPlugin()
-        apiPlugin.responders[.queryRequestListener] = responder
+        apiPlugin.responders[.queryRequestResponse] = responder
 
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
@@ -120,23 +118,19 @@ class InitialSyncOrchestratorTests: XCTestCase {
     func testFinishWithAPIError() async throws {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+        let responder = QueryRequestResponder<PaginatedList<AnyModel>> { request in
             if request.document.contains("SyncPosts") {
-                let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult =
-                    .failure(APIError.operationError("", "", nil))
-                listener?(event)
+                throw APIError.operationError("", "", nil)
             } else if request.document.contains("SyncComments") {
                 let startedAt = Int64(Date().timeIntervalSince1970)
                 let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-                let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-                listener?(event)
+                return .success(list)
             }
-
-            return nil
+            return .failure(.unknown("", "", nil))
         }
 
         let apiPlugin = MockAPICategoryPlugin()
-        apiPlugin.responders[.queryRequestListener] = responder
+        apiPlugin.responders[.queryRequestResponse] = responder
 
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
@@ -238,16 +232,14 @@ class InitialSyncOrchestratorTests: XCTestCase {
         }
         TestModelsWithNoAssociations().registerModels(registry: ModelRegistry.self)
 
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
+        let responder = QueryRequestResponder<PaginatedList<AnyModel>> { _ in
             let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-            listener?(event)
-            return nil
+            return .success(list)
         }
 
         let apiPlugin = MockAPICategoryPlugin()
-        apiPlugin.responders[.queryRequestListener] = responder
+        apiPlugin.responders[.queryRequestResponse] = responder
 
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
@@ -297,7 +289,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let postWasQueried = expectation(description: "Post was queried")
         let commentWasQueried = expectation(description: "Comment was queried")
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+        let responder = QueryRequestResponder<PaginatedList<AnyModel>> { request in
             if request.document.hasPrefix("query SyncPosts") {
                 postWasQueried.fulfill()
             }
@@ -308,13 +300,11 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
             let startedAt = Int64(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-            listener?(event)
-            return nil
+            return .success(list)
         }
 
         let apiPlugin = MockAPICategoryPlugin()
-        apiPlugin.responders[.queryRequestListener] = responder
+        apiPlugin.responders[.queryRequestResponse] = responder
 
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
@@ -371,7 +361,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
         var nextTokens = Array(repeating: "token", count: pageCount - 1)
 
-        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+        let responder = QueryRequestResponder<PaginatedList<AnyModel>> { request in
             if request.document.hasPrefix("query SyncPosts") {
                 postWasQueried.fulfill()
             }
@@ -383,13 +373,11 @@ class InitialSyncOrchestratorTests: XCTestCase {
             let startedAt = Int64(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-            listener?(event)
-            return nil
+            return .success(list)
         }
 
         let apiPlugin = MockAPICategoryPlugin()
-        apiPlugin.responders[.queryRequestListener] = responder
+        apiPlugin.responders[.queryRequestResponse] = responder
 
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQueryModelSyncMetadata(nil)

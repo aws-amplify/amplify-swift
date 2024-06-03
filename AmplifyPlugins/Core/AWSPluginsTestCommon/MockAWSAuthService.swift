@@ -8,9 +8,9 @@
 import ClientRuntime
 import AWSClientRuntime
 import Amplify
-import AWSPluginsCore
+import InternalAmplifyCredentials
 
-public class MockAWSAuthService: AWSAuthServiceBehavior {
+public class MockAWSAuthService: AWSAuthCredentialsProviderBehavior {
 
     var interactions: [String] = []
     var getIdentityIdError: AuthError?

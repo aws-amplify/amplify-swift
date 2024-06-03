@@ -8,15 +8,16 @@
 import Foundation
 import Amplify
 import AWSClientRuntime
+import AWSPluginsCore
 
 public protocol IAMCredentialsProvider {
     func getCredentialsProvider() -> CredentialsProviding
 }
 
 public struct BasicIAMCredentialsProvider: IAMCredentialsProvider {
-    let authService: AWSAuthServiceBehavior
+    let authService: AWSAuthCredentialsProviderBehavior
 
-    public init(authService: AWSAuthServiceBehavior) {
+    public init(authService: AWSAuthCredentialsProviderBehavior) {
         self.authService = authService
     }
 
