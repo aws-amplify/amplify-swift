@@ -33,10 +33,14 @@ final class GraphQLSalary18Tests: AWSAPIPluginGen2GraphQLBaseTest {
             let createdSalary = try await Amplify.API.mutate(request: .create(
                 salary,
                 authMode: .amazonCognitoUserPools)).get()
+            // Code Snippet Ends
+            XCTFail("Should not make it to here. Expected to catch failure since user is not in the Admin group.")
+            // Code Snippet begins
         } catch {
             print("Failed to create salary", error)
             // Code Snippet Ends
             // Expected to catch failure since the user is not in the Admin group.
+            XCTAssertNotNil(error)
             // Code Snippet begins
         }
     }

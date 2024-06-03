@@ -133,7 +133,7 @@ const schema = a.schema({
     }).authorization(allow => [allow.publicApiKey()]),
     
     // Gen2_41 -Model multiple relationships between two models
-    // http://localhost:3000/swift/build-a-backend/data/data-modeling/relationships/#model-multiple-relationships-between-two-models
+    // http://docs.amplify.aws/swift/build-a-backend/data/data-modeling/relationships/#model-multiple-relationships-between-two-models
     Post41: a.model({
       title: a.string().required(),
       content: a.string().required(),
