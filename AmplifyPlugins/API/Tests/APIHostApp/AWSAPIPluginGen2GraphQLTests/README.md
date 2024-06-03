@@ -77,10 +77,10 @@ const schema = a.schema({
     Post1: a.model({
       location: a.ref('Location1'),
       content: a.string(),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
     User1: a.model({
       lastKnownLocation: a.ref('Location1'),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
 
     // Gen2_2
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/add-fields/#specify-an-enum-field-type
@@ -92,10 +92,10 @@ const schema = a.schema({
     Post2: a.model({
       content: a.string(),
       privacySetting: a.ref('PrivacySetting2'),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
     Video2: a.model({
       privacySetting: a.ref('PrivacySetting2'),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
 
     // Gen2_3
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/relationships/#model-one-to-many-relationships
@@ -124,16 +124,16 @@ const schema = a.schema({
         customerId: a.id(),
         // 2. Create relationship field with the reference field
         customer: a.belongsTo('Customer4', 'customerId'),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
     Customer4: a.model({
         name: a.string(),
         // 3. Create relationship field with the reference field
         //    from the Cart model
         activeCart: a.hasOne('Cart4', 'customerId')
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
     
     // Gen2_41 -Model multiple relationships between two models
-    // http://localhost:3000/swift/build-a-backend/data/data-modeling/relationships/#model-multiple-relationships-between-two-models
+    // http://docs.amplify.aws/swift/build-a-backend/data/data-modeling/relationships/#model-multiple-relationships-between-two-models
     Post41: a.model({
       title: a.string().required(),
       content: a.string().required(),
@@ -142,19 +142,19 @@ const schema = a.schema({
       author: a.belongsTo('Person41', 'authorId'),
       editorId: a.id(),
       editor: a.belongsTo('Person41', 'editorId'),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
     Person41: a.model({
       name: a.string(),
       editedPosts: a.hasMany('Post41', 'editorId'),
       authoredPosts: a.hasMany('Post41', 'authorId'),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
   
     // Gen2_5 - Customize data model identifiers
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/identifiers/
     Todo5: a.model({
         content: a.string(),
         completed: a.boolean(),
-    }),
+    }).authorization(allow => [allow.publicApiKey()]),
     
     // Gen2_6 - Single-field identifier
     // https://docs.amplify.aws/swift/build-a-backend/data/data-modeling/identifiers/#single-field-identifier
@@ -162,7 +162,7 @@ const schema = a.schema({
         todoId: a.id().required(),
         content: a.string(),
         completed: a.boolean(),
-    })
+    }).authorization(allow => [allow.publicApiKey()])
     .identifier(['todoId']),
     
     // Gen2_7 - Composite identifier
@@ -175,7 +175,7 @@ const schema = a.schema({
         city: a.string(),
         zipCode: a.string(),
         streetAddress: a.string(),
-    })
+    }).authorization(allow => [allow.publicApiKey()])
     .identifier(['tenantId', 'name']),
     
     // Gen2_8 - Customize secondary indexes
@@ -185,7 +185,7 @@ const schema = a.schema({
         name: a.string(),
         phoneNumber: a.phone(),
         accountRepresentativeId: a.id().required(),
-    })
+    }).authorization(allow => [allow.publicApiKey()])
     .secondaryIndexes((index) => [index("accountRepresentativeId")]),
     
     // Gen2_9
@@ -195,7 +195,7 @@ const schema = a.schema({
         name: a.string(),
         phoneNumber: a.phone(),
         accountRepresentativeId: a.id().required(),
-    })
+    }).authorization(allow => [allow.publicApiKey()])
     .secondaryIndexes((index) => [
        index("accountRepresentativeId")
         .sortKeys(["name"]),
@@ -208,13 +208,73 @@ const schema = a.schema({
         name: a.string(),
         phoneNumber: a.phone(),
         accountRepresentativeId: a.id().required(),
-    })
+    }).authorization(allow => [allow.publicApiKey()])
     .secondaryIndexes((index) => [
       index("accountRepresentativeId")
         .queryField("listByRep"),
     ]),
     
-}).authorization(allow => [allow.publicApiKey()]);
+    // Gen2_11
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/#configure-multiple-authorization-rules
+     Post11: a.model({
+        title: a.string(),
+        content: a.string()
+    }).authorization(allow => [
+        allow.guest().to(["read"]),
+        allow.owner()
+    ]),
+
+    // Gen2_12
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/public-data-access/#add-public-authorization-rule-using-api-key-based-authentication
+    Todo12: a
+      .model({
+        content: a.string(),
+    }).authorization(allow => [allow.publicApiKey()]),
+
+    // Gen2_13 
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/public-data-access/#add-public-authorization-rule-using-amazon-cognito-identity-pools-unauthenticated-role
+    Todo13: a
+      .model({
+        content: a.string(),
+    }).authorization(allow => [allow.guest()]),
+    
+    // Gen2_14
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/per-user-per-owner-data-access/#add-per-userper-owner-authorization-rule
+    Todo14: a
+      .model({
+        content: a.string(),
+    }).authorization(allow => [allow.owner().to(['create', 'read', 'update'])]),
+
+    // Gen2_15
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/multi-user-data-access/#add-multi-user-authorization-rule
+    Todo15: a
+      .model({
+        content: a.string(),
+        owners: a.string().array(),
+    }).authorization(allow => [allow.ownersDefinedIn('owners')]),
+  
+    // Gen2_16
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/signed-in-user-data-access/#use-identity-pool-for-signed-in-user-authentication
+    Todo16: a
+      .model({
+        content: a.string(),
+    }).authorization(allow => [allow.authenticated()]),
+
+    // Gen2_17
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/signed-in-user-data-access/#use-identity-pool-for-signed-in-user-authentication
+    Todo17: a
+      .model({
+        content: a.string(),
+    }).authorization(allow => [allow.authenticated('identityPool')]),
+
+    // Gen2_18
+    // https://docs.amplify.aws/swift/build-a-backend/data/customize-authz/user-group-based-data-access/#add-authorization-rules-for-specific-user-groups
+    Salary18: a
+      .model({
+        wage: a.float(),
+        currency: a.string(),
+    }).authorization(allow => [allow.group('Admin')]),
+});
 
 ```
 
@@ -225,12 +285,79 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: 'apiKey',
-    // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 365,
     },
   },
 });
+```
+
+
+auth
+```
+import { defineAuth, defineFunction } from '@aws-amplify/backend';
+
+/**
+ * Define and configure your auth resource
+ * @see https://docs.amplify.aws/gen2/build-a-backend/auth
+ */
+export const auth = defineAuth({
+  loginWith: {
+    email: true
+  },
+  triggers: {
+    // configure a trigger to point to a function definition
+    preSignUp: defineFunction({
+      entry: './pre-sign-up-handler.ts'
+    })
+  }
+});
+```
+
+`amplify/auth/pre-sign-up-handler.ts`
+```
+import type { PreSignUpTriggerHandler } from 'aws-lambda';
+
+export const handler: PreSignUpTriggerHandler = async (event) => {
+  // your code here
+  event.response.autoConfirmUser = true
+  return event;
+};
+```
+
+backend.ts
+```
+import { defineBackend } from '@aws-amplify/backend';
+import { auth } from './auth/resource';
+import { data } from './data/resource';
+
+
+const backend = defineBackend({
+  auth,
+  data,
+  //storage
+  // additional resource
+});
+
+
+// Override sign in with username as the username
+
+const { cfnUserPool } = backend.auth.resources.cfnResources
+cfnUserPool.usernameAttributes = []
+
+cfnUserPool.addPropertyOverride(
+  "Policies",
+  {
+    PasswordPolicy: {
+      MinimumLength: 10,
+      RequireLowercase: false,
+      RequireNumbers: true,
+      RequireSymbols: true,
+      RequireUppercase: true,
+      TemporaryPasswordValidityDays: 20,
+    },
+  }
+);
 ```
 
 4. Deploy the backend with npx amplify sandbox
