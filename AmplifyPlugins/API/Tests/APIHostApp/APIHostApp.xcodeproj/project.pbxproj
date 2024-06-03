@@ -56,6 +56,52 @@
 		2126275E289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272F289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift */; };
 		2126275F289ABFEB003788E3 /* Post3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262730289ABFEB003788E3 /* Post3.swift */; };
 		2136C8B32926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2136C8B22926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift */; };
+		213B969E2BF3B65800DE74AB /* Post2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96992BF3B65800DE74AB /* Post2+Schema.swift */; };
+		213B969F2BF3B65800DE74AB /* Video2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B969A2BF3B65800DE74AB /* Video2.swift */; };
+		213B96A02BF3B65800DE74AB /* PrivacySetting2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B969B2BF3B65800DE74AB /* PrivacySetting2.swift */; };
+		213B96A12BF3B65800DE74AB /* Post2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B969C2BF3B65800DE74AB /* Post2.swift */; };
+		213B96A22BF3B65800DE74AB /* Video2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B969D2BF3B65800DE74AB /* Video2+Schema.swift */; };
+		213B96A92BF3B67500DE74AB /* Location1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96A32BF3B67500DE74AB /* Location1.swift */; };
+		213B96AA2BF3B67500DE74AB /* User1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96A42BF3B67500DE74AB /* User1.swift */; };
+		213B96AB2BF3B67500DE74AB /* Post1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96A52BF3B67500DE74AB /* Post1.swift */; };
+		213B96AC2BF3B67500DE74AB /* User1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96A62BF3B67500DE74AB /* User1+Schema.swift */; };
+		213B96AD2BF3B67500DE74AB /* Location1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96A72BF3B67500DE74AB /* Location1+Schema.swift */; };
+		213B96AE2BF3B67500DE74AB /* Post1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96A82BF3B67500DE74AB /* Post1+Schema.swift */; };
+		213B96B32BF3B6C100DE74AB /* Team3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96AF2BF3B6C100DE74AB /* Team3+Schema.swift */; };
+		213B96B42BF3B6C100DE74AB /* Member3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96B02BF3B6C100DE74AB /* Member3.swift */; };
+		213B96B52BF3B6C100DE74AB /* Member3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96B12BF3B6C100DE74AB /* Member3+Schema.swift */; };
+		213B96B62BF3B6C100DE74AB /* Team3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96B22BF3B6C100DE74AB /* Team3.swift */; };
+		213B96BB2BF3B6D400DE74AB /* Customer4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96B72BF3B6D400DE74AB /* Customer4.swift */; };
+		213B96BC2BF3B6D400DE74AB /* Cart4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96B82BF3B6D400DE74AB /* Cart4.swift */; };
+		213B96BD2BF3B6D400DE74AB /* Cart4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96B92BF3B6D400DE74AB /* Cart4+Schema.swift */; };
+		213B96BE2BF3B6D400DE74AB /* Customer4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96BA2BF3B6D400DE74AB /* Customer4+Schema.swift */; };
+		213B96CC2BF3BA2300DE74AB /* GraphQLLocationPostUser1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96CB2BF3BA2300DE74AB /* GraphQLLocationPostUser1Tests.swift */; };
+		213B96CE2BF3E3D000DE74AB /* GraphQLPostVideoPrivacySetting2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96CD2BF3E3D000DE74AB /* GraphQLPostVideoPrivacySetting2Tests.swift */; };
+		213B96D02BF3E64C00DE74AB /* GraphQLTeamMember3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96CF2BF3E64C00DE74AB /* GraphQLTeamMember3Tests.swift */; };
+		213B96D22BF3EFD000DE74AB /* GraphQLCartCustomer4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96D12BF3EFD000DE74AB /* GraphQLCartCustomer4Tests.swift */; };
+		213B96D52BF4480900DE74AB /* Todo5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96D32BF4480900DE74AB /* Todo5.swift */; };
+		213B96D62BF4480900DE74AB /* Todo5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96D42BF4480900DE74AB /* Todo5+Schema.swift */; };
+		213B96DA2BF4481F00DE74AB /* Todo6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96D82BF4481F00DE74AB /* Todo6+Schema.swift */; };
+		213B96DB2BF4481F00DE74AB /* Todo6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96D92BF4481F00DE74AB /* Todo6.swift */; };
+		213B96DF2BF4484700DE74AB /* StoreBranch7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96DD2BF4484700DE74AB /* StoreBranch7.swift */; };
+		213B96E02BF4484700DE74AB /* StoreBranch7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96DE2BF4484700DE74AB /* StoreBranch7+Schema.swift */; };
+		213B96E22BF4486900DE74AB /* GraphQLTodo5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96E12BF4486900DE74AB /* GraphQLTodo5Tests.swift */; };
+		213B96E42BF4492400DE74AB /* GraphQLTodo6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96E32BF4492400DE74AB /* GraphQLTodo6Tests.swift */; };
+		213B96E62BF4493300DE74AB /* GraphQLStoreBranch7Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96E52BF4493300DE74AB /* GraphQLStoreBranch7Tests.swift */; };
+		213B96E92BF44DE600DE74AB /* GraphQLCustomer8Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96E82BF44DE600DE74AB /* GraphQLCustomer8Tests.swift */; };
+		213B96ED2BF44F4D00DE74AB /* GraphQLCustomer9Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96EC2BF44F4D00DE74AB /* GraphQLCustomer9Tests.swift */; };
+		213B96EF2BF44F6D00DE74AB /* GraphQLCustomer10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96EE2BF44F6D00DE74AB /* GraphQLCustomer10Tests.swift */; };
+		213B96F22BF4500200DE74AB /* Customer8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96F02BF4500200DE74AB /* Customer8.swift */; };
+		213B96F32BF4500200DE74AB /* Customer8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96F12BF4500200DE74AB /* Customer8+Schema.swift */; };
+		213B96F62BF4500D00DE74AB /* Customer9.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96F42BF4500D00DE74AB /* Customer9.swift */; };
+		213B96F72BF4500D00DE74AB /* Customer9+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96F52BF4500D00DE74AB /* Customer9+Schema.swift */; };
+		213B96FA2BF4501B00DE74AB /* Customer10.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96F82BF4501B00DE74AB /* Customer10.swift */; };
+		213B96FB2BF4501B00DE74AB /* Customer10+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96F92BF4501B00DE74AB /* Customer10+Schema.swift */; };
+		213B96FE2BF4533500DE74AB /* GraphQLPostPerson41Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B96FD2BF4533500DE74AB /* GraphQLPostPerson41Tests.swift */; };
+		213B970F2BF4F1E800DE74AB /* Post41+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B970B2BF4F1E800DE74AB /* Post41+Schema.swift */; };
+		213B97102BF4F1E800DE74AB /* Person41.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B970C2BF4F1E800DE74AB /* Person41.swift */; };
+		213B97112BF4F1E800DE74AB /* Person41+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B970D2BF4F1E800DE74AB /* Person41+Schema.swift */; };
+		213B97122BF4F1E800DE74AB /* Post41.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213B970E2BF4F1E800DE74AB /* Post41.swift */; };
 		213DBC8128A6C4FB00B30280 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8028A6C4FB00B30280 /* TestConfigHelper.swift */; };
 		213DBC8528A6CE9800B30280 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
 		213DBC8728A6CEDD00B30280 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8628A6CEDD00B30280 /* Todo.swift */; };
@@ -516,6 +562,52 @@
 		2126272F289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NestedTypeTestModel+Schema.swift"; sourceTree = "<group>"; };
 		21262730289ABFEB003788E3 /* Post3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3.swift; sourceTree = "<group>"; };
 		2136C8B22926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadBlogPostComment8V2Tests.swift; sourceTree = "<group>"; };
+		213B96992BF3B65800DE74AB /* Post2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post2+Schema.swift"; sourceTree = "<group>"; };
+		213B969A2BF3B65800DE74AB /* Video2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video2.swift; sourceTree = "<group>"; };
+		213B969B2BF3B65800DE74AB /* PrivacySetting2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivacySetting2.swift; sourceTree = "<group>"; };
+		213B969C2BF3B65800DE74AB /* Post2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post2.swift; sourceTree = "<group>"; };
+		213B969D2BF3B65800DE74AB /* Video2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video2+Schema.swift"; sourceTree = "<group>"; };
+		213B96A32BF3B67500DE74AB /* Location1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location1.swift; sourceTree = "<group>"; };
+		213B96A42BF3B67500DE74AB /* User1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User1.swift; sourceTree = "<group>"; };
+		213B96A52BF3B67500DE74AB /* Post1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post1.swift; sourceTree = "<group>"; };
+		213B96A62BF3B67500DE74AB /* User1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User1+Schema.swift"; sourceTree = "<group>"; };
+		213B96A72BF3B67500DE74AB /* Location1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Location1+Schema.swift"; sourceTree = "<group>"; };
+		213B96A82BF3B67500DE74AB /* Post1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post1+Schema.swift"; sourceTree = "<group>"; };
+		213B96AF2BF3B6C100DE74AB /* Team3+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team3+Schema.swift"; sourceTree = "<group>"; };
+		213B96B02BF3B6C100DE74AB /* Member3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Member3.swift; sourceTree = "<group>"; };
+		213B96B12BF3B6C100DE74AB /* Member3+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Member3+Schema.swift"; sourceTree = "<group>"; };
+		213B96B22BF3B6C100DE74AB /* Team3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team3.swift; sourceTree = "<group>"; };
+		213B96B72BF3B6D400DE74AB /* Customer4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Customer4.swift; sourceTree = "<group>"; };
+		213B96B82BF3B6D400DE74AB /* Cart4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cart4.swift; sourceTree = "<group>"; };
+		213B96B92BF3B6D400DE74AB /* Cart4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cart4+Schema.swift"; sourceTree = "<group>"; };
+		213B96BA2BF3B6D400DE74AB /* Customer4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Customer4+Schema.swift"; sourceTree = "<group>"; };
+		213B96CB2BF3BA2300DE74AB /* GraphQLLocationPostUser1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLocationPostUser1Tests.swift; sourceTree = "<group>"; };
+		213B96CD2BF3E3D000DE74AB /* GraphQLPostVideoPrivacySetting2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLPostVideoPrivacySetting2Tests.swift; sourceTree = "<group>"; };
+		213B96CF2BF3E64C00DE74AB /* GraphQLTeamMember3Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLTeamMember3Tests.swift; sourceTree = "<group>"; };
+		213B96D12BF3EFD000DE74AB /* GraphQLCartCustomer4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCartCustomer4Tests.swift; sourceTree = "<group>"; };
+		213B96D32BF4480900DE74AB /* Todo5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo5.swift; sourceTree = "<group>"; };
+		213B96D42BF4480900DE74AB /* Todo5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Todo5+Schema.swift"; sourceTree = "<group>"; };
+		213B96D82BF4481F00DE74AB /* Todo6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Todo6+Schema.swift"; sourceTree = "<group>"; };
+		213B96D92BF4481F00DE74AB /* Todo6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo6.swift; sourceTree = "<group>"; };
+		213B96DD2BF4484700DE74AB /* StoreBranch7.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreBranch7.swift; sourceTree = "<group>"; };
+		213B96DE2BF4484700DE74AB /* StoreBranch7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StoreBranch7+Schema.swift"; sourceTree = "<group>"; };
+		213B96E12BF4486900DE74AB /* GraphQLTodo5Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLTodo5Tests.swift; sourceTree = "<group>"; };
+		213B96E32BF4492400DE74AB /* GraphQLTodo6Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLTodo6Tests.swift; sourceTree = "<group>"; };
+		213B96E52BF4493300DE74AB /* GraphQLStoreBranch7Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLStoreBranch7Tests.swift; sourceTree = "<group>"; };
+		213B96E82BF44DE600DE74AB /* GraphQLCustomer8Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCustomer8Tests.swift; sourceTree = "<group>"; };
+		213B96EC2BF44F4D00DE74AB /* GraphQLCustomer9Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCustomer9Tests.swift; sourceTree = "<group>"; };
+		213B96EE2BF44F6D00DE74AB /* GraphQLCustomer10Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLCustomer10Tests.swift; sourceTree = "<group>"; };
+		213B96F02BF4500200DE74AB /* Customer8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Customer8.swift; sourceTree = "<group>"; };
+		213B96F12BF4500200DE74AB /* Customer8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Customer8+Schema.swift"; sourceTree = "<group>"; };
+		213B96F42BF4500D00DE74AB /* Customer9.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Customer9.swift; sourceTree = "<group>"; };
+		213B96F52BF4500D00DE74AB /* Customer9+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Customer9+Schema.swift"; sourceTree = "<group>"; };
+		213B96F82BF4501B00DE74AB /* Customer10.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Customer10.swift; sourceTree = "<group>"; };
+		213B96F92BF4501B00DE74AB /* Customer10+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Customer10+Schema.swift"; sourceTree = "<group>"; };
+		213B96FD2BF4533500DE74AB /* GraphQLPostPerson41Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLPostPerson41Tests.swift; sourceTree = "<group>"; };
+		213B970B2BF4F1E800DE74AB /* Post41+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post41+Schema.swift"; sourceTree = "<group>"; };
+		213B970C2BF4F1E800DE74AB /* Person41.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person41.swift; sourceTree = "<group>"; };
+		213B970D2BF4F1E800DE74AB /* Person41+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Person41+Schema.swift"; sourceTree = "<group>"; };
+		213B970E2BF4F1E800DE74AB /* Post41.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post41.swift; sourceTree = "<group>"; };
 		213DBB6028A40DAE00B30280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		213DBC7528A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLLambdaAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		213DBC8028A6C4FB00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -912,6 +1004,129 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		213B96942BF3B5EA00DE74AB /* Gen2_2 */ = {
+			isa = PBXGroup;
+			children = (
+				213B969C2BF3B65800DE74AB /* Post2.swift */,
+				213B96992BF3B65800DE74AB /* Post2+Schema.swift */,
+				213B969B2BF3B65800DE74AB /* PrivacySetting2.swift */,
+				213B969A2BF3B65800DE74AB /* Video2.swift */,
+				213B969D2BF3B65800DE74AB /* Video2+Schema.swift */,
+				213B96CD2BF3E3D000DE74AB /* GraphQLPostVideoPrivacySetting2Tests.swift */,
+			);
+			path = Gen2_2;
+			sourceTree = "<group>";
+		};
+		213B96952BF3B62200DE74AB /* Gen2_3 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96B02BF3B6C100DE74AB /* Member3.swift */,
+				213B96B12BF3B6C100DE74AB /* Member3+Schema.swift */,
+				213B96B22BF3B6C100DE74AB /* Team3.swift */,
+				213B96AF2BF3B6C100DE74AB /* Team3+Schema.swift */,
+				213B96CF2BF3E64C00DE74AB /* GraphQLTeamMember3Tests.swift */,
+			);
+			path = Gen2_3;
+			sourceTree = "<group>";
+		};
+		213B96962BF3B62C00DE74AB /* Gen2_1 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96A32BF3B67500DE74AB /* Location1.swift */,
+				213B96A72BF3B67500DE74AB /* Location1+Schema.swift */,
+				213B96A52BF3B67500DE74AB /* Post1.swift */,
+				213B96A82BF3B67500DE74AB /* Post1+Schema.swift */,
+				213B96A42BF3B67500DE74AB /* User1.swift */,
+				213B96A62BF3B67500DE74AB /* User1+Schema.swift */,
+				213B96CB2BF3BA2300DE74AB /* GraphQLLocationPostUser1Tests.swift */,
+			);
+			path = Gen2_1;
+			sourceTree = "<group>";
+		};
+		213B96972BF3B63600DE74AB /* Gen2_4 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96B82BF3B6D400DE74AB /* Cart4.swift */,
+				213B96B92BF3B6D400DE74AB /* Cart4+Schema.swift */,
+				213B96B72BF3B6D400DE74AB /* Customer4.swift */,
+				213B96BA2BF3B6D400DE74AB /* Customer4+Schema.swift */,
+				213B96D12BF3EFD000DE74AB /* GraphQLCartCustomer4Tests.swift */,
+			);
+			path = Gen2_4;
+			sourceTree = "<group>";
+		};
+		213B96982BF3B63E00DE74AB /* Gen2_5 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96D32BF4480900DE74AB /* Todo5.swift */,
+				213B96D42BF4480900DE74AB /* Todo5+Schema.swift */,
+				213B96E12BF4486900DE74AB /* GraphQLTodo5Tests.swift */,
+			);
+			path = Gen2_5;
+			sourceTree = "<group>";
+		};
+		213B96D72BF4480E00DE74AB /* Gen2_6 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96D92BF4481F00DE74AB /* Todo6.swift */,
+				213B96D82BF4481F00DE74AB /* Todo6+Schema.swift */,
+				213B96E32BF4492400DE74AB /* GraphQLTodo6Tests.swift */,
+			);
+			path = Gen2_6;
+			sourceTree = "<group>";
+		};
+		213B96DC2BF4482D00DE74AB /* Gen2_7 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96DD2BF4484700DE74AB /* StoreBranch7.swift */,
+				213B96DE2BF4484700DE74AB /* StoreBranch7+Schema.swift */,
+				213B96E52BF4493300DE74AB /* GraphQLStoreBranch7Tests.swift */,
+			);
+			path = Gen2_7;
+			sourceTree = "<group>";
+		};
+		213B96E72BF44DCD00DE74AB /* Gen2_8 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96F02BF4500200DE74AB /* Customer8.swift */,
+				213B96F12BF4500200DE74AB /* Customer8+Schema.swift */,
+				213B96E82BF44DE600DE74AB /* GraphQLCustomer8Tests.swift */,
+			);
+			path = Gen2_8;
+			sourceTree = "<group>";
+		};
+		213B96EA2BF44F2800DE74AB /* Gen2_9 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96F42BF4500D00DE74AB /* Customer9.swift */,
+				213B96F52BF4500D00DE74AB /* Customer9+Schema.swift */,
+				213B96EC2BF44F4D00DE74AB /* GraphQLCustomer9Tests.swift */,
+			);
+			path = Gen2_9;
+			sourceTree = "<group>";
+		};
+		213B96EB2BF44F3400DE74AB /* Gen2_10 */ = {
+			isa = PBXGroup;
+			children = (
+				213B96F82BF4501B00DE74AB /* Customer10.swift */,
+				213B96F92BF4501B00DE74AB /* Customer10+Schema.swift */,
+				213B96EE2BF44F6D00DE74AB /* GraphQLCustomer10Tests.swift */,
+			);
+			path = Gen2_10;
+			sourceTree = "<group>";
+		};
+		213B96FC2BF4531100DE74AB /* Gen2_41 */ = {
+			isa = PBXGroup;
+			children = (
+				213B970C2BF4F1E800DE74AB /* Person41.swift */,
+				213B970D2BF4F1E800DE74AB /* Person41+Schema.swift */,
+				213B970E2BF4F1E800DE74AB /* Post41.swift */,
+				213B970B2BF4F1E800DE74AB /* Post41+Schema.swift */,
+				213B96FD2BF4533500DE74AB /* GraphQLPostPerson41Tests.swift */,
+			);
+			path = Gen2_41;
+			sourceTree = "<group>";
+		};
 		213DBC7628A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -934,9 +1149,20 @@
 		2163D60D2BE96C90009689B1 /* AWSAPIPluginGen2GraphQLTests */ = {
 			isa = PBXGroup;
 			children = (
-				2163D6192BE97476009689B1 /* LL3 */,
-				2163D6182BE9740B009689B1 /* LL1 */,
 				2163D60E2BE96C90009689B1 /* AWSAPIPluginGen2GraphQLBaseTest.swift */,
+				213B96962BF3B62C00DE74AB /* Gen2_1 */,
+				213B96942BF3B5EA00DE74AB /* Gen2_2 */,
+				213B96952BF3B62200DE74AB /* Gen2_3 */,
+				213B96972BF3B63600DE74AB /* Gen2_4 */,
+				213B96FC2BF4531100DE74AB /* Gen2_41 */,
+				213B96982BF3B63E00DE74AB /* Gen2_5 */,
+				213B96D72BF4480E00DE74AB /* Gen2_6 */,
+				213B96DC2BF4482D00DE74AB /* Gen2_7 */,
+				213B96E72BF44DCD00DE74AB /* Gen2_8 */,
+				213B96EA2BF44F2800DE74AB /* Gen2_9 */,
+				213B96EB2BF44F3400DE74AB /* Gen2_10 */,
+				2163D6182BE9740B009689B1 /* LL1 */,
+				2163D6192BE97476009689B1 /* LL3 */,
 				2163D6152BE96D12009689B1 /* README.md */,
 				2163D6162BE96E3D009689B1 /* TestConfigHelper.swift */,
 			);
@@ -2249,18 +2475,64 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				213B96AE2BF3B67500DE74AB /* Post1+Schema.swift in Sources */,
+				213B970F2BF4F1E800DE74AB /* Post41+Schema.swift in Sources */,
+				213B96D52BF4480900DE74AB /* Todo5.swift in Sources */,
+				213B96F72BF4500D00DE74AB /* Customer9+Schema.swift in Sources */,
+				213B969F2BF3B65800DE74AB /* Video2.swift in Sources */,
+				213B96CE2BF3E3D000DE74AB /* GraphQLPostVideoPrivacySetting2Tests.swift in Sources */,
+				213B96F22BF4500200DE74AB /* Customer8.swift in Sources */,
 				2163D61B2BE97494009689B1 /* GraphQLLazyLoadPostComment4V2Tests.swift in Sources */,
+				213B96E92BF44DE600DE74AB /* GraphQLCustomer8Tests.swift in Sources */,
+				213B96D02BF3E64C00DE74AB /* GraphQLTeamMember3Tests.swift in Sources */,
+				213B97112BF4F1E800DE74AB /* Person41+Schema.swift in Sources */,
+				213B96B32BF3B6C100DE74AB /* Team3+Schema.swift in Sources */,
+				213B96F62BF4500D00DE74AB /* Customer9.swift in Sources */,
+				213B96DF2BF4484700DE74AB /* StoreBranch7.swift in Sources */,
+				213B97122BF4F1E800DE74AB /* Post41.swift in Sources */,
+				213B97102BF4F1E800DE74AB /* Person41.swift in Sources */,
+				213B96D62BF4480900DE74AB /* Todo5+Schema.swift in Sources */,
 				2163D60F2BE96C90009689B1 /* AWSAPIPluginGen2GraphQLBaseTest.swift in Sources */,
 				2163D62D2BE974E6009689B1 /* PostWithCompositeKey+Schema.swift in Sources */,
+				213B96FB2BF4501B00DE74AB /* Customer10+Schema.swift in Sources */,
+				213B96A92BF3B67500DE74AB /* Location1.swift in Sources */,
+				213B96BC2BF3B6D400DE74AB /* Cart4.swift in Sources */,
 				2163D6252BE974D8009689B1 /* Comment4V2.swift in Sources */,
+				213B96BD2BF3B6D400DE74AB /* Cart4+Schema.swift in Sources */,
 				2163D6242BE974D8009689B1 /* Post4V2.swift in Sources */,
+				213B96AD2BF3B67500DE74AB /* Location1+Schema.swift in Sources */,
+				213B96BE2BF3B6D400DE74AB /* Customer4+Schema.swift in Sources */,
+				213B96ED2BF44F4D00DE74AB /* GraphQLCustomer9Tests.swift in Sources */,
 				2163D6172BE96E3D009689B1 /* TestConfigHelper.swift in Sources */,
+				213B96B42BF3B6C100DE74AB /* Member3.swift in Sources */,
 				2163D62A2BE974E6009689B1 /* PostWithCompositeKey.swift in Sources */,
+				213B96E62BF4493300DE74AB /* GraphQLStoreBranch7Tests.swift in Sources */,
+				213B969E2BF3B65800DE74AB /* Post2+Schema.swift in Sources */,
 				2163D61D2BE974B0009689B1 /* GraphQLLazyLoadPostCommentWithCompositeKeyTests.swift in Sources */,
+				213B96F32BF4500200DE74AB /* Customer8+Schema.swift in Sources */,
+				213B96DB2BF4481F00DE74AB /* Todo6.swift in Sources */,
+				213B96E42BF4492400DE74AB /* GraphQLTodo6Tests.swift in Sources */,
 				2163D62C2BE974E6009689B1 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				213B96BB2BF3B6D400DE74AB /* Customer4.swift in Sources */,
+				213B96FE2BF4533500DE74AB /* GraphQLPostPerson41Tests.swift in Sources */,
+				213B96CC2BF3BA2300DE74AB /* GraphQLLocationPostUser1Tests.swift in Sources */,
+				213B96E22BF4486900DE74AB /* GraphQLTodo5Tests.swift in Sources */,
+				213B96DA2BF4481F00DE74AB /* Todo6+Schema.swift in Sources */,
+				213B96D22BF3EFD000DE74AB /* GraphQLCartCustomer4Tests.swift in Sources */,
 				2163D62B2BE974E6009689B1 /* CommentWithCompositeKey.swift in Sources */,
+				213B96B62BF3B6C100DE74AB /* Team3.swift in Sources */,
+				213B96AB2BF3B67500DE74AB /* Post1.swift in Sources */,
+				213B96B52BF3B6C100DE74AB /* Member3+Schema.swift in Sources */,
+				213B96FA2BF4501B00DE74AB /* Customer10.swift in Sources */,
+				213B96E02BF4484700DE74AB /* StoreBranch7+Schema.swift in Sources */,
+				213B96AA2BF3B67500DE74AB /* User1.swift in Sources */,
 				2163D6222BE974D8009689B1 /* Comment4V2+Schema.swift in Sources */,
+				213B96A02BF3B65800DE74AB /* PrivacySetting2.swift in Sources */,
+				213B96A22BF3B65800DE74AB /* Video2+Schema.swift in Sources */,
+				213B96A12BF3B65800DE74AB /* Post2.swift in Sources */,
 				2163D6232BE974D8009689B1 /* Post4V2+Schema.swift in Sources */,
+				213B96AC2BF3B67500DE74AB /* User1+Schema.swift in Sources */,
+				213B96EF2BF44F6D00DE74AB /* GraphQLCustomer10Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
