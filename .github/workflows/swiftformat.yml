@@ -31,7 +31,7 @@ jobs:
 
       - name: SwiftFormat
         run: |
-          swiftformat --lint --lenient . --reporter github-actions-log
+          swiftformat --lint . --reporter github-actions-log
 
   confirm-pass:
     runs-on: macos-latest
