@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.35.0 (2024-06-04)
+
+### Features
+
+- **datastore**: refactor datastore category to use APICategoryGraphQLBehavior (#3666)
+
+### Bug Fixes
+
+- **ci**: update unstable release file path in CI scripts (#3737)
+
 ## 2.34.4 (2024-06-03)
 
 ## 2.34.3 (2024-05-30)
