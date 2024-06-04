@@ -46,7 +46,7 @@ class DataStoreLargeNumberModelsSubscriptionTests: SyncEngineIntegrationTestBase
     }
 
     func testDataStoreStop_subscriptionsShouldAllUnsubscribed() async throws {
-        await setUp(withModels: TestModelRegistration())
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startAmplifyAndWaitForSync()
 
         try await stopDataStoreAndVerifyAppSyncClientDisconnected()

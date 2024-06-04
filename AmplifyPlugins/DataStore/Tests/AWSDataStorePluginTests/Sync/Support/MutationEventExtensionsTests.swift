@@ -21,7 +21,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     ///         event model that matches the received mutation sync model. The received mutation sync has version 1.
     /// - When: The sent model matches the received model and the first pending mutation event version is `nil`.
     /// - Then: The pending mutation event version should be updated to the received model version of 1.
-    func testSentModelWithNilVersion_Reconciled() throws {
+    func testSentModelWithNilVersion_Reconciled() async throws {
         let modelId = UUID().uuidString
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
         let requestMutationEvent = try createMutationEvent(model: post,
@@ -57,7 +57,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [updatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the updated version
         MutationEvent.pendingMutationEvents(forModel: post,
@@ -75,7 +75,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with two events(update and delete) containing `nil` version,
@@ -85,7 +85,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     ///         the second pending mutation event(delete) version is `nil`.
     /// - Then: The first pending mutation event(update) version should be updated to the received model version of 1
     ///         and the second pending mutation event version(delete) should not be updated.
-    func testSentModelWithNilVersion_SecondPendingEventNotReconciled() throws {
+    func testSentModelWithNilVersion_SecondPendingEventNotReconciled() async throws {
         let modelId = UUID().uuidString
         let post = Post(id: modelId, title: "title", content: "content", createdAt: .now())
         let requestMutationEvent = try createMutationEvent(model: post,
@@ -127,7 +127,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [updatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the updated version
         MutationEvent.pendingMutationEvents(forModel: post,
@@ -146,7 +146,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with event containing version 2, a sent mutation event model
@@ -154,7 +154,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     ///         version 1.
     /// - When: The sent model matches the received model and the first pending mutation event version is 2.
     /// - Then: The first pending mutation event version should NOT be updated.
-    func testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled() throws {
+    func testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled() async throws {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
@@ -190,7 +190,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [updatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
@@ -208,7 +208,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with event containing version 1, a sent mutation event model
@@ -216,7 +216,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     ///         sync has version 2.
     /// - When: The sent model doesn't match the received model and the first pending mutation event version is 1.
     /// - Then: The first pending mutation event version should NOT be updated.
-    func testSentModelNotEqualToResponseModel_PendingEventNotReconciled() throws {
+    func testSentModelNotEqualToResponseModel_PendingEventNotReconciled() async throws {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
@@ -253,7 +253,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [updatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
@@ -271,7 +271,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     /// - Given: A pending mutation events queue with event containing version 1, a sent mutation event model
@@ -279,7 +279,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
     ///         has version 2.
     /// - When: The sent model matches the received model and the first pending mutation event version is 1.
     /// - Then: The first pending mutation event version should be updated to received mutation sync version i.e. 2.
-    func testPendingVersionReconciledSuccess() throws {
+    func testPendingVersionReconciledSuccess() async throws {
         let modelId = UUID().uuidString
         let post1 = Post(id: modelId, title: "title1", content: "content1", createdAt: .now())
         let post2 = Post(id: modelId, title: "title2", content: "content2", createdAt: .now())
@@ -315,7 +315,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 updatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [updatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [updatingVersionExpectation], timeout: 1)
 
         // query for head of mutation event table for given model id and check if it has the correct version
         MutationEvent.pendingMutationEvents(forModel: post1,
@@ -333,7 +333,7 @@ class MutationEventExtensionsTest: BaseDataStoreTests {
                 queryAfterUpdatingVersionExpectation.fulfill()
             }
         }
-        wait(for: [queryAfterUpdatingVersionExpectation], timeout: 1)
+        await fulfillment(of: [queryAfterUpdatingVersionExpectation], timeout: 1)
     }
 
     private func createMutationEvent(model: Model,

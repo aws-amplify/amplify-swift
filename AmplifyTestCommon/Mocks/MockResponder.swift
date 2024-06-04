@@ -42,6 +42,22 @@ public struct MockResponder<Parameters, Result> {
     }
 }
 
+public struct MockAsyncResponder<Parameters, Result> {
+    public typealias Callback = (Parameters) async -> Result
+    public let callback: Callback
+    public init(callback: @escaping Callback) {
+        self.callback = callback
+    }
+}
+
+public struct MockAsyncThrowingResponder<Parameters, Result> {
+    public typealias Callback = (Parameters) async throws -> Result
+    public let callback: Callback
+    public init(callback: @escaping Callback) {
+        self.callback = callback
+    }
+}
+
 /// A MockResponder variant whose callback throws
 public struct ThrowingMockResponder<Parameters, Result> {
     public typealias Callback = (Parameters) throws -> Result

@@ -46,7 +46,8 @@ platform :ios do
   desc "Increment versions"
   private_lane :increment_versions do |options|
     version = options[:version].to_s
-    set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "amplifyVersion", value: version)
+    configuration_file_path = "AmplifyPlugins/Core/AmplifyCredentials/AmplifyAWSServiceConfiguration.swift"
+    set_key_value(file: configuration_file_path, key: "amplifyVersion", value: version)
   end
 
   desc "Commit and push"
@@ -77,7 +78,7 @@ platform :ios do
     version = options[:version].to_s
     changelog = options[:changelog]
     tag = "#{version}"
-  
+
     sh('bundle', 'exec', 'swift', 'package', 'update')
 
     write_changelog(changelog: changelog, path: 'CHANGELOG.md')

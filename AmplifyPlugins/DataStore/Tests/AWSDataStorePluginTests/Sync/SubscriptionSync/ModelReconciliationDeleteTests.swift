@@ -40,14 +40,16 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         storageAdapter.save(localSyncMetadata) { _ in localMetadataSaved.fulfill() }
         await fulfillment(of: [localMetadataSaved], timeout: 1)
 
-        var valueListenerFromRequest: MutationSyncInProcessListener?
+        var asyncSequence: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<MutationSync<AnyModel>>>?
         let expectationListener = expectation(description: "listener")
-        let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> { request, valueListener, _ in
+        let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> { request in
             if request.document.contains("onUpdateMockSynced") {
-                valueListenerFromRequest = valueListener
                 expectationListener.fulfill()
             }
-            return nil
+
+            let sequence = AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<MutationSync<AnyModel>>>()
+            asyncSequence = sequence
+            return sequence
         }
 
         apiPlugin.responders[.subscribeRequestListener] = responder
@@ -59,7 +61,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         }
 
         await fulfillment(of: [expectationListener], timeout: 2)
-        guard let valueListener = valueListenerFromRequest else {
+        guard let asyncSequence else {
                 XCTFail("Incoming responder didn't set up listener")
                 return
         }
@@ -71,7 +73,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 1)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        valueListener(.data(.success(remoteMutationSync)))
+        asyncSequence.send(.data(.success(remoteMutationSync)))
 
         // Because we expect this event to be dropped, there won't be a Hub notification or callback to listen to, so
         // we have to brute-force this wait
@@ -106,9 +108,13 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                             let onUpdateListener: MutationSyncInProcessListener = { _ in
                                 print("emptyListener")
                             }
-                            _ = self.apiPlugin.subscribe(request: request,
-                                                         valueListener: onUpdateListener,
-                                                         completionListener: nil)
+
+                            Task {
+                                let sequence = self.apiPlugin.subscribe(request: request)
+                                for try await event in sequence {
+                                    onUpdateListener(event)
+                                }
+                            }
                             MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                         }
                     default:
@@ -131,15 +137,15 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             try setUpStorageAdapter()
         }
 
-        var valueListenerFromRequest: MutationSyncInProcessListener?
+        var asyncSequence: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<MutationSync<AnyModel>>>?
 
-        let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> {request, valueListener, _ in
+        let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> {request in
             if request.document.contains("onUpdateMockSynced") {
-                valueListenerFromRequest = valueListener
                 expectationListener.fulfill()
             }
-
-            return nil
+            let sequence = AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<MutationSync<AnyModel>>>()
+            asyncSequence = sequence
+            return sequence
         }
 
         apiPlugin.responders[.subscribeRequestListener] = responder
@@ -151,7 +157,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         }
         
         await fulfillment(of: [expectationListener], timeout: 1)
-        guard let valueListener = valueListenerFromRequest else {
+        guard let asyncSequence else {
             XCTFail("Incoming responder didn't set up listener")
             return
         }
@@ -174,7 +180,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        valueListener(.data(.success(remoteMutationSync)))
+        asyncSequence.send(.data(.success(remoteMutationSync)))
 
         await fulfillment(of: [syncReceivedNotification], timeout: 1)
         let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
@@ -225,9 +231,12 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                                     break
                                 }
                             }
-                            _ = self.apiPlugin.subscribe(request: request,
-                                                         valueListener: onUpdateListener,
-                                                         completionListener: nil)
+                            Task {
+                                let sequence = self.apiPlugin.subscribe(request: request)
+                                for try await event in sequence {
+                                    onUpdateListener(event)
+                                }
+                            }
                             MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                         }
                     default:

@@ -76,7 +76,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     ///   - the `save(post)` is called
     /// - Then:
     ///   - call `query(Post)` to check if the model was correctly inserted
-    func testInsertPost() {
+    func testInsertPost() async {
         let expectation = self.expectation(
             description: "it should save and select a Post from the database")
 
@@ -115,7 +115,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                 expectation.fulfill()
             }
         }
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -124,7 +124,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     /// - Then:
     ///   - call `query(Post, where: title == post.title)` to check
     ///   if the model was correctly inserted using a predicate
-    func testInsertPostAndSelectByTitle() {
+    func testInsertPostAndSelectByTitle() async {
         let expectation = self.expectation(
             description: "it should save and select a Post from the database")
 
@@ -163,7 +163,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -173,7 +173,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     ///   - call `save(post)` again with an updated title
     ///   - check if the `query(Post)` returns only 1 post
     ///   - the post has the updated title
-    func testInsertPostAndThenUpdateIt() {
+    func testInsertPostAndThenUpdateIt() async {
         let expectation = self.expectation(
             description: "it should insert and update a Post")
 
@@ -224,7 +224,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// - Given: a list a `Post` instance
@@ -233,7 +233,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
     /// - Then:
     ///   - call `delete(Post, id)` and check if `query(Post)` is empty
     ///   - check if `storageAdapter.exists(Post, id)` returns `false`
-    func testInsertPostAndThenDeleteIt() {
+    func testInsertPostAndThenDeleteIt() async {
         let saveExpectation = expectation(description: "Saved")
         let deleteExpectation = expectation(description: "Deleted")
         let queryExpectation = expectation(description: "Queried")
@@ -270,7 +270,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             }
         }
 
-        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+        await fulfillment(of: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
     /// - Given: A Post instance

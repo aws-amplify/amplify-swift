@@ -8,6 +8,7 @@
 @_spi(InternalAmplifyConfiguration) import Amplify
 import Foundation
 import AWSPluginsCore
+import InternalAmplifyCredentials
 
 // Convenience typealias
 typealias APIEndpointName = String
@@ -17,11 +18,11 @@ public struct AWSAPICategoryPluginConfiguration {
     private var interceptors: [APIEndpointName: AWSAPIEndpointInterceptors]
 
     private var apiAuthProviderFactory: APIAuthProviderFactory?
-    private var authService: AWSAuthServiceBehavior?
+    private var authService: AWSAuthCredentialsProviderBehavior?
 
     init(jsonValue: JSONValue,
          apiAuthProviderFactory: APIAuthProviderFactory,
-         authService: AWSAuthServiceBehavior) throws {
+         authService: AWSAuthCredentialsProviderBehavior) throws {
         guard case .object(let config) = jsonValue else {
             throw PluginError.pluginConfigurationError(
                 "Could not cast incoming configuration to a JSONValue `.object`",
@@ -50,7 +51,7 @@ public struct AWSAPICategoryPluginConfiguration {
 
     init(configuration: AmplifyOutputsData,
          apiAuthProviderFactory: APIAuthProviderFactory,
-         authService: AWSAuthServiceBehavior) throws {
+         authService: AWSAuthCredentialsProviderBehavior) throws {
 
         guard let data = configuration.data else {
             throw PluginError.pluginConfigurationError(
@@ -95,7 +96,7 @@ public struct AWSAPICategoryPluginConfiguration {
     internal init(endpoints: [APIEndpointName: EndpointConfig],
                   interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:],
                   apiAuthProviderFactory: APIAuthProviderFactory,
-                  authService: AWSAuthServiceBehavior) {
+                  authService: AWSAuthCredentialsProviderBehavior) {
         self.endpoints = endpoints
         self.interceptors = interceptors
         self.apiAuthProviderFactory = apiAuthProviderFactory
@@ -215,7 +216,7 @@ public struct AWSAPICategoryPluginConfiguration {
     /// - Returns: dictionary of AWSAPIEndpointInterceptors indexed by API endpoint name
     private static func makeInterceptors(forEndpoints endpoints: [APIEndpointName: EndpointConfig],
                                          apiAuthProviderFactory: APIAuthProviderFactory,
-                                         authService: AWSAuthServiceBehavior) throws -> [APIEndpointName: AWSAPIEndpointInterceptors] {
+                                         authService: AWSAuthCredentialsProviderBehavior) throws -> [APIEndpointName: AWSAPIEndpointInterceptors] {
         var interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:]
         for (name, config) in endpoints {
             var interceptorsConfig = AWSAPIEndpointInterceptors(endpointName: name,

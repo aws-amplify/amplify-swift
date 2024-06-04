@@ -228,7 +228,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     }
 
     func testDeleteWithInvalidCondition() async throws {
-        await setUp(withModels: TestModelRegistration())
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startAmplifyAndWaitForSync()
         let team = Team1(name: "name")
         let project = Project1(team: team)

@@ -15,7 +15,7 @@ import AWSPluginsCore
 class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
 
     /// Tests that upon completion, the operation is removed from the task mapper.
-    func testOperationCleanup() {
+    func testOperationCleanup() async {
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
@@ -34,7 +34,7 @@ class AWSGraphQLOperationTests: AWSAPICategoryPluginTestBase {
         } receiveValue: { _ in }
         defer { sink.cancel() }
 
-        wait(for: [receivedCompletion], timeout: 1)
+        await fulfillment(of: [receivedCompletion], timeout: 1)
         let task = operation.mapper.task(for: operation)
         XCTAssertNil(task)
     }

@@ -30,8 +30,7 @@ let amplifyTargets: [Target] = [
     .target(
         name: "AWSPluginsCore",
         dependencies: [
-            "Amplify",
-            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+            "Amplify"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCore",
         exclude: [
@@ -42,11 +41,23 @@ let amplifyTargets: [Target] = [
         ]
     ),
     .target(
+        name: "InternalAmplifyCredentials",
+        dependencies: [
+            "Amplify",
+            "AWSPluginsCore",
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyPlugins/Core/AmplifyCredentials",
+        resources: [
+            .copy("Resources/PrivacyInfo.xcprivacy")
+        ]
+    ),
+    .target(
         name: "AmplifyTestCommon",
         dependencies: [
             "Amplify",
             "CwlPreconditionTesting",
-            "AWSPluginsCore"
+            "InternalAmplifyCredentials"
         ],
         path: "AmplifyTestCommon",
         exclude: [
@@ -89,6 +100,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "AWSPluginsCore",
+            "InternalAmplifyCredentials",
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
@@ -100,13 +112,21 @@ let amplifyTargets: [Target] = [
         name: "AWSPluginsCoreTests",
         dependencies: [
             "AWSPluginsCore",
-            "AmplifyTestCommon",
-            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+            "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
             "Info.plist"
         ]
+    ),
+    .testTarget(
+        name: "InternalAmplifyCredentialsTests",
+        dependencies: [
+            "InternalAmplifyCredentials",
+            "AmplifyTestCommon",
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
+        ],
+        path: "AmplifyPlugins/Core/AmplifyCredentialsTests"
     )
 ]
 
@@ -115,7 +135,7 @@ let apiTargets: [Target] = [
         name: "AWSAPIPlugin",
         dependencies: [
             .target(name: "Amplify"),
-            .target(name: "AWSPluginsCore")
+            .target(name: "InternalAmplifyCredentials")
         ],
         path: "AmplifyPlugins/API/Sources/AWSAPIPlugin",
         exclude: [
@@ -161,6 +181,7 @@ let authTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "InternalAmplifyCredentials"),
             .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
@@ -234,6 +255,7 @@ let storageTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "InternalAmplifyCredentials"),
             .product(name: "AWSS3", package: "aws-sdk-swift")],
         path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
@@ -264,6 +286,7 @@ let geoTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "InternalAmplifyCredentials"),
             .product(name: "AWSLocation", package: "aws-sdk-swift")],
         path: "AmplifyPlugins/Geo/Sources/AWSLocationGeoPlugin",
         exclude: [
@@ -295,6 +318,7 @@ let internalPinpointTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "InternalAmplifyCredentials"),
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
             .product(name: "AmplifyUtilsNotifications", package: "amplify-swift-utils-notifications")
@@ -363,6 +387,7 @@ let predictionsTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "InternalAmplifyCredentials"),
             .target(name: "CoreMLPredictionsPlugin"),
             .product(name: "AWSComprehend", package: "aws-sdk-swift"),
             .product(name: "AWSPolly", package: "aws-sdk-swift"),
@@ -413,6 +438,7 @@ let loggingTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
+            .target(name: "InternalAmplifyCredentials"),
             .product(name: "AWSCloudWatchLogs", package: "aws-sdk-swift"),
         ],
         path: "AmplifyPlugins/Logging/Sources/AWSCloudWatchLoggingPlugin",
@@ -457,6 +483,10 @@ let package = Package(
         .library(
             name: "AWSPluginsCore",
             targets: ["AWSPluginsCore"]
+        ),
+        .library(
+            name: "InternalAmplifyCredentials",
+            targets: ["InternalAmplifyCredentials"]
         ),
         .library(
             name: "AWSAPIPlugin",

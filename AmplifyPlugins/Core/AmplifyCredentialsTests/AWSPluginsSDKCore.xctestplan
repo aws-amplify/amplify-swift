@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "9D7C41C1-F847-4136-AB74-D1E17831BCDD",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "InternalAmplifyCredentialsTests",
+        "name" : "InternalAmplifyCredentialsTests"
+      }
+    }
+  ],
+  "version" : 1
+}

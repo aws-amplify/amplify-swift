@@ -530,7 +530,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - MutationType is `delete`, remote model is an update, conflict handler returns `.retryLocal`
     /// - Then:
     ///    - API is called to delete with local model
-    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryLocal() throws {
+    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryLocal() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
@@ -546,19 +546,32 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
 
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
-                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
-                    XCTFail("The document variables property doesn't contain a valid input")
-                    return nil
-                }
-                XCTAssert(input["id"] as? String == localPost.id)
-                XCTAssert(request.document.contains("DeletePost"))
-                eventListenerOptional = eventListener
-                apiMutateCalled.fulfill()
-                return nil
+        mockAPIPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
+                                                       modelName: remotePost.modelName,
+                                                       deleted: true,
+                                                       lastChangedAt: 0,
+                                                       version: 3)
+
+            guard let variables = request.variables,
+                let input = variables["input"] as? [String: Any]
+            else {
+                XCTFail("The document variables property doesn't contain a valid input")
+                return .failure(.unknown("", "", nil))
+            }
+            XCTAssert(input["id"] as? String == localPost.id)
+            XCTAssert(request.document.contains("DeletePost"))
+            apiMutateCalled.fulfill()
+
+            guard let mockResponse = (
+                    try? localPost.eraseToAnyModel()
+                ).map({ MutationSync(model:$0 , syncMetadata: updatedMetadata) })
+            else {
+                XCTFail("Failed to wrap to AnyModel")
+                return .failure(.unknown("", "", nil))
+            }
+            return .success(mockResponse)
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
@@ -585,21 +598,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
-        guard let eventListener = eventListenerOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
-                                                   modelName: remotePost.modelName,
-                                                   deleted: true,
-                                                   lastChangedAt: 0,
-                                                   version: 3)
-        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.success(.success(mockResponse)))
-
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -607,7 +608,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - MutationType is `delete`, remote model is an update, conflict handler returns `.retry(model)`
     /// - Then:
     ///    - API is called with the model from the conflict handler result
-    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryModel() throws {
+    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryModel() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
@@ -624,19 +625,28 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: .now())
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
+
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
-                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
-                    XCTFail("The document variables property doesn't contain a valid input")
-                    return nil
-                }
-                XCTAssert(input["title"] as? String == retryModel.title)
-                XCTAssertTrue(request.document.contains("UpdatePost"))
-                eventListenerOptional = eventListener
-                apiMutateCalled.fulfill()
-                return nil
+        mockAPIPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                XCTFail("The document variables property doesn't contain a valid input")
+                return .failure(.unknown("The document variables property doesn't contain a valid input", "", nil))
+            }
+            XCTAssert(input["title"] as? String == retryModel.title)
+            XCTAssertTrue(request.document.contains("UpdatePost"))
+            apiMutateCalled.fulfill()
+
+            let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
+                                                       modelName: remotePost.modelName,
+                                                       deleted: false,
+                                                       lastChangedAt: 0,
+                                                       version: 3)
+            guard let mockResponse = (try? localPost.eraseToAnyModel()).map({ MutationSync(model: $0, syncMetadata: updatedMetadata) }) else {
+                XCTFail("Failed to wrap to AnyModel")
+                return .failure(.unknown("Failed to wrap to AnyModel", "", nil))
+            }
+
+            return .success(mockResponse)
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
@@ -663,21 +673,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
-        guard let eventListener = eventListenerOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
-                                                   modelName: remotePost.modelName,
-                                                   deleted: false,
-                                                   lastChangedAt: 0,
-                                                   version: 3)
-        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.success(.success(mockResponse)))
-
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -685,7 +683,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - MutationType is `delete`, remote model is an update, conflict handler returns `.applyRemote`
     /// - Then:
     ///    - Local Store is reconciled(recreated) to remote model, result mutationEvent is `update`
-    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsApplyRemote() throws {
+    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsApplyRemote() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
@@ -742,9 +740,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                completion: completion)
         queue.addOperation(operation)
 
-        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -753,13 +751,15 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - MutationType is `update`, remote model is deleted
     /// - Then:
     ///    - Local model is deleted, result mutationEvent is `delete`
-    func testConflictUnhandledForUpdateMutationAndDeletedRemoteModel() throws {
+    func testConflictUnhandledForUpdateMutationAndDeletedRemoteModel() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
-        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
-                                                                     deleted: true,
-                                                                     version: 2) else {
+        guard let graphQLResponseError = try getGraphQLResponseError(
+            withRemote: remotePost,
+            deleted: true,
+            version: 2
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -797,19 +797,23 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                 expectHubEvent.fulfill()
             }
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .testDefault(),
-                                                               mutationEvent: mutationEvent,
-                                                               api: mockAPIPlugin,
-                                                               storageAdapter: storageAdapter,
-                                                               graphQLResponseError: graphQLResponseError,
-                                                               completion: completion)
 
+        let operation = ProcessMutationErrorFromCloudOperation(
+            dataStoreConfiguration: .testDefault(),
+            mutationEvent: mutationEvent,
+            api: mockAPIPlugin,
+            storageAdapter: storageAdapter,
+            graphQLResponseError: graphQLResponseError,
+            completion: completion
+        )
         queue.addOperation(operation)
 
-        wait(for: [modelDeletedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [
+            modelDeletedEvent,
+            metadataSavedEvent,
+            expectHubEvent,
+            expectCompletion
+        ], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -818,13 +822,15 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - MutationType is `update`, remote model is an update, conflict handler returns `.applyRemote`
     /// - Then:
     ///    - Local model is updated with remote model data, result mutationEvent is `update`
-    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsApplyRemote() throws {
+    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsApplyRemote() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
-        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
-                                                                     deleted: false,
-                                                                     version: 2) else {
+        guard let graphQLResponseError = try getGraphQLResponseError(
+            withRemote: remotePost,
+            deleted: false,
+            version: 2
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -879,19 +885,24 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectConflicthandlerCalled.fulfill()
             resolve(.applyRemote)
         })
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
-                                                               mutationEvent: mutationEvent,
-                                                               api: mockAPIPlugin,
-                                                               storageAdapter: storageAdapter,
-                                                               graphQLResponseError: graphQLResponseError,
-                                                               completion: completion)
+
+        let operation = ProcessMutationErrorFromCloudOperation(
+            dataStoreConfiguration: configuration,
+            mutationEvent: mutationEvent,
+            api: mockAPIPlugin,
+            storageAdapter: storageAdapter,
+            graphQLResponseError: graphQLResponseError,
+            completion: completion
+        )
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [
+            expectConflicthandlerCalled,
+            modelSavedEvent,
+            metadataSavedEvent,
+            expectHubEvent,
+            expectCompletion
+        ], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -900,13 +911,15 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - MutationType is `update`, remote model is an update, conflict handler returns `.retryLocal`
     /// - Then:
     ///    - API is called to update with the local model
-    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryLocal() throws {
+    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryLocal() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
-        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
-                                                                     deleted: false,
-                                                                     version: 2) else {
+        guard let graphQLResponseError = try getGraphQLResponseError(
+            withRemote: remotePost,
+            deleted: false,
+            version: 2
+        ) else {
             XCTFail("Couldn't get GraphQL response with remote post")
             return
         }
@@ -920,19 +933,32 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
 
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
-                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
-                    XCTFail("The document variables property doesn't contain a valid input")
-                    return nil
-                }
-                XCTAssert(input["title"] as? String == localPost.title)
-                XCTAssertTrue(request.document.contains("UpdatePost"))
-                eventListenerOptional = eventListener
-                apiMutateCalled.fulfill()
-                return nil
+        mockAPIPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                XCTFail("The document variables property doesn't contain a valid input")
+                return .failure(.unknown("The document variables property doesn't contain a valid input", "", nil))
+            }
+            XCTAssert(input["title"] as? String == localPost.title)
+            XCTAssertTrue(request.document.contains("UpdatePost"))
+            apiMutateCalled.fulfill()
+
+            let updatedMetadata = MutationSyncMetadata(
+                modelId: remotePost.id,
+                modelName: remotePost.modelName,
+                deleted: false,
+                lastChangedAt: 0,
+                version: 3
+            )
+
+            guard let mockResponse = (try? localPost.eraseToAnyModel())
+                .map({ MutationSync(model: $0, syncMetadata: updatedMetadata) })
+            else {
+                XCTFail("Failed to wrap to AnyModel")
+                return .failure(.unknown("Failed to wrap AnyModel", "", nil))
+            }
+
+            return .success(mockResponse)
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
@@ -948,30 +974,23 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectConflicthandlerCalled.fulfill()
             resolve(.retryLocal)
         })
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
-                                                               mutationEvent: mutationEvent,
-                                                               api: mockAPIPlugin,
-                                                               storageAdapter: storageAdapter,
-                                                               graphQLResponseError: graphQLResponseError,
-                                                               reconciliationQueue: reconciliationQueue,
-                                                               completion: completion)
 
+        let operation = ProcessMutationErrorFromCloudOperation(
+            dataStoreConfiguration: configuration,
+            mutationEvent: mutationEvent,
+            api: mockAPIPlugin,
+            storageAdapter: storageAdapter,
+            graphQLResponseError: graphQLResponseError,
+            reconciliationQueue: reconciliationQueue,
+            completion: completion
+        )
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
-        guard let eventListener = eventListenerOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
-                                                   modelName: remotePost.modelName,
-                                                   deleted: false,
-                                                   lastChangedAt: 0,
-                                                   version: 3)
-        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.success(.success(mockResponse)))
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [
+            expectConflicthandlerCalled,
+            apiMutateCalled,
+            expectCompletion
+        ], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -979,7 +998,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - MutationType is `update`, remote model is an update, conflict handler returns `.retry(Model)`
     /// - Then:
     ///    - API is called to update the model from the conflict handler result
-    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryModel() throws {
+    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryModel() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
@@ -1000,19 +1019,30 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: .now())
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
+
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
-                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
-                    XCTFail("The document variables property doesn't contain a valid input")
-                    return nil
-                }
-                XCTAssert(input["title"] as? String == retryModel.title)
-                XCTAssertTrue(request.document.contains("UpdatePost"))
-                eventListenerOptional = eventListener
-                apiMutateCalled.fulfill()
-                return nil
+        mockAPIPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                XCTFail("The document variables property doesn't contain a valid input")
+                return .failure(.unknown("The document variables property doesn't contain a valid input", "", nil))
+            }
+            XCTAssert(input["title"] as? String == retryModel.title)
+            XCTAssertTrue(request.document.contains("UpdatePost"))
+            apiMutateCalled.fulfill()
+            let updatedMetadata = MutationSyncMetadata(
+                modelId: remotePost.id,
+                modelName: remotePost.modelName,
+                deleted: false,
+                lastChangedAt: 0,
+                version: 3
+            )
+            guard let mockResponse = (try? localPost.eraseToAnyModel())
+                .map({ MutationSync(model: $0, syncMetadata: updatedMetadata) })
+            else {
+                XCTFail("Failed to wrap to AnyModel")
+                return .failure(.unknown("Failed to wrap to AnyModel", "", nil))
+            }
+            return .success(mockResponse)
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
@@ -1028,29 +1058,22 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectConflicthandlerCalled.fulfill()
             resolve(.retry(retryModel))
         })
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
-                                                               mutationEvent: mutationEvent,
-                                                               api: mockAPIPlugin,
-                                                               storageAdapter: storageAdapter,
-                                                               graphQLResponseError: graphQLResponseError,
-                                                               reconciliationQueue: reconciliationQueue,
-                                                               completion: completion)
+        let operation = ProcessMutationErrorFromCloudOperation(
+            dataStoreConfiguration: configuration,
+            mutationEvent: mutationEvent,
+            api: mockAPIPlugin,
+            storageAdapter: storageAdapter,
+            graphQLResponseError: graphQLResponseError,
+            reconciliationQueue: reconciliationQueue,
+            completion: completion
+        )
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
-        guard let eventListener = eventListenerOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-        let updatedMetadata = MutationSyncMetadata(modelId: remotePost.id,
-                                                   modelName: remotePost.modelName,
-                                                   deleted: false,
-                                                   lastChangedAt: 0,
-                                                   version: 3)
-        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.success(.success(mockResponse)))
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [
+            expectConflicthandlerCalled,
+            apiMutateCalled,
+            expectCompletion
+        ], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -1059,7 +1082,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - API is called to update with local model and response contains error
     /// - Then:
     ///    - `DataStoreErrorHandler` is called
-    func testConflictUnhandledSyncToCloudReturnsError() throws {
+    func testConflictUnhandledSyncToCloudReturnsError() async throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
@@ -1079,19 +1102,18 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
 
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
+
         let apiMutateCalled = expectation(description: "API was called")
-        mockAPIPlugin.responders[.mutateRequestListener] =
-            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
-                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
-                    XCTFail("The document variables property doesn't contain a valid input")
-                    return nil
-                }
-                XCTAssert(input["title"] as? String == localPost.title)
-                XCTAssertTrue(request.document.contains("UpdatePost"))
-                eventListenerOptional = eventListener
-                apiMutateCalled.fulfill()
-                return nil
+        mockAPIPlugin.responders[.mutateRequestResponse] = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                XCTFail("The document variables property doesn't contain a valid input")
+                return .failure(.unknown("The document variables property doesn't contain a valid input", "", nil))
+            }
+
+            XCTAssert(input["title"] as? String == localPost.title)
+            XCTAssertTrue(request.document.contains("UpdatePost"))
+            apiMutateCalled.fulfill()
+            return .failure(.error([GraphQLError(message: "some other error")]))
         }
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
@@ -1118,18 +1140,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                completion: completion)
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
-        guard let eventListener = eventListenerOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-
-        let error = GraphQLError(message: "some other error")
-        eventListener(.success(.failure(.error([error]))))
-
-        wait(for: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [
+            expectConflicthandlerCalled,
+            apiMutateCalled,
+            expectErrorHandlerCalled,
+            expectCompletion
+        ], timeout: defaultAsyncWaitTimeout)
     }
 
     /// Given: GraphQL "OperationDisabled" error
@@ -1137,7 +1153,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - API is called and response contains an "OperationDisabled" error
     /// - Then:
     ///    - Completion handler is successfully called
-    func testProcessOperationDisabledError() throws {
+    func testProcessOperationDisabledError() async throws {
         let post = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: post, modelSchema: Post.schema, mutationType: .create)
         let expectCompletion = expectation(description: "Expect to complete error processing")
@@ -1164,7 +1180,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             completion: completion)
 
         queue.addOperation(operation)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 }
 
