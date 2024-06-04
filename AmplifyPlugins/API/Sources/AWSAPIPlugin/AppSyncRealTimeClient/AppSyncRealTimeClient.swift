@@ -298,6 +298,16 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         .eraseToAnyPublisher()
     }
 
+    private func reconnect() async {
+        do {
+            log.debug("[AppSyncRealTimeClient] Reconnecting")
+            await disconnect()
+            try await connect()
+        } catch {
+            log.debug("[AppSyncRealTimeClient] Failed to reconnect, error: \(error)")
+        }
+    }
+
     private static func decodeAppSyncRealTimeResponseError(_ data: JSONValue?) -> [Error] {
         let knownAppSyncRealTimeRequestErorrs =
             Self.decodeAppSyncRealTimeRequestError(data)
@@ -414,7 +424,7 @@ extension AppSyncRealTimeClient {
             .sink(receiveValue: {
                 self.log.debug("[AppSyncRealTimeClient] KeepAlive timed out, disconnecting")
                 Task { [weak self] in
-                    await self?.disconnect()
+                    await self?.reconnect()
                 }.toAnyCancellable.store(in: &self.cancellables)
             })
             .store(in: &cancellablesBindToConnection)
