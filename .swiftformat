@@ -1,8 +1,7 @@
 # file options
---exclude Pods
+--exclude Pods, AmplifyPlugins/*/Tests, AmplifyPlugins/*/*/Tests, AmplifyAsyncTesting, AmplifyFunctionalTests, AmplifySwiftXcode, AmplifyTestApp, AmplifyTestCommon, AmplifyTests, AmplifyTools, canaries
 
 # rules with format options
-
 --enable braces
   --allman false
 
@@ -71,6 +70,7 @@
   --wrapcollections before-first
 
 # standalone rules
+--disable extensionAccessControl
 --disable andOperator
 --disable anyObjectProtocol
 --disable blankLinesAroundMark
