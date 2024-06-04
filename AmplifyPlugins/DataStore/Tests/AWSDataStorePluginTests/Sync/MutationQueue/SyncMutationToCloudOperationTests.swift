@@ -38,38 +38,38 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let expectFirstCallToAPIMutate = expectation(description: "First call to API.mutate")
         let expectSecondCallToAPIMutate = expectation(description: "Second call to API.mutate")
 
+        let model = MockSynced(id: "id-1")
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
         let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
 
-        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
-        var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
-
         var numberOfTimesEntered = 0
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            defer { numberOfTimesEntered += 1 }
             if numberOfTimesEntered == 0 {
                 let requestInputVersion = request.variables.flatMap { $0["input"] as? [String: Any] }.flatMap { $0["_version"] as? Int }
                 XCTAssertEqual(requestInputVersion, 10)
-                listenerFromFirstRequestOptional = eventListener
                 expectFirstCallToAPIMutate.fulfill()
-            } else if numberOfTimesEntered == 1 {
-                listenerFromSecondRequestOptional = eventListener
+                let urlError = URLError(URLError.notConnectedToInternet)
+                return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
+            } else if numberOfTimesEntered == 1, let anyModel = try? model.eraseToAnyModel() {
                 expectSecondCallToAPIMutate.fulfill()
+                let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                              modelName: model.modelName,
+                                                              deleted: false,
+                                                              lastChangedAt: Date().unixSeconds,
+                                                              version: 2)
+                return .success(MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata))
             } else {
                 XCTFail("This should not be called more than once")
+                return .failure(.unknown("Unexpected operation", "", nil))
             }
-            numberOfTimesEntered += 1
-            // We could return an operation here, but we don't need to.
-            // The main reason for having this responder is to get the eventListener.
-            // the eventListener block will execute the the call to validateResponseFromCloud
-            return nil
         }
-        mockAPIPlugin.responders[.mutateRequestListener] = responder
+        mockAPIPlugin.responders[.mutateRequestResponse] = responder
 
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
             expectMutationRequestCompletion.fulfill()
         }
 
-        let model = MockSynced(id: "id-1")
         let operation = await SyncMutationToCloudOperation(
             mutationEvent: mutationEvent,
             getLatestSyncMetadata: {
@@ -89,32 +89,11 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         )
         let queue = OperationQueue()
         queue.addOperation(operation)
-        await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
-        guard let listenerFromFirstRequest = listenerFromFirstRequestOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-
-        let urlError = URLError(URLError.notConnectedToInternet)
-        listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
-        await fulfillment(of: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
-
-        guard let listenerFromSecondRequest = listenerFromSecondRequestOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-
-
-        let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                      modelName: model.modelName,
-                                                      deleted: false,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: 2)
-        let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromSecondRequest(.success(.success(remoteMutationSync)))
-        // waitForExpectations(timeout: 1)
-        await fulfillment(of: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
+        await fulfillment(of: [
+            expectFirstCallToAPIMutate,
+            expectSecondCallToAPIMutate,
+            expectMutationRequestCompletion
+        ], timeout: defaultAsyncWaitTimeout)
     }
 
     func testRetryOnChangeReachability() async throws {
@@ -127,28 +106,30 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let expectSecondCallToAPIMutate = expectation(description: "Second call to API.mutate")
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
         let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
-
-        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
-        var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
+        let model = MockSynced(id: "id-1")
 
         var numberOfTimesEntered = 0
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            defer { numberOfTimesEntered += 1 }
             if numberOfTimesEntered == 0 {
-                listenerFromFirstRequestOptional = eventListener
                 expectFirstCallToAPIMutate.fulfill()
-            } else if numberOfTimesEntered == 1 {
-                listenerFromSecondRequestOptional = eventListener
+                let urlError = URLError(URLError.notConnectedToInternet)
+                return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
+            } else if numberOfTimesEntered == 1, let anyModel = try? model.eraseToAnyModel() {
                 expectSecondCallToAPIMutate.fulfill()
+                let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                              modelName: model.modelName,
+                                                              deleted: false,
+                                                              lastChangedAt: Date().unixSeconds,
+                                                              version: 2)
+                let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+                return .success(remoteMutationSync)
             } else {
                 XCTFail("This should not be called more than once")
+                return .failure(.unknown("This should not be called more than once", "", nil))
             }
-            numberOfTimesEntered += 1
-            // We could return an operation here, but we don't need to.
-            // The main reason for having this responder is to get the eventListener.
-            // the eventListener block will execute the the call to validateResponseFromCloud
-            return nil
         }
-        mockAPIPlugin.responders[.mutateRequestListener] = responder
+        mockAPIPlugin.responders[.mutateRequestResponse] = responder
 
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
             expectMutationRequestCompletion.fulfill()
@@ -166,30 +147,10 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let queue = OperationQueue()
         queue.addOperation(operation)
         await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
-        guard let listenerFromFirstRequest = listenerFromFirstRequestOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
 
-        let urlError = URLError(URLError.notConnectedToInternet)
-        listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
         reachabilityPublisher.send(ReachabilityUpdate(isOnline: true))
 
         await fulfillment(of: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
-        guard let listenerFromSecondRequest = listenerFromSecondRequestOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-
-        let model = MockSynced(id: "id-1")
-        let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                      modelName: model.modelName,
-                                                      deleted: false,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: 2)
-        let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromSecondRequest(.success(.success(remoteMutationSync)))
         await fulfillment(of: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
@@ -203,23 +164,20 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())
         let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
 
-        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
-
         var numberOfTimesEntered = 0
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { _ in
+            defer { numberOfTimesEntered += 1 }
             if numberOfTimesEntered == 0 {
-                listenerFromFirstRequestOptional = eventListener
                 expectFirstCallToAPIMutate.fulfill()
+                let urlError = URLError(URLError.notConnectedToInternet)
+                return .failure(.unknown("", "", APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
             } else {
                 XCTFail("This should not be called more than once")
+                return .failure(.unknown("This should not be called more than once", "", nil))
             }
-            numberOfTimesEntered += 1
-            // We could return an operation here, but we don't need to.
-            // The main reason for having this responder is to get the eventListener.
-            // the eventListener block will execute the the call to validateResponseFromCloud
-            return nil
+
         }
-        mockAPIPlugin.responders[.mutateRequestListener] = responder
+        mockAPIPlugin.responders[.mutateRequestResponse] = responder
 
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { asyncEvent in
             switch asyncEvent {
@@ -242,13 +200,6 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let queue = OperationQueue()
         queue.addOperation(operation)
         await fulfillment(of: [expectFirstCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
-        guard let listenerFromFirstRequest = listenerFromFirstRequestOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-
-        let urlError = URLError(URLError.notConnectedToInternet)
-        listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
 
         // At this point, we will be "waiting forever" to retry our request or until the operation is canceled
         operation.cancel()
@@ -326,28 +277,13 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             }
         )
         
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
-            let requestOptions = GraphQLOperationRequest<MutationSync<AnyModel>>.Options(pluginOptions: nil)
-            let request = GraphQLOperationRequest<MutationSync<AnyModel>>(apiName: request.apiName,
-                                                     operationType: .mutation,
-                                                     document: request.document,
-                                                     variables: request.variables,
-                                                     responseType: request.responseType,
-                                                     options: requestOptions)
-            let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
-            
-            numberOfTimesEntered += 1
-            
-            DispatchQueue.global().sync {
-                // Fail with 401 status code
-                eventListener!(.failure(error))
-            }
-            
-            return operation
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            defer { numberOfTimesEntered += 1 }
+            return .failure(.unknown("", "", error))
         }
         
-        mockAPIPlugin.responders[.mutateRequestListener] = responder
-        
+        mockAPIPlugin.responders[.mutateRequestResponse] = responder
+
         let queue = OperationQueue()
         queue.addOperation(operation)
         
@@ -372,6 +308,9 @@ class SyncMutationToCloudOperationTests: XCTestCase {
     }
     
     func testGetRetryAdvice_OperationErrorAuthErrorWithSingleAuth_RetryFalse() async throws {
+        let expectation = expectation(description: "operation completed")
+        var numberOfTimesEntered = 0
+        var error: APIError?
         let operation = await SyncMutationToCloudOperation(
             mutationEvent: try createMutationEvent(),
             getLatestSyncMetadata: { nil },
@@ -379,13 +318,30 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             authModeStrategy: AWSDefaultAuthModeStrategy(),
             networkReachabilityPublisher: publisher,
             currentAttemptNumber: 1,
-            completion: { _ in }
+            completion: { result in
+                XCTAssertEqual(numberOfTimesEntered, 1)
+                switch result {
+                case .failure(let apiError):
+                    error = apiError
+                default:
+                    XCTFail("Wrong result")
+                }
+                expectation.fulfill()
+            }
         )
-        
-        let authError = AuthError.notAuthorized("", "", nil)
-        let error = APIError.operationError("", "", authError)
-        let advice = operation.getRetryAdviceIfRetryable(error: error)
-        XCTAssertFalse(advice.shouldRetry)
+
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { request in
+            defer { numberOfTimesEntered += 1 }
+            let authError = AuthError.notAuthorized("", "", nil)
+            return .failure(.unknown("", "", APIError.operationError("", "", authError)))
+        }
+
+        mockAPIPlugin.responders[.mutateRequestResponse] = responder
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        await fulfillment(of: [expectation])
+        XCTAssertEqual(false, operation.getRetryAdviceIfRetryable(error: error!).shouldRetry)
     }
     
     func testGetRetryAdvice_OperationErrorAuthErrorSessionExpired_RetryTrue() async throws {
@@ -435,12 +391,18 @@ public class MockMultiAuthModeStrategy: AuthModeStrategy {
 
     public func authTypesFor(schema: ModelSchema,
                              operation: ModelOperation) -> AWSAuthorizationTypeIterator {
-        return AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools, .apiKey])
+        return AWSAuthorizationTypeIterator(withValues: [
+            .designated(.amazonCognitoUserPools),
+            .designated(.apiKey)
+        ])
     }
 
     public func authTypesFor(schema: ModelSchema,
                              operations: [ModelOperation]) -> AWSAuthorizationTypeIterator {
-        return AWSAuthorizationTypeIterator(withValues: [.amazonCognitoUserPools, .apiKey])
+        return AWSAuthorizationTypeIterator(withValues: [
+            .designated(.amazonCognitoUserPools),
+            .designated(.apiKey)
+        ])
     }
 }
 

@@ -758,20 +758,29 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        await fulfillment(of: [expect, storageExpect, storageMetadataExpect, notifyExpect, hubExpect], timeout: 1)
 
+        await fulfillment(of: [
+            expect,
+            storageExpect,
+            storageMetadataExpect,
+            notifyExpect,
+            hubExpect
+        ], timeout: 1)
     }
 
     func testApplyRemoteModels_multipleDispositions() async {
-        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync)]
+        let dispositions: [RemoteSyncReconciler.Disposition] = [
+            .create(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync)
+        ]
+
         let expect = expectation(description: "should complete successfully")
         expect.expectedFulfillmentCount = 2
         let storageExpect = expectation(description: "storage save/delete should be called")
@@ -835,7 +844,13 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        await fulfillment(of: [expect, storageExpect, notifyExpect, storageMetadataExpect, hubExpect], timeout: 1)
+        await fulfillment(of: [
+            expect,
+            storageExpect,
+            storageMetadataExpect,
+            notifyExpect,
+            hubExpect
+        ], timeout: 1)
     }
 
     func testApplyRemoteModels_skipFailedOperations() async throws {
@@ -890,7 +905,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
 
             }).store(in: &cancellables)
-        await fulfillment(of: [expect, expectedDropped, expectedDeleteSuccess], timeout: 1)
+
+        await fulfillment(of: [
+            expect,
+            expectedDropped,
+            expectedDeleteSuccess
+        ], timeout: 1)
     }
 
     func testApplyRemoteModels_failWithConstraintViolationShouldBeSuccessful() async {

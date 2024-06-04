@@ -73,7 +73,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
         XCTAssertTrue(pairs.contains(where: { $0.transferTask.key == "key1" }))
         XCTAssertTrue(pairs.contains(where: { $0.transferTask.key == "key2" }))
     }
-    
+
     /// Given: A DefaultStorageTransferDatabase
     /// When: linkTasksWithSessions is invoked with tasks containing multipart uploads but without a sessionTask, and a session
     /// Then: A StorageTransferTaskPairs linking the tasks with the session is returned
@@ -127,7 +127,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             uploadId: "uploadId",
             uploadFile: uploadFile
         )
-        
+
         let transferTask1 = StorageTransferTask(
             transferType: .multiPartUploadPart(
                 uploadId: "uploadId",
@@ -159,7 +159,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             bytes: Bytes.megabytes(6).bytes,
             eTag: "eTag"
         )
-        
+
         let transferTask2 = StorageTransferTask(
             transferType: .multiPartUploadPart(
                 uploadId: "uploadId",
@@ -184,7 +184,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             bytesTransferred: Bytes.megabytes(3).bytes,
             taskIdentifier: 1
         )
-        
+
         let pairs = database.linkTasksWithSessions(
             persistableTransferTasks: [
                 "taskId0": .init(task: transferTask0),
@@ -195,7 +195,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
                 session
             ]
         )
-        
+
         XCTAssertEqual(pairs.count, 3)
         XCTAssertTrue(pairs.contains(where: { $0.transferTask.key == "key1" }))
         XCTAssertFalse(pairs.contains(where: { $0.transferTask.key == "key2" }))

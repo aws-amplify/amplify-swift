@@ -7,150 +7,71 @@
 
 import Foundation
 import XCTest
-
+import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 
 class RetryableGraphQLOperationTests: XCTestCase {
     let testApiName = "apiName"
 
-    /// Given: a RetryableGraphQLOperation with a maxRetries of 2
-    /// When: the request fails the first attempt with a .signedOut error
-    /// Then: the request is re-tried and resultListener called
-    func testShouldRetryOperation() {
-        let maxRetries = 2
-        var attempt = 0
-
-        let requestFactoryExpectation = expectation(description: "Retry factory called \(maxRetries) times")
-        requestFactoryExpectation.expectedFulfillmentCount = maxRetries
-        let resultExpectation = expectation(description: "Result called")
-
-        let resultListener: ResultListener = { _ in
-            resultExpectation.fulfill()
+    /// Given: a RetryableGraphQLOperation with 2 operations
+    /// When: the first one fails with a .notAuthorized error, the next one succeed with response
+    /// Then: return the success response
+    func testShouldRetryOperationWithNotAuthorizedAuthError() async throws {
+        let expectation1 = expectation(description: "Operation 1 throws signed out auth error")
+        let operation1: () async throws -> GraphQLResponse<String> = {
+            expectation1.fulfill()
+            throw APIError.operationError("", "", AuthError.notAuthorized("", ""))
         }
 
-        let requestFactory: RequestFactory = {
-            requestFactoryExpectation.fulfill()
-            return self.makeTestRequest()
-
+        let expectation2 = expectation(description: "Operation 2 successfully finished")
+        let operation2: () async throws -> GraphQLResponse<String> = {
+            expectation2.fulfill()
+            return .success("operation 2")
         }
 
-        let operation = RetryableGraphQLOperation<Payload>(requestFactory: requestFactory,
-                                                           maxRetries: maxRetries,
-                                                           resultListener: resultListener) { _, wrappedListener in
-
-            // simulate an error at first attempt
-            if attempt == 0 {
-                wrappedListener(
-                    .failure(self.makeSignedOutAuthError())
-                )
-            } else {
-                wrappedListener(.success(.success("")))
-            }
-            attempt += 1
-            return self.makeTestOperation()
+        let operationStream = AsyncStream { continuation in
+            continuation.yield(operation1)
+            continuation.yield(operation2)
+            continuation.finish()
         }
-        operation.main()
-
-        wait(for: [requestFactoryExpectation, resultExpectation], timeout: 10)
+        let result = await RetryableGraphQLOperation(requestStream: operationStream).run()
+        if case .success(.success(let string)) = result {
+            XCTAssertEqual(string, "operation 2")
+        } else {
+            XCTFail("Wrong result")
+        }
+        await fulfillment(of: [expectation1, expectation2], timeout: 1)
     }
 
-    /// Given: a RetryableGraphQLOperation with a maxRetries of 1
-    /// When: the request fails the first attempt with a .signedOut error
-    /// Then: the request is not re-tried
-    func testShouldNotRetryOperationWithMaxRetriesOne() {
-        let maxRetries = 1
-
-        let requestFactoryExpectation = expectation(description: "Retry factory called \(maxRetries) times")
-        requestFactoryExpectation.expectedFulfillmentCount = maxRetries
-        let resultExpectation = expectation(description: "Result called")
-
-        let resultListener: ResultListener = { _ in
-            resultExpectation.fulfill()
+    /// Given: a RetryableGraphQLOperation with 2 operations
+    /// When: the first one fails with a .notAuthorized error, the next one succeed with response
+    /// Then: return the success response
+    func testShouldNotRetryOperationWithUnknownError() async throws {
+        let expectation1 = expectation(description: "Operation 1 throws signed out auth error")
+        let operation1: () async throws -> GraphQLResponse<String> = {
+            expectation1.fulfill()
+            throw APIError.unknown("~Unknown~", "")
         }
 
-        let requestFactory: RequestFactory = {
-            requestFactoryExpectation.fulfill()
-            return self.makeTestRequest()
-
+        let expectation2 = expectation(description: "Operation 2 successfully finished")
+        expectation2.isInverted = true
+        let operation2: () async throws -> GraphQLResponse<String> = {
+            expectation2.fulfill()
+            return .success("operation 2")
         }
 
-        let operation = RetryableGraphQLOperation<Payload>(requestFactory: requestFactory,
-                                                           maxRetries: maxRetries,
-                                                           resultListener: resultListener) { _, wrappedListener in
-
-            wrappedListener(
-                .failure(self.makeSignedOutAuthError())
-            )
-            return self.makeTestOperation()
+        let operationStream = AsyncStream { continuation in
+            continuation.yield(operation1)
+            continuation.yield(operation2)
+            continuation.finish()
         }
-        operation.main()
-
-        wait(for: [requestFactoryExpectation, resultExpectation], timeout: 10)
+        let result = await RetryableGraphQLOperation(requestStream: operationStream).run()
+        if case .failure(.unknown(let description, _, _)) = result {
+            XCTAssertEqual(description, "~Unknown~")
+        } else {
+            XCTFail("Wrong result")
+        }
+        await fulfillment(of: [expectation1, expectation2], timeout: 0.3)
     }
-
-    /// Given: a RetryableGraphQLOperation with a maxRetries of 2
-    /// When: the request fails both attempts
-    /// Then: the request is re-tried only twice and resultListener called
-    func testNotShouldRetryOperation() {
-        let maxRetries = 2
-
-        let requestFactoryExpectation = expectation(description: "Retry factory called \(maxRetries) times")
-        requestFactoryExpectation.expectedFulfillmentCount = maxRetries
-        let resultExpectation = expectation(description: "Result called")
-
-        let resultListener: ResultListener = { _ in
-            resultExpectation.fulfill()
-        }
-
-        let requestFactory: RequestFactory = {
-            requestFactoryExpectation.fulfill()
-            return self.makeTestRequest()
-
-        }
-
-        let operation = RetryableGraphQLOperation<Payload>(requestFactory: requestFactory,
-                                                           maxRetries: maxRetries,
-                                                           resultListener: resultListener) { _, wrappedListener in
-
-            // simulate an error for both attempts
-            wrappedListener(
-                .failure(self.makeSignedOutAuthError())
-            )
-            return self.makeTestOperation()
-        }
-        operation.main()
-
-        wait(for: [requestFactoryExpectation, resultExpectation], timeout: 10)
-    }
-}
-
-// MARK: - Test helpers
-extension RetryableGraphQLOperationTests {
-    private func makeTestRequest() -> GraphQLRequest<Payload> {
-        GraphQLRequest<Payload>(apiName: testApiName,
-                                       document: "",
-                                       responseType: Payload.self)
-    }
-
-    private func makeTestOperation() -> GraphQLOperation<Payload> {
-        let requestOptions = GraphQLOperationRequest<Payload>.Options(pluginOptions: nil)
-        let operationRequest = GraphQLOperationRequest<Payload>(apiName: testApiName,
-                                                                operationType: .subscription,
-                                                                document: "",
-                                                                responseType: Payload.self,
-                                                                options: requestOptions)
-        return GraphQLOperation<Payload>(categoryType: .dataStore,
-                                         eventName: "eventName",
-                                         request: operationRequest)
-    }
-
-    func makeSignedOutAuthError() -> APIError {
-        return APIError.operationError("Error", "", AuthError.signedOut("AuthError", ""))
-    }
-
-    /// Convenience type alias
-    private typealias Payload = String
-    private typealias ResultListener = RetryableGraphQLOperation<Payload>.OperationResultListener
-    private typealias RequestFactory = RetryableGraphQLOperation<Payload>.RequestFactory
 }

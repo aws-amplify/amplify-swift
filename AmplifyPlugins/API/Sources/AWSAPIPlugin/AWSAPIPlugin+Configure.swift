@@ -7,6 +7,7 @@
 
 @_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPluginsCore
+import InternalAmplifyCredentials
 import AwsCommonRuntimeKit
 
 public extension AWSAPIPlugin {
@@ -55,7 +56,7 @@ extension AWSAPIPlugin {
     /// A holder for AWSAPIPlugin dependencies that provides sane defaults for
     /// production
     struct ConfigurationDependencies {
-        let authService: AWSAuthServiceBehavior
+        let authService: AWSAuthCredentialsProviderBehavior
         let pluginConfig: AWSAPICategoryPluginConfiguration
         let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
         let logLevel: Amplify.LogLevel
@@ -63,7 +64,7 @@ extension AWSAPIPlugin {
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,
-            authService: AWSAuthServiceBehavior? = nil,
+            authService: AWSAuthCredentialsProviderBehavior? = nil,
             appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
             logLevel: Amplify.LogLevel? = nil
         ) throws {
@@ -90,7 +91,7 @@ extension AWSAPIPlugin {
         init(
             configuration: AmplifyOutputsData,
             apiAuthProviderFactory: APIAuthProviderFactory,
-            authService: AWSAuthServiceBehavior = AWSAuthService(),
+            authService: AWSAuthCredentialsProviderBehavior = AWSAuthService(),
             appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
             logLevel: Amplify.LogLevel = Amplify.Logging.logLevel
         ) throws {
@@ -111,7 +112,7 @@ extension AWSAPIPlugin {
 
         init(
             pluginConfig: AWSAPICategoryPluginConfiguration,
-            authService: AWSAuthServiceBehavior,
+            authService: AWSAuthCredentialsProviderBehavior,
             appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
             logLevel: Amplify.LogLevel
         ) {

@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
+import InternalAmplifyCredentials
 
 /// The order of interceptor decoration is as follows:
 /// 1. **prelude interceptors**
@@ -22,7 +23,7 @@ struct AWSAPIEndpointInterceptors {
     let apiEndpointName: APIEndpointName
 
     let apiAuthProviderFactory: APIAuthProviderFactory
-    let authService: AWSAuthServiceBehavior?
+    let authService: AWSAuthCredentialsProviderBehavior?
 
     var preludeInterceptors: [URLRequestInterceptor] = []
 
@@ -46,7 +47,7 @@ struct AWSAPIEndpointInterceptors {
     
     init(endpointName: APIEndpointName,
          apiAuthProviderFactory: APIAuthProviderFactory,
-         authService: AWSAuthServiceBehavior? = nil) {
+         authService: AWSAuthCredentialsProviderBehavior? = nil) {
         self.apiEndpointName = endpointName
         self.apiAuthProviderFactory = apiAuthProviderFactory
         self.authService = authService

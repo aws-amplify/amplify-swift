@@ -8,6 +8,7 @@
 import XCTest
 import Amplify
 import AWSPluginsCore
+import InternalAmplifyCredentials
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 @testable import AWSPluginsTestCommon
@@ -102,7 +103,7 @@ class AWSAPIEndpointInterceptorsTests: XCTestCase {
     
     // MARK: - Test Helpers
 
-    func createAPIInterceptorConfig(authService: AWSAuthServiceBehavior = MockAWSAuthService()) -> AWSAPIEndpointInterceptors {
+    func createAPIInterceptorConfig(authService: AWSAuthCredentialsProviderBehavior = MockAWSAuthService()) -> AWSAPIEndpointInterceptors {
         return AWSAPIEndpointInterceptors(
             endpointName: endpointName,
             apiAuthProviderFactory: APIAuthProviderFactory(),

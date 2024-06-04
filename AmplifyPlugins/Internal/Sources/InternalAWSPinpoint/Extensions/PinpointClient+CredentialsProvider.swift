@@ -8,7 +8,7 @@
 import AWSClientRuntime
 import AWSPluginsCore
 import AWSPinpoint
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 extension PinpointClient {
     convenience init(region: String, credentialsProvider: CredentialsProviding) throws {

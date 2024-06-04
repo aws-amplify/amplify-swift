@@ -17,8 +17,9 @@ class AuthModeStrategyTests: XCTestCase {
     // Then: an empty iterator is returned
     func testDefaultAuthModeShouldReturnAnEmptyIterator() {
         let authMode = AWSDefaultAuthModeStrategy()
-        let authTypesIterator = authMode.authTypesFor(schema: AnyModelTester.schema, operation: .create)
-        XCTAssertEqual(authTypesIterator.count, 0)
+        var authTypesIterator = authMode.authTypesFor(schema: AnyModelTester.schema, operation: .create)
+        XCTAssertEqual(authTypesIterator.count, 1)
+        XCTAssertEqual(authTypesIterator.next(), .inferred)
     }
 
     // Given: multi-auth strategy and a model schema
@@ -28,8 +29,8 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = await authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema, operation: .create)
         XCTAssertEqual(authTypesIterator.count, 2)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
 
     // Given: multi-auth strategy and a model schema without auth provider
@@ -39,8 +40,8 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = await authMode.authTypesFor(schema: ModelNoProvider.schema, operation: .read)
         XCTAssertEqual(authTypesIterator.count, 2)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
 
     // Given: multi-auth strategy and a model schema with 4 auth rules
@@ -50,10 +51,10 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = await authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .read)
         XCTAssertEqual(authTypesIterator.count, 4)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .awsIAM)
     }
 
     // Given: multi-auth strategy and a model schema multiple public rules
@@ -63,10 +64,10 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = await authMode.authTypesFor(schema: ModelWithMultiplePublicRules.schema, operation: .read)
         XCTAssertEqual(authTypesIterator.count, 4)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .openIDConnect)
-        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
-        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .openIDConnect)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .awsIAM)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
 
     // Given: multi-auth strategy and a model schema
@@ -77,8 +78,8 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = await authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .create)
         XCTAssertEqual(authTypesIterator.count, 2)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
     }
 
     // Given: multi-auth strategy a model schema
@@ -92,7 +93,7 @@ class AuthModeStrategyTests: XCTestCase {
         var authTypesIterator = await authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema,
                                                             operation: .create)
         XCTAssertEqual(authTypesIterator.count, 1)
-        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
 
     // Given: multi-auth model schema with a custom strategy
@@ -103,9 +104,9 @@ class AuthModeStrategyTests: XCTestCase {
         var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
                                                             operation: .create)
         XCTAssertEqual(authTypesIterator.count, 3)
-        XCTAssertEqual(authTypesIterator.next(), .function)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .function)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .awsIAM)
     }
 
     // Given: multi-auth model schema with a custom strategy
@@ -119,8 +120,8 @@ class AuthModeStrategyTests: XCTestCase {
         var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
                                                             operation: .create)
         XCTAssertEqual(authTypesIterator.count, 2)
-        XCTAssertEqual(authTypesIterator.next(), .function)
-        XCTAssertEqual(authTypesIterator.next(), .awsIAM)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .function)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .awsIAM)
     }
 
     // Given: multi-auth strategy and a model schema without auth provider
@@ -130,8 +131,8 @@ class AuthModeStrategyTests: XCTestCase {
         let authMode = AWSMultiAuthModeStrategy()
         var authTypesIterator = await authMode.authTypesFor(schema: ModelNoProvider.schema, operations: [.read, .create])
         XCTAssertEqual(authTypesIterator.count, 2)
-        XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
-        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .amazonCognitoUserPools)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
 
     // Given: multi-auth strategy and a model schema with auth provider
@@ -143,7 +144,7 @@ class AuthModeStrategyTests: XCTestCase {
         authMode.authDelegate = delegate
         var authTypesIterator = await authMode.authTypesFor(schema: ModelNoProvider.schema, operations: [.read, .create])
         XCTAssertEqual(authTypesIterator.count, 1)
-        XCTAssertEqual(authTypesIterator.next(), .apiKey)
+        XCTAssertEqual(authTypesIterator.next()?.awsAuthType, .apiKey)
     }
 
 }
