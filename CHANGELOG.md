@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.1 (2024-06-04)
+
+### Bug Fixes
+
+- **datastore**: reconnect the AppSyncRealTimeClient once connection is stale (#3734)
+
 ## 2.35.0 (2024-06-04)
 
 ### Features
