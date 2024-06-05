@@ -490,34 +490,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPluginsSDKCore"
-               BuildableName = "AWSPluginsSDKCore"
-               BlueprintName = "AWSPluginsSDKCore"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyCredentials"
-               BuildableName = "AmplifyCredentials"
-               BlueprintName = "AmplifyCredentials"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "InternalAmplifyCredentials"
                BuildableName = "InternalAmplifyCredentials"
                BlueprintName = "InternalAmplifyCredentials"
@@ -780,46 +752,6 @@
                BlueprintIdentifier = "AWSCloudWatchLoggingPluginTests"
                BuildableName = "AWSCloudWatchLoggingPluginTests"
                BlueprintName = "AWSCloudWatchLoggingPluginTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyNetworkUnitTests"
-               BuildableName = "AmplifyNetworkUnitTests"
-               BlueprintName = "AmplifyNetworkUnitTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "InternalAmplifyNetworkUnitTests"
-               BuildableName = "InternalAmplifyNetworkUnitTests"
-               BlueprintName = "InternalAmplifyNetworkUnitTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPluginsSDKCoreTests"
-               BuildableName = "AWSPluginsSDKCoreTests"
-               BlueprintName = "AWSPluginsSDKCoreTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AmplifyCredentialsTests"
-               BuildableName = "AmplifyCredentialsTests"
-               BlueprintName = "AmplifyCredentialsTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
