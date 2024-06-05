@@ -62,7 +62,7 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase {
         }
     }
 
-    func startAmplifyAndWaitForSync() throws {
+    func startAmplifyAndWaitForSync() async throws {
         let syncStarted = expectation(description: "Sync started")
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
 

@@ -8,8 +8,7 @@
 import Foundation
 import AWSPinpoint
 import ClientRuntime
-@_spi(PluginHTTPClientEngine)
-import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 @globalActor actor PinpointRequestsRegistry {
     static let shared = PinpointRequestsRegistry()

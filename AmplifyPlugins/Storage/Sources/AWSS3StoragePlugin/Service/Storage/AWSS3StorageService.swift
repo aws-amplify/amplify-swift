@@ -9,14 +9,14 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import ClientRuntime
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 /// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     // resettable values
-    private var authService: AWSAuthServiceBehavior?
+    private var authService: AWSAuthCredentialsProviderBehavior?
     var logger: Logger!
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
     var awsS3: AWSS3Behavior!
@@ -53,7 +53,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         storageConfiguration.sessionIdentifier
     }
 
-    convenience init(authService: AWSAuthServiceBehavior,
+    convenience init(authService: AWSAuthCredentialsProviderBehavior,
                      region: String,
                      bucket: String,
                      httpClientEngineProxy: HttpClientEngineProxy? = nil,
@@ -112,7 +112,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                   bucket: bucket)
     }
 
-    init(authService: AWSAuthServiceBehavior,
+    init(authService: AWSAuthCredentialsProviderBehavior,
          storageConfiguration: StorageConfiguration = .default,
          storageTransferDatabase: StorageTransferDatabase = .default,
          fileSystem: FileSystem = .default,

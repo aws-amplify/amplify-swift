@@ -8,6 +8,7 @@
 import XCTest
 @testable import AWSAPIPlugin
 import AWSPluginsCore
+import InternalAmplifyCredentials
 
 // swiftlint:disable:next type_name
 class AWSAPICategoryPluginInterceptorBehaviorTests: AWSAPICategoryPluginTestBase {

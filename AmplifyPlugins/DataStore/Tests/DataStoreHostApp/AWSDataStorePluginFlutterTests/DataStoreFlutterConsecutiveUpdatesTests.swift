@@ -17,7 +17,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved and then immediately updated
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
-    func testSaveAndImmediatelyUpdate() throws {
+    func testSaveAndImmediatelyUpdate() async throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let newPost = try PostWrapper(title: "MyPost",
@@ -132,7 +132,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved and deleted immediately
     /// - Then: The Post should not be returned when queried for immediately and in the eventual consistent state
-    func testSaveAndImmediatelyDelete() throws {
+    func testSaveAndImmediatelyDelete() async throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let newPost = try PostWrapper(title: "MyPost",
@@ -237,7 +237,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved with sync complete, updated and deleted immediately
     /// - Then: The Post should not be returned when queried for
-    func testSaveThenUpdateAndImmediatelyDelete() throws {
+    func testSaveThenUpdateAndImmediatelyDelete() async throws {
         try startAmplifyAndWaitForSync()
         let plugin: AWSDataStorePlugin = try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
 
@@ -367,7 +367,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         await fulfillment(of: [apiQuerySuccess], timeout: networkTimeout)
     }
 
-    private func queryPost(id: String, plugin: AWSDataStorePlugin) -> PostWrapper? {
+    private func queryPost(id: String, plugin: AWSDataStorePlugin) -> async PostWrapper? {
         let queryExpectation = expectation(description: "Query is successful")
         var queryResult: PostWrapper?
         plugin.query(FlutterSerializedModel.self, modelSchema: Post.schema, where: Post.keys.id.eq(id)) { result in

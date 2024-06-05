@@ -12,7 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import Foundation
 import ClientRuntime
 import AWSClientRuntime

@@ -17,7 +17,7 @@ class NoOpMutationQueue: OutgoingMutationQueueBehavior {
         completion()
     }
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehaviorExtended,
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher,
                              reconciliationQueue: IncomingEventReconciliationQueue?) {
         // do nothing
