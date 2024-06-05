@@ -125,11 +125,11 @@ struct IssueReporter: View {
                                   includeEnvInfo: includeEnvInfo,
                                   includeDeviceInfo: includeDeviceInfo)
             let value = await IssueInfoHelper.generateMarkdownForIssue(issue: issue)
-    #if os(iOS)
+            #if os(iOS)
             UIPasteboard.general.string = value
-    #elseif canImport(AppKit)
+            #elseif canImport(AppKit)
             NSPasteboard.general.setString(value, forType: .string)
-    #endif
+            #endif
         }
     }
 }
