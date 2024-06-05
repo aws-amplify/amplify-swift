@@ -114,9 +114,10 @@ final class AWSCloudWatchLoggingSessionController {
         }
 
         guard let cloudWatchClient = client else { return nil }
-        return CloudWatchLoggingConsumer(client: cloudWatchClient,
-                                               logGroupName: self.logGroupName,
-                                               userIdentifier: self.userIdentifier)
+        return CloudWatchLoggingConsumer(
+            client: cloudWatchClient,
+            logGroupName: self.logGroupName,
+            userIdentifier: self.userIdentifier)
     }
 
     private func connectProducerAndConsumer() {

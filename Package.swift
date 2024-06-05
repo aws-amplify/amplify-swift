@@ -89,7 +89,6 @@ let amplifyTargets: [Target] = [
         dependencies: [],
         path: "AmplifyAsyncTesting/Sources/AsyncTesting",
         linkerSettings: [.linkedFramework("XCTest")]
-
     ),
     .testTarget(
         name: "AmplifyAsyncTestingTests",
