@@ -101,7 +101,6 @@ actor EndpointClient: EndpointClientBehaviour {
         }
 
         let endpointInformation = await endpointInformationProvider.endpointInfo()
-
         endpointProfile.endpointId = configuration.uniqueDeviceId
         endpointProfile.deviceToken = deviceToken
         endpointProfile.location = .init()

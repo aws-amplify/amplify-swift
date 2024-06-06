@@ -23,8 +23,8 @@ protocol EndpointInformationProvider {
 struct DefaultEndpointInformationProvider: EndpointInformationProvider {
     func endpointInfo() async -> EndpointInformation {
         let deviceInfo = await DeviceInfo.current
-        let model = await DeviceInfo.current.model
-        let platform = await DeviceInfo.current.operatingSystem
+        let model = await deviceInfo.model
+        let platform = await deviceInfo.operatingSystem
         let appVersion = Bundle.main.appVersion
         return EndpointInformation(model: model, appVersion: appVersion, platform: platform)
     }
