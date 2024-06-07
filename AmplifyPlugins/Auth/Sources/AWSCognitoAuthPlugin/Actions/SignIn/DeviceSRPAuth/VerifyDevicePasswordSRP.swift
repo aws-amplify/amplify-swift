@@ -59,7 +59,7 @@ struct VerifyDevicePasswordSRP: Action {
                 serverPublicBHexString: serverPublicB,
                 srpClient: srpClient)
 
-            let request = RespondToAuthChallengeInput.devicePasswordVerifier(
+            let request = await RespondToAuthChallengeInput.devicePasswordVerifier(
                 username: username,
                 stateData: stateData,
                 session: authResponse.session,

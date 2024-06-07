@@ -15,7 +15,7 @@ extension ConfirmSignUpInput {
          asfDeviceId: String?,
          forceAliasCreation: Bool?,
          environment: UserPoolEnvironment
-    ) {
+    ) async {
 
         let configuration = environment.userPoolConfiguration
         let secretHash = ClientSecretHelper.calculateSecretHash(
@@ -23,7 +23,7 @@ extension ConfirmSignUpInput {
             userPoolConfiguration: configuration)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId = asfDeviceId,
-           let encodedData = CognitoUserPoolASF.encodedContext(
+           let encodedData = await CognitoUserPoolASF.encodedContext(
             username: username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),

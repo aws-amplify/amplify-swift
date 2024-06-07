@@ -60,8 +60,14 @@ class AWSCloudWatchLoggingPluginIntergrationTests: XCTestCase {
     override func tearDown() async throws {
         await Amplify.reset()
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path ?? NSTemporaryDirectory()
-        let directory = documents.appendingPathComponent("amplify")
-                                 .appendingPathComponent("logging")
+        let directory = documents.appendingPathComponent("amplify").appendingPathComponent("logging")
+        let fileURLs = try FileManager.default.contentsOfDirectory(
+            at: URL(string: directory)!,
+            includingPropertiesForKeys: nil,
+            options: .skipsHiddenFiles)
+        for fileURL in fileURLs {
+            try FileManager.default.removeItem(at: fileURL)
+        }
         try FileManager.default.removeItem(atPath: directory)
     }
     

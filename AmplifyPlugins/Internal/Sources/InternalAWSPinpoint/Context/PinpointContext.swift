@@ -110,7 +110,7 @@ class PinpointContext {
     private let storage: PinpointContextStorage
 
     init(with configuration: PinpointContextConfiguration,
-         endpointInformation: EndpointInformation = .current,
+         endpointInformationProvider: EndpointInformationProvider = DefaultEndpointInformationProvider(),
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
          keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
          fileManager: FileManagerBehaviour = FileManager.default,
@@ -130,7 +130,7 @@ class PinpointContext {
                                                              uniqueDeviceId: uniqueId,
                                                              isDebug: configuration.isDebug),
                                         pinpointClient: pinpointClient,
-                                        endpointInformation: endpointInformation,
+                                        endpointInformationProvider: endpointInformationProvider,
                                         userDefaults: userDefaults,
                                         keychain: keychainStore,
                                         remoteNotificationsHelper: remoteNotificationsHelper)

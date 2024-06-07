@@ -35,71 +35,66 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                     subdirectory: "\(AuthTestHarnessConstants.testSuitesPath)/\(directory)"
                 )
                 let authTestHarness = await AuthTestHarness(featureSpecification: specification)
-                XCTContext.runActivity(named: testSuiteFile) { activity in
-                    beginTest(for: authTestHarness.plugin,
-                              with: authTestHarness)
-                }
+                await beginTest(for: authTestHarness.plugin, with: authTestHarness)
             }
         }
     }
 
     func beginTest(
         for plugin: AWSCognitoAuthPlugin,
-        with testHarness: AuthTestHarness) {
+        with testHarness: AuthTestHarness) async {
 
             switch testHarness.apiUnderTest {
             case .resetPassword(let resetPasswordRequest,
                                 let expectedOutput):
-                validateAPI(expectedOutput: expectedOutput) {
+                await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.resetPassword(
                         for: resetPasswordRequest.username,
                         options: resetPasswordRequest.options)
                 }
             case .signUp(let signUpRequest,
                          let expectedOutput):
-                validateAPI(expectedOutput: expectedOutput) {
+                await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.signUp(
                         username: signUpRequest.username,
                         password: signUpRequest.password, options: signUpRequest.options)
                 }
             case .signIn(let request,
                          let expectedOutput):
-                validateAPI(expectedOutput: expectedOutput) {
+                await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.signIn(
                         username: request.username,
                         password: request.password, options: request.options)
                 }
             case .fetchAuthSession(let request,
                                    let expectedOutput):
-                validateAPI(expectedOutput: expectedOutput) {
+                await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.fetchAuthSession(options: request.options) as! AWSAuthCognitoSession
                 }
             case .signOut(let request, let expectedOutput):
-                validateAPI(expectedOutput: expectedOutput) {
+                await validateAPI(expectedOutput: expectedOutput) {
                     return await plugin.signOut(options: request.options) as! AWSCognitoSignOutResult
                 }
 
             case .deleteUser(_, let expectedOutput):
                 let expectation = expectation(description: "expectation")
-                Task {
-                    do {
-                        try await plugin.deleteUser()
-                        expectation.fulfill()
-                    } catch let error as AuthError {
-                        if case .failure(let expectedError) = expectedOutput {
-                            XCTAssertEqual(error, expectedError)
-                        } else {
-                            XCTFail("API should not throw AuthError")
-                        }
-                        expectation.fulfill()
-                    } catch {
+                do {
+                    try await plugin.deleteUser()
+                    expectation.fulfill()
+                } catch let error as AuthError {
+                    if case .failure(let expectedError) = expectedOutput {
+                        XCTAssertEqual(error, expectedError)
+                    } else {
                         XCTFail("API should not throw AuthError")
-                        expectation.fulfill()
                     }
+                    expectation.fulfill()
+                } catch {
+                    XCTFail("API should not throw AuthError")
+                    expectation.fulfill()
                 }
-                wait(for: [expectation], timeout: apiTimeout)
+                await fulfillment(of: [expectation], timeout: apiTimeout)
             case .confirmSignIn(let request, expectedOutput: let expectedOutput):
-                validateAPI(expectedOutput: expectedOutput) {
+                await validateAPI(expectedOutput: expectedOutput) {
                     return try await plugin.confirmSignIn(
                         challengeResponse: request.challengeResponse, options: request.options)
                 }
@@ -111,22 +106,20 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
     // Helper to validate API Result
     func validateAPI<T: Equatable>(
         expectedOutput: Result<T, AuthError>?,
-        apiCall: @escaping () async throws -> T) {
+        apiCall: @escaping () async throws -> T) async {
 
             let expectation = expectation(description: "expectation")
-            Task {
-                do {
-                    let result = try await apiCall()
-                    XCTAssertEqual(expectedOutput, Result.success(result))
-                    expectation.fulfill()
-                } catch let error as AuthError {
-                    XCTAssertEqual(expectedOutput, Result.failure(error))
-                    expectation.fulfill()
-                } catch {
-                    XCTFail("API should not throw AuthError")
-                    expectation.fulfill()
-                }
+            do {
+                let result = try await apiCall()
+                XCTAssertEqual(expectedOutput, Result.success(result))
+                expectation.fulfill()
+            } catch let error as AuthError {
+                XCTAssertEqual(expectedOutput, Result.failure(error))
+                expectation.fulfill()
+            } catch {
+                XCTFail("API should not throw AuthError")
+                expectation.fulfill()
             }
-            wait(for: [expectation], timeout: apiTimeout)
+            await fulfillment(of: [expectation], timeout: apiTimeout)
         }
 }

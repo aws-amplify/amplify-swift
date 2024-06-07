@@ -36,7 +36,7 @@ struct ConfirmDevice: Action {
                 deviceKey: deviceMetadata.deviceKey,
                 password: deviceMetadata.deviceSecret)
 
-            let deviceName = DeviceInfo.current.name
+            let deviceName = await DeviceInfo.current.name
 
             let base64EncodedVerifier = passwordVerifier.passwordVerifier.base64EncodedString()
             let base64EncodedSalt = passwordVerifier.salt.base64EncodedString()

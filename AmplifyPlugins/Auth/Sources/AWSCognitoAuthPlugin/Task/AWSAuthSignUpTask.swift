@@ -41,7 +41,7 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
                 into: [String: String]()) {
                     $0[$1.key.rawValue] = $1.value
                 } ?? [:]
-            let input = SignUpInput(username: request.username,
+            let input = await SignUpInput(username: request.username,
                                     password: request.password!,
                                     clientMetadata: metaData,
                                     validationData: validationData,

@@ -39,7 +39,7 @@ extension AWSS3StorageService {
                                                                                  metadata: metadata,
                                                                                  accelerate: accelerate,
                                                                                  expires: nil)
-                startUpload(preSignedURL: preSignedURL,
+                await startUpload(preSignedURL: preSignedURL,
                             fileURL: uploadFileURL,
                             contentType: contentType,
                             transferTask: transferTask)
@@ -53,7 +53,7 @@ extension AWSS3StorageService {
                      fileURL: URL,
                      contentType: String,
                      transferTask: StorageTransferTask,
-                     startTransfer: Bool = true) {
+                     startTransfer: Bool = true) async {
         guard case .upload = transferTask.transferType else {
             fatalError("Transfer type must be upload")
         }
@@ -63,7 +63,7 @@ extension AWSS3StorageService {
         request.networkServiceType = .responsiveData
 
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
-        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(await userAgent, forHTTPHeaderField: "User-Agent")
 
         request.setHTTPRequestHeaders(transferTask: transferTask)
 

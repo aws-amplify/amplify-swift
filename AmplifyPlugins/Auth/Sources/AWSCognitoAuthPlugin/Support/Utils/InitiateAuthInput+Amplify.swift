@@ -16,7 +16,7 @@ extension InitiateAuthInput {
                          clientMetadata: [String: String],
                          asfDeviceId: String,
                          deviceMetadata: DeviceMetadata,
-                         environment: UserPoolEnvironment) -> InitiateAuthInput {
+                         environment: UserPoolEnvironment) async -> InitiateAuthInput {
         var authParameters = [
             "USERNAME": username,
             "SRP_A": publicSRPAHexValue
@@ -28,7 +28,7 @@ extension InitiateAuthInput {
             authParameters["CHALLENGE_NAME"] = "SRP_A"
         }
 
-        return buildInput(username: username,
+        return await buildInput(username: username,
                           authFlowType: authFlowType.getClientFlowType(),
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
@@ -41,12 +41,12 @@ extension InitiateAuthInput {
                            clientMetadata: [String: String],
                            asfDeviceId: String,
                            deviceMetadata: DeviceMetadata,
-                           environment: UserPoolEnvironment) -> InitiateAuthInput {
+                           environment: UserPoolEnvironment) async -> InitiateAuthInput {
         let authParameters = [
             "USERNAME": username
         ]
 
-        return buildInput(username: username,
+        return await buildInput(username: username,
                           authFlowType: .customAuth,
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
@@ -60,13 +60,13 @@ extension InitiateAuthInput {
                             clientMetadata: [String: String],
                             asfDeviceId: String,
                             deviceMetadata: DeviceMetadata,
-                            environment: UserPoolEnvironment) -> InitiateAuthInput {
+                            environment: UserPoolEnvironment) async -> InitiateAuthInput {
         let authParameters = [
             "USERNAME": username,
             "PASSWORD": password
         ]
 
-        return buildInput(username: username,
+        return await buildInput(username: username,
                           authFlowType: .userPasswordAuth,
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
@@ -80,13 +80,13 @@ extension InitiateAuthInput {
                                  clientMetadata: [String: String],
                                  asfDeviceId: String,
                                  deviceMetadata: DeviceMetadata,
-                                 environment: UserPoolEnvironment) -> InitiateAuthInput {
+                                 environment: UserPoolEnvironment) async -> InitiateAuthInput {
 
         let authParameters = [
             "REFRESH_TOKEN": refreshToken
         ]
 
-        return buildInput(username: username,
+        return await buildInput(username: username,
                           authFlowType: .refreshTokenAuth,
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
@@ -102,7 +102,7 @@ extension InitiateAuthInput {
                            clientMetadata: [String: String],
                            asfDeviceId: String?,
                            deviceMetadata: DeviceMetadata,
-                           environment: UserPoolEnvironment) -> InitiateAuthInput {
+                           environment: UserPoolEnvironment) async -> InitiateAuthInput {
 
         var authParameters = authParameters
         let configuration = environment.userPoolConfiguration
@@ -123,7 +123,7 @@ extension InitiateAuthInput {
 
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId = asfDeviceId,
-           let encodedData = CognitoUserPoolASF.encodedContext(
+           let encodedData = await CognitoUserPoolASF.encodedContext(
             username: username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),

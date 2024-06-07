@@ -33,7 +33,7 @@ struct InitiateCustomAuth: Action {
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient)
-            let request = InitiateAuthInput.customAuth(
+            let request = await InitiateAuthInput.customAuth(
                 username: username,
                 clientMetadata: clientMetadata,
                 asfDeviceId: asfDeviceId,

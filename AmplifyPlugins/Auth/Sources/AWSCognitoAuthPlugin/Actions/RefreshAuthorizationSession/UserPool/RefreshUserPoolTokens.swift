@@ -41,7 +41,7 @@ struct RefreshUserPoolTokens: Action {
                 for: existingSignedIndata.username,
                 credentialStoreClient: authEnv.credentialsClient)
 
-            let input = InitiateAuthInput.refreshAuthInput(
+            let input = await InitiateAuthInput.refreshAuthInput(
                 username: existingSignedIndata.username,
                 refreshToken: existingTokens.refreshToken,
                 clientMetadata: [:],

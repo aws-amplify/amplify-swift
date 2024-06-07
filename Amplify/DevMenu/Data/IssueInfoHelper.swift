@@ -9,6 +9,7 @@
 import Foundation
 
 /// Helper class to generate markdown text for issue reporting
+@MainActor
 struct IssueInfoHelper {
 
     private static let issueDescTitle = "Issue Description"

@@ -129,7 +129,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Hub.getPlugin(for: "MockSecondHubCategoryPlugin"))
     }
 
-    func testCanUseDefaultPluginIfOnlyOnePlugin() throws {
+    func testCanUseDefaultPluginIfOnlyOnePlugin() async throws {
         let plugin = MockHubCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
@@ -146,8 +146,7 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         let unsubscribeToken = UnsubscribeToken(channel: .storage, id: UUID())
         Amplify.Hub.removeListener(unsubscribeToken)
-
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1)
     }
 
     func testPreconditionFailureInvokingWithMultiplePlugins() throws {

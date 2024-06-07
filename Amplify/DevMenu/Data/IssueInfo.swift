@@ -9,6 +9,7 @@
 import Foundation
 
 /// Struct consisting of information required to report an issue
+@MainActor
 struct IssueInfo {
 
     private var includeEnvironmentInfo: Bool

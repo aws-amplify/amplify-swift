@@ -28,6 +28,7 @@ import AppKit
 /// ```
 ///
 /// - Tag: DeviceInfo
+@MainActor
 public struct DeviceInfo {
 
     private init() {}
