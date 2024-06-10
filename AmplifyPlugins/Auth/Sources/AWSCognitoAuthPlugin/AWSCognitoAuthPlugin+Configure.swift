@@ -111,7 +111,8 @@ extension AWSCognitoAuthPlugin {
                 configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
 
-            configuration.credentialsProvider = AmplifyAWSCredentialsProvider()
+            let authService = AWSAuthService()
+            configuration.credentialsProvider = authService.getCredentialsProvider()
 
             return CognitoIdentityProviderClient(config: configuration)
         default:
@@ -135,7 +136,8 @@ extension AWSCognitoAuthPlugin {
                 configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
 
-            configuration.credentialsProvider = AmplifyAWSCredentialsProvider()
+            let authService = AWSAuthService()
+            configuration.credentialsProvider = authService.getCredentialsProvider()
 
             return CognitoIdentityClient(config: configuration)
         default:
