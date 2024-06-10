@@ -7,7 +7,6 @@
 
 import Foundation
 @_spi(InternalAmplifyConfiguration) import Amplify
-
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
@@ -112,6 +111,8 @@ extension AWSCognitoAuthPlugin {
                 configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
 
+            configuration.credentialsProvider = AmplifyAWSCredentialsProvider()
+
             return CognitoIdentityProviderClient(config: configuration)
         default:
             fatalError()
@@ -133,6 +134,8 @@ extension AWSCognitoAuthPlugin {
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
                 configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
+
+            configuration.credentialsProvider = AmplifyAWSCredentialsProvider()
 
             return CognitoIdentityClient(config: configuration)
         default:
