@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.2 (2024-06-10)
+
+### Bug Fixes
+
+- resolve strict concurrency errors (#3731)
+
 ## 2.35.1 (2024-06-04)
 
 ### Bug Fixes
