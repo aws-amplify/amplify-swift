@@ -13,7 +13,7 @@ import AWSCognitoIdentityProvider
 
 class ConfirmSignUpInputTests: XCTestCase {
 
-    func testConfirmSignUpInputWithClientSecretAndAsfDeviceId() throws {
+    func testConfirmSignUpInputWithClientSecretAndAsfDeviceId() async throws {
         let username = "jeff"
         let clientSecret = UUID().uuidString
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
@@ -26,7 +26,7 @@ class ConfirmSignUpInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
 
-        let confirmSignUpInput = ConfirmSignUpInput(
+        let confirmSignUpInput = await ConfirmSignUpInput(
             username: username,
             confirmationCode: "123",
             clientMetadata: [:],
@@ -38,7 +38,7 @@ class ConfirmSignUpInputTests: XCTestCase {
         XCTAssertNotNil(confirmSignUpInput.userContextData)
     }
 
-    func testConfirmSignUpInputWithoutClientSecretAndAsfDeviceId() throws {
+    func testConfirmSignUpInputWithoutClientSecretAndAsfDeviceId() async throws {
         let username = "jeff"
 
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
@@ -51,7 +51,7 @@ class ConfirmSignUpInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
 
-        let confirmSignUpInput = ConfirmSignUpInput(
+        let confirmSignUpInput = await ConfirmSignUpInput(
             username: username,
             confirmationCode: "123",
             clientMetadata: [:],

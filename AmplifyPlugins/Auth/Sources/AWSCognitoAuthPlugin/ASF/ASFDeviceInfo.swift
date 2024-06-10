@@ -8,6 +8,7 @@
 import Foundation
 import Amplify
 
+@MainActor
 struct ASFDeviceInfo: ASFDeviceBehavior {
 
     let id: String

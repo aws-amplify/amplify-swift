@@ -15,7 +15,7 @@ protocol AdvancedSecurityBehavior {
                          configuration: UserPoolConfigurationData) throws -> String
 }
 
-protocol ASFDeviceBehavior {
+protocol ASFDeviceBehavior: Sendable {
 
     var id: String { get }
 

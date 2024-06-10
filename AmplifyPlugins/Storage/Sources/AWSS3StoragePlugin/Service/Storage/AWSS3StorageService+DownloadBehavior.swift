@@ -33,7 +33,7 @@ extension AWSS3StorageService {
                                                                                  metadata: nil,
                                                                                  accelerate: accelerate,
                                                                                  expires: nil)
-                startDownload(preSignedURL: preSignedURL, transferTask: transferTask)
+                await startDownload(preSignedURL: preSignedURL, transferTask: transferTask)
             } catch {
                 onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
             }
@@ -42,14 +42,14 @@ extension AWSS3StorageService {
 
     private func startDownload(preSignedURL: URL,
                                transferTask: StorageTransferTask,
-                               startTransfer: Bool = true) {
+                               startTransfer: Bool = true) async {
         guard case .download = transferTask.transferType else {
             fatalError("Transfer type must be download")
         }
         var request = URLRequest(url: preSignedURL)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpMethod = "GET"
-        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(await userAgent, forHTTPHeaderField: "User-Agent")
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
         urlRequestDelegate?.willSend(request: request)

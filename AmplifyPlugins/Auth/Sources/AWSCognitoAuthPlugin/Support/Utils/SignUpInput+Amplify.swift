@@ -21,16 +21,16 @@ extension SignUpInput {
          validationData: [String: String]?,
          attributes: [String: String],
          asfDeviceId: String?,
-         environment: UserPoolEnvironment) {
+         environment: UserPoolEnvironment) async {
 
         let configuration = environment.userPoolConfiguration
         let secretHash = ClientSecretHelper.calculateSecretHash(username: username,
                                                   userPoolConfiguration: configuration)
-        let validationData = Self.getValidationData(with: validationData)
+        let validationData = await Self.getValidationData(with: validationData)
         let convertedAttributes = Self.convertAttributes(attributes)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId = asfDeviceId,
-           let encodedData = CognitoUserPoolASF.encodedContext(
+           let encodedData = await CognitoUserPoolASF.encodedContext(
             username: username,
             asfDeviceId: asfDeviceId,
             asfClient: environment.cognitoUserPoolASFFactory(),
@@ -52,41 +52,47 @@ extension SignUpInput {
     }
 
     private static func getValidationData(with devProvidedData: [String: String]?)
-    -> [CognitoIdentityProviderClientTypes.AttributeType]? {
+    async -> [CognitoIdentityProviderClientTypes.AttributeType]? {
 
         if let devProvidedData = devProvidedData {
             return devProvidedData.compactMap { (key, value) in
                 return CognitoIdentityProviderClientTypes.AttributeType(name: key, value: value)
-            } + (cognitoValidationData ?? [])
+            } + (await cognitoValidationData ?? [])
         }
-        return cognitoValidationData
+        return await cognitoValidationData
     }
 
     private static var cognitoValidationData: [CognitoIdentityProviderClientTypes.AttributeType]? {
-#if canImport(WatchKit)
-        let device = WKInterfaceDevice.current()
-#elseif canImport(UIKit)
-        let device = UIDevice.current
-#endif
+        get async {
+            #if canImport(WatchKit)
+            let device = WKInterfaceDevice.current()
+            #elseif canImport(UIKit)
+            let device = await UIDevice.current
+            #endif
 
-#if canImport(WatchKit) || canImport(UIKit)
-        let bundle = Bundle.main
-        let bundleVersion = bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String
-        let bundleShortVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-
-        return [
-            .init(name: "cognito:iOSVersion", value: device.systemVersion),
-            .init(name: "cognito:systemName", value: device.systemName),
-            .init(name: "cognito:deviceName", value: device.name),
-            .init(name: "cognito:model", value: device.model),
-            .init(name: "cognito:idForVendor", value: device.identifierForVendor?.uuidString ?? ""),
-            .init(name: "cognito:bundleId", value: bundle.bundleIdentifier),
-            .init(name: "cognito:bundleVersion", value: bundleVersion ?? ""),
-            .init(name: "cognito:bundleShortV", value: bundleShortVersion ?? "")
-        ]
-#else
-        return nil
-#endif
+            #if canImport(WatchKit) || canImport(UIKit)
+            let bundle = Bundle.main
+            let bundleVersion = bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String
+            let bundleShortVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+            let systemVersion = await device.systemVersion
+            let systemName = await device.systemName
+            let name = await device.name
+            let model = await device.model
+            let idForVendor = await device.identifierForVendor?.uuidString ?? ""
+            return [
+                .init(name: "cognito:iOSVersion", value: systemVersion),
+                .init(name: "cognito:systemName", value: systemName),
+                .init(name: "cognito:deviceName", value: name),
+                .init(name: "cognito:model", value: model),
+                .init(name: "cognito:idForVendor", value: idForVendor),
+                .init(name: "cognito:bundleId", value: bundle.bundleIdentifier),
+                .init(name: "cognito:bundleVersion", value: bundleVersion ?? ""),
+                .init(name: "cognito:bundleShortV", value: bundleShortVersion ?? "")
+            ]
+            #else
+                    return nil
+            #endif
+        }
     }
 
     private static func convertAttributes(_ attributes: [String: String]) -> [CognitoIdentityProviderClientTypes.AttributeType] {

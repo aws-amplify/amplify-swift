@@ -23,22 +23,25 @@ import AppKit
 struct CloudWatchLoggingStreamNameFormatter {
 
     let userIdentifier: String?
-    let deviceIdentifier: String?
+    var deviceIdentifier: String? {
+        get async {
+            #if canImport(WatchKit)
+            await WKInterfaceDevice.current().identifierForVendor?.uuidString
+            #elseif canImport(UIKit)
+            await UIDevice.current.identifierForVendor?.uuidString
+            #elseif canImport(AppKit)
+            Host.current().name
+            #else
+            Self.deviceIdentifierFromBundle()
+            #endif
+        }
+    }
 
     init(userIdentifier: String? = nil) {
         self.userIdentifier = userIdentifier
-        #if canImport(WatchKit)
-        self.deviceIdentifier = WKInterfaceDevice.current().identifierForVendor?.uuidString
-        #elseif canImport(UIKit)
-        self.deviceIdentifier = UIDevice.current.identifierForVendor?.uuidString
-        #elseif canImport(AppKit)
-        self.deviceIdentifier = Host.current().name
-        #else
-        self.deviceIdentifier = Self.deviceIdentifierFromBundle()
-        #endif
     }
 
-    func formattedStreamName() -> String {
-        return "\(deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
+    func formattedStreamName() async -> String {
+        return "\(await deviceIdentifier ?? "").\(userIdentifier ?? "guest")"
     }
 }

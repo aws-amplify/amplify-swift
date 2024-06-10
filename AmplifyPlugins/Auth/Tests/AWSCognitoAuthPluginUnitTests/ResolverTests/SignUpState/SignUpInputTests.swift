@@ -13,7 +13,7 @@ import AWSCognitoIdentityProvider
 
 class SignUpInputTests: XCTestCase {
 
-    func testSignUpInputWithClientSecret() throws {
+    func testSignUpInputWithClientSecret() async throws {
         let username = "jeff"
         let password = "a2z"
         let clientSecret = UUID().uuidString
@@ -26,7 +26,7 @@ class SignUpInputTests: XCTestCase {
             cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
-        let input = SignUpInput(username: username,
+        let input = await SignUpInput(username: username,
                                 password: password,
                                 clientMetadata: [:],
                                 validationData: [:],
@@ -38,7 +38,7 @@ class SignUpInputTests: XCTestCase {
         XCTAssertNotNil(input.userContextData)
     }
 
-    func testSignUpInputWithoutClientSecret() throws {
+    func testSignUpInputWithoutClientSecret() async throws {
         let username = "jeff"
         let password = "a2z"
 
@@ -51,7 +51,7 @@ class SignUpInputTests: XCTestCase {
             cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
-        let input = SignUpInput(username: username,
+        let input = await SignUpInput(username: username,
                                 password: password,
                                 clientMetadata: [:],
                                 validationData: [:],
@@ -64,7 +64,7 @@ class SignUpInputTests: XCTestCase {
     }
 
 #if canImport(UIKit)
-    func testSignUpInputValidationData() throws {
+    func testSignUpInputValidationData() async throws {
         let username = "jeff"
         let password = "a2z"
         let clientSecret = UUID().uuidString
@@ -77,7 +77,7 @@ class SignUpInputTests: XCTestCase {
             cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
-        let input = SignUpInput(username: username,
+        let input = await SignUpInput(username: username,
                                 password: password,
                                 clientMetadata: [:],
                                 validationData: [:],

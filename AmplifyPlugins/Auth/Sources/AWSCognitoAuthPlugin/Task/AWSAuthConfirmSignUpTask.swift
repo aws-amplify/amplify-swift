@@ -35,7 +35,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
             let metadata = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.metadata
             let forceAliasCreation = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.forceAliasCreation
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
-            let input = ConfirmSignUpInput(username: request.username,
+            let input = await ConfirmSignUpInput(username: request.username,
                                            confirmationCode: request.code,
                                            clientMetadata: metadata,
                                            asfDeviceId: asfDeviceId,

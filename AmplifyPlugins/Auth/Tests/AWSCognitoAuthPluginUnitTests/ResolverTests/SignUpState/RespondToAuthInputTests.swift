@@ -13,7 +13,7 @@ import AWSCognitoIdentityProvider
 
 class RespondToAuthInputTests: XCTestCase {
 
-    func testDevicePasswordVerifierInput() throws {
+    func testDevicePasswordVerifierInput() async throws {
         let username = "jeff"
         let clientSecret = UUID().uuidString
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
@@ -26,7 +26,7 @@ class RespondToAuthInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
 
-        let respondToAuthChallengeInput = RespondToAuthChallengeInput.devicePasswordVerifier(
+        let respondToAuthChallengeInput = await RespondToAuthChallengeInput.devicePasswordVerifier(
             username: username,
             stateData: .testData,
             session: "session",
@@ -40,7 +40,7 @@ class RespondToAuthInputTests: XCTestCase {
         XCTAssertNotNil(respondToAuthChallengeInput.userContextData)
     }
 
-    func testVerifyChallengeInput() throws {
+    func testVerifyChallengeInput() async throws {
         let username = "jeff"
         let clientSecret = UUID().uuidString
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
@@ -53,7 +53,7 @@ class RespondToAuthInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
 
-        let respondToAuthChallengeInput = RespondToAuthChallengeInput.verifyChallenge(
+        let respondToAuthChallengeInput = await RespondToAuthChallengeInput.verifyChallenge(
             username: username,
             challengeType: .smsMfa,
             session: "session",
@@ -69,7 +69,7 @@ class RespondToAuthInputTests: XCTestCase {
         XCTAssertNotNil(respondToAuthChallengeInput.userContextData)
     }
 
-    func testPasswordVerifierInput() throws {
+    func testPasswordVerifierInput() async throws {
         let username = "jeff"
         let clientSecret = UUID().uuidString
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
@@ -82,7 +82,7 @@ class RespondToAuthInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
 
-        let respondToAuthChallengeInput = RespondToAuthChallengeInput.passwordVerifier(
+        let respondToAuthChallengeInput = await RespondToAuthChallengeInput.passwordVerifier(
             username: username,
             stateData: .testData,
             session: "session",
@@ -98,7 +98,7 @@ class RespondToAuthInputTests: XCTestCase {
         XCTAssertNotNil(respondToAuthChallengeInput.userContextData)
     }
 
-    func testDeviceSrpInput() throws {
+    func testDeviceSrpInput() async throws {
         let username = "jeff"
         let clientSecret = UUID().uuidString
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
@@ -111,7 +111,7 @@ class RespondToAuthInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
             cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
 
-        let respondToAuthChallengeInput = RespondToAuthChallengeInput.deviceSRP(
+        let respondToAuthChallengeInput = await RespondToAuthChallengeInput.deviceSRP(
             username: username,
             environment: environment,
             deviceMetadata: .metadata(.init(deviceKey: "", deviceGroupKey: "")),

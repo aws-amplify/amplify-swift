@@ -111,7 +111,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                   fatalError("Part number is required")
               }
 
-        let startUploadPart: (URL, URL) -> Void = { [weak self] partialFileURL, preSignedURL in
+        let startUploadPart: (URL, URL) async -> Void = { [weak self] partialFileURL, preSignedURL in
             guard let self = self else { return }
             var request = URLRequest(url: preSignedURL)
             request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -122,7 +122,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             // [UploadPart](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html)
             // operation, the "MultiPart/UploadPart" suffix is added to the
             // user agent.
-            let userAgent = serviceProxy.userAgent.appending(" MultiPart/UploadPart")
+            let userAgent = await serviceProxy.userAgent.appending(" MultiPart/UploadPart")
             request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
 
             self.serviceProxy?.urlRequestDelegate?.willSend(request: request)
@@ -157,7 +157,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                         accelerate: nil,
                         expires: nil
                     )
-                    startUploadPart(partialFileURL, preSignedURL)
+                    await startUploadPart(partialFileURL, preSignedURL)
                 } catch {
                     self.session?.fail(error: error)
                 }
