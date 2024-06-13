@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.3 (2024-06-13)
+
+### Bug Fixes
+
+- **Auth**: Adding credentialsProvider to Cognito clients (#3745)
+
 ## 2.35.2 (2024-06-10)
 
 ### Bug Fixes
