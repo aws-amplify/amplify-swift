@@ -182,5 +182,5 @@ jobs:
             owner: owner,
             repo: repo,
             pull_number: issueNumber,
-            reviewers: selectedReviewers
+            team_reviewers: ["amplify-ios-admins"]
           });
