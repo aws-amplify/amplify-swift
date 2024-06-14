@@ -485,10 +485,6 @@ let package = Package(
             targets: ["AWSPluginsCore"]
         ),
         .library(
-            name: "InternalAmplifyCredentials",
-            targets: ["InternalAmplifyCredentials"]
-        ),
-        .library(
             name: "AWSAPIPlugin",
             targets: ["AWSAPIPlugin"]
         ),
