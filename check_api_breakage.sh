@@ -33,7 +33,22 @@ git checkout $BASE_BRANCH
 git pull origin $BASE_BRANCH
 swift build > /dev/null 2>&1 || { echo "Failed to build base branch ($BASE_BRANCH)"; exit 1; }
 for module in $modules; do
-    swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$OLD_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump SDK for base branch ($BASE_BRANCH)"; exit 1; }
+    # If file doesn't exits in the old directory
+   if [ ! -f api-dump/${module}.json ]; then
+     echo "Old API file does not exist in the base branch. Generating it..."
+     # Check if the project has been built
+     if ! $built; then
+       echo "Building project..."
+       swift build > /dev/null 2>&1 || { echo "Failed to build project"; exit 1; }
+       built=true
+     fi
+       
+     # Generate the API file using api-digester
+     swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$OLD_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
+   else
+     # Use the api-dump/${module}.json file from the base branch directly
+     cp "api-dump/${module}.json" "$OLD_API_DIR/${module}.json"
+   fi
 done
 
 # Fetch and build the current branch
@@ -52,6 +67,14 @@ for module in $modules; do
   module_diff_output=$(grep -v '^/\*' "$REPORT_DIR/api-diff-report.txt" | grep -v '^$' || true)
   if [ -n "$module_diff_output" ]; then
     api_diff_output=$(printf "%s\n Module: %s\n%s\n" "$api_diff_output" "$module" "$module_diff_output")
+    # Check if there are lines containing "has been renamed to Func"
+    if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
+        # Capture the line containing "has been renamed to Func"
+        renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
+    
+        # Append a message to the module_diff_output
+        api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+    fi
   fi
 done
 
