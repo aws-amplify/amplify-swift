@@ -161,23 +161,6 @@ jobs:
           const owner = context.repo.owner;
           const repo = context.repo.repo;
     
-          // Define the list of potential reviewers
-          const potentialReviewers = ["rozayc", "rozayc", "rozayc", "rozayc", "rozayc"];
-    
-          // Shuffle the array to ensure randomness
-          function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              [array[i], array[j]] = [array[j], array[i]];
-            }
-          }
-    
-          // Shuffle the potential reviewers list
-          shuffle(potentialReviewers);
-    
-          // Select the first 2 reviewers from the shuffled list
-          const selectedReviewers = potentialReviewers.slice(0, 1);
-    
           github.rest.pulls.requestReviewers({
             owner: owner,
             repo: repo,
