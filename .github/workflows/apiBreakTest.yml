@@ -3,6 +3,9 @@ name: "Check API Breakage"
 on:
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   buildAndCheckAPIBreakage:
     name: Build and Check API Breakage
