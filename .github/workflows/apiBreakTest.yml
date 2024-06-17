@@ -11,6 +11,7 @@ jobs:
   buildAndCheckAPIBreakage:
     name: Build and Check API Breakage
     runs-on: macos-latest
+    permissions: write-all
 
     steps:
     - name: Checkout repository
