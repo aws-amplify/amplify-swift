@@ -27,7 +27,7 @@ public class Amplify {
     ///
     /// - Tag: Amplify.isConfigured
 
-    public static var testReviewer: Float = 5.0
+    public static var testReviewer: Int = 5
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
