@@ -17,12 +17,11 @@ jobs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
         fetch-depth: 0
-        persist-credentials: false
 
 
     - name: Setup and Run Swift API Diff
       env:
-        GH_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "Swift version: $(swift --version)"
         echo "Swift package manager version: $(swift package --version)"
@@ -139,7 +138,7 @@ jobs:
     - name: Comment on PR with API Diff
       uses: actions/github-script@v6
       with:
-        github-token: ${{ github.token }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const apiDiffOutput = process.env.API_DIFF_OUTPUT;
           const issueNumber = context.payload.pull_request.number;
@@ -161,7 +160,7 @@ jobs:
       if: env.BREAKING_CHANGE_DETECTED == 'true'
       uses: actions/github-script@v6
       with:
-        github-token: ${{ github.token }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const issueNumber = context.payload.pull_request.number;
           const owner = context.repo.owner;
