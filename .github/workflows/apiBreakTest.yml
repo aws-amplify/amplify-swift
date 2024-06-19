@@ -1,4 +1,4 @@
-name: "Check API Breakage"
+name: Public Interface Breakage Detection
 
 on:
   pull_request:
