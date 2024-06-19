@@ -1,4 +1,4 @@
-name: Swift API Digester Check
+name: Swift API Digester Functionality Check
 
 on:
   schedule:
