@@ -16,7 +16,7 @@ jobs:
         fetch-depth: 0
 
 
-    - name: Check API Dihester
+    - name: Check API Digester
       run: |
         TEMP_DIR=$(mktemp -d)
         echo "Temporary directory created at $TEMP_DIR"
