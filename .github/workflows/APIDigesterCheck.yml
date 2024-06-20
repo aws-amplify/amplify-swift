@@ -17,6 +17,9 @@ jobs:
 
 
     - name: Check API Digester
+      shell: bash
+      env:
+          WEBHOOK_URL: ${{ secrets.SLACK_API_CHECKER_WEBHOOK_URL }}
       run: |
         TEMP_DIR=$(mktemp -d)
         echo "Temporary directory created at $TEMP_DIR"
@@ -31,7 +34,13 @@ jobs:
         
         if diff "$TEMP_DIR/api-digester-output.txt" api-dump-test/expected-result.txt; then
           echo "The output matches the expected result."
+          WORKFLOW_URL="just for testing: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          xargs -I {} curl -s POST "$WEBHOOK_URL" -H "Content-Type:application/json" --data '{"WORKFLOW_URL":"'$WORKFLOW_URL'"}'
+          echo "$WORKFLOW_URL"
         else
           echo "The output does not match the expected result."
+          WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          xargs -I {} curl -s POST "$WEBHOOK_URL" -H "Content-Type:application/json" --data '{"WORKFLOW_URL":"'$WORKFLOW_URL'"}'
           exit 1
         fi
+
