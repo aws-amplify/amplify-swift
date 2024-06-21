@@ -218,4 +218,88 @@ class GraphQLListQueryTests: XCTestCase {
         XCTAssertEqual(variables["limit"] as? Int, 1_000)
         XCTAssertNotNil(variables["filter"])
     }
+
+    /**
+     - Given: 
+        - A Post schema with optional field 'draft'
+     - When:
+        - Using list query to filter records that either don't have 'draft' field or have 'null' value
+     - Then:
+        - the query document as expected
+        - the filter is encoded correctly
+     */
+    func test_listQuery_withAttributeExistsFilter_correctlyBuildGraphQLQueryStatement() {
+        let post = Post.keys
+        let predicate = post.id.eq("id")
+        && (post.draft.attributeExists(false) || post.draft.eq(nil))
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+        documentBuilder.add(decorator: PaginationDecorator())
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Post.schema)))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int) {
+          listPosts(filter: $filter, limit: $limit) {
+            items {
+              id
+              content
+              createdAt
+              draft
+              rating
+              status
+              title
+              updatedAt
+              __typename
+            }
+            nextToken
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "listPosts")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, 1_000)
+
+        guard let filter = variables["filter"] as? GraphQLFilter else {
+            XCTFail("variables should contain a valid filter")
+            return
+        }
+
+        // Test filter for a valid JSON format
+        let filterJSON = try? JSONSerialization.data(withJSONObject: filter,
+                                                     options: .prettyPrinted)
+        XCTAssertNotNil(filterJSON)
+
+        let expectedFilterJSON = """
+        {
+          "and" : [
+            {
+              "id" : {
+                "eq" : "id"
+              }
+            },
+            {
+              "or" : [
+                {
+                  "draft" : {
+                    "attributeExists" : false
+                  }
+                },
+                {
+                  "draft" : {
+                    "eq" : null
+                  }
+                }
+              ]
+            }
+          ]
+        }
+        """
+        XCTAssertEqual(String(data: filterJSON!, encoding: .utf8), expectedFilterJSON)
+    }
 }

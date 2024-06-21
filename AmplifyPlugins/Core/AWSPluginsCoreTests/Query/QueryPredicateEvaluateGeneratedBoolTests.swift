@@ -41,7 +41,7 @@ class QueryPredicateEvaluateGeneratedBoolTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testBoolfalsenotEqualBooltrue() throws {
@@ -70,7 +70,7 @@ class QueryPredicateEvaluateGeneratedBoolTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertFalse(evaluation)
+        XCTAssertTrue(evaluation)
     }
 
     func testBooltrueequalsBooltrue() throws {

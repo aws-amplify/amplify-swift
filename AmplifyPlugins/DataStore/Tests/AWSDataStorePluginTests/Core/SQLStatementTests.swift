@@ -1350,4 +1350,101 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectStatement)
         XCTAssertEqual(variables[0] as? String, expectedVariable)
     }
+
+
+    /// Given: a query predicate of attributeExists
+    /// When: the bind value is false
+    /// Then: generate the correct SQL query statement
+    func test_translateAttributeExistsFalseQueryPredicate() {
+        let post = Post.keys
+
+        let predicate = post.id.attributeExists(false)
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+        let expectedStatement =
+            """
+              and "root"."id" is null
+            """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// Given: a query predicate of attributeExists
+    /// When: the bind value is true
+    /// Then: generate the correct SQL query statement
+    func test_translateAttributeExistsTrueQueryPredicate() {
+        let post = Post.keys
+
+        let predicate = post.id.attributeExists(true)
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+        let expectedStatement =
+            """
+              and "root"."id" is not null
+            """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// Given: a combined query predicate of attributeExists and ne
+    /// When: attributeExists(true) && ne(nil)
+    /// Then: generate the correct SQL query statement
+    func test_translateCombinedQueryPredicateOfAttributeExistsTrueAndNeNil() {
+        let post = Post.keys
+
+        let predicate = post.id.attributeExists(true) && post.id.ne(nil)
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+        let expectedStatement =
+            """
+              and "root"."id" is not null
+            """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// Given: a combined query predicate of attributeExists and ne
+    /// When: attributeExists(false) && ne(nil)
+    /// Then: generate the correct SQL query statement
+    func test_translateCombinedQueryPredicateOfAttributeExistsFalseAndNeNil() {
+        let post = Post.keys
+
+        let predicate = post.id.attributeExists(false) && post.id.ne(nil)
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+        let expectedStatement =
+            """
+              and (
+                "root"."id" is null
+                and "root"."id" is not null
+              )
+            """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// Given: a combined query predicate of attributeExists and eq
+    /// When: attributeExists(false) || eq(nil)
+    /// Then: generate the correct SQL query statement
+    func test_translateCombinedQueryPredicateOfAttributeExistsFalseOrEqNil() {
+        let post = Post.keys
+
+        let predicate = post.id.attributeExists(false) || post.id.eq(nil)
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+        let expectedStatement =
+            """
+              and "root"."id" is null
+            """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// Given: a combined query predicate of attributeExists and eq
+    /// When: attributeExists(true) || eq(nil)
+    /// Then: generate the correct SQL query statement
+    func test_translateCombinedQueryPredicateOfAttributeExistsTrueOrEqNil() {
+        let post = Post.keys
+
+        let predicate = post.id.attributeExists(true) || post.id.eq(nil)
+        let statement = ConditionStatement(modelSchema: Post.schema, predicate: predicate, namespace: "root")
+        let expectedStatement =
+            """
+              and (
+                "root"."id" is not null
+                or "root"."id" is null
+              )
+            """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
 }
