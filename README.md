@@ -62,15 +62,7 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires the following Xcode versions, according to the targeted platform:
-
-| Platform      | Xcode Version |
-| -------------:| ------------: |
-| iOS           | 15.0+         |
-| macOS         | 15.0+         |
-| tvOS          | 15.0+         |
-| watchOS       | 15.0+         |
-| visionOS      | 15.0+         |
+Amplify requires Xcode 15.0 or later for all the supported platforms.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|
