@@ -224,7 +224,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
             log.debug("[AppSyncRealTimeClient] start subscription failed, could not found subscription with id \(id) ")
             throw APIError.unknown("Could not find a subscription with id \(id)", "", nil)
         }
-        log.debug("[AppSyncRealTimeClient] current number of subscriptions: \(numberOfSubscriptions)")
+
         try await subscription.subscribe()
 
         return AnyCancellable {

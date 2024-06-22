@@ -408,14 +408,7 @@ fileprivate func toAPIError<R: Decodable>(_ errors: [Error], type: R.Type) -> AP
         )
 
     case let errors as [WebSocketClient.Error]:
-        if errors.contains(where: { $0 == .connectionCancelled || $0 == .connectionLost}) {
-            return APIError.networkError("WebSocketClient connection aborted", nil, errors.first)
-        }
-        return APIError.operationError(
-            errorDescription(),
-            "",
-            errors.first
-        )
+        return APIError.networkError("WebSocketClient connection aborted", nil, URLError(.networkConnectionLost))
     default:
         return APIError.operationError(
             errorDescription(),

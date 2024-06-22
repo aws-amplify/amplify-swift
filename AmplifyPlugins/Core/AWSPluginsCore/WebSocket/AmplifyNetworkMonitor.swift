@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Network
 import Combine
 
@@ -38,6 +37,7 @@ public final class AmplifyNetworkMonitor {
             label: "com.amazonaws.amplify.ios.network.websocket.monitor",
             qos: .userInitiated
         ))
+
     }
 
     public func updateState(_ nextState: State) {
@@ -48,4 +48,5 @@ public final class AmplifyNetworkMonitor {
         subject.send(completion: .finished)
         monitor.cancel()
     }
+
 }
