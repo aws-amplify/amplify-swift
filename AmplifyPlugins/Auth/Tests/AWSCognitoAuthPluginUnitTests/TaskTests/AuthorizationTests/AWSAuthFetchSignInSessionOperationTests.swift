@@ -584,6 +584,59 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         }
     }
 
+    /// Test fetch session with authorization in error state
+    ///
+    /// - Given: An auth plugin with signedOut state
+    /// - When:
+    ///    - I invoke fetchAuthSession and mock notSignedIn for getTokens
+    /// - Then:
+    ///    - I should get an a valid session with the following details:
+    ///         - isSignedIn = false
+    ///         - aws credentails = valid values
+    ///         - identity id = valid values
+    ///         - cognito tokens = signedOut
+    ///
+    func testFetchSessionWithAuthorizationInErrorState() async throws {
+
+        let initialState = AuthState.configured(
+            AuthenticationState.signedOut(.testData),
+            AuthorizationState.error(.sessionError(.service(AuthError.unknown("error")), .noCredentials)))
+
+        let getId: MockIdentity.MockGetIdResponse = { _ in
+            return .init(identityId: "mockIdentityId")
+        }
+
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
+                                                                     expiration: Date(),
+                                                                     secretKey: "secret",
+                                                                     sessionToken: "session")
+            return .init(credentials: credentials, identityId: "responseIdentityID")
+        }
+
+        let plugin = configurePluginWith(identityPool: {
+            MockIdentity(mockGetIdResponse: getId,
+                         mockGetCredentialsResponse: getCredentials) },
+                                         initialState: initialState)
+
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        XCTAssertFalse(session.isSignedIn)
+
+        let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+        XCTAssertNotNil(creds?.accessKeyId)
+        XCTAssertNotNil(creds?.secretAccessKey)
+
+        let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+        XCTAssertNotNil(identityId)
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let error) = tokensResult,
+              case .signedOut = error else {
+            XCTFail("Should return signed out error")
+            return
+        }
+    }
+
     /// Test signedOut state credential refresh
     ///
     /// - Given: Given an auth plugin with signedOut state and expired AWS credentials
