@@ -127,8 +127,38 @@ jobs:
         git add api-dump/*.json
 
         if ! git diff --cached --quiet --exit-code; then
-          git commit -m "Update API dumps for new version"
-          git push origin HEAD:${{ github.head_ref }}
+          # Get the file names that have changes
+          changed_files=$(git diff --cached --name-only)
+
+          push_changes=false
+          for file in $changed_files; do
+            if [[ $file == api-dump/* ]]; then
+              # Get the number of lines in the file
+              total_lines=$(wc -l < "$file")
+              # Get the line numbers of the changes
+              changed_lines=$(git diff --cached -U0 "$file" | grep -o '@@ [^ ]* [^ ]* @@' | awk '{print $3}' | cut -d ',' -f1 | sed 's/[^0-9]//g')
+              echo "Changed lines in $file: $changed_lines"
+              # Check if any change is not within the last 10 lines
+              for line in $changed_lines; do
+                if [ "$line" -le "$((total_lines - 10))" ]; then
+                  push_changes=true
+                  break
+                fi
+              done
+
+              # If any file should be pushed, break out of the loop
+              if [ "$push_changes" = true ]; then
+                break
+              fi
+            fi
+          done
+
+          if [ "$push_changes" = true ]; then
+            git commit -m "Update API dumps for new version"
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No changes to commit in the api-dump folder."
+          fi
         else
           echo "No changes to commit in the api-dump folder."
         fi
