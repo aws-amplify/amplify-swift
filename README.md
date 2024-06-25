@@ -56,21 +56,17 @@ of the library.
 
 Applications that evaluate all members of an enumeration using a `switch` statement can add a `default` case to prevent new cases from causing compile warnings or errors.
 
+#### Semantic versioning and dependencies update
+
+We follow [semantic versioning for updating our dependencies](https://semver.org/#what-should-i-do-if-i-update-my-own-dependencies-without-changing-the-public-api).
+
 ## License
 
 This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires the following Xcode versions, according to the targeted platform:
-
-| Platform      | Xcode Version |
-| -------------:| ------------: |
-| iOS           | 15.0+         |
-| macOS         | 15.0+         |
-| tvOS          | 15.0+         |
-| watchOS       | 15.0+         |
-| visionOS      | 15 beta 2+    |
+Amplify requires Xcode 15.0 or later for all the supported platforms.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|
