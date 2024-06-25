@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.35.4 (2024-06-25)
+
+### Bug Fixes
+
+- **Auth**: Resolve AuthZ state correctly when in error state (#3762)
+- **core**: remove InternalAmplifyCredentials from products (#3750)
+
 ## 2.35.3 (2024-06-13)
 
 ### Bug Fixes
