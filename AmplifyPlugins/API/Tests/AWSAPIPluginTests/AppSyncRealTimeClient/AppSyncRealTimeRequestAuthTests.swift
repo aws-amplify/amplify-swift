@@ -150,26 +150,32 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
     func testAppSyncRealTimeRequestAuth_URLQueryWithCognitoAuthHeader() {
         let expectedURL = """
         https://example.com?\
-        header=eyJBdXRob3JpemF0aW9uIjoiNDk4NTljN2MtNzQwNS00ZDU4LWFmZjctNTJiZ\
-        TRiNDczNTU3IiwiaG9zdCI6ImV4YW1wbGUuY29tIn0%3D\
-        &payload=e30%3D
+        payload=e30%3D
+        """
+        let expectedAuthHeader = """
+        eyJBdXRob3JpemF0aW9uIjoiNDk4NTljN2MtNzQwNS00ZDU4LWFmZjctNTJiZ\
+        TRiNDczNTU3IiwiaG9zdCI6ImV4YW1wbGUuY29tIn0=
         """
         let encodedURL = AppSyncRealTimeRequestAuth.URLQuery(
             header: .authToken(.init(
                 host: "example.com",
                 authToken: "49859c7c-7405-4d58-aff7-52be4b473557"
             ))
-        ).withBaseURL(URL(string: "https://example.com")!, encoder: jsonEncoder)
-        XCTAssertEqual(encodedURL.absoluteString, expectedURL)
+        ).withBaseURLRequest(URL(string: "https://example.com")!, encoder: jsonEncoder)
+        XCTAssertEqual(encodedURL.url?.absoluteString, expectedURL)
+        let authHeader = encodedURL.value(forHTTPHeaderField: "Authorization")
+        XCTAssertEqual(expectedAuthHeader, authHeader)
     }
 
     func testAppSyncRealTimeRequestAuth_URLQueryWithApiKeyAuthHeader() {
         let expectedURL = """
         https://example.com?\
-        header=eyJob3N0IjoiZXhhbXBsZS5jb20iLCJ4LWFtei1kYXRlIjoiOWUwZTJkZjktMmVlNy00NjU5L\
+        payload=e30%3D
+        """
+        let expectedAuthHeader = """
+        eyJob3N0IjoiZXhhbXBsZS5jb20iLCJ4LWFtei1kYXRlIjoiOWUwZTJkZjktMmVlNy00NjU5L\
         TgzNjItMWM4ODFlMTE4YzlmIiwieC1hcGkta2V5IjoiNjVlMmZhY2EtOGUxZS00ZDM3LThkYzctNjQ0N\
-        2Q5Njk4MjQ3In0%3D\
-        &payload=e30%3D
+        2Q5Njk4MjQ3In0=
         """
         let encodedURL = AppSyncRealTimeRequestAuth.URLQuery(
             header: .apiKey(.init(
@@ -177,20 +183,23 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
                 apiKey: "65e2faca-8e1e-4d37-8dc7-6447d9698247",
                 amzDate: "9e0e2df9-2ee7-4659-8362-1c881e118c9f"
             ))
-        ).withBaseURL(URL(string: "https://example.com")!, encoder: jsonEncoder)
-        XCTAssertEqual(encodedURL.absoluteString, expectedURL)
+        ).withBaseURLRequest(URL(string: "https://example.com")!, encoder: jsonEncoder)
+        XCTAssertEqual(encodedURL.url?.absoluteString, expectedURL)
+        let authHeader = encodedURL.value(forHTTPHeaderField: "Authorization")
+        XCTAssertEqual(expectedAuthHeader, authHeader)
     }
 
     func testAppSyncRealTimeRequestAuth_URLQueryWithIAMAuthHeader() {
-
         let expectedURL = """
         https://example.com?\
-        header=eyJhY2NlcHQiOiJhcHBsaWNhdGlvblwvanNvbiwgdGV4dFwvamF2YXNjcmlwdCIsIkF1dGhvcml6YXR\
+        payload=e30%3D
+        """
+        let expectedAuthHeader = """
+        eyJhY2NlcHQiOiJhcHBsaWNhdGlvblwvanNvbiwgdGV4dFwvamF2YXNjcmlwdCIsIkF1dGhvcml6YXR\
         pb24iOiJjOWRhZDg5Ny05MGQxLTRhNGMtYTVjOS0yYjM2YTI0NzczNWYiLCJjb250ZW50LWVuY29kaW5nIjoiY\
         W16LTEuMCIsImNvbnRlbnQtdHlwZSI6ImFwcGxpY2F0aW9uXC9qc29uOyBjaGFyc2V0PVVURi04IiwiaG9zdCI\
         6ImV4YW1wbGUuY29tIiwieC1hbXotZGF0ZSI6IjllMGUyZGY5LTJlZTctNDY1OS04MzYyLTFjODgxZTExOGM5Z\
-        iIsIlgtQW16LVNlY3VyaXR5LVRva2VuIjoiZTdlNjI2OWUtZmRhMS00ZGUwLThiZGItYmFhN2I2ZGQwYTBkIn0%3D\
-        &payload=e30%3D
+        iIsIlgtQW16LVNlY3VyaXR5LVRva2VuIjoiZTdlNjI2OWUtZmRhMS00ZGUwLThiZGItYmFhN2I2ZGQwYTBkIn0=
         """
         let encodedURL = AppSyncRealTimeRequestAuth.URLQuery(
             header: .iam(.init(
@@ -198,8 +207,10 @@ class AppSyncRealTimeRequestAuthTests: XCTestCase {
                 authToken: "c9dad897-90d1-4a4c-a5c9-2b36a247735f",
                 securityToken: "e7e6269e-fda1-4de0-8bdb-baa7b6dd0a0d",
                 amzDate: "9e0e2df9-2ee7-4659-8362-1c881e118c9f"))
-        ).withBaseURL(URL(string: "https://example.com")!, encoder: jsonEncoder)
-        XCTAssertEqual(encodedURL.absoluteString, expectedURL)
+        ).withBaseURLRequest(URL(string: "https://example.com")!, encoder: jsonEncoder)
+        XCTAssertEqual(encodedURL.url?.absoluteString, expectedURL)
+        let authHeader = encodedURL.value(forHTTPHeaderField: "Authorization")
+        XCTAssertEqual(expectedAuthHeader, authHeader)
     }
 
     private func toJson(_ value: Encodable) -> String? {

@@ -57,7 +57,7 @@ extension AuthTokenInterceptor: AppSyncRequestInterceptor {
 }
 
 extension AuthTokenInterceptor: WebSocketInterceptor {
-    func interceptConnection(url: URL) async -> URL {
+    func interceptConnection(url: URL) async -> URLRequest {
         let authToken = await getAuthToken()
 
         return AppSyncRealTimeRequestAuth.URLQuery(
@@ -65,7 +65,7 @@ extension AuthTokenInterceptor: WebSocketInterceptor {
                 host: AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!,
                 authToken: authToken
             ))
-        ).withBaseURL(url)
+        ).withBaseURLRequest(url)
     }
 }
 

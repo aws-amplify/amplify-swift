@@ -10,5 +10,5 @@ import Foundation
 
 @_spi(WebSocket)
 public protocol WebSocketInterceptor {
-    func interceptConnection(url: URL) async -> URL
+    func interceptConnection(url: URL) async -> URLRequest
 }

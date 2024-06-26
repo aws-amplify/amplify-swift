@@ -21,11 +21,11 @@ class APIKeyAuthInterceptor {
 }
 
 extension APIKeyAuthInterceptor: WebSocketInterceptor {
-    func interceptConnection(url: URL) async -> URL {
+    func interceptConnection(url: URL) async -> URLRequest {
         let authHeader = getAuthHeader(apiKey, AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).host!)
         return AppSyncRealTimeRequestAuth.URLQuery(
             header: .apiKey(authHeader)
-        ).withBaseURL(url)
+        ).withBaseURLRequest(url)
     }
 }
 

@@ -88,15 +88,15 @@ class IAMAuthInterceptor {
 }
 
 extension IAMAuthInterceptor: WebSocketInterceptor {
-    func interceptConnection(url: URL) async -> URL {
+    func interceptConnection(url: URL) async -> URLRequest {
         let connectUrl = AppSyncRealTimeClientFactory.appSyncApiEndpoint(url).appendingPathComponent("connect")
         guard let authHeader = await getAuthHeader(connectUrl, with: "{}") else {
-            return connectUrl
+            return URLRequest(url: connectUrl)
         }
         
         return AppSyncRealTimeRequestAuth.URLQuery(
             header: .iam(authHeader)
-        ).withBaseURL(url)
+        ).withBaseURLRequest(url)
     }
 }
 
