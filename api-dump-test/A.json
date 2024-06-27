@@ -1,0 +1,395 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "DigesterTest"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "DigesterTest",
+        "printedName": "DigesterTest",
+        "children": [
+            {
+              "kind": "Var",
+              "name": "testVar",
+              "printedName": "testVar",
+              "children": [
+                {
+                  "kind": "TypeNominal",
+                  "name": "Float",
+                  "printedName": "Swift.Float",
+                  "usr": "s:Sf"
+                }
+              ],
+              "declKind": "Var",
+              "usr": "s:7DigesterTestAAC10testVarSfvpZ",
+              "mangledName": "$s7DigesterTestAAC10testVarSfvpZ",
+              "moduleName": "DigesterTest",
+              "static": true,
+              "declAttributes": [
+                "HasInitialValue",
+                "Final",
+                "HasStorage"
+              ],
+              "hasStorage": true,
+              "accessors": [
+                {
+                  "kind": "Accessor",
+                  "name": "Get",
+                  "printedName": "Get()",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Float",
+                      "printedName": "Swift.Float",
+                      "usr": "s:Sf"
+                    }
+                  ],
+                  "declKind": "Accessor",
+                  "usr": "s:7DigesterTestAAC10testVarSfvgZ",
+                  "mangledName": "$s7DigesterTestAAC10testVarSfvgZ",
+                  "moduleName": "DigesterTest",
+                  "static": true,
+                  "implicit": true,
+                  "declAttributes": [
+                    "Transparent",
+                    "Final"
+                  ],
+                  "accessorKind": "get"
+                },
+                {
+                  "kind": "Accessor",
+                  "name": "Set",
+                  "printedName": "Set()",
+                  "children": [
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Void",
+                      "printedName": "()"
+                    },
+                    {
+                      "kind": "TypeNominal",
+                      "name": "Float",
+                      "printedName": "Swift.Float",
+                      "usr": "s:Sf"
+                    }
+                  ],
+                  "declKind": "Accessor",
+                  "usr": "s:7DigesterTestAAC10testVarSfvsZ",
+                  "mangledName": "$s7DigesterTestAAC10testVarSfvsZ",
+                  "moduleName": "DigesterTest",
+                  "static": true,
+                  "implicit": true,
+                  "declAttributes": [
+                    "Transparent",
+                    "Final"
+                  ],
+                  "accessorKind": "set"
+                }
+              ]
+            }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "Direction",
+        "printedName": "Direction",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "north",
+            "printedName": "north",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(DigesterTest.Direction.Type) -> DigesterTest.Direction",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Direction",
+                    "printedName": "DigesterTest.Direction",
+                    "usr": "s:7DigesterTest9DirectionO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Paren",
+                    "printedName": "(DigesterTest.Direction.Type)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "DigesterTest.Direction.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Direction",
+                            "printedName": "DigesterTest.Direction",
+                            "usr": "s:7DigesterTest9DirectionO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7DigesterTest9DirectionO5northyA2CmF",
+            "mangledName": "$s7DigesterTest9DirectionO5northyA2CmF",
+            "moduleName": "DigesterTest"
+          },
+          {
+            "kind": "Var",
+            "name": "south",
+            "printedName": "south",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(DigesterTest.Direction.Type) -> DigesterTest.Direction",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Direction",
+                    "printedName": "DigesterTest.Direction",
+                    "usr": "s:7DigesterTest9DirectionO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Paren",
+                    "printedName": "(DigesterTest.Direction.Type)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "DigesterTest.Direction.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Direction",
+                            "printedName": "DigesterTest.Direction",
+                            "usr": "s:7DigesterTest9DirectionO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7DigesterTest9DirectionO5southyA2CmF",
+            "mangledName": "$s7DigesterTest9DirectionO5southyA2CmF",
+            "moduleName": "DigesterTest"
+          },
+          {
+            "kind": "Var",
+            "name": "east",
+            "printedName": "east",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(DigesterTest.Direction.Type) -> DigesterTest.Direction",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Direction",
+                    "printedName": "DigesterTest.Direction",
+                    "usr": "s:7DigesterTest9DirectionO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Paren",
+                    "printedName": "(DigesterTest.Direction.Type)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "DigesterTest.Direction.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Direction",
+                            "printedName": "DigesterTest.Direction",
+                            "usr": "s:7DigesterTest9DirectionO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "s:7DigesterTest9DirectionO4eastyA2CmF",
+            "mangledName": "$s7DigesterTest9DirectionO4eastyA2CmF",
+            "moduleName": "DigesterTest"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(rawValue:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "DigesterTest.Direction?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Direction",
+                    "printedName": "DigesterTest.Direction",
+                    "usr": "s:7DigesterTest9DirectionO"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:7DigesterTest9DirectionO8rawValueACSgSS_tcfc",
+            "mangledName": "$s7DigesterTest9DirectionO8rawValueACSgSS_tcfc",
+            "moduleName": "DigesterTest",
+            "implicit": true,
+            "declAttributes": [
+              "Inlinable"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "TypeAlias",
+            "name": "RawValue",
+            "printedName": "RawValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "TypeAlias",
+            "usr": "s:7DigesterTest9DirectionO8RawValuea",
+            "mangledName": "$s7DigesterTest9DirectionO8RawValuea",
+            "moduleName": "DigesterTest",
+            "implicit": true
+          },
+          {
+            "kind": "Var",
+            "name": "rawValue",
+            "printedName": "rawValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:7DigesterTest9DirectionO8rawValueSSvp",
+            "mangledName": "$s7DigesterTest9DirectionO8rawValueSSvp",
+            "moduleName": "DigesterTest",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:7DigesterTest9DirectionO8rawValueSSvg",
+                "mangledName": "$s7DigesterTest9DirectionO8rawValueSSvg",
+                "moduleName": "DigesterTest",
+                "implicit": true,
+                "declAttributes": [
+                  "Inlinable"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "s:7DigesterTest9DirectionO",
+        "mangledName": "$s7DigesterTest9DirectionO",
+        "moduleName": "DigesterTest",
+        "enumRawTypeName": "String",
+        "isEnumExhaustive": true,
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "RawRepresentable",
+            "printedName": "RawRepresentable",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "RawValue",
+                "printedName": "RawValue",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ]
+              }
+            ],
+            "usr": "s:SY",
+            "mangledName": "$sSY"
+          }
+        ]
+      }
+    ],
+    "json_format_version": 8,
+    "tool_arguments": [
+      "-sdk",
+      "\/Library\/Developer\/CommandLineTools\/SDKs\/MacOSX.sdk",
+      "-dump-sdk",
+      "-module",
+      "DigesterTest",
+      "-o",
+      ".\/api-dump-test\/DigesterTest.json",
+      "-I",
+      ".build\/debug",
+      "-sdk-version",
+      "23E208"
+    ]
+  }
+}
