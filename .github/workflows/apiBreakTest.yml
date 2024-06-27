@@ -93,11 +93,9 @@ jobs:
           echo "### 💔 Public API Breaking Change detected:" >> $GITHUB_ENV
           echo -e "$api_diff_output" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          echo "BREAKING_CHANGE_DETECTED=true" >> $GITHUB_ENV
         else
           echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          echo "BREAKING_CHANGE_DETECTED=false" >> $GITHUB_ENV
         fi
 
         # Checkout to the branch associated with the pull request
@@ -185,20 +183,3 @@ jobs:
           } else {
             console.log("No API diff output found.");
           }
-
-    - name: Add Reviewer if Breaking Change Detected
-      if: env.BREAKING_CHANGE_DETECTED == 'true'
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const issueNumber = context.payload.pull_request.number;
-          const owner = context.repo.owner;
-          const repo = context.repo.repo;
-    
-          github.rest.pulls.requestReviewers({
-            owner: owner,
-            repo: repo,
-            pull_number: issueNumber,
-            team_reviewers: ["amplify-ios-admins"]
-          });
