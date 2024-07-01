@@ -11,4 +11,5 @@ import Foundation
 public enum ServerDisconnection {
     case disconnectionEvent
     case unexpectedClosure(URLSessionWebSocketTask.CloseCode)
+    case runtimeError
 }
