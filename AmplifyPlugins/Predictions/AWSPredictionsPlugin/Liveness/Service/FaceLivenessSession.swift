@@ -183,6 +183,7 @@ public final class FaceLivenessSession: LivenessService {
                     return fallbackDecoding(message)
                 }
             } catch {
+                onComplete(.runtimeError)
                 return false
             }
         case .success:
