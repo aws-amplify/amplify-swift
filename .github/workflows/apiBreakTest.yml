@@ -23,6 +23,36 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        # Define the list of exceptions to filter out
+        exceptions=(
+          'has been added as a new enum case$'
+          'is now with @_spi$'
+        )
+        
+        # Define the mandatory patterns to filter out
+        mandatory_patterns=(
+          '^/\*'
+          '^$'
+        )
+        
+        # Function to apply patterns with grep
+        apply_patterns() {
+          local input="$1"
+          local output="$input"
+        
+          # Apply mandatory patterns
+          for pattern in "${mandatory_patterns[@]}"; do
+            output=$(echo "$output" | grep -v "$pattern")
+          done
+        
+          # Apply exceptions
+          for exception in "${exceptions[@]}"; do
+            output=$(echo "$output" | grep -v "$exception")
+          done
+        
+          echo "$output"
+        }
+
         echo "Swift version: $(swift --version)"
         echo "Swift package manager version: $(swift package --version)"
         swift package resolve
@@ -73,7 +103,7 @@ jobs:
         api_diff_output=""
         for module in $modules; do
           swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
-          module_diff_output=$(grep -v '^/\*' "api-diff-report-${module}.txt" | grep -v '^$' | grep -v 'has been added as a new enum case$' | grep -v 'is now with @_spi$' || true)
+          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
           if [ -n "$module_diff_output" ]; then
             api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
 
@@ -183,3 +213,4 @@ jobs:
           } else {
             console.log("No API diff output found.");
           }
+          
