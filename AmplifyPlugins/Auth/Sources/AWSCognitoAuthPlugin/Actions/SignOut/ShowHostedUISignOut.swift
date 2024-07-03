@@ -66,9 +66,8 @@ class ShowHostedUISignOut: NSObject, Action {
                    environment: Environment) async {
 
         var hostedUIError: AWSCognitoHostedUIError?
-        if let hostedUIInternalError = error as? HostedUIError,
-           case .cancelled = hostedUIInternalError {
-           let event = SignOutEvent(eventType: .userCancelled)
+        if let hostedUIInternalError = error as? HostedUIError {
+           let event = SignOutEvent(eventType: .hostedUISignOutError(hostedUIInternalError))
             self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             await dispatcher.send(event)
             return

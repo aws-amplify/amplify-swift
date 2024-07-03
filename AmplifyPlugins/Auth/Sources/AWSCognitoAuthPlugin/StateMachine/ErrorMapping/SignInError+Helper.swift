@@ -107,7 +107,8 @@ extension HostedUIError: AuthErrorConvertible {
         case .unableToStartASWebAuthenticationSession:
             return .service(
                 AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.errorDescription,
-                AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.recoverySuggestion,
+                AWSCognitoAuthError.errorLoadingUI)
 
         case .serviceMessage(let message):
             return .service(message, AuthPluginErrorConstants.serviceError)

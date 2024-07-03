@@ -114,7 +114,7 @@ class ShowHostedUISignOutTests: XCTestCase {
                     return
                 }
 
-                XCTAssertEqual(event.eventType, .userCancelled)
+                XCTAssertEqual(event.eventType, .hostedUISignOutError(.cancelled))
                 expectation.fulfill()
             },
             environment: Defaults.makeDefaultAuthEnvironment(
@@ -185,14 +185,13 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .signOutGlobally(let data, let hostedUIError) = event.eventType else {
-                    XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
+                    XCTFail("Expected SignOutEvent.hostedUISignOutError, got \(event)")
                     expectation.fulfill()
                     return
                 }
 
-                guard let hostedUIError = hostedUIError,
-                      case .invalidState(let errorDescription, let recoverySuggestion, let serviceError) = hostedUIError.error else {
+                guard case .invalidState(let errorDescription, let recoverySuggestion, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.invalidState")
                     expectation.fulfill()
                     return
@@ -200,7 +199,6 @@ class ShowHostedUISignOutTests: XCTestCase {
 
                 XCTAssertEqual(errorDescription, AuthPluginErrorConstants.hostedUIInvalidPresentation.errorDescription)
                 XCTAssertEqual(recoverySuggestion, AuthPluginErrorConstants.hostedUIInvalidPresentation.recoverySuggestion)
-                XCTAssertEqual(data, signInData)
                 XCTAssertNil(serviceError)
                 expectation.fulfill()
             },
