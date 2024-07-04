@@ -75,7 +75,7 @@ class ShowHostedUISignOut: NSObject, Action {
         await dispatcher.send(event)
     }
 
-    func getEvent(for hostedUIError: AWSCognitoHostedUIError?) -> SignOutEvent {
+    private func getEvent(for hostedUIError: AWSCognitoHostedUIError?) -> SignOutEvent {
         if self.signOutEvent.globalSignOut {
             return SignOutEvent(eventType: .signOutGlobally(self.signInData,
                                                              hostedUIError: hostedUIError))
