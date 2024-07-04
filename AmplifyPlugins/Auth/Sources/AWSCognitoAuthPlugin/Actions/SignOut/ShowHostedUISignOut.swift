@@ -61,7 +61,7 @@ class ShowHostedUISignOut: NSObject, Action {
            event = SignOutEvent(eventType: .hostedUISignOutError(hostedUIInternalError))
         } else if let error = error as? AuthErrorConvertible {
             event = getEvent(for: AWSCognitoHostedUIError(error: error.authError))
-        } else if let error = error{
+        } else if let error = error {
             let serviceError = AuthError.service(
                 "HostedUI failed with error", "", error)
             event = getEvent(for: AWSCognitoHostedUIError(error: serviceError))
