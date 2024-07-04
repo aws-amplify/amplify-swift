@@ -74,12 +74,12 @@ extension HostedUIError: AuthErrorConvertible {
                 AuthPluginErrorConstants.hostedUITokenURI.recoverySuggestion)
 
         case .signOutURI:
-            return .service(
+            return .configuration(
                 AuthPluginErrorConstants.hostedUISignOutURI.errorDescription,
                 AuthPluginErrorConstants.hostedUISignOutURI.recoverySuggestion)
 
         case .signOutRedirectURI:
-            return .service(
+            return .configuration(
                 AuthPluginErrorConstants.hostedUISignOutRedirectURI.errorDescription,
                 AuthPluginErrorConstants.hostedUISignOutRedirectURI.recoverySuggestion)
 
