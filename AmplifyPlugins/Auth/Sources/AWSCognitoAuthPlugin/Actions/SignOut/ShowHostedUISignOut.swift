@@ -63,7 +63,10 @@ class ShowHostedUISignOut: NSObject, Action {
             event = getEvent(for: AWSCognitoHostedUIError(error: error.authError))
         } else if let error = error {
             let serviceError = AuthError.service(
-                "HostedUI failed with error", "", error)
+                "HostedUI failed with error", 
+                "", 
+                error
+            )
             event = getEvent(for: AWSCognitoHostedUIError(error: serviceError))
         } else {
             event = getEvent(for: nil)
