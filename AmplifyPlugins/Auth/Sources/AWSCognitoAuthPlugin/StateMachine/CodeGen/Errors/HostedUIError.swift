@@ -15,6 +15,8 @@ enum HostedUIError: Error {
 
     case signOutURI
 
+    case signOutRedirectURI
+
     case proofCalculation
 
     case codeValidation
@@ -22,6 +24,8 @@ enum HostedUIError: Error {
     case tokenParsing
 
     case serviceMessage(String)
+
+    case pluginConfiguration(String)
 
     case cancelled
 

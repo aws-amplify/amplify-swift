@@ -24,7 +24,7 @@ class SignOutStateSigningOutGloballyTests: XCTestCase {
                 .signedOutSuccess,
                 .invokeHostedUISignOut,
                 .signOutGuest,
-                .userCancelled,
+                .hostedUISignOutError,
                 .signedOutFailure:
                 XCTAssertEqual(
                     resolver.resolve(

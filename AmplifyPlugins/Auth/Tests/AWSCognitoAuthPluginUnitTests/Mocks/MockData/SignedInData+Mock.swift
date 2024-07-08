@@ -23,4 +23,15 @@ extension SignedInData {
                             signInMethod: .apiBased(.userSRP),
                             cognitoUserPoolTokens: tokens)
     }
+
+    static var hostedUISignInData: SignedInData {
+        let tokens = AWSCognitoUserPoolTokens.testData
+        return SignedInData(signedInDate: Date(),
+                            signInMethod: .hostedUI(.init(
+                                scopes: [],
+                                providerInfo: .init(authProvider: .google, idpIdentifier: ""),
+                                presentationAnchor: nil,
+                                preferPrivateSession: false)),
+                            cognitoUserPoolTokens: tokens)
+    }
 }
