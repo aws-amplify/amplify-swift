@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.5 (2024-07-08)
+
+### Bug Fixes
+
+- **Auth**: Throw error if hosted UI is not presented during sign out (#3769)
+
 ## 2.35.4 (2024-06-25)
 
 ### Bug Fixes
