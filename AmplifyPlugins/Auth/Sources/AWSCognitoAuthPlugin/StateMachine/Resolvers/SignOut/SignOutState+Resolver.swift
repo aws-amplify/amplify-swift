@@ -117,9 +117,9 @@ extension SignOutState {
                     newState: SignOutState.revokingToken,
                     actions: [action]
                 )
-            case .userCancelled:
+            case .hostedUISignOutError(let error):
                 let action = CancelSignOut(signedInData: signedInData)
-                return .init(newState: .error(.userCancelled), actions: [action])
+                return .init(newState: .error(.hostedUI(error)), actions: [action])
             default:
                 return .from(oldState)
             }

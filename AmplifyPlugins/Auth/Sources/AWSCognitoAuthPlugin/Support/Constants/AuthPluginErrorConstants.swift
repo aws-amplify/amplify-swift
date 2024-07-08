@@ -56,6 +56,10 @@ enum AuthPluginErrorConstants {
         "SignOut URI could not be created",
         "Check the configuration to make sure that HostedUI related information are present")
 
+    static let hostedUISignOutRedirectURI: AuthPluginErrorString = (
+        "Callback URL could not be retrieved",
+        "Check the configuration to make sure that HostedUI related information are present")
+
     static let hostedUIProofCalculation: AuthPluginErrorString = (
         "Proof calculation failed",
         "Reach out with amplify team via github to raise an issue")
