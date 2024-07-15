@@ -8,7 +8,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  buildAndCheckAPIBreakage:
+  build-and-check-api-breakage:
     name: Build and Check API Breakage
     runs-on: macos-latest
 
@@ -16,7 +16,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       with:
-        fetch-depth: 0
+        ref: ${{ github.head_ref }}  # Checkout the PR branch
+        fetch-depth: 1
+
+    - name: Fetch the branchs
+      run: |
+        git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
+        git fetch origin ${{ github.sha }}
 
 
     - name: Setup and Run Swift API Diff
@@ -66,6 +72,7 @@ jobs:
         SDK_PATH=$(xcrun --show-sdk-path)
 
         # Get all library module names
+        # Moduels with aws-crt-swift as dependency are not listed due to swift-api-digester's issue with analyzing C dependencies
         modules=$(swift package dump-package | jq -r '.products | map(select(.name == "Amplify" or .name == "CoreMLPredictionsPlugin" or .name == "AWSDataStorePlugin" or .name == "AWSPluginsCore")) | map(.name) | .[]')
         echo "Modules: $modules"
         
@@ -194,7 +201,7 @@ jobs:
         git stash pop || true
         
     - name: Comment on PR with API Diff
-      uses: actions/github-script@v6
+      uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
