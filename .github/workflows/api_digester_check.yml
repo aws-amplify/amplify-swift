@@ -2,7 +2,7 @@ name: Swift API Digester Functionality Check
 
 on:
   schedule:
-    - cron: '0 0 * * *' # This will run the action every night at midnight
+    - cron: '0 15 * * *' # This will run the action every day at 3:00 pm UTC (8:00 am PDT)
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
