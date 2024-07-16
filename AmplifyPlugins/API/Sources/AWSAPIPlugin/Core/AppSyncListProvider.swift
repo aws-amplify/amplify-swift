@@ -268,7 +268,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         }
         let defaultFieldName = modelSchema.name.camelCased() + field.pascalCased() + "Id"
         switch modelField.association {
-        case .belongsTo(_, let targetNames), .hasOne(_, let targetNames):
+        case .belongsTo(_, let targetNames), .hasOne(_, _, let targetNames):
             guard !targetNames.isEmpty else {
                 return [defaultFieldName]
 
