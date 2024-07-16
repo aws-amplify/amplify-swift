@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.7 (2024-07-16)
+
+### Bug Fixes
+
+- **core**: update privacy info (#3777)
+
 ## 2.35.6 (2024-07-16)
 
 ### Bug Fixes
