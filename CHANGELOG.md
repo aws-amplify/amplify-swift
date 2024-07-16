@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.35.6 (2024-07-16)
+
+### Bug Fixes
+
+- **data**: Gen2 hasOne associatedFields compile issue (#3700)
+
 ## 2.35.5 (2024-07-08)
 
 ### Bug Fixes
