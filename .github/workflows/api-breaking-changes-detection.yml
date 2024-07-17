@@ -1,0 +1,223 @@
+name: Public Interface Breakage Detection
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-and-check-api-breakage:
+    name: Build and Check API Breakage
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      with:
+        ref: ${{ github.head_ref }}  # Checkout the PR branch
+        fetch-depth: 1
+
+    - name: Fetch the branchs
+      run: |
+        git fetch origin ${{ github.sha }}
+
+
+    - name: Setup and Run Swift API Diff
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Define the list of exceptions to filter out
+        exceptions=(
+          'has been added as a new enum case$'
+          'is now with @_spi$'
+        )
+        
+        # Define the mandatory patterns to filter out
+        mandatory_patterns=(
+          '^/\*'
+          '^$'
+        )
+        
+        # Function to apply patterns with grep
+        apply_patterns() {
+          local input="$1"
+          local output="$input"
+        
+          # Apply mandatory patterns
+          for pattern in "${mandatory_patterns[@]}"; do
+            output=$(echo "$output" | grep -v "$pattern")
+          done
+        
+          # Apply exceptions
+          for exception in "${exceptions[@]}"; do
+            output=$(echo "$output" | grep -v "$exception")
+          done
+        
+          echo "$output"
+        }
+
+        echo "Swift version: $(swift --version)"
+        echo "Swift package manager version: $(swift package --version)"
+        swift package resolve
+
+        # Ensure we are in the correct directory
+        cd $GITHUB_WORKSPACE
+        
+        # Run swift-api-diff commands here directly
+        NEW_API_DIR=$(mktemp -d)
+        OLD_API_DIR=$(mktemp -d)
+        SDK_PATH=$(xcrun --show-sdk-path)
+
+        # Get all library module names
+        # Moduels with aws-crt-swift as dependency are not listed due to swift-api-digester's issue with analyzing C dependencies
+        modules=$(swift package dump-package | jq -r '.products | map(select(.name == "Amplify" or .name == "CoreMLPredictionsPlugin" or .name == "AWSDataStorePlugin" or .name == "AWSPluginsCore")) | map(.name) | .[]')
+        echo "Modules: $modules"
+        
+        echo "Fetching old version..."
+        git fetch origin ${{ github.event.pull_request.base.sha }}
+        git checkout ${{ github.event.pull_request.base.sha }}
+        built=false
+        for module in $modules; do
+          # If file doesn't exits in the old directory
+          if [ ! -f api-dump/${module}.json ]; then
+            echo "Old API file does not exist in the base branch. Generating it..."
+            # Check if the project has been built
+            if ! $built; then
+              echo "Building project..."
+              swift build > /dev/null 2>&1 || { echo "Failed to build project"; exit 1; }
+              built=true 
+            fi
+              
+            # Generate the API file using api-digester
+            swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$OLD_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
+          else
+            # Use the api-dump/${module}.json file from the base branch directly
+            cp "api-dump/${module}.json" "$OLD_API_DIR/${module}.json"
+          fi
+        done
+        
+        echo "Fetching new version..."
+        git checkout ${{ github.sha }}
+        git log -1  # Print the commit info for debugging
+        swift build> /dev/null 2>&1 || { echo "Failed to build new version"; exit 1; }
+        for module in $modules; do
+          swift api-digester -sdk "$SDK_PATH" -dump-sdk -module "$module" -o "$NEW_API_DIR/${module}.json" -I .build/debug || { echo "Failed to dump new SDK for module $module"; exit 1; }
+        done
+        
+        # Compare APIs for each module and capture the output
+        api_diff_output=""
+        for module in $modules; do
+          swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths "$OLD_API_DIR/${module}.json" --input-paths "$NEW_API_DIR/${module}.json" >> "api-diff-report-${module}.txt" 2>&1
+          module_diff_output=$(apply_patterns "$(cat "api-diff-report-${module}.txt")")
+          if [ -n "$module_diff_output" ]; then
+            api_diff_output="${api_diff_output}\n**Module: ${module}**\n${module_diff_output}\n"
+
+            # Check if there are lines containing "has been renamed to Func"
+            if echo "$module_diff_output" | grep -q 'has been renamed to Func'; then
+                # Capture the line containing "has been renamed to Func"
+                renamed_line=$(echo "$module_diff_output" | grep 'has been renamed to Func')
+            
+                # Append a message to the module_diff_output
+                api_diff_output="${api_diff_output}👉🏻 _Note: If you're just adding optional parameters to existing methods, neglect the line:_\n_${renamed_line}_\n"
+            fi
+          fi
+        done
+        
+        echo "API_DIFF_OUTPUT<<EOF" >> $GITHUB_ENV
+        if [ -n "$api_diff_output" ]; then
+          echo "### 💔 Public API Breaking Change detected:" >> $GITHUB_ENV
+          echo -e "$api_diff_output" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        else
+          echo "### ✅ No Public API Breaking Change detected" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        fi
+
+        # Checkout to the branch associated with the pull request
+        git stash --include-untracked
+        git checkout ${{ github.head_ref }}
+
+        if [ ! -d "api-dump" ]; then
+            echo "api-dump folder does not exist. Creating it..."
+            mkdir -p "api-dump"
+        fi
+        
+        # Update the api-dump folder of the new version by making a commit if there are changes
+        for module in $modules; do
+            if [ ! -f api-dump/${module}.json ]; then
+              echo "API file does not exist in api-dump folder. Creating it..."
+              echo "{}" > "api-dump/${module}.json"
+            fi
+            if ! diff "$NEW_API_DIR/${module}.json" "api-dump/${module}.json" > /dev/null; then
+                echo "Updating API Dumps..."
+                mv "$NEW_API_DIR/${module}.json" "api-dump/${module}.json"
+            fi
+        done
+
+        git config --global user.name "aws-amplify-ops"
+        git config --global user.email "aws-amplify@amazon.com"
+        
+        git add api-dump/*.json
+
+        if ! git diff --cached --quiet --exit-code; then
+          # Get the file names that have changes
+          changed_files=$(git diff --cached --name-only)
+
+          push_changes=false
+          for file in $changed_files; do
+            if [[ $file == api-dump/* ]]; then
+              # Get the number of lines in the file
+              total_lines=$(wc -l < "$file")
+              # Get the line numbers of the changes
+              changed_lines=$(git diff --cached -U0 "$file" | grep -o '@@ [^ ]* [^ ]* @@' | awk '{print $3}' | cut -d ',' -f1 | sed 's/[^0-9]//g')
+              echo "Changed lines in $file: $changed_lines"
+              # Check if any change is not within the last 10 lines
+              for line in $changed_lines; do
+                if [ "$line" -le "$((total_lines - 10))" ]; then
+                  push_changes=true
+                  break
+                fi
+              done
+
+              # If any file should be pushed, break out of the loop
+              if [ "$push_changes" = true ]; then
+                break
+              fi
+            fi
+          done
+
+          if [ "$push_changes" = true ]; then
+            git commit -m "Update API dumps for new version"
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No changes to commit in the api-dump folder."
+          fi
+        else
+          echo "No changes to commit in the api-dump folder."
+        fi
+
+        git stash pop || true
+        
+    - name: Comment on PR with API Diff
+      uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6.4.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const apiDiffOutput = process.env.API_DIFF_OUTPUT;
+          const issueNumber = context.payload.pull_request.number;
+          const owner = context.repo.owner;
+          const repo = context.repo.repo;
+
+          if (apiDiffOutput && apiDiffOutput.trim().length > 0) {
+            github.rest.issues.createComment({
+              owner: owner,
+              repo: repo,
+              issue_number: issueNumber,
+              body: `## API Breakage Report\n${apiDiffOutput}\n`
+            });
+          } else {
+            console.log("No API diff output found.");
+          }
+          
