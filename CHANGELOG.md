@@ -1,5 +1,30 @@
 # Changelog
 
+## 2.35.7 (2024-07-16)
+
+### Bug Fixes
+
+- **core**: update privacy info (#3777)
+
+## 2.35.6 (2024-07-16)
+
+### Bug Fixes
+
+- **data**: Gen2 hasOne associatedFields compile issue (#3700)
+
+## 2.35.5 (2024-07-08)
+
+### Bug Fixes
+
+- **Auth**: Throw error if hosted UI is not presented during sign out (#3769)
+
+## 2.35.4 (2024-06-25)
+
+### Bug Fixes
+
+- **Auth**: Resolve AuthZ state correctly when in error state (#3762)
+- **core**: remove InternalAmplifyCredentials from products (#3750)
+
 ## 2.35.3 (2024-06-13)
 
 ### Bug Fixes

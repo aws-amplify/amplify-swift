@@ -74,9 +74,14 @@ extension HostedUIError: AuthErrorConvertible {
                 AuthPluginErrorConstants.hostedUITokenURI.recoverySuggestion)
 
         case .signOutURI:
-            return .service(
+            return .configuration(
                 AuthPluginErrorConstants.hostedUISignOutURI.errorDescription,
                 AuthPluginErrorConstants.hostedUISignOutURI.recoverySuggestion)
+
+        case .signOutRedirectURI:
+            return .configuration(
+                AuthPluginErrorConstants.hostedUISignOutRedirectURI.errorDescription,
+                AuthPluginErrorConstants.hostedUISignOutRedirectURI.recoverySuggestion)
 
         case .proofCalculation:
             return .invalidState(
@@ -107,10 +112,14 @@ extension HostedUIError: AuthErrorConvertible {
         case .unableToStartASWebAuthenticationSession:
             return .service(
                 AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.errorDescription,
-                AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.recoverySuggestion)
+                AuthPluginErrorConstants.hostedUIUnableToStartASWebAuthenticationSession.recoverySuggestion,
+                AWSCognitoAuthError.errorLoadingUI)
 
         case .serviceMessage(let message):
             return .service(message, AuthPluginErrorConstants.serviceError)
+
+        case .pluginConfiguration(let message):
+            return .configuration(message, AuthPluginErrorConstants.configurationError)
 
         case .unknown:
             return .unknown("WebUI signIn encountered an unknown error", nil)

@@ -203,7 +203,7 @@ extension Statement: StatementModelConvertible {
 
     private func getTargetNames(field: ModelField) -> [String] {
         switch field.association {
-        case let .some(.hasOne(_, targetNames)):
+        case let .some(.hasOne(_, _, targetNames)):
             return targetNames
         case let .some(.belongsTo(_, targetNames)):
             return targetNames

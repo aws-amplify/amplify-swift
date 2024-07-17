@@ -10,7 +10,7 @@ import Amplify
 
 enum SignOutError: Error {
 
-    case userCancelled
+    case hostedUI(HostedUIError)
 
     case localSignOut
 }
@@ -18,10 +18,22 @@ enum SignOutError: Error {
 extension SignOutError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
-        case .userCancelled:
-            return AuthError.service("", "", AWSCognitoAuthError.userCancelled)
+        case .hostedUI(let error):
+            return error.authError
         case .localSignOut:
             return AuthError.unknown("", nil)
+        }
+    }
+}
+
+extension SignOutError: Equatable {
+    static func == (lhs: SignOutError, rhs: SignOutError) -> Bool {
+        switch (lhs, rhs) {
+        case (.hostedUI, .hostedUI),
+            (.localSignOut, .localSignOut):
+            return true
+        default:
+            return false
         }
     }
 }

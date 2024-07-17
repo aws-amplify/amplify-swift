@@ -22,7 +22,7 @@ class SignOutStateNotStartedTests: XCTestCase {
             case .signOutLocally,
                     .signedOutSuccess,
                     .signedOutFailure,
-                    .userCancelled,
+                    .hostedUISignOutError,
                     .globalSignOutError:
                 XCTAssertEqual(
                     resolver.resolve(
