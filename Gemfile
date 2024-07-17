@@ -7,5 +7,6 @@ gem 'fastlane'
 gem 'jazzy'
 gem 'rexml', '>= 3.3.2'
 gem 'activesupport', '>= 7.0.7.2'
+gem 'json', '2.6.3'
 eval_gemfile('fastlane/Pluginfile')
 
