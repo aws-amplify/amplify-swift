@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.36.0 (2024-07-18)
+
+### Features
+
+- **Storage**: Adding subpath strategy to the List operation (#3775)
+
 ## 2.35.7 (2024-07-16)
 
 ### Bug Fixes
