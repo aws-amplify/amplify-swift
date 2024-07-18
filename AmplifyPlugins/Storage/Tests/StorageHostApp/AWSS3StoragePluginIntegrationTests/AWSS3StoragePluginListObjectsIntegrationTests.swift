@@ -189,4 +189,67 @@ class AWSS3StoragePluginListObjectsIntegrationTests: AWSS3StoragePluginTestBase 
         }
     }
 
+    /// Given: Multiple objects uploaded to a public path
+    /// When: `Amplify.Storage.list` is invoked with `subpathStrategy: .exclude`
+    /// Then: The API should execute successfully and list objects for the given path, without including contens from its subpaths
+    func testList_withSubpathStrategyExclude_shouldExcludeSubpaths() async throws {
+        let path = UUID().uuidString
+        let data = Data(path.utf8)
+        let uniqueStringPath = "public/\(path)"
+
+        // Upload data
+        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test1"), data: data, options: nil).value
+        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/test2"), data: data, options: nil).value
+        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/subpath1/test"), data: data, options: nil).value
+        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "/subpath2/test"), data: data, options: nil).value
+
+        let result = try await Amplify.Storage.list(
+            path: .fromString("\(uniqueStringPath)/"),
+            options: .init(
+                subpathStrategy: .exclude
+            )
+        )
+
+        // Validate result
+        XCTAssertEqual(result.items.count, 2)
+        XCTAssertTrue(result.items.contains(where: { $0.path.hasPrefix("\(uniqueStringPath)/test") }), "Unexpected item")
+        XCTAssertEqual(result.excludedSubpaths.count, 2)
+        XCTAssertTrue(result.excludedSubpaths.contains(where: { $0.hasPrefix("\(uniqueStringPath)/subpath") }), "Unexpected excluded subpath")
+
+        // Clean up
+        _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "/test1"))
+        _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "/test2"))
+        _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "/subpath1/test"))
+        _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "/subpath2/test"))
+    }
+
+    /// Given: Multiple objects uploaded to a public path
+    /// When: `Amplify.Storage.list` is invoked with `subpathStrategy: .exclude(delimitedBy:)`
+    /// Then: The API should execute successfully and list objects for the given path, without including contents from any subpath that is determined by the given delimiter
+    func testList_withSubpathStrategyExclude_andCustomDelimiter_shouldExcludeSubpaths() async throws {
+        let path = UUID().uuidString
+        let data = Data(path.utf8)
+        let uniqueStringPath = "public/\(path)"
+
+        // Upload data
+        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "-test"), data: data, options: nil).value
+        _ = try await Amplify.Storage.uploadData(path: .fromString(uniqueStringPath + "-subpath-test"), data: data, options: nil).value
+
+        let result = try await Amplify.Storage.list(
+            path: .fromString("\(uniqueStringPath)-"),
+            options: .init(
+                subpathStrategy: .exclude(delimitedBy: "-")
+            )
+        )
+
+        // Validate result
+        XCTAssertEqual(result.items.count, 1)
+        XCTAssertEqual(result.items.first?.path, "\(uniqueStringPath)-test")
+        XCTAssertEqual(result.excludedSubpaths.count, 1)
+        XCTAssertEqual(result.excludedSubpaths.first, "\(uniqueStringPath)-subpath-")
+
+        // Clean up
+        _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "-test"))
+        _ = try await Amplify.Storage.remove(path: .fromString(uniqueStringPath + "-subpath-test"))
+    }
 }
