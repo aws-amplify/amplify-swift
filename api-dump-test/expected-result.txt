@@ -1,0 +1,29 @@
+
+/* Generic Signature Changes */
+
+/* RawRepresentable Changes */
+
+/* Removed Decls */
+
+/* Moved Decls */
+
+/* Renamed Decls */
+
+/* Type Changes */
+Accessor DigesterTest.testVar.Get() has return type change from Swift.Float to Swift.Int
+Accessor DigesterTest.testVar.Set() has parameter 0 type change from Swift.Float to Swift.Int
+Var DigesterTest.testVar has declared type change from Swift.Float to Swift.Int
+
+/* Decl Attribute changes */
+Var DigesterTest.testVar is now with @_spi
+
+/* Fixed-layout Type Changes */
+EnumElement Direction.west has been added as a new enum case
+
+/* Protocol Conformance Change */
+
+/* Protocol Requirement Change */
+
+/* Class Inheritance Change */
+
+/* Others */

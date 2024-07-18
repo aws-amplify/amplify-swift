@@ -114,4 +114,22 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
         XCTAssertEqual(1, storageService.interactions.count)
     }
 
+    /// - Given: A plugin configured with a mocked service
+    /// - When: The list API is invoked with subpathStrategy set to .exclude
+    /// - Then: The list of excluded subpaths and the list of items should be populated
+    func testPluginListWithCommonPrefixesAsync() async throws  {
+        storageService.listHandler = { (_, _) in
+            return .init(
+                items: [.init(path: "path")],
+                excludedSubpaths: ["subpath1", "subpath2"]
+            )
+        }
+        let output = try await storagePlugin.list(options: .init(subpathStrategy: .exclude))
+        XCTAssertEqual(1, output.items.count, String(describing: output))
+        XCTAssertEqual("path", output.items.first?.path)
+        XCTAssertEqual(2, output.excludedSubpaths.count)
+        XCTAssertEqual("subpath1", output.excludedSubpaths[0])
+        XCTAssertEqual("subpath2", output.excludedSubpaths[1])
+        XCTAssertEqual(1, storageService.interactions.count)
+    }
 }

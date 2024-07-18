@@ -31,7 +31,7 @@ extension AWSS3StorageService {
         }
         let input = ListObjectsV2Input(bucket: bucket,
                                        continuationToken: options.nextToken,
-                                       delimiter: nil,
+                                       delimiter: options.subpathStrategy.delimiter,
                                        maxKeys: Int(options.pageSize),
                                        prefix: finalPrefix,
                                        startAfter: nil)
@@ -41,7 +41,20 @@ extension AWSS3StorageService {
             let items = try contents.map {
                 try StorageListResult.Item(s3Object: $0, prefix: prefix)
             }
-            return StorageListResult(items: items, nextToken: response.nextContinuationToken)
+
+            let commonPrefixes = response.commonPrefixes ?? []
+            let excludedSubpaths: [String] = commonPrefixes.compactMap {
+                guard let commonPrefix = $0.prefix else {
+                    return nil
+                }
+                return String(commonPrefix.dropFirst(prefix.count))
+            }
+
+            return StorageListResult(
+                items: items,
+                excludedSubpaths: excludedSubpaths,
+                nextToken: response.nextContinuationToken
+            )
         } catch let error as StorageErrorConvertible {
             throw error.storageError
         } catch {

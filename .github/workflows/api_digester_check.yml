@@ -1,0 +1,39 @@
+name: Swift API Digester Functionality Check
+
+on:
+  schedule:
+    - cron: '0 15 * * *' # This will run the action every day at 3:00 pm UTC (8:00 am PDT)
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  check-swift-api-digester:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+
+    - name: Check API Digester
+      shell: bash
+      env:
+          WEBHOOK_URL: ${{ secrets.SLACK_API_CHECKER_WEBHOOK_URL }}
+      run: |
+        TEMP_DIR=$(mktemp -d)
+        echo "Temporary directory created at $TEMP_DIR"
+        SDK_PATH=$(xcrun --sdk macosx --show-sdk-path)
+        echo "SDK Path: $SDK_PATH"
+        
+        # Run swift-api-digester
+        swift api-digester -sdk "$SDK_PATH" -diagnose-sdk --input-paths api-dump-test/A.json --input-paths api-dump-test/B.json >> "$TEMP_DIR/api-digester-output.txt" 2>&1
+          
+        # Display the output
+        cat "$TEMP_DIR/api-digester-output.txt"
+        
+        if diff "$TEMP_DIR/api-digester-output.txt" api-dump-test/expected-result.txt; then
+          echo "The output matches the expected result."
+        else
+          echo "The output does not match the expected result."
+          WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "$WORKFLOW_URL" | xargs -I {} curl -s POST "$WEBHOOK_URL" -H "Content-Type:application/json" --data '{"WORKFLOW_URL":"{}"}'
+          exit 1
+        fi

@@ -38,6 +38,7 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
             storageBehaviour: serviceMock)
         let value = try await task.value
         XCTAssertEqual(value.items.count, 2)
+        XCTAssertTrue(value.excludedSubpaths.isEmpty)
         XCTAssertEqual(value.nextToken, "continuationToken")
         XCTAssertEqual(value.items[0].eTag, "tag")
         XCTAssertEqual(value.items[0].key, "key")
@@ -129,5 +130,82 @@ class AWSS3StorageListObjectsTaskTests: XCTestCase {
 
             XCTAssertEqual(field, "path", "Field in error should be `path`")
         }
+    }
+
+    /// - Given: A configured Storage List Objects Task with mocked service
+    /// - When: AWSS3StorageListObjectsTask value is invoked with subpathStrategy set to .exclude
+    /// - Then: The delimiter should be set, the list of excluded subpaths and the list of items should be populated
+    func testListObjectsTask_withSubpathStrategyExclude_shouldSucceed() async throws {
+        let serviceMock = MockAWSS3StorageService()
+        let client = serviceMock.client as! MockS3Client
+        client.listObjectsV2Handler = { input in
+            XCTAssertNotNil(input.delimiter, "Expected delimiter to be set")
+            return .init(
+                commonPrefixes: [
+                    .init(prefix: "path/subpath1/"),
+                    .init(prefix: "path/subpath2/")
+                ],
+                contents: [
+                    .init(eTag: "tag", key: "path/result", lastModified: Date())
+                ],
+                nextContinuationToken: "continuationToken"
+            )
+        }
+
+        let request = StorageListRequest(
+            path: StringStoragePath.fromString("path/"),
+            options: .init(
+                subpathStrategy: .exclude
+            )
+        )
+        let task = AWSS3StorageListObjectsTask(
+            request,
+            storageConfiguration: AWSS3StoragePluginConfiguration(),
+            storageBehaviour: serviceMock
+        )
+        let value = try await task.value
+        XCTAssertEqual(value.items.count, 1)
+        XCTAssertEqual(value.items[0].eTag, "tag")
+        XCTAssertEqual(value.items[0].path, "path/result")
+        XCTAssertNotNil(value.items[0].lastModified)
+        XCTAssertEqual(value.excludedSubpaths.count, 2)
+        XCTAssertEqual(value.excludedSubpaths[0], "path/subpath1/")
+        XCTAssertEqual(value.excludedSubpaths[1], "path/subpath2/")
+        XCTAssertEqual(value.nextToken, "continuationToken")
+    }
+
+    /// - Given: A configured Storage List Objects Task with mocked service
+    /// - When: AWSS3StorageListObjectsTask value is invoked with subpathStrategy set to .include
+    /// - Then: The delimiter should not be set, the list of excluded subpaths should be empty and the list of items should be populated
+    func testListObjectsTask_withSubpathStrategyInclude_shouldSucceed() async throws {
+        let serviceMock = MockAWSS3StorageService()
+        let client = serviceMock.client as! MockS3Client
+        client.listObjectsV2Handler = { input in
+            XCTAssertNil(input.delimiter, "Expected delimiter to be nil")
+            return .init(
+                contents: [
+                    .init(eTag: "tag", key: "path", lastModified: Date()),
+                ],
+                nextContinuationToken: "continuationToken"
+            )
+        }
+
+        let request = StorageListRequest(
+            path: StringStoragePath.fromString("path"), 
+            options: .init(
+                subpathStrategy: .include
+            )
+        )
+        let task = AWSS3StorageListObjectsTask(
+            request,
+            storageConfiguration: AWSS3StoragePluginConfiguration(),
+            storageBehaviour: serviceMock)
+        let value = try await task.value
+        XCTAssertEqual(value.items.count, 1)
+        XCTAssertEqual(value.items[0].eTag, "tag")
+        XCTAssertEqual(value.items[0].path, "path")
+        XCTAssertNotNil(value.items[0].lastModified)
+        XCTAssertTrue(value.excludedSubpaths.isEmpty)
+        XCTAssertEqual(value.nextToken, "continuationToken")
     }
 }
