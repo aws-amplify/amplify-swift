@@ -7,6 +7,7 @@
 
 import Foundation
 import libtommathAmplify
+import s2nbignum
 
 extension AmplifyBigInt {
 

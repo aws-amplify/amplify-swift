@@ -164,7 +164,8 @@ let apiTargets: [Target] = [
 let authTargets: [Target] = [
     .target(name: "AmplifyBigInteger",
             dependencies: [
-                "libtommathAmplify"
+                "libtommathAmplify",
+                "s2nbignum"
             ],
             path: "AmplifyPlugins/Auth/Sources/AmplifyBigInteger"
            ),
@@ -199,6 +200,10 @@ let authTargets: [Target] = [
             "LICENSE",
             "README.md"
         ]
+    ),
+    .target(
+        name: "s2nbignum",
+        path: "AmplifyPlugins/Auth/Sources/s2n-bignum"
     ),
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
