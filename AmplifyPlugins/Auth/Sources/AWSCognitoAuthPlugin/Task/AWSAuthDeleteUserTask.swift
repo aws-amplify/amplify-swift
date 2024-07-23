@@ -26,7 +26,6 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
     }
 
     func execute() async throws {
-        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
         let accessToken = try await taskHelper.getAccessToken()
 
