@@ -92,7 +92,7 @@ public struct KeychainStore: KeychainStoreBehavior {
             log.error("[KeychainStore] Unable to create String from Data retrieved")
             throw KeychainStoreError.conversionError("Unable to create String from Data retrieved")
         }
-        log.verbose("[KeychainStore] Successfully retrieved string from the store")
+        log.verbose("[KeychainStore] Successfully retrieved `String` from the store")
         return string
 
     }
@@ -175,7 +175,7 @@ public struct KeychainStore: KeychainStoreBehavior {
                 log.error("[KeychainStore] Error updating item to keychain with status=\(updateStatus)")
                 throw KeychainStoreError.securityError(updateStatus)
             }
-            log.verbose("[KeychainStore] Successfully updated `String` in keychain for key=\(key)")
+            log.verbose("[KeychainStore] Successfully updated `Data` in keychain for key=\(key)")
             #endif
         case errSecItemNotFound:
             log.verbose("[KeychainStore] Unable to find an existing item, creating new item")
@@ -188,7 +188,7 @@ public struct KeychainStore: KeychainStoreBehavior {
                 log.error("[KeychainStore] Error adding item to keychain with status=\(addStatus)")
                 throw KeychainStoreError.securityError(addStatus)
             }
-            log.verbose("[KeychainStore] Successfully added `String` in keychain for key=\(key)")
+            log.verbose("[KeychainStore] Successfully added `Data` in keychain for key=\(key)")
         default:
             log.error("[KeychainStore] Error occurred while retrieving data from keychain when deciding to update or add with status=\(fetchStatus)")
             throw KeychainStoreError.securityError(fetchStatus)
@@ -206,7 +206,7 @@ public struct KeychainStore: KeychainStoreBehavior {
 
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
-            log.error("[KeychainStore] Error removing itms from keychain with status=\(status)")
+            log.error("[KeychainStore] Error removing items from keychain with status=\(status)")
             throw KeychainStoreError.securityError(status)
         }
         log.verbose("[KeychainStore] Successfully removed item from keychain")
