@@ -27,7 +27,6 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogg
     }
 
     func execute() async throws {
-        log.verbose("Starting execution")
         if let validationError = request.hasError() {
             throw validationError
         }
