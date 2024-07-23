@@ -23,10 +23,12 @@ protocol AmplifyAuthTaskNonThrowing {
 
 }
 
-extension AmplifyAuthTaskNonThrowing {
+extension AmplifyAuthTaskNonThrowing where Self: DefaultLogger {
     var value: Success {
         get async {
+            log.info("Starting execution for \(eventName)")
             let valueReturned = await execute()
+            log.info("Successfully completed execution for \(eventName) with result:\n\(valueReturned)")
             dispatch(result: valueReturned)
             return valueReturned
         }
