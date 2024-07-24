@@ -3,7 +3,9 @@
 source 'https://rubygems.org'
 
 gem 'xcpretty', '0.3.0'
-gem 'fastlane', '2.205.1'
-gem 'jazzy', '0.14.2'
+gem 'fastlane'
+gem 'jazzy'
+gem "rexml", ">= 3.3.2"
+gem 'activesupport', '>= 7.1.3.4'
 eval_gemfile('fastlane/Pluginfile')
 
