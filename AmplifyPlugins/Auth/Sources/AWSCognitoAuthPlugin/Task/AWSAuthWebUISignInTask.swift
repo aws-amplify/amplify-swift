@@ -33,7 +33,6 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger {
     }
 
     func execute() async throws -> AuthSignInResult {
-        log.verbose("Starting execution")
         do {
             await taskHelper.didStateMachineConfigured()
             let result = try await helper.initiateSignIn()

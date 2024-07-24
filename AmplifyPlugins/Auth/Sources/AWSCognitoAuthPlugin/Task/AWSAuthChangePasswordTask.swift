@@ -33,7 +33,6 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
     }
 
     func execute() async throws {
-        log.verbose("Starting execution")
         do {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
