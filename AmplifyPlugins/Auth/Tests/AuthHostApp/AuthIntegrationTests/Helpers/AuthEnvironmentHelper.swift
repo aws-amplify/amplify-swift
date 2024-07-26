@@ -40,6 +40,14 @@ extension AuthAWSCognitoCredentials {
             sessionToken: "xx",
             expiration: Date())
     }
+    
+    static var nonimmediateExpiryTestData: AuthAWSCognitoCredentials {
+        return AuthAWSCognitoCredentials(
+            accessKeyId: "xx",
+            secretAccessKey: "xx",
+            sessionToken: "xx",
+            expiration: Date() + TimeInterval(200))
+    }
 }
 
 extension AWSCognitoUserPoolTokens {
