@@ -245,6 +245,8 @@
 		B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthResendSignUpCodeTests.swift; sourceTree = "<group>"; };
 		B4B9F45628F47B7B004F346F /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
+		E2A7D1732C5D76CB00B06999 /* AuthHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AuthHostApp.entitlements; sourceTree = "<group>"; };
+		E2A7D1742C5D774200B06999 /* AuthWatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AuthWatchApp.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -342,6 +344,7 @@
 		485CB53127B614CE006CCEC7 = {
 			isa = PBXGroup;
 			children = (
+				E2A7D1742C5D774200B06999 /* AuthWatchApp.entitlements */,
 				485CB5C627B62C5C006CCEC7 /* Packages */,
 				485CB53C27B614CE006CCEC7 /* AuthHostApp */,
 				485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */,
@@ -367,7 +370,7 @@
 		485CB53C27B614CE006CCEC7 /* AuthHostApp */ = {
 			isa = PBXGroup;
 			children = (
-				907EA7602A4B6F56005E3AA8 /* AuthHostApp.entitlements */,
+				E2A7D1732C5D76CB00B06999 /* AuthHostApp.entitlements */,
 				681DFEA728E747B80000C36A /* AsyncTesting */,
 				485CB53D27B614CE006CCEC7 /* AuthHostAppApp.swift */,
 				485CB53F27B614CE006CCEC7 /* ContentView.swift */,
@@ -1335,6 +1338,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = AuthWatchApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -1365,6 +1369,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = AuthWatchApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
