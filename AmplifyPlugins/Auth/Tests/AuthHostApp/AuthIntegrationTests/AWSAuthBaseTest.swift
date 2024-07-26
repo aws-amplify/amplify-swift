@@ -30,6 +30,10 @@ class AWSAuthBaseTest: XCTestCase {
     var amplifyOutputsFile =
         "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplify_outputs"
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
+    let keychainAccessGroup = "94KV3E626L.com.aws.amplify.auth.AuthHostAppShared"
+    let keychainAccessGroup2 = "94KV3E626L.com.aws.amplify.auth.AuthHostAppShared2"
+    let keychainAccessGroupWatch = "W3DRXD72QU.com.amazon.aws.amplify.swift.AuthWatchAppShared"
+    let keychainAccessGroupWatch2 = "W3DRXD72QU.com.amazon.aws.amplify.swift.AuthWatchAppShared2"
 
     var amplifyConfiguration: AmplifyConfiguration!
     var amplifyOutputs: AmplifyOutputsData!

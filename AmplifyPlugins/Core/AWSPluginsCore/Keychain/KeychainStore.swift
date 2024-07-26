@@ -52,6 +52,11 @@ public protocol KeychainStoreBehavior {
     /// Removes all key-value pair in the Keychain.
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     func _removeAll() throws
+    
+    @_spi(KeychainStore)
+    /// Retrieves all key-value pairs in the keychain
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    func _getAll() throws -> [(key: String, value: Data)]
 }
 
 public struct KeychainStore: KeychainStoreBehavior {
@@ -70,14 +75,13 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     public init(service: String) {
-        self.init(service: service, accessGroup: nil)
+        attributes = KeychainStoreAttributes(service: service)
+        log.verbose("[KeychainStore] Initialized keychain with service=\(service), attributes=\(attributes), accessGroup=")
     }
 
     public init(service: String, accessGroup: String? = nil) {
-        var attributes = KeychainStoreAttributes(service: service)
-        attributes.accessGroup = accessGroup
-        self.init(attributes: attributes)
-        log.verbose("[KeychainStore] Initialized keychain with service=\(service), attributes=\(attributes), accessGroup=\(accessGroup ?? "")")
+        attributes = KeychainStoreAttributes(service: service, accessGroup: accessGroup)
+        log.verbose("[KeychainStore] Initialized keychain with service=\(service), attributes=\(attributes), accessGroup=\(attributes.accessGroup ?? "")")
     }
 
     @_spi(KeychainStore)
@@ -206,7 +210,7 @@ public struct KeychainStore: KeychainStoreBehavior {
 
         let status = SecItemDelete(query as CFDictionary)
         if status != errSecSuccess && status != errSecItemNotFound {
-            log.error("[KeychainStore] Error removing itms from keychain with status=\(status)")
+            log.error("[KeychainStore] Error removing items from keychain with status=\(status)")
             throw KeychainStoreError.securityError(status)
         }
         log.verbose("[KeychainStore] Successfully removed item from keychain")
@@ -228,6 +232,48 @@ public struct KeychainStore: KeychainStoreBehavior {
             throw KeychainStoreError.securityError(status)
         }
         log.verbose("[KeychainStore] Successfully removed all items from keychain")
+    }
+    
+    @_spi(KeychainStore)
+    /// Retrieves all key-value pairs in the keychain
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    public func _getAll() throws -> [(key: String, value: Data)] {
+        log.verbose("[KeychainStore] Starting to retrieve all items from keychain")
+        var query = attributes.defaultGetQuery()
+        query[Constants.MatchLimit] = Constants.MatchLimitAll
+        query[Constants.ReturnData] = kCFBooleanTrue
+        query[Constants.ReturnAttributes] = kCFBooleanTrue
+        query[Constants.ReturnRef] = kCFBooleanTrue
+
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+        switch status {
+        case errSecSuccess:
+            guard let items = result as? [[String: Any]] else {
+                log.error("[KeychainStore] The keychain items retrieved are not the correct type")
+                throw KeychainStoreError.unknown("The keychain items retrieved are not the correct type")
+            }
+
+            var keyValuePairs = [(key: String, value: Data)]()
+            for item in items {
+                guard let key = item[Constants.AttributeAccount] as? String,
+                      let value = item[Constants.ValueData] as? Data else {
+                    log.error("[KeychainStore] Unable to retrieve key or value from keychain item")
+                    continue
+                }
+                keyValuePairs.append((key: key, value: value))
+            }
+
+            log.verbose("[KeychainStore] Successfully retrieved \(keyValuePairs.count) items from keychain")
+            return keyValuePairs
+        case errSecItemNotFound:
+            log.verbose("[KeychainStore] No items found in keychain")
+            return []
+        default:
+            log.error("[KeychainStore] Error of status=\(status) occurred when attempting to retrieve all items from keychain")
+            throw KeychainStoreError.securityError(status)
+        }
     }
 
 }
@@ -258,6 +304,7 @@ extension KeychainStore {
         /** Return Type Key Constants */
         static let ReturnData = String(kSecReturnData)
         static let ReturnAttributes = String(kSecReturnAttributes)
+        static let ReturnRef = String(kSecReturnRef)
 
         /** Value Type Key Constants */
         static let ValueData = String(kSecValueData)
