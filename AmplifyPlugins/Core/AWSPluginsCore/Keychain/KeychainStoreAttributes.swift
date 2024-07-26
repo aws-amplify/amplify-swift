@@ -24,7 +24,7 @@ extension KeychainStoreAttributes {
             KeychainStore.Constants.UseDataProtectionKeyChain: kCFBooleanTrue
         ]
 
-        if let accessGroup = accessGroup {
+        if let accessGroup {
             query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
         }
         return query
@@ -34,6 +34,10 @@ extension KeychainStoreAttributes {
         var query: [String: Any] = defaultGetQuery()
         query[KeychainStore.Constants.AttributeAccessible] = KeychainStore.Constants.AttributeAccessibleAfterFirstUnlockThisDeviceOnly
         query[KeychainStore.Constants.UseDataProtectionKeyChain] = kCFBooleanTrue
+
+        if let accessGroup {
+            query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
+        }
         return query
     }
 }

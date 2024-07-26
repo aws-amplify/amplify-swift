@@ -177,7 +177,21 @@ extension AWSCognitoAuthPlugin {
     }
 
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
-        AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
+        let accessGroupName: String?
+        let shouldMigrate: Bool
+        switch secureStoragePreferences?.accessGroup {
+        case .named(let name, let migrateKeychainItemsOfUserSession):
+            accessGroupName = name
+            shouldMigrate = migrateKeychainItemsOfUserSession
+        case .unnamed(let migrateKeychainItemsOfUserSession):
+            accessGroupName = nil
+            shouldMigrate = migrateKeychainItemsOfUserSession
+        default:
+            accessGroupName = nil
+            shouldMigrate = false
+        }
+        return AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration, accessGroup: accessGroupName,
+            migrateKeychainItemsOfUserSession: shouldMigrate)
     }
 
     private func makeLegacyKeychainStore(service: String) -> KeychainStoreBehavior {

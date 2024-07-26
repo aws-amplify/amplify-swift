@@ -61,6 +61,20 @@ class MockKeychainStore: KeychainStoreBehavior {
         stringValues.removeAll()
         dataValues.removeAll()
     }
+    
+    func _getAll() throws -> [(key: String, value: Data)] {
+        var allValues: [(key: String, value: Data)] = []
+        
+        for (key, value) in dataValues {
+            allValues.append((key: key, value: value))
+        }
+        
+        for (key, value) in stringValues {
+            allValues.append((key: key, value: value.data(using: .utf8)!))
+        }
+        
+        return allValues
+    }
 
     func resetCounters() {
         dataForKeyCount = 0

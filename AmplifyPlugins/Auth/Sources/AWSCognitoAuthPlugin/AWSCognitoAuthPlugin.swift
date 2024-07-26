@@ -35,6 +35,9 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     /// The user network preferences for timeout and retry
     let networkPreferences: AWSCognitoNetworkPreferences?
 
+    /// The user secure storage preferences for access group
+    let secureStoragePreferences: AWSCognitoSecureStoragePreferences?
+
     @_spi(InternalAmplifyConfiguration)
     internal(set) public var jsonConfiguration: JSONValue?
 
@@ -43,15 +46,14 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
         return "awsCognitoAuthPlugin"
     }
 
-    /// Instantiates an instance of the AWSCognitoAuthPlugin.
-    public init() {
-        self.networkPreferences = nil
-    }
-
-    /// Instantiates an instance of the AWSCognitoAuthPlugin with custom network preferences
+    /// Instantiates an instance of the AWSCognitoAuthPlugin with optionally custom network
+    /// preferences and custom secure storage preferences
     /// - Parameters:
     ///   - networkPreferences: network preferences
-    public init(networkPreferences: AWSCognitoNetworkPreferences) {
+    ///   - secureStoragePreferences: secure storage preferences
+    public init(networkPreferences: AWSCognitoNetworkPreferences? = nil,
+                secureStoragePreferences: AWSCognitoSecureStoragePreferences = AWSCognitoSecureStoragePreferences()) {
         self.networkPreferences = networkPreferences
+        self.secureStoragePreferences = secureStoragePreferences
     }
 }
