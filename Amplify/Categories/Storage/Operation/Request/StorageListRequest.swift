@@ -15,9 +15,22 @@ public struct StorageListRequest: AmplifyOperationRequest {
     /// - Tag: StorageListRequest
     public let options: Options
 
+    /// The unique path for the object in storage
+    ///
+    /// - Tag: StorageListRequest.path
+    public let path: (any StoragePath)?
+
     /// - Tag: StorageListRequest.init
+    @available(*, deprecated, message: "Use init(path:options)")
     public init(options: Options) {
         self.options = options
+        self.path = nil
+    }
+
+    /// - Tag: StorageListRequest.init
+    public init(path: any StoragePath, options: Options) {
+        self.options = options
+        self.path = path
     }
 }
 
@@ -32,17 +45,25 @@ public extension StorageListRequest {
         /// Access level of the storage system. Defaults to `public`
         ///
         /// - Tag: StorageListRequestOptions.accessLevel
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let accessLevel: StorageAccessLevel
 
         /// Target user to apply the action on
         ///
         /// - Tag: StorageListRequestOptions.targetIdentityId
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let targetIdentityId: String?
 
         /// Path to the keys
         ///
         /// - Tag: StorageListRequestOptions.path
+        @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let path: String?
+
+        /// The strategy to use when listing contents from subpaths. Defaults to [`.include`](x-source-tag://SubpathStrategy.include)
+        ///
+        /// - Tag: StorageListRequestOptions.subpathStrategy
+        public let subpathStrategy: SubpathStrategy
 
         /// Number between 1 and 1,000 that indicates the limit of how many entries to fetch when
         /// retreiving file lists from the server.
@@ -78,15 +99,47 @@ public extension StorageListRequest {
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     path: String? = nil,
+                    subpathStrategy: SubpathStrategy = .include,
                     pageSize: UInt = 1000,
                     nextToken: String? = nil,
                     pluginOptions: Any? = nil) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.path = path
+            self.subpathStrategy = subpathStrategy
             self.pageSize = pageSize
             self.nextToken = nextToken
             self.pluginOptions = pluginOptions
+        }
+    }
+}
+
+public extension StorageListRequest.Options {
+    /// Represents the strategy used when listing contents from subpaths relative to the given path.
+    ///
+    /// - Tag: StorageListRequestOptions.SubpathStrategy
+    enum SubpathStrategy {
+        /// Items from nested subpaths are included in the results
+        ///
+        /// - Tag: SubpathStrategy.include
+        case include
+
+        /// Items from nested subpaths are not included in the results. Their subpaths are instead grouped under [`StorageListResult.excludedSubpaths`](StorageListResult.excludedSubpaths).
+        ///
+        /// - Parameter delimitedBy: The delimiter used to determine subpaths. Defaults to `"/"`
+        ///
+        /// - SeeAlso: [`StorageListResult.excludedSubpaths`](x-source-tag://StorageListResult.excludedSubpaths)
+        ///
+        /// - Tag: SubpathStrategy.excludeWithDelimiter
+        case exclude(delimitedBy: String = "/")
+
+        /// Items from nested subpaths are not included in the results. Their subpaths are instead grouped under [`StorageListResult.excludedSubpaths`](StorageListResult.excludedSubpaths).
+        ///
+        /// - SeeAlso: [`StorageListResult.excludedSubpaths`](x-source-tag://StorageListResult.excludedSubpaths)
+        ///
+        /// - Tag: SubpathStrategy.exclude
+        public static var exclude: SubpathStrategy {
+            return .exclude()
         }
     }
 }

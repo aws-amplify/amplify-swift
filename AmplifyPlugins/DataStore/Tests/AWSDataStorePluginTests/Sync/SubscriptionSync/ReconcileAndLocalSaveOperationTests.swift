@@ -75,7 +75,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     // MARK: - State tests
 
-    func testReconcile() {
+    func testReconcile() async {
         let expect = expectation(description: "action .reconciled")
 
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
@@ -86,10 +86,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         stateMachine.state = .reconciling([anyPostMutationSync])
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testReconcile_nilStorageAdapter() {
+    func testReconcile_nilStorageAdapter() async {
         let expect = expectation(description: "action .errored")
         let expectedDropped = expectation(description: "mutationEventDropped received")
         storageAdapter = nil
@@ -110,10 +110,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         stateMachine.state = .reconciling([anyPostMutationSync])
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectedDropped], timeout: 1)
     }
 
-    func testReconcile_emptyRemoteModels() {
+    func testReconcile_emptyRemoteModels() async {
         let expect = expectation(description: "action .reconciled")
 
         stateMachine.pushExpectActionCriteria { action in
@@ -123,10 +123,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         stateMachine.state = .reconciling([])
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testReconcile_failedQueryPendingMutations() {
+    func testReconcile_failedQueryPendingMutations() async {
         let expect = expectation(description: "action .reconciled")
         let expectedDropped = expectation(description: "mutationEventDropped received")
 
@@ -151,10 +151,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         stateMachine.state = .reconciling([anyPostMutationSync])
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectedDropped], timeout: 1)
     }
 
-    func testReconcile_transactionDataStoreError() {
+    func testReconcile_transactionDataStoreError() async {
         let expect = expectation(description: "action .errored")
 
         let error = DataStoreError.internalOperation("Transaction failed", "")
@@ -166,10 +166,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         stateMachine.state = .reconciling([anyPostMutationSync])
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testReconcile_transactionError() {
+    func testReconcile_transactionError() async {
         let expect = expectation(description: "action .errored")
 
         enum UnknownError: Error {
@@ -184,10 +184,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
         stateMachine.state = .reconciling([anyPostMutationSync])
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testInError() {
+    func testInError() async {
         let expect = expectation(description: "publisher should finish")
         operation.publisher.sink { completion in
             switch completion {
@@ -198,10 +198,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }
         } receiveValue: { _ in }.store(in: &cancellables)
         stateMachine.state = .inError(DataStoreError.unknown("InError State", ""))
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testFinished() {
+    func testFinished() async {
         let expect = expectation(description: "publisher should finish")
         operation.publisher.sink { completion in
             switch completion {
@@ -213,12 +213,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         } receiveValue: { _ in }.store(in: &cancellables)
 
         stateMachine.state = .finished
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     // MARK: - queryPendingMutations
 
-    func testQueryPendingMutations_nilStorageAdapter() {
+    func testQueryPendingMutations_nilStorageAdapter() async {
         let expect = expectation(description: "storage adapter error")
 
         storageAdapter = nil
@@ -235,10 +235,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 XCTFail("Unexpected \(mutationEvents)")
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testQueryPendingMutations_emptyModels() {
+    func testQueryPendingMutations_emptyModels() async {
         let expect = expectation(description: "should complete successfully for empty input")
         expect.expectedFulfillmentCount = 2
 
@@ -255,10 +255,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testQueryPendingMutations_querySuccess() {
+    func testQueryPendingMutations_querySuccess() async {
         let expect = expectation(description: "queried pending mutations success")
         expect.expectedFulfillmentCount = 2
 
@@ -279,10 +279,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testQueryPendingMutations_queryFailure() {
+    func testQueryPendingMutations_queryFailure() async {
         let expect = expectation(description: "queried pending mutations failed")
         let expectedDropped = expectation(description: "mutationEventDropped received")
         let queryResponder = QueryModelTypePredicateResponder<MutationEvent> { _, _ in
@@ -309,7 +309,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 XCTFail("Should not return a value")
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectedDropped], timeout: 1)
     }
 
     // MARK: - reconcile(remoteModels:pendingMutations)
@@ -392,7 +392,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 
     // MARK: - queryLocalMetadata
 
-    func testQueryLocalMetadata_nilStorageAdapter() {
+    func testQueryLocalMetadata_nilStorageAdapter() async {
         let expect = expectation(description: "storage adapter error")
         let expectedDropped = expectation(description: "mutationEventDropped received")
         storageAdapter = nil
@@ -417,10 +417,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 XCTFail("Unexpected \(result)")
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectedDropped], timeout: 1)
     }
 
-    func testQueryLocalMetadata_emptyModels() {
+    func testQueryLocalMetadata_emptyModels() async {
         let expect = expectation(description: "should complete successfully for empty input")
         expect.expectedFulfillmentCount = 2
 
@@ -438,10 +438,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testQueryLocalMetadata_querySuccess() {
+    func testQueryLocalMetadata_querySuccess() async {
         let expect = expectation(description: "queried local metadata success")
         expect.expectedFulfillmentCount = 2
 
@@ -468,7 +468,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     // MARK: - reconcile(remoteModels:localMetadata)
@@ -479,7 +479,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         XCTAssertTrue(result.isEmpty)
     }
 
-    func testReconcileLocalMetadata_emptyLocalMetadatas() {
+    func testReconcileLocalMetadata_emptyLocalMetadatas() async {
         let result = operation.getDispositions(for: [anyPostMutationSync], localMetadatas: [])
 
         guard let remoteModelDisposition = result.first else {
@@ -489,7 +489,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         XCTAssertEqual(remoteModelDisposition, .create(anyPostMutationSync))
     }
 
-    func testReconcileLocalMetadata_success() {
+    func testReconcileLocalMetadata_success() async {
         let expect = expectation(description: "notify dropped twice")
         expect.expectedFulfillmentCount = 2
         let model1 = AnyModel(Post(title: "post1", content: "content", createdAt: .now()))
@@ -540,12 +540,12 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                   localMetadatas: [localMetadata1, localMetadata2])
 
         XCTAssertTrue(result.isEmpty)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
     // MARK: - applyRemoteModels
 
-    func testApplyRemoteModels_nilStorageAdapter() {
+    func testApplyRemoteModels_nilStorageAdapter() async {
         let expect = expectation(description: "storage adapter error")
         let expectedDropped = expectation(description: "mutationEventDropped received")
         operation.publisher.sink { _ in } receiveValue: { event in
@@ -571,10 +571,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 XCTFail("Unexpected \(result)")
             }).store(in: &cancellables)
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectedDropped], timeout: 1)
     }
 
-    func testApplyRemoteModels_emptyDisposition() {
+    func testApplyRemoteModels_emptyDisposition() async {
         let expect = expectation(description: "should complete successfully")
         expect.expectedFulfillmentCount = 2
 
@@ -589,18 +589,18 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testApplyRemoteModels_createDisposition() {
+    func testApplyRemoteModels_createDisposition() async {
         let expect = expectation(description: "operation should send value and complete successfully")
         expect.expectedFulfillmentCount = 2
-        let stoargeExpect = expectation(description: "storage save should be called")
+        let storageExpect = expectation(description: "storage save should be called")
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         let notifyExpect = expectation(description: "mutation event should be emitted")
         let hubExpect = expectation(description: "Hub is notified")
         let saveResponder = SaveUntypedModelResponder { model, completion in
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             completion(.success(model))
         }
 
@@ -646,19 +646,19 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, storageExpect, storageMetadataExpect, notifyExpect, hubExpect], timeout: 1)
         Amplify.Hub.removeListener(hubListener)
     }
 
-    func testApplyRemoteModels_updateDisposition() {
+    func testApplyRemoteModels_updateDisposition() async {
         let expect = expectation(description: "operation should send value and complete successfully")
         expect.expectedFulfillmentCount = 2
-        let stoargeExpect = expectation(description: "storage save should be called")
+        let storageExpect = expectation(description: "storage save should be called")
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         let notifyExpect = expectation(description: "mutation event should be emitted")
         let hubExpect = expectation(description: "Hub is notified")
         let saveResponder = SaveUntypedModelResponder { _, completion in
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             completion(.success(self.anyPostMutationSync.model))
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
@@ -702,19 +702,19 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, storageExpect, storageMetadataExpect, notifyExpect, hubExpect], timeout: 1)
     }
 
-    func testApplyRemoteModels_deleteDisposition() {
+    func testApplyRemoteModels_deleteDisposition() async {
         let expect = expectation(description: "operation should send value and complete successfully")
         expect.expectedFulfillmentCount = 2
-        let stoargeExpect = expectation(description: "storage delete should be called")
+        let storageExpect = expectation(description: "storage delete should be called")
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         let notifyExpect = expectation(description: "mutation event should be emitted")
         let hubExpect = expectation(description: "Hub is notified")
         let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
@@ -758,24 +758,33 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
-        
+
+        await fulfillment(of: [
+            expect,
+            storageExpect,
+            storageMetadataExpect,
+            notifyExpect,
+            hubExpect
+        ], timeout: 1)
     }
 
-    func testApplyRemoteModels_multipleDispositions() {
-        let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync),
-                                                                .create(anyPostMutationSync),
-                                                                .update(anyPostMutationSync),
-                                                                .delete(anyPostMutationSync)]
+    func testApplyRemoteModels_multipleDispositions() async {
+        let dispositions: [RemoteSyncReconciler.Disposition] = [
+            .create(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .delete(anyPostMutationSync),
+            .create(anyPostMutationSync),
+            .update(anyPostMutationSync),
+            .delete(anyPostMutationSync)
+        ]
+
         let expect = expectation(description: "should complete successfully")
         expect.expectedFulfillmentCount = 2
-        let stoargeExpect = expectation(description: "storage save/delete should be called")
-        stoargeExpect.expectedFulfillmentCount = dispositions.count
+        let storageExpect = expectation(description: "storage save/delete should be called")
+        storageExpect.expectedFulfillmentCount = dispositions.count
         let storageMetadataExpect = expectation(description: "storage save metadata should be called")
         storageMetadataExpect.expectedFulfillmentCount = dispositions.count
         let notifyExpect = expectation(description: "mutation event should be emitted")
@@ -784,14 +793,14 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         hubExpect.expectedFulfillmentCount = dispositions.count
 
         let saveResponder = SaveUntypedModelResponder { _, completion in
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             completion(.success(self.anyPostMutationSync.model))
         }
         storageAdapter.responders[.saveUntypedModel] = saveResponder
 
         let deleteResponder = DeleteUntypedModelCompletionResponder { _, id in
             XCTAssertEqual(id, self.anyPostMutationSync.model.id)
-            stoargeExpect.fulfill()
+            storageExpect.fulfill()
             return .emptyResult
         }
         storageAdapter.responders[.deleteUntypedModel] = deleteResponder
@@ -835,10 +844,16 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [
+            expect,
+            storageExpect,
+            storageMetadataExpect,
+            notifyExpect,
+            hubExpect
+        ], timeout: 1)
     }
 
-    func testApplyRemoteModels_skipFailedOperations() throws {
+    func testApplyRemoteModels_skipFailedOperations() async throws {
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
@@ -890,10 +905,15 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
 
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+
+        await fulfillment(of: [
+            expect,
+            expectedDropped,
+            expectedDeleteSuccess
+        ], timeout: 1)
     }
 
-    func testApplyRemoteModels_failWithConstraintViolationShouldBeSuccessful() {
+    func testApplyRemoteModels_failWithConstraintViolationShouldBeSuccessful() async {
         let expect = expectation(description: "should complete successfully")
         expect.expectedFulfillmentCount = 2
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
@@ -947,10 +967,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
                 expect.fulfill()
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectDropped], timeout: 1)
     }
 
-    func testApplyRemoteModels_deleteFail() throws {
+    func testApplyRemoteModels_deleteFail() async throws {
         let dispositions: [RemoteSyncReconciler.Disposition] = [
             .create(anyPostMutationSync),
             .create(anyPostMutationSync),
@@ -1004,10 +1024,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
 
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectedDropped, expectedCreateAndUpdateSuccess], timeout: 1)
     }
 
-    func testApplyRemoteModels_saveMetadataFail() throws {
+    func testApplyRemoteModels_saveMetadataFail() async throws {
         let dispositions: [RemoteSyncReconciler.Disposition] = [
             .create(anyPostMutationSync),
             .create(anyPostMutationSync),
@@ -1058,7 +1078,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             }, receiveValue: { _ in
 
             }).store(in: &cancellables)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect, expectedDropped], timeout: 1)
     }
 }
 

@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "78DC5EA3-B302-4726-8FCA-A9EC59103B63",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AnalyticsHostApp.xcodeproj",
+        "identifier" : "211035142BD6AB30006AC186",
+        "name" : "AWSPinpointAnalyticsPluginGen2IntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

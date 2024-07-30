@@ -32,7 +32,7 @@ actor EndpointClient: EndpointClientBehaviour {
 
     private let configuration: EndpointClient.Configuration
     private let archiver: AmplifyArchiverBehaviour
-    private let endpointInformation: EndpointInformation
+    private let endpointInformationProvider: EndpointInformationProvider
     private let userDefaults: UserDefaultsBehaviour
     private let keychain: KeychainStoreBehavior
     private let remoteNotificationsHelper: RemoteNotificationsBehaviour
@@ -43,7 +43,7 @@ actor EndpointClient: EndpointClientBehaviour {
     init(configuration: EndpointClient.Configuration,
          pinpointClient: PinpointClientProtocol,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
-         endpointInformation: EndpointInformation = .current,
+         endpointInformationProvider: EndpointInformationProvider,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
          keychain: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
          remoteNotificationsHelper: RemoteNotificationsBehaviour = .default
@@ -51,7 +51,7 @@ actor EndpointClient: EndpointClientBehaviour {
         self.configuration = configuration
         self.pinpointClient = pinpointClient
         self.archiver = archiver
-        self.endpointInformation = endpointInformation
+        self.endpointInformationProvider = endpointInformationProvider
         self.userDefaults = userDefaults
         self.keychain = keychain
         self.remoteNotificationsHelper = remoteNotificationsHelper
@@ -100,6 +100,7 @@ actor EndpointClient: EndpointClientBehaviour {
             deviceToken = tokenData.asHexString()
         }
 
+        let endpointInformation = await endpointInformationProvider.endpointInfo()
         endpointProfile.endpointId = configuration.uniqueDeviceId
         endpointProfile.deviceToken = deviceToken
         endpointProfile.location = .init()

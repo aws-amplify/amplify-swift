@@ -6,14 +6,13 @@
 //
 
 import Foundation
-import Amplify
-
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 import ClientRuntime
 import AWSClientRuntime
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 @_spi(InternalHttpEngineProxy) import AWSPluginsCore
 
 extension AWSCognitoAuthPlugin {
@@ -24,16 +23,18 @@ extension AWSCognitoAuthPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any?) throws {
-
-        guard let jsonValueConfiguration = configuration as? JSONValue else {
+        let authConfiguration: AuthConfiguration
+        if let configuration = configuration as? AmplifyOutputsData {
+            authConfiguration = try ConfigurationHelper.authConfiguration(configuration)
+            jsonConfiguration = ConfigurationHelper.createUserPoolJsonConfiguration(authConfiguration)
+        } else if let jsonValueConfiguration = configuration as? JSONValue {
+            jsonConfiguration = jsonValueConfiguration
+            authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
+        } else {
             throw PluginError.pluginConfigurationError(
                 AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
                 AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
-
-        jsonConfiguration = jsonValueConfiguration
-
-        let authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
 
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
         let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
@@ -110,6 +111,9 @@ extension AWSCognitoAuthPlugin {
                 configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
 
+            let authService = AWSAuthService()
+            configuration.credentialsProvider = authService.getCredentialsProvider()
+
             return CognitoIdentityProviderClient(config: configuration)
         default:
             fatalError()
@@ -131,6 +135,9 @@ extension AWSCognitoAuthPlugin {
             if let maxRetryUnwrapped = networkPreferences?.maxRetryCount {
                 configuration.retryStrategyOptions = RetryStrategyOptions(maxRetriesBase: Int(maxRetryUnwrapped))
             }
+
+            let authService = AWSAuthService()
+            configuration.credentialsProvider = authService.getCredentialsProvider()
 
             return CognitoIdentityClient(config: configuration)
         default:

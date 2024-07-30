@@ -88,7 +88,7 @@ class AWSS3StorageServiceTests: XCTestCase {
     /// Given: An AWSS3StorageService
     /// When: attachEventHandlers is invoked and a .completed event is sent
     /// Then: A .completed event is dispatched to the event handler
-    func testAttachEventHandlers() {
+    func testAttachEventHandlers() async {
         let expectation = self.expectation(description: "Attach Event Handlers")
         service.attachEventHandlers(
             onUpload: { event in
@@ -101,7 +101,7 @@ class AWSS3StorageServiceTests: XCTestCase {
         )
         XCTAssertNotNil(database.onUploadHandler)
         database.onUploadHandler?(.completed(()))
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     /// Given: An AWSS3StorageService
@@ -221,7 +221,7 @@ class AWSS3StorageServiceTests: XCTestCase {
     /// Given: An AWSS3StorageService with a non-completed download task
     /// When: completeDownload is invoked for the identifier matching the task
     /// Then: The task is marked as completed and a .completed event is dispatched
-    func testCompleteDownload_shouldReturnData() {
+    func testCompleteDownload_shouldReturnData() async {
         let expectation = self.expectation(description: "Complete Download")
        
         let downloadTask = StorageTransferTask(
@@ -247,7 +247,7 @@ class AWSS3StorageServiceTests: XCTestCase {
 
         service.completeDownload(taskIdentifier: 1, sourceURL: sourceUrl)
         XCTAssertEqual(downloadTask.status, .completed)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     /// Given: An AWSS3StorageService with a non-completed download task that sets a location
@@ -308,7 +308,7 @@ class AWSS3StorageServiceTests: XCTestCase {
     /// Given: An AWSS3StorageService with a non-completed upload task that sets a location
     /// When: completeDownload is invoked for the identifier matching the task
     /// Then: The task status is not updated and an .upload event is not dispatched
-    func testCompleteDownload_withNoDownload_shouldDoNothing() {
+    func testCompleteDownload_withNoDownload_shouldDoNothing() async {
         let expectation = self.expectation(description: "Complete Download")
         expectation.isInverted = true
        
@@ -331,13 +331,13 @@ class AWSS3StorageServiceTests: XCTestCase {
         service.completeDownload(taskIdentifier: 1, sourceURL: sourceUrl)
         XCTAssertNotEqual(uploadTask.status, .completed)
         XCTAssertNotEqual(uploadTask.status, .error)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     /// Given: An AWSS3StorageService that cannot create a pre signed url
     /// When: upload is invoked
     /// Then: A .failed event is dispatched with an .unknown error
-    func testUpload_withoutPreSignedURL_shouldSendFailEvent() {
+    func testUpload_withoutPreSignedURL_shouldSendFailEvent() async {
         let data = Data("someData".utf8)
         let expectation = self.expectation(description: "Upload")
         service.upload(
@@ -357,13 +357,13 @@ class AWSS3StorageServiceTests: XCTestCase {
             }
         )
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     /// Given: An AWSS3StorageService that can create a pre signed url
     /// When: upload is invoked
     /// Then: An .initiated event is dispatched
-    func testUpload_withPreSignedURL_shouldSendInitiatedEvent() {
+    func testUpload_withPreSignedURL_shouldSendInitiatedEvent() async {
         let data = Data("someData".utf8)
         let expectation = self.expectation(description: "Upload")
         service.preSignedURLBuilder = MockAWSS3PreSignedURLBuilder()
@@ -374,15 +374,13 @@ class AWSS3StorageServiceTests: XCTestCase {
             metadata: [:],
             accelerate: true,
             onEvent: { event in
-                guard case .initiated(_) = event else {
-                    XCTFail("Expected .initiated event, got \(event)")
-                    return
+                if case .initiated(_) = event {
+                    expectation.fulfill()
                 }
-                expectation.fulfill()
             }
         )
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
 }
 

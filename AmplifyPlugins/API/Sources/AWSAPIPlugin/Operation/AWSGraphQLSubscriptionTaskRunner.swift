@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
+import InternalAmplifyCredentials
 import Combine
 
 public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
@@ -25,7 +26,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     }
     let appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let authService: AWSAuthServiceBehavior
+    let authService: AWSAuthCredentialsProviderBehavior
     var apiAuthProviderFactory: APIAuthProviderFactory
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
     private let subscriptionId = UUID().uuidString
@@ -35,7 +36,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     init(request: Request,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          appSyncClientFactory: AppSyncRealTimeClientFactoryProtocol,
-         authService: AWSAuthServiceBehavior,
+         authService: AWSAuthCredentialsProviderBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory) {
         self.request = request
         self.pluginConfig = pluginConfig
@@ -44,12 +45,12 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.apiAuthProviderFactory = apiAuthProviderFactory
     }
 
+    /// When the top-level AmplifyThrowingSequence is canceled, this cancel method is invoked.
+    /// In this situation, we need to send the disconnected event because
+    /// the top-level AmplifyThrowingSequence is terminated immediately upon cancellation.
     public func cancel() {
         self.send(GraphQLSubscriptionEvent<R>.connection(.disconnected))
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
+        Task {
             guard let appSyncClient = self.appSyncClient else {
                 return
             }
@@ -91,14 +92,21 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
+            authType = authorizationMode
+        } else {
+            authType = nil
+        }
         // Retrieve the subscription connection
         do {
             self.appSyncClient = try await appSyncClientFactory.getAppSyncRealTimeClient(
                 for: endpointConfig,
                 endpoint: endpointConfig.baseURL,
                 authService: authService,
-                authType: pluginOptions?.authType,
+                authType: authType,
                 apiAuthProviderFactory: apiAuthProviderFactory
             )
 
@@ -178,7 +186,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
-    let authService: AWSAuthServiceBehavior
+    let authService: AWSAuthCredentialsProviderBehavior
     private let userAgent = AmplifyAWSServiceConfiguration.userAgentLib
 
     var appSyncRealTimeClient: AppSyncRealTimeClientProtocol?
@@ -194,7 +202,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     init(request: GraphQLOperationRequest<R>,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
-         authService: AWSAuthServiceBehavior,
+         authService: AWSAuthCredentialsProviderBehavior,
          apiAuthProviderFactory: APIAuthProviderFactory,
          inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
          resultListener: AWSGraphQLSubscriptionOperation.ResultListener?) {
@@ -213,12 +221,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     override public func cancel() {
         super.cancel()
-
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
-
+        Task {
             guard let appSyncRealTimeClient = self.appSyncRealTimeClient else {
                 return
             }
@@ -267,14 +270,21 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         }
 
-        let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions
+        let authType: AWSAuthorizationType?
+        if let pluginOptions = request.options.pluginOptions as? AWSAPIPluginDataStoreOptions {
+            authType = pluginOptions.authType
+        } else if let authorizationMode = request.authMode as? AWSAuthorizationType {
+            authType = authorizationMode
+        } else {
+            authType = nil
+        }
         Task {
             do {
                 appSyncRealTimeClient = try await appSyncRealTimeClientFactory.getAppSyncRealTimeClient(
                     for: endpointConfig,
                     endpoint: endpointConfig.baseURL,
                     authService: authService,
-                    authType: pluginOptions?.authType,
+                    authType: authType,
                     apiAuthProviderFactory: apiAuthProviderFactory
                 )
 

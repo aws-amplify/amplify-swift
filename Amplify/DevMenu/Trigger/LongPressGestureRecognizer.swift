@@ -47,13 +47,5 @@ class LongPressGestureRecognizer: NSObject, TriggerRecognizer, UIGestureRecogniz
         uiWindow?.addGestureRecognizer(recognizer)
         recognizer.delegate = self
     }
-
-    deinit {
-        if let window = uiWindow {
-            window.removeGestureRecognizer(recognizer)
-        }
-        uiWindow = nil
-        triggerDelegate = nil
-    }
 }
 #endif

@@ -103,7 +103,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         let username = AWSS3StoragePluginTestBase.user1.lowercased()
         let password = AWSS3StoragePluginTestBase.password
-
         logger.debug("Signing in as user1")
         let result = try await Amplify.Auth.signIn(username: username, password: password)
         XCTAssertTrue(result.isSignedIn)
@@ -164,7 +163,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             // user 2 can read upload by user 1 with protected access
             .init(label: "Protected", key: UUID().uuidString, accessLevel: .protected),
             // user 2 can get access denied error from upload by user 1 with private access
-            .init(label: "Private", key: UUID().uuidString, accessLevel: .private)
+            .init(label: "Private", key: UUID().uuidString, accessLevel: .private),
         ]
 
         for testRun in testRuns {

@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 
 /// This decoder is registered and used to detect various data payloads objects to store
 /// inside an AppSyncListProvider when decoding to the Lazy `List` type as a "not yet loaded" List. If the data payload
@@ -18,6 +19,7 @@ public struct AppSyncListDecoder: ModelListDecoder {
         let appSyncAssociatedIdentifiers: [String]
         let appSyncAssociatedFields: [String]
         let apiName: String?
+        let authMode: AWSAuthorizationType?
     }
 
     /// Used by the custom decoder implemented in the `List` type to detect if the payload can be

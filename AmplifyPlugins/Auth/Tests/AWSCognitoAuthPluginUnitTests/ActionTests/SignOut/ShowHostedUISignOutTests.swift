@@ -114,7 +114,7 @@ class ShowHostedUISignOutTests: XCTestCase {
                     return
                 }
 
-                XCTAssertEqual(event.eventType, .userCancelled)
+                XCTAssertEqual(event.eventType, .hostedUISignOutError(.cancelled))
                 expectation.fulfill()
             },
             environment: Defaults.makeDefaultAuthEnvironment(
@@ -142,21 +142,19 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .signOutGlobally(let data, let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
                 }
 
-                guard let hostedUIError = hostedUIError,
-                      case .configuration(let errorDescription, _, let serviceError) = hostedUIError.error else {
+                guard case .configuration(let errorDescription, _, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.configuration")
                     expectation.fulfill()
                     return
                 }
 
-                XCTAssertEqual(errorDescription, "Could not create logout URL")
-                XCTAssertEqual(data, signInData)
+                XCTAssertEqual(errorDescription, "SignOut URI could not be created")
                 XCTAssertNil(serviceError)
                 expectation.fulfill()
             },
@@ -185,14 +183,13 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .signOutGlobally(let data, let hostedUIError) = event.eventType else {
-                    XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
+                    XCTFail("Expected SignOutEvent.hostedUISignOutError, got \(event)")
                     expectation.fulfill()
                     return
                 }
 
-                guard let hostedUIError = hostedUIError,
-                      case .invalidState(let errorDescription, let recoverySuggestion, let serviceError) = hostedUIError.error else {
+                guard case .invalidState(let errorDescription, let recoverySuggestion, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.invalidState")
                     expectation.fulfill()
                     return
@@ -200,7 +197,6 @@ class ShowHostedUISignOutTests: XCTestCase {
 
                 XCTAssertEqual(errorDescription, AuthPluginErrorConstants.hostedUIInvalidPresentation.errorDescription)
                 XCTAssertEqual(recoverySuggestion, AuthPluginErrorConstants.hostedUIInvalidPresentation.recoverySuggestion)
-                XCTAssertEqual(data, signInData)
                 XCTAssertNil(serviceError)
                 expectation.fulfill()
             },
@@ -229,21 +225,19 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .signOutGlobally(let data, let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
                 }
 
-                guard let hostedUIError = hostedUIError,
-                      case .configuration(let errorDescription, _, let serviceError) = hostedUIError.error else {
+                guard case .configuration(let errorDescription, _, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.configuration")
                     expectation.fulfill()
                     return
                 }
 
                 XCTAssertEqual(errorDescription, "Callback URL could not be retrieved")
-                XCTAssertEqual(data, signInData)
                 XCTAssertNil(serviceError)
                 expectation.fulfill()
             },
@@ -269,20 +263,18 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .signOutGlobally(let data, let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
                 }
                 
-                guard let hostedUIError = hostedUIError,
-                      case .configuration(let errorDescription, _, let serviceError) = hostedUIError.error else {
+                guard case .configuration(let errorDescription, _, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.configuration")
                     expectation.fulfill()
                     return
                 }
 
-                XCTAssertEqual(data, signInData)
                 XCTAssertEqual(errorDescription, AuthPluginErrorConstants.configurationError)
                 XCTAssertNil(serviceError)
                 expectation.fulfill()
@@ -309,20 +301,18 @@ class ShowHostedUISignOutTests: XCTestCase {
         await action.execute(
             withDispatcher: MockDispatcher { event in
                 guard let event = event as? SignOutEvent,
-                      case .signOutGlobally(let data, let hostedUIError) = event.eventType else {
+                      case .hostedUISignOutError(let hostedUIError) = event.eventType else {
                     XCTFail("Expected SignOutEvent.signOutGlobally, got \(event)")
                     expectation.fulfill()
                     return
                 }
                 
-                guard let hostedUIError = hostedUIError,
-                      case .configuration(let errorDescription, _, let serviceError) = hostedUIError.error else {
+                guard case .configuration(let errorDescription, _, let serviceError) = hostedUIError.authError else {
                     XCTFail("Expected AuthError.configuration")
                     expectation.fulfill()
                     return
                 }
 
-                XCTAssertEqual(data, signInData)
                 XCTAssertEqual(errorDescription, AuthPluginErrorConstants.configurationError)
                 XCTAssertNil(serviceError)
                 expectation.fulfill()

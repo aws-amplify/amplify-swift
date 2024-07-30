@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import Foundation
 import AWSPluginsCore
 
@@ -60,6 +60,21 @@ public extension AWSAPICategoryPluginConfiguration {
         }
 
         init(name: String,
+             config: AmplifyOutputsData.DataCategory,
+             apiAuthProviderFactory: APIAuthProviderFactory,
+             authService: AWSAuthServiceBehavior? = nil) throws {
+
+            try self.init(name: name,
+                          baseURL: try EndpointConfig.getBaseURL(from: config.url),
+                          region: config.awsRegion,
+                          authorizationType: try AWSAuthorizationType.from(authorizationTypeString: config.defaultAuthorizationType.rawValue),
+                          endpointType: .graphQL,
+                          apiKey: config.apiKey,
+                          apiAuthProviderFactory: apiAuthProviderFactory,
+                          authService: authService)
+        }
+
+        init(name: String,
              baseURL: URL,
              region: AWSRegionType?,
              authorizationType: AWSAuthorizationType,
@@ -98,13 +113,16 @@ public extension AWSAPICategoryPluginConfiguration {
                 )
             }
 
+            return try getBaseURL(from: baseURLString)
+        }
+
+        private static func getBaseURL(from baseURLString: String) throws -> URL {
             guard let baseURL = URL(string: baseURLString) else {
                 throw PluginError.pluginConfigurationError(
                     "Could not convert `\(baseURLString)` to a URL",
                     """
                     The "endpoint" value in the specified configuration cannot be converted to a URL. Review the \
-                    configuration and ensure it contains the expected values:
-                    \(endpointJSON)
+                    configuration and ensure it contains the expected values.
                     """
                 )
             }
@@ -174,6 +192,11 @@ private extension AWSAuthorizationType {
             )
         }
 
+        return try from(authorizationTypeString: authorizationTypeString)
+
+    }
+
+    static func from(authorizationTypeString: String) throws -> AWSAuthorizationType {
         guard let authorizationType = AWSAuthorizationType(rawValue: authorizationTypeString) else {
             let authTypes = AWSAuthorizationType.allCases.map { $0.rawValue }.joined(separator: ", ")
             throw PluginError.pluginConfigurationError(
@@ -181,8 +204,7 @@ private extension AWSAuthorizationType {
                 """
                 The "authorizationType" value in the specified configuration cannot be converted to an \
                 AWSAuthorizationType. Review the configuration and ensure it contains a valid value \
-                (\(authTypes)):
-                \(endpointJSON)
+                (\(authTypes))
                 """
             )
         }

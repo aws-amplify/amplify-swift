@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAmplifyPluginExtension) import AWSPluginsCore
+@_spi(InternalAmplifyPluginExtension) import InternalAmplifyCredentials
 import Foundation
 import ClientRuntime
 

@@ -42,7 +42,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         reconciliationQueue = MockReconciliationQueue()
     }
 
-    func testInitialState() {
+    func testInitialState() async {
         let expect = expectation(description: "state initialized")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.initialized)
@@ -53,12 +53,12 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
                                               storageAdapter: storageAdapter,
                                               dataStoreConfiguration: .testDefault(),
                                               authModeStrategy: AWSDefaultAuthModeStrategy())
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
 
         XCTAssertEqual(stateMachine.state, OutgoingMutationQueue.State.notInitialized)
     }
 
-    func testStartingState() {
+    func testStartingState() async {
         let expect = expectation(description: "state receivedSubscription")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
@@ -66,17 +66,17 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
 
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testRequestingEvent_subscriptionSetup() throws {
+    func testRequestingEvent_subscriptionSetup() async throws {
         let receivedSubscription = expectation(description: "state machine received receivedSubscription")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
             receivedSubscription.fulfill()
         }
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
-        wait(for: [receivedSubscription], timeout: 1.0)
+        await fulfillment(of: [receivedSubscription], timeout: 1.0)
 
         let json = "{\"id\":\"1234\",\"title\":\"t\",\"content\":\"c\",\"createdAt\":\"2020-09-03T22:55:13.424Z\"}"
         let futureResult = MutationEvent(modelId: "1",
@@ -92,17 +92,24 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
 
         let apiMutationReceived = expectation(description: "API call for mutate received")
-        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
-            listenerFromRequest = eventListener
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { _ in
             apiMutationReceived.fulfill()
-            return nil
+            try! await Task.sleep(seconds: 0.5)
+            let model = MockSynced(id: "id-1")
+            let anyModel = try! model.eraseToAnyModel()
+            let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                          modelName: MockSynced.modelName,
+                                                          deleted: false,
+                                                          lastChangedAt: Date().unixSeconds,
+                                                          version: 2)
+            let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+            return .success(remoteMutationSync)
         }
-        apiBehavior.responders[.mutateRequestListener] = responder
+        apiBehavior.responders[.mutateRequestResponse] = responder
 
         stateMachine.state = .requestingEvent
 
-        wait(for: [enqueueEvent, apiMutationReceived], timeout: 1)
+        await fulfillment(of: [enqueueEvent, apiMutationReceived], timeout: 1)
 
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
         stateMachine.pushExpectActionCriteria { action in
@@ -110,20 +117,10 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             processEvent.fulfill()
         }
 
-        let model = MockSynced(id: "id-1")
-        let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                      modelName: MockSynced.modelName,
-                                                      deleted: false,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: 2)
-        let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromRequest(.success(.success(remoteMutationSync)))
-
-        wait(for: [processEvent], timeout: 1)
+        await fulfillment(of: [processEvent], timeout: 1)
     }
 
-    func testRequestingEvent_nosubscription() {
+    func testRequestingEvent_nosubscription() async {
         let expect = expectation(description: "state requestingEvent, no subscription")
         stateMachine.pushExpectActionCriteria { action in
             let error = DataStoreError.unknown("_", "", nil)
@@ -132,10 +129,10 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
 
         stateMachine.state = .requestingEvent
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expect], timeout: 1)
     }
 
-    func testReceivedStartActionWhileExpectingEventProcessedAction() throws {
+    func testReceivedStartActionWhileExpectingEventProcessedAction() async throws {
         // Ensure subscription is setup
         let receivedSubscription = expectation(description: "receivedSubscription")
         stateMachine.pushExpectActionCriteria { action in
@@ -143,7 +140,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             receivedSubscription.fulfill()
         }
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
-        wait(for: [receivedSubscription], timeout: 0.1)
+        await fulfillment(of: [receivedSubscription], timeout: 0.1)
 
         // Mock incoming mutation event
         let post = Post(title: "title",
@@ -160,16 +157,24 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             enqueueEvent.fulfill()
         }
         let mutateAPICallExpecation = expectation(description: "Call to api category for mutate")
-        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
-        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
-            listenerFromRequest = eventListener
+
+        let responder = MutateRequestResponder<MutationSync<AnyModel>> { _ in
             mutateAPICallExpecation.fulfill()
-            return nil
+            try! await Task.sleep(seconds: 0.3)
+            let model = MockSynced(id: "id-1")
+            let anyModel = try! model.eraseToAnyModel()
+            let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
+                                                          modelName: MockSynced.modelName,
+                                                          deleted: false,
+                                                          lastChangedAt: Date().unixSeconds,
+                                                          version: 2)
+            let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+            return .success(remoteMutationSync)
         }
-        apiBehavior.responders[.mutateRequestListener] = responder
+        apiBehavior.responders[.mutateRequestResponse] = responder
 
         stateMachine.state = .requestingEvent
-        wait(for: [enqueueEvent, mutateAPICallExpecation], timeout: 0.1)
+        await fulfillment(of: [enqueueEvent, mutateAPICallExpecation], timeout: 0.1)
 
         // While we are expecting the mutationEvent to be processed by making an API call,
         // stop the mutation queue. Note that we are not testing that the operation
@@ -181,7 +186,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             mutationQueueStopped.fulfill()
         }
         mutationQueue.stopSyncingToCloud { }
-        wait(for: [mutationQueueStopped], timeout: 0.1)
+        await fulfillment(of: [mutationQueueStopped], timeout: 0.1)
 
         // Re-enable syncing
         let startReceivedAgain = expectation(description: "Start received again")
@@ -196,7 +201,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
                                           mutationEventPublisher: publisher,
                                           reconciliationQueue: reconciliationQueue)
 
-        wait(for: [startReceivedAgain], timeout: 1)
+        await fulfillment(of: [startReceivedAgain], timeout: 1)
 
         // After - enabling, mock the callback from API to be completed
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
@@ -205,17 +210,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             processEvent.fulfill()
         }
 
-        let model = MockSynced(id: "id-1")
-        let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(modelId: model.id,
-                                                      modelName: MockSynced.modelName,
-                                                      deleted: false,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: 2)
-        let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromRequest(.success(.success(remoteMutationSync)))
-
-        wait(for: [processEvent], timeout: 1)
+        await fulfillment(of: [processEvent], timeout: 1)
     }
 }
 

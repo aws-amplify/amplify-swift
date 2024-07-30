@@ -75,7 +75,6 @@ class SyncEngineTestBase: XCTestCase {
         authPlugin = MockAuthCategoryPlugin()
         try Amplify.add(plugin: apiPlugin)
         try Amplify.add(plugin: authPlugin)
-        Amplify.Logging.logLevel = .verbose
     }
     
     override func tearDown() async throws {

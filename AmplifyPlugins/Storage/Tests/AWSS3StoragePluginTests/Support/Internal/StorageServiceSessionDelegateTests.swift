@@ -135,7 +135,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with a NSError with a NSURLErrorCancelled reason
     /// When: didComplete is invoked
     /// Then: The task is not unregistered
-    func testDidComplete_withNSURLErrorCancelled_shouldNotCompleteTask() {
+    func testDidComplete_withNSURLErrorCancelled_shouldNotCompleteTask() async {
         let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
         let reasons = [
             NSURLErrorCancelledReasonBackgroundUpdatesDisabled,
@@ -164,7 +164,9 @@ class StorageServiceSessionDelegateTests: XCTestCase {
             )
             
             delegate.urlSession(.shared, task: task, didCompleteWithError: error)
-            waitForExpectations(timeout: 1)
+            
+            await fulfillment(of: [expectation], timeout: 5)
+          
             XCTAssertEqual(storageTask.status, .unknown)
             XCTAssertEqual(service.unregisterCount, 0)
         }
@@ -173,7 +175,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask with a StorageError
     /// When: didComplete is invoked
     /// Then: The task status is set to error and it's unregistered
-    func testDidComplete_withError_shouldFailTask() {
+    func testDidComplete_withError_shouldFailTask() async {
         let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Complete With Error")
         let storageTask = StorageTransferTask(
@@ -186,7 +188,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
         service.mockedTask = storageTask
         
         delegate.urlSession(.shared, task: task, didCompleteWithError: StorageError.accessDenied("", "", nil))
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
         XCTAssertEqual(storageTask.status, .error)
         XCTAssertEqual(service.unregisterCount, 1)
     }
@@ -194,7 +196,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .upload
     /// When: didSendBodyData is invoked
     /// Then: An .inProcess event is reported, with the corresponding values
-    func testDidSendBodyData_upload_shouldSendInProcessEvent() {
+    func testDidSendBodyData_upload_shouldSendInProcessEvent() async {
         let task = URLSession.shared.dataTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Send Body Data")
         let storageTask = StorageTransferTask(
@@ -220,7 +222,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
             totalBytesExpectedToSend: 120
         )
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .multiPartUploadPart
@@ -266,7 +268,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
     /// Given: A StorageServiceSessionDelegate and a StorageTransferTask of type .download
     /// When: didWriteData is invoked
     /// Then: An .inProcess event is reported, with the corresponding values
-    func testDidWriteData_shouldNotifyProgress() {
+    func testDidWriteData_shouldNotifyProgress() async {
         let task = URLSession.shared.downloadTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Write Data")
         let storageTask = StorageTransferTask(
@@ -292,13 +294,13 @@ class StorageServiceSessionDelegateTests: XCTestCase {
             totalBytesExpectedToWrite: 300
         )
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     /// Given: A StorageServiceSessionDelegate and a URLSessionDownloadTask without a httpResponse
     /// When: didFinishDownloadingTo is invoked
     /// Then: No event is reported and the task is not completed
-    func testDiFinishDownloading_withError_shouldNotCompleteDownload() {
+    func testDiFinishDownloading_withError_shouldNotCompleteDownload() async {
         let task = URLSession.shared.downloadTask(with: FileManager.default.temporaryDirectory)
         let expectation = self.expectation(description: "Did Finish Downloading")
         expectation.isInverted = true
@@ -317,7 +319,7 @@ class StorageServiceSessionDelegateTests: XCTestCase {
             didFinishDownloadingTo: FileManager.default.temporaryDirectory
         )
         
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 1)
         XCTAssertEqual(service.completeDownloadCount, 0)
     }
 }

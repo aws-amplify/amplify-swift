@@ -7,12 +7,12 @@
 
 #if canImport(Speech) && canImport(Vision)
 import Foundation
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 
 extension CoreMLPredictionsPlugin {
 
     public func configure(using configuration: Any?) throws {
-        guard configuration is JSONValue else {
+        guard configuration is JSONValue || configuration is AmplifyOutputsData else {
             let errorDescription = CoreMLPluginErrorString.decodeConfigurationError.errorDescription
             let recoverySuggestion = CoreMLPluginErrorString.decodeConfigurationError.recoverySuggestion
             throw PluginError.pluginConfigurationError(errorDescription, recoverySuggestion)

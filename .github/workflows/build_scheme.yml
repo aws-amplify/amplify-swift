@@ -1,0 +1,98 @@
+name: Build scheme for the given platform and other parameters
+on:
+  workflow_call:
+    inputs:
+      scheme:
+        type: string
+        required: true
+
+      platform:
+        type: string
+        required: true
+
+      xcode-version:
+        type: string
+        default: 'latest'
+
+      os-runner:
+        type: string
+        default: 'macos-latest'
+
+      save_build_cache:
+        type: boolean
+        default: true
+
+permissions:
+    contents: read
+    actions: write
+
+jobs:
+  build-scheme:
+    name: Build ${{ inputs.scheme }} | ${{ inputs.platform }}
+    runs-on: ${{ inputs.os-runner }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          persist-credentials: false
+
+      - name: Get build parameters for ${{ inputs.platform }}
+        id: platform
+        uses: ./.github/composite_actions/get_platform_parameters
+        with:
+          platform: ${{ inputs.platform }}
+          xcode_version: ${{ inputs.xcode-version }}
+
+      - name: Attempt to use the dependencies cache
+        id: dependencies-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: amplify-packages-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            amplify-packages-
+
+      - name: Attempt to restore the build cache from main
+        id: build-cache
+        timeout-minutes: 4
+        continue-on-error: true
+        uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: Amplify-${{ inputs.platform }}-build-cache
+
+      - name: Build ${{ inputs.scheme }}
+        id: build-package
+        uses: ./.github/composite_actions/run_xcodebuild
+        with:
+          scheme: ${{ inputs.scheme }}
+          destination: ${{ steps.platform.outputs.destination }}
+          sdk: ${{ steps.platform.outputs.sdk }}
+          xcode_path: /Applications/Xcode_${{ steps.platform.outputs.xcode-version }}.app
+          cloned_source_packages_path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          derived_data_path: ${{ github.workspace }}/Build
+          disable_package_resolution: ${{ steps.dependencies-cache.outputs.cache-hit }}
+
+      - name: Save the dependencies cache in main
+        if: inputs.save_build_cache && steps.dependencies-cache.outputs.cache-hit != 'true' && github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Amplify
+          key: ${{ steps.dependencies-cache.outputs.cache-primary-key }}
+
+      - name: Delete the old build cache
+        if: inputs.save_build_cache && steps.build-cache.outputs.cache-hit && github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+        run: |
+          gh cache delete ${{ steps.build-cache.outputs.cache-primary-key }}
+
+      - name: Save the build cache
+        if: inputs.save_build_cache && github.ref_name == 'main'
+        uses: actions/cache/save@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ github.workspace }}/Build
+          key: ${{ steps.build-cache.outputs.cache-primary-key }}

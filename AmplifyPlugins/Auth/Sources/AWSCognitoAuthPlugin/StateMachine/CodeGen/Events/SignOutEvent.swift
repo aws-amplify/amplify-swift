@@ -41,7 +41,7 @@ struct SignOutEvent: StateMachineEvent {
 
         case signedOutFailure(AuthenticationError)
 
-        case userCancelled
+        case hostedUISignOutError(HostedUIError)
     }
 
     let id: String
@@ -66,8 +66,8 @@ struct SignOutEvent: StateMachineEvent {
             return "SignOutEvent.globalSignOutError"
         case .signOutGuest:
             return "SignOutEvent.signOutGuest"
-        case .userCancelled:
-            return "SignOutEvent.userCancelled"
+        case .hostedUISignOutError:
+            return "SignOutEvent.hostedUISignOutError"
         }
     }
 
@@ -94,7 +94,7 @@ extension SignOutEvent.EventType: Equatable {
             (.signedOutFailure, .signedOutFailure),
             (.globalSignOutError, .globalSignOutError),
             (.signOutGuest, .signOutGuest),
-            (.userCancelled, .userCancelled):
+            (.hostedUISignOutError, .hostedUISignOutError):
             return true
         default:
             return false

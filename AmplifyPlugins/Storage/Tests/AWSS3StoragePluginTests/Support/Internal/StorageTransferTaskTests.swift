@@ -15,7 +15,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask with a sessionTask
     /// When: resume is invoked
     /// Then: an .initiated event is reported and the task set to .inProgress
-    func testResume_withSessionTask_shouldCallResume_andReportInitiatedEvent() {
+    func testResume_withSessionTask_shouldCallResume_andReportInitiatedEvent() async {
         let expectation = expectation(description: ".initiated event received on resume with only sessionTask")
         let sessionTask = MockSessionTask()
         let task = createTask(
@@ -32,8 +32,8 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
         
         task.resume()
-        waitForExpectations(timeout: 0.5)
-        
+        await fulfillment(of: [expectation], timeout: 0.5)
+
         XCTAssertEqual(sessionTask.resumeCount, 1)
         XCTAssertEqual(task.status, .inProgress)
     }
@@ -41,7 +41,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask with a proxyStorageTask
     /// When: resume is invoked
     /// Then: an .initiated event is reported and the task set to .inProgress
-    func testResume_withProxyStorageTask_shouldCallResume_andReportInitiatedEvent() {
+    func testResume_withProxyStorageTask_shouldCallResume_andReportInitiatedEvent() async {
         let expectation = expectation(description: ".initiated event received on resume with only proxyStorageTask")
         let sessionTask = MockSessionTask()
         let storageTask = MockStorageTask()
@@ -60,8 +60,8 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
         
         task.resume()
-        waitForExpectations(timeout: 0.5)
-        
+        await fulfillment(of: [expectation], timeout: 0.5)
+
         XCTAssertEqual(sessionTask.resumeCount, 0)
         XCTAssertEqual(storageTask.resumeCount, 1)
         XCTAssertEqual(task.status, .inProgress)
@@ -70,7 +70,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask with a sessionTask and a proxyStorageTask
     /// When: resume is invoked
     /// Then: an .initiated event is reported and the task set to .inProgress
-    func testResume_withSessionTask_andProxyStorageTask_shouldCallResume_andReportInitiatedEvent() {
+    func testResume_withSessionTask_andProxyStorageTask_shouldCallResume_andReportInitiatedEvent() async {
         let expectation = expectation(description: ".initiated event received on resume with sessionTask and proxyStorageTask")
         let sessionTask = MockSessionTask()
         let storageTask = MockStorageTask()
@@ -88,8 +88,8 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
         
         task.resume()
-        waitForExpectations(timeout: 0.5)
-        
+        await fulfillment(of: [expectation], timeout: 0.5)
+
         XCTAssertEqual(sessionTask.resumeCount, 1)
         XCTAssertEqual(storageTask.resumeCount, 0)
         XCTAssertEqual(task.status, .inProgress)
@@ -98,7 +98,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask without a sessionTask and without a proxyStorageTask
     /// When: resume is invoked
     /// Then: No event is reported and the task is not to .inProgress
-    func testResume_withoutSessionTask_withoutProxyStorateTask_shouldNotCallResume_andNotReportEvent() {
+    func testResume_withoutSessionTask_withoutProxyStorateTask_shouldNotCallResume_andNotReportEvent() async {
         let expectation = expectation(description: "no event is received on resume when no sessionTask nor proxyStorageTask")
         expectation.isInverted = true
         let sessionTask = MockSessionTask()
@@ -114,8 +114,8 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .paused)
         
         task.resume()
-        waitForExpectations(timeout: 0.5)
-        
+        await fulfillment(of: [expectation], timeout: 0.5)
+
         XCTAssertEqual(sessionTask.resumeCount, 0)
         XCTAssertEqual(task.status, .paused)
     }
@@ -123,7 +123,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask with status not being paused
     /// When: resume is invoked
     /// Then: No event is reported and the task is not set to .inProgress
-    func testResume_withTaskNotPaused_shouldNotCallResume_andNotReportEvent() {
+    func testResume_withTaskNotPaused_shouldNotCallResume_andNotReportEvent() async {
         let expectation = expectation(description: "no event is received on resume when the session is not paused")
         expectation.isInverted = true
         let task = createTask(
@@ -137,7 +137,7 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .unknown)
         
         task.resume()
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [expectation], timeout: 0.5)
         
         XCTAssertEqual(task.status, .unknown)
     }
@@ -393,7 +393,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask
     /// When: fail is invoked
     /// Then: A .failed event is reported
-    func testFail_shouldReportFailEvent() {
+    func testFail_shouldReportFailEvent() async {
         let expectation = expectation(description: ".failed event received on fail")
         let task = createTask(
             transferType: .upload(onEvent: { event in
@@ -408,7 +408,7 @@ class StorageTransferTaskTests: XCTestCase {
         )
         task.fail(error: CancellationError())
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [expectation], timeout: 0.5)
         XCTAssertEqual(task.status, .error)
         XCTAssertTrue(task.isFailed)
         XCTAssertNil(task.proxyStorageTask)
@@ -417,7 +417,7 @@ class StorageTransferTaskTests: XCTestCase {
     /// Given: A StorageTransferTask with status .failed
     /// When: fail is invoked
     /// Then: No event is reported
-    func testFail_withFailedTask_shouldNotReportEvent() {
+    func testFail_withFailedTask_shouldNotReportEvent() async {
         let expectation = expectation(description: "event received on fail for failed task")
         expectation.isInverted = true
         let task = createTask(
@@ -434,7 +434,7 @@ class StorageTransferTaskTests: XCTestCase {
         XCTAssertEqual(task.status, .error)
         task.fail(error: CancellationError())
 
-        waitForExpectations(timeout: 0.5)
+        await fulfillment(of: [expectation], timeout: 0.5)
         XCTAssertNotNil(task.proxyStorageTask)
     }
     

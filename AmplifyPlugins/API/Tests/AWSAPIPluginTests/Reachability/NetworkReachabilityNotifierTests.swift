@@ -28,7 +28,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         MockReachability.iConnection = .wifi
     }
 
-    func testWifiConnectivity() {
+    func testWifiConnectivity() async {
         MockReachability.iConnection = .wifi
         let expect = expectation(description: ".sink receives values")
         var values = [Bool]()
@@ -45,11 +45,11 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [expect], timeout: 1)
         cancellable.cancel()
     }
 
-    func testCellularConnectivity() {
+    func testCellularConnectivity() async {
         MockReachability.iConnection = .wifi
         let expect = expectation(description: ".sink receives values")
         var values = [Bool]()
@@ -67,11 +67,11 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [expect], timeout: 1)
         cancellable.cancel()
     }
 
-    func testNoConnectivity() {
+    func testNoConnectivity() async {
         MockReachability.iConnection = .unavailable
         let expect = expectation(description: ".sink receives values")
         var values = [Bool]()
@@ -89,11 +89,11 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [expect], timeout: 1)
         cancellable.cancel()
     }
 
-    func testWifiConnectivity_publisherGoesOutOfScope() {
+    func testWifiConnectivity_publisherGoesOutOfScope() async {
         MockReachability.iConnection = .wifi
         let defaultValueExpect = expectation(description: ".sink receives default value")
         let completeExpect = expectation(description: ".sink receives completion")
@@ -104,12 +104,12 @@ class NetworkReachabilityNotifierTests: XCTestCase {
             defaultValueExpect.fulfill()
         })
 
-        wait(for: [defaultValueExpect], timeout: 1.0)
+        await fulfillment(of: [defaultValueExpect], timeout: 1.0)
         notifier = nil
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        wait(for: [completeExpect], timeout: 1.0)
+        await fulfillment(of: [completeExpect], timeout: 1.0)
         cancellable.cancel()
     }
 }

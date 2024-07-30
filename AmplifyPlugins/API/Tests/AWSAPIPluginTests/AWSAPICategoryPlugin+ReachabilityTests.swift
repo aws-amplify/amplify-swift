@@ -82,7 +82,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         XCTAssertEqual(reachability.key, graphQLAPI)
     }
 
-    func testReachabilityConcurrentPerform() throws {
+    func testReachabilityConcurrentPerform() async throws {
         let graphQLAPI = "graphQLAPI"
         let restAPI = "restAPI"
         do {
@@ -114,7 +114,7 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
             concurrentPerformCompleted.fulfill()
 
         }
-        wait(for: [concurrentPerformCompleted], timeout: 1)
+        await fulfillment(of: [concurrentPerformCompleted], timeout: 1)
         XCTAssertEqual(apiPlugin.reachabilityMap.count, 2)
     }
 

@@ -37,7 +37,7 @@ class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
     init() {
         self.remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
     }
-    func start(api: APICategoryGraphQLBehaviorExtended, auth: AuthCategoryBehavior?) {
+    func start(api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
         syncing = true
     }
 

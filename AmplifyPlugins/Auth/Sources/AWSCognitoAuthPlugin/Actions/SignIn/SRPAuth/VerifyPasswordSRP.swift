@@ -57,7 +57,7 @@ struct VerifyPasswordSRP: Action {
                                           serverPublicBHexString: serverPublicB,
                                           srpClient: srpClient,
                                           poolId: userPoolEnv.userPoolConfiguration.poolId)
-            let request = RespondToAuthChallengeInput.passwordVerifier(
+            let request = await RespondToAuthChallengeInput.passwordVerifier(
                 username: username,
                 stateData: stateData,
                 session: authResponse.session,

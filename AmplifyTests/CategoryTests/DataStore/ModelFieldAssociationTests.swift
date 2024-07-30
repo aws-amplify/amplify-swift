@@ -28,7 +28,7 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testHasManyWithCodingKeys() {
         let hasMany = ModelAssociation.hasMany(associatedWith: Comment.keys.post)
-        guard case .hasMany(let fieldName, let targetNames) = hasMany else {
+        guard case .hasMany(let fieldName, _) = hasMany else {
             XCTFail("Should create hasMany association")
             return
         }
@@ -37,22 +37,35 @@ class ModelFieldAssociationTests: XCTestCase {
 
     func testHasOneWithCodingKeys() {
         let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetNames: [])
-        guard case .hasOne(let fieldName, let target) = hasOne else {
+        guard case .hasOne(let fieldName, let fieldNames, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
         }
         XCTAssertEqual(fieldName, Comment.keys.post.stringValue)
+        XCTAssertEqual(fieldNames, [])
         XCTAssertEqual(target, [])
     }
 
     func testHasOneWithCodingKeysWithTargetName() {
         let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetNames: ["postID"])
-        guard case .hasOne(let fieldName, let target) = hasOne else {
+        guard case .hasOne(let fieldName, let fieldNames, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
         }
         XCTAssertEqual(fieldName, Comment.keys.post.stringValue)
+        XCTAssertEqual(fieldNames, [])
         XCTAssertEqual(target, ["postID"])
+    }
+
+    func testHasOneWithCodingKeysWithAssociatedFields() {
+        let hasOne = ModelAssociation.hasOne(associatedFields: [Comment.keys.post])
+        guard case .hasOne(let fieldName, let fieldNames, let target) = hasOne else {
+            XCTFail("Should create hasOne association")
+            return
+        }
+        XCTAssertEqual(fieldName, nil)
+        XCTAssertEqual(fieldNames, ["post"])
+        XCTAssertEqual(target, [])
     }
 
     func testBelongsToWithTargetName() {

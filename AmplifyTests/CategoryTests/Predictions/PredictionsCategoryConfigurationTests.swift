@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class PredictionsCategoryConfigurationTests: XCTestCase {
@@ -48,6 +48,26 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(predictions: config)
 
         try Amplify.configure(amplifyConfig)
+
+        XCTAssertNotNil(Amplify.Predictions)
+        XCTAssertNotNil(try Amplify.Predictions.getPlugin(for: "MockPredictionsCategoryPlugin"))
+    }
+
+    /// Test if Prediction plugin can be configured with AmplifyOutputs
+    ///
+    /// - Given: UnConfigured Amplify framework
+    /// - When:
+    ///    - I add a new Prediction plugin and add configuration for the plugin
+    /// - Then:
+    ///    - Prediction plugin should be configured correctly
+    ///
+    func testCanConfigurePluginWithAmplifyOutputs() throws {
+        let plugin = MockPredictionsCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
 
         XCTAssertNotNil(Amplify.Predictions)
         XCTAssertNotNil(try Amplify.Predictions.getPlugin(for: "MockPredictionsCategoryPlugin"))
@@ -151,7 +171,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - Should work without any error.
     ///
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockPredictionsCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
         expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -179,7 +199,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Predictions.getPlugin(for: "MockPredictionsCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 
     // MARK: - Test internal config behavior guarantees
@@ -240,7 +260,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - I should see a log warning
     ///
-    func testWarnsOnMissingPlugin() throws {
+    func testWarnsOnMissingPlugin() async throws {
         let warningReceived = expectation(description: "Warning message received")
 
         let loggingPlugin = MockLoggingCategoryPlugin()
@@ -262,6 +282,6 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warningReceived], timeout: 0.1)
     }
 }

@@ -17,8 +17,13 @@ public struct StorageListResult {
     /// [StorageCategoryBehavior.list](x-source-tag://StorageCategoryBehavior.list).
     ///
     /// - Tag: StorageListResult.init
-    public init(items: [Item], nextToken: String? = nil) {
+    public init(
+        items: [Item],
+        excludedSubpaths: [String] = [],
+        nextToken: String? = nil
+    ) {
         self.items = items
+        self.excludedSubpaths = excludedSubpaths
         self.nextToken = nextToken
     }
 
@@ -26,6 +31,13 @@ public struct StorageListResult {
     ///
     /// - Tag: StorageListResult.items
     public var items: [Item]
+
+
+    /// Array of excluded subpaths in the Result. 
+    /// This field is only populated when [`StorageListRequest.Options.subpathStrategy`](x-source-tag://StorageListRequestOptions.subpathStragegy) is set to [`.exclude()`](x-source-tag://SubpathStrategy.exclude).
+    ///
+    /// - Tag: StorageListResult.excludedSubpaths
+    public var excludedSubpaths: [String]
 
     /// Opaque string indicating the page offset at which to resume a listing. This value is usually copied to
     /// [StorageListRequestOptions.nextToken](x-source-tag://StorageListRequestOptions.nextToken).
@@ -42,9 +54,15 @@ extension StorageListResult {
     /// - Tag: StorageListResultItem
     public struct Item {
 
+        /// The path of the object in storage.
+        ///
+        /// - Tag: StorageListResultItem.path
+        public let path: String
+
         /// The unique identifier of the object in storage.
         ///
         /// - Tag: StorageListResultItem.key
+        @available(*, deprecated, message: "Use `path` instead.")
         public let key: String
 
         /// Size in bytes of the object
@@ -72,12 +90,31 @@ extension StorageListResult {
         /// [StorageCategoryBehavior.list](x-source-tag://StorageCategoryBehavior.list).
         ///
         /// - Tag: StorageListResultItem.init
-        public init(key: String,
-                    size: Int? = nil,
-                    eTag: String? = nil,
-                    lastModified: Date? = nil,
-                    pluginResults: Any? = nil) {
+        @available(*, deprecated, message: "Use init(path:size:lastModifiedDate:eTag:pluginResults)")
+        public init(
+            key: String,
+            size: Int? = nil,
+            eTag: String? = nil,
+            lastModified: Date? = nil,
+            pluginResults: Any? = nil
+        ) {
             self.key = key
+            self.size = size
+            self.eTag = eTag
+            self.lastModified = lastModified
+            self.pluginResults  = pluginResults
+            self.path = ""
+        }
+
+        public init(
+            path: String,
+            size: Int? = nil,
+            eTag: String? = nil,
+            lastModified: Date? = nil,
+            pluginResults: Any? = nil
+        ) {
+            self.path = path
+            self.key = path
             self.size = size
             self.eTag = eTag
             self.lastModified = lastModified

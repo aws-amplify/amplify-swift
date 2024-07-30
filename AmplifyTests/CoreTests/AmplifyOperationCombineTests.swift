@@ -14,7 +14,7 @@ import Combine
 
 class AmplifyOperationCombineTests: XCTestCase {
 
-    func testResultPublisherSucceeds() {
+    func testResultPublisherSucceeds() async {
         let responder: MockPublisherOperation.Responder = { operation in
             operation.dispatch(result: .success(1))
             operation.finish()
@@ -41,11 +41,11 @@ class AmplifyOperationCombineTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFailure, receivedFinished], timeout: 0.05)
         sink.cancel()
     }
 
-    func testResultPublisherFails() {
+    func testResultPublisherFails() async {
         let responder: MockPublisherOperation.Responder = { operation in
             operation.dispatch(result: .failure(.unknown("Test", "Test")))
             operation.finish()
@@ -73,11 +73,11 @@ class AmplifyOperationCombineTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFailure, receivedFinished], timeout: 0.05)
         sink.cancel()
     }
 
-    func testResultPublisherCancels() {
+    func testResultPublisherCancels() async {
         let responder: MockPublisherOperation.Responder = { operation in
             operation.dispatch(result: .success(1))
             operation.finish()
@@ -105,11 +105,11 @@ class AmplifyOperationCombineTests: XCTestCase {
 
         operation.cancel()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFailure, receivedFinished], timeout: 0.05)
         sink.cancel()
     }
 
-    func testChainedResultPublishersSucceed() {
+    func testChainedResultPublishersSucceed() async {
         let makeSuccessResponder: (Int) -> MockPublisherOperation.Responder = { value in
             let successResponder: MockPublisherOperation.Responder = { operation in
                 operation.dispatch(result: .success(value))
@@ -151,11 +151,11 @@ class AmplifyOperationCombineTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFailure, receivedFinished], timeout: 0.05)
         sink.cancel()
     }
 
-    func testChainedResultPublishersFail() {
+    func testChainedResultPublishersFail() async {
         let makeSuccessResponder: (Int) -> MockPublisherOperation.Responder = { value in
             let successResponder: MockPublisherOperation.Responder = { operation in
                 operation.dispatch(result: .success(value))
@@ -203,11 +203,11 @@ class AmplifyOperationCombineTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFailure, receivedFinished], timeout: 0.05)
         sink.cancel()
     }
 
-    func testChainedResultPublishersCancel() {
+    func testChainedResultPublishersCancel() async {
         let makeSuccessResponder: (Int) -> MockPublisherOperation.Responder = { value in
             let successResponder: MockPublisherOperation.Responder = { operation in
                 operation.dispatch(result: .success(value))
@@ -250,7 +250,7 @@ class AmplifyOperationCombineTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue, receivedFailure, receivedFinished], timeout: 0.05)
         sink.cancel()
     }
 

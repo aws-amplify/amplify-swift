@@ -9,13 +9,14 @@
 import Foundation
 import Amplify
 import Combine
+import InternalAmplifyCredentials
 @_spi(WebSocket) import AWSPluginsCore
 
 protocol AppSyncRealTimeClientFactoryProtocol {
     func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         endpoint: URL,
-        authService: AWSAuthServiceBehavior,
+        authService: AWSAuthCredentialsProviderBehavior,
         authType: AWSAuthorizationType?,
         apiAuthProviderFactory: APIAuthProviderFactory
     ) async throws -> AppSyncRealTimeClientProtocol
@@ -40,7 +41,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
     public func getAppSyncRealTimeClient(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
         endpoint: URL,
-        authService: AWSAuthServiceBehavior,
+        authService: AWSAuthCredentialsProviderBehavior,
         authType: AWSAuthorizationType? = nil,
         apiAuthProviderFactory: APIAuthProviderFactory
     ) throws -> AppSyncRealTimeClientProtocol {
@@ -90,7 +91,7 @@ actor AppSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol {
 
     private func getInterceptor(
         for authorizationConfiguration: AWSAuthorizationConfiguration,
-        authService: AWSAuthServiceBehavior,
+        authService: AWSAuthCredentialsProviderBehavior,
         apiAuthProviderFactory: APIAuthProviderFactory
     ) throws -> AppSyncRequestInterceptor & WebSocketInterceptor {
         switch authorizationConfiguration {

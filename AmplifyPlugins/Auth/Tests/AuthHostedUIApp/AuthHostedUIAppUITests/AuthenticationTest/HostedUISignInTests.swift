@@ -12,7 +12,7 @@ class HostedUISignInTests: UITestCase {
     func testSignInSuccess() throws {
 
         let username = "hostedUI-\(UUID().uuidString)@amazon.com"
-        let password = "P123@\(UUID().uuidString)"
+        let password = "Pp123@\(UUID().uuidString)"
         let signInScreen = SignInScreen(app: app)
         let signUpScreen = signInScreen.gotoSignUpView()
         _ = signUpScreen
@@ -31,7 +31,7 @@ class HostedUISignInTests: UITestCase {
 
     func testSignInWithoutPresentationAnchorSuccess() throws {
         let username = "hostedUI-\(UUID().uuidString)@amazon.com"
-        let password = "P123@\(UUID().uuidString)"
+        let password = "Pp123@\(UUID().uuidString)"
         let signInScreen = SignInScreen(app: app)
         let signUpScreen = signInScreen.gotoSignUpView()
         _ = signUpScreen

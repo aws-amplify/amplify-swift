@@ -56,7 +56,7 @@ struct InitiateAuthSRP: Action {
                 for: username,
                 credentialStoreClient: authEnv.credentialsClient)
 
-            let request = InitiateAuthInput.srpInput(
+            let request = await InitiateAuthInput.srpInput(
                 username: username,
                 publicSRPAHexValue: srpKeyPair.publicKeyHexValue,
                 authFlowType: authFlowType,

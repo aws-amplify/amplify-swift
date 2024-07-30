@@ -102,7 +102,14 @@ class GraphQLSubscribeTests: OperationTestBase {
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        await waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedCompletionFinish, 
+                               receivedCompletionFailure,
+                               receivedConnected,
+                               receivedDisconnected,
+                               receivedSubscriptionEventData,
+                               receivedSubscriptionEventError
+                              ],
+                          timeout: 0.05)
     }
 
     /// Lifecycle test
@@ -131,7 +138,14 @@ class GraphQLSubscribeTests: OperationTestBase {
         try await MockAppSyncRealTimeClient.waitForSubscirbed()
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        await waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedCompletionFinish,
+                               receivedCompletionFailure,
+                               receivedConnected,
+                               receivedDisconnected,
+                               receivedSubscriptionEventData,
+                               receivedSubscriptionEventError
+                              ],
+                          timeout: 0.05)
     }
 
     /// Lifecycle test
@@ -158,7 +172,14 @@ class GraphQLSubscribeTests: OperationTestBase {
         try await MockAppSyncRealTimeClient.waitForSubscirbing()
         mockAppSyncRealTimeClient.triggerEvent(.error(["Error"]))
 
-        await waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedCompletionFinish,
+                               receivedCompletionFailure,
+                               receivedConnected,
+                               receivedDisconnected,
+                               receivedSubscriptionEventData,
+                               receivedSubscriptionEventError
+                              ],
+                          timeout: 0.05)
     }
 
     /// Lifecycle test
@@ -193,7 +214,14 @@ class GraphQLSubscribeTests: OperationTestBase {
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        await waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedCompletionFinish,
+                               receivedCompletionFailure,
+                               receivedConnected,
+                               receivedDisconnected,
+                               receivedSubscriptionEventData,
+                               receivedSubscriptionEventError
+                              ],
+                          timeout: 0.05)
     }
 
     func testMultipleSuccessValues() async throws {
@@ -220,7 +248,14 @@ class GraphQLSubscribeTests: OperationTestBase {
         mockAppSyncRealTimeClient.triggerEvent(.data(testData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        await waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedCompletionFinish,
+                               receivedCompletionFailure,
+                               receivedConnected,
+                               receivedDisconnected,
+                               receivedSubscriptionEventData,
+                               receivedSubscriptionEventError
+                              ],
+                          timeout: 0.05)
     }
 
     func testMixedSuccessAndErrorValues() async throws {
@@ -253,7 +288,14 @@ class GraphQLSubscribeTests: OperationTestBase {
         mockAppSyncRealTimeClient.triggerEvent(.data(successfulTestData))
         mockAppSyncRealTimeClient.triggerEvent(.unsubscribed)
 
-        await waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedCompletionFinish,
+                               receivedCompletionFailure,
+                               receivedConnected,
+                               receivedDisconnected,
+                               receivedSubscriptionEventData,
+                               receivedSubscriptionEventError
+                              ],
+                          timeout: 0.05)
     }
 
     // MARK: - Utilities

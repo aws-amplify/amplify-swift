@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPluginsCore
+import InternalAmplifyCredentials
 import AwsCommonRuntimeKit
 
 public extension AWSAPIPlugin {
@@ -19,8 +20,15 @@ public extension AWSAPIPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the required configuration values is invalid or empty
     func configure(using configuration: Any?) throws {
+        let dependencies: ConfigurationDependencies
+        if let configuration = configuration as? AmplifyOutputsData {
+            dependencies = try ConfigurationDependencies(configuration: configuration,
+                                                         apiAuthProviderFactory: authProviderFactory)
+        } else if let jsonValue = configuration as? JSONValue {
+            dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
+                                                         apiAuthProviderFactory: authProviderFactory)
 
-        guard let jsonValue = configuration as? JSONValue else {
+        } else {
             throw PluginError.pluginConfigurationError(
                 "Could not cast incoming configuration to JSONValue",
                 """
@@ -32,8 +40,6 @@ public extension AWSAPIPlugin {
             )
         }
 
-        let dependencies = try ConfigurationDependencies(configurationValues: jsonValue,
-                                                         apiAuthProviderFactory: authProviderFactory)
         configure(using: dependencies)
 
         // Initialize SwiftSDK's CRT dependency for SigV4 signing functionality
@@ -50,7 +56,7 @@ extension AWSAPIPlugin {
     /// A holder for AWSAPIPlugin dependencies that provides sane defaults for
     /// production
     struct ConfigurationDependencies {
-        let authService: AWSAuthServiceBehavior
+        let authService: AWSAuthCredentialsProviderBehavior
         let pluginConfig: AWSAPICategoryPluginConfiguration
         let appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol
         let logLevel: Amplify.LogLevel
@@ -58,12 +64,12 @@ extension AWSAPIPlugin {
         init(
             configurationValues: JSONValue,
             apiAuthProviderFactory: APIAuthProviderFactory,
-            authService: AWSAuthServiceBehavior? = nil,
+            authService: AWSAuthCredentialsProviderBehavior? = nil,
             appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
             logLevel: Amplify.LogLevel? = nil
         ) throws {
             let authService = authService
-                ?? AWSAuthService()
+            ?? AWSAuthService()
 
             let pluginConfig = try AWSAPICategoryPluginConfiguration(
                 jsonValue: configurationValues,
@@ -83,8 +89,30 @@ extension AWSAPIPlugin {
         }
 
         init(
+            configuration: AmplifyOutputsData,
+            apiAuthProviderFactory: APIAuthProviderFactory,
+            authService: AWSAuthCredentialsProviderBehavior = AWSAuthService(),
+            appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol? = nil,
+            logLevel: Amplify.LogLevel = Amplify.Logging.logLevel
+        ) throws {
+            let pluginConfig = try AWSAPICategoryPluginConfiguration(
+                configuration: configuration,
+                apiAuthProviderFactory: apiAuthProviderFactory,
+                authService: authService
+            )
+
+            self.init(
+                pluginConfig: pluginConfig,
+                authService: authService,
+                appSyncRealTimeClientFactory: appSyncRealTimeClientFactory
+                ?? AppSyncRealTimeClientFactory(),
+                logLevel: logLevel
+            )
+        }
+
+        init(
             pluginConfig: AWSAPICategoryPluginConfiguration,
-            authService: AWSAuthServiceBehavior,
+            authService: AWSAuthCredentialsProviderBehavior,
             appSyncRealTimeClientFactory: AppSyncRealTimeClientFactoryProtocol,
             logLevel: Amplify.LogLevel
         ) {

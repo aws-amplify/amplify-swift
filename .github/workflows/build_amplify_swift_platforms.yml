@@ -52,8 +52,9 @@ jobs:
           - platform: ${{ github.event.inputs.macos == 'false' && 'macOS' || 'None' }}
           - platform: ${{ github.event.inputs.tvos == 'false' && 'tvOS' || 'None' }}
           - platform: ${{ github.event.inputs.watchos == 'false' && 'watchOS' || 'None' }}
-    uses: ./.github/workflows/build_amplify_swift.yml
+    uses: ./.github/workflows/build_scheme.yml
     with:
+      scheme: Amplify-Package
       platform: ${{ matrix.platform }}
 
   confirm-pass:

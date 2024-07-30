@@ -325,7 +325,7 @@ class AmplifyPublisherTests: XCTestCase {
                     return nil
                 } else {
                     if fails && current > 4 {
-                        throw Failure.unluckyNumber
+                        throw AmplifyPublisherTests.Failure.unluckyNumber
                     } else {
                         return current
                     }

@@ -20,8 +20,7 @@ public final class FaceLivenessSession: LivenessService {
     
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
-        target: .global()
-    )
+        qos: .userInteractive)
 
     init(
         websocket: WebSocketSession,
@@ -84,7 +83,7 @@ public final class FaceLivenessSession: LivenessService {
         _ event: LivenessEvent<T>,
         eventDate: @escaping () -> Date = Date.init
     ) {
-        livenessServiceDispatchQueue.async {
+        livenessServiceDispatchQueue.sync {
             let encodedPayload = self.eventStreamEncoder.encode(
                 payload: event.payload,
                 headers: [

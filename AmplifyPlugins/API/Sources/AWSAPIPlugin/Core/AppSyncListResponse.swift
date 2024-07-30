@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import AWSPluginsCore
 
 /// Resembles the AppSync's GraphQL response for a list operation.
 struct AppSyncListResponse<Element: Model>: Codable {
@@ -25,10 +26,14 @@ extension AppSyncListResponse {
     /// model metadata on its array associations.
     static func initWithMetadata(type: Element.Type,
                                  graphQLData: JSONValue,
-                                 apiName: String?) throws -> AppSyncListResponse<Element> {
+                                 apiName: String?,
+                                 authMode: AWSAuthorizationType?) throws -> AppSyncListResponse<Element> {
         var elements = [Element]()
         if case let .array(jsonArray) = graphQLData["items"] {
-            let jsonArrayWithMetadata = AppSyncModelMetadataUtils.addMetadata(toModelArray: jsonArray, apiName: apiName)
+            let jsonArrayWithMetadata = AppSyncModelMetadataUtils.addMetadata(
+                toModelArray: jsonArray,
+                apiName: apiName,
+                authMode: authMode)
 
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy

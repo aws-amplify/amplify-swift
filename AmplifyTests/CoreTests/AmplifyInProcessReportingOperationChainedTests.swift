@@ -15,7 +15,7 @@ import Combine
 // swiftlint:disable:next type_name
 class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
 
-    func testChainedResultPublishersSucceed() {
+    func testChainedResultPublishersSucceed() async {
         let makeSuccessResponder: (Int) -> MockPublisherInProcessOperation.Responder = { value in
             let successResponder: MockPublisherInProcessOperation.Responder = { operation in
                 operation.dispatch(result: .success(value))
@@ -57,11 +57,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue,
+                               receivedFailure,
+                               receivedFinished],
+                          timeout: 0.05)
         sink.cancel()
     }
 
-    func testChainedResultPublishersFail() {
+    func testChainedResultPublishersFail() async {
         let makeSuccessResponder: (Int) -> MockPublisherInProcessOperation.Responder = { value in
             let successResponder: MockPublisherInProcessOperation.Responder = { operation in
                 operation.dispatch(result: .success(value))
@@ -109,11 +112,14 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue,
+                               receivedFailure,
+                               receivedFinished],
+                          timeout: 0.05)
         sink.cancel()
     }
 
-    func testChainedResultPublishersCancel() {
+    func testChainedResultPublishersCancel() async {
         let makeSuccessResponder: (Int) -> MockPublisherInProcessOperation.Responder = { value in
             let successResponder: MockPublisherInProcessOperation.Responder = { operation in
                 operation.dispatch(result: .success(value))
@@ -156,7 +162,10 @@ class AmplifyInProcessReportingOperationChainedTests: XCTestCase {
         mockOp1.main()
         mockOp2.main()
 
-        waitForExpectations(timeout: 0.05)
+        await fulfillment(of: [receivedValue,
+                               receivedFailure,
+                               receivedFinished],
+                          timeout: 0.05)
         sink.cancel()
     }
 

@@ -28,7 +28,8 @@ class GraphQLRequestToListQueryTests: XCTestCase {
                                                           modelSchema: Comment4.schema,
                                                           filter: predicate.graphQLFilter(for: Comment4.schema),
                                                           limit: 1_000,
-                                                          apiName: "apiName")
+                                                          apiName: "apiName",
+                                                          authMode: .awsIAM)
         XCTAssertNotNil(request)
         let expectedDocument = """
         query ListComment4s($filter: ModelComment4FilterInput, $limit: Int) {
@@ -50,6 +51,7 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         XCTAssertEqual(request.document, expectedDocument)
         XCTAssertEqual(request.decodePath, "listComment4s")
         XCTAssertEqual(request.apiName, "apiName")
+        XCTAssertEqual(request.authMode as? AWSAuthorizationType, .awsIAM)
         guard let variables = request.variables else {
             XCTFail("The document doesn't contain variables")
             return
@@ -76,7 +78,8 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         let request = GraphQLRequest<JSONValue>.listQuery(responseType: List<Comment4>.self,
                                                           modelSchema: Comment4.schema,
                                                           nextToken: "nextToken",
-                                                          apiName: "apiName")
+                                                          apiName: "apiName",
+                                                          authMode: .amazonCognitoUserPools)
         XCTAssertNotNil(request)
         let expectedDocument = """
         query ListComment4s($limit: Int, $nextToken: String) {
@@ -98,6 +101,7 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         XCTAssertEqual(request.document, expectedDocument)
         XCTAssertEqual(request.decodePath, "listComment4s")
         XCTAssertEqual(request.apiName, "apiName")
+        XCTAssertEqual(request.authMode as? AWSAuthorizationType, .amazonCognitoUserPools)
         guard let variables = request.variables else {
             XCTFail("The document doesn't contain variables")
             return
@@ -119,7 +123,8 @@ class GraphQLRequestToListQueryTests: XCTestCase {
                                                           filter: previousFilter,
                                                           limit: 1_000,
                                                           nextToken: "nextToken",
-                                                          apiName: "apiName")
+                                                          apiName: "apiName",
+                                                          authMode: .function)
         XCTAssertNotNil(request)
         let expectedDocument = """
         query ListComment4s($filter: ModelComment4FilterInput, $limit: Int, $nextToken: String) {
@@ -141,6 +146,7 @@ class GraphQLRequestToListQueryTests: XCTestCase {
         XCTAssertEqual(request.document, expectedDocument)
         XCTAssertEqual(request.decodePath, "listComment4s")
         XCTAssertEqual(request.apiName, "apiName")
+        XCTAssertEqual(request.authMode as? AWSAuthorizationType, .function)
         guard let variables = request.variables else {
             XCTFail("The document doesn't contain variables")
             return

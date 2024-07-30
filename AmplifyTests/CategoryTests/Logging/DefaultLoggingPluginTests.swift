@@ -46,7 +46,7 @@ class DefaultLoggingPluginTests: XCTestCase {
     ///    - I log messages using `Amplify.Logging`
     /// - Then:
     ///    - It uses the default logging level
-    func testUsesDefaultLoggingLevel() {
+    func testUsesDefaultLoggingLevel() async {
         // Relies on Amplify.Logging.logLevel defaulting to `.error`
 
         let errorMessageCorrectlyEvaluated = expectation(description: "error message was correctly evaluated")
@@ -68,7 +68,12 @@ class DefaultLoggingPluginTests: XCTestCase {
         verboseMessageIncorrectlyEvaluated.isInverted = true
         Amplify.Logging.verbose("verbose \(verboseMessageIncorrectlyEvaluated.fulfill())")
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [errorMessageCorrectlyEvaluated,
+                               warnMessageIncorrectlyEvaluated,
+                               infoMessageIncorrectlyEvaluated,
+                               debugMessageIncorrectlyEvaluated,
+                               verboseMessageIncorrectlyEvaluated],
+                          timeout: 0.1)
     }
 
     /// - Given: default configuration
@@ -76,7 +81,7 @@ class DefaultLoggingPluginTests: XCTestCase {
     ///    - I change the global Amplify.Logging.logLevel
     /// - Then:
     ///    - My log statements are evaluated appropriately
-    func testRespectsChangedDefaultLogLevel() {
+    func testRespectsChangedDefaultLogLevel() async {
         Amplify.Logging.logLevel = .error
 
         let warnMessageIncorrectlyEvaluated = expectation(description: "warn message was incorrectly evaluated")
@@ -97,7 +102,11 @@ class DefaultLoggingPluginTests: XCTestCase {
         infoMessageIncorrectlyEvaluatedAgain.isInverted = true
         Amplify.Logging.info("info \(infoMessageIncorrectlyEvaluatedAgain.fulfill())")
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warnMessageCorrectlyEvaluated,
+                               infoMessageIncorrectlyEvaluated,
+                               warnMessageIncorrectlyEvaluated,
+                               infoMessageIncorrectlyEvaluatedAgain],
+                          timeout: 0.1)
     }
 
     /// Although we can't assert it, the messages in the console log are expected to have different "category" tags
@@ -107,7 +116,7 @@ class DefaultLoggingPluginTests: XCTestCase {
     ///    - I obtain a category-specific log
     /// - Then:
     ///    - I can send messages to it
-    func testCategorySpecificLog() throws {
+    func testCategorySpecificLog() async throws {
         let logger1MessageCorrectlyEvaluated = expectation(description: "logger1 message was correctly evaluated")
         let logger2MessageCorrectlyEvaluated = expectation(description: "logger2 message was correctly evaluated")
 
@@ -119,7 +128,7 @@ class DefaultLoggingPluginTests: XCTestCase {
             logger2.error("logger2 \(logger2MessageCorrectlyEvaluated.fulfill())")
         }
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [logger1MessageCorrectlyEvaluated, logger2MessageCorrectlyEvaluated], timeout: 0.1)
     }
 
     /// - Given: default configuration
@@ -127,7 +136,7 @@ class DefaultLoggingPluginTests: XCTestCase {
     ///    - I obtain category specific logs with different log levels
     /// - Then:
     ///    - Each category-specific log evalutes at the appropriate level
-    func testDifferentLoggersWithDifferentLogLevels() {
+    func testDifferentLoggersWithDifferentLogLevels() async {
         let globalMessageCorrectlyEvaluated = expectation(description: "global message was correctly evaluated")
         let logger1MessageCorrectlyEvaluated = expectation(description: "logger1 message was correctly evaluated")
         let logger2MessageIncorrectlyEvaluated = expectation(description: "logger2 message was incorrectly evaluated")
@@ -141,6 +150,48 @@ class DefaultLoggingPluginTests: XCTestCase {
         logger1.info("logger1 \(logger1MessageCorrectlyEvaluated.fulfill())")
         logger2.info("logger2 \(logger2MessageIncorrectlyEvaluated.fulfill())")
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [logger1MessageCorrectlyEvaluated,
+                               logger2MessageIncorrectlyEvaluated,
+                               globalMessageCorrectlyEvaluated],
+                          timeout: 0.1)
+    }
+
+    /// - Given: default configuration
+    /// - When:
+    ///   - set logLevel to .none
+    /// - Then:
+    ///   - no log is recorded
+    func testLoggerWithNoneLogLevel_noLogsAreRecorded() async {
+        Amplify.Logging.logLevel = .none
+
+        let errorMessageIncorrectlyEvaluated = expectation(description: "error message was incorrectly evaluated")
+        errorMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.error("error \(errorMessageIncorrectlyEvaluated.fulfill())")
+
+        let warnMessageIncorrectlyEvaluated = expectation(description: "warn message was incorrectly evaluated")
+        warnMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.warn("warn \(warnMessageIncorrectlyEvaluated.fulfill())")
+
+        let infoMessageIncorrectlyEvaluated = expectation(description: "info message was incorrectly evaluated")
+        infoMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.info("info \(infoMessageIncorrectlyEvaluated.fulfill())")
+
+        let debugMessageIncorrectlyEvaluated = expectation(description: "debug message was incorrectly evaluated")
+        debugMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.debug("debug \(debugMessageIncorrectlyEvaluated.fulfill())")
+
+        let verboseMessageIncorrectlyEvaluated = expectation(description: "verbose message was incorrectly evaluated")
+        verboseMessageIncorrectlyEvaluated.isInverted = true
+        Amplify.Logging.verbose("verbose \(verboseMessageIncorrectlyEvaluated.fulfill())")
+        await fulfillment(
+            of: [
+                errorMessageIncorrectlyEvaluated,
+                warnMessageIncorrectlyEvaluated,
+                infoMessageIncorrectlyEvaluated,
+                debugMessageIncorrectlyEvaluated,
+                verboseMessageIncorrectlyEvaluated
+            ],
+            timeout: 0.3
+        )
     }
 }

@@ -22,10 +22,11 @@ class CognitoUserPoolASFTests: XCTestCase {
     /// Given: A CognitoUserPoolASF
     /// When: userContextData is invoked
     /// Then: A non-empty string is returned
-    func testUserContextData_shouldReturnData() throws {
+    func testUserContextData_shouldReturnData() async throws {
+        let deviceInfo = await ASFDeviceInfo(id: "mockedDevice")
         let result = try userPool.userContextData(
             for: "TestUser",
-            deviceInfo: ASFDeviceInfo(id: "mockedDevice"),
+            deviceInfo: deviceInfo,
             appInfo: ASFAppInfo(),
             configuration: .testData
         )

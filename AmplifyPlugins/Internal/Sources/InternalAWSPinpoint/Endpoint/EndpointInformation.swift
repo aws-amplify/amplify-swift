@@ -8,26 +8,24 @@
 import Amplify
 import Foundation
 
-protocol EndpointInformation {
+struct EndpointInformation {
     typealias Platform = (name: String, version: String)
 
-    var model: String { get }
-    var appVersion: String { get }
-    var platform: Platform { get }
+    let model: String
+    let appVersion: String
+    let platform: Platform
 }
 
-extension DeviceInfo: EndpointInformation {
-    var appVersion: String {
-        Bundle.main.appVersion
-    }
-
-    var platform: Platform {
-        operatingSystem
-    }
+protocol EndpointInformationProvider {
+    func endpointInfo() async -> EndpointInformation
 }
 
-extension EndpointInformation where Self == DeviceInfo {
-    static var current: EndpointInformation {
-        DeviceInfo.current
+struct DefaultEndpointInformationProvider: EndpointInformationProvider {
+    func endpointInfo() async -> EndpointInformation {
+        let deviceInfo = await DeviceInfo.current
+        let model = await deviceInfo.model
+        let platform = await deviceInfo.operatingSystem
+        let appVersion = Bundle.main.appVersion
+        return EndpointInformation(model: model, appVersion: appVersion, platform: platform)
     }
 }

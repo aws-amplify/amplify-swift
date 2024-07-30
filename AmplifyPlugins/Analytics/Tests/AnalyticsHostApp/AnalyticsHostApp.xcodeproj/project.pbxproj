@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		211035182BD6AB30006AC186 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697029519DEC0074B63A /* AsyncTesting.swift */; };
+		211035192BD6AB30006AC186 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697129519DEC0074B63A /* AsyncExpectation.swift */; };
+		2110351A2BD6AB30006AC186 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */; };
+		2110351B2BD6AB30006AC186 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
+		2110351C2BD6AB30006AC186 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857648828AE9951000CE2E9 /* TestConfigHelper.swift */; };
 		5C2E096829551E3100673FF9 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2E096729551E3100673FF9 /* Amplify */; };
 		5C2E096A29551E3F00673FF9 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2E096929551E3F00673FF9 /* AWSPinpointAnalyticsPlugin */; };
 		5C2E096C2955210C00673FF9 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2E096B2955210C00673FF9 /* AWSPluginsCore */; };
@@ -24,9 +29,6 @@
 		68DBE9592A3B6EAE002B73E3 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */; };
 		68DBE95A2A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
 		68DBE95B2A3B6EAE002B73E3 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857648828AE9951000CE2E9 /* TestConfigHelper.swift */; };
-		68DBE9662A3B6F2A002B73E3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 68DBE9652A3B6F2A002B73E3 /* Amplify */; };
-		68DBE9682A3B6F2A002B73E3 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68DBE9672A3B6F2A002B73E3 /* AWSCognitoAuthPlugin */; };
-		68DBE96A2A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 68DBE9692A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin */; };
 		9737697629519E050074B63A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697029519DEC0074B63A /* AsyncTesting.swift */; };
 		9737697729519E050074B63A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697129519DEC0074B63A /* AsyncExpectation.swift */; };
 		9737697829519E050074B63A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */; };
@@ -39,6 +41,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		211035162BD6AB30006AC186 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6857645428AE94D9000CE2E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6857645B28AE94D9000CE2E9;
+			remoteInfo = AnalyticsHostApp;
+		};
 		6857647A28AE95ED000CE2E9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6857645428AE94D9000CE2E9 /* Project object */;
@@ -63,6 +72,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		211035232BD6AB30006AC186 /* AWSPinpointAnalyticsPluginGen2IntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginGen2IntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		211035242BD6AB98006AC186 /* AWSPinpointAnalyticsPluginGen2IntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AWSPinpointAnalyticsPluginGen2IntegrationTests.xctestplan; sourceTree = "<group>"; };
+		212371552BBC5414003B1B44 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5C2E096629551CDD00673FF9 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 		6857645C28AE94D9000CE2E9 /* AnalyticsHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnalyticsHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6857645F28AE94D9000CE2E9 /* AnalyticsHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHostAppApp.swift; sourceTree = "<group>"; };
@@ -81,6 +93,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2110351D2BD6AB30006AC186 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6857645928AE94D9000CE2E9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -112,9 +131,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68DBE9662A3B6F2A002B73E3 /* Amplify in Frameworks */,
-				68DBE96A2A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin in Frameworks */,
-				68DBE9682A3B6F2A002B73E3 /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +164,7 @@
 				97914D2F29564227002000EA /* AnalyticsStressTests.xctest */,
 				68DBE9362A3B69CE002B73E3 /* AnalyticsWatchApp.app */,
 				68DBE9622A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch.xctest */,
+				211035232BD6AB30006AC186 /* AWSPinpointAnalyticsPluginGen2IntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -165,6 +182,8 @@
 		6857647728AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				211035242BD6AB98006AC186 /* AWSPinpointAnalyticsPluginGen2IntegrationTests.xctestplan */,
+				212371552BBC5414003B1B44 /* README.md */,
 				6857647828AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */,
 				6857648828AE9951000CE2E9 /* TestConfigHelper.swift */,
 			);
@@ -209,6 +228,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		211035142BD6AB30006AC186 /* AWSPinpointAnalyticsPluginGen2IntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 211035202BD6AB30006AC186 /* Build configuration list for PBXNativeTarget "AWSPinpointAnalyticsPluginGen2IntegrationTests" */;
+			buildPhases = (
+				211035172BD6AB30006AC186 /* Sources */,
+				2110351D2BD6AB30006AC186 /* Frameworks */,
+				2110351E2BD6AB30006AC186 /* Resources */,
+				2110351F2BD6AB30006AC186 /* Copy Configuration folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				211035152BD6AB30006AC186 /* PBXTargetDependency */,
+			);
+			name = AWSPinpointAnalyticsPluginGen2IntegrationTests;
+			productName = AWSPinpointAnalyticsPluginIntegrationTests;
+			productReference = 211035232BD6AB30006AC186 /* AWSPinpointAnalyticsPluginGen2IntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6857645B28AE94D9000CE2E9 /* AnalyticsHostApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6857646A28AE94DA000CE2E9 /* Build configuration list for PBXNativeTarget "AnalyticsHostApp" */;
@@ -288,9 +326,6 @@
 			);
 			name = AWSPinpointAnalyticsPluginIntegrationTestsWatch;
 			packageProductDependencies = (
-				68DBE9652A3B6F2A002B73E3 /* Amplify */,
-				68DBE9672A3B6F2A002B73E3 /* AWSCognitoAuthPlugin */,
-				68DBE9692A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin */,
 			);
 			productName = AWSPinpointAnalyticsPluginIntegrationTests;
 			productReference = 68DBE9622A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch.xctest */;
@@ -358,11 +393,19 @@
 				97914D2029564227002000EA /* AnalyticsStressTests */,
 				68DBE9352A3B69CE002B73E3 /* AnalyticsWatchApp */,
 				68DBE9532A3B6EAE002B73E3 /* AWSPinpointAnalyticsPluginIntegrationTestsWatch */,
+				211035142BD6AB30006AC186 /* AWSPinpointAnalyticsPluginGen2IntegrationTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2110351E2BD6AB30006AC186 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6857645A28AE94D9000CE2E9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -402,6 +445,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2110351F2BD6AB30006AC186 /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
 		6857647F28AE9615000CE2E9 /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -459,6 +520,18 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		211035172BD6AB30006AC186 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				211035182BD6AB30006AC186 /* AsyncTesting.swift in Sources */,
+				211035192BD6AB30006AC186 /* AsyncExpectation.swift in Sources */,
+				2110351A2BD6AB30006AC186 /* XCTestCase+AsyncTesting.swift in Sources */,
+				2110351B2BD6AB30006AC186 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */,
+				2110351C2BD6AB30006AC186 /* TestConfigHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6857645828AE94D9000CE2E9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -516,6 +589,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		211035152BD6AB30006AC186 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6857645B28AE94D9000CE2E9 /* AnalyticsHostApp */;
+			targetProxy = 211035162BD6AB30006AC186 /* PBXContainerItemProxy */;
+		};
 		6857647B28AE95ED000CE2E9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6857645B28AE94D9000CE2E9 /* AnalyticsHostApp */;
@@ -534,6 +612,48 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		211035212BD6AB30006AC186 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.ASPinpointAnalyticsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
+			};
+			name = Debug;
+		};
+		211035222BD6AB30006AC186 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.ASPinpointAnalyticsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
+			};
+			name = Release;
+		};
 		6857646828AE94DA000CE2E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -899,6 +1019,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		211035202BD6AB30006AC186 /* Build configuration list for PBXNativeTarget "AWSPinpointAnalyticsPluginGen2IntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				211035212BD6AB30006AC186 /* Debug */,
+				211035222BD6AB30006AC186 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6857645728AE94D9000CE2E9 /* Build configuration list for PBXProject "AnalyticsHostApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -977,18 +1106,6 @@
 			productName = AWSCognitoAuthPlugin;
 		};
 		68DBE9512A3B6A82002B73E3 /* AWSPinpointAnalyticsPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSPinpointAnalyticsPlugin;
-		};
-		68DBE9652A3B6F2A002B73E3 /* Amplify */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Amplify;
-		};
-		68DBE9672A3B6F2A002B73E3 /* AWSCognitoAuthPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSCognitoAuthPlugin;
-		};
-		68DBE9692A3B6F2A002B73E3 /* AWSPinpointAnalyticsPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSPinpointAnalyticsPlugin;
 		};

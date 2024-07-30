@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Amplify
+@_spi(InternalAmplifyConfiguration) import Amplify
 import AWSPluginsCore
 
 extension AWSS3StoragePlugin {
@@ -18,35 +18,35 @@ extension AWSS3StoragePlugin {
     ///
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:
-    ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
+    ///   - `PluginError` is thrown if the AmplifyConfiguration is an invalid JSON, or AmplifyOutputsData's `storage` category is missing.
+    ///   - `PluginError` is wrapped as the underlying error of a `StorageError` for other validation logic related to retrieving
+    ///   configuration fields such as `region` and `bucket`.
     ///
     /// - Tag: AWSS3StoragePlugin.configure
     public func configure(using configuration: Any?) throws {
-        guard let config = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
-                                                       PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
-        }
-
-        guard case let .object(configObject) = config else {
-            throw StorageError.configuration(
-                PluginErrorConstants.configurationObjectExpected.errorDescription,
-                PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
+        let configClosures: ConfigurationClosures
+        if let config = configuration as? AmplifyOutputsData {
+            configClosures = try retrieveConfiguration(config)
+        } else if let config = configuration as? JSONValue {
+            configClosures = try retrieveConfiguration(config)
+        } else {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.decodeConfigurationError.errorDescription,
+                PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
 
         do {
             let authService = AWSAuthService()
-
-            let region = try AWSS3StoragePlugin.getRegion(configObject)
-            let bucket = try AWSS3StoragePlugin.getBucket(configObject)
-            let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
-
+            let defaultAccessLevel = try configClosures.retrieveDefaultAccessLevel()
             let storageService = try AWSS3StorageService(authService: authService,
-                                                         region: region,
-                                                         bucket: bucket,
+                                                         region: configClosures.retrieveRegion(),
+                                                         bucket: configClosures.retrieveBucket(),
                                                          httpClientEngineProxy: self.httpClientEngineProxy)
             storageService.urlRequestDelegate = self.urlRequestDelegate
 
-            configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
+            configure(storageService: storageService, 
+                      authService: authService,
+                      defaultAccessLevel: defaultAccessLevel)
         } catch let storageError as StorageError {
             throw storageError
         } catch {
@@ -79,10 +79,53 @@ extension AWSS3StoragePlugin {
         self.authService = authService
         self.queue = queue
         self.defaultAccessLevel = defaultAccessLevel
-
     }
 
     // MARK: Private helper methods
+
+    private struct ConfigurationClosures {
+        let retrieveRegion: () throws -> String
+        let retrieveBucket: () throws -> String
+        let retrieveDefaultAccessLevel: () throws -> StorageAccessLevel
+    }
+
+    private func retrieveConfiguration(_ configuration: AmplifyOutputsData) throws -> ConfigurationClosures {
+        guard let storage = configuration.storage else {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.missingStorageCategoryConfiguration.errorDescription,
+                PluginErrorConstants.missingStorageCategoryConfiguration.recoverySuggestion)
+        }
+
+        let regionClosure = {
+            try AWSS3StoragePlugin.validateRegionNonEmpty(storage.awsRegion)
+            return storage.awsRegion
+        }
+
+        let bucketClosure = {
+            try AWSS3StoragePlugin.validateBucketNonEmpty(storage.bucketName)
+            return storage.bucketName
+        }
+
+        return ConfigurationClosures(retrieveRegion: regionClosure,
+                                     retrieveBucket: bucketClosure,
+                                     retrieveDefaultAccessLevel: { .guest })
+    }
+
+    private func retrieveConfiguration(_ configuration: JSONValue) throws -> ConfigurationClosures {
+        guard case let .object(configObject) = configuration else {
+            throw StorageError.configuration(
+                PluginErrorConstants.configurationObjectExpected.errorDescription,
+                PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
+        }
+
+        let regionClosure = { try AWSS3StoragePlugin.getRegion(configObject) }
+        let bucketClosure = { try AWSS3StoragePlugin.getBucket(configObject) }
+        let defaultAccessLevelClosure = { try AWSS3StoragePlugin.getDefaultAccessLevel(configObject) }
+
+        return ConfigurationClosures(retrieveRegion: regionClosure,
+                                     retrieveBucket: bucketClosure,
+                                     retrieveDefaultAccessLevel: defaultAccessLevelClosure)
+    }
 
     /// Retrieves the region from configuration, validates, and returns it.
     private static func getRegion(_ configuration: [String: JSONValue]) throws -> String {
@@ -96,12 +139,16 @@ extension AWSS3StoragePlugin {
                                                        PluginErrorConstants.invalidRegion.recoverySuggestion)
         }
 
-        if regionValue.isEmpty {
+        try validateRegionNonEmpty(regionValue)
+
+        return regionValue
+    }
+
+    private static func validateRegionNonEmpty(_ region: String) throws {
+        if region.isEmpty {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyRegion.errorDescription,
                                                        PluginErrorConstants.emptyRegion.recoverySuggestion)
         }
-
-        return regionValue
     }
 
     /// Retrieves the bucket from configuration, validates, and returns it.
@@ -116,12 +163,16 @@ extension AWSS3StoragePlugin {
                                                        PluginErrorConstants.invalidBucket.recoverySuggestion)
         }
 
-        if bucketValue.isEmpty {
+        try validateBucketNonEmpty(bucketValue)
+
+        return bucketValue
+    }
+
+    private static func validateBucketNonEmpty(_ bucket: String) throws {
+        if bucket.isEmpty {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyBucket.errorDescription,
                                                        PluginErrorConstants.emptyBucket.recoverySuggestion)
         }
-
-        return bucketValue
     }
 
     /// Checks if the access level is specified in the configurationand and retrieves it. Returns the default

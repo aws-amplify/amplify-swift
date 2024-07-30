@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class APICategoryConfigurationTests: XCTestCase {
@@ -36,6 +36,19 @@ class APICategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"))
     }
 
+    func testCanConfigureAPIPluginWithAmplifyOutputs() throws {
+        let plugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
+
+        XCTAssertNotNil(Amplify.API)
+        XCTAssertNotNil(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"))
+    }
+
+
     func testCanResetAPIPlugin() async throws {
         let plugin = MockAPICategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
@@ -53,6 +66,23 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
+        await Amplify.reset()
+        await fulfillment(of: [resetWasInvoked], timeout: 1.0)
+    }
+
+    func testCanResetAPIPluginFromAmplifyOutputs() async throws {
+        let plugin = MockAPICategoryPlugin()
+        let resetWasInvoked = expectation(description: "reset() was invoked")
+        plugin.listeners.append { message in
+            if message == "reset" {
+                resetWasInvoked.fulfill()
+            }
+        }
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
         await Amplify.reset()
         await fulfillment(of: [resetWasInvoked], timeout: 1.0)
     }
@@ -200,7 +230,7 @@ class APICategoryConfigurationTests: XCTestCase {
         )
     }
 
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockAPICategoryPlugin()
         let configureShouldBeInvokedFromCategory =
             expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -228,7 +258,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.API.getPlugin(for: "MockAPICategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 
     // TODO: this test is disabled for now since `catchBadInstruction` only takes in closure
@@ -320,7 +350,7 @@ class APICategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - I should see a log warning
     ///
-    func testWarnsOnMissingPlugin() throws {
+    func testWarnsOnMissingPlugin() async throws {
         let warningReceived = expectation(description: "Warning message received")
 
         let loggingPlugin = MockLoggingCategoryPlugin()
@@ -342,7 +372,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warningReceived], timeout: 0.1)
     }
 
     /// Test if adding a plugin after configuration throws an error

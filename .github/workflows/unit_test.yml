@@ -41,7 +41,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref_name != 'main'}}
 
 jobs:
-  unit-tests-without-coverage:
+  targets-without-coverage:
     name: ${{ matrix.scheme }} Unit Tests
     strategy:
       fail-fast: false
@@ -54,7 +54,7 @@ jobs:
       scheme: ${{ matrix.scheme }}
       generate_coverage_report: false
 
-  unit-tests-with-coverage:
+  targets-with-coverage:
     name: ${{ matrix.scheme }} Unit Tests
     strategy:
       fail-fast: false
@@ -70,17 +70,17 @@ jobs:
           AWSPredictionsPlugin,
           AWSPinpointAnalyticsPlugin,
           AWSPinpointPushNotificationsPlugin,
-          AWSS3StoragePlugin,
-          CoreMLPredictionsPlugin
+          AWSS3StoragePlugin
         ]
     uses: ./.github/workflows/run_unit_tests_platforms.yml
     with:
       scheme: ${{ matrix.scheme }}
-      generate_coverage_report: true
+      generate_coverage_report: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' }}
 
   report-coverage:
+    if: ${{ vars.DISABLE_COVERAGE_REPORT != 'true' }}
     name: ${{ matrix.file.scheme }} Unit Tests
-    needs: [unit-tests-with-coverage]
+    needs: [targets-with-coverage]
     strategy:
       fail-fast: false
       matrix:
@@ -95,21 +95,21 @@ jobs:
           { scheme: AWSPredictionsPlugin, flags: 'Predictions_plugin_unit_test,unit_tests' },
           { scheme: AWSPinpointAnalyticsPlugin, flags: 'Analytics_plugin_unit_test,unit_tests' },
           { scheme: AWSPinpointPushNotificationsPlugin, flags: 'PushNotifications_plugin_unit_test,unit_tests' },
-          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' },
-          { scheme: CoreMLPredictionsPlugin, flags: 'CoreMLPredictions_plugin_unit_test,unit_tests' }
+          { scheme: AWSS3StoragePlugin, flags: 'Storage_plugin_unit_test,unit_tests' }
         ]
     uses: ./.github/workflows/upload_coverage_report.yml
     with:
       scheme: ${{ matrix.file.scheme }}
       flags: ${{ matrix.file.flags }}
+    secrets: inherit
 
   unit-test-pass-confirmation:
     runs-on: ubuntu-latest
     name: Confirm Passing Unit Tests
     if: ${{ !cancelled() }}
     needs: [
-      unit-tests-with-coverage,
-      unit-tests-without-coverage
+      targets-with-coverage,
+      targets-without-coverage
     ]
     env:
       EXIT_CODE: ${{ contains(needs.*.result, 'failure') && 1 || 0 }}

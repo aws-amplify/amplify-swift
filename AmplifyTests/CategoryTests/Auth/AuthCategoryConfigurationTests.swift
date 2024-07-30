@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class AuthCategoryConfigurationTests: XCTestCase {
@@ -48,6 +48,25 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(auth: config)
 
         try Amplify.configure(amplifyConfig)
+
+        XCTAssertNotNil(Amplify.Auth)
+        XCTAssertNotNil(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"))
+    }
+
+    /// Test if Auth plugin can be configured with AmplifyOutputs
+    ///
+    /// - Given: UnConfigured Amplify framework
+    /// - When:
+    ///    - I add a new Auth plugin and add configuration
+    /// - Then:
+    ///    - Auth plugin should be configured correctly
+    ///
+    func testCanConfigureCategoryWithAmplifyOutputs() throws {
+        let plugin = MockAuthCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        
+        let config = AmplifyOutputsData()
+        try Amplify.configure(config)
 
         XCTAssertNotNil(Amplify.Auth)
         XCTAssertNotNil(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"))
@@ -246,7 +265,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - Should work without any error.
     ///
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockAuthCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
             expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -274,7 +293,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 
     /// Test if unconfigured plugin throws an error
@@ -366,7 +385,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - I should see a log warning
     ///
-    func testWarnsOnMissingPlugin() throws {
+    func testWarnsOnMissingPlugin() async throws {
         let warningReceived = expectation(description: "Warning message received")
 
         let loggingPlugin = MockLoggingCategoryPlugin()
@@ -388,7 +407,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        waitForExpectations(timeout: 0.1)
+        await fulfillment(of: [warningReceived], timeout: 0.1)
     }
 
     /// Test that Amplify throws an `AuthError` if it encounters a plugin without a key

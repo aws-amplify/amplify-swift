@@ -482,6 +482,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalAmplifyCredentials"
+               BuildableName = "InternalAmplifyCredentials"
+               BlueprintName = "InternalAmplifyCredentials"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -738,6 +752,16 @@
                BlueprintIdentifier = "AWSCloudWatchLoggingPluginTests"
                BuildableName = "AWSCloudWatchLoggingPluginTests"
                BlueprintName = "AWSCloudWatchLoggingPluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "InternalAmplifyCredentialsTests"
+               BuildableName = "InternalAmplifyCredentialsTests"
+               BlueprintName = "InternalAmplifyCredentialsTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

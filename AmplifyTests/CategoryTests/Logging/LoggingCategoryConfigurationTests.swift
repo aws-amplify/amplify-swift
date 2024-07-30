@@ -7,7 +7,7 @@
 
 import XCTest
 
-@testable import Amplify
+@_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
 
 class LoggingCategoryConfigurationTests: XCTestCase {
@@ -35,6 +35,19 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(Amplify.Logging)
         XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
     }
+
+    func testCanConfigureLoggingPluginWithAmplifyOutputs() throws {
+        let plugin = MockLoggingCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        let config = AmplifyOutputsData()
+
+        try Amplify.configure(config)
+
+        XCTAssertNotNil(Amplify.Logging)
+        XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
+    }
+
 
     func testCanResetLoggingPlugin() async throws {
         let plugin = MockLoggingCategoryPlugin()
@@ -137,7 +150,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockSecondLoggingCategoryPlugin"))
     }
 
-    func testCanUseDefaultPluginIfOnlyOnePlugin() throws {
+    func testCanUseDefaultPluginIfOnlyOnePlugin() async throws {
         let plugin = MockLoggingCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
@@ -154,10 +167,10 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         Amplify.Logging.error("test")
 
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodInvokedOnDefaultPlugin], timeout: 1)
     }
 
-    func testCanUseSpecifiedPlugin() throws {
+    func testCanUseSpecifiedPlugin() async throws {
         let plugin1 = MockLoggingCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
             expectation(description: "test method should not be invoked on default plugin")
@@ -192,10 +205,10 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         try Amplify.Logging.getPlugin(for: "MockSecondLoggingCategoryPlugin")
             .default
             .error("test")
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [methodShouldBeInvokedOnSecondPlugin, methodShouldNotBeInvokedOnDefaultPlugin], timeout: 1)
     }
 
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockLoggingCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
             expectation(description: "Configure should be invoked by Amplify.configure()")
@@ -223,7 +236,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+        await fulfillment(of: [configureShouldBeInvokedDirectly, configureShouldBeInvokedFromCategory], timeout: 1)
     }
 
     // MARK: - Test internal config behavior guarantees

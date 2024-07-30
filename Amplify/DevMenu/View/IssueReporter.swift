@@ -95,36 +95,42 @@ struct IssueReporter: View {
 
     /// Open Amplify iOS issue logging screen on Github
     private func reportToGithub() {
-        let issueDescriptionMarkdown =
-            IssueInfoHelper.generateMarkdownForIssue(
-                issue: IssueInfo(issueDescription: issueDescription,
-                         includeEnvInfo: includeEnvInfo,
-                         includeDeviceInfo: includeDeviceInfo))
+        Task {
+            let issue = await IssueInfo(issueDescription: issueDescription,
+                                        includeEnvInfo: includeEnvInfo,
+                                        includeDeviceInfo: includeDeviceInfo)
+            let issueDescriptionMarkdown =
+                await IssueInfoHelper.generateMarkdownForIssue(
+                    issue: issue)
 
-        let urlString = amplifyIosNewIssueUrl + issueDescriptionMarkdown
-        guard let url = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            showAlertIfInvalidURL = true
-            return
-        }
-        guard let urlToOpen = URL(string: url) else {
-            showAlertIfInvalidURL = true
-            return
+            let urlString = amplifyIosNewIssueUrl + issueDescriptionMarkdown
+            guard let url = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                showAlertIfInvalidURL = true
+                return
+            }
+            guard let urlToOpen = URL(string: url) else {
+                showAlertIfInvalidURL = true
+                return
+            }
+
+            await UIApplication.shared.open(urlToOpen)
         }
 
-        UIApplication.shared.open(urlToOpen)
     }
 
     /// Copy issue as a markdown string to clipboard
     private func copyToClipboard() {
-        let issue = IssueInfo(issueDescription: issueDescription,
-                              includeEnvInfo: includeEnvInfo,
-                              includeDeviceInfo: includeDeviceInfo)
-        let value = IssueInfoHelper.generateMarkdownForIssue(issue: issue)
-#if os(iOS)
-        UIPasteboard.general.string = value
-#elseif canImport(AppKit)
-        NSPasteboard.general.setString(value, forType: .string)
-#endif
+        Task {
+            let issue = await IssueInfo(issueDescription: issueDescription,
+                                  includeEnvInfo: includeEnvInfo,
+                                  includeDeviceInfo: includeDeviceInfo)
+            let value = await IssueInfoHelper.generateMarkdownForIssue(issue: issue)
+            #if os(iOS)
+            UIPasteboard.general.string = value
+            #elseif canImport(AppKit)
+            NSPasteboard.general.setString(value, forType: .string)
+            #endif
+        }
     }
 }
 
@@ -166,6 +172,7 @@ final class MultilineTextField: UIViewRepresentable {
         return view
     }
 
+    @MainActor
     @objc func dismissKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
                                         to: nil, from: nil, for: nil)

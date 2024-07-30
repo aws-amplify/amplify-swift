@@ -8,6 +8,7 @@
 @testable import AWSCloudWatchLoggingPlugin
 
 import XCTest
+import Amplify
 
 final class AWSCloudWatchLoggingPluginTests: XCTestCase {
     
@@ -33,16 +34,16 @@ final class AWSCloudWatchLoggingPluginTests: XCTestCase {
         let configuration = AWSCloudWatchLoggingPluginConfiguration(logGroupName: "testLogGroup", region: "us-east-1")
         let plugin = AWSCloudWatchLoggingPlugin(loggingPluginConfiguration: configuration)
         var authLogger = plugin.logger(forCategory: "Auth")
-        XCTAssertEqual(authLogger.logLevel.rawValue, 0)
-        
+        XCTAssertEqual(authLogger.logLevel.rawValue, LogLevel.error.rawValue)
+
         authLogger = plugin.logger(forCategory: "Auth", forNamespace: "test")
-        XCTAssertEqual(authLogger.logLevel.rawValue, 0)
+        XCTAssertEqual(authLogger.logLevel.rawValue, LogLevel.error.rawValue)
 
         let apiLogger = plugin.logger(forCategory: "API", logLevel: .debug)
-        XCTAssertEqual(apiLogger.logLevel.rawValue, 3)
+        XCTAssertEqual(apiLogger.logLevel.rawValue, LogLevel.debug.rawValue)
 
         let defaultLogger = plugin.logger(forNamespace: "test")
-        XCTAssertEqual(defaultLogger.logLevel.rawValue, 0)
+        XCTAssertEqual(defaultLogger.logLevel.rawValue, LogLevel.error.rawValue)
     }
     
     /// Given: a AWSCloudWatchLoggingPlugin

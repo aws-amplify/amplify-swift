@@ -6,7 +6,7 @@
 //
 
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 import Amplify
 import Combine
 import Foundation
@@ -103,7 +103,6 @@ final class AWSCloudWatchLoggingSessionController {
 
     private func createConsumer() throws -> LogBatchConsumer? {
         if self.client == nil {
-            // TODO: FrameworkMetadata Replacement
             let configuration = try CloudWatchLogsClient.CloudWatchLogsClientConfiguration(
                 region: region,
                 credentialsProvider: credentialsProvider
@@ -115,9 +114,10 @@ final class AWSCloudWatchLoggingSessionController {
         }
 
         guard let cloudWatchClient = client else { return nil }
-        return try CloudWatchLoggingConsumer(client: cloudWatchClient,
-                                             logGroupName: self.logGroupName,
-                                             userIdentifier: self.userIdentifier)
+        return CloudWatchLoggingConsumer(
+            client: cloudWatchClient,
+            logGroupName: self.logGroupName,
+            userIdentifier: self.userIdentifier)
     }
 
     private func connectProducerAndConsumer() {

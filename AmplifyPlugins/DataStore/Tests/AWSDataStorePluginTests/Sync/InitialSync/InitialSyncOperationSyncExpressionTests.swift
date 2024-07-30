@@ -15,7 +15,7 @@ import Combine
 @testable import AWSPluginsCore
 
 class InitialSyncOperationSyncExpressionTests: XCTestCase {
-    typealias APIPluginQueryResponder = QueryRequestListenerResponder<PaginatedList<AnyModel>>
+    typealias APIPluginQueryResponder = QueryRequestResponder<PaginatedList<AnyModel>>
 
     var storageAdapter: StorageEngineAdapter!
     var apiPlugin = MockAPICategoryPlugin()
@@ -36,13 +36,13 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
 
     func initialSyncOperation(withSyncExpression syncExpression: DataStoreSyncExpression,
                               responder: APIPluginQueryResponder) -> InitialSyncOperation {
-        apiPlugin.responders[.queryRequestListener] = responder
+        apiPlugin.responders[.queryRequestResponse] = responder
         #if os(watchOS)
-        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, 
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10,
                                                            syncExpressions: [syncExpression],
                                                            disableSubscriptions: { false })
         #else
-        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10, 
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10,
                                                            syncExpressions: [syncExpression])
         #endif
         return InitialSyncOperation(
@@ -54,8 +54,8 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             authModeStrategy: AWSDefaultAuthModeStrategy())
     }
 
-    func testBaseQueryWithBasicSyncExpression() throws {
-        let responder = APIPluginQueryResponder { request, listener in
+    func testBaseQueryWithBasicSyncExpression() async throws {
+        let responder = APIPluginQueryResponder { request in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($filter: ModelMockSyncedFilterInput, $limit: Int) {
               syncMockSynceds(filter: $filter, limit: $limit) {
@@ -73,28 +73,26 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             """)
             guard let filter = request.variables?["filter"] as? [String: Any?] else {
                 XCTFail("Unable to get filter")
-                return nil
+                return .failure(.unknown("Unable to get filter", "", nil))
             }
             guard let group = filter["and"] as? [[String: Any?]] else {
                 XCTFail("Unable to find 'and' group")
-                return nil
+                return .failure(.unknown("Unable to find 'and' group", "", nil))
             }
 
             guard let key = group[0]["id"] as? [String: Any?] else {
                 XCTFail("Unable to get id from filter")
-                return nil
+                return .failure(.unknown("Unable to get id from filter", "", nil))
             }
             guard let value = key["eq"] as? String else {
                 XCTFail("Unable to get eq from key")
-                return nil
+                return .failure(.unknown("Unable to get eq from key", "", nil))
             }
             XCTAssertEqual(value, "id-123")
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-            listener?(event)
             self.apiWasQueried.fulfill()
-            return nil
+            return .success(list)
         }
 
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
@@ -122,12 +120,12 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 
-    func testBaseQueryWithFilterSyncExpression() throws {
-        let responder = APIPluginQueryResponder { request, listener in
+    func testBaseQueryWithFilterSyncExpression() async throws {
+        let responder = APIPluginQueryResponder { request in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($filter: ModelMockSyncedFilterInput, $limit: Int) {
               syncMockSynceds(filter: $filter, limit: $limit) {
@@ -145,28 +143,26 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             """)
             guard let filter = request.variables?["filter"] as? [String: Any?] else {
                 XCTFail("Unable to get filter")
-                return nil
+                return .failure(.unknown("Unable to get filter", "", nil))
             }
             guard let group = filter["or"] as? [[String: Any?]] else {
                 XCTFail("Unable to find 'or' group")
-                return nil
+                return .failure(.unknown("Unable to find 'or' group", "", nil))
             }
 
             guard let key = group[0]["id"] as? [String: Any?] else {
                 XCTFail("Unable to get id from filter")
-                return nil
+                return .failure(.unknown("Unable to get id from filter", "", nil))
             }
             guard let value = key["eq"] as? String else {
                 XCTFail("Unable to get eq from key")
-                return nil
+                return .failure(.unknown("Unable to get eq from key", "", nil))
             }
             XCTAssertEqual(value, "id-123")
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-            listener?(event)
             self.apiWasQueried.fulfill()
-            return nil
+            return .success(list)
         }
 
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
@@ -194,12 +190,12 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, finishedReceived, apiWasQueried, syncCompletionReceived], timeout: 1)
         sink.cancel()
     }
 
-    func testBaseQueryWithSyncExpressionConstantAll() throws {
-        let responder = APIPluginQueryResponder { request, listener in
+    func testBaseQueryWithSyncExpressionConstantAll() async throws {
+        let responder = APIPluginQueryResponder { request in
             XCTAssertEqual(request.document, """
             query SyncMockSynceds($limit: Int) {
               syncMockSynceds(limit: $limit) {
@@ -218,10 +214,8 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
             XCTAssertNil(request.variables?["filter"])
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
-            listener?(event)
             self.apiWasQueried.fulfill()
-            return nil
+            return .success(list)
         }
 
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
@@ -249,7 +243,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
 
         operation.main()
 
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [syncStartedReceived, syncCompletionReceived, finishedReceived, apiWasQueried], timeout: 1)
         sink.cancel()
     }
 }

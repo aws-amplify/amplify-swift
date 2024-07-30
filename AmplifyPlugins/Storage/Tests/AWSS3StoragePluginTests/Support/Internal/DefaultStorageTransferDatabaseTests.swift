@@ -73,7 +73,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
         XCTAssertTrue(pairs.contains(where: { $0.transferTask.key == "key1" }))
         XCTAssertTrue(pairs.contains(where: { $0.transferTask.key == "key2" }))
     }
-    
+
     /// Given: A DefaultStorageTransferDatabase
     /// When: linkTasksWithSessions is invoked with tasks containing multipart uploads but without a sessionTask, and a session
     /// Then: A StorageTransferTaskPairs linking the tasks with the session is returned
@@ -127,7 +127,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             uploadId: "uploadId",
             uploadFile: uploadFile
         )
-        
+
         let transferTask1 = StorageTransferTask(
             transferType: .multiPartUploadPart(
                 uploadId: "uploadId",
@@ -159,7 +159,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             bytes: Bytes.megabytes(6).bytes,
             eTag: "eTag"
         )
-        
+
         let transferTask2 = StorageTransferTask(
             transferType: .multiPartUploadPart(
                 uploadId: "uploadId",
@@ -184,7 +184,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             bytesTransferred: Bytes.megabytes(3).bytes,
             taskIdentifier: 1
         )
-        
+
         let pairs = database.linkTasksWithSessions(
             persistableTransferTasks: [
                 "taskId0": .init(task: transferTask0),
@@ -195,7 +195,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
                 session
             ]
         )
-        
+
         XCTAssertEqual(pairs.count, 3)
         XCTAssertTrue(pairs.contains(where: { $0.transferTask.key == "key1" }))
         XCTAssertFalse(pairs.contains(where: { $0.transferTask.key == "key2" }))
@@ -204,7 +204,7 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
     /// Given: A DefaultStorageTransferDatabase
     /// When: recover is invoked with a StorageURLSession that returns a session
     /// Then: A .success is returned
-    func testLoadPersistableTasks() {
+    func testLoadPersistableTasks() async {
         let urlSession = MockStorageURLSession(
             sessionTasks: [
                 session
@@ -217,18 +217,18 @@ class DefaultStorageTransferDatabaseTests: XCTestCase {
             }
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// Given: A DefaultStorageTransferDatabase
     /// When: prepareForBackground is invoked
     /// Then: A callback is invoked
-    func testPrepareForBackground() {
+    func testPrepareForBackground() async {
         let expectation = self.expectation(description: "Prepare for Background")
         database.prepareForBackground() {
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 1)
+        await fulfillment(of: [expectation], timeout: 5)
     }
 
     /// Given: The StorageTransferDatabase Type

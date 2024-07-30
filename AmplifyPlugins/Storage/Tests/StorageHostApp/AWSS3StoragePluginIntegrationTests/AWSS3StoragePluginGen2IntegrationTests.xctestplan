@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "0FBDC955-0CBB-4E06-B071-1A55189542CE",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "GEN2"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:StorageHostApp.xcodeproj",
+        "identifier" : "21F763092BD6B8640048845A",
+        "name" : "AWSS3StoragePluginGen2IntegrationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

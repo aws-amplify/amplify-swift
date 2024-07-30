@@ -17,7 +17,7 @@ class EndpointClientTests: XCTestCase {
     private var archiver: MockArchiver!
     private var userDefaults: MockUserDefaults!
     private var pinpointClient: MockPinpointClient!
-    private var endpointInformation: MockEndpointInformation!
+    private var endpointInformationProvider: MockEndpointInformationProvider!
     private var remoteNotificationsHelper: MockRemoteNotifications!
     private var currentApplicationId = "applicationId"
     private var currentEndpointId = "endpointId"
@@ -26,7 +26,7 @@ class EndpointClientTests: XCTestCase {
         archiver = MockArchiver()
         userDefaults = MockUserDefaults()
         pinpointClient = MockPinpointClient()
-        endpointInformation = MockEndpointInformation()
+        endpointInformationProvider = MockEndpointInformationProvider()
         keychain = MockKeychainStore()
         remoteNotificationsHelper = MockRemoteNotifications()
         endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
@@ -34,7 +34,7 @@ class EndpointClientTests: XCTestCase {
                                                              isDebug: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        endpointInformation: endpointInformation,
+                                        endpointInformationProvider: endpointInformationProvider,
                                         userDefaults: userDefaults,
                                         keychain: keychain,
                                         remoteNotificationsHelper: remoteNotificationsHelper)
@@ -44,7 +44,7 @@ class EndpointClientTests: XCTestCase {
         archiver = nil
         userDefaults = nil
         pinpointClient = nil
-        endpointInformation = nil
+        endpointInformationProvider = nil
         endpointClient = nil
         keychain = nil
         remoteNotificationsHelper = nil
@@ -80,10 +80,10 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(endpointProfile.endpointId, currentEndpointId)
         XCTAssertEqual(endpointProfile.deviceToken, newToken.asHexString())
         XCTAssertNotEqual(endpointProfile.demographic, oldDemographic)
-        XCTAssertEqual(endpointProfile.demographic.appVersion, endpointInformation.appVersion)
+        XCTAssertEqual(endpointProfile.demographic.appVersion, endpointInformationProvider.appVersion)
         XCTAssertEqual(endpointProfile.demographic.make, "apple")
-        XCTAssertEqual(endpointProfile.demographic.platform, endpointInformation.platform.name)
-        XCTAssertEqual(endpointProfile.demographic.platformVersion, endpointInformation.platform.version)
+        XCTAssertEqual(endpointProfile.demographic.platform, endpointInformationProvider.platformName)
+        XCTAssertEqual(endpointProfile.demographic.platformVersion, endpointInformationProvider.platformVersion)
     }
 
     func testCurrentEndpointProfile_withInvalidStoredProfile_shouldRemoveStored_andReturnNew() async {
@@ -110,10 +110,10 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(endpointProfile.deviceToken, newToken?.asHexString())
         XCTAssertNotEqual(endpointProfile.effectiveDate, oldEffectiveDate)
         XCTAssertNotEqual(endpointProfile.demographic, oldDemographic)
-        XCTAssertEqual(endpointProfile.demographic.appVersion, endpointInformation.appVersion)
+        XCTAssertEqual(endpointProfile.demographic.appVersion, endpointInformationProvider.appVersion)
         XCTAssertEqual(endpointProfile.demographic.make, "apple")
-        XCTAssertEqual(endpointProfile.demographic.platform, endpointInformation.platform.name)
-        XCTAssertEqual(endpointProfile.demographic.platformVersion, endpointInformation.platform.version)
+        XCTAssertEqual(endpointProfile.demographic.platform, endpointInformationProvider.platformName)
+        XCTAssertEqual(endpointProfile.demographic.platformVersion, endpointInformationProvider.platformVersion)
     }
 
     func testUpdateEndpointProfile_shouldSendUpdateRequestAndSave() async {
@@ -182,18 +182,18 @@ class EndpointClientTests: XCTestCase {
     func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
         let endpointProfile = await endpointClient.currentEndpointProfile()
         let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
-        let mockModel = MockEndpointInformation()
+        let mockModel = MockEndpointInformationProvider()
         XCTAssertNotNil(publicEndpoint)
         XCTAssertNil(publicEndpoint.address)
         XCTAssertEqual(publicEndpoint.attributes?.count, 0)
         XCTAssertEqual(publicEndpoint.metrics?.count, 0)
         XCTAssertNil(publicEndpoint.channelType)
         XCTAssertNil(publicEndpoint.optOut)
-        XCTAssertEqual(publicEndpoint.demographic?.appVersion, mockModel.appVersion)
+        XCTAssertEqual(publicEndpoint.demographic?.appVersion, endpointInformationProvider.appVersion)
         XCTAssertEqual(publicEndpoint.demographic?.make, "apple")
-        XCTAssertEqual(publicEndpoint.demographic?.model, mockModel.model)
-        XCTAssertEqual(publicEndpoint.demographic?.platform, mockModel.platform.name)
-        XCTAssertEqual(publicEndpoint.demographic?.platformVersion, mockModel.platform.version)
+        XCTAssertEqual(publicEndpoint.demographic?.model, endpointInformationProvider.model)
+        XCTAssertEqual(publicEndpoint.demographic?.platform, endpointInformationProvider.platformName)
+        XCTAssertEqual(publicEndpoint.demographic?.platformVersion, endpointInformationProvider.platformVersion)
     }
 
     @discardableResult
@@ -208,10 +208,14 @@ class EndpointClientTests: XCTestCase {
     }
 }
 
-class MockEndpointInformation: EndpointInformation {
-    var model: String = "mockModel"
-    var appVersion: String = "mockAppVersion"
-    var platform: Platform = (name: "mockPlatformName", version: "mockPlatformVersion")
+class MockEndpointInformationProvider: EndpointInformationProvider {
+    let model = "modelModel"
+    let appVersion = "mockAppVersion"
+    let platformName = "mockPlatformName"
+    let platformVersion = "mockPlatformVersion"
+    func endpointInfo() async -> InternalAWSPinpoint.EndpointInformation {
+        return InternalAWSPinpoint.EndpointInformation(model: model, appVersion: appVersion, platform: (name: platformName, version: platformVersion))
+    }
 }
 
 class MockRemoteNotifications: RemoteNotificationsBehaviour {

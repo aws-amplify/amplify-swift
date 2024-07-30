@@ -32,8 +32,8 @@ extension CognitoUserPoolASF {
     static func encodedContext(username: String,
                                asfDeviceId: String,
                                asfClient: AdvancedSecurityBehavior,
-                               userPoolConfiguration: UserPoolConfigurationData) -> String? {
-        let deviceInfo: ASFDeviceBehavior = ASFDeviceInfo(id: asfDeviceId)
+                               userPoolConfiguration: UserPoolConfigurationData) async -> String? {
+        let deviceInfo: ASFDeviceBehavior = await ASFDeviceInfo(id: asfDeviceId)
         let appInfo: ASFAppInfoBehavior = ASFAppInfo()
 
         do {

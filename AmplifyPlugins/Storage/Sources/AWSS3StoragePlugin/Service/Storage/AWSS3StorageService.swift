@@ -9,14 +9,14 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import AWSPluginsCore
 import ClientRuntime
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 /// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
 
     // resettable values
-    private var authService: AWSAuthServiceBehavior?
+    private var authService: AWSAuthCredentialsProviderBehavior?
     var logger: Logger!
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
     var awsS3: AWSS3Behavior!
@@ -31,7 +31,12 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     /// - Tag: AWSS3StorageService.client
     var client: S3ClientProtocol
 
-    let userAgent: String
+    var userAgent: String {
+        get async {
+            "\(AmplifyAWSServiceConfiguration.userAgentLib) \(await AmplifyAWSServiceConfiguration.userAgentOS)"
+        }
+    }
+    
     let storageConfiguration: StorageConfiguration
     let sessionConfiguration: URLSessionConfiguration
     var delegateQueue: OperationQueue?
@@ -48,7 +53,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         storageConfiguration.sessionIdentifier
     }
 
-    convenience init(authService: AWSAuthServiceBehavior,
+    convenience init(authService: AWSAuthCredentialsProviderBehavior,
                      region: String,
                      bucket: String,
                      httpClientEngineProxy: HttpClientEngineProxy? = nil,
@@ -107,7 +112,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                   bucket: bucket)
     }
 
-    init(authService: AWSAuthServiceBehavior,
+    init(authService: AWSAuthCredentialsProviderBehavior,
          storageConfiguration: StorageConfiguration = .default,
          storageTransferDatabase: StorageTransferDatabase = .default,
          fileSystem: FileSystem = .default,
@@ -133,7 +138,6 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
-        self.userAgent = "\(AmplifyAWSServiceConfiguration.userAgentLib) \(AmplifyAWSServiceConfiguration.userAgentOS)"
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 

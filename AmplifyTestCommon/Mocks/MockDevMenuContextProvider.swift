@@ -10,6 +10,7 @@ import Amplify
 import UIKit
 
 /// Mock class for presenting UI context to developer menu
+@MainActor
 class MockDevMenuContextProvider: DevMenuPresentationContextProvider {
 
     let uiWindow = UIWindow()

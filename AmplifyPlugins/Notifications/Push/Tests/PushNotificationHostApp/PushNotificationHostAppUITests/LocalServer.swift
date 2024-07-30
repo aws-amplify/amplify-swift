@@ -13,6 +13,7 @@ enum LocalServer {
 
     case notifications(PinpointNotification)
     case uninstall(String)
+    case boot(String)
 }
 
 extension LocalServer {
@@ -20,6 +21,7 @@ extension LocalServer {
         switch self {
         case .notifications: return "POST"
         case .uninstall: return "POST"
+        case .boot: return "POST"
         }
     }
 
@@ -27,6 +29,7 @@ extension LocalServer {
         switch self {
         case .notifications: return "/notifications"
         case .uninstall: return "/uninstall"
+        case .boot: return "/boot"
         }
     }
 
@@ -36,12 +39,14 @@ extension LocalServer {
             return try? JSONEncoder().encode(notification)
         case let .uninstall(deviceId):
             return try? JSONEncoder().encode(["deviceId": deviceId])
+        case let .boot(deviceId):
+            return try? JSONEncoder().encode(["deviceId": deviceId])
         }
     }
 
     var additionalRequestHeaders: [String: String]? {
         switch self {
-        case .notifications, .uninstall:
+        case .notifications, .uninstall, .boot:
             return ["Content-Type": "application/json"]
         }
     }
