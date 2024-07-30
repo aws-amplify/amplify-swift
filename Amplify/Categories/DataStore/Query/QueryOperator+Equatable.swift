@@ -24,6 +24,8 @@ extension QueryOperator: Equatable {
         case let (.between(oneStart, oneEnd), .between(otherStart, otherEnd)):
             return PersistableHelper.isEqual(oneStart, otherStart)
                 && PersistableHelper.isEqual(oneEnd, otherEnd)
+        case let (.attributeExists(one), .attributeExists(other)):
+            return one == other
         default:
             return false
         }

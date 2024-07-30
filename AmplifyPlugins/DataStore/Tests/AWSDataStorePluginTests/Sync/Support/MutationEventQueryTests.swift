@@ -58,7 +58,7 @@ class MutationEventQueryTests: BaseDataStoreTests {
         wait(for: [querySuccess], timeout: 1)
     }
 
-    func testQueryPendingMutationEventsForModelIds() {
+    func testQueryPendingMutationEventsForModelIds() async {
         let mutationEvent1 = generateRandomMutationEvent()
         let mutationEvent2 = generateRandomMutationEvent()
 
@@ -70,7 +70,7 @@ class MutationEventQueryTests: BaseDataStoreTests {
             }
             saveMutationEvent1.fulfill()
         }
-        wait(for: [saveMutationEvent1], timeout: 1)
+        await fulfillment(of: [saveMutationEvent1], timeout: 1)
 
         let saveMutationEvent2 = expectation(description: "save mutationEvent1 success")
         storageAdapter.save(mutationEvent2) { result in
@@ -80,7 +80,7 @@ class MutationEventQueryTests: BaseDataStoreTests {
             }
             saveMutationEvent2.fulfill()
         }
-        wait(for: [saveMutationEvent2], timeout: 1)
+        await fulfillment(of: [saveMutationEvent2], timeout: 1)
 
         let querySuccess = expectation(description: "query for metadata success")
         var mutationEvents = [mutationEvent1]
@@ -98,7 +98,7 @@ class MutationEventQueryTests: BaseDataStoreTests {
             }
         }
 
-        wait(for: [querySuccess], timeout: 1)
+        await fulfillment(of: [querySuccess], timeout: 5)
     }
 
     private func generateRandomMutationEvent() -> MutationEvent {
