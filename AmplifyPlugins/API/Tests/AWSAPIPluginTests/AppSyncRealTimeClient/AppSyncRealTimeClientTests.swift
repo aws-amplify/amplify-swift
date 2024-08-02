@@ -59,7 +59,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
         Task {
             try await Task.sleep(nanoseconds: 80 * 1000)
-            await appSyncClient.subject.send(.init(id: nil, payload: nil, type: .connectionAck))
+            await appSyncClient.subject.send(.success(.init(id: nil, payload: nil, type: .connectionAck)))
         }
         await fulfillment(of: [finishExpectation], timeout: timeout + 1)
     }
@@ -91,7 +91,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
         }
         Task {
             try await Task.sleep(nanoseconds: 80 * 1000)
-            await appSyncClient.subject.send(.init(
+            await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
                     "errors": .array([
@@ -101,7 +101,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
                     ])
                 ]),
                 type: .error
-            ))
+            )))
         }
         await fulfillment(of: [limitExceededErrorExpectation], timeout: timeout + 1)
     }
@@ -134,7 +134,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
         Task {
             try await Task.sleep(nanoseconds: 80 * 1000)
-            await appSyncClient.subject.send(.init(
+            await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
                     "errors": .array([
@@ -144,7 +144,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
                     ])
                 ]),
                 type: .error
-            ))
+            )))
         }
         await fulfillment(of: [
             maxSubscriptionsReachedExpectation
@@ -181,7 +181,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
 
         Task {
             try await Task.sleep(nanoseconds: 80 * 1000)
-            await appSyncClient.subject.send(.init(
+            await appSyncClient.subject.send(.success(.init(
                 id: id,
                 payload: .object([
                     "errors": .array([
@@ -191,7 +191,7 @@ class AppSyncRealTimeClientTests: XCTestCase {
                     ])
                 ]),
                 type: .error
-            ))
+            )))
         }
         await fulfillment(of: [
             triggerUnknownErrorExpectation
