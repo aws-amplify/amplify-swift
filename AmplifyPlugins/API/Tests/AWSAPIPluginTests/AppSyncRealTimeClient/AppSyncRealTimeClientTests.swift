@@ -487,4 +487,68 @@ class AppSyncRealTimeClientTests: XCTestCase {
             startTriggered
         ], timeout: 3, enforceOrder: true)
     }
+
+    func testNetworkInterrupt_withAppSyncRealTimeClientConnected_triggersApiNetworkError() async throws {
+        var cancellables = Set<AnyCancellable>()
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+        let id = UUID().uuidString
+        let query = UUID().uuidString
+
+        let startTriggered = expectation(description: "webSocket writing start event to connection")
+        let errorReceived = expectation(description: "webSocket connection lost error is received")
+
+        await mockWebSocketClient.setStateToConnected()
+        Task {
+            try await Task.sleep(nanoseconds: 80 * 1_000_000)
+            await mockWebSocketClient.subject.send(.connected)
+            try await Task.sleep(nanoseconds: 80 * 1_000_000)
+            await mockWebSocketClient.subject.send(.string("""
+                {"type": "connection_ack", "payload": { "connectionTimeoutMs": 300000 }}
+            """))
+            try await Task.sleep(nanoseconds: 80 * 1_000_000)
+            await mockWebSocketClient.subject.send(.error(WebSocketClient.Error.connectionLost))
+        }
+        try await appSyncClient.subscribe(id: id, query: query).sink { event in
+            if case .error(let errors) = event,
+               errors.count == 1,
+               let error = errors.first,
+               let connectionLostError = error as? WebSocketClient.Error,
+               connectionLostError == WebSocketClient.Error.connectionLost
+            {
+                errorReceived.fulfill()
+            }
+        }.store(in: &cancellables)
+        await mockWebSocketClient.actionSubject
+            .sink { action in
+                switch action {
+                case .write(let message):
+                    guard let response = try? JSONDecoder().decode(
+                        JSONValue.self,
+                        from: message.data(using: .utf8)!
+                    ) else {
+                        XCTFail("Response should be able to decode to AppSyncRealTimeResponse")
+                        return
+                    }
+
+                    if response.type?.stringValue == "start" {
+                        XCTAssertEqual(response.id?.stringValue, id)
+                        XCTAssertEqual(response.payload?.asObject?["data"]?.stringValue, query)
+                        startTriggered.fulfill()
+                    }
+
+                default:
+                    break
+                }
+            }
+            .store(in: &cancellables)
+
+        await fulfillment(of: [startTriggered, errorReceived], timeout: 2)
+
+    }
 }
