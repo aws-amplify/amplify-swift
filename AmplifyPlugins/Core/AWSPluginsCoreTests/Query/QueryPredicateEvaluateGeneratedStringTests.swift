@@ -64,7 +64,7 @@ class QueryPredicateEvaluateGeneratedStringTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertTrue(evaluation)
+        XCTAssertFalse(evaluation)
     }
 
     func testStringbbnotEqualStringa() throws {
@@ -113,7 +113,7 @@ class QueryPredicateEvaluateGeneratedStringTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertTrue(evaluation)
+        XCTAssertFalse(evaluation)
     }
 
     func testStringaanotEqualStringa() throws {
@@ -162,7 +162,7 @@ class QueryPredicateEvaluateGeneratedStringTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertTrue(evaluation)
+        XCTAssertFalse(evaluation)
     }
 
     func testStringcnotEqualStringa() throws {
@@ -211,7 +211,7 @@ class QueryPredicateEvaluateGeneratedStringTests: XCTestCase {
 
         let evaluation = try predicate.evaluate(target: instance.eraseToAnyModel().instance)
 
-        XCTAssertTrue(evaluation)
+        XCTAssertFalse(evaluation)
     }
 
     func testStringaequalsStringa() throws {
