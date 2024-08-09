@@ -33,7 +33,7 @@ extension AppSyncRealTimeClient {
             // listen to response
             self.subject
                 .setFailureType(to: AppSyncRealTimeRequest.Error.self)
-                .flatMap { Self.filterResponse(request: request, response: $0) }
+                .flatMap { Self.filterResponse(request: request, result: $0) }
                 .timeout(.seconds(timeout), scheduler: DispatchQueue.global(qos: .userInitiated), customError: { .timeout })
                 .first()
                 .sink(receiveCompletion: { completion in
@@ -65,47 +65,59 @@ extension AppSyncRealTimeClient {
 
     private static func filterResponse(
         request: AppSyncRealTimeRequest,
-        response: AppSyncRealTimeResponse
+        result: Result<AppSyncRealTimeResponse, Error>
     ) -> AnyPublisher<AppSyncRealTimeResponse, AppSyncRealTimeRequest.Error> {
-        let justTheResponse = Just(response)
-            .setFailureType(to: AppSyncRealTimeRequest.Error.self)
-            .eraseToAnyPublisher()
 
-        switch (request, response.type) {
-        case (.connectionInit, .connectionAck):
-            return justTheResponse
+        switch result {
+        case .success(let response):
+            let justTheResponse = Just(response)
+                .setFailureType(to: AppSyncRealTimeRequest.Error.self)
+                .eraseToAnyPublisher()
 
-        case (.start(let startRequest), .startAck) where startRequest.id == response.id:
-            return justTheResponse
+            switch (request, response.type) {
+            case (.connectionInit, .connectionAck):
+                return justTheResponse
 
-        case (.stop(let id), .stopAck) where id == response.id:
-            return justTheResponse
+            case (.start(let startRequest), .startAck) where startRequest.id == response.id:
+                return justTheResponse
 
-        case (_, .error)
-            where request.id != nil
-                && request.id == response.id
-                && response.payload?.errors != nil:
-            let errorsJson: JSONValue = (response.payload?.errors)!
-            let errors = errorsJson.asArray ?? [errorsJson]
-            let reqeustErrors = errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
-            if reqeustErrors.isEmpty {
+            case (.stop(let id), .stopAck) where id == response.id:
+                return justTheResponse
+
+            case (_, .error)
+                where request.id != nil
+                    && request.id == response.id
+                    && response.payload?.errors != nil:
+                let errorsJson: JSONValue = (response.payload?.errors)!
+                let errors = errorsJson.asArray ?? [errorsJson]
+                let reqeustErrors = errors.compactMap(AppSyncRealTimeRequest.parseResponseError(error:))
+                if reqeustErrors.isEmpty {
+                    return Empty(
+                        outputType: AppSyncRealTimeResponse.self,
+                        failureType: AppSyncRealTimeRequest.Error.self
+                    ).eraseToAnyPublisher()
+                } else {
+                    return Fail(
+                        outputType: AppSyncRealTimeResponse.self,
+                        failure: reqeustErrors.first!
+                    ).eraseToAnyPublisher()
+                }
+
+            default:
                 return Empty(
                     outputType: AppSyncRealTimeResponse.self,
                     failureType: AppSyncRealTimeRequest.Error.self
                 ).eraseToAnyPublisher()
-            } else {
-                return Fail(
-                    outputType: AppSyncRealTimeResponse.self,
-                    failure: reqeustErrors.first!
-                ).eraseToAnyPublisher()
+
             }
 
-        default:
-            return Empty(
+        case .failure:
+            return Fail(
                 outputType: AppSyncRealTimeResponse.self,
-                failureType: AppSyncRealTimeRequest.Error.self
+                failure: .timeout
             ).eraseToAnyPublisher()
-
         }
+
+
     }
 }
