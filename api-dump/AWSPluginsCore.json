@@ -5187,6 +5187,55 @@
             "throwing": true,
             "reqNewWitnessTableEntry": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "_getAll",
+            "printedName": "_getAll()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[(key: Swift.String, value: Foundation.Data)]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Tuple",
+                    "printedName": "(key: Swift.String, value: Foundation.Data)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Data",
+                        "printedName": "Foundation.Data",
+                        "usr": "s:10Foundation4DataV"
+                      }
+                    ]
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:14AWSPluginsCore21KeychainStoreBehaviorP7_getAllSaySS3key_10Foundation4DataV5valuetGyKF",
+            "mangledName": "$s14AWSPluginsCore21KeychainStoreBehaviorP7_getAllSaySS3key_10Foundation4DataV5valuetGyKF",
+            "moduleName": "AWSPluginsCore",
+            "genericSig": "<Self where Self : AWSPluginsCore.KeychainStoreBehavior>",
+            "protocolReq": true,
+            "declAttributes": [
+              "SPIAccessControl"
+            ],
+            "spi_group_names": [
+              "KeychainStore"
+            ],
+            "throwing": true,
+            "reqNewWitnessTableEntry": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Protocol",
@@ -5458,6 +5507,52 @@
             "declKind": "Func",
             "usr": "s:14AWSPluginsCore13KeychainStoreV10_removeAllyyKF",
             "mangledName": "$s14AWSPluginsCore13KeychainStoreV10_removeAllyyKF",
+            "moduleName": "AWSPluginsCore",
+            "declAttributes": [
+              "SPIAccessControl"
+            ],
+            "spi_group_names": [
+              "KeychainStore"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "_getAll",
+            "printedName": "_getAll()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[(key: Swift.String, value: Foundation.Data)]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Tuple",
+                    "printedName": "(key: Swift.String, value: Foundation.Data)",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Data",
+                        "printedName": "Foundation.Data",
+                        "usr": "s:10Foundation4DataV"
+                      }
+                    ]
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:14AWSPluginsCore13KeychainStoreV7_getAllSaySS3key_10Foundation4DataV5valuetGyKF",
+            "mangledName": "$s14AWSPluginsCore13KeychainStoreV7_getAllSaySS3key_10Foundation4DataV5valuetGyKF",
             "moduleName": "AWSPluginsCore",
             "declAttributes": [
               "SPIAccessControl"
@@ -24273,7 +24368,7 @@
       "-module",
       "AWSPluginsCore",
       "-o",
-      "\/var\/folders\/hn\/5bx1f4_d4ds5vhwhkxc7vdcr0000gn\/T\/tmp.nAGRifhwH6\/AWSPluginsCore.json",
+      "\/var\/folders\/m_\/cksx93ys47x4621g0zbw_m4m0000gn\/T\/tmp.ucB2YVX5NO\/AWSPluginsCore.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
