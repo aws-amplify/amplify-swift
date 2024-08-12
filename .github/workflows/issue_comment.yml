@@ -8,7 +8,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     permissions: {}
-    if: ${{ !github.event.issue.pull_request }}
+    if: ${{ !github.event.issue.pull_request && !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) }}
     steps:
       - name: Run webhook curl command
         env:
