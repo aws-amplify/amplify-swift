@@ -4,10 +4,6 @@
 
 ### Features
 
-- **api**: add support for GraphQL filter attributeExists (#3484)
-
-### Bug Fixes
-
 - **api**: propagate connectionLost error from websocket client to sync engine (#3800)
 
 ## 2.36.0 (2024-07-18)
