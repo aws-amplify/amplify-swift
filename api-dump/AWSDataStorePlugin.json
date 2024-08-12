@@ -41,13 +41,6 @@
       },
       {
         "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "AWSDataStorePlugin"
-      },
-      {
-        "kind": "Import",
         "name": "SQLite",
         "printedName": "SQLite",
         "declKind": "Import",
@@ -204,7 +197,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "AmplifyModelRegistration",
-                "printedName": "Amplify.AmplifyModelRegistration",
+                "printedName": "any Amplify.AmplifyModelRegistration",
                 "usr": "s:7Amplify0A17ModelRegistrationP"
               },
               {
@@ -293,12 +286,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -395,12 +388,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -444,12 +437,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -552,12 +545,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1089,12 +1082,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1240,12 +1233,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1326,12 +1319,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1491,12 +1484,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1585,12 +1578,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1648,12 +1641,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1706,12 +1699,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1828,12 +1821,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -1896,12 +1889,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -2030,12 +2023,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -2073,12 +2066,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -2182,12 +2175,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -2231,12 +2224,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -2346,12 +2339,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -2396,7 +2389,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "QueryPredicate",
-                "printedName": "Amplify.QueryPredicate",
+                "printedName": "any Amplify.QueryPredicate",
                 "usr": "s:7Amplify14QueryPredicateP"
               },
               {
@@ -2503,7 +2496,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "QueryPredicate",
-                "printedName": "Amplify.QueryPredicate",
+                "printedName": "any Amplify.QueryPredicate",
                 "usr": "s:7Amplify14QueryPredicateP"
               }
             ],
@@ -2550,7 +2543,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "QueryPredicate",
-                "printedName": "Amplify.QueryPredicate",
+                "printedName": "any Amplify.QueryPredicate",
                 "usr": "s:7Amplify14QueryPredicateP"
               },
               {
@@ -2663,7 +2656,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "QueryPredicate",
-                "printedName": "Amplify.QueryPredicate",
+                "printedName": "any Amplify.QueryPredicate",
                 "usr": "s:7Amplify14QueryPredicateP"
               }
             ],
@@ -3180,12 +3173,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -3476,12 +3469,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -3521,7 +3514,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -3543,7 +3536,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -3568,7 +3561,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -3589,7 +3582,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -3681,7 +3674,7 @@
           {
             "kind": "TypeFunc",
             "name": "Function",
-            "printedName": "(Amplify.AmplifyError) -> Swift.Void",
+            "printedName": "(any Amplify.AmplifyError) -> Swift.Void",
             "children": [
               {
                 "kind": "TypeNameAlias",
@@ -3698,12 +3691,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Paren",
-                "printedName": "(Amplify.AmplifyError)",
+                "printedName": "(any Amplify.AmplifyError)",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "AmplifyError",
-                    "printedName": "Amplify.AmplifyError",
+                    "printedName": "any Amplify.AmplifyError",
                     "usr": "s:7Amplify0A5ErrorP"
                   }
                 ],
@@ -3730,7 +3723,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               }
             ],
@@ -3752,7 +3745,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Model",
-                    "printedName": "Amplify.Model",
+                    "printedName": "any Amplify.Model",
                     "usr": "s:7Amplify5ModelP"
                   }
                 ],
@@ -3776,7 +3769,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               }
             ],
@@ -3798,7 +3791,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Model",
-                    "printedName": "Amplify.Model",
+                    "printedName": "any Amplify.Model",
                     "usr": "s:7Amplify5ModelP"
                   }
                 ],
@@ -4048,12 +4041,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(AWSDataStorePlugin.DataStoreConflictHandlerResult.Type) -> (Amplify.Model) -> AWSDataStorePlugin.DataStoreConflictHandlerResult",
+                "printedName": "(AWSDataStorePlugin.DataStoreConflictHandlerResult.Type) -> (any Amplify.Model) -> AWSDataStorePlugin.DataStoreConflictHandlerResult",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Amplify.Model) -> AWSDataStorePlugin.DataStoreConflictHandlerResult",
+                    "printedName": "(any Amplify.Model) -> AWSDataStorePlugin.DataStoreConflictHandlerResult",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -4064,12 +4057,12 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Paren",
-                        "printedName": "(Amplify.Model)",
+                        "printedName": "(any Amplify.Model)",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "Model",
-                            "printedName": "Amplify.Model",
+                            "printedName": "any Amplify.Model",
                             "usr": "s:7Amplify5ModelP"
                           }
                         ],
@@ -4130,7 +4123,7 @@
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Amplify.AmplifyError) -> Swift.Void",
+                    "printedName": "(any Amplify.AmplifyError) -> Swift.Void",
                     "children": [
                       {
                         "kind": "TypeNameAlias",
@@ -4147,12 +4140,12 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Paren",
-                        "printedName": "(Amplify.AmplifyError)",
+                        "printedName": "(any Amplify.AmplifyError)",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "AmplifyError",
-                            "printedName": "Amplify.AmplifyError",
+                            "printedName": "any Amplify.AmplifyError",
                             "usr": "s:7Amplify0A5ErrorP"
                           }
                         ],
@@ -4186,7 +4179,7 @@
                       {
                         "kind": "TypeFunc",
                         "name": "Function",
-                        "printedName": "(Amplify.AmplifyError) -> Swift.Void",
+                        "printedName": "(any Amplify.AmplifyError) -> Swift.Void",
                         "children": [
                           {
                             "kind": "TypeNameAlias",
@@ -4203,12 +4196,12 @@
                           {
                             "kind": "TypeNominal",
                             "name": "Paren",
-                            "printedName": "(Amplify.AmplifyError)",
+                            "printedName": "(any Amplify.AmplifyError)",
                             "children": [
                               {
                                 "kind": "TypeNominal",
                                 "name": "AmplifyError",
-                                "printedName": "Amplify.AmplifyError",
+                                "printedName": "any Amplify.AmplifyError",
                                 "usr": "s:7Amplify0A5ErrorP"
                               }
                             ],
@@ -4965,7 +4958,7 @@
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Amplify.AmplifyError) -> Swift.Void",
+                    "printedName": "(any Amplify.AmplifyError) -> Swift.Void",
                     "children": [
                       {
                         "kind": "TypeNameAlias",
@@ -4982,12 +4975,12 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Paren",
-                        "printedName": "(Amplify.AmplifyError)",
+                        "printedName": "(any Amplify.AmplifyError)",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "AmplifyError",
-                            "printedName": "Amplify.AmplifyError",
+                            "printedName": "any Amplify.AmplifyError",
                             "usr": "s:7Amplify0A5ErrorP"
                           }
                         ],
@@ -5230,7 +5223,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -5283,7 +5276,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -5427,7 +5420,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Encoder",
-                "printedName": "Swift.Encoder",
+                "printedName": "any Swift.Encoder",
                 "usr": "s:s7EncoderP"
               }
             ],
@@ -5465,7 +5458,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -5487,7 +5480,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -5513,7 +5506,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -5531,7 +5524,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -5629,7 +5622,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -5727,7 +5720,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Encoder",
-                "printedName": "Swift.Encoder",
+                "printedName": "any Swift.Encoder",
                 "usr": "s:s7EncoderP"
               }
             ],
@@ -5796,12 +5789,12 @@
           {
             "kind": "TypeFunc",
             "name": "Function",
-            "printedName": "() -> Amplify.QueryPredicate",
+            "printedName": "() -> any Amplify.QueryPredicate",
             "children": [
               {
                 "kind": "TypeNominal",
                 "name": "QueryPredicate",
-                "printedName": "Amplify.QueryPredicate",
+                "printedName": "any Amplify.QueryPredicate",
                 "usr": "s:7Amplify14QueryPredicateP"
               },
               {
@@ -5847,12 +5840,12 @@
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "() -> Amplify.QueryPredicate",
+                    "printedName": "() -> any Amplify.QueryPredicate",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "QueryPredicate",
-                        "printedName": "Amplify.QueryPredicate",
+                        "printedName": "any Amplify.QueryPredicate",
                         "usr": "s:7Amplify14QueryPredicateP"
                       },
                       {
@@ -5950,7 +5943,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -5972,7 +5965,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -5998,7 +5991,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -6016,7 +6009,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -6138,12 +6131,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "SQLite.Binding?",
+                "printedName": "(any SQLite.Binding)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Binding",
-                    "printedName": "SQLite.Binding",
+                    "printedName": "any SQLite.Binding",
                     "usr": "s:6SQLite7BindingP"
                   }
                 ],
@@ -6163,12 +6156,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "SQLite.Binding?",
+                "printedName": "(any SQLite.Binding)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Binding",
-                    "printedName": "SQLite.Binding",
+                    "printedName": "any SQLite.Binding",
                     "usr": "s:6SQLite7BindingP"
                   }
                 ],
@@ -6223,12 +6216,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "SQLite.Binding?",
+                "printedName": "(any SQLite.Binding)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Binding",
-                    "printedName": "SQLite.Binding",
+                    "printedName": "any SQLite.Binding",
                     "usr": "s:6SQLite7BindingP"
                   }
                 ],
@@ -6300,12 +6293,12 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Optional",
-                        "printedName": "SQLite.Binding?",
+                        "printedName": "(any SQLite.Binding)?",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "Binding",
-                            "printedName": "SQLite.Binding",
+                            "printedName": "any SQLite.Binding",
                             "usr": "s:6SQLite7BindingP"
                           }
                         ],
@@ -7166,7 +7159,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -7211,7 +7204,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               }
             ],
@@ -7235,7 +7228,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Model",
-                    "printedName": "Amplify.Model",
+                    "printedName": "any Amplify.Model",
                     "usr": "s:7Amplify5ModelP"
                   }
                 ],
@@ -7257,7 +7250,7 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Model",
-                        "printedName": "Amplify.Model",
+                        "printedName": "any Amplify.Model",
                         "usr": "s:7Amplify5ModelP"
                       }
                     ],
@@ -7982,7 +7975,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -8001,7 +7994,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -8023,7 +8016,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -8041,7 +8034,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -8102,17 +8095,17 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Array",
-                        "printedName": "[SQLite.Binding?]",
+                        "printedName": "[(any SQLite.Binding)?]",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "Optional",
-                            "printedName": "SQLite.Binding?",
+                            "printedName": "(any SQLite.Binding)?",
                             "children": [
                               {
                                 "kind": "TypeNominal",
                                 "name": "Binding",
-                                "printedName": "SQLite.Binding",
+                                "printedName": "any SQLite.Binding",
                                 "usr": "s:6SQLite7BindingP"
                               }
                             ],
@@ -8167,17 +8160,17 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Array",
-                        "printedName": "[SQLite.Binding?]",
+                        "printedName": "[(any SQLite.Binding)?]",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "Optional",
-                            "printedName": "SQLite.Binding?",
+                            "printedName": "(any SQLite.Binding)?",
                             "children": [
                               {
                                 "kind": "TypeNominal",
                                 "name": "Binding",
-                                "printedName": "SQLite.Binding",
+                                "printedName": "any SQLite.Binding",
                                 "usr": "s:6SQLite7BindingP"
                               }
                             ],
@@ -8207,16 +8200,16 @@
     "json_format_version": 8,
     "tool_arguments": [
       "-sdk",
-      "\/Applications\/Xcode_15.0.1.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk",
+      "\/Applications\/Xcode_15.4.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk",
       "-dump-sdk",
       "-module",
       "AWSDataStorePlugin",
       "-o",
-      "\/var\/folders\/xz\/lz5thm6s3vb1vdkk77vmkgbr0000gn\/T\/tmp.bR6aszViJ0\/AWSDataStorePlugin.json",
+      "\/var\/folders\/hn\/5bx1f4_d4ds5vhwhkxc7vdcr0000gn\/T\/tmp.nAGRifhwH6\/AWSDataStorePlugin.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
-      "23A334"
+      "23F73"
     ]
   }
 }

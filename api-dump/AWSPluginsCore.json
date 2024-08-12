@@ -27,13 +27,6 @@
       },
       {
         "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "AWSPluginsCore"
-      },
-      {
-        "kind": "Import",
         "name": "Network",
         "printedName": "Network",
         "declKind": "Import",
@@ -933,7 +926,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "AuthModeStrategy",
-                "printedName": "AWSPluginsCore.AuthModeStrategy",
+                "printedName": "any AWSPluginsCore.AuthModeStrategy",
                 "usr": "s:14AWSPluginsCore16AuthModeStrategyP"
               }
             ],
@@ -1108,12 +1101,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?",
+                "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "AuthModeStrategyDelegate",
-                    "printedName": "AWSPluginsCore.AuthModeStrategyDelegate",
+                    "printedName": "any AWSPluginsCore.AuthModeStrategyDelegate",
                     "usr": "s:14AWSPluginsCore24AuthModeStrategyDelegateP"
                   }
                 ],
@@ -1134,12 +1127,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Optional",
-                    "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?",
+                    "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "AuthModeStrategyDelegate",
-                        "printedName": "AWSPluginsCore.AuthModeStrategyDelegate",
+                        "printedName": "any AWSPluginsCore.AuthModeStrategyDelegate",
                         "usr": "s:14AWSPluginsCore24AuthModeStrategyDelegateP"
                       }
                     ],
@@ -1168,12 +1161,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Optional",
-                    "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?",
+                    "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "AuthModeStrategyDelegate",
-                        "printedName": "AWSPluginsCore.AuthModeStrategyDelegate",
+                        "printedName": "any AWSPluginsCore.AuthModeStrategyDelegate",
                         "usr": "s:14AWSPluginsCore24AuthModeStrategyDelegateP"
                       }
                     ],
@@ -1806,7 +1799,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "WeakStorage",
-                "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?"
+                "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?"
               }
             ],
             "declKind": "Var",
@@ -1829,12 +1822,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Optional",
-                    "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?",
+                    "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "AuthModeStrategyDelegate",
-                        "printedName": "AWSPluginsCore.AuthModeStrategyDelegate",
+                        "printedName": "any AWSPluginsCore.AuthModeStrategyDelegate",
                         "usr": "s:14AWSPluginsCore24AuthModeStrategyDelegateP"
                       }
                     ],
@@ -1864,12 +1857,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Optional",
-                    "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?",
+                    "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "AuthModeStrategyDelegate",
-                        "printedName": "AWSPluginsCore.AuthModeStrategyDelegate",
+                        "printedName": "any AWSPluginsCore.AuthModeStrategyDelegate",
                         "usr": "s:14AWSPluginsCore24AuthModeStrategyDelegateP"
                       }
                     ],
@@ -2005,7 +1998,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "WeakStorage",
-                "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?"
+                "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?"
               }
             ],
             "declKind": "Var",
@@ -2028,12 +2021,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Optional",
-                    "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?",
+                    "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "AuthModeStrategyDelegate",
-                        "printedName": "AWSPluginsCore.AuthModeStrategyDelegate",
+                        "printedName": "any AWSPluginsCore.AuthModeStrategyDelegate",
                         "usr": "s:14AWSPluginsCore24AuthModeStrategyDelegateP"
                       }
                     ],
@@ -2063,12 +2056,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Optional",
-                    "printedName": "AWSPluginsCore.AuthModeStrategyDelegate?",
+                    "printedName": "(any AWSPluginsCore.AuthModeStrategyDelegate)?",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "AuthModeStrategyDelegate",
-                        "printedName": "AWSPluginsCore.AuthModeStrategyDelegate",
+                        "printedName": "any AWSPluginsCore.AuthModeStrategyDelegate",
                         "usr": "s:14AWSPluginsCore24AuthModeStrategyDelegateP"
                       }
                     ],
@@ -2451,12 +2444,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Result",
-                "printedName": "Swift.Result<AWSPluginsCore.AWSTemporaryCredentials, Amplify.AuthError>",
+                "printedName": "Swift.Result<any AWSPluginsCore.AWSTemporaryCredentials, Amplify.AuthError>",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "AWSTemporaryCredentials",
-                    "printedName": "AWSPluginsCore.AWSTemporaryCredentials",
+                    "printedName": "any AWSPluginsCore.AWSTemporaryCredentials",
                     "usr": "s:14AWSPluginsCore23AWSTemporaryCredentialsP"
                   },
                   {
@@ -2483,12 +2476,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Result",
-                    "printedName": "Swift.Result<AWSPluginsCore.AWSTemporaryCredentials, Amplify.AuthError>",
+                    "printedName": "Swift.Result<any AWSPluginsCore.AWSTemporaryCredentials, Amplify.AuthError>",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "AWSTemporaryCredentials",
-                        "printedName": "AWSPluginsCore.AWSTemporaryCredentials",
+                        "printedName": "any AWSPluginsCore.AWSTemporaryCredentials",
                         "usr": "s:14AWSPluginsCore23AWSTemporaryCredentialsP"
                       },
                       {
@@ -3549,12 +3542,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Result",
-                "printedName": "Swift.Result<AWSPluginsCore.AWSCredentials, Amplify.AuthError>",
+                "printedName": "Swift.Result<any AWSPluginsCore.AWSCredentials, Amplify.AuthError>",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "AWSCredentials",
-                    "printedName": "AWSPluginsCore.AWSCredentials",
+                    "printedName": "any AWSPluginsCore.AWSCredentials",
                     "usr": "s:14AWSPluginsCore14AWSCredentialsP"
                   },
                   {
@@ -3584,12 +3577,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Result",
-                "printedName": "Swift.Result<AWSPluginsCore.AWSCredentials, Amplify.AuthError>",
+                "printedName": "Swift.Result<any AWSPluginsCore.AWSCredentials, Amplify.AuthError>",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "AWSCredentials",
-                    "printedName": "AWSPluginsCore.AWSCredentials",
+                    "printedName": "any AWSPluginsCore.AWSCredentials",
                     "usr": "s:14AWSPluginsCore14AWSCredentialsP"
                   },
                   {
@@ -3629,7 +3622,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "AWSCredentials",
-                "printedName": "AWSPluginsCore.AWSCredentials",
+                "printedName": "any AWSPluginsCore.AWSCredentials",
                 "usr": "s:14AWSPluginsCore14AWSCredentialsP"
               }
             ],
@@ -4007,12 +4000,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Result",
-                "printedName": "Swift.Result<AWSPluginsCore.AuthCognitoTokens, Amplify.AuthError>",
+                "printedName": "Swift.Result<any AWSPluginsCore.AuthCognitoTokens, Amplify.AuthError>",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "AuthCognitoTokens",
-                    "printedName": "AWSPluginsCore.AuthCognitoTokens",
+                    "printedName": "any AWSPluginsCore.AuthCognitoTokens",
                     "usr": "s:14AWSPluginsCore17AuthCognitoTokensP"
                   },
                   {
@@ -5483,7 +5476,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -5502,7 +5495,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -5524,7 +5517,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -5545,7 +5538,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -5657,12 +5650,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(AWSPluginsCore.KeychainStoreError.Type) -> (Amplify.ErrorDescription, Swift.Error?) -> AWSPluginsCore.KeychainStoreError",
+                "printedName": "(AWSPluginsCore.KeychainStoreError.Type) -> (Amplify.ErrorDescription, (any Swift.Error)?) -> AWSPluginsCore.KeychainStoreError",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Amplify.ErrorDescription, Swift.Error?) -> AWSPluginsCore.KeychainStoreError",
+                    "printedName": "(Amplify.ErrorDescription, (any Swift.Error)?) -> AWSPluginsCore.KeychainStoreError",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -5673,7 +5666,7 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Tuple",
-                        "printedName": "(Amplify.ErrorDescription, Swift.Error?)",
+                        "printedName": "(Amplify.ErrorDescription, (any Swift.Error)?)",
                         "children": [
                           {
                             "kind": "TypeNameAlias",
@@ -5691,12 +5684,12 @@
                           {
                             "kind": "TypeNominal",
                             "name": "Optional",
-                            "printedName": "Swift.Error?",
+                            "printedName": "(any Swift.Error)?",
                             "children": [
                               {
                                 "kind": "TypeNominal",
                                 "name": "Error",
-                                "printedName": "Swift.Error",
+                                "printedName": "any Swift.Error",
                                 "usr": "s:s5ErrorP"
                               }
                             ],
@@ -5742,12 +5735,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(AWSPluginsCore.KeychainStoreError.Type) -> (Amplify.ErrorDescription, Swift.Error?) -> AWSPluginsCore.KeychainStoreError",
+                "printedName": "(AWSPluginsCore.KeychainStoreError.Type) -> (Amplify.ErrorDescription, (any Swift.Error)?) -> AWSPluginsCore.KeychainStoreError",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Amplify.ErrorDescription, Swift.Error?) -> AWSPluginsCore.KeychainStoreError",
+                    "printedName": "(Amplify.ErrorDescription, (any Swift.Error)?) -> AWSPluginsCore.KeychainStoreError",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -5758,7 +5751,7 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Tuple",
-                        "printedName": "(Amplify.ErrorDescription, Swift.Error?)",
+                        "printedName": "(Amplify.ErrorDescription, (any Swift.Error)?)",
                         "children": [
                           {
                             "kind": "TypeNameAlias",
@@ -5776,12 +5769,12 @@
                           {
                             "kind": "TypeNominal",
                             "name": "Optional",
-                            "printedName": "Swift.Error?",
+                            "printedName": "(any Swift.Error)?",
                             "children": [
                               {
                                 "kind": "TypeNominal",
                                 "name": "Error",
-                                "printedName": "Swift.Error",
+                                "printedName": "any Swift.Error",
                                 "usr": "s:s5ErrorP"
                               }
                             ],
@@ -5827,12 +5820,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(AWSPluginsCore.KeychainStoreError.Type) -> (Amplify.ErrorDescription, Swift.Error?) -> AWSPluginsCore.KeychainStoreError",
+                "printedName": "(AWSPluginsCore.KeychainStoreError.Type) -> (Amplify.ErrorDescription, (any Swift.Error)?) -> AWSPluginsCore.KeychainStoreError",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Amplify.ErrorDescription, Swift.Error?) -> AWSPluginsCore.KeychainStoreError",
+                    "printedName": "(Amplify.ErrorDescription, (any Swift.Error)?) -> AWSPluginsCore.KeychainStoreError",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -5843,7 +5836,7 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Tuple",
-                        "printedName": "(Amplify.ErrorDescription, Swift.Error?)",
+                        "printedName": "(Amplify.ErrorDescription, (any Swift.Error)?)",
                         "children": [
                           {
                             "kind": "TypeNameAlias",
@@ -5861,12 +5854,12 @@
                           {
                             "kind": "TypeNominal",
                             "name": "Optional",
-                            "printedName": "Swift.Error?",
+                            "printedName": "(any Swift.Error)?",
                             "children": [
                               {
                                 "kind": "TypeNominal",
                                 "name": "Error",
-                                "printedName": "Swift.Error",
+                                "printedName": "any Swift.Error",
                                 "usr": "s:s5ErrorP"
                               }
                             ],
@@ -6062,7 +6055,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Error",
-                "printedName": "Swift.Error",
+                "printedName": "any Swift.Error",
                 "usr": "s:s5ErrorP"
               }
             ],
@@ -6187,12 +6180,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Swift.Error?",
+                "printedName": "(any Swift.Error)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Error",
-                    "printedName": "Swift.Error",
+                    "printedName": "any Swift.Error",
                     "usr": "s:s5ErrorP"
                   }
                 ],
@@ -6213,12 +6206,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Optional",
-                    "printedName": "Swift.Error?",
+                    "printedName": "(any Swift.Error)?",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "Error",
-                        "printedName": "Swift.Error",
+                        "printedName": "any Swift.Error",
                         "usr": "s:s5ErrorP"
                       }
                     ],
@@ -6369,7 +6362,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               }
             ],
@@ -6391,7 +6384,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Model",
-                    "printedName": "Amplify.Model",
+                    "printedName": "any Amplify.Model",
                     "usr": "s:7Amplify5ModelP"
                   }
                 ],
@@ -6467,7 +6460,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               }
             ],
@@ -6485,7 +6478,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ModelIdentifierProtocol",
-                "printedName": "Amplify.ModelIdentifierProtocol",
+                "printedName": "any Amplify.ModelIdentifierProtocol",
                 "usr": "s:7Amplify23ModelIdentifierProtocolP"
               },
               {
@@ -6552,7 +6545,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -6577,7 +6570,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Encoder",
-                "printedName": "Swift.Encoder",
+                "printedName": "any Swift.Encoder",
                 "usr": "s:s7EncoderP"
               }
             ],
@@ -6714,7 +6707,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "CodingKey",
-                "printedName": "Swift.CodingKey",
+                "printedName": "any Swift.CodingKey",
                 "usr": "s:s9CodingKeyP"
               }
             ],
@@ -6745,7 +6738,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "CodingKey",
-                    "printedName": "Swift.CodingKey",
+                    "printedName": "any Swift.CodingKey",
                     "usr": "s:s9CodingKeyP"
                   }
                 ],
@@ -7778,19 +7771,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -7815,13 +7808,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -7845,7 +7838,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -7864,7 +7857,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -7886,7 +7879,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -7904,7 +7897,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -8013,19 +8006,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -8050,13 +8043,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -8172,19 +8165,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -8209,13 +8202,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -8303,19 +8296,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -8340,13 +8333,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -8390,19 +8383,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -8427,13 +8420,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -8477,19 +8470,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -8521,13 +8514,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -8571,7 +8564,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -8595,19 +8588,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -8632,13 +8625,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -8688,7 +8681,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -8718,12 +8711,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Array",
-                "printedName": "[(name: Swift.String, value: Amplify.Persistable)]",
+                "printedName": "[(name: Swift.String, value: any Amplify.Persistable)]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Tuple",
-                    "printedName": "(name: Swift.String, value: Amplify.Persistable)",
+                    "printedName": "(name: Swift.String, value: any Amplify.Persistable)",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -8734,7 +8727,7 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Persistable",
-                        "printedName": "Amplify.Persistable",
+                        "printedName": "any Amplify.Persistable",
                         "usr": "s:7Amplify11PersistableP"
                       }
                     ]
@@ -8795,7 +8788,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               }
             ],
@@ -8874,19 +8867,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -8911,13 +8904,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -9009,19 +9002,19 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -9046,13 +9039,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               },
               {
@@ -9188,7 +9181,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -9789,7 +9782,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -10390,7 +10383,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -10942,7 +10935,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -11026,7 +11019,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ModelBasedGraphQLDocumentDecorator",
-                "printedName": "AWSPluginsCore.ModelBasedGraphQLDocumentDecorator",
+                "printedName": "any AWSPluginsCore.ModelBasedGraphQLDocumentDecorator",
                 "usr": "s:14AWSPluginsCore34ModelBasedGraphQLDocumentDecoratorP"
               }
             ],
@@ -11044,7 +11037,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "SingleDirectiveGraphQLDocument",
-                "printedName": "AWSPluginsCore.SingleDirectiveGraphQLDocument",
+                "printedName": "any AWSPluginsCore.SingleDirectiveGraphQLDocument",
                 "usr": "s:14AWSPluginsCore30SingleDirectiveGraphQLDocumentP"
               }
             ],
@@ -11871,17 +11864,17 @@
           {
             "kind": "TypeFunc",
             "name": "Function",
-            "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+            "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
             "children": [
               {
                 "kind": "TypeNominal",
                 "name": "Array",
-                "printedName": "[Amplify.PropertyContainerPath]",
+                "printedName": "[any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "PropertyContainerPath",
-                    "printedName": "Amplify.PropertyContainerPath",
+                    "printedName": "any Amplify.PropertyContainerPath",
                     "usr": "s:7Amplify21PropertyContainerPathP"
                   }
                 ],
@@ -12115,12 +12108,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(AWSPluginsCore.GraphQLDocumentInputValue.Type) -> (AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
+                "printedName": "(AWSPluginsCore.GraphQLDocumentInputValue.Type) -> (any AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
+                    "printedName": "(any AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -12131,12 +12124,12 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Paren",
-                        "printedName": "(AWSPluginsCore.GraphQLDocumentValueRepresentable)",
+                        "printedName": "(any AWSPluginsCore.GraphQLDocumentValueRepresentable)",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "GraphQLDocumentValueRepresentable",
-                            "printedName": "AWSPluginsCore.GraphQLDocumentValueRepresentable",
+                            "printedName": "any AWSPluginsCore.GraphQLDocumentValueRepresentable",
                             "usr": "s:14AWSPluginsCore33GraphQLDocumentValueRepresentableP"
                           }
                         ],
@@ -12180,12 +12173,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(AWSPluginsCore.GraphQLDocumentInputValue.Type) -> (AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
+                "printedName": "(AWSPluginsCore.GraphQLDocumentInputValue.Type) -> (any AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
+                    "printedName": "(any AWSPluginsCore.GraphQLDocumentValueRepresentable) -> AWSPluginsCore.GraphQLDocumentInputValue",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -12196,12 +12189,12 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Paren",
-                        "printedName": "(AWSPluginsCore.GraphQLDocumentValueRepresentable)",
+                        "printedName": "(any AWSPluginsCore.GraphQLDocumentValueRepresentable)",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "GraphQLDocumentValueRepresentable",
-                            "printedName": "AWSPluginsCore.GraphQLDocumentValueRepresentable",
+                            "printedName": "any AWSPluginsCore.GraphQLDocumentValueRepresentable",
                             "usr": "s:14AWSPluginsCore33GraphQLDocumentValueRepresentableP"
                           }
                         ],
@@ -12490,7 +12483,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "QueryPredicate",
-                "printedName": "Amplify.QueryPredicate",
+                "printedName": "any Amplify.QueryPredicate",
                 "usr": "s:7Amplify14QueryPredicateP"
               },
               {
@@ -12529,7 +12522,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "QueryPredicate",
-                "printedName": "Amplify.QueryPredicate",
+                "printedName": "any Amplify.QueryPredicate",
                 "usr": "s:7Amplify14QueryPredicateP"
               },
               {
@@ -13335,7 +13328,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Encoder",
-                "printedName": "Swift.Encoder",
+                "printedName": "any Swift.Encoder",
                 "usr": "s:s7EncoderP"
               }
             ],
@@ -13361,7 +13354,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -14268,7 +14261,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -14844,7 +14837,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Encoder",
-                "printedName": "Swift.Encoder",
+                "printedName": "any Swift.Encoder",
                 "usr": "s:s7EncoderP"
               }
             ],
@@ -14870,7 +14863,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -16083,7 +16076,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Decoder",
-                "printedName": "Swift.Decoder",
+                "printedName": "any Swift.Decoder",
                 "usr": "s:s7DecoderP"
               }
             ],
@@ -16604,12 +16597,12 @@
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(AWSPluginsCore.RetryWithJitter.Error.Type) -> ([Swift.Error]) -> AWSPluginsCore.RetryWithJitter.Error",
+                    "printedName": "(AWSPluginsCore.RetryWithJitter.Error.Type) -> ([any Swift.Error]) -> AWSPluginsCore.RetryWithJitter.Error",
                     "children": [
                       {
                         "kind": "TypeFunc",
                         "name": "Function",
-                        "printedName": "([Swift.Error]) -> AWSPluginsCore.RetryWithJitter.Error",
+                        "printedName": "([any Swift.Error]) -> AWSPluginsCore.RetryWithJitter.Error",
                         "children": [
                           {
                             "kind": "TypeNominal",
@@ -16620,17 +16613,17 @@
                           {
                             "kind": "TypeNominal",
                             "name": "Paren",
-                            "printedName": "([Swift.Error])",
+                            "printedName": "([any Swift.Error])",
                             "children": [
                               {
                                 "kind": "TypeNominal",
                                 "name": "Array",
-                                "printedName": "[Swift.Error]",
+                                "printedName": "[any Swift.Error]",
                                 "children": [
                                   {
                                     "kind": "TypeNominal",
                                     "name": "Error",
-                                    "printedName": "Swift.Error",
+                                    "printedName": "any Swift.Error",
                                     "usr": "s:s5ErrorP"
                                   }
                                 ],
@@ -16779,7 +16772,7 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Swift.Error) -> Swift.Bool",
+                "printedName": "(any Swift.Error) -> Swift.Bool",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -16790,12 +16783,12 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Paren",
-                    "printedName": "(Swift.Error)",
+                    "printedName": "(any Swift.Error)",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "Error",
-                        "printedName": "Swift.Error",
+                        "printedName": "any Swift.Error",
                         "usr": "s:s5ErrorP"
                       }
                     ],
@@ -17296,12 +17289,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "AWSPluginsCore.WebSocketInterceptor?",
+                "printedName": "(any AWSPluginsCore.WebSocketInterceptor)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "WebSocketInterceptor",
-                    "printedName": "AWSPluginsCore.WebSocketInterceptor",
+                    "printedName": "any AWSPluginsCore.WebSocketInterceptor",
                     "usr": "s:14AWSPluginsCore20WebSocketInterceptorP"
                   }
                 ],
@@ -17311,7 +17304,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "WebSocketNetworkMonitorProtocol",
-                "printedName": "AWSPluginsCore.WebSocketNetworkMonitorProtocol",
+                "printedName": "any AWSPluginsCore.WebSocketNetworkMonitorProtocol",
                 "hasDefaultArg": true,
                 "usr": "s:14AWSPluginsCore31WebSocketNetworkMonitorProtocolP"
               }
@@ -17671,12 +17664,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Swift.Error?",
+                "printedName": "(any Swift.Error)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Error",
-                    "printedName": "Swift.Error",
+                    "printedName": "any Swift.Error",
                     "usr": "s:s5ErrorP"
                   }
                 ],
@@ -17707,7 +17700,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -17732,7 +17725,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -17760,7 +17753,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Logger",
-                "printedName": "Amplify.Logger",
+                "printedName": "any Amplify.Logger",
                 "usr": "s:7Amplify6LoggerP"
               }
             ],
@@ -17785,7 +17778,7 @@
                   {
                     "kind": "TypeNominal",
                     "name": "Logger",
-                    "printedName": "Amplify.Logger",
+                    "printedName": "any Amplify.Logger",
                     "usr": "s:7Amplify6LoggerP"
                   }
                 ],
@@ -18219,12 +18212,12 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(AWSPluginsCore.WebSocketEvent.Type) -> (Swift.Error) -> AWSPluginsCore.WebSocketEvent",
+                "printedName": "(AWSPluginsCore.WebSocketEvent.Type) -> (any Swift.Error) -> AWSPluginsCore.WebSocketEvent",
                 "children": [
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Swift.Error) -> AWSPluginsCore.WebSocketEvent",
+                    "printedName": "(any Swift.Error) -> AWSPluginsCore.WebSocketEvent",
                     "children": [
                       {
                         "kind": "TypeNominal",
@@ -18235,12 +18228,12 @@
                       {
                         "kind": "TypeNominal",
                         "name": "Paren",
-                        "printedName": "(Swift.Error)",
+                        "printedName": "(any Swift.Error)",
                         "children": [
                           {
                             "kind": "TypeNominal",
                             "name": "Error",
-                            "printedName": "Swift.Error",
+                            "printedName": "any Swift.Error",
                             "usr": "s:s5ErrorP"
                           }
                         ],
@@ -18704,7 +18697,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -18784,7 +18777,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -18899,7 +18892,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -18977,7 +18970,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -19081,7 +19074,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "ExistentialMetatype",
-                "printedName": "Amplify.Model.Type",
+                "printedName": "any Amplify.Model.Type",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -19094,12 +19087,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -19213,7 +19206,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -19299,7 +19292,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -19420,7 +19413,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Model",
-                "printedName": "Amplify.Model",
+                "printedName": "any Amplify.Model",
                 "usr": "s:7Amplify5ModelP"
               },
               {
@@ -19715,12 +19708,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -19823,17 +19816,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -19917,12 +19910,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -19932,17 +19925,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20026,12 +20019,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -20041,17 +20034,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20141,17 +20134,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20241,12 +20234,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -20256,17 +20249,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20356,12 +20349,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -20371,17 +20364,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20465,12 +20458,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -20480,17 +20473,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20586,12 +20579,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -20601,17 +20594,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20722,17 +20715,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20837,17 +20830,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -20964,17 +20957,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -21073,12 +21066,12 @@
               {
                 "kind": "TypeNominal",
                 "name": "Optional",
-                "printedName": "Amplify.QueryPredicate?",
+                "printedName": "(any Amplify.QueryPredicate)?",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "QueryPredicate",
-                    "printedName": "Amplify.QueryPredicate",
+                    "printedName": "any Amplify.QueryPredicate",
                     "usr": "s:7Amplify14QueryPredicateP"
                   }
                 ],
@@ -21088,17 +21081,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -21210,17 +21203,17 @@
               {
                 "kind": "TypeFunc",
                 "name": "Function",
-                "printedName": "(Amplify.ModelPath<M>) -> [Amplify.PropertyContainerPath]",
+                "printedName": "(Amplify.ModelPath<M>) -> [any Amplify.PropertyContainerPath]",
                 "children": [
                   {
                     "kind": "TypeNominal",
                     "name": "Array",
-                    "printedName": "[Amplify.PropertyContainerPath]",
+                    "printedName": "[any Amplify.PropertyContainerPath]",
                     "children": [
                       {
                         "kind": "TypeNominal",
                         "name": "PropertyContainerPath",
-                        "printedName": "Amplify.PropertyContainerPath",
+                        "printedName": "any Amplify.PropertyContainerPath",
                         "usr": "s:7Amplify21PropertyContainerPathP"
                       }
                     ],
@@ -22290,6 +22283,7 @@
         "mangledName": "$sSS",
         "moduleName": "Swift",
         "declAttributes": [
+          "EagerMove",
           "Frozen"
         ],
         "isExternal": true,
@@ -23220,7 +23214,7 @@
         ],
         "declKind": "Struct",
         "usr": "c:@SA@NSDecimal",
-        "location": "\/Applications\/Xcode_15.0.1.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk\/System\/Library\/Frameworks\/Foundation.framework\/Headers\/NSDecimal.h:42:9",
+        "location": "\/Applications\/Xcode_15.4.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk\/System\/Library\/Frameworks\/Foundation.framework\/Headers\/NSDecimal.h:42:9",
         "moduleName": "Foundation",
         "declAttributes": [
           "SynthesizedProtocol",
@@ -24274,16 +24268,16 @@
     "json_format_version": 8,
     "tool_arguments": [
       "-sdk",
-      "\/Applications\/Xcode_15.0.1.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk",
+      "\/Applications\/Xcode_15.4.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk",
       "-dump-sdk",
       "-module",
       "AWSPluginsCore",
       "-o",
-      "\/var\/folders\/xz\/lz5thm6s3vb1vdkk77vmkgbr0000gn\/T\/tmp.bR6aszViJ0\/AWSPluginsCore.json",
+      "\/var\/folders\/hn\/5bx1f4_d4ds5vhwhkxc7vdcr0000gn\/T\/tmp.nAGRifhwH6\/AWSPluginsCore.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
-      "23A334"
+      "23F73"
     ]
   }
 }

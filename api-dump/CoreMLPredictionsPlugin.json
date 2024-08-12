@@ -27,13 +27,6 @@
       },
       {
         "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "CoreMLPredictionsPlugin"
-      },
-      {
-        "kind": "Import",
         "name": "NaturalLanguage",
         "printedName": "NaturalLanguage",
         "declKind": "Import",
@@ -432,16 +425,16 @@
     "json_format_version": 8,
     "tool_arguments": [
       "-sdk",
-      "\/Applications\/Xcode_15.0.1.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk",
+      "\/Applications\/Xcode_15.4.app\/Contents\/Developer\/Platforms\/MacOSX.platform\/Developer\/SDKs\/MacOSX.sdk",
       "-dump-sdk",
       "-module",
       "CoreMLPredictionsPlugin",
       "-o",
-      "\/var\/folders\/xz\/lz5thm6s3vb1vdkk77vmkgbr0000gn\/T\/tmp.bR6aszViJ0\/CoreMLPredictionsPlugin.json",
+      "\/var\/folders\/hn\/5bx1f4_d4ds5vhwhkxc7vdcr0000gn\/T\/tmp.nAGRifhwH6\/CoreMLPredictionsPlugin.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
-      "23A334"
+      "23F73"
     ]
   }
 }
