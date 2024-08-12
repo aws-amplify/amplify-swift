@@ -8,7 +8,7 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     permissions: {}
-    if: ${{ !github.event.issue.pull_request && !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) }}
+    if: ${{ !github.event.issue.pull_request }}
     steps:
       - name: Run webhook curl command
         env:
@@ -19,17 +19,27 @@ jobs:
         shell: bash
         run: echo $COMMENT | sed "s/\\\n/. /g; s/\\\r//g; s/[^a-zA-Z0-9 &().,:]//g" | xargs -I {} curl -s POST "$WEBHOOK_URL" -H "Content-Type:application/json" --data '{"comment":"{}", "commentUrl":"'$COMMENT_URL'", "user":"'$USER'"}'
 
-  remove-pending-response-label:
+  adjust-labels:
     runs-on: ubuntu-latest
     permissions:
       issues: write
-    if: ${{ !github.event.issue.pull_request && contains(github.event.issue.labels.*.name, 'pending-response') }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      REPOSITORY_NAME: ${{ github.event.repository.full_name }}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-      - name: remove unnecessary labels after closing
+      - name: remove pending-community-response when new comment received
+        if: ${{ !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) && !github.event.issue.pull_request }}
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          gh issue edit $ISSUE_NUMBER --remove-label "pending-response"
+          gh issue edit $ISSUE_NUMBER --repo $REPOSITORY_NAME --remove-label "pending-community-response"
+      - name: add pending-maintainer-response when new community comment received
+        if: ${{ !contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) }}
+        shell: bash
+        run: |
+          gh issue edit $ISSUE_NUMBER --repo $REPOSITORY_NAME --add-label "pending-maintainer-response"
+      - name: remove pending-maintainer-response when new owner/member comment received
+        if: ${{ contains(fromJSON('["MEMBER", "OWNER"]'), github.event.comment.author_association) }}
+        shell: bash
+        run: |
+          gh issue edit $ISSUE_NUMBER --repo $REPOSITORY_NAME --remove-label "pending-maintainer-response"
