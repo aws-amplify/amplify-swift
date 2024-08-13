@@ -8205,7 +8205,7 @@
       "-module",
       "AWSDataStorePlugin",
       "-o",
-      "\/var\/folders\/hn\/5bx1f4_d4ds5vhwhkxc7vdcr0000gn\/T\/tmp.nAGRifhwH6\/AWSDataStorePlugin.json",
+      "\/var\/folders\/m_\/cksx93ys47x4621g0zbw_m4m0000gn\/T\/tmp.gb6DUlncxa\/AWSDataStorePlugin.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
