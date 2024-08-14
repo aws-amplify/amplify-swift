@@ -78,6 +78,11 @@ public extension StorageListRequest {
         /// - Tag: StorageListRequestOptions.pageSize
         public let pageSize: UInt
 
+        /// A Storage Bucket that contains the objects to list. Defaults to `nil`, in which case the default one will be used.
+        ///
+        /// - Tag: StorageDownloadDataRequest.bucket
+        public let bucket: (any StorageBucket)?
+
         /// Opaque string indicating the page offset at which to resume a listing. This is usually a copy of
         /// the value from [StorageListResult.nextToken](x-source-tag://StorageListResult.nextToken).
         ///
@@ -96,18 +101,22 @@ public extension StorageListRequest {
         public let pluginOptions: Any?
 
         /// - Tag: StorageListRequestOptions.init
-        public init(accessLevel: StorageAccessLevel = .guest,
-                    targetIdentityId: String? = nil,
-                    path: String? = nil,
-                    subpathStrategy: SubpathStrategy = .include,
-                    pageSize: UInt = 1000,
-                    nextToken: String? = nil,
-                    pluginOptions: Any? = nil) {
+        public init(
+            accessLevel: StorageAccessLevel = .guest,
+            targetIdentityId: String? = nil,
+            path: String? = nil,
+            subpathStrategy: SubpathStrategy = .include,
+            pageSize: UInt = 1000,
+            bucket: (any StorageBucket)? = nil,
+            nextToken: String? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.path = path
             self.subpathStrategy = subpathStrategy
             self.pageSize = pageSize
+            self.bucket = bucket
             self.nextToken = nextToken
             self.pluginOptions = pluginOptions
         }
