@@ -64,6 +64,11 @@ public extension StorageDownloadDataRequest {
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let targetIdentityId: String?
 
+        /// A Storage Bucket that contains the object to download. Defaults to `nil`, in which case the default one will be used.
+        ///
+        /// - Tag: StorageDownloadDataRequest.bucket
+        public let bucket: (any StorageBucket)?
+
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
@@ -90,20 +95,28 @@ public extension StorageDownloadDataRequest {
 
         ///
         /// - Tag: StorageDownloadDataRequestOptions.init
-        @available(*, deprecated, message: "Use init(pluginOptions)")
-        public init(accessLevel: StorageAccessLevel = .guest,
-                    targetIdentityId: String? = nil,
-                    pluginOptions: Any? = nil) {
+        @available(*, deprecated, message: "Use init(bucket:pluginOptions)")
+        public init(
+            accessLevel: StorageAccessLevel = .guest,
+            targetIdentityId: String? = nil,
+            bucket: (any StorageBucket)? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
+            self.bucket = bucket
             self.pluginOptions = pluginOptions
         }
 
         ///
         /// - Tag: StorageDownloadDataRequestOptions.init
-        public init(pluginOptions: Any? = nil) {
+        public init(
+            bucket: (any StorageBucket)? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.accessLevel = .guest
             self.targetIdentityId = nil
+            self.bucket = bucket
             self.pluginOptions = pluginOptions
         }
     }

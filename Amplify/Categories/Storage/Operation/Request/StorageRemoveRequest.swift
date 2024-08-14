@@ -56,6 +56,11 @@ public extension StorageRemoveRequest {
         @available(*, deprecated, message: "Use `path` in Storage API instead of `Options`")
         public let accessLevel: StorageAccessLevel
 
+        /// A Storage Bucket that contains the object to remove. Defaults to `nil`, in which case the default one will be used.
+        ///
+        /// - Tag: StorageDownloadDataRequest.bucket
+        public let bucket: (any StorageBucket)?
+
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
@@ -64,9 +69,13 @@ public extension StorageRemoveRequest {
         public let pluginOptions: Any?
 
         /// - Tag: StorageRemoveRequestOptions.init
-        public init(accessLevel: StorageAccessLevel = .guest,
-                    pluginOptions: Any? = nil) {
+        public init(
+            accessLevel: StorageAccessLevel = .guest,
+            bucket: (any StorageBucket)? = nil,
+            pluginOptions: Any? = nil
+        ) {
             self.accessLevel = accessLevel
+            self.bucket = bucket
             self.pluginOptions = pluginOptions
         }
     }
