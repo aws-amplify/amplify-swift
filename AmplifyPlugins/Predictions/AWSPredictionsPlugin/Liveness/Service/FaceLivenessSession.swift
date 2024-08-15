@@ -17,6 +17,14 @@ public final class FaceLivenessSession: LivenessService {
     let baseURL: URL
     var serverEventListeners: [LivenessEventKind.Server: (FaceLivenessSession.SessionConfiguration) -> Void] = [:]
     var onComplete: (ServerDisconnection) -> Void = { _ in }
+    var serverDate: Date?
+    var savedURLForReconnect: URL?
+    var connectingState: ConnectingState = .normal
+    
+    enum ConnectingState {
+        case normal
+        case reconnect
+    }
     
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
@@ -35,11 +43,15 @@ public final class FaceLivenessSession: LivenessService {
         self.websocket = websocket
 
         websocket.onMessageReceived { [weak self] result in
-            self?.receive(result: result) ?? false
+            self?.receive(result: result) ?? .stopAndInvalidateSession
         }
 
         websocket.onSocketClosed { [weak self] closeCode in
             self?.onComplete(.unexpectedClosure(closeCode))
+        }
+        
+        websocket.onServerDateReceived { [weak self] serverDate in
+            self?.serverDate = serverDate
         }
     }
 
@@ -75,6 +87,7 @@ public final class FaceLivenessSession: LivenessService {
         guard let url = components?.url
         else { throw FaceLivenessSessionError.invalidURL }
 
+        savedURLForReconnect = url
         let signedConnectionURL = signer.sign(url: url)
         websocket.open(url: signedConnectionURL)
     }
@@ -93,17 +106,22 @@ public final class FaceLivenessSession: LivenessService {
                 ]
             )
 
-            let eventDate = eventDate()
+            let dateForSigning: Date
+            if let serverDate = serverDate {
+                dateForSigning = serverDate
+            } else {
+                dateForSigning = eventDate()
+            }
 
             let signedPayload = self.signer.signWithPreviousSignature(
                 payload: encodedPayload,
-                dateHeader: (key: ":date", value: eventDate)
+                dateHeader: (key: ":date", value: dateForSigning)
             )
 
             let encodedEvent = self.eventStreamEncoder.encode(
                 payload: encodedPayload,
                 headers: [
-                    ":date": .timestamp(eventDate),
+                    ":date": .timestamp(dateForSigning),
                     ":chunk-signature": .data(signedPayload)
                 ]
             )
@@ -115,7 +133,7 @@ public final class FaceLivenessSession: LivenessService {
         }
     }
 
-    private func fallbackDecoding(_ message: EventStream.Message) -> Bool {
+    private func fallbackDecoding(_ message: EventStream.Message) -> WebSocketSession.WebSocketMessageResult {
         // We only care about two events above.
         // Just in case the header value changes (it shouldn't)
         // We'll try to decode each of these events
@@ -124,12 +142,12 @@ public final class FaceLivenessSession: LivenessService {
             self.serverEventListeners[.challenge]?(sessionConfiguration)
         } else if (try? JSONDecoder().decode(DisconnectEvent.self, from: message.payload)) != nil {
             onComplete(.disconnectionEvent)
-            return false
+            return .stopAndInvalidateSession
         }
-        return true
+        return .continueToReceive
     }
 
-    private func receive(result: Result<URLSessionWebSocketTask.Message, Error>) -> Bool {
+    private func receive(result: Result<URLSessionWebSocketTask.Message, Error>) -> WebSocketSession.WebSocketMessageResult {
         switch result {
         case .success(.data(let data)):
             do {
@@ -145,28 +163,41 @@ public final class FaceLivenessSession: LivenessService {
                         )
                         let sessionConfiguration = sessionConfiguration(from: payload)
                         serverEventListeners[.challenge]?(sessionConfiguration)
-                        return true
+                        return .continueToReceive
                     case .disconnect:
                         // :event-type DisconnectionEvent
                         onComplete(.disconnectionEvent)
-                        return false
+                        return .stopAndInvalidateSession
                     default:
-                        return true
+                        return .continueToReceive
                     }
                 } else if let exceptionType = message.headers.first(where: { $0.name == ":exception-type" }) {
                     let exceptionEvent = LivenessEventKind.Exception(rawValue: exceptionType.value)
-                    onServiceException(.init(event: exceptionEvent))
-                    return false
+                    Amplify.log.verbose("\(#function): Received exception: \(exceptionEvent)")
+                    guard exceptionEvent == .invalidSignature,
+                          connectingState == .normal,
+                          let savedURLForReconnect = savedURLForReconnect,
+                          let serverDate = serverDate else {
+                        onServiceException(.init(event: exceptionEvent))
+                        return .stopAndInvalidateSession
+                    }
+                    
+                    connectingState = .reconnect
+                    let signedConnectionURL = signer.sign(
+                        url: savedURLForReconnect,
+                        date: { serverDate }
+                    )
+                    return .invalidateSessionAndRetry(url: signedConnectionURL)
                 } else {
                     return fallbackDecoding(message)
                 }
             } catch {
-                return false
+                return .stopAndInvalidateSession
             }
         case .success:
-            return true
+            return .continueToReceive
         case .failure:
-            return false
+            return .stopAndInvalidateSession
         }
     }
 }

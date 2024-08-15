@@ -131,17 +131,17 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
                             continuation.yield(transcribedPayload)
                             let isPartial = transcribedPayload.transcript?.results?.map(\.isPartial) ?? []
                             let shouldContinue = isPartial.allSatisfy { $0 }
-                            return shouldContinue
+                            return shouldContinue ? .continueToReceive : .stopAndInvalidateSession
                         } catch {
-                            return true
+                            return .continueToReceive
                         }
                     case .success(.string):
-                        return true
+                        return .continueToReceive
                     case .failure(let error):
                         continuation.finish(throwing: error)
-                        return false
+                        return .stopAndInvalidateSession
                     @unknown default:
-                        return true
+                        return .continueToReceive
                     }
                 }
             }
