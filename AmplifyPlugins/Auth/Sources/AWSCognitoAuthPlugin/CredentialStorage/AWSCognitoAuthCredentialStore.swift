@@ -35,7 +35,11 @@ struct AWSCognitoAuthCredentialStore {
     private let userDefaults = UserDefaults.standard
     private let accessGroup: String?
 
-    init(authConfiguration: AuthConfiguration, accessGroup: String? = nil, migrateKeychainItemsOfUserSession: Bool = false) {
+    init(
+        authConfiguration: AuthConfiguration,
+        accessGroup: String? = nil,
+        migrateKeychainItemsOfUserSession: Bool = false
+    ) {
         self.authConfiguration = authConfiguration
         self.accessGroup = accessGroup
         if let accessGroup {
@@ -241,33 +245,14 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
             return
         }
         
-        let oldItems: [(key: String, value: Data)]
-        do {
-            oldItems = try oldKeychain._getAll()
-        } catch {
-            log.error("[AWSCognitoAuthCredentialStore] Error getting all items from keychain under old access group, aborting migration")
-            return
-        }
-
-        if oldItems.isEmpty {
-            log.verbose("[AWSCognitoAuthCredentialStore] No items in keychain under old access group, clearing keychain items under new access group")
-            return
-        }
-
-        for item in oldItems {
-            do {
-                try keychain._set(item.value, key: item.key)
-            } catch {
-                log.error("[AWSCognitoAuthCredentialStore] Error migrating one of the items, aborting migration: \(error)")
-                try? clearAllCredentials()
-                return
-            }
-        }
+        let oldService = oldAccessGroup != nil ? sharedService : service
+        let newService = accessGroup != nil ? sharedService : service
         
         do {
-            try oldKeychain._removeAll()
+            try KeychainStoreMigrator(oldService: oldService, newService: newService, oldAccessGroup: oldAccessGroup, newAccessGroup: accessGroup).migrate()
         } catch {
-            log.error("[AWSCognitoAuthCredentialStore] Error deleting all items from keychain under old access group after migration")
+            log.error("[AWSCognitoAuthCredentialStore] Migration has failed")
+            return
         }
         
         log.verbose("[AWSCognitoAuthCredentialStore] Migration of keychain items from old access group to new access group successful")
