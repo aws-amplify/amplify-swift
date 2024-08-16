@@ -75,13 +75,16 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     public init(service: String) {
-        attributes = KeychainStoreAttributes(service: service)
-        log.verbose("[KeychainStore] Initialized keychain with service=\(service), attributes=\(attributes), accessGroup=")
+        self.init(service: service, accessGroup: nil)
     }
 
     public init(service: String, accessGroup: String? = nil) {
         attributes = KeychainStoreAttributes(service: service, accessGroup: accessGroup)
-        log.verbose("[KeychainStore] Initialized keychain with service=\(service), attributes=\(attributes), accessGroup=\(attributes.accessGroup ?? "")")
+        log.verbose(
+            "[KeychainStore] Initialized keychain with service=\(service), " +
+            "attributes=\(attributes), " +
+            "accessGroup=\(attributes.accessGroup ?? "No access group specified")"
+        )
     }
 
     @_spi(KeychainStore)

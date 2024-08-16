@@ -46,8 +46,8 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
         return "awsCognitoAuthPlugin"
     }
 
-    /// Instantiates an instance of the AWSCognitoAuthPlugin with optionally custom network
-    /// preferences and custom secure storage preferences
+    /// Instantiates an instance of the AWSCognitoAuthPlugin with optional custom network
+    /// preferences and optional custom secure storage preferences
     /// - Parameters:
     ///   - networkPreferences: network preferences
     ///   - secureStoragePreferences: secure storage preferences

@@ -20,7 +20,12 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
         HubPayload.EventName.Auth.fetchSessionAPI
     }
 
-    init(_ request: AuthFetchSessionRequest, authStateMachine: AuthStateMachine, configuration: AuthConfiguration, forceReconfigure: Bool = false) {
+    init(
+        _ request: AuthFetchSessionRequest,
+        authStateMachine: AuthStateMachine,
+        configuration: AuthConfiguration,
+        forceReconfigure: Bool = false
+    ) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()

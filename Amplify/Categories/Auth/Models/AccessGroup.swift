@@ -16,14 +16,14 @@ public struct AccessGroup {
     }
 
     public static func none(migrateKeychainItemsOfUserSession: Bool) -> AccessGroup {
-        return .init(name: nil, migrateKeychainItems: migrateKeychainItemsOfUserSession)
+        return .init(migrateKeychainItems: migrateKeychainItemsOfUserSession)
     }
 
     public static var none: AccessGroup {
         return .none(migrateKeychainItemsOfUserSession: false)
     }
 
-    private init(name: String?, migrateKeychainItems: Bool) {
+    private init(name: String? = nil, migrateKeychainItems: Bool) {
         self.name = name
         self.migrateKeychainItems = migrateKeychainItems
     }
