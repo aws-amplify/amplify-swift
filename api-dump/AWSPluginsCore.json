@@ -6400,6 +6400,185 @@
       },
       {
         "kind": "TypeDecl",
+        "name": "KeychainStoreMigrator",
+        "printedName": "KeychainStoreMigrator",
+        "children": [
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(oldService:newService:oldAccessGroup:newAccessGroup:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "KeychainStoreMigrator",
+                "printedName": "AWSPluginsCore.KeychainStoreMigrator",
+                "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV10oldService03newG00F11AccessGroup0hiJ0ACSS_S2SSgAHtcfc",
+            "mangledName": "$s14AWSPluginsCore21KeychainStoreMigratorV10oldService03newG00F11AccessGroup0hiJ0ACSS_S2SSgAHtcfc",
+            "moduleName": "AWSPluginsCore",
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "migrate",
+            "printedName": "migrate()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV7migrateyyKF",
+            "mangledName": "$s14AWSPluginsCore21KeychainStoreMigratorV7migrateyyKF",
+            "moduleName": "AWSPluginsCore",
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Var",
+            "name": "log",
+            "printedName": "log",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Logger",
+                "printedName": "any Amplify.Logger",
+                "usr": "s:7Amplify6LoggerP"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvpZ",
+            "mangledName": "$s14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvpZ",
+            "moduleName": "AWSPluginsCore",
+            "static": true,
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Logger",
+                    "printedName": "any Amplify.Logger",
+                    "usr": "s:7Amplify6LoggerP"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvgZ",
+                "mangledName": "$s14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvgZ",
+                "moduleName": "AWSPluginsCore",
+                "static": true,
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "log",
+            "printedName": "log",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Logger",
+                "printedName": "any Amplify.Logger",
+                "usr": "s:7Amplify6LoggerP"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvp",
+            "mangledName": "$s14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvp",
+            "moduleName": "AWSPluginsCore",
+            "declAttributes": [
+              "Nonisolated"
+            ],
+            "isFromExtension": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Logger",
+                    "printedName": "any Amplify.Logger",
+                    "usr": "s:7Amplify6LoggerP"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvg",
+                "mangledName": "$s14AWSPluginsCore21KeychainStoreMigratorV3log7Amplify6Logger_pvg",
+                "moduleName": "AWSPluginsCore",
+                "isFromExtension": true,
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:14AWSPluginsCore21KeychainStoreMigratorV",
+        "mangledName": "$s14AWSPluginsCore21KeychainStoreMigratorV",
+        "moduleName": "AWSPluginsCore",
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "DefaultLogger",
+            "printedName": "DefaultLogger",
+            "usr": "s:7Amplify13DefaultLoggerP",
+            "mangledName": "$s7Amplify13DefaultLoggerP"
+          }
+        ]
+      },
+      {
+        "kind": "TypeDecl",
         "name": "AnyModel",
         "printedName": "AnyModel",
         "children": [
@@ -24368,7 +24547,7 @@
       "-module",
       "AWSPluginsCore",
       "-o",
-      "\/var\/folders\/hw\/1f0gcr8d6kn9ms0_wn0_57qc0000gn\/T\/tmp.Op48snuvLw\/AWSPluginsCore.json",
+      "\/var\/folders\/hw\/1f0gcr8d6kn9ms0_wn0_57qc0000gn\/T\/tmp.7FvtSuhXB9\/AWSPluginsCore.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
