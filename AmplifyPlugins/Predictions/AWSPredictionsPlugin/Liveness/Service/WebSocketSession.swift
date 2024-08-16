@@ -14,7 +14,7 @@ final class WebSocketSession {
     private var task: URLSessionWebSocketTask?
     private var receiveMessage: ((Result<URLSessionWebSocketTask.Message, Error>) -> WebSocketMessageResult)?
     private var onSocketClosed: ((URLSessionWebSocketTask.CloseCode) -> Void)?
-    private var onServerDateReceived: ((Date) -> Void)?
+    private var onServerDateReceived: ((Date?) -> Void)?
 
     init() {
         self.urlSessionWebSocketDelegate = Delegate()
@@ -37,7 +37,7 @@ final class WebSocketSession {
         urlSessionWebSocketDelegate.onOpen = onOpen
     }
     
-    func onServerDateReceived(_ onServerDateReceived: @escaping (Date) -> Void) {
+    func onServerDateReceived(_ onServerDateReceived: @escaping (Date?) -> Void) {
         urlSessionWebSocketDelegate.onServerDateReceived = onServerDateReceived
     }
 
@@ -89,7 +89,7 @@ final class WebSocketSession {
     final class Delegate: NSObject, URLSessionWebSocketDelegate, URLSessionTaskDelegate {
         var onClose: (URLSessionWebSocketTask.CloseCode) -> Void = { _ in }
         var onOpen: () -> Void = {}
-        var onServerDateReceived: (Date) -> Void = { _ in }
+        var onServerDateReceived: (Date?) -> Void = { _ in }
 
         // MARK: - URLSessionWebSocketDelegate methods
         func urlSession(
@@ -117,6 +117,7 @@ final class WebSocketSession {
             guard let httpResponse = metrics.transactionMetrics.first?.response as? HTTPURLResponse,
                   let dateString = httpResponse.value(forHTTPHeaderField: "Date") else {
                 Amplify.log.verbose("\(#function): Couldn't find Date header in URLSession metrics")
+                onServerDateReceived(nil)
                 return
             }
             
@@ -124,6 +125,7 @@ final class WebSocketSession {
             dateFormatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss z"
             guard let serverDate = dateFormatter.date(from: dateString) else {
                 Amplify.log.verbose("\(#function): Error parsing Date header in expected format")
+                onServerDateReceived(nil)
                 return
             }
             
