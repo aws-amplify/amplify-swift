@@ -15,12 +15,15 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
     typealias VoidHandler = () -> Void
 
     let data: String
+    let allData: [(key: String, value: Data)]
     let removeAllHandler: VoidHandler?
+    let mockKey: String = "mockKey"
 
     init(data: String,
          removeAllHandler: VoidHandler? = nil) {
         self.data = data
         self.removeAllHandler = removeAllHandler
+        self.allData = [(key: mockKey, value: Data(data.utf8))]
     }
 
     func _getString(_ key: String) throws -> String {
@@ -40,5 +43,9 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
 
     func _removeAll() throws {
         removeAllHandler?()
+    }
+    
+    func _getAll() throws -> [(key: String, value: Data)] {
+        return allData
     }
 }

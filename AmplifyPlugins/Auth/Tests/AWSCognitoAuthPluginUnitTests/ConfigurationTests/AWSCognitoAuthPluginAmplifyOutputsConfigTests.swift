@@ -123,4 +123,84 @@ class AWSCognitoAuthPluginAmplifyOutputsConfigTests: XCTestCase {
             XCTFail("Should not throw error. \(error)")
         }
     }
+    
+    /// Test Auth configuration with valid config for user pool and identity pool, with secure storage preferences
+    ///
+    /// - Given: Given valid config for user pool and identity pool with secure storage preferences
+    /// - When:
+    ///    - I configure auth with the given configuration and secure storage preferences
+    /// - Then:
+    ///    - I should not get any error while configuring auth
+    ///
+    func testConfigWithUserPoolAndIdentityPoolWithSecureStoragePreferences() throws {
+        let plugin = AWSCognitoAuthPlugin(
+            secureStoragePreferences: .init(
+                accessGroup: AccessGroup(name: "xx")
+            )
+        )
+        try Amplify.add(plugin: plugin)
+
+        let amplifyConfig = AmplifyOutputsData(auth: .init(
+                awsRegion: "us-east-1",
+                userPoolId: "xx",
+                userPoolClientId: "xx",
+                identityPoolId: "xx"))
+
+        do {
+            try Amplify.configure(amplifyConfig)
+
+            let escapeHatch = plugin.getEscapeHatch()
+            guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = escapeHatch else {
+                XCTFail("Expected .userPool, got \(escapeHatch)")
+                return
+            }
+            XCTAssertNotNil(userPoolClient)
+            XCTAssertNotNil(identityPoolClient)
+
+        } catch {
+            XCTFail("Should not throw error. \(error)")
+        }
+    }
+    
+    /// Test Auth configuration with valid config for user pool and identity pool, with network preferences and secure storage preferences
+    ///
+    /// - Given: Given valid config for user pool and identity pool, network preferences, and secure storage preferences
+    /// - When:
+    ///    - I configure auth with the given configuration, network preferences, and secure storage preferences
+    /// - Then:
+    ///    - I should not get any error while configuring auth
+    ///
+    func testConfigWithUserPoolAndIdentityPoolWithNetworkPreferencesAndSecureStoragePreferences() throws {
+        let plugin = AWSCognitoAuthPlugin(
+            networkPreferences: .init(
+                maxRetryCount: 2,
+                timeoutIntervalForRequest: 60,
+                timeoutIntervalForResource: 60),
+            secureStoragePreferences: .init(
+                accessGroup: AccessGroup(name: "xx")
+            )
+        )
+        try Amplify.add(plugin: plugin)
+
+        let amplifyConfig = AmplifyOutputsData(auth: .init(
+                awsRegion: "us-east-1",
+                userPoolId: "xx",
+                userPoolClientId: "xx",
+                identityPoolId: "xx"))
+
+        do {
+            try Amplify.configure(amplifyConfig)
+
+            let escapeHatch = plugin.getEscapeHatch()
+            guard case .userPoolAndIdentityPool(let userPoolClient, let identityPoolClient) = escapeHatch else {
+                XCTFail("Expected .userPool, got \(escapeHatch)")
+                return
+            }
+            XCTAssertNotNil(userPoolClient)
+            XCTAssertNotNil(identityPoolClient)
+
+        } catch {
+            XCTFail("Should not throw error. \(error)")
+        }
+    }
 }
