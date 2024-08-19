@@ -19,6 +19,6 @@ extension AWSS3StoragePlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.getEscapeHatch
     public func getEscapeHatch() -> S3Client {
-        return storageService.getEscapeHatch()
+        return defaultStorageService.getEscapeHatch()
     }
 }

@@ -20,10 +20,6 @@ struct StorageConfiguration {
     let allowsCellularAccess: Bool
     let timeoutIntervalForResource: TimeInterval
 
-    static let `default`: StorageConfiguration = {
-        StorageConfiguration()
-    }()
-
     init(sessionIdentifier: String = Defaults.sessionIdentifier,
          sharedContainerIdentifier: String = Defaults.sharedContainerIdentifier,
          allowsCellularAccess: Bool = Defaults.allowsCellularAccess,
@@ -32,5 +28,11 @@ struct StorageConfiguration {
         self.sharedContainerIdentifier = sharedContainerIdentifier
         self.allowsCellularAccess = allowsCellularAccess
         self.timeoutIntervalForResource = timeoutIntervalForResource
+    }
+
+    init(forBucket bucket: String) {
+        self.init(
+            sessionIdentifier: "\(Defaults.sessionIdentifier).\(bucket)"
+        )
     }
 }

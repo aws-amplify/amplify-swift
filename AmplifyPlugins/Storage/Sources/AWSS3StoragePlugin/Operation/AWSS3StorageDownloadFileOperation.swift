@@ -25,23 +25,29 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
 >, StorageDownloadFileOperation {
 
     let storageConfiguration: AWSS3StoragePluginConfiguration
-    let storageService: AWSS3StorageServiceBehavior
+    let storageServiceProvider: AWSS3StorageServiceProvider
     let authService: AWSAuthServiceBehavior
     var storageTaskReference: StorageTaskReference?
 
     // Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
+    private var storageService: AWSS3StorageServiceBehavior {
+        get throws {
+            return try storageServiceProvider()
+        }
+    }
+
     init(_ request: StorageDownloadFileRequest,
          storageConfiguration: AWSS3StoragePluginConfiguration,
-         storageService: AWSS3StorageServiceBehavior,
+         storageServiceProvider: @escaping AWSS3StorageServiceProvider,
          authService: AWSAuthServiceBehavior,
          progressListener: InProcessListener? = nil,
          resultListener: ResultListener? = nil
     ) {
 
         self.storageConfiguration = storageConfiguration
-        self.storageService = storageService
+        self.storageServiceProvider = storageServiceProvider
         self.authService = authService
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadFile,
@@ -99,7 +105,7 @@ class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
                     serviceKey = prefix + request.key
                 }
                 let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
-                storageService.download(
+                try storageService.download(
                     serviceKey: serviceKey,
                     fileURL: self.request.local,
                     accelerate: accelerate
