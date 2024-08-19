@@ -6,13 +6,15 @@
 //
 
 import Foundation
+import Amplify
 
 final class WebSocketSession {
     private let urlSessionWebSocketDelegate: Delegate
     private let session: URLSession
     private var task: URLSessionWebSocketTask?
-    private var receiveMessage: ((Result<URLSessionWebSocketTask.Message, Error>) -> Bool)?
+    private var receiveMessage: ((Result<URLSessionWebSocketTask.Message, Error>) -> WebSocketMessageResult)?
     private var onSocketClosed: ((URLSessionWebSocketTask.CloseCode) -> Void)?
+    private var onServerDateReceived: ((Date?) -> Void)?
 
     init() {
         self.urlSessionWebSocketDelegate = Delegate()
@@ -23,7 +25,7 @@ final class WebSocketSession {
         )
     }
 
-    func onMessageReceived(_ receive: @escaping (Result<URLSessionWebSocketTask.Message, Error>) -> Bool) {
+    func onMessageReceived(_ receive: @escaping (Result<URLSessionWebSocketTask.Message, Error>) -> WebSocketMessageResult) {
         self.receiveMessage = receive
     }
 
@@ -34,25 +36,32 @@ final class WebSocketSession {
     func onSocketOpened(_ onOpen: @escaping () -> Void) {
         urlSessionWebSocketDelegate.onOpen = onOpen
     }
+    
+    func onServerDateReceived(_ onServerDateReceived: @escaping (Date?) -> Void) {
+        urlSessionWebSocketDelegate.onServerDateReceived = onServerDateReceived
+    }
 
-    func receive(shouldContinue: Bool) {
-        guard shouldContinue else {
+    func receive(result: WebSocketMessageResult) {
+        switch result {
+        case .continueToReceive:
+            task?.receive(completionHandler: { [weak self] result in
+                if let webSocketResult = self?.receiveMessage?(result) {
+                    self?.receive(result: webSocketResult)
+                }
+            })
+        case .stopAndInvalidateSession:
             session.finishTasksAndInvalidate()
-            return
+        case .invalidateSessionAndRetry(let url):
+            session.finishTasksAndInvalidate()
+            open(url: url)
         }
-
-        task?.receive(completionHandler: { [weak self] result in
-            if let shouldContinue = self?.receiveMessage?(result) {
-                self?.receive(shouldContinue: shouldContinue)
-            }
-        })
     }
 
     func open(url: URL) {
         var request = URLRequest(url: url)
         request.setValue("no-store", forHTTPHeaderField: "Cache-Control")
         task = session.webSocketTask(with: request)
-        receive(shouldContinue: true)
+        receive(result: .continueToReceive)
         task?.resume()
     }
 
@@ -77,10 +86,12 @@ final class WebSocketSession {
         )
     }
 
-    final class Delegate: NSObject, URLSessionWebSocketDelegate {
+    final class Delegate: NSObject, URLSessionWebSocketDelegate, URLSessionTaskDelegate {
         var onClose: (URLSessionWebSocketTask.CloseCode) -> Void = { _ in }
         var onOpen: () -> Void = {}
+        var onServerDateReceived: (Date?) -> Void = { _ in }
 
+        // MARK: - URLSessionWebSocketDelegate methods
         func urlSession(
             _ session: URLSession,
             webSocketTask: URLSessionWebSocketTask,
@@ -97,5 +108,34 @@ final class WebSocketSession {
         ) {
             onClose(closeCode)
         }
+        
+        // MARK: - URLSessionTaskDelegate methods
+        func urlSession(_ session: URLSession,
+                        task: URLSessionTask,
+                        didFinishCollecting metrics: URLSessionTaskMetrics
+        ) {
+            guard let httpResponse = metrics.transactionMetrics.first?.response as? HTTPURLResponse,
+                  let dateString = httpResponse.value(forHTTPHeaderField: "Date") else {
+                Amplify.log.verbose("\(#function): Couldn't find Date header in URLSession metrics")
+                onServerDateReceived(nil)
+                return
+            }
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "EEE, d MMM yyyy HH:mm:ss z"
+            guard let serverDate = dateFormatter.date(from: dateString) else {
+                Amplify.log.verbose("\(#function): Error parsing Date header in expected format")
+                onServerDateReceived(nil)
+                return
+            }
+            
+            onServerDateReceived(serverDate)
+        }
+    }
+    
+    enum WebSocketMessageResult {
+        case continueToReceive
+        case stopAndInvalidateSession
+        case invalidateSessionAndRetry(url: URL)
     }
 }

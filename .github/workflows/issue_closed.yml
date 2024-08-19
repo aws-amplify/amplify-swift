@@ -10,16 +10,16 @@ permissions:
 jobs:
   cleanup-labels:
     runs-on: ubuntu-latest
-    if: ${{ (contains(github.event.issue.labels.*.name, 'pending-response') || contains(github.event.issue.labels.*.name, 'closing soon') || contains(github.event.issue.labels.*.name, 'pending-release')) }}
+    if: ${{ (contains(github.event.issue.labels.*.name, 'pending-community-response') || contains(github.event.issue.labels.*.name, 'pending-maintainer-response') || contains(github.event.issue.labels.*.name, 'closing soon') || contains(github.event.issue.labels.*.name, 'pending-release')|| contains(github.event.issue.labels.*.name, 'pending-triage')) }}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       - name: remove unnecessary labels after closing
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPOSITORY_NAME: ${{ github.event.repository.full_name }}
         run: |
-          gh issue edit $ISSUE_NUMBER --remove-label "closing soon" --remove-label "pending-response" --remove-label "pending-release"
+          gh issue edit $ISSUE_NUMBER --repo $REPOSITORY_NAME --remove-label "closing soon" --remove-label "pending-community-response" --remove-label "pending-maintainer-response" --remove-label "pending-release" --remove-label "pending-triage"
 
   comment-visibility-warning:
     runs-on: ubuntu-latest
