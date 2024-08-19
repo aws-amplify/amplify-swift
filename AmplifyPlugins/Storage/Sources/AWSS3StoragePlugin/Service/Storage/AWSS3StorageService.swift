@@ -57,13 +57,14 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
                      region: String,
                      bucket: String,
                      httpClientEngineProxy: HttpClientEngineProxy? = nil,
-                     storageConfiguration: StorageConfiguration = .default,
+                     storageConfiguration: StorageConfiguration? = nil,
                      storageTransferDatabase: StorageTransferDatabase = .default,
                      fileSystem: FileSystem = .default,
                      sessionConfiguration: URLSessionConfiguration? = nil,
                      delegateQueue: OperationQueue? = nil,
                      logger: Logger = storageLogger) throws {
         let credentialsProvider = authService.getCredentialsProvider()
+        let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
         let clientConfig = try S3Client.S3ClientConfiguration(
             region: region,
             credentialsProvider: credentialsProvider,
@@ -113,7 +114,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
     }
 
     init(authService: AWSAuthCredentialsProviderBehavior,
-         storageConfiguration: StorageConfiguration = .default,
+         storageConfiguration: StorageConfiguration? = nil,
          storageTransferDatabase: StorageTransferDatabase = .default,
          fileSystem: FileSystem = .default,
          sessionConfiguration: URLSessionConfiguration,
@@ -123,6 +124,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehavior, StorageServiceProxy {
          preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
          awsS3: AWSS3Behavior,
          bucket: String) {
+        let storageConfiguration = storageConfiguration ?? .init(forBucket: bucket)
         self.storageConfiguration = storageConfiguration
         self.storageTransferDatabase = storageTransferDatabase
         self.fileSystem = fileSystem

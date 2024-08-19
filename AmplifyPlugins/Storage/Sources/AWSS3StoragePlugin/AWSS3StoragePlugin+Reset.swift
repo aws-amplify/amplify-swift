@@ -18,10 +18,19 @@ extension AWSS3StoragePlugin {
     ///
     /// - Tag: AWSS3StoragePlugin.reset
     public func reset() async {
-        if storageService != nil {
-            storageService.reset()
-            storageService = nil
+        if defaultBucket != nil {
+            defaultBucket = nil
         }
+
+        for storageService in storageServicesByBucket.values {
+            storageService.reset()
+        }
+        storageServicesByBucket.removeAll()
+
+        if additionalBucketsByName != nil {
+            additionalBucketsByName = nil
+        }
+
         if authService != nil {
             authService = nil
         }
