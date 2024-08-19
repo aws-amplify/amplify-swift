@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.38.0 (2024-08-19)
+
+### Features
+
+- **predictions**: add web socket retry for clock skew (#3816)
+
 ## 2.37.0 (2024-08-12)
 
 ### Features
