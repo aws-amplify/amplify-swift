@@ -292,7 +292,7 @@ actor AppSyncRealTimeClient: AppSyncRealTimeClientProtocol {
         subject.filter {
             switch $0 {
             case .success(let response): return response.id == id || response.type == .connectionError
-            case .failure(let error): return true
+            case .failure: return true
             }
         }
         .map { result -> AppSyncSubscriptionEvent? in
@@ -430,7 +430,7 @@ extension AppSyncRealTimeClient {
         }
     }
 
-    private func monitorHeartBeats(_ connectionAck: JSONValue?) {
+    internal func monitorHeartBeats(_ connectionAck: JSONValue?) {
         let timeoutMs = connectionAck?.connectionTimeoutMs?.intValue ?? 0
         log.debug("[AppSyncRealTimeClient] Starting heart beat monitor with interval \(timeoutMs) ms")
         let cancellable = heartBeats.eraseToAnyPublisher()
