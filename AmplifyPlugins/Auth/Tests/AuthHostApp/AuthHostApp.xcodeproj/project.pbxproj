@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21CFD7C62C7524570071C70F /* AppSyncSignerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21CFD7C52C7524570071C70F /* AppSyncSignerTests.swift */; };
 		21F762A52BD6B1AA0048845A /* AuthSessionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5B727B61F0F006CCEC7 /* AuthSessionHelper.swift */; };
 		21F762A62BD6B1AA0048845A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA828E747B80000C36A /* AsyncTesting.swift */; };
 		21F762A72BD6B1AA0048845A /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
@@ -169,6 +170,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21CFD7C52C7524570071C70F /* AppSyncSignerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncSignerTests.swift; sourceTree = "<group>"; };
 		21F762CB2BD6B1AA0048845A /* AuthGen2IntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthGen2IntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21F762CC2BD6B1CD0048845A /* AuthGen2IntegrationTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AuthGen2IntegrationTests.xctestplan; sourceTree = "<group>"; };
 		4821B2F1286B5F74000EC1D7 /* AuthDeleteUserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthDeleteUserTests.swift; sourceTree = "<group>"; };
@@ -268,6 +270,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		21CFD7C42C75243B0071C70F /* AppSyncSignerTests */ = {
+			isa = PBXGroup;
+			children = (
+				21CFD7C52C7524570071C70F /* AppSyncSignerTests.swift */,
+			);
+			path = AppSyncSignerTests;
+			sourceTree = "<group>";
+		};
 		4821B2F0286B5F74000EC1D7 /* AuthDeleteUserTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -355,6 +365,7 @@
 		485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				21CFD7C42C75243B0071C70F /* AppSyncSignerTests */,
 				21F762CC2BD6B1CD0048845A /* AuthGen2IntegrationTests.xctestplan */,
 				48916F362A412AF800E3E1B1 /* MFATests */,
 				97B370C32878DA3500F1C088 /* DeviceTests */,
@@ -851,6 +862,7 @@
 				681DFEAC28E747B80000C36A /* AsyncExpectation.swift in Sources */,
 				48E3AB3128E52590004EE395 /* GetCurrentUserTests.swift in Sources */,
 				48916F3A2A412CEE00E3E1B1 /* TOTPHelper.swift in Sources */,
+				21CFD7C62C7524570071C70F /* AppSyncSignerTests.swift in Sources */,
 				485CB5B127B61EAC006CCEC7 /* AWSAuthBaseTest.swift in Sources */,
 				485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */,
 				485CB5BA27B61F10006CCEC7 /* AuthSignInHelper.swift in Sources */,
