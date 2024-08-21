@@ -25,7 +25,6 @@ class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
     }
 
     func execute() async throws -> AuthSignUpResult {
-        log.verbose("Starting execution")
         let userPoolEnvironment = authEnvironment.userPoolEnvironment
         try request.hasError()
 

@@ -34,7 +34,6 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask, 
     }
 
     public func execute() async throws -> FederateToIdentityPoolResult {
-        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
         let state = await authStateMachine.currentState
         guard case .configured(let authNState, let authZState) = state  else {
