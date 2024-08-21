@@ -12,10 +12,7 @@ import AWSPluginsCore
 import Foundation
 
 public class AmplifyAWSCredentialsProvider: AWSClientRuntime.CredentialsProviding {
-
-    public init() {
-    }
-
+    
     public func getCredentials() async throws -> AWSClientRuntime.AWSCredentials {
         let authSession = try await Amplify.Auth.fetchAuthSession()
         if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {

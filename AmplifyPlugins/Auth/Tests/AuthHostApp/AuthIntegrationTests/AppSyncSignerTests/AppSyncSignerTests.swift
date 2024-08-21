@@ -15,14 +15,14 @@ class AppSyncSignerTests: AWSAuthBaseTest {
     ///
     /// - Given: Base test configures Amplify and adds AWSCognitoAuthPlugin
     /// - When:
-    ///    - I invoke AWSCognitoAuthPlugin.signAppSyncRequest(request, region)
+    ///    - I invoke AWSCognitoAuthPlugin's AppSync signer
     /// - Then:
     ///    - I should get a signed request.
     ///
     func testSignAppSyncRequest() async throws {
         let request = URLRequest(url: URL(string: "http://graphql.com")!)
-        let signedRequest = try await AWSCognitoAuthPlugin.signAppSyncRequest(request, region: "us-east-1")
-
+        let signer = AWSCognitoAuthPlugin.createAppSyncSigner(region: "us-east-1")
+        let signedRequest = try await signer(request)
         guard let headers = signedRequest.allHTTPHeaderFields else {
             XCTFail("Missing headers")
             return

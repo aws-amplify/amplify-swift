@@ -6,23 +6,25 @@
 //
 
 import Foundation
+import Amplify // Amplify.Auth
+import AWSPluginsCore // AuthAWSCredentialsProvider
 import AWSClientRuntime // AWSClientRuntime.CredentialsProviding
 import ClientRuntime // SdkHttpRequestBuilder
-import InternalAmplifyCredentials // AmplifyAWSCredentialsProvider()
 import AwsCommonRuntimeKit // CommonRuntimeKit.initialize()
 
 extension AWSCognitoAuthPlugin {
 
     public static func createAppSyncSigner(region: String) -> ((URLRequest) async throws -> URLRequest) {
         return { request in
-            try await signAppSyncRequest(request, region: region)
+            try await signAppSyncRequest(request, 
+                                         region: region)
         }
     }
-    public static func signAppSyncRequest(_ urlRequest: URLRequest,
-                                          region: Swift.String,
-                                          credentialsProvider: AWSClientRuntime.CredentialsProviding = AmplifyAWSCredentialsProvider(),
-                                          signingName: Swift.String = "appsync",
-                                          date: ClientRuntime.Date = Date()) async throws -> URLRequest {
+    
+    static func signAppSyncRequest(_ urlRequest: URLRequest,
+                                   region: Swift.String,
+                                   signingName: Swift.String = "appsync",
+                                   date: ClientRuntime.Date = Date()) async throws -> URLRequest {
         CommonRuntimeKit.initialize()
 
         // Convert URLRequest to SDK's HTTPRequest
@@ -32,7 +34,15 @@ extension AWSCognitoAuthPlugin {
         }
 
         // Retrieve the credentials from credentials provider
-        let credentials = try await credentialsProvider.getCredentials()
+        let credentials: AWSClientRuntime.AWSCredentials
+        let authSession = try await Amplify.Auth.fetchAuthSession()
+        if let awsCredentialsProvider = authSession as? AuthAWSCredentialsProvider {
+            let awsCredentials = try awsCredentialsProvider.getAWSCredentials().get()
+            credentials = awsCredentials.toAWSSDKCredentials()
+        } else {
+            let error = AuthError.unknown("Auth session does not include AWS credentials information")
+            throw error
+        }
 
         // Prepare signing
         let flags = SigningFlags(useDoubleURIEncode: true,
@@ -98,5 +108,24 @@ extension AWSCognitoAuthPlugin {
             .withBody(.data(urlRequest.httpBody))
 
         return requestBuilder
+    }
+}
+
+extension AWSPluginsCore.AWSCredentials {
+
+    func toAWSSDKCredentials() -> AWSClientRuntime.AWSCredentials {
+        if let tempCredentials = self as? AWSTemporaryCredentials {
+            return AWSClientRuntime.AWSCredentials(
+                accessKey: tempCredentials.accessKeyId,
+                secret: tempCredentials.secretAccessKey,
+                expirationTimeout: tempCredentials.expiration,
+                sessionToken: tempCredentials.sessionToken)
+        } else {
+            return AWSClientRuntime.AWSCredentials(
+                accessKey: accessKeyId,
+                secret: secretAccessKey,
+                expirationTimeout: Date())
+        }
+
     }
 }
