@@ -50,7 +50,6 @@ public extension StorageBucket where Self == ResolvedStorageBucket {
     }
 }
 
-
 /// Conforms to `StorageBucket`. Represents a Storage Bucket defined by a name in the AmplifyOutputs file.
 ///
 /// - Tag: OutputsStorageBucket
@@ -63,4 +62,20 @@ public struct OutputsStorageBucket: StorageBucket {
 /// - Tag: ResolvedStorageBucket
 public struct ResolvedStorageBucket: StorageBucket {
     public let bucketInfo: BucketInfo
+}
+
+public extension Optional where Wrapped == any StorageBucket {
+    /// References a `StorageBucket` in the AmplifyOutputs file using the given name.
+    ///
+    /// - Parameter name: The name of the bucket
+    static func fromOutputs(name: String) -> (any StorageBucket)? {
+        return OutputsStorageBucket.fromOutputs(name: name)
+    }
+
+    /// References a `StorageBucket` using the data from the given `BucketInfo`.
+    ///
+    /// - Parameter bucketInfo: A `BucketInfo` instance
+    static func fromBucketInfo(_ bucketInfo: BucketInfo) -> (any StorageBucket)? {
+        return ResolvedStorageBucket.fromBucketInfo(bucketInfo)
+    }
 }
