@@ -14,6 +14,15 @@ import AwsCommonRuntimeKit // CommonRuntimeKit.initialize()
 
 extension AWSCognitoAuthPlugin {
 
+
+    /// Creates a AWS IAM SigV4 signer capable of signing AWS AppSync requests.
+    ///
+    /// **Note**. Although this method is static, **Amplify.Auth** is required to be configured with **AWSCognitoAuthPlugin** as
+    /// it depends on the credentials provider from Cognito through `Amplify.Auth.fetchAuthSession()`. The static type allows
+    /// developers to simplify their callsite without having to access the method on the plugin instance.
+    ///
+    /// - Parameter region: The region of the AWS AppSync API
+    /// - Returns: A closure that takes in a requestand returns a signed request.
     public static func createAppSyncSigner(region: String) -> ((URLRequest) async throws -> URLRequest) {
         return { request in
             try await signAppSyncRequest(request, 

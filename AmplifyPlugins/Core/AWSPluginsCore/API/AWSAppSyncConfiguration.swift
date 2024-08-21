@@ -8,11 +8,25 @@
 import Foundation
 @_spi(InternalAmplifyConfiguration) import Amplify
 
+
+/// Hold necessary AWS AppSync configuration values to interact with the AppSync API
 public struct AWSAppSyncConfiguration {
+    
+    /// The region of the AWS AppSync API
     public let region: String
+
+    /// The endpoint of the AWS AppSync API
     public let endpoint: URL
+
+    /// API key for API Key authentication.
     public let apiKey: String?
 
+
+    /// Initializes an `AWSAppSyncConfiguration` instance using the provided AmplifyOutputs file.
+    /// AmplifyOutputs support multiple ways to read the `amplify_outputs.json` configuration file
+    ///
+    /// For example, `try AWSAppSyncConfiguraton(with: .amplifyOutputs)` will read the
+    /// `amplify_outputs.json` file from the main bundle.
     public init(with amplifyOutputs: AmplifyOutputs) throws {
         let resolvedConfiguration = try amplifyOutputs.resolveConfiguration()
 
@@ -28,6 +42,5 @@ public struct AWSAppSyncConfiguration {
         }
         self.endpoint = endpoint
         self.apiKey = dataCategory.apiKey
-
     }
 }
