@@ -89,8 +89,16 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
             XCTFail("Unable to save credentials")
         }
 
+        // When configuration changed
+        let updatedConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            UserPoolConfigurationData(poolId: Defaults.userPoolId,
+                                      clientId: Defaults.appClientId,
+                                      region: Defaults.regionString,
+                                      clientSecret: Defaults.appClientSecret,
+                                      pinpointAppId: "somethingNew"),
+            Defaults.makeIdentityConfigData())
         // When configuration don't change changed
-        let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
+        let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: updatedConfig)
 
         // Then
         guard let credentials = try? newCredentialStore.retrieveCredential(),
