@@ -366,10 +366,6 @@ struct MockLegacyStore: KeychainStoreBehavior {
     func _removeAll() throws {
 
     }
-    
-    func _getAll() throws -> [(key: String, value: Data)] {
-        return []
-    }
 
 }
 
