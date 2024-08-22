@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-class FetchAuthSessionOperationHelper: DefaultLogger {
+class FetchAuthSessionOperationHelper {
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 
@@ -108,85 +108,41 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
                                      "Auth plugin is in an invalid state")
     }
 
-    func sessionResultWithError(_ error: AuthorizationError,
-                                authenticationState: AuthenticationState)
-    throws -> AuthSession {
-        log.verbose("Received error - \(error)")
+    func sessionResultWithError(
+        _ error: AuthorizationError,
+        authenticationState: AuthenticationState
+    ) throws -> AuthSession {
+        log.verbose("Received fetch auth session error - \(error)")
 
         var isSignedIn = false
+        var authError: AuthError = error.authError
+
         if case .signedIn = authenticationState {
             isSignedIn = true
         }
+
         switch error {
-        case .sessionError(let fetchError, let credentials):
-            return try sessionResultWithFetchError(fetchError,
-                                                   authenticationState: authenticationState,
-                                                   existingCredentials: credentials)
+        case .sessionError(let fetchError, _):
+            if (fetchError == .notAuthorized || fetchError == .noCredentialsToRefresh) && !isSignedIn {
+                return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
+            } else {
+                authError = fetchError.authError
+            }
         case .sessionExpired(let error):
             let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession(
                 underlyingError: error)
             return session
         default:
-            let message = "Unknown error occurred"
-            let error = AuthError.unknown(message)
-            let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
-                                                identityIdResult: .failure(error),
-                                                awsCredentialsResult: .failure(error),
-                                                cognitoTokensResult: .failure(error))
-            return session
-        }
-    }
-
-    func sessionResultWithFetchError(_ error: FetchSessionError,
-                                     authenticationState: AuthenticationState,
-                                     existingCredentials: AmplifyCredentials)
-    throws -> AuthSession {
-
-        var isSignedIn = false
-        if case .signedIn = authenticationState {
-            isSignedIn = true
+            break
         }
 
-        switch error {
-
-        case .notAuthorized, .noCredentialsToRefresh:
-            if !isSignedIn {
-                return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
-            }
-
-        case .service(let error):
-            var authError: AuthError
-            if let convertedAuthError = (error as? AuthErrorConvertible)?.authError {
-                authError = convertedAuthError
-            } else {
-                authError = AuthError.service(
-                    "Unknown service error occurred",
-                    "See the attached error for more details",
-                    error)
-            }
-            let session = AWSAuthCognitoSession(
-                isSignedIn: isSignedIn,
-                identityIdResult: .failure(authError),
-                awsCredentialsResult: .failure(authError),
-                cognitoTokensResult: .failure(authError))
-            return session
-        default: break
-
-        }
-        let message = "Unknown error occurred"
-        let error = AuthError.unknown(message)
-        let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
-                                            identityIdResult: .failure(error),
-                                            awsCredentialsResult: .failure(error),
-                                            cognitoTokensResult: .failure(error))
+        let session = AWSAuthCognitoSession(
+            isSignedIn: isSignedIn,
+            identityIdResult: .failure(authError),
+            awsCredentialsResult: .failure(authError),
+            cognitoTokensResult: .failure(authError))
         return session
     }
-
-    public static var log: Logger {
-        Amplify.Logging.logger(forCategory: CategoryType.auth.displayName, forNamespace: String(describing: self))
-    }
-
-    public var log: Logger {
-        Self.log
-    }
 }
+
+extension FetchAuthSessionOperationHelper: DefaultLogger { }
