@@ -29,18 +29,20 @@ extension LivenessEvent where T == FreshnessEvent {
     public static func freshness(event: FreshnessEvent) throws -> Self {
         let clientEvent = ClientSessionInformationEvent(
             challenge: .init(
-                faceMovementAndLightChallenge: .init(
-                    challengeID: event.challengeID,
-                    targetFace: nil,
-                    initialFace: nil,
-                    videoStartTimestamp: nil,
-                    colorDisplayed: .init(
-                        currentColor: .init(rgb: event.color),
-                        sequenceNumber: event.sequenceNumber,
-                        currentColorStartTimeStamp: event.timestamp,
-                        previousColor: .init(rgb: event.previousColor)
-                    ),
-                    videoEndTimeStamp: nil
+                clientChallengeType: .faceMovementAndLightChallenge(
+                    challenge: .init(
+                        challengeID: event.challengeID,
+                        targetFace: nil,
+                        initialFace: nil,
+                        videoStartTimestamp: nil,
+                        colorDisplayed: .init(
+                            currentColor: .init(rgb: event.color),
+                            sequenceNumber: event.sequenceNumber,
+                            currentColorStartTimeStamp: event.timestamp,
+                            previousColor: .init(rgb: event.previousColor)
+                        ),
+                        videoEndTimeStamp: nil
+                    )
                 )
             )
         )
