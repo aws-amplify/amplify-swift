@@ -53,10 +53,6 @@ public protocol KeychainStoreBehavior {
     /// This System Programming Interface (SPI) may have breaking changes in future updates.
     func _removeAll() throws
     
-    @_spi(KeychainStore)
-    /// Retrieves all key-value pairs in the keychain
-    /// This System Programming Interface (SPI) may have breaking changes in future updates.
-    func _getAll() throws -> [(key: String, value: Data)]
 }
 
 public struct KeychainStore: KeychainStoreBehavior {
@@ -235,48 +231,6 @@ public struct KeychainStore: KeychainStoreBehavior {
             throw KeychainStoreError.securityError(status)
         }
         log.verbose("[KeychainStore] Successfully removed all items from keychain")
-    }
-    
-    @_spi(KeychainStore)
-    /// Retrieves all key-value pairs in the keychain
-    /// This System Programming Interface (SPI) may have breaking changes in future updates.
-    public func _getAll() throws -> [(key: String, value: Data)] {
-        log.verbose("[KeychainStore] Starting to retrieve all items from keychain")
-        var query = attributes.defaultGetQuery()
-        query[Constants.MatchLimit] = Constants.MatchLimitAll
-        query[Constants.ReturnData] = kCFBooleanTrue
-        query[Constants.ReturnAttributes] = kCFBooleanTrue
-        query[Constants.ReturnRef] = kCFBooleanTrue
-
-        var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
-
-        switch status {
-        case errSecSuccess:
-            guard let items = result as? [[String: Any]] else {
-                log.error("[KeychainStore] The keychain items retrieved are not the correct type")
-                throw KeychainStoreError.unknown("The keychain items retrieved are not the correct type")
-            }
-
-            var keyValuePairs = [(key: String, value: Data)]()
-            for item in items {
-                guard let key = item[Constants.AttributeAccount] as? String,
-                      let value = item[Constants.ValueData] as? Data else {
-                    log.error("[KeychainStore] Unable to retrieve key or value from keychain item")
-                    continue
-                }
-                keyValuePairs.append((key: key, value: value))
-            }
-
-            log.verbose("[KeychainStore] Successfully retrieved \(keyValuePairs.count) items from keychain")
-            return keyValuePairs
-        case errSecItemNotFound:
-            log.verbose("[KeychainStore] No items found in keychain")
-            return []
-        default:
-            log.error("[KeychainStore] Error of status=\(status) occurred when attempting to retrieve all items from keychain")
-            throw KeychainStoreError.securityError(status)
-        }
     }
 
 }

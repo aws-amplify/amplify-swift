@@ -20,15 +20,21 @@ public struct KeychainStoreMigrator {
     public func migrate() throws {
         log.verbose("[KeychainStoreMigrator] Starting to migrate items")
 
+        // Check if there are any existing items under the new service and access group
+        let existingItemsQuery = newAttributes.defaultGetQuery()
+        let existingItemsStatus = SecItemCopyMatching(existingItemsQuery as CFDictionary, nil)
+
+        if existingItemsStatus == errSecSuccess {
+            // Remove existing items to avoid duplicate item error
+            try? KeychainStore(service: newAttributes.service, accessGroup: newAttributes.accessGroup)._removeAll()
+        }
+        
         var updateQuery = oldAttributes.defaultGetQuery()
 
         var updateAttributes = [String: Any]()
         updateAttributes[KeychainStore.Constants.AttributeService] = newAttributes.service
         updateAttributes[KeychainStore.Constants.AttributeAccessGroup] = newAttributes.accessGroup
 
-        // Remove any current items to avoid duplicate item error
-        try? KeychainStore(service: newAttributes.service, accessGroup: newAttributes.accessGroup)._removeAll()
-        
         let updateStatus = SecItemUpdate(updateQuery as CFDictionary, updateAttributes as CFDictionary)
         switch updateStatus {
         case errSecSuccess:
@@ -47,10 +53,4 @@ public struct KeychainStoreMigrator {
     }
 }
 
-extension KeychainStoreMigrator: DefaultLogger {
-    public static var log: Logger {
-        Amplify.Logging.logger(forNamespace: String(describing: self))
-    }
-
-    public nonisolated var log: Logger { Self.log }
-}
+extension KeychainStoreMigrator: DefaultLogger { }
