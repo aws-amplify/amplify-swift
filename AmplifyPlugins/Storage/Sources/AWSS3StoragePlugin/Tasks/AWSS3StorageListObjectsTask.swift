@@ -56,6 +56,7 @@ class AWSS3StorageListObjectsTask: StorageListObjectsTask, DefaultLogger {
                 }
                 return StorageListResult.Item(
                     path: path,
+                    size: s3Object.size,
                     eTag: s3Object.eTag,
                     lastModified: s3Object.lastModified
                 )

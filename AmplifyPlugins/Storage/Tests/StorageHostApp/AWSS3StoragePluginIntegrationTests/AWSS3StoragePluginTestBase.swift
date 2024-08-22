@@ -87,13 +87,17 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         Amplify.Storage.downloadData(key: key)
     }
 
-    func uploadData(key: String, data: Data) async throws {
+    func uploadData(
+        key: String,
+        data: Data,
+        options: StorageUploadDataRequest.Options? = nil
+    ) async throws {
         let completeInvoked = expectation(description: "Completed is invoked")
         Task {
             let result = try await Amplify.Storage.uploadData(
                 key: key,
                 data: data,
-                options: nil
+                options: options
             ).value
 
             XCTAssertNotNil(result)
@@ -102,7 +106,27 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
         await fulfillment(of: [completeInvoked], timeout: 60)
     }
-    
+
+    func uploadData(
+        path: any StoragePath,
+        data: Data,
+        options: StorageUploadDataRequest.Options? = nil
+    ) async throws {
+        let completeInvoked = expectation(description: "Completed is invoked")
+        Task {
+            let result = try await Amplify.Storage.uploadData(
+                path: path,
+                data: data,
+                options: options
+            ).value
+
+            XCTAssertNotNil(result)
+            completeInvoked.fulfill()
+        }
+
+        await fulfillment(of: [completeInvoked], timeout: 60)
+    }
+
     func remove(key: String, accessLevel: StorageAccessLevel? = nil) async {
         var removeOptions: StorageRemoveRequest.Options? = nil
         if let accessLevel = accessLevel {
@@ -196,15 +220,19 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     private func invalidateCurrentSession() {
         Self.logger.debug("Invalidating URLSession")
-        guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin,
-              let service = plugin.storageService as? AWSS3StorageService else {
-            print("Unable to to cast to AWSS3StorageService")
+        guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin else {
+            print("Unable to to cast to AWSS3StoragePlugin")
             return
         }
 
-        if let delegate = service.urlSession.delegate as? StorageServiceSessionDelegate {
-            delegate.storageService = nil
+        for serviceBehaviour in plugin.storageServicesByBucket.values {
+            guard let service = serviceBehaviour as? AWSS3StorageService else {
+                continue
+            }
+            if let delegate = service.urlSession.delegate as? StorageServiceSessionDelegate {
+                delegate.storageService = nil
+            }
+            service.urlSession.invalidateAndCancel()
         }
-        service.urlSession.invalidateAndCancel()
     }
 }
