@@ -26,7 +26,6 @@ public final class FaceLivenessSession: LivenessService {
         case normal
         case reconnect
     }
-    let options: FaceLivenessSession.Options
     
     private let livenessServiceDispatchQueue = DispatchQueue(
         label: "com.amazon.aws.amplify.liveness.service",
@@ -182,7 +181,7 @@ public final class FaceLivenessSession: LivenessService {
                         )
                         let challengeType = challengeType(from: payload)
                         challengeTypeListeners[.challenge]?(challengeType)
-                        return true
+                        return .continueToReceive
                     case .sessionInformation:
                         // :event-type ServerSessionInformationEvent
                         let payload = try JSONDecoder().decode(
