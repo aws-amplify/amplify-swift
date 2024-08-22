@@ -55,7 +55,7 @@ struct AWSCognitoAuthCredentialStore {
         let oldAccessGroup = retrieveStoredAccessGroup()
         if migrateKeychainItemsOfUserSession {
             try? migrateKeychainItemsToAccessGroup()
-        } else if oldAccessGroup == nil && oldAccessGroup != accessGroup{
+        } else if oldAccessGroup == nil && oldAccessGroup != accessGroup {
             try? KeychainStore(service: service)._removeAll()
         }
             

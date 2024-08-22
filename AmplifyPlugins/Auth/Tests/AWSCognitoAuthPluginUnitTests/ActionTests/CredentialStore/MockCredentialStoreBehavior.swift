@@ -16,7 +16,6 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
 
     let data: String
     let removeAllHandler: VoidHandler?
-    let mockKey: String = "mockKey"
 
     init(data: String,
          removeAllHandler: VoidHandler? = nil) {
@@ -42,5 +41,4 @@ class MockKeychainStoreBehavior: KeychainStoreBehavior {
     func _removeAll() throws {
         removeAllHandler?()
     }
-    
 }
