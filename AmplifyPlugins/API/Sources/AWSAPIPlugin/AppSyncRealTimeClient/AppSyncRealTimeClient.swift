@@ -430,7 +430,7 @@ extension AppSyncRealTimeClient {
         }
     }
 
-    internal func monitorHeartBeats(_ connectionAck: JSONValue?) {
+    func monitorHeartBeats(_ connectionAck: JSONValue?) {
         let timeoutMs = connectionAck?.connectionTimeoutMs?.intValue ?? 0
         log.debug("[AppSyncRealTimeClient] Starting heart beat monitor with interval \(timeoutMs) ms")
         let cancellable = heartBeats.eraseToAnyPublisher()
