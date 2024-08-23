@@ -551,4 +551,32 @@ class AppSyncRealTimeClientTests: XCTestCase {
         await fulfillment(of: [startTriggered, errorReceived], timeout: 2)
 
     }
+
+    func testReconnect_whenHeartBeatSignalIsNotReceived() async throws {
+        var cancellables = Set<AnyCancellable>()
+        let timeout = 1.0
+        let mockWebSocketClient = MockWebSocketClient()
+        let mockAppSyncRequestInterceptor = MockAppSyncRequestInterceptor()
+        let appSyncClient = AppSyncRealTimeClient(
+            endpoint: URL(string: "https://example.com")!,
+            requestInterceptor: mockAppSyncRequestInterceptor,
+            webSocketClient: mockWebSocketClient
+        )
+
+        // start monitoring
+        await appSyncClient.monitorHeartBeats(.object([
+            "connectionTimeoutMs": 100
+        ]))
+
+        let reconnect = expectation(description: "webSocket triggers event to connection")
+        await mockWebSocketClient.actionSubject.sink { action in
+            switch action {
+            case .connect:
+                reconnect.fulfill()
+            default: break
+            }
+        }.store(in: &cancellables)
+        await fulfillment(of: [reconnect], timeout: 2)
+    }
+
 }
