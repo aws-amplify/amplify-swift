@@ -95,23 +95,30 @@ public extension StorageDownloadDataRequest {
 
         ///
         /// - Tag: StorageDownloadDataRequestOptions.init
-        @available(*, deprecated, message: "Use init(bucket:pluginOptions)")
+        @available(*, deprecated, message: "Use init(pluginOptions)")
         public init(
             accessLevel: StorageAccessLevel = .guest,
             targetIdentityId: String? = nil,
-            bucket: (any StorageBucket)? = nil,
             pluginOptions: Any? = nil
         ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
-            self.bucket = bucket
+            self.bucket = nil
             self.pluginOptions = pluginOptions
         }
 
         ///
         /// - Tag: StorageDownloadDataRequestOptions.init
+        public init(pluginOptions: Any? = nil) {
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
+            self.bucket = nil
+            self.pluginOptions = pluginOptions
+        }
+
+        /// - Tag: StorageDownloadDataRequestOptions.init
         public init(
-            bucket: (any StorageBucket)? = nil,
+            bucket: some StorageBucket,
             pluginOptions: Any? = nil
         ) {
             self.accessLevel = .guest

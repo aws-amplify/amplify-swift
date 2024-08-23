@@ -90,19 +90,18 @@ public extension StorageUploadFileRequest {
         public let pluginOptions: Any?
 
         /// - Tag: StorageUploadFileRequestOptions.init
-        @available(*, deprecated, message: "Use init(metadata:bucket:contentType:pluginOptions)")
+        @available(*, deprecated, message: "Use init(metadata:contentType:pluginOptions)")
         public init(
             accessLevel: StorageAccessLevel = .guest,
             targetIdentityId: String? = nil,
             metadata: [String: String]? = nil,
-            bucket: (any StorageBucket)? = nil,
             contentType: String? = nil,
             pluginOptions: Any? = nil
         ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.metadata = metadata
-            self.bucket = bucket
+            self.bucket = nil
             self.contentType = contentType
             self.pluginOptions = pluginOptions
         }
@@ -110,7 +109,21 @@ public extension StorageUploadFileRequest {
         /// - Tag: StorageUploadFileRequestOptions.init
         public init(
             metadata: [String: String]? = nil,
-            bucket: (any StorageBucket)? = nil,
+            contentType: String? = nil,
+            pluginOptions: Any? = nil
+        ) {
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
+            self.metadata = metadata
+            self.bucket = nil
+            self.contentType = contentType
+            self.pluginOptions = pluginOptions
+        }
+
+        /// - Tag: StorageUploadFileRequestOptions.init
+        public init(
+            metadata: [String: String]? = nil,
+            bucket: some StorageBucket,
             contentType: String? = nil,
             pluginOptions: Any? = nil
         ) {

@@ -16,7 +16,6 @@ public protocol StorageBucket { }
 ///
 /// - Tag: BucketInfo
 public struct BucketInfo: Hashable {
-
     /// The name of the bucket
     /// - Tag: BucketInfo.bucketName
     public let bucketName: String
@@ -32,7 +31,6 @@ public struct BucketInfo: Hashable {
 }
 
 public extension StorageBucket where Self == OutputsStorageBucket {
-
     /// References a `StorageBucket` in the AmplifyOutputs file using the given name.
     ///
     /// - Parameter name: The name of the bucket
@@ -62,20 +60,4 @@ public struct OutputsStorageBucket: StorageBucket {
 /// - Tag: ResolvedStorageBucket
 public struct ResolvedStorageBucket: StorageBucket {
     public let bucketInfo: BucketInfo
-}
-
-public extension Optional where Wrapped == any StorageBucket {
-    /// References a `StorageBucket` in the AmplifyOutputs file using the given name.
-    ///
-    /// - Parameter name: The name of the bucket
-    static func fromOutputs(name: String) -> (any StorageBucket)? {
-        return OutputsStorageBucket.fromOutputs(name: name)
-    }
-
-    /// References a `StorageBucket` using the data from the given `BucketInfo`.
-    ///
-    /// - Parameter bucketInfo: A `BucketInfo` instance
-    static func fromBucketInfo(_ bucketInfo: BucketInfo) -> (any StorageBucket)? {
-        return ResolvedStorageBucket.fromBucketInfo(bucketInfo)
-    }
 }

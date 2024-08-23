@@ -107,13 +107,30 @@ public extension StorageListRequest {
             path: String? = nil,
             subpathStrategy: SubpathStrategy = .include,
             pageSize: UInt = 1000,
-            bucket: (any StorageBucket)? = nil,
             nextToken: String? = nil,
             pluginOptions: Any? = nil
         ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.path = path
+            self.subpathStrategy = subpathStrategy
+            self.pageSize = pageSize
+            self.bucket = nil
+            self.nextToken = nextToken
+            self.pluginOptions = pluginOptions
+        }
+
+        /// - Tag: StorageListRequestOptions.init
+        public init(
+            subpathStrategy: SubpathStrategy = .include,
+            pageSize: UInt = 1000,
+            bucket: some StorageBucket,
+            nextToken: String? = nil,
+            pluginOptions: Any? = nil
+        ) {
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
+            self.path = nil
             self.subpathStrategy = subpathStrategy
             self.pageSize = pageSize
             self.bucket = bucket
