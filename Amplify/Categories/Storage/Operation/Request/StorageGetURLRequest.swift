@@ -88,25 +88,36 @@ public extension StorageGetURLRequest {
         public let pluginOptions: Any?
 
         /// - Tag: StorageGetURLRequest.Options.init
-        @available(*, deprecated, message: "Use init(expires:bucket:pluginOptions)")
+        @available(*, deprecated, message: "Use init(expires:pluginOptions)")
         public init(
             accessLevel: StorageAccessLevel = .guest,
             targetIdentityId: String? = nil,
             expires: Int = Options.defaultExpireInSeconds,
-            bucket: (any StorageBucket)? = nil,
             pluginOptions: Any? = nil
         ) {
             self.accessLevel = accessLevel
             self.targetIdentityId = targetIdentityId
             self.expires = expires
-            self.bucket = bucket
+            self.bucket = nil
             self.pluginOptions = pluginOptions
         }
 
         /// - Tag: StorageGetURLRequest.Options.init
         public init(
             expires: Int = Options.defaultExpireInSeconds,
-            bucket: (any StorageBucket)? = nil,
+            pluginOptions: Any? = nil
+        ) {
+            self.expires = expires
+            self.bucket = nil
+            self.pluginOptions = pluginOptions
+            self.accessLevel = .guest
+            self.targetIdentityId = nil
+        }
+
+        /// - Tag: StorageGetURLRequest.Options.init
+        public init(
+            expires: Int = Options.defaultExpireInSeconds,
+            bucket: some StorageBucket,
             pluginOptions: Any? = nil
         ) {
             self.expires = expires
