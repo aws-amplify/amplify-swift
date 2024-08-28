@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.39.0 (2024-08-28)
+
+### Features
+
+- Add AppSync components  (#3825)
+
+### Bug Fixes
+
+- **auth**: clear credentials values only if namespacing has changed (#3827)
+- **api**: storing cancelablles with actor methods in AppSyncRTC (#3824)
+
 ## 2.38.0 (2024-08-19)
 
 ### Features
