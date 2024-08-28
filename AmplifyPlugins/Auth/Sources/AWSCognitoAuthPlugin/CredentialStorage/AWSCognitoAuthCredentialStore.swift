@@ -65,12 +65,12 @@ struct AWSCognitoAuthCredentialStore {
             newIdentityConfigData != nil &&
             oldIdentityPoolConfiguration == newIdentityConfigData
         {
-
             // retrieve data from the old namespace and save with the new namespace
             if let oldCognitoCredentialsData = try? keychain._getData(oldNameSpace) {
                 try? keychain._set(oldCognitoCredentialsData, key: newNameSpace)
             }
-        } else if oldAuthConfigData != currentAuthConfig {
+        } else if oldAuthConfigData != currentAuthConfig &&
+                    oldNameSpace != newNameSpace {
             // Clear the old credentials
             try? keychain._remove(oldNameSpace)
         }

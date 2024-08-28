@@ -26,7 +26,6 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
     }
 
     func execute() async throws -> AuthSession {
-        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
         let doesNeedForceRefresh = request.options.forceRefresh
         return try await fetchAuthSessionHelper.fetch(authStateMachine,

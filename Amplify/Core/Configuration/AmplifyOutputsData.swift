@@ -251,7 +251,8 @@ public struct AmplifyOutputsData: Codable {
 public struct AmplifyOutputs {
 
     /// A closure that resolves the `AmplifyOutputsData` configuration
-    let resolveConfiguration: () throws -> AmplifyOutputsData
+    @_spi(InternalAmplifyConfiguration)
+    public let resolveConfiguration: () throws -> AmplifyOutputsData
 
     /// Resolves configuration with `amplify_outputs.json` in the main bundle.
     public static let amplifyOutputs: AmplifyOutputs = {

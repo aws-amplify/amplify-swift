@@ -35,7 +35,6 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
     }
 
     public func execute() async throws {
-        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
         try await clearFederationHelper.clearFederation(authStateMachine)
         log.verbose("Cleared federation")

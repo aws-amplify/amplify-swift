@@ -138,6 +138,196 @@
       },
       {
         "kind": "TypeDecl",
+        "name": "AWSAppSyncConfiguration",
+        "printedName": "AWSAppSyncConfiguration",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "region",
+            "printedName": "region",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV6regionSSvp",
+            "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV6regionSSvp",
+            "moduleName": "AWSPluginsCore",
+            "declAttributes": [
+              "HasStorage"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV6regionSSvg",
+                "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV6regionSSvg",
+                "moduleName": "AWSPluginsCore",
+                "implicit": true,
+                "declAttributes": [
+                  "Transparent"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "endpoint",
+            "printedName": "endpoint",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "URL",
+                "printedName": "Foundation.URL",
+                "usr": "s:10Foundation3URLV"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV8endpoint10Foundation3URLVvp",
+            "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV8endpoint10Foundation3URLVvp",
+            "moduleName": "AWSPluginsCore",
+            "declAttributes": [
+              "HasStorage"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "URL",
+                    "printedName": "Foundation.URL",
+                    "usr": "s:10Foundation3URLV"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV8endpoint10Foundation3URLVvg",
+                "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV8endpoint10Foundation3URLVvg",
+                "moduleName": "AWSPluginsCore",
+                "implicit": true,
+                "declAttributes": [
+                  "Transparent"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "apiKey",
+            "printedName": "apiKey",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV6apiKeySSSgvp",
+            "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV6apiKeySSSgvp",
+            "moduleName": "AWSPluginsCore",
+            "declAttributes": [
+              "HasStorage"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV6apiKeySSSgvg",
+                "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV6apiKeySSSgvg",
+                "moduleName": "AWSPluginsCore",
+                "implicit": true,
+                "declAttributes": [
+                  "Transparent"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(with:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "AWSAppSyncConfiguration",
+                "printedName": "AWSPluginsCore.AWSAppSyncConfiguration",
+                "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "AmplifyOutputs",
+                "printedName": "Amplify.AmplifyOutputs",
+                "usr": "s:7Amplify0A7OutputsV"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV4withAC7Amplify0G7OutputsV_tKcfc",
+            "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV4withAC7Amplify0G7OutputsV_tKcfc",
+            "moduleName": "AWSPluginsCore",
+            "throwing": true,
+            "init_kind": "Designated"
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:14AWSPluginsCore23AWSAppSyncConfigurationV",
+        "mangledName": "$s14AWSPluginsCore23AWSAppSyncConfigurationV",
+        "moduleName": "AWSPluginsCore"
+      },
+      {
+        "kind": "TypeDecl",
         "name": "AppSyncErrorType",
         "printedName": "AppSyncErrorType",
         "children": [
@@ -3644,6 +3834,99 @@
       },
       {
         "kind": "TypeDecl",
+        "name": "AWSCredentials",
+        "printedName": "AWSCredentials",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "accessKeyId",
+            "printedName": "accessKeyId",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvp",
+            "mangledName": "$s14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvp",
+            "moduleName": "AWSPluginsCore",
+            "protocolReq": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvg",
+                "mangledName": "$s14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvg",
+                "moduleName": "AWSPluginsCore",
+                "genericSig": "<Self where Self : AWSPluginsCore.AWSCredentials>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "secretAccessKey",
+            "printedName": "secretAccessKey",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvp",
+            "mangledName": "$s14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvp",
+            "moduleName": "AWSPluginsCore",
+            "protocolReq": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvg",
+                "mangledName": "$s14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvg",
+                "moduleName": "AWSPluginsCore",
+                "genericSig": "<Self where Self : AWSPluginsCore.AWSCredentials>",
+                "protocolReq": true,
+                "reqNewWitnessTableEntry": true,
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Protocol",
+        "usr": "s:14AWSPluginsCore14AWSCredentialsP",
+        "mangledName": "$s14AWSPluginsCore14AWSCredentialsP",
+        "moduleName": "AWSPluginsCore"
+      },
+      {
+        "kind": "TypeDecl",
         "name": "AWSTemporaryCredentials",
         "printedName": "AWSTemporaryCredentials",
         "children": [
@@ -3744,99 +4027,6 @@
             "mangledName": "$s14AWSPluginsCore14AWSCredentialsP"
           }
         ]
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "AWSCredentials",
-        "printedName": "AWSCredentials",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "accessKeyId",
-            "printedName": "accessKeyId",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvp",
-            "mangledName": "$s14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvp",
-            "moduleName": "AWSPluginsCore",
-            "protocolReq": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvg",
-                "mangledName": "$s14AWSPluginsCore14AWSCredentialsP11accessKeyIdSSvg",
-                "moduleName": "AWSPluginsCore",
-                "genericSig": "<Self where Self : AWSPluginsCore.AWSCredentials>",
-                "protocolReq": true,
-                "reqNewWitnessTableEntry": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "secretAccessKey",
-            "printedName": "secretAccessKey",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvp",
-            "mangledName": "$s14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvp",
-            "moduleName": "AWSPluginsCore",
-            "protocolReq": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvg",
-                "mangledName": "$s14AWSPluginsCore14AWSCredentialsP15secretAccessKeySSvg",
-                "moduleName": "AWSPluginsCore",
-                "genericSig": "<Self where Self : AWSPluginsCore.AWSCredentials>",
-                "protocolReq": true,
-                "reqNewWitnessTableEntry": true,
-                "accessorKind": "get"
-              }
-            ]
-          }
-        ],
-        "declKind": "Protocol",
-        "usr": "s:14AWSPluginsCore14AWSCredentialsP",
-        "mangledName": "$s14AWSPluginsCore14AWSCredentialsP",
-        "moduleName": "AWSPluginsCore"
       },
       {
         "kind": "TypeDecl",
@@ -24273,7 +24463,7 @@
       "-module",
       "AWSPluginsCore",
       "-o",
-      "\/var\/folders\/hn\/5bx1f4_d4ds5vhwhkxc7vdcr0000gn\/T\/tmp.nAGRifhwH6\/AWSPluginsCore.json",
+      "\/var\/folders\/4d\/0gnh84wj53j7wyk695q0tc_80000gn\/T\/tmp.BZQxGLOyZz\/AWSPluginsCore.json",
       "-I",
       ".build\/debug",
       "-sdk-version",
