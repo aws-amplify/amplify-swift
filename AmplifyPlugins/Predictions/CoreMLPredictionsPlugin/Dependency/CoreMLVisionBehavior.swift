@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 protocol CoreMLVisionBehavior: AnyObject {
     func detectLabels(_ imageURL: URL) throws -> Predictions.Identify.Labels.Result?

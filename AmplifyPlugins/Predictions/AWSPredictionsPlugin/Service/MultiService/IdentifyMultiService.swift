@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 @_spi(PredictionsIdentifyRequestKind) import Amplify
 
 class IdentifyMultiService<Output> {
@@ -179,7 +179,8 @@ extension Predictions.Label: Hashable {
 
     func higherConfidence(compareTo: Predictions.Label) -> Predictions.Label {
         guard let firstMetadata = metadata,
-            let secondMetadata = compareTo.metadata else {
+            let secondMetadata = compareTo.metadata
+        else {
                 return self
         }
         return max(firstMetadata, secondMetadata) == firstMetadata ? self : compareTo

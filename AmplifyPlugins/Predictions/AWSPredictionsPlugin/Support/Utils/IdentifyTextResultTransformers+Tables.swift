@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSTextract
+import Foundation
 
 extension IdentifyTextResultTransformers {
 
@@ -30,7 +30,8 @@ extension IdentifyTextResultTransformers {
     ) -> Predictions.Table? {
 
         guard let relationships = tableBlock.relationships,
-            case .table = tableBlock.blockType else {
+            case .table = tableBlock.blockType
+        else {
                 return nil
         }
         var table = Predictions.Table()
@@ -56,7 +57,8 @@ extension IdentifyTextResultTransformers {
 
                 if !rows.contains(row),
                     !cols.contains(row),
-                    let cell = constructTableCell(cellBlock, blockMap) {
+                    let cell = constructTableCell(cellBlock, blockMap)
+                {
                     table.cells.append(cell)
                     rows.insert(row)
                     cols.insert(col)
@@ -120,7 +122,8 @@ extension IdentifyTextResultTransformers {
         }
 
         guard let boundingBox = IdentifyResultTransformers.processBoundingBox(textractBoundingBox),
-              let polygon = IdentifyResultTransformers.processPolygon(texttractPolygon) else {
+              let polygon = IdentifyResultTransformers.processPolygon(texttractPolygon)
+        else {
                 return nil
         }
 

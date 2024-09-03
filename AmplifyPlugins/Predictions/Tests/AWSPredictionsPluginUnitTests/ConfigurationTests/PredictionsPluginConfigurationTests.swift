@@ -224,7 +224,8 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             XCTFail("Predictions configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError = pluginError else {
+                case .pluginConfigurationError = pluginError
+            else {
                     XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
                     return
             }

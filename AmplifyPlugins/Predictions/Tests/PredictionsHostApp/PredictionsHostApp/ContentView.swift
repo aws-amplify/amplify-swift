@@ -1,12 +1,12 @@
 //
-//  ContentView.swift
-//  PredictionsHostApp
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Saultz, Ian on 11/3/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
-import SwiftUI
 import Amplify
+import SwiftUI
 
 struct ContentView: View {
     var body: some View {

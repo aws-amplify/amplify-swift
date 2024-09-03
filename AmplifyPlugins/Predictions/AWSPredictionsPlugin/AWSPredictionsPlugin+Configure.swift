@@ -6,8 +6,8 @@
 //
 
 @_spi(InternalAmplifyConfiguration) import Amplify
-import Foundation
 import AWSPluginsCore
+import Foundation
 
 extension AWSPredictionsPlugin {
     /// Configures AWSPredictionsPlugin with the specified configuration.
@@ -68,7 +68,7 @@ extension AWSPredictionsPlugin {
         config: PredictionsPluginConfiguration
     ) {
         self.predictionsService = predictionsService
-        self.coreMLService = coreMLSerivce
+        coreMLService = coreMLSerivce
         self.authService = authService
         self.config = config
     }

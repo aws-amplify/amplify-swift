@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSRekognition
 import Amplify
+import AWSRekognition
 import AWSTextract
+import Foundation
 
 enum IdentifyTextResultTransformers {
 
@@ -125,7 +125,8 @@ enum IdentifyTextResultTransformers {
     static func processLineBlock(block: TextractClientTypes.Block) -> Predictions.IdentifiedLine? {
         guard let text = block.text,
               let boundingBox = IdentifyResultTransformers.processBoundingBox(block.geometry?.boundingBox),
-              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon) else {
+              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon)
+        else {
                 return nil
         }
 
@@ -140,7 +141,8 @@ enum IdentifyTextResultTransformers {
     static func processWordBlock(block: TextractClientTypes.Block) -> Predictions.IdentifiedWord? {
         guard let text = block.text,
               let boundingBox = IdentifyResultTransformers.processBoundingBox(block.geometry?.boundingBox),
-              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon) else {
+              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon)
+        else {
                 return nil
         }
 
@@ -154,7 +156,8 @@ enum IdentifyTextResultTransformers {
 
     static func processSelectionElementBlock(block: TextractClientTypes.Block) -> Predictions.Selection? {
         guard let boundingBox = IdentifyResultTransformers.processBoundingBox(block.geometry?.boundingBox),
-              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon) else {
+              let polygon = IdentifyResultTransformers.processPolygon(block.geometry?.polygon)
+        else {
                 return nil
         }
         let selectionStatus = block.selectionStatus == .selected

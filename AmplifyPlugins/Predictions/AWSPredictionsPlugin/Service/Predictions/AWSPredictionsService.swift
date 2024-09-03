@@ -6,17 +6,17 @@
 //
 
 import Amplify
-import AWSRekognition
-import AWSTranslate
-import AWSTextract
-import AWSComprehend
-import AWSPolly
-import AWSPluginsCore
-@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
-import Foundation
-import ClientRuntime
 import AWSClientRuntime
+import AWSComprehend
+import AWSPluginsCore
+import AWSPolly
+import AWSRekognition
+import AWSTextract
 import AWSTranscribeStreaming
+import AWSTranslate
+import ClientRuntime
+import Foundation
+@_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 class AWSPredictionsService {
     var identifier: String!

@@ -6,8 +6,8 @@
 //
 
 #if canImport(Vision)
-import XCTest
 import Vision
+import XCTest
 @testable import CoreMLPredictionsPlugin
 
 class CoreMLVisionAdapterTests: XCTestCase {

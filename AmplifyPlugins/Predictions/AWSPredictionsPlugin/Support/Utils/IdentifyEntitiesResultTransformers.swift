@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSRekognition
 import Amplify
+import AWSRekognition
 
 enum IdentifyEntitiesResultTransformers {
     static func processFaces(
@@ -20,7 +20,7 @@ enum IdentifyEntitiesResultTransformers {
             }
             let landmarks = IdentifyResultTransformers.processLandmarks(rekognitionFace.landmarks)
             let emotions = processEmotions(rekognitionFace.emotions)
-            let ageRange = (rekognitionFace.ageRange?.low ?? 0)...(rekognitionFace.ageRange?.high ?? 0)
+            let ageRange = (rekognitionFace.ageRange?.low ?? 0) ... (rekognitionFace.ageRange?.high ?? 0)
 
             let genderAttribute = Predictions.GenderAttribute(
                 gender: mapGender(
@@ -32,7 +32,8 @@ enum IdentifyEntitiesResultTransformers {
 
             guard let pitch = rekognitionFace.pose?.pitch,
                 let roll = rekognitionFace.pose?.roll,
-                let yaw = rekognitionFace.pose?.yaw else {
+                let yaw = rekognitionFace.pose?.yaw
+            else {
                 continue
             }
 
@@ -92,7 +93,7 @@ enum IdentifyEntitiesResultTransformers {
         _ rekognitionEmotions: [RekognitionClientTypes.Emotion]?
     ) -> [Predictions.Emotion] {
         var emotions = [Predictions.Emotion]()
-        guard let rekognitionEmotions = rekognitionEmotions
+        guard let rekognitionEmotions
             else {
             return emotions
         }

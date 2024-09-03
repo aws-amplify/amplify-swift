@@ -97,7 +97,8 @@ class InterpretTextMultiService: MultiServiceBehavior {
         offlineResult: Predictions.Sentiment?
     ) -> Predictions.Sentiment? {
         guard let onlineSentiment = onlineResult,
-            onlineSentiment.predominantSentiment != .unknown else {
+            onlineSentiment.predominantSentiment != .unknown
+        else {
                 return offlineResult
         }
         return onlineSentiment
@@ -108,7 +109,8 @@ class InterpretTextMultiService: MultiServiceBehavior {
         offlineResult: [Predictions.KeyPhrase]?
     ) -> [Predictions.KeyPhrase]? {
         if let onlineKeyPhrases = onlineResult,
-            let offlineKeyPhrases = offlineResult {
+            let offlineKeyPhrases = offlineResult
+        {
             let onlineKeyPhraseSet = Set<Predictions.KeyPhrase>(onlineKeyPhrases)
             let offlineKeyPhraseSet = Set<Predictions.KeyPhrase>(offlineKeyPhrases)
             return Array(onlineKeyPhraseSet.union(offlineKeyPhraseSet))
@@ -124,7 +126,8 @@ class InterpretTextMultiService: MultiServiceBehavior {
         offlineResult: [Predictions.Entity.DetectionResult]?
     ) -> [Predictions.Entity.DetectionResult]? {
         if let onlineEntities = onlineResult,
-            let offlineEntities = offlineResult {
+            let offlineEntities = offlineResult
+        {
             let onlineEntitiesSet = Set<Predictions.Entity.DetectionResult>(onlineEntities)
             let offlineEntitiesSet = Set<Predictions.Entity.DetectionResult>(offlineEntities)
             return Array(onlineEntitiesSet.union(offlineEntitiesSet))
@@ -140,7 +143,8 @@ class InterpretTextMultiService: MultiServiceBehavior {
         offlineResult: [Predictions.SyntaxToken]?
     ) -> [Predictions.SyntaxToken]? {
         if let onlineSyntax = onlineResult,
-            let offlineSyntax = offlineResult {
+            let offlineSyntax = offlineResult
+        {
             let onlineSyntaxSet = Set<Predictions.SyntaxToken>(onlineSyntax)
             let offlineSyntaxSet = Set<Predictions.SyntaxToken>(offlineSyntax)
             return Array(onlineSyntaxSet.union(offlineSyntaxSet))

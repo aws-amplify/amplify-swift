@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 typealias PluginErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-struct CoreMLPluginErrorString {
+enum CoreMLPluginErrorString {
     static let decodeConfigurationError: PluginErrorString = (
         "Unable to decode configuration",
         "Make sure the plugin configuration is JSONValue")

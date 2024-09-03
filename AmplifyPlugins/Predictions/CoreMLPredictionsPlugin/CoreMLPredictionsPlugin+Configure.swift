@@ -25,7 +25,8 @@ extension CoreMLPredictionsPlugin {
     func configure(naturalLanguageBehavior: CoreMLNaturalLanguageBehavior,
                    visionBehavior: CoreMLVisionBehavior,
                    speechBehavior: CoreMLSpeechBehavior,
-                   queue: OperationQueue = OperationQueue()) {
+                   queue: OperationQueue = OperationQueue())
+    {
         coreMLNaturalLanguage = naturalLanguageBehavior
         coreMLVision = visionBehavior
         coreMLSpeech = speechBehavior
