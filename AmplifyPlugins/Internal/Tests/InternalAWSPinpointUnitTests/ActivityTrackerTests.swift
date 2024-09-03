@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import InternalAWSPinpoint
 import XCTest
+@testable import InternalAWSPinpoint
 #if canImport(WatchKit)
 import WatchKit
 #elseif canImport(UIKit)
@@ -79,11 +79,11 @@ class ActivityTrackerTests: XCTestCase {
     func testApplicationStateChanged_shouldReportProperEvent() async {
         stateMachine.processExpectation = expectation(description: "Application state changed")
         stateMachine.processExpectation?.expectedFulfillmentCount = 3
-        
+
         NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
         NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
         await NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
-        
+
         await fulfillment(of: [stateMachine.processExpectation!], timeout: 1)
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
         XCTAssertTrue(stateMachine.processedEvents.contains(.applicationWillMoveToForeground))
@@ -94,7 +94,7 @@ class ActivityTrackerTests: XCTestCase {
     func testBackgroundTracking_afterTimeout_shouldReportBackgroundTimeout() async {
         stateMachine.processExpectation = expectation(description: "Background tracking timeout")
         stateMachine.processExpectation?.expectedFulfillmentCount = 2
-        
+
         NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
 
         await fulfillment(of: [stateMachine.processExpectation!], timeout: 5)
@@ -104,7 +104,7 @@ class ActivityTrackerTests: XCTestCase {
     }
 }
 
-extension Array where Element == ActivityEvent {
+extension [ActivityEvent] {
     func contains(_ element: Element) -> Bool {
         return contains(where: { $0 == element })
     }

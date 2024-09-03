@@ -7,9 +7,9 @@
 
 import Amplify
 import AWSCognitoAuthPlugin
+import enum AwsCommonRuntimeKit.CommonRunTimeError
 import AWSPinpoint
 import ClientRuntime
-import enum AwsCommonRuntimeKit.CommonRunTimeError
 import Foundation
 
 /// AnalyticsEventRecording saves and submits pinpoint events
@@ -28,7 +28,7 @@ protocol AnalyticsEventRecording: Actor {
     func updateAttributesOfEvents(ofType: String,
                                   withSessionId: PinpointSession.SessionId,
                                   setAttributes: [String: String]) throws
-    
+
     /// Updates the session information of the events that match the same sessionId.
     /// - Parameter session: The session to update
     func update(_ session: PinpointSession) throws
@@ -56,7 +56,8 @@ actor EventRecorder: AnalyticsEventRecording {
     init(appId: String,
          storage: AnalyticsEventStorage,
          pinpointClient: PinpointClientProtocol,
-         endpointClient: EndpointClientBehaviour) throws {
+         endpointClient: EndpointClientBehaviour) throws
+    {
         self.appId = appId
         self.storage = storage
         self.pinpointClient = pinpointClient
@@ -76,7 +77,8 @@ actor EventRecorder: AnalyticsEventRecording {
 
     func updateAttributesOfEvents(ofType eventType: String,
                                   withSessionId sessionId: PinpointSession.SessionId,
-                                  setAttributes attributes: [String: String]) throws {
+                                  setAttributes attributes: [String: String]) throws
+    {
         try storage.updateEvents(ofType: eventType,
                                       withSessionId: sessionId,
                                       setAttributes: attributes)
@@ -129,7 +131,8 @@ actor EventRecorder: AnalyticsEventRecording {
     }
 
     private func submit(pinpointEvents: [PinpointEvent],
-                        endpointProfile: PinpointEndpointProfile) async throws {
+                        endpointProfile: PinpointEndpointProfile) async throws
+    {
         var clientEvents = [String: PinpointClientTypes.Event]()
         var pinpointEventsById = [String: PinpointEvent]()
         for event in pinpointEvents {
@@ -155,7 +158,7 @@ actor EventRecorder: AnalyticsEventRecording {
                 throw AnalyticsError.unknown(errorMessage)
             }
 
-            let endpointResponseMap = results.compactMap { $0.value.endpointItemResponse }
+            let endpointResponseMap = results.compactMap(\.value.endpointItemResponse)
             for endpointResponse in endpointResponseMap {
                 if HttpStatusCode.accepted.rawValue == endpointResponse.statusCode {
                     log.verbose("EndpointProfile updated successfully.")
@@ -164,12 +167,13 @@ actor EventRecorder: AnalyticsEventRecording {
                 }
             }
 
-            let eventsResponseMap = results.compactMap { $0.value.eventsItemResponse }
+            let eventsResponseMap = results.compactMap(\.value.eventsItemResponse)
             for (eventId, eventResponse) in eventsResponseMap.flatMap({ $0 }) {
                 guard let event = pinpointEventsById[eventId] else { continue }
                 let responseMessage = eventResponse.message ?? "Unknown"
                 if HttpStatusCode.accepted.rawValue == eventResponse.statusCode,
-                   Constants.acceptedResponseMessage == responseMessage {
+                   Constants.acceptedResponseMessage == responseMessage
+                {
                     // On successful submission, add the event to the list of submitted events and delete it from the local storage
                     log.verbose("Successful submit for event with id \(eventId)")
                     submittedEvents.append(event)
@@ -181,11 +185,10 @@ actor EventRecorder: AnalyticsEventRecording {
                 } else {
                     // On other failures, increment the event retry counter
                     incrementEventRetry(eventId: eventId)
-                    let retryMessage: String
-                    if event.retryCount < Constants.maxNumberOfRetries {
-                        retryMessage = "Event will be retried"
+                    let retryMessage = if event.retryCount < Constants.maxNumberOfRetries {
+                        "Event will be retried"
                     } else {
-                        retryMessage = "Event will be discarded because it exceeded its max retry attempts"
+                        "Event will be discarded because it exceeded its max retry attempts"
                     }
                     log.verbose("Submit attempt #\(event.retryCount + 1) for event with id \(eventId) failed.")
                     log.error("Unable to successfully deliver event with id \(eventId) to the server. \(retryMessage). Error: \(responseMessage)")
@@ -328,7 +331,8 @@ actor EventRecorder: AnalyticsEventRecording {
 
     private func retry(times: Int = Constants.defaultNumberOfRetriesForStorageOperations,
                        onErrorMessage: String,
-                       _ closure: () throws -> Void) {
+                       _ closure: () throws -> Void)
+    {
         do {
             try closure()
         } catch {
@@ -357,30 +361,30 @@ extension EventRecorder: DefaultLogger {
     public static var log: Logger {
         Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName, forNamespace: String(describing: self))
     }
-    nonisolated public var log: Logger {
+    public nonisolated var log: Logger {
         Self.log
     }
 }
 
 extension EventRecorder {
-    private struct Constants {
+    private enum Constants {
         static let maxEventsSubmittedPerBatch = 100
-        static let pinpointClientByteLimitDefault = 5 * 1024 * 1024 // 5MB
-        static let pinpointClientBatchRecordByteLimitDefault = 512 * 1024 // 0.5MB
-        static let pinpointClientBatchRecordByteLimitMax = 4 * 1024 * 1024 // 4MB
+        static let pinpointClientByteLimitDefault = 5 * 1_024 * 1_024 // 5MB
+        static let pinpointClientBatchRecordByteLimitDefault = 512 * 1_024 // 0.5MB
+        static let pinpointClientBatchRecordByteLimitMax = 4 * 1_024 * 1_024 // 4MB
         static let acceptedResponseMessage = "Accepted"
         static let defaultNumberOfRetriesForStorageOperations = 1
         static let maxNumberOfRetries = 3
     }
 }
 
-private extension Array where Element == PinpointEvent {
+private extension [PinpointEvent] {
     func numberOfPushNotificationsEvents() -> Int {
-        let pushNotificationsEvents = filter({ event in
+        let pushNotificationsEvents = filter { event in
             event.eventType.contains(".opened_notification")
             || event.eventType.contains(".received_foreground")
             || event.eventType.contains(".received_background")
-        })
+        }
         return pushNotificationsEvents.count
     }
 }

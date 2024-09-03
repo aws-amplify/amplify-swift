@@ -28,7 +28,7 @@ enum ApplicationState {
     case runningInBackground(isStale: Bool)
     case terminated
 
-    struct Resolver {
+    enum Resolver {
         static func resolve(currentState: ApplicationState, event: ActivityEvent) -> ApplicationState {
             if case .terminated = currentState {
                 log.warn("Unexpected state transition. Received event \(event) in \(currentState) state.")
@@ -123,7 +123,8 @@ class ActivityTracker: ActivityTrackerBehaviour {
     ]
 
     init(backgroundTrackingTimeout: TimeInterval = .infinity,
-         stateMachine: StateMachine<ApplicationState, ActivityEvent>? = nil) {
+         stateMachine: StateMachine<ApplicationState, ActivityEvent>? = nil)
+    {
         self.backgroundTrackingTimeout = backgroundTrackingTimeout
         self.stateMachine = stateMachine ?? StateMachine(initialState: .initializing,
                                                          resolver: ApplicationState.Resolver.resolve(currentState:event:))
@@ -197,7 +198,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
 
 #if canImport(UIKit)
 extension ActivityTracker {
-    struct Constants {
+    enum Constants {
         static let backgroundTask = "com.amazonaws.AWSPinpointSessionBackgroundTask"
     }
 }

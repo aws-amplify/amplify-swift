@@ -1,14 +1,13 @@
 //
-//
 // Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import StoreKit
 import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class AnalyticsClientTests: XCTestCase {
     private var analyticsClient: AnalyticsClient!
@@ -49,7 +48,7 @@ class AnalyticsClientTests: XCTestCase {
 
     func testCreateVirtualMonetizationEvent() {
         let productId = "productIt"
-        let itemPrice: Double = 5.25
+        let itemPrice = 5.25
         let quantity = 2
         let currency = "USD"
 
@@ -159,7 +158,7 @@ private class MockTransaction: SKPaymentTransaction {
         private let _quantity: Int
 
         init(quantity: Int) {
-            _quantity = quantity
+            self._quantity = quantity
         }
 
         override var quantity: Int {
@@ -169,9 +168,10 @@ private class MockTransaction: SKPaymentTransaction {
     }
 
     init(transactionId: String,
-         quantity: Int) {
-        _transactionId = transactionId
-        _payment = MockPayment(quantity: quantity)
+         quantity: Int)
+    {
+        self._transactionId = transactionId
+        self._payment = MockPayment(quantity: quantity)
     }
 
     override var transactionIdentifier: String? {
@@ -188,9 +188,10 @@ private class MockProduct: SKProduct {
     private let _price: Double
 
     init(productId: String,
-         price: Double) {
-        _productId = productId
-        _price = price
+         price: Double)
+    {
+        self._productId = productId
+        self._price = price
     }
 
     override var productIdentifier: String {

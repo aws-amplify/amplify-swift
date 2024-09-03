@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
-import XCTest
 import AWSPinpoint
 import UserNotifications
+import XCTest
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 class EndpointClientTests: XCTestCase {
     private let newTokenHex = "646576696365546f6b656e"
@@ -87,7 +87,7 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testCurrentEndpointProfile_withInvalidStoredProfile_shouldRemoveStored_andReturnNew() async {
-        let oldEffectiveDate = Date().addingTimeInterval(-1000)
+        let oldEffectiveDate = Date().addingTimeInterval(-1_000)
         let oldDemographic = PinpointClientTypes.EndpointDemographic(appVersion: "oldVersion")
         let storedEndpointProfile = PinpointEndpointProfile(applicationId: "oldApplicationId",
                                                             endpointId: "oldEndpoint",

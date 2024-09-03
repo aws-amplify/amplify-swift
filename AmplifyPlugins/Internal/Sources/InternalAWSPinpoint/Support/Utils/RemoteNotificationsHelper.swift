@@ -18,8 +18,8 @@ public protocol RemoteNotificationsBehaviour {
 }
 
 @_spi(InternalAWSPinpoint)
-extension RemoteNotificationsBehaviour where Self == AmplifyRemoteNotificationsHelper {
-    public static var `default`: RemoteNotificationsBehaviour {
+public extension RemoteNotificationsBehaviour where Self == AmplifyRemoteNotificationsHelper {
+    static var `default`: RemoteNotificationsBehaviour {
         AmplifyRemoteNotificationsHelper.shared
     }
 }

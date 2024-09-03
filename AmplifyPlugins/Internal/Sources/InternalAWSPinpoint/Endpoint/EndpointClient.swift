@@ -76,14 +76,15 @@ actor EndpointClient: EndpointClientBehaviour {
 
     private func retrieveOrCreateEndpointProfile() async -> PinpointEndpointProfile {
         // 1. Look for the local endpointProfile variable
-        if let endpointProfile = endpointProfile {
+        if let endpointProfile {
             return endpointProfile
         }
 
         // 2. Look for a valid PinpointEndpointProfile object stored locally. It needs to match the current applicationId, otherwise we'll discard it.
         if let endpointProfileData = Self.getStoredData(from: keychain, forKey: Constants.endpointProfileKey, fallbackTo: userDefaults),
            let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData),
-           decodedEndpointProfile.applicationId == configuration.appId {
+           decodedEndpointProfile.applicationId == configuration.appId
+        {
             return await configure(endpointProfile: decodedEndpointProfile)
         }
 
@@ -132,7 +133,8 @@ actor EndpointClient: EndpointClientBehaviour {
     private func updateStoredAPNsToken(from endpointProfile: PinpointEndpointProfile) {
         do {
             guard let deviceToken = endpointProfile.deviceToken,
-                  let apnsToken = Data(hexString: deviceToken) else {
+                  let apnsToken = Data(hexString: deviceToken)
+            else {
                 try keychain._remove(Constants.deviceTokenKey)
                 return
             }
@@ -183,18 +185,18 @@ actor EndpointClient: EndpointClientBehaviour {
         return publicEndpoint
     }
 
-    nonisolated private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType? {
+    private nonisolated func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType? {
         if endpointProfile.deviceToken == nil {
             return nil
         }
         return endpointProfile.isDebug ? .apnsSandbox : .apns
     }
 
-    nonisolated private func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {
+    private nonisolated func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {
         endpointProfile.effectiveDate.asISO8601String
     }
 
-    nonisolated private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String? {
+    private nonisolated func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String? {
         if endpointProfile.deviceToken == nil {
             return nil
         }
@@ -245,8 +247,8 @@ extension EndpointClient: DefaultLogger {
 }
 
 extension EndpointClient {
-    struct Constants {
-        struct OptOut {
+    enum Constants {
+        enum OptOut {
             static let all = "ALL"
             static let none = "NONE"
         }
@@ -257,14 +259,15 @@ extension EndpointClient {
 }
 
 extension PinpointClientTypes.EndpointDemographic {
-    struct Constants {
+    enum Constants {
         static let appleMake = "apple"
         static let unknown = "Unknown"
     }
 
     init(device: EndpointInformation,
          locale: String = Locale.autoupdatingCurrent.identifier,
-         timezone: String = TimeZone.current.identifier) {
+         timezone: String = TimeZone.current.identifier)
+    {
         self.init(appVersion: device.appVersion,
                   locale: locale,
                   make: Constants.appleMake,

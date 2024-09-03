@@ -25,7 +25,8 @@ public class AWSPinpointFactory {
     static var provisioningProfileReader: ProvisioningProfileReader = .default
 
     public static func sharedPinpoint(appId: String,
-                                      region: String) throws -> AWSPinpointBehavior {
+                                      region: String) throws -> AWSPinpointBehavior
+    {
         let key = PinpointContextKey(appId: appId, region: region)
         if let existingContext = instances[key] {
             return existingContext

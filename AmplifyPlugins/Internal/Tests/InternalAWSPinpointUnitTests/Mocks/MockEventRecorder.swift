@@ -1,5 +1,4 @@
 //
-//
 // Copyright Amazon.com Inc. or its affiliates.
 // All Rights Reserved.
 //
@@ -25,7 +24,8 @@ actor MockEventRecorder: AnalyticsEventRecording {
 
     func updateAttributesOfEvents(ofType: String,
                                   withSessionId: PinpointSession.SessionId,
-                                  setAttributes: [String: String]) throws {
+                                  setAttributes: [String: String]) throws
+    {
         updateCount += 1
     }
 

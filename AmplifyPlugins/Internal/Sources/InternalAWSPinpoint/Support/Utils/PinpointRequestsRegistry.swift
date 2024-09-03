@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
 import ClientRuntime
+import Foundation
 @_spi(PluginHTTPClientEngine) import InternalAmplifyCredentials
 
 @globalActor actor PinpointRequestsRegistry {
@@ -63,7 +63,8 @@ private struct CustomPinpointHttpClientEngine: HTTPClient {
     func send(request: ClientRuntime.SdkHttpRequest) async throws -> ClientRuntime.HttpResponse {
         guard let url = request.endpoint.url,
               let pinpointApi = PinpointRequestsRegistry.API(from: url),
-              let userAgentSuffix = await userAgent(for: pinpointApi) else {
+              let userAgentSuffix = await userAgent(for: pinpointApi)
+        else {
             return try await httpClientEngine.send(request: request)
         }
 

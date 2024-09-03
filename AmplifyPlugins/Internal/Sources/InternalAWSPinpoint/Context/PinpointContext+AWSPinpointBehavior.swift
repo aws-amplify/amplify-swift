@@ -32,7 +32,8 @@ extension PinpointContext: AWSPinpointBehavior {
     }
 
     func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
-                        source: AWSPinpointSource) async throws {
+                        source: AWSPinpointSource) async throws
+    {
         await PinpointRequestsRegistry.shared.registerSource(source, for: .updateEndpoint)
         try await endpointClient.updateEndpointProfile(with: endpointProfile)
     }
@@ -62,7 +63,8 @@ extension PinpointContext: AWSPinpointBehavior {
     }
 
     func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
-                                          onSubmit: AnalyticsClientBehaviour.SubmitResult?) {
+                                          onSubmit: AnalyticsClientBehaviour.SubmitResult?)
+    {
         Task {
             await analyticsClient.setAutomaticSubmitEventsInterval(interval, onSubmit: onSubmit)
         }

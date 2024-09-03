@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AmplifyAsyncTesting
 import AWSPinpoint
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import StoreKit
 import XCTest
-import AmplifyAsyncTesting
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 actor MockAnalyticsClient: AnalyticsClientBehaviour {
     let pinpointClient: PinpointClientProtocol = MockPinpointClient()

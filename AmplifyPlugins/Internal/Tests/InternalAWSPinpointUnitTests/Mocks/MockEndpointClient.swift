@@ -5,17 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 import AWSClientRuntime
 import AWSPinpoint
 import Foundation
+@_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 
 actor MockEndpointClient: EndpointClientBehaviour {
     let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
     class MockCredentialsProvider: CredentialsProviding {
         func getCredentials() async throws -> AWSCredentials {
-            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: Date().addingTimeInterval(1000))
+            return AWSCredentials(accessKey: "", secret: "", expirationTimeout: Date().addingTimeInterval(1_000))
         }
     }
 

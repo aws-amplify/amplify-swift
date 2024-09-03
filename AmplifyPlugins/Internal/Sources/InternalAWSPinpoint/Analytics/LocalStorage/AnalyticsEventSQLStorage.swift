@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 import SQLite
 
 /// This is a temporary placeholder class to interface with the SQLiteLocalStorageAdapter
@@ -103,7 +103,8 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
 
     func updateEvents(ofType eventType: String,
                       withSessionId sessionId: PinpointSession.SessionId,
-                      setAttributes attributes: [String: String]) throws {
+                      setAttributes attributes: [String: String]) throws
+    {
         let updateStatement = """
         UPDATE Event
         SET attributes = ?
@@ -115,7 +116,7 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
             sessionId,
             eventType])
     }
-    
+
     func updateSession(_ session: PinpointSession) throws {
         let updateStatement = """
         UPDATE Event
@@ -226,15 +227,15 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     }
 
     /// Check the disk usage limit of the local database.
-    /// If database is over the limit then delete all dirty events and oldest event 
+    /// If database is over the limit then delete all dirty events and oldest event
     /// - Parameter limit: the size limit of the database in Byte unit
     func checkDiskSize(limit: Byte) throws {
         if dbAdapter.diskBytesUsed > limit {
-            try self.deleteDirtyEvents()
+            try deleteDirtyEvents()
         }
 
         if dbAdapter.diskBytesUsed > limit {
-            try self.deleteOldestEvent()
+            try deleteOldestEvent()
         }
     }
 }

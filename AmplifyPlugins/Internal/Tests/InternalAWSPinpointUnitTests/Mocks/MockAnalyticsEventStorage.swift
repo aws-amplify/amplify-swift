@@ -44,7 +44,8 @@ class MockAnalyticsEventStorage: AnalyticsEventStorage {
     }
     func updateEvents(ofType: String,
                       withSessionId: PinpointSession.SessionId,
-                      setAttributes: [String: String]) throws {
+                      setAttributes: [String: String]) throws
+    {
         updateEventsCallCount += 1
     }
 

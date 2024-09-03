@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import StoreKit
 import Amplify
 import AWSPinpoint
+import Foundation
+import StoreKit
 
 @_spi(InternalAWSPinpoint)
 public protocol AnalyticsClientBehaviour: Actor {
-    typealias SubmitResult = ((Result<[PinpointEvent], Error>) -> Void)
+    typealias SubmitResult = (Result<[PinpointEvent], Error>) -> Void
     nonisolated var pinpointClient: PinpointClientProtocol { get }
 
     func addGlobalAttribute(_ attribute: String, forKey key: String)
@@ -68,7 +68,8 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     private lazy var eventTypeMetrics: [String: PinpointEventMetrics] = [:]
 
     init(eventRecorder: AnalyticsEventRecording,
-         sessionProvider: @escaping SessionProvider) {
+         sessionProvider: @escaping SessionProvider)
+    {
         self.eventRecorder = eventRecorder
         self.sessionProvider = sessionProvider
     }
@@ -79,7 +80,8 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     init(applicationId: String,
          pinpointClient: PinpointClientProtocol,
          endpointClient: EndpointClientBehaviour,
-         sessionProvider: @escaping SessionProvider) throws {
+         sessionProvider: @escaping SessionProvider) throws
+    {
         let dbAdapter = try SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix,
                                                       databaseName: applicationId)
         let eventRecorder = try EventRecorder(appId: applicationId,
@@ -92,7 +94,8 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     convenience init(applicationId: String,
                      pinpointClient: PinpointClientProtocol,
                      endpointClient: EndpointClientBehaviour,
-                     sessionProvider: @escaping SessionProvider) throws {
+                     sessionProvider: @escaping SessionProvider) throws
+    {
         let dbAdapter = try SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix,
                                                       databaseName: applicationId)
         let eventRecorder = try EventRecorder(appId: applicationId,
@@ -161,7 +164,8 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
 
     // MARK: - Monetization events
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
-                                                  with product: SKProduct) -> PinpointEvent {
+                                                  with product: SKProduct) -> PinpointEvent
+    {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = product.priceLocale
         numberFormatter.numberStyle = .currency
@@ -179,7 +183,8 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     nonisolated func createVirtualMonetizationEvent(withProductId productId: String,
                                                     withItemPrice itemPrice: Double,
                                                     withQuantity quantity: Int,
-                                                    withCurrency currency: String) -> PinpointEvent {
+                                                    withCurrency currency: String) -> PinpointEvent
+    {
         return createMonetizationEvent(withStore: Constants.PurchaseEvent.virtual,
                                        productId: productId,
                                        quantity: quantity,
@@ -194,7 +199,8 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
                                                      currencyCode: String?,
                                                      formattedItemPrice: String? = nil,
                                                      priceLocale: Locale? = nil,
-                                                     transactionId: String? = nil) -> PinpointEvent {
+                                                     transactionId: String? = nil) -> PinpointEvent
+    {
         let monetizationEvent = PinpointEvent(eventType: Constants.PurchaseEvent.name,
                                               session: sessionProvider())
         monetizationEvent.addAttribute(store,
@@ -206,17 +212,17 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         monetizationEvent.addMetric(itemPrice,
                                     forKey: Constants.PurchaseEvent.Keys.itemPrice)
 
-        if let currencyCode = currencyCode {
+        if let currencyCode {
             monetizationEvent.addAttribute(currencyCode,
                                            forKey: Constants.PurchaseEvent.Keys.currency)
         }
 
-        if let formattedItemPrice = formattedItemPrice {
+        if let formattedItemPrice {
             monetizationEvent.addAttribute(formattedItemPrice,
                                            forKey: Constants.PurchaseEvent.Keys.priceFormatted)
         }
 
-        if let transactionId = transactionId {
+        if let transactionId {
             monetizationEvent.addAttribute(transactionId,
                                            forKey: Constants.PurchaseEvent.Keys.transactionId)
         }
@@ -263,13 +269,14 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     func submitEvents() async throws -> [PinpointEvent] {
         return try await eventRecorder.submitAllEvents()
     }
-    
+
     func update(_ session: PinpointSession) async throws {
         try await eventRecorder.update(session)
     }
 
     func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
-                                          onSubmit: SubmitResult?) {
+                                          onSubmit: SubmitResult?)
+    {
         guard automaticSubmitEventsInterval != interval else {
             let message = interval == .zero ? "disabled" : "set to \(interval) seconds"
             log.verbose("Automatic Submission of Events' interval is already \(message).")
@@ -287,7 +294,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         automaticSubmitEventsTimer = RepeatingTimer.createRepeatingTimer(
             timeInterval: automaticSubmitEventsInterval,
             eventHandler: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 Task {
                     self.log.debug("AutoFlushTimer triggered, flushing events")
                     do {
@@ -313,13 +320,13 @@ extension AnalyticsClient: DefaultLogger {
 }
 
 extension AnalyticsClient {
-    private struct Constants {
-        struct PurchaseEvent {
+    private enum Constants {
+        enum PurchaseEvent {
             static let name = "_monetization.purchase"
             static let appleStore = "Apple"
             static let virtual = "Virtual"
 
-            struct Keys {
+            enum Keys {
                 static let productId = "_product_id"
                 static let quantity = "_quantity"
                 static let itemPrice = "_item_price"

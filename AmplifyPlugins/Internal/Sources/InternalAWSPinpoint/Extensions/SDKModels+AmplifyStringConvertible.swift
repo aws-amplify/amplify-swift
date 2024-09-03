@@ -17,7 +17,7 @@ extension PutEventsOutput: AmplifyStringConvertible {
 
     public func encode(to encoder: Encoder) throws {
         var encodeContainer = encoder.container(keyedBy: CodingKeys.self)
-        if let eventsResponse = self.eventsResponse {
+        if let eventsResponse {
             try encodeContainer.encode(eventsResponse, forKey: .eventsResponse)
         }
     }
@@ -32,7 +32,7 @@ extension UpdateEndpointOutput: AmplifyStringConvertible {
 
     public func encode(to encoder: Encoder) throws {
         var encodeContainer = encoder.container(keyedBy: CodingKeys.self)
-        if let messageBody = self.messageBody {
+        if let messageBody {
             try encodeContainer.encode(messageBody, forKey: .messageBody)
         }
     }
