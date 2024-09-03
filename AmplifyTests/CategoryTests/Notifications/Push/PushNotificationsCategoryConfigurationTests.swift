@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @_spi(InternalAmplifyConfiguration) @testable import Amplify
 @testable import AmplifyTestCommon
-import XCTest
 
 class PushNotificationsCategoryConfigurationTests: XCTestCase {
     // MARK: - Setup methods
@@ -35,7 +35,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
 
     private func createAmplifyConfig(hasSecondPlugin: Bool = false) -> AmplifyConfiguration {
         let categoryConfiguration = createCategoryConfig(hasSecondPlugin: hasSecondPlugin)
-        
+
         return AmplifyConfiguration(notifications: categoryConfiguration)
     }
 
@@ -52,7 +52,8 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(createAmplifyConfig())
 
         XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
             guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                 XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                 return
@@ -67,7 +68,8 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.Notifications.Push.configure(using: categoryConfig)
 
         XCTAssertThrowsError(try Amplify.Notifications.Push.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
             guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                 XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                 return
@@ -205,7 +207,8 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
 
         await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Notifications.Push.getPlugin(for: "MockPushNotificationsCategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
+                             "Getting a plugin after reset() should throw")
+        { error in
             guard case PushNotificationsError.configuration = error else {
                 XCTFail("Expected PushNotificationsError.configuration error")
                 return
@@ -224,7 +227,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Notifications.Push.getPlugin(for: "MockPushNotificationsCategoryPlugin"))
         XCTAssertNotNil(try Amplify.Notifications.Push.getPlugin(for: "MockPushNotificationsCategoryPlugin"))
     }
-    
+
     func testUsingPlugin_withMultiplePlugins_shouldSucceed() async throws {
         let plugin1 = MockPushNotificationsCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
@@ -236,7 +239,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
             }
         }
         try Amplify.add(plugin: plugin1)
-        
+
         let plugin2 = MockSecondPushNotificationsCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
         expectation(description: "test method should be invoked on second plugin")

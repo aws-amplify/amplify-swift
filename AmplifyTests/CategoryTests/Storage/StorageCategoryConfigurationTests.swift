@@ -82,7 +82,8 @@ class StorageCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
+                             "Getting a plugin after reset() should throw")
+        { error in
                                 guard case StorageError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
@@ -257,7 +258,8 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Storage.configure(using: categoryConfig)
         XCTAssertThrowsError(try Amplify.Storage.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return
@@ -334,7 +336,8 @@ class StorageCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return

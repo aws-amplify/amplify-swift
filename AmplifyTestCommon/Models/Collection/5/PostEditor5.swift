@@ -16,7 +16,8 @@ public struct PostEditor5: Model {
 
   public init(id: String = UUID().uuidString,
       post: Post5,
-      editor: User5) {
+      editor: User5)
+  {
       self.id = id
       self.post = post
       self.editor = editor

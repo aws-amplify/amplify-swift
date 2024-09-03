@@ -12,7 +12,8 @@ import XCTest
 
 public func XCTAssertThrowFatalError(_ expression: @escaping () -> Void,
                                      file: StaticString = #file,
-                                     line: UInt = #line) throws {
+                                     line: UInt = #line) throws
+{
 #if (os(iOS) || os(macOS)) && (arch(arm64) || arch(x86_64))
     var reached = false
     let exception = catchBadInstruction {
@@ -28,7 +29,8 @@ public func XCTAssertThrowFatalError(_ expression: @escaping () -> Void,
 
 public func XCTAssertNoThrowFatalError(_ expression: @escaping () -> Void,
                                        file: StaticString = #file,
-                                       line: UInt = #line) throws {
+                                       line: UInt = #line) throws
+{
 #if (os(iOS) || os(macOS)) && (arch(arm64) || arch(x86_64))
     var reached = false
     let exception = catchBadInstruction {

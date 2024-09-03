@@ -20,7 +20,8 @@ public struct CommentWithCompositeKeyUnidirectional: Model {
   public init(id: String = UUID().uuidString,
       content: String,
       post21CommentsId: String? = nil,
-      post21CommentsTitle: String? = nil) {
+      post21CommentsTitle: String? = nil)
+  {
     self.init(id: id,
       content: content,
       createdAt: nil,
@@ -28,12 +29,13 @@ public struct CommentWithCompositeKeyUnidirectional: Model {
       postWithCompositeKeyUnidirectionalCommentsId: post21CommentsId,
       postWithCompositeKeyUnidirectionalCommentsTitle: post21CommentsTitle)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
                 content: String,
                 createdAt: Temporal.DateTime? = nil,
                 updatedAt: Temporal.DateTime? = nil,
                 postWithCompositeKeyUnidirectionalCommentsId: String? = nil,
-                postWithCompositeKeyUnidirectionalCommentsTitle: String? = nil) {
+                postWithCompositeKeyUnidirectionalCommentsTitle: String? = nil)
+  {
       self.id = id
       self.content = content
       self.createdAt = createdAt

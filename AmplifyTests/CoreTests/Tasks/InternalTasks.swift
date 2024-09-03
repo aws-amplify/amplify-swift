@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 public class MagicEightBallRequest: AmplifyOperationRequest {
-    public let options: [AnyHashable : Any]
+    public let options: [AnyHashable: Any]
     public let total: Int
     public let delay: Double
 
-    public init(options: [AnyHashable : Any] = [:], total: Int, delay: Double) {
+    public init(options: [AnyHashable: Any] = [:], total: Int, delay: Double) {
         self.options = options
         self.total = total
         self.delay = delay
@@ -67,7 +67,7 @@ public class MagicEightBallTaskRunner: InternalTaskRunner, InternalTaskAsyncSequ
     public func run() async throws {
         guard !running else { return }
         running = true
-        for _ in 0..<request.total {
+        for _ in 0 ..< request.total {
             try await Task.sleep(seconds: request.delay)
             let answer = ask()
             send(answer)
@@ -93,11 +93,11 @@ public struct MagicEightBallPlugin {
 }
 
 public class RandomEmojiRequest: AmplifyOperationRequest {
-    public let options: [AnyHashable : Any]
+    public let options: [AnyHashable: Any]
     public let total: Int
     public let delay: Double
 
-    public init(options: [AnyHashable : Any] = [:], total: Int, delay: Double) {
+    public init(options: [AnyHashable: Any] = [:], total: Int, delay: Double) {
         self.options = options
         self.total = total
         self.delay = delay
@@ -121,7 +121,7 @@ public class RandomEmojiTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowin
     public func run() async throws {
         guard !running else { return }
         running = true
-        for _ in 0..<request.total {
+        for _ in 0 ..< request.total {
             try await Task.sleep(seconds: request.delay)
             let emoji = randomEmoji()
             send(emoji)
@@ -130,8 +130,8 @@ public class RandomEmojiTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowin
     }
 
     private func randomEmoji() -> String {
-        let range = [UInt32](0x1F601...0x1F64F)
-        let ascii = range[Int(drand48() * (Double(range.count)))]
+        let range = [UInt32](0x1f601 ... 0x1f64f)
+        let ascii = range[Int(drand48() * Double(range.count))]
         let emoji = UnicodeScalar(ascii)?.description
         return emoji!
     }

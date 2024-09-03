@@ -16,7 +16,8 @@ public struct Post4: Model {
 
   public init(id: String = UUID().uuidString,
       title: String,
-      comments: List<Comment4>? = []) {
+      comments: List<Comment4>? = [])
+  {
       self.id = id
       self.title = title
       self.comments = comments

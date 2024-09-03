@@ -16,7 +16,8 @@ public struct M2MPostEditor: Model {
 
   public init(id: String = UUID().uuidString,
       post: M2MPost,
-      editor: M2MUser) {
+      editor: M2MUser)
+  {
       self.id = id
       self.post = post
       self.editor = editor

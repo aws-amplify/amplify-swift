@@ -18,18 +18,20 @@ public struct PostWithTagsCompositeKey: Model {
 
   public init(postId: String,
       title: String,
-      tags: List<PostTagsWithCompositeKey>? = []) {
+      tags: List<PostTagsWithCompositeKey>? = [])
+  {
     self.init(postId: postId,
       title: title,
       tags: tags,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(postId: String,
+  init(postId: String,
       title: String,
       tags: List<PostTagsWithCompositeKey>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.postId = postId
       self.title = title
       self.tags = tags

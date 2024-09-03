@@ -16,7 +16,8 @@ public struct Restaurant: Model {
 
   public init(id: String = UUID().uuidString,
       restaurantName: String,
-      menus: List<Menu>? = []) {
+      menus: List<Menu>? = [])
+  {
       self.id = id
       self.restaurantName = restaurantName
       self.menus = menus

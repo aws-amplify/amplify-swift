@@ -14,7 +14,8 @@ public struct Team: Model {
   public var name: String
 
   public init(id: String = UUID().uuidString,
-      name: String) {
+      name: String)
+  {
       self.id = id
       self.name = name
   }

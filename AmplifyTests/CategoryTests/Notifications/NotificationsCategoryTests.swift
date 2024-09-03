@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-import XCTest
 
 final class NotificationsCategoryTests: XCTestCase {
     private var category: NotificationsCategory!
@@ -32,7 +32,7 @@ final class NotificationsCategoryTests: XCTestCase {
             plugins: [notificationsPlugin.key: true]
         )
         try Amplify.add(plugin: notificationsPlugin)
-        try Amplify.configure(AmplifyConfiguration(notifications:notificationsConfig))
+        try Amplify.configure(AmplifyConfiguration(notifications: notificationsConfig))
 
         let configuredCategories = category.subcategories
         XCTAssertEqual(configuredCategories.count, 1)

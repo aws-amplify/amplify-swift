@@ -12,7 +12,8 @@ import XCTest
 class DefaultHubPluginConcurrencyTests: XCTestCase {
     var plugin: HubCategoryPlugin {
         guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
-            plugin.key == "awsHubPlugin" else {
+            plugin.key == "awsHubPlugin"
+        else {
                 fatalError("Could not access AWSHubPlugin")
         }
         return plugin
@@ -68,7 +69,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
                 messagesReceived.append(messageReceived)
             }
         }
-        
+
         let capturedChannels = channels
 
         DispatchQueue.concurrentPerform(iterations: channels.count) { iteration in

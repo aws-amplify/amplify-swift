@@ -43,13 +43,14 @@ class ListTests: XCTestCase {
         var errorOnNextPage: CoreError?
         var nextPage: List<Element>?
         var state: ModelListProviderState<Element>?
-        
+
         public init(elements: [Element] = [Element](),
                     error: CoreError? = nil,
                     errorOnLoad: CoreError? = nil,
                     errorOnNextPage: CoreError? = nil,
                     nextPage: List<Element>? = nil,
-                    state: ModelListProviderState<Element>? = nil) {
+                    state: ModelListProviderState<Element>? = nil)
+        {
             self.elements = elements
             self.error = error
             self.errorOnLoad = errorOnLoad
@@ -61,9 +62,9 @@ class ListTests: XCTestCase {
         public func getState() -> ModelListProviderState<Element> {
             state ?? .notLoaded(associatedIdentifiers: [""], associatedFields: [""])
         }
-        
+
         public func load(completion: (Result<[Element], CoreError>) -> Void) {
-            if let error = error {
+            if let error {
                 completion(.failure(error))
             } else if let error = errorOnLoad {
                 completion(.failure(error))
@@ -71,9 +72,9 @@ class ListTests: XCTestCase {
                 completion(.success(elements))
             }
         }
-        
+
         public func load() async throws -> [Element] {
-            if let error = error {
+            if let error {
                 throw error
             } else if let error = errorOnLoad {
                 throw error
@@ -87,29 +88,29 @@ class ListTests: XCTestCase {
         }
 
         public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
-            if let error = error {
+            if let error {
                 completion(.failure(error))
             } else if let error = errorOnNextPage {
                 completion(.failure(error))
-            } else if let nextPage = nextPage {
+            } else if let nextPage {
                 completion(.success(nextPage))
             } else {
                 fatalError("Mock not implemented")
             }
         }
-        
+
         public func getNextPage() async throws -> List<Element> {
-            if let error = error {
+            if let error {
                 throw error
             } else if let error = errorOnNextPage {
                 throw error
-            } else if let nextPage = nextPage {
+            } else if let nextPage {
                 return nextPage
             } else {
                 fatalError("Mock not implemented")
             }
         }
-        
+
         func encode(to encoder: Encoder) throws {
             try elements.encode(to: encoder)
         }
@@ -137,7 +138,7 @@ class ListTests: XCTestCase {
             fetchSuccess.fulfill()
         }
         await fulfillment(of: [fetchSuccess], timeout: 1.0)
-        
+
         XCTAssertEqual(list.count, 2)
         XCTAssertEqual(list.startIndex, 0)
         XCTAssertEqual(list.endIndex, 2)
@@ -145,7 +146,7 @@ class ListTests: XCTestCase {
         XCTAssertNotNil(list[0])
         let iterateSuccess = expectation(description: "Iterate over the list successfullly")
         iterateSuccess.expectedFulfillmentCount = 2
-        list.makeIterator().forEach { _ in
+        for _ in list.makeIterator() {
             iterateSuccess.fulfill()
         }
         await fulfillment(of: [iterateSuccess], timeout: 1)
@@ -178,7 +179,7 @@ class ListTests: XCTestCase {
         XCTAssertNotNil(list[0])
         let iterateSuccess = expectation(description: "Iterate over the list successfullly")
         iterateSuccess.expectedFulfillmentCount = 2
-        list.makeIterator().forEach { _ in
+        for _ in list.makeIterator() {
             iterateSuccess.fulfill()
         }
         await fulfillment(of: [iterateSuccess], timeout: 1)
@@ -238,7 +239,7 @@ class ListTests: XCTestCase {
         return try encoder.encode(json)
     }
 
-    private static func toJSON<ModelType: Model>(list: List<ModelType>) throws -> String {
+    private static func toJSON(list: List<some Model>) throws -> String {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
         let data = try encoder.encode(list)

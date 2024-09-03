@@ -18,7 +18,7 @@ class AmplifyTaskTests: XCTestCase {
 
     func testFastOperation() async throws {
         let input = [1, 2, 3]
-        var output: Int = 0
+        var output = 0
         var thrown: Error? = nil
 
         do {
@@ -38,8 +38,8 @@ class AmplifyTaskTests: XCTestCase {
         let exp1 = expectation(description: "\(#function)-1")
         let exp2 = expectation(description: "\(#function)-2")
         let input = [1, 2, 3]
-        var output: Int = 0
-        var thrown: Error? = nil
+        var output = 0
+        var thrown: Error?
 
         let request = FastOperationRequest(numbers: input)
         let publisher = runFastOperationWithPublisher(request: request)
@@ -103,9 +103,9 @@ class AmplifyTaskTests: XCTestCase {
         let exp2 = expectation(description: "\(#function)-2")
 
         var success = false
-        var output: String? = nil
-        var thrown: Error? = nil
-        var requestID: String? = nil
+        var output: String?
+        var thrown: Error?
+        var requestID: String?
         var progressCount = 0
         var lastProgress: Double = 0
 

@@ -9,9 +9,10 @@
 import Amplify
 import Foundation
 
-extension ModelCompositePkWithAssociation {
+public extension ModelCompositePkWithAssociation {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey
+  {
     case id
     case dob
     case name
@@ -20,10 +21,10 @@ extension ModelCompositePkWithAssociation {
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let modelCompositePkWithAssociation = ModelCompositePkWithAssociation.keys
 
     model.pluralName = "ModelCompositePkWithAssociations"
@@ -51,8 +52,8 @@ extension ModelCompositePkWithAssociation: ModelIdentifiable {
     public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension ModelCompositePkWithAssociation.IdentifierProtocol {
-    public static func identifier(id: String, dob: Temporal.DateTime) -> Self {
+public extension ModelCompositePkWithAssociation.IdentifierProtocol {
+    static func identifier(id: String, dob: Temporal.DateTime) -> Self {
         .make(fields: [(name: "id", value: id), (name: "dob", value: dob)])
     }
 }

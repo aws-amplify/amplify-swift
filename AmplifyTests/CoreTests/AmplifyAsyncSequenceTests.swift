@@ -114,14 +114,14 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         }
 
         XCTAssertNotNil(thrown)
-        let expected = Array(input[0..<2])
+        let expected = Array(input[0 ..< 2])
         XCTAssertEqual(expected, output)
     }
 
     func testChannelCancelled() async throws {
         // parent task is canceled while reducing values from sequence
         // before a value is sent which should result in a sum of zero
-        let input = 2006
+        let input = 2_006
         let reduced = expectation(description: "reduced")
         let done = expectation(description: "done")
         let channel = AmplifyAsyncSequence<Int>()
@@ -151,7 +151,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
     func testThrowingChannelCancelled() async throws {
         // parent task is canceled while reducing values from sequence
         // before a value is sent which should result in a sum of zero
-        let input = 2006
+        let input = 2_006
         let reduced = expectation(description: "reduced")
         let done = expectation(description: "done")
         let channel = AmplifyAsyncThrowingSequence<Int>()
@@ -225,7 +225,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         let token = operation.subscribe { (value: LongOperation.InProcess) in
             count += 1
             channel.send(value)
-            if value.completedUnitCount >= steps/2 {
+            if value.completedUnitCount >= steps / 2 {
                 channel.cancel()
                 sent.fulfill()
             }
@@ -297,7 +297,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         let token = operation.subscribe { (value: LongOperation.InProcess) in
             count += 1
             channel.send(value)
-            if value.completedUnitCount >= steps/2 {
+            if value.completedUnitCount >= steps / 2 {
                 channel.cancel()
                 sent.fulfill()
             }
@@ -338,7 +338,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         while index < elements.count {
             try await Task.sleep(seconds: sleepSeconds)
             let element = elements[index]
-            if let processor = processor {
+            if let processor {
                 do {
                     let processed = try processor(element)
                     channel.send(processed)

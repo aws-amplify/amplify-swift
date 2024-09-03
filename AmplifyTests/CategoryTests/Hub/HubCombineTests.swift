@@ -6,8 +6,8 @@
 //
 
 #if canImport(Combine)
-import XCTest
 import Combine
+import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon

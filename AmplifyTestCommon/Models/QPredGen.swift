@@ -8,6 +8,7 @@
 // swiftlint:disable all
 import Amplify
 import Foundation
+
 /*
  Generated from:
 
@@ -42,7 +43,8 @@ public struct QPredGen: Model {
       myString: String? = nil,
       myDate: Temporal.Date? = nil,
       myDateTime: Temporal.DateTime? = nil,
-      myTime: Temporal.Time? = nil) {
+      myTime: Temporal.Time? = nil)
+  {
       self.id = id
       self.name = name
       self.myBool = myBool

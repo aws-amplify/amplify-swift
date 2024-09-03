@@ -18,18 +18,20 @@ public struct PostTagsWithCompositeKey: Model {
 
   public init(id: String = UUID().uuidString,
       postWithTagsCompositeKey: PostWithTagsCompositeKey,
-      tagWithCompositeKey: TagWithCompositeKey) {
+      tagWithCompositeKey: TagWithCompositeKey)
+  {
     self.init(id: id,
       postWithTagsCompositeKey: postWithTagsCompositeKey,
       tagWithCompositeKey: tagWithCompositeKey,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       postWithTagsCompositeKey: PostWithTagsCompositeKey,
       tagWithCompositeKey: TagWithCompositeKey,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.postWithTagsCompositeKey = postWithTagsCompositeKey
       self.tagWithCompositeKey = tagWithCompositeKey

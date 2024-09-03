@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import ArgumentParser
+import Foundation
 
 /// The following extensions on ArgumentParser commands parameters property wrappers
 /// help us providing a hook to generate a JSON representation of a CLI command.

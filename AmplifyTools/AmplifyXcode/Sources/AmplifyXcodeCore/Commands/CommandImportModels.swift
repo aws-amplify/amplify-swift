@@ -10,13 +10,13 @@ import PathKit
 
 enum CommandImportModelsTasks {
     static func projectHasGeneratedModels(environment: AmplifyCommandEnvironment,
-                                          args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult {
+                                          args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult
+    {
         let modelsPath = environment.path(for: args.generatedModelsPath)
         guard environment.directoryExists(atPath: modelsPath) else {
             do {
                 _ = try environment.createDirectory(atPath: args.generatedModelsPath)
-            } 
-            catch {
+            } catch {
                 return .failure(
                     AmplifyCommandError(
                         .folderNotFound,
@@ -31,7 +31,8 @@ enum CommandImportModelsTasks {
     }
 
     static func addGeneratedModelsToProject(environment: AmplifyCommandEnvironment,
-                                            args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult {
+                                            args: CommandImportModels.TaskArgs) -> AmplifyCommandTaskResult
+    {
         let models = environment.glob(pattern: "\(args.generatedModelsPath)/*.swift").map {
             environment.createXcodeFile(withPath: $0, ofType: .source)
         }

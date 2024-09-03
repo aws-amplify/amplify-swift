@@ -22,7 +22,8 @@ public struct Post8: Model {
       name: String,
       randomId: String? = nil,
       blog: Blog8? = nil,
-      comments: List<Comment8>? = []) {
+      comments: List<Comment8>? = [])
+  {
     self.init(id: id,
       name: name,
       randomId: randomId,
@@ -31,13 +32,14 @@ public struct Post8: Model {
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String,
       randomId: String? = nil,
       blog: Blog8? = nil,
       comments: List<Comment8>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.name = name
       self.randomId = randomId

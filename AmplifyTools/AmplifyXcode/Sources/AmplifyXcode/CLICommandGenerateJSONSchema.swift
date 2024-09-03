@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AmplifyXcodeCore
 import ArgumentParser
+import Foundation
 
 /// Encodable representation of the `amplify-xcode` CLI.
 /// In order to get the necessary information to produce a representation of each commands,

@@ -18,7 +18,7 @@ struct DynamicEmbedded: Embeddable, JSONValueHolder {
     public init(from decoder: Decoder) throws {
         let json = try JSONValue(from: decoder)
         if case .object(let jsonValue) = json {
-            values = jsonValue
+            self.values = jsonValue
         } else {
             self.values = [:]
         }
@@ -51,7 +51,8 @@ struct DynamicEmbedded: Embeddable, JSONValueHolder {
     public func jsonValue(for key: String, modelSchema: ModelSchema) -> Any?? {
         let field = modelSchema.field(withName: key)
         if case .int = field?.type,
-           case .some(.number(let deserializedValue)) = values[key] {
+           case .some(.number(let deserializedValue)) = values[key]
+        {
             return Int(deserializedValue)
         }
         return jsonValue(for: key)

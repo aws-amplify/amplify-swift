@@ -38,7 +38,8 @@ public struct ScalarContainer: Model {
       myJSON: String? = nil,
       myPhone: String? = nil,
       myURL: String? = nil,
-      myIPAddress: String? = nil) {
+      myIPAddress: String? = nil)
+  {
       self.id = id
       self.myString = myString
       self.myInt = myInt

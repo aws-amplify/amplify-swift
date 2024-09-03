@@ -81,7 +81,8 @@ class GeoCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Geo.getPlugin(for: "MockGeoCategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
+                             "Getting a plugin after reset() should throw")
+        { error in
             guard case Geo.Error.invalidConfiguration = error else {
                 XCTFail("Expected PluginError.noSuchPlugin")
                 return
@@ -240,7 +241,8 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Geo.configure(using: categoryConfig)
         XCTAssertThrowsError(try Amplify.Geo.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return
@@ -317,7 +319,8 @@ class GeoCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return

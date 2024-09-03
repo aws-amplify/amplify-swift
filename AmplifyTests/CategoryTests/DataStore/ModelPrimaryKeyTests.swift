@@ -98,7 +98,7 @@ class ModelPrimaryKeyTests: XCTestCase {
         let expectedFieldsNames = ["id", "dob", "date", "time", "phoneNumber", "priority", "height"]
         XCTAssertEqual(primaryKey.isCompositeKey, true)
         XCTAssertEqual(primaryKey.fields.count, 7)
-        XCTAssertEqual(primaryKey.fields.map { $0.name }, expectedFieldsNames)
+        XCTAssertEqual(primaryKey.fields.map(\.name), expectedFieldsNames)
     }
 
     /// Given: a schema for model with a composite primary key field
@@ -110,7 +110,7 @@ class ModelPrimaryKeyTests: XCTestCase {
         let expectedFieldsNames = ["id", "dob"]
         XCTAssertEqual(primaryKey.isCompositeKey, true)
         XCTAssertEqual(primaryKey.fields.count, 2)
-        XCTAssertEqual(primaryKey.fields.map { $0.name }, expectedFieldsNames)
+        XCTAssertEqual(primaryKey.fields.map(\.name), expectedFieldsNames)
     }
 
     /// Given: a schema for model with a legacy composite primary key field
@@ -121,7 +121,7 @@ class ModelPrimaryKeyTests: XCTestCase {
         let expectedFieldsNames = ["orderId", "id"]
         XCTAssertEqual(primaryKey.isCompositeKey, true)
         XCTAssertEqual(primaryKey.fields.count, 2)
-        XCTAssertEqual(primaryKey.fields.map { $0.name }, expectedFieldsNames)
+        XCTAssertEqual(primaryKey.fields.map(\.name), expectedFieldsNames)
     }
 
     /// Given: a schema for model with an untyped model

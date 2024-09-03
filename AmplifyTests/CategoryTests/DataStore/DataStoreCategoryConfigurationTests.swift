@@ -106,7 +106,8 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
         XCTAssertThrowsError(try Amplify.DataStore.getPlugin(for: "MockDataStoreCategoryPlugin"),
-                             "Getting a plugin after reset() should throw") { error in
+                             "Getting a plugin after reset() should throw")
+        { error in
                                 guard case DataStoreError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
@@ -221,7 +222,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)
 
         try Amplify.configure(amplifyConfig)
-        
+
         let saveSuccess = expectation(description: "save success")
         Task {
             _ = try await Amplify.DataStore.getPlugin(for: "MockSecondDataStoreCategoryPlugin")
@@ -295,7 +296,8 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.DataStore.configure(using: categoryConfig)
         XCTAssertThrowsError(try Amplify.DataStore.configure(using: categoryConfig),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return
@@ -372,7 +374,8 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         XCTAssertThrowsError(try Amplify.add(plugin: plugin),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                                     return

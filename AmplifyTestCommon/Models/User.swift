@@ -18,7 +18,8 @@ public struct User: Model {
   public init(id: String = UUID().uuidString,
       name: String,
       following: List<UserFollowing>? = [],
-      followers: List<UserFollowers>? = []) {
+      followers: List<UserFollowers>? = [])
+  {
       self.id = id
       self.name = name
       self.following = following

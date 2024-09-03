@@ -16,7 +16,8 @@ public struct Blog6: Model {
 
   public init(id: String = UUID().uuidString,
       name: String,
-      posts: List<Post6>? = []) {
+      posts: List<Post6>? = [])
+  {
       self.id = id
       self.name = name
       self.posts = posts

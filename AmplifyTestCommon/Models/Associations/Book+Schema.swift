@@ -8,20 +8,20 @@
 import Amplify
 import Foundation
 
-extension Book {
+public extension Book {
 
     // MARK: - CodingKeys
-    public enum CodingKeys: String, ModelKey {
+    enum CodingKeys: String, ModelKey {
         case id
         case title
         case authors
     }
 
-    public static let keys = CodingKeys.self
+    static let keys = CodingKeys.self
 
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema { model in
+    static let schema = defineSchema { model in
         let book = Book.keys
 
         model.fields(
@@ -33,9 +33,9 @@ extension Book {
         )
     }
 
-    public class Path : ModelPath<Book> {}
+    class Path: ModelPath<Book> {}
 
-    public static var rootPath: PropertyContainerPath? { Path() }
+    static var rootPath: PropertyContainerPath? { Path() }
 
 }
 

@@ -24,7 +24,8 @@ public class Project4aV2: Model {
     public convenience init(id: String = UUID().uuidString,
       name: String? = nil,
       team: Team4aV2? = nil,
-      project4aV2TeamId: String? = nil) {
+      project4aV2TeamId: String? = nil)
+  {
     self.init(id: id,
       name: name,
       team: team,
@@ -32,12 +33,13 @@ public class Project4aV2: Model {
       updatedAt: nil,
       project4aV2TeamId: project4aV2TeamId)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       name: String? = nil,
       team: Team4aV2? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
-      project4aV2TeamId: String? = nil) {
+      project4aV2TeamId: String? = nil)
+  {
       self.id = id
       self.name = name
       self.team = team

@@ -13,7 +13,8 @@ import Foundation
 class MockAPICategoryPlugin: MessageReporter,
                              APICategoryPlugin,
                              APICategoryReachabilityBehavior,
-                             APICategoryGraphQLBehavior {
+                             APICategoryGraphQLBehavior
+{
 
     var authProviderFactory: APIAuthProviderFactory?
 
@@ -91,11 +92,11 @@ class MockAPICategoryPlugin: MessageReporter,
                                                  variables: request.variables,
                                                  responseType: request.responseType,
                                                  options: requestOptions)
-        
+
         let taskRunner = MockAWSGraphQLSubscriptionTaskRunner(request: request)
         return taskRunner.sequence
     }
-    
+
     public func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
         reachabilityPublisher()
     }
@@ -121,7 +122,7 @@ class MockAPICategoryPlugin: MessageReporter,
         let operation = MockAPIOperation(request: operationRequest)
         return operation
     }
-    
+
     func get(request: RESTRequest) async throws -> RESTTask.Success {
         notify("get")
         return Data()
@@ -138,7 +139,7 @@ class MockAPICategoryPlugin: MessageReporter,
         let operation = MockAPIOperation(request: request)
         return operation
     }
-    
+
     func put(request: RESTRequest) async throws -> RESTTask.Success {
         notify("put")
         let request = RESTOperationRequest(apiName: request.apiName,
@@ -176,7 +177,7 @@ class MockAPICategoryPlugin: MessageReporter,
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value
     }
-    
+
     func delete(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("delete")
         let request = RESTOperationRequest(apiName: request.apiName,
@@ -201,7 +202,7 @@ class MockAPICategoryPlugin: MessageReporter,
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value
     }
-    
+
     func patch(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("patch")
         let request = RESTOperationRequest(apiName: request.apiName,
@@ -213,7 +214,7 @@ class MockAPICategoryPlugin: MessageReporter,
         let operation = MockAPIOperation(request: request)
         return operation
     }
-    
+
     func patch(request: RESTRequest) async throws -> RESTTask.Success {
         notify("patch")
         let request = RESTOperationRequest(apiName: request.apiName,
@@ -238,7 +239,7 @@ class MockAPICategoryPlugin: MessageReporter,
         let operation = MockAPIOperation(request: request)
         return operation
     }
-    
+
     func head(request: RESTRequest) async throws -> RESTTask.Success {
         notify("head")
         let request = RESTOperationRequest(apiName: request.apiName,
@@ -251,7 +252,7 @@ class MockAPICategoryPlugin: MessageReporter,
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value
     }
-    
+
 
     func add(interceptor: URLRequestInterceptor, for apiName: String) {
         notify("addInterceptor")
@@ -260,7 +261,7 @@ class MockAPICategoryPlugin: MessageReporter,
     // MARK: - APICategoryAuthProviderFactoryBehavior
 
     func apiAuthProviderFactory() -> APIAuthProviderFactory {
-        if let authProviderFactory = authProviderFactory {
+        if let authProviderFactory {
             return authProviderFactory
         } else {
             return APIAuthProviderFactory()
@@ -282,7 +283,8 @@ class MockGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     }
 
     init(request: Request,
-         responseType: R.Type) {
+         responseType: R.Type)
+    {
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.mutate,
                    request: request)
@@ -298,7 +300,8 @@ class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperati
     }
 
     init(request: Request,
-         responseType: R.Type) {
+         responseType: R.Type)
+    {
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.subscribe,
                    request: request)
@@ -324,7 +327,8 @@ class MockAPIAuthProviderFactory: APIAuthProviderFactory {
     let functionProvider: AmplifyFunctionAuthProvider?
 
     init(oidcProvider: AmplifyOIDCAuthProvider? = nil,
-         functionProvider: AmplifyFunctionAuthProvider? = nil) {
+         functionProvider: AmplifyFunctionAuthProvider? = nil)
+    {
         self.oidcProvider = oidcProvider
         self.functionProvider = functionProvider
     }
@@ -340,7 +344,7 @@ class MockAPIAuthProviderFactory: APIAuthProviderFactory {
 
 class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
     var result: Result<AuthToken, Error>?
-    
+
     func getLatestAuthToken() async throws -> String {
         if case let .success(token) = result {
             return token
@@ -352,7 +356,7 @@ class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
 
 class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
     var result: Result<AuthToken, Error>?
-    
+
     func getLatestAuthToken() async throws -> String {
         if case let .success(token) = result {
             return token
@@ -363,17 +367,17 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
 }
 
 class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
-    
+
     public typealias Request = GraphQLOperationRequest<R>
     public typealias InProcess = GraphQLSubscriptionEvent<R>
     public var request: GraphQLOperationRequest<R>
     public var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
     func run() async throws {
-        
+
     }
-    
+
     init(request: GraphQLOperationRequest<R>) {
         self.request = request
     }
-    
+
 }

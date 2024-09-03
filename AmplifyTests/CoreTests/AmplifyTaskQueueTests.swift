@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 // As expected, running this work as straight up Task invocations:
 
@@ -68,18 +68,18 @@ final class AmplifyTaskQueueTests: XCTestCase {
 
     func testAsync() async throws {
         let taskCount = 1_000
-        let expectations: [XCTestExpectation] = (0..<taskCount).map {
+        let expectations: [XCTestExpectation] = (0 ..< taskCount).map {
             expectation(description: "Expected execution of a task number \($0)")
         }
-        
+
         let taskQueue = TaskQueue<Void>()
-        
-        for i in 0..<taskCount {
+
+        for i in 0 ..< taskCount {
             taskQueue.async {
                 expectations[i].fulfill()
             }
         }
-        
+
         await fulfillment(of: expectations, enforceOrder: true)
     }
 }

@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPluginsCore
 import AWSClientRuntime
+import AWSPluginsCore
 import Foundation
 
 class MockCredentialsProvider: AWSClientRuntime.CredentialsProviding {
@@ -14,7 +14,7 @@ class MockCredentialsProvider: AWSClientRuntime.CredentialsProviding {
         return AWSCredentials(
             accessKey: "accessKey",
             secret: "secret",
-            expirationTimeout: Date().addingTimeInterval(1000)
+            expirationTimeout: Date().addingTimeInterval(1_000)
         )
     }
 }

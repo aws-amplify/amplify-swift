@@ -21,10 +21,11 @@ public struct ModelExplicitCustomPk: Model {
               createdAt: nil,
               updatedAt: nil)
   }
-  internal init(userId: String,
+  init(userId: String,
                 name: String? = nil,
                 createdAt: Temporal.DateTime? = nil,
-                updatedAt: Temporal.DateTime? = nil) {
+                updatedAt: Temporal.DateTime? = nil)
+  {
       self.userId = userId
       self.name = name
       self.createdAt = createdAt

@@ -10,7 +10,8 @@ import Foundation
 enum ImportConfigTasks {
     static func amplifyFolderExist(
         environment: AmplifyCommandEnvironment,
-        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
+        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult
+    {
         guard environment.directoryExists(atPath: "amplify") else {
             return .failure(AmplifyCommandError(
                                 .folderNotFound,
@@ -22,7 +23,8 @@ enum ImportConfigTasks {
 
     static func configFilesExist(
         environment: AmplifyCommandEnvironment,
-        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
+        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult
+    {
         for file in args.configFiles {
             if !environment.fileExists(atPath: file) {
                 return .failure(AmplifyCommandError(
@@ -36,7 +38,8 @@ enum ImportConfigTasks {
 
     static func addConfigFilesToXcodeProject(
         environment: AmplifyCommandEnvironment,
-        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult {
+        args: CommandImportConfig.TaskArgs) -> AmplifyCommandTaskResult
+    {
         let configFiles = args.configFiles.map {
             environment.createXcodeFile(withPath: environment.path(for: $0), ofType: .resource)
         }

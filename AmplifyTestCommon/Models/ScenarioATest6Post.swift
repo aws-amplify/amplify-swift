@@ -14,7 +14,8 @@ public struct ScenarioATest6Post: Model {
   public var title: String
 
   public init(id: String = UUID().uuidString,
-      title: String) {
+      title: String)
+  {
       self.id = id
       self.title = title
   }

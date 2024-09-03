@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
@@ -16,7 +16,8 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     func signIn(username: String,
                 password: String,
-                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
+                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
+    {
         fatalError()
     }
 
@@ -26,7 +27,8 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
-                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
+                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult
+    {
         fatalError()
     }
 
@@ -36,25 +38,29 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     public func signIn(username: String? = nil,
                        password: String? = nil,
-                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult
+    {
         fatalError()
     }
 
 #if os(iOS) || os(macOS)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult
+    {
         fatalError()
     }
 
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor? = nil,
-                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult
+    {
         fatalError()
     }
 #endif
 
     public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult
+    {
         fatalError()
     }
 
@@ -77,7 +83,8 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,
                                      confirmationCode: String,
-                                     options: AuthConfirmResetPasswordRequest.Options? = nil) async throws {
+                                     options: AuthConfirmResetPasswordRequest.Options? = nil) async throws
+    {
             fatalError()
     }
 
@@ -94,7 +101,8 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 
     public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
-        async throws -> AuthCodeDeliveryDetails {
+        async throws -> AuthCodeDeliveryDetails
+    {
             fatalError()
     }
 
@@ -118,13 +126,15 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,
-                        options: AuthConfirmUserAttributeRequest.Options? = nil) async throws {
+                        options: AuthConfirmUserAttributeRequest.Options? = nil) async throws
+    {
             fatalError()
     }
 
     public func update(oldPassword: String,
                        to newPassword: String,
-                       options: AuthChangePasswordRequest.Options? = nil) async throws {
+                       options: AuthChangePasswordRequest.Options? = nil) async throws
+    {
         notify("changePassword")
 
     }

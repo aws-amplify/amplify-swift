@@ -9,9 +9,10 @@
 import Amplify
 import Foundation
 
-extension TagWithCompositeKey {
+public extension TagWithCompositeKey {
   // MARK: - CodingKeys
-   public enum CodingKeys: String, ModelKey {
+   enum CodingKeys: String, ModelKey
+  {
     case id
     case name
     case posts
@@ -19,10 +20,10 @@ extension TagWithCompositeKey {
     case updatedAt
   }
 
-  public static let keys = CodingKeys.self
+  static let keys = CodingKeys.self
   //  MARK: - ModelSchema
 
-  public static let schema = defineSchema { model in
+  static let schema = defineSchema { model in
     let tagWithCompositeKey = TagWithCompositeKey.keys
 
     model.pluralName = "TagWithCompositeKeys"
@@ -47,9 +48,10 @@ extension TagWithCompositeKey: ModelIdentifiable {
   public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension TagWithCompositeKey.IdentifierProtocol {
-  public static func identifier(id: String,
-      name: String) -> Self {
+public extension TagWithCompositeKey.IdentifierProtocol {
+  static func identifier(id: String,
+      name: String) -> Self
+  {
     .make(fields: [(name: "id", value: id), (name: "name", value: name)])
   }
 }

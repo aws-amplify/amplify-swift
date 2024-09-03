@@ -18,18 +18,20 @@ public struct Comment7V2: Model {
 
   public init(id: String = UUID().uuidString,
       content: String? = nil,
-      post: Post7V2? = nil) {
+      post: Post7V2? = nil)
+  {
     self.init(id: id,
       content: content,
       post: post,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       content: String? = nil,
       post: Post7V2? = nil,
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.content = content
       self.post = post

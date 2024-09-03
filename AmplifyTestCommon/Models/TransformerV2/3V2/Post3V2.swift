@@ -18,18 +18,20 @@ public struct Post3V2: Model {
 
   public init(id: String = UUID().uuidString,
       title: String,
-      comments: List<Comment3V2>? = []) {
+      comments: List<Comment3V2>? = [])
+  {
     self.init(id: id,
       title: title,
       comments: comments,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  init(id: String = UUID().uuidString,
       title: String,
       comments: List<Comment3V2>? = [],
       createdAt: Temporal.DateTime? = nil,
-      updatedAt: Temporal.DateTime? = nil) {
+      updatedAt: Temporal.DateTime? = nil)
+  {
       self.id = id
       self.title = title
       self.comments = comments

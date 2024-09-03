@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-struct HubListenerTestUtilities {
+enum HubListenerTestUtilities {
 
     /// Blocks current thread until the listener with `token` is attached to the plugin. Returns `true` if the listener
     /// becomes present before the `timeout` expires, `false` otherwise.
@@ -21,7 +21,8 @@ struct HubListenerTestUtilities {
                                 plugin: HubCategoryPlugin? = nil,
                                 timeout: TimeInterval,
                                 file: StaticString = #file,
-                                line: UInt = #line) async throws -> Bool {
+                                line: UInt = #line) async throws -> Bool
+    {
 
         let plugin = try plugin ?? Amplify.Hub.getPlugin(for: AWSHubPlugin.key)
 

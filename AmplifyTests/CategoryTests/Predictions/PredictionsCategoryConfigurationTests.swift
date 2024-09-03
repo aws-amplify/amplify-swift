@@ -221,7 +221,8 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Predictions.configure(using: config)
         XCTAssertThrowsError(try Amplify.Predictions.configure(using: config),
-                             "configure() an already configured plugin should throw") { error in
+                             "configure() an already configured plugin should throw")
+        { error in
             guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                 XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
                 return

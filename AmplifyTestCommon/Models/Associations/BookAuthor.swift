@@ -20,7 +20,8 @@ public struct BookAuthor: Model {
 
     public init(id: String = UUID().uuidString,
                 book: Book,
-                author: Author) {
+                author: Author)
+    {
         self.id = id
         self.book = book
         self.author = author
