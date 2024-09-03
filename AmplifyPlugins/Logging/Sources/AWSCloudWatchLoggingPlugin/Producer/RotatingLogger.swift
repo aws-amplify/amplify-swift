@@ -45,7 +45,7 @@ final class RotatingLogger {
 
     func getLogBatches() async throws -> [RotatingLogBatch] {
         let logs = try await actor.getLogs()
-        return logs.map({RotatingLogBatch(url: $0)})
+        return logs.map {RotatingLogBatch(url: $0)}
     }
 
     func resetLogs() async throws {
@@ -54,16 +54,16 @@ final class RotatingLogger {
 
     func record(level: LogLevel, message: @autoclosure () -> String) async throws {
         try await setupSubscription()
-        let entry = LogEntry(category: self.category, namespace: self.namespace, level: level, message: message())
-        try await self.actor.record(entry)
+        let entry = LogEntry(category: category, namespace: namespace, level: level, message: message())
+        try await actor.record(entry)
     }
 
     private func setupSubscription() async throws {
         if rotationSubscription == nil {
-            let rotationPublisher = await self.actor.rotationPublisher()
+            let rotationPublisher = await actor.rotationPublisher()
             rotationSubscription = rotationPublisher.sink { [weak self] url in
-                guard let self = self else { return }
-                self.batchSubject.send(RotatingLogBatch(url: url))
+                guard let self else { return }
+                batchSubject.send(RotatingLogBatch(url: url))
             }
         }
     }

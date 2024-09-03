@@ -33,8 +33,8 @@ class AWSCLoudWatchLoggingMonitor {
         automaticFlushLogsTimer = createRepeatingTimer(
             timeInterval: automaticFlushLogsInterval,
             eventHandler: { [weak self] in
-                guard let self = self else { return }
-                self.eventDelegate?.handleAutomaticFlushIntervalEvent()
+                guard let self else { return }
+                eventDelegate?.handleAutomaticFlushIntervalEvent()
         })
         automaticFlushLogsTimer?.resume()
     }

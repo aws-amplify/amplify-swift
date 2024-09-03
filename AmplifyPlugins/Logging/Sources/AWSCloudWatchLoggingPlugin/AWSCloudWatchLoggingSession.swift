@@ -43,7 +43,7 @@ final class AWSCloudWatchLoggingSession {
         let directory = try directory(for: category, userIdentifier: userIdentifier)
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         try (directory as NSURL).setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
-        let cacheMaxSizeInBytes = localStoreMaxSizeInMB * 1048576
+        let cacheMaxSizeInBytes = localStoreMaxSizeInMB * 1_048_576
         return try RotatingLogger(directory: directory,
                                   category: category,
                                   namespace: namespace,
@@ -64,7 +64,7 @@ final class AWSCloudWatchLoggingSession {
     }
 
     private static func normalized(userIdentifier: String?) throws -> String {
-        guard let userIdentifier = userIdentifier else {
+        guard let userIdentifier else {
             return "guest"
         }
 

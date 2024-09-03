@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSCloudWatchLoggingPlugin
 import AWSCloudWatchLogs
+import Foundation
 
 class AWSCloudWatchClientHelper {
     static func getFilterLogEventCount(client: CloudWatchLogsClientProtocol?, filterPattern: String?, startTime: Date?, endTime: Date?, logGroupName: String?) async throws -> [CloudWatchLogsClientTypes.FilteredLogEvent]? {
@@ -19,6 +19,6 @@ class AWSCloudWatchClientHelper {
 
 extension Date {
     var epochMilliseconds: Int {
-        Int(self.timeIntervalSince1970 * 1_000)
+        Int(timeIntervalSince1970 * 1_000)
     }
 }
